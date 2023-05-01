@@ -3,7 +3,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.google.cloud</groupId>
     <artifactId>spring-cloud-gcp-security-iap-sample</artifactId>
     <name>Spring Framework on Google Cloud Code Sample - IAP</name>
     <description>Spring Cloud IAP Security Sample</description>
@@ -12,7 +11,7 @@
         <!-- Your own application should inherit from spring-boot-starter-parent -->
         <artifactId>spring-cloud-gcp-samples</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>4.2.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
 
     <properties>

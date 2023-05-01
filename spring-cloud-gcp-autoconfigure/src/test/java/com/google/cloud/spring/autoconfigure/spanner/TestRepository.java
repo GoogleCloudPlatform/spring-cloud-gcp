@@ -21,4 +21,4 @@ import org.springframework.stereotype.Repository;
 
 /** A repository for testing instantiation. */
 @Repository
-public interface TestRepository extends SpannerRepository {}
+public interface TestRepository<T, I> extends SpannerRepository<T, I> {}

@@ -106,7 +106,8 @@ class DatastoreTransactionTemplateTests {
     verify(this.datastore, times(1)).newTransaction();
     verify(this.transaction, times(1)).commit();
     verify(this.transaction, times(0)).rollback();
-    verify(this.transaction, times(3)).put((FullEntity<?>[]) any());
+    verify(this.transaction, times(2)).put((FullEntity<?>[]) any());
+    verify(this.transaction, times(1)).add((FullEntity<?>[]) any());
     verify(this.transaction, times(1)).fetch((Key[]) any());
     verify(this.transaction, times(1)).delete(any());
   }
@@ -131,6 +132,7 @@ class DatastoreTransactionTemplateTests {
     verify(this.transaction, never()).commit();
     verify(this.transaction, never()).rollback();
     verify(this.transaction, never()).put((FullEntity<?>) any());
+    verify(this.transaction, never()).add((FullEntity<?>) any());
     verify(this.transaction, never()).fetch((Key[]) any());
     verify(this.transaction, never()).delete(any());
     verify(this.datastore, never()).newTransaction();
@@ -197,7 +199,7 @@ class DatastoreTransactionTemplateTests {
     @Transactional
     public void doInTransaction(TestEntity entity1, TestEntity entity2) {
       this.datastoreTemplate.findById("abc", TestEntity.class);
-      this.datastoreTemplate.save(entity1);
+      this.datastoreTemplate.insert(entity1);
       this.datastoreTemplate.save(entity2);
       this.datastoreTemplate.delete(entity1);
       this.datastoreTemplate.save(entity2);
@@ -206,7 +208,7 @@ class DatastoreTransactionTemplateTests {
     @Transactional
     public void doInTransactionWithException(TestEntity entity1, TestEntity entity2) {
       this.datastoreTemplate.findById("abc", TestEntity.class);
-      this.datastoreTemplate.save(entity1);
+      this.datastoreTemplate.insert(entity1);
       this.datastoreTemplate.save(entity2);
       this.datastoreTemplate.delete(entity1);
       this.datastoreTemplate.save(entity2);
@@ -215,7 +217,7 @@ class DatastoreTransactionTemplateTests {
 
     public void doWithoutTransaction(TestEntity entity1, TestEntity entity2) {
       this.datastoreTemplate.findById("abc", TestEntity.class);
-      this.datastoreTemplate.save(entity1);
+      this.datastoreTemplate.insert(entity1);
       this.datastoreTemplate.save(entity2);
       this.datastoreTemplate.delete(entity1);
       this.datastoreTemplate.save(entity2);

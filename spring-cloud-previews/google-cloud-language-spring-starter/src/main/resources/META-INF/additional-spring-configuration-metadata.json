@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.language.v1.language-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud language/LanguageService components.",
+      "defaultValue": true
+    }
+  ]
+}

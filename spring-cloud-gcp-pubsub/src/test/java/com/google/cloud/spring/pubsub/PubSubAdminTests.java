@@ -19,6 +19,7 @@ package com.google.cloud.spring.pubsub;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,8 +29,8 @@ import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
+import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.pubsub.v1.ProjectName;
-import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.TopicName;
@@ -236,7 +237,8 @@ class PubSubAdminTests {
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .getSubscription("fooSubscription");
     verify(this.mockSubscriptionAdminClient)
-        .getSubscription(ProjectSubscriptionName.of("test-project", "fooSubscription"));
+        .getSubscription(
+            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project").toString());
   }
 
   @Test
@@ -245,12 +247,12 @@ class PubSubAdminTests {
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .getSubscription("projects/differentProject/subscriptions/fooSubscription");
     verify(this.mockSubscriptionAdminClient)
-        .getSubscription(ProjectSubscriptionName.of("differentProject", "fooSubscription"));
+        .getSubscription("projects/differentProject/subscriptions/fooSubscription");
   }
 
   @Test
   void testGetSubscription_notFound() {
-    when(this.mockSubscriptionAdminClient.getSubscription(any(ProjectSubscriptionName.class)))
+    when(this.mockSubscriptionAdminClient.getSubscription(anyString()))
         .thenThrow(new ApiException(null, GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND), false));
     assertThat(
             new PubSubAdmin(
@@ -260,12 +262,13 @@ class PubSubAdminTests {
                 .getSubscription("fooSubscription"))
         .isNull();
     verify(this.mockSubscriptionAdminClient)
-        .getSubscription(ProjectSubscriptionName.of("test-project", "fooSubscription"));
+        .getSubscription(
+            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project").toString());
   }
 
   @Test
   void testGetSubscription_serviceDown() {
-    when(this.mockSubscriptionAdminClient.getSubscription(any(ProjectSubscriptionName.class)))
+    when(this.mockSubscriptionAdminClient.getSubscription(anyString()))
         .thenThrow(
             new ApiException(null, GrpcStatusCode.of(io.grpc.Status.Code.UNAVAILABLE), false));
     PubSubAdmin psa =
@@ -275,7 +278,8 @@ class PubSubAdminTests {
     assertThatExceptionOfType(ApiException.class)
         .isThrownBy(() -> psa.getSubscription("fooSubscription"));
     verify(this.mockSubscriptionAdminClient)
-        .getSubscription(ProjectSubscriptionName.of("test-project", "fooSubscription"));
+        .getSubscription(
+            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project").toString());
   }
 
   @Test
@@ -284,7 +288,8 @@ class PubSubAdminTests {
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .deleteSubscription("fooSubscription");
     verify(this.mockSubscriptionAdminClient)
-        .deleteSubscription(ProjectSubscriptionName.of("test-project", "fooSubscription"));
+        .deleteSubscription(
+            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project").toString());
   }
 
   @Test
@@ -293,7 +298,7 @@ class PubSubAdminTests {
             () -> "test-project", this.mockTopicAdminClient, this.mockSubscriptionAdminClient)
         .deleteSubscription("projects/differentProject/subscriptions/fooSubscription");
     verify(this.mockSubscriptionAdminClient)
-        .deleteSubscription(ProjectSubscriptionName.of("differentProject", "fooSubscription"));
+        .deleteSubscription("projects/differentProject/subscriptions/fooSubscription");
   }
 
   @Test

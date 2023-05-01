@@ -31,8 +31,7 @@ import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreAuditing;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -52,7 +51,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration
 class DatastoreTemplateAuditingTests {
 
-  private static final LocalDateTime LONG_AGO = LocalDate.parse("2000-01-01").atStartOfDay();
+  private static final Instant LONG_AGO = Instant.parse("2000-01-01T00:00:00.00Z");
 
   @Autowired DatastoreTemplate datastoreTemplate;
   @Autowired Datastore datastore;
@@ -134,7 +133,7 @@ class DatastoreTemplateAuditingTests {
                 FullEntity testEntity = invocation.getArgument(0);
                 assertThat(testEntity.getTimestamp("lastTouched")).isNotNull();
                 assertThat(testEntity.getTimestamp("lastTouched"))
-                    .isGreaterThan(Timestamp.of(java.sql.Timestamp.valueOf(LONG_AGO)));
+                    .isGreaterThan(Timestamp.of(java.sql.Timestamp.from(LONG_AGO)));
                 assertThat(testEntity.getString("lastUser")).isEqualTo("test_user");
                 return null;
               });
@@ -154,6 +153,7 @@ class DatastoreTemplateAuditingTests {
 
     @LastModifiedBy String lastUser;
 
-    @LastModifiedDate LocalDateTime lastTouched;
+    @LastModifiedDate
+    Instant lastTouched;
   }
 }

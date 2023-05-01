@@ -11,7 +11,7 @@ You can check our project website https://spring.io/projects/spring-cloud-gcp[he
 For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation below or the https://googleapis.dev/java/spring-cloud-gcp/latest/index.html[latest Javadocs].
 
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html[Spring Framework on Google Cloud Latest]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.4.0/reference/html/index.html[SSpring Framework on Google Cloud 3.4.0]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.4.0/reference/html/index.html[Spring Framework on Google Cloud 3.4.0]
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/2.0.11/reference/html/index.html[Spring Framework on Google Cloud 2.0.11]
 
 If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Framework on Google Cloud sample applications] or the https://codelabs.developers.google.com/spring[Spring on Google Cloud codelabs].
@@ -36,7 +36,6 @@ Currently, this repository provides support for:
 ** link:spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-mysql[Google Cloud SQL MySQL]
 ** link:spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-postgresql[Google Cloud SQL PostgreSQL]
 ** link:spring-cloud-gcp-starters/spring-cloud-gcp-starter-storage[Google Cloud Storage]
-** link:spring-cloud-gcp-starters/spring-cloud-gcp-starter-trace[Google Cloud Trace with Spring Cloud Sleuth]
 ** link:spring-cloud-gcp-starters/spring-cloud-gcp-starter-secretmanager[Google Secret Manager]
 ** link:spring-cloud-gcp-starters/spring-cloud-gcp-starter-security-firebase[Firebase Authentication]
 ** link:spring-cloud-gcp-starters/spring-cloud-gcp-starter-security-iap[Google Cloud IAP Authentication]
@@ -55,6 +54,7 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 
 |2.0.x |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes[2020.0.x] (3.0/Illford) |2.4.x, 2.5.x|5.3.x| No
 |3.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes[2021.0.x] (3.1/Jubilee) |2.6.x, 2.7.x | 5.3.x| Yes
+|4.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2022.0-Release-Notes[2022.0.x] (4.0/Kilburn) |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes[3.x]| https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x[6.x]| Yes
 |===
 
 == Spring Initializr
@@ -70,6 +70,8 @@ Similarly to `GCP Messaging`, `GCP Storage` contains the Google Cloud Storage su
 If you're a Maven user, add our BOM to your pom.xml `<dependencyManagement>` section.
 This will allow you to not specify versions for any of the Maven dependencies and instead delegate versioning to the BOM.
 
+// {x-version-update-start:spring-cloud-gcp:released}
+
 [source,xml]
 ----
 <dependencyManagement>
@@ -77,13 +79,15 @@ This will allow you to not specify versions for any of the Maven dependencies an
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-dependencies</artifactId>
-            <version>3.4.0</version>
+            <version>4.2.0</version> 
             <type>pom</type>
             <scope>import</scope>
         </dependency>
     </dependencies>
 </dependencyManagement>
 ----
+
+// {x-version-update-end} 
 
 == Snapshots Repository
 

@@ -14,7 +14,143 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
-## 3.5.0-SNAPSHOT
+## [4.2.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.1.4...v4.2.0) (2023-04-20)
+
+
+### Features
+
+* reconfigure `ZipkinAutoConfiguration` ([#1728](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1728)) ([2fe61c4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2fe61c4a6739fd0567a7229a095856bd3f2c2ab0))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.13.0 (main) ([#1755](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1755)) ([56fee5b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/56fee5b2c5d5b92e02c98ec4e6d8c3541a2e40a2))
+* **deps:** update spring boot to v3.0.6 (main) ([#1747](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1747)) ([f230b7b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f230b7b34e2e4a062a819af4b46f7c1a92e9b5f1))
+* pass `enable-iam-auth=true` to `spring.r2dbc.properties` ([#1715](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1715)) ([d0c4589](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d0c45898d7ae049593041197e258e1201225e4d8))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.11.0 to 1.11.1 ([#1723](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1723)) ([71105d4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/71105d4da18bb301b68c2d8e484709398f763dcd))
+* bump flatten-maven-plugin from 1.4.0 to 1.4.1 ([#1678](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1678)) ([5596ac8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5596ac8a80951c958d9e6c78063314508ed41690))
+* bump maven-enforcer-plugin from 3.2.1 to 3.3.0 ([#1696](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1696)) ([1ae1c36](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1ae1c36c2d20fad8a14f6704ca4e543f0e0cd22d))
+* bump micrometer-tracing-bom from 1.0.3 to 1.0.4 ([#1717](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1717)) ([4246398](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/424639848553e03c84ae87ef4d65a55aa724423c))
+* bump spring-cloud-config.version from 4.0.1 to 4.0.2 ([#1681](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1681)) ([b1ebb57](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b1ebb577126063c6faa5c116dcb67a04ea862b7f))
+* bump spring-cloud-dependencies from 2022.0.1 to 2022.0.2 ([#1680](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1680)) ([a9480e2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a9480e2ae7d947127bb838e0aaf0864788df495e))
+* bump testcontainers-bom from 1.17.6 to 1.18.0 ([#1694](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1694)) ([ab108bf](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ab108bf4b5cc9eb82208c580cef47ce0132b1ca6))
+
+## [4.1.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.1.3...v4.1.4) (2023-04-05)
+
+
+### Bug Fixes
+
+* fix secret manager docs ([#1687](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1687)) ([2b7a744](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2b7a7448f6c11f0bfb6358e7fae97cb4ed4ba787))
+
+
+### Dependencies
+
+* bump libraries-bom from 26.11.0 to 26.12.0 ([#1695](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1695)) ([4f5598c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4f5598ca6236724f9e7f718e831f3c11759a2317))
+* bump maven-resources-plugin from 3.1.0 to 3.3.1 ([#1673](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1673)) ([272c68d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/272c68d436aca2fecd85c3033b367d9b9974d9d7))
+
+## [4.1.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.1.2...v4.1.3) (2023-03-24)
+
+
+### Dependencies
+
+* bump flatten-maven-plugin from 1.3.0 to 1.4.0 ([#1662](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1662)) ([3b95f12](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3b95f12a3d37a2c5d46a468c3426dbc3e00fa8a9))
+* bump libraries-bom from 26.10.0 to 26.11.0 ([#1668](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1668)) ([d3cfb98](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d3cfb987261f349717773ab3807eab4bd6819d5a))
+* bump micrometer-tracing-bom from 1.0.2 to 1.0.3 ([#1651](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1651)) ([79f4d4a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/79f4d4aca7a2ce710a5cb1e213cea984ccf77a1d))
+* bump spring-boot-dependencies from 3.0.4 to 3.0.5 ([#1669](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1669)) ([3a0d3fb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3a0d3fb0828f548a06fd22a45441fcc0a9140583))
+* bump spring-boot-starter-parent from 3.0.4 to 3.0.5 ([#1667](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1667)) ([393fd86](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/393fd86f1f92913ee4eec56bcd413c7d8221c156))
+
+## [4.1.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.1.1...v4.1.2) (2023-03-08)
+
+
+### Bug Fixes
+
+* provide setters for min/max duration per ack ext ([#1644](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1644)) ([cd3a75c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cd3a75c5cbf6459cbfb46ab72d45b0cca2562109))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.10.0 to 1.11.0 ([#1634](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1634)) ([cf24325](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cf24325fdcbc681bc3544ea8081f45f891ea91fc))
+* bump libraries-bom from 26.9.0 to 26.10.0 ([#1647](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1647)) ([33d131b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/33d131bc1e0799693e6b4052fd78f55483e77fac))
+* bump spring-boot-dependencies from 3.0.3 to 3.0.4 ([#1642](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1642)) ([a9db5bd](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a9db5bdf2b05e35428e897dee1b5c7c3d11ad335))
+* bump spring-boot-starter-parent from 3.0.3 to 3.0.4 ([#1641](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1641)) ([7f89063](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7f89063fe3675be2cffcb4f18d34f595123c7012))
+* bump spring-cloud-build from 3.1.5 to 3.1.6 ([#1625](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1625)) ([f75a8bf](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f75a8bf0f2c87a121fa5091ed6d89b5ca8034f7d))
+
+## [4.1.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.1.0...v4.1.1) (2023-02-24)
+
+
+### Bug Fixes
+
+* update starter modules in spring-cloud-previews ([abfd34b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/abfd34bd3ae5cf83a5bdc6942a6f42b35d4341a2))
+
+
+### Documentation
+
+* fix secret-manager docs ([19ffedb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/19ffedbde9c4e7744ce23bf77c4463b09e463477))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.9.0 to 1.10.0 ([#1585](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1585)) ([f046398](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f046398011ec8b84bc9f586de39acdde6a6b2e08))
+* bump libraries-bom from 26.7.0 to 26.9.0 ([abfd34b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/abfd34bd3ae5cf83a5bdc6942a6f42b35d4341a2))
+* bump maven-javadoc-plugin from 3.4.1 to 3.5.0 ([#1596](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1596)) ([79cf1ba](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/79cf1baf35f3cbf36f5217e29bdfa885d94bac5c))
+* bump micrometer-tracing-bom from 1.0.1 to 1.0.2 ([#1595](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1595)) ([f226afc](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f226afcb34cfff3bef85f979c6e78f25db885ed5))
+* bump r2dbc-postgresql from 1.0.0.RELEASE to 1.0.1.RELEASE ([#1598](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1598)) ([e6fe51c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e6fe51c3848d1e43772388195bb2fbbc2658b4ca))
+* bump spring-boot-dependencies from 3.0.2 to 3.0.3 ([#1612](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1612)) ([8183160](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/818316091c62f1c425c4a1e2cadf97ea40df8e9e))
+* bump spring-boot-starter-parent from 3.0.2 to 3.0.3 ([#1614](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1614)) ([cde91e5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cde91e505d6bd2649ff0e2be511b216e52d51d96))
+
+## [4.1.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.0.0...v4.1.0) (2023-02-09)
+
+
+### Features
+
+* add an encoder bean in Trace auto-configuration ([#1568](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1568)) ([deb4239](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/deb4239696360dadfe8ecfcda692adf344938909))
+* remove `SecretManagerPropertySourceLocator` ([#1571](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1571)) ([c80d299](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c80d2998ca71ee65118ae51853d093817fc1bf3d))
+
+
+### Bug Fixes
+
+* create Secret Manager beans even without `spring.config.import=sm://` property ([#1567](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1567)) ([b444fcb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b444fcbbdd57984ac7304263490546219ec41c86))
+* update starter modules in spring-cloud-preview ([033e2ee](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/033e2ee4135f0dc9db2edf0bb046296f8d9f34bd))
+
+
+### Dependencies
+
+* bump libraries-bom from 26.5.0 to 26.7.0 ([033e2ee](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/033e2ee4135f0dc9db2edf0bb046296f8d9f34bd))
+* bump maven-enforcer-plugin from 3.1.0 to 3.2.1 ([#1557](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1557)) ([877d271](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/877d2717bf2dbb66ff04660844cd63b248a3c619))
+
+## [4.0.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.2...v4.0.0) (2023-01-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* This release officially introduces Spring Boot 3.x compatibility. Note that breaking changes occur in this release. For full list of changes, refer to [this](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1287).
+
+### Features
+
+* Additional starters that provide dependencies and auto-configurations for working with corresponding Google Client Libraries are available for preview. ([2a8b103](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2a8b10395058168971a85b9bdc3cea65b32b0b59))
+* This release officially introduces Spring Boot 3.x compatibility. Note that breaking changes occur in this release. For full list of changes, refer to [this](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1287). ([0caa9b6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0caa9b6245cb4281b8d8da7ccb9f8fa993b0b9c4))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.8.2 to 1.9.0 ([39f9ba3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/39f9ba3906b25a1d18aa678aa540c0cde78a7b83))
+* bump libraries-bom from 26.4.0 to 26.5.0 ([#1532](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1532)) ([d2a7973](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d2a7973b233efd5b64e9f1b79cdf47f11db4acef))
+* bump micrometer-tracing-bom from 1.0.0 to 1.0.1 ([875768d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/875768d186d1e8cca75516c011e16b130c48279f))
+* bump spring-boot-dependencies from 3.0.0 to 3.0.2 ([1b7ca45](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1b7ca452221268758ac29ff163baab6483c191ed))
+* bump spring-boot-starter-parent from 3.0.0 to 3.0.2 ([c9165f8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c9165f82e9747f05387dfa4e000e4214fa12945b))
+* bump spring-cloud-config.version from 4.0.0 to 4.0.1 ([#1526](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1526)) ([64fd758](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/64fd758ac41f6ea3cd184e0da93f64d2ce7b8ed5))
+* bump spring-cloud-dependencies from 2022.0.0 to 2022.0.1 ([#1527](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1527)) ([668d0a7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/668d0a72e2cec9f0cd8652872c6e00691067097e))
+
+## [3.4.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.1...v3.4.2) (2023-01-18)
+
+
+### Documentation
+
+* Fixes docs related to keeping a background user thread - pub/sub ([2802b8e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2802b8e4dd22dadb9643efe73bca3615435ac362))
 
 ## 3.4.0
 

@@ -23,6 +23,7 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -31,7 +32,6 @@ import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * Default implementation of {@link org.springframework.boot.actuate.health.HealthIndicator} for
@@ -117,7 +117,7 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
   }
 
   private void pullMessage() throws InterruptedException, ExecutionException, TimeoutException {
-    ListenableFuture<List<AcknowledgeablePubsubMessage>> future =
+    CompletableFuture<List<AcknowledgeablePubsubMessage>> future =
         pubSubTemplate.pullAsync(this.subscription, 1, true);
     List<AcknowledgeablePubsubMessage> messages = future.get(timeoutMillis, TimeUnit.MILLISECONDS);
     if (this.acknowledgeMessages) {
@@ -131,8 +131,7 @@ public class PubSubHealthIndicator extends AbstractHealthIndicator {
 
   private boolean isHealthyResponseForUnspecifiedSubscription(ExecutionException e) {
     Throwable t = e.getCause();
-    if (t instanceof ApiException) {
-      ApiException aex = (ApiException) t;
+    if (t instanceof ApiException aex) {
       Code errorCode = aex.getStatusCode().getCode();
       return errorCode == StatusCode.Code.NOT_FOUND || errorCode == Code.PERMISSION_DENIED;
     }

@@ -24,7 +24,7 @@ import org.springframework.util.Assert;
 /** An object that holds metadata information for a Cloud Storage file. */
 public class GcsFileInfo extends AbstractFileInfo<BlobInfo> {
 
-  private BlobInfo gcsFile;
+  private final BlobInfo gcsFile;
 
   public GcsFileInfo(BlobInfo gcsFile) {
     Assert.notNull(gcsFile, "The GCS blob can't be null.");
@@ -48,7 +48,7 @@ public class GcsFileInfo extends AbstractFileInfo<BlobInfo> {
 
   @Override
   public long getModified() {
-    return this.gcsFile.getUpdateTime();
+    return this.gcsFile.getUpdateTimeOffsetDateTime().toInstant().toEpochMilli();
   }
 
   @Override

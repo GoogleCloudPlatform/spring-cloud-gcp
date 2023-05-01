@@ -36,6 +36,6 @@ public class WebController {
 
   @GetMapping("/getTuples")
   public Flux<String> getTuples() {
-    return template.select(User.class).all().map(user -> user.toString());
+    return template.select(User.class).all().map(User::toString);
   }
 }

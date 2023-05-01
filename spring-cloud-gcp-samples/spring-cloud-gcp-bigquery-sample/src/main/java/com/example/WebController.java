@@ -26,11 +26,10 @@ import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import com.google.cloud.spring.bigquery.core.WriteApiResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,22 +40,30 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class WebController {
 
-  @Autowired BigQueryFileGateway bigQueryFileGateway;
+  private final BigQueryFileGateway bigQueryFileGateway;
 
-  @Autowired BigQueryTemplate bigQueryTemplate;
+  private final BigQueryTemplate bigQueryTemplate;
+
+  private static final String DATASET_NAME = "datasetName";
 
   @Value("${spring.cloud.gcp.bigquery.datasetName}")
   private String datasetName;
 
+  public WebController(BigQueryFileGateway bigQueryFileGateway,
+      BigQueryTemplate bigQueryTemplate) {
+    this.bigQueryFileGateway = bigQueryFileGateway;
+    this.bigQueryTemplate = bigQueryTemplate;
+  }
+
   @GetMapping("/")
   public ModelAndView renderIndex(ModelMap map) {
-    map.put("datasetName", this.datasetName);
+    map.put(DATASET_NAME, this.datasetName);
     return new ModelAndView("index.html", map);
   }
 
   @GetMapping("/write-api-json-upload")
   public ModelAndView renderUploadJson(ModelMap map) {
-    map.put("datasetName", this.datasetName);
+    map.put(DATASET_NAME, this.datasetName);
     return new ModelAndView("upload-json.html", map);
   }
 
@@ -74,7 +81,7 @@ public class WebController {
       @RequestParam("tableName") String tableName,
       @RequestParam(name = "createTable", required = false) String createDefaultTable)
       throws IOException {
-    ListenableFuture<WriteApiResponse> writeApiRes = null;
+    CompletableFuture<WriteApiResponse> writeApiRes;
     if (createDefaultTable != null
         && createDefaultTable.equals("createTable")) { // create the default table
       writeApiRes =
@@ -107,7 +114,7 @@ public class WebController {
       @RequestParam("jsonRows") String jsonRows,
       @RequestParam("tableName") String tableName,
       @RequestParam(name = "createTable", required = false) String createDefaultTable) {
-    ListenableFuture<WriteApiResponse> writeApiRes = null;
+    CompletableFuture<WriteApiResponse> writeApiRes;
     if (createDefaultTable != null
         && createDefaultTable.equals("createTable")) { // create the default table
 
@@ -123,13 +130,13 @@ public class WebController {
   }
 
   private ModelAndView getWriteApiResponse(
-      ListenableFuture<WriteApiResponse> writeApiFuture, String tableName) {
+      CompletableFuture<WriteApiResponse> writeApiFuture, String tableName) {
     String message = null;
     try {
       WriteApiResponse apiResponse = writeApiFuture.get();
       if (apiResponse.isSuccessful()) {
         message = "Successfully loaded data to " + tableName;
-      } else if (apiResponse.getErrors() != null && apiResponse.getErrors().size() > 0) {
+      } else if (apiResponse.getErrors() != null && !apiResponse.getErrors().isEmpty()) {
         message =
             String.format(
                 "Error occurred while loading the file, printing first error %s. Use WriteApiResponse.getErrors() to get the complete list of errors",
@@ -141,7 +148,7 @@ public class WebController {
       message = "Error: " + e.getMessage();
     }
     return new ModelAndView("upload-json.html")
-        .addObject("datasetName", this.datasetName)
+        .addObject(DATASET_NAME, this.datasetName)
         .addObject("message", message);
   }
 
@@ -150,7 +157,7 @@ public class WebController {
    *
    * @param file the CSV file to upload to BigQuery
    * @param tableName name of the table to load data into
-   * @return ModelAndView of the response the send back to users
+   * @return ModelAndView of the response to send back to users
    * @throws IOException if the file is unable to be loaded.
    */
   @PostMapping("/uploadFile")
@@ -158,7 +165,7 @@ public class WebController {
       @RequestParam("file") MultipartFile file, @RequestParam("tableName") String tableName)
       throws IOException {
 
-    ListenableFuture<Job> loadJob =
+    CompletableFuture<Job> loadJob =
         this.bigQueryTemplate.writeDataToTable(
             tableName, file.getInputStream(), FormatOptions.csv());
 
@@ -176,13 +183,13 @@ public class WebController {
   public ModelAndView handleCsvTextUpload(
       @RequestParam("csvText") String csvData, @RequestParam("tableName") String tableName) {
 
-    ListenableFuture<Job> loadJob =
+    CompletableFuture<Job> loadJob =
         this.bigQueryFileGateway.writeToBigQueryTable(csvData.getBytes(), tableName);
 
     return getResponse(loadJob, tableName);
   }
 
-  private ModelAndView getResponse(ListenableFuture<Job> loadJob, String tableName) {
+  private ModelAndView getResponse(CompletableFuture<Job> loadJob, String tableName) {
     String message;
     try {
       Job job = loadJob.get();
@@ -193,7 +200,7 @@ public class WebController {
     }
 
     return new ModelAndView("index")
-        .addObject("datasetName", this.datasetName)
+        .addObject(DATASET_NAME, this.datasetName)
         .addObject("message", message);
   }
 }

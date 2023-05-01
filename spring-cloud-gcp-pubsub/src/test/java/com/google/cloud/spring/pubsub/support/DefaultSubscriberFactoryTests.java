@@ -84,7 +84,7 @@ class DefaultSubscriberFactoryTests {
 
   @Test
   void testNewSubscriber() {
-    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust");
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
 
     Subscriber subscriber = factory.createSubscriber("midnight cowboy", (message, consumer) -> {});
@@ -117,7 +117,7 @@ class DefaultSubscriberFactoryTests {
   @Test
   void testNewDefaultSubscriberFactory_nullProjectProvider() {
 
-    assertThatThrownBy(() -> new DefaultSubscriberFactory(null))
+    assertThatThrownBy(() -> new DefaultSubscriberFactory(null, pubSubConfig))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("The project ID provider can't be null.");
   }
@@ -125,7 +125,7 @@ class DefaultSubscriberFactoryTests {
   @Test
   void testNewDefaultSubscriberFactory_nullProject() {
 
-    assertThatThrownBy(() -> new DefaultSubscriberFactory(() -> null))
+    assertThatThrownBy(() -> new DefaultSubscriberFactory(() -> null, pubSubConfig))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("The project ID can't be null or empty.");
 
@@ -133,7 +133,7 @@ class DefaultSubscriberFactoryTests {
 
   @Test
   void testCreatePullRequest_greaterThanZeroMaxMessages() {
-    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project");
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
 
     assertThatThrownBy(() -> factory.createPullRequest("test", -1, true))
@@ -143,7 +143,7 @@ class DefaultSubscriberFactoryTests {
 
   @Test
   void testCreatePullRequest_nonNullMaxMessages() {
-    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project");
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "project", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
 
     PullRequest request = factory.createPullRequest("test", null, true);
@@ -543,6 +543,48 @@ class DefaultSubscriberFactoryTests {
   }
 
   @Test
+  void testGetMinDurationPerAckExtension_factorySetValue() {
+    GcpProjectIdProvider projectIdProvider = () -> "project";
+    DefaultSubscriberFactory factory =
+        new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+
+    when(mockPubSubConfiguration.computeMinDurationPerAckExtension("subscription-name",
+        projectIdProvider.getProjectId())).thenReturn(3L);
+
+    // subscription level setting is used when factory-level one is not provided
+    assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
+        .isEqualTo(Duration.ofSeconds(3));
+
+    // this setting should override the subscription-level one
+    factory.setMinDurationPerAckExtension(Duration.ofSeconds(2));
+
+    // factory-level setting is used even when subscription level one is provided
+    assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
+        .isEqualTo(Duration.ofSeconds(2));
+  }
+
+  @Test
+  void testGetMaxDurationPerAckExtension_factorySetValue() {
+    GcpProjectIdProvider projectIdProvider = () -> "project";
+    DefaultSubscriberFactory factory =
+        new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
+
+    when(mockPubSubConfiguration.computeMaxDurationPerAckExtension("subscription-name",
+        projectIdProvider.getProjectId())).thenReturn(3L);
+
+    // subscription level setting is used when factory-level one is not provided
+    assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
+        .isEqualTo(Duration.ofSeconds(3));
+
+    // this setting should override the subscription-level one
+    factory.setMaxDurationPerAckExtension(Duration.ofSeconds(2));
+
+    // factory-level setting is used even when subscription level one is provided
+    assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
+        .isEqualTo(Duration.ofSeconds(2));
+  }
+
+  @Test
   void testGetMinDurationPerAckExtension_newConfiguration() {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
@@ -718,23 +760,6 @@ class DefaultSubscriberFactoryTests {
   }
 
   @Test
-  void createSubscriberStubSucceeds_noSubscriptionNameAndNewConfiguration() {
-
-    when(this.mockTransportChannel.getEmptyCallContext()).thenReturn(this.mockApiCallContext);
-    when(this.mockApiCallContext.withCredentials(any())).thenReturn(this.mockApiCallContext);
-    when(this.mockApiCallContext.withTransportChannel(any())).thenReturn(this.mockApiCallContext);
-
-    GcpProjectIdProvider projectIdProvider = () -> "project";
-    DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
-    factory.setChannelProvider(FixedTransportChannelProvider.create(this.mockTransportChannel));
-    factory.setCredentialsProvider(() -> NoCredentials.getInstance());
-
-    SubscriberStub stub = factory.createSubscriberStub();
-    assertThat(stub.isShutdown()).isFalse();
-  }
-
-  @Test
   void createSubscriberStubSucceeds() {
 
     when(this.mockTransportChannel.getEmptyCallContext()).thenReturn(this.mockApiCallContext);
@@ -745,7 +770,7 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
     factory.setChannelProvider(FixedTransportChannelProvider.create(this.mockTransportChannel));
-    factory.setCredentialsProvider(() -> NoCredentials.getInstance());
+    factory.setCredentialsProvider(NoCredentials::getInstance);
 
     SubscriberStub stub = factory.createSubscriberStub("unusedSubscription");
     assertThat(stub.isShutdown()).isFalse();
@@ -775,7 +800,7 @@ class DefaultSubscriberFactoryTests {
 
     when(healthTrackerRegistry.isTracked(subscriptionName)).thenReturn(true);
 
-    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust");
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
     factory.setHealthTrackerRegistry(healthTrackerRegistry);
 
@@ -794,7 +819,7 @@ class DefaultSubscriberFactoryTests {
 
     when(healthTrackerRegistry.isTracked(subscriptionName)).thenReturn(false);
 
-    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust");
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
     factory.setHealthTrackerRegistry(healthTrackerRegistry);
 

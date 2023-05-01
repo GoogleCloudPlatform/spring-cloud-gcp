@@ -22,8 +22,7 @@ logging service provided by Google Cloud.
 This module provides support for associating a web request trace ID with
 the corresponding log entries. It does so by retrieving the
 `X-B3-TraceId` value from the [Mapped Diagnostic Context
-(MDC)](https://logback.qos.ch/manual/mdc.html), which is set by Spring
-Cloud Sleuth. If Spring Cloud Sleuth isn’t used, the configured
+(MDC)](https://logback.qos.ch/manual/mdc.html), which is set by Micrometer. If Spring Cloud Micrometer isn’t used, the configured
 `TraceIdExtractor` extracts the desired header value and sets it as the
 log entry’s trace ID. This allows grouping of log messages by request,
 for example, in the [Google Cloud Console Logs
@@ -53,7 +52,7 @@ messages.
 <div class="warning">
 
 If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself
-and delegates log correlation to Spring Cloud Sleuth.
+and delegates log correlation to Micrometer.
 
 </div>
 
@@ -63,7 +62,7 @@ applications.
 
 Applications hosted on the Google Cloud include trace IDs under
 the `x-cloud-trace-context` header, which will be included in log
-entries. However, if Sleuth is used the trace ID will be picked up from
+entries. However, if Micrometer is used the trace ID will be picked up from
 the MDC.
 
 ### Logback Support
@@ -212,7 +211,7 @@ configure the appender. The following properties are available:
 <tr class="even">
 <td><p><code>includeMDC</code></p></td>
 <td><p><code>true</code></p></td>
-<td><p>Should all MDC properties be included. The MDC properties <code>X-B3-TraceId</code>, <code>X-B3-SpanId</code> and <code>X-Span-Export</code> provided by Spring Sleuth will get excluded as they get handled separately</p></td>
+<td><p>Should all MDC properties be included. The MDC properties <code>X-B3-TraceId</code>, <code>X-B3-SpanId</code> and <code>X-Span-Export</code> provided by Micrometer will get excluded as they get handled separately</p></td>
 </tr>
 <tr class="odd">
 <td><p><code>includeLoggerName</code></p></td>

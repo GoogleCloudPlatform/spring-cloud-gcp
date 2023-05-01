@@ -7,11 +7,10 @@
         <!-- Your own application should inherit from spring-boot-starter-parent -->
         <artifactId>spring-cloud-gcp-samples</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+				<version>4.2.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.google.cloud</groupId>
     <artifactId>spring-cloud-gcp-config-sample</artifactId>
     <name>Spring Framework on Google Cloud Code Sample - Runtime Configuration</name>
 

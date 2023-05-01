@@ -6,9 +6,8 @@
     <parent>
         <artifactId>spring-cloud-gcp</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>4.2.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
-
 
     <artifactId>spring-cloud-gcp-security-firebase</artifactId>
     <name>Spring Framework on Google Cloud Module - Firebase Auth</name>
@@ -35,7 +34,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-
-
 </project>

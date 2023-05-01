@@ -35,10 +35,10 @@ import org.springframework.http.ResponseEntity;
     properties = {
       "spring.cloud.gcp.sql.databaseName=code_samples_test_r2dbc_db",
       "spring.cloud.gcp.sql.instanceConnectionName=spring-cloud-gcp-ci:us-central1:testpostgres",
-      "spring.r2dbc.password=test"
+      "spring.cloud.gcp.sql.enable-iam.auth=true"
     })
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
-public class SqlR2dbcPostgresSampleApplicationIntegrationTests {
+class SqlR2dbcPostgresSampleApplicationIntegrationTests {
 
   @Autowired private TestRestTemplate testRestTemplate;
 
@@ -46,7 +46,7 @@ public class SqlR2dbcPostgresSampleApplicationIntegrationTests {
   void testSqlRowsAccess() {
     ResponseEntity<String> result =
         this.testRestTemplate.exchange(
-            "/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<String>() {});
+            "/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
 
     assertThat(result.getBody())
         .isEqualTo(

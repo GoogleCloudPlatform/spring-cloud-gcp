@@ -24,9 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.CustomConversions;
-import org.springframework.data.convert.JodaTimeConverters;
 import org.springframework.data.convert.Jsr310Converters;
-import org.springframework.data.convert.ThreeTenBackPortConverters;
+import org.springframework.lang.NonNull;
 
 /**
  * Value object to capture custom conversion. {@link DatastoreCustomConversions}
@@ -41,17 +40,15 @@ public class DatastoreCustomConversions extends CustomConversions {
 
   static {
     ArrayList<Converter<?, ?>> converters = new ArrayList<>();
-    converters.addAll(JodaTimeConverters.getConvertersToRegister());
     converters.addAll(Jsr310Converters.getConvertersToRegister());
-    converters.addAll(ThreeTenBackPortConverters.getConvertersToRegister());
     converters.add(
         new Converter<BaseKey, Long>() {
           @Override
-          public Long convert(BaseKey key) {
+          public Long convert(@NonNull BaseKey baseKey) {
             Long id = null;
             // embedded entities have IncompleteKey, and have no inner value
-            if (key instanceof Key) {
-              id = ((Key) key).getId();
+            if (baseKey instanceof Key key) {
+              id = key.getId();
               if (id == null) {
                 throw new DatastoreDataException(
                     "The given key doesn't have a numeric ID but a conversion"
@@ -65,11 +62,11 @@ public class DatastoreCustomConversions extends CustomConversions {
     converters.add(
         new Converter<BaseKey, String>() {
           @Override
-          public String convert(BaseKey key) {
+          public String convert(@NonNull BaseKey baseKey) {
             String name = null;
             // embedded entities have IncompleteKey, and have no inner value
-            if (key instanceof Key) {
-              name = ((Key) key).getName();
+            if (baseKey instanceof Key key) {
+              name = key.getName();
               if (name == null) {
                 throw new DatastoreDataException(
                     "The given key doesn't have a String name value but "

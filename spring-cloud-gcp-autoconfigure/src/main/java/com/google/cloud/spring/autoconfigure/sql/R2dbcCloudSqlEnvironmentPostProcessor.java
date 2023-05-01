@@ -67,6 +67,14 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
 
       CredentialsPropertiesSetter.setCredentials(sqlProperties,
           propertiesRetriever.getGcpProperties());
+
+      if (sqlProperties.isEnableIamAuth()) {
+        environment
+            .getPropertySources()
+            .addFirst(
+                new MapPropertySource("CLOUD_SQL_R2DBC_ENABLE_IAM_AUTH",
+                    Map.of("spring.r2dbc.properties", Map.of("ENABLE_IAM_AUTH", "true"))));
+      }
     }
   }
 
@@ -84,10 +92,10 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
   }
 
   /**
-   * Returns {@link DatabaseType} constant based on whether mySQL or postgreSQL R2DBC driver and
+   * Returns {@link DatabaseType} constant based on whether postgresSQL R2DBC driver and
    * connector dependencies are present on the classpath. Returns null if Cloud SQL is not enabled
    * in Spring Cloud GCP, CredentialFactory is not present or ConnectionFactory (which is used to
-   * enable Spring R2DBC auto-configuration) is not present.
+   * enable Spring R2DBC autoconfiguration) is not present.
    *
    * @param environment environment to post-process
    * @return database type
@@ -95,14 +103,10 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
   DatabaseType getEnabledDatabaseType(ConfigurableEnvironment environment) {
     if (isR2dbcEnabled(environment)
         && isOnClasspath("com.google.cloud.sql.CredentialFactory")
-        && isOnClasspath("io.r2dbc.spi.ConnectionFactory")) {
-      if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql")
-          && isOnClasspath("dev.miku.r2dbc.mysql.MySqlConnectionFactoryProvider")) {
-        return DatabaseType.MYSQL;
-      } else if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres")
-          && isOnClasspath("io.r2dbc.postgresql.PostgresqlConnectionFactoryProvider")) {
-        return DatabaseType.POSTGRESQL;
-      }
+        && isOnClasspath("io.r2dbc.spi.ConnectionFactory")
+        && isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres")
+        && isOnClasspath("io.r2dbc.postgresql.PostgresqlConnectionFactoryProvider")) {
+      return DatabaseType.POSTGRESQL;
     }
     return null;
   }

@@ -18,6 +18,7 @@ package com.google.cloud.spring.data.spanner.test.domain;
 
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.data.spanner.repository.query.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface SingerRepository extends SpannerRepository<Singer, String> {
   @Query(
@@ -25,5 +26,5 @@ public interface SingerRepository extends SpannerRepository<Singer, String> {
       value =
           "INSERT INTO singers_list (singerId, firstName, lastName) VALUES (@singerId, @firstName,"
               + " @lastName)")
-  void insert(Integer singerId, String firstName, String lastName);
+  void insert(@Param("singerId") Integer singerId, @Param("firstName") String firstName, @Param("lastName") String lastName);
 }

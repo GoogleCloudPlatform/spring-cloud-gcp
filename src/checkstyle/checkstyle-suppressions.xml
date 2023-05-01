@@ -34,4 +34,16 @@
     <suppress checks="AbbreviationAsWordInName" files="/spring-cloud-gcp-samples/"/>
     <suppress checks="OneTopLevelClass" files="/spring-cloud-gcp-samples/"/>
 
+    <!--  Temporary suppress for spring-cloud-previews modules,
+      for lowerCamelCase abbreviation handling limitations in generated code -->
+    <suppress checks="AbbreviationAsWordInName" files="/spring-cloud-previews/"/>
+    <suppress checks="[MethodName|ParameterName]"
+              files="/spring-cloud-previews/google-cloud-ids-spring-starter/.*IDSSpringAutoConfiguration.java"/>
+    <suppress checks="[MethodName|ParameterName]"
+              files="/spring-cloud-previews/google-cloud-iamcredentials-spring-starter/.*IAMCredentialsSpringAutoConfiguration.java"/>
+    <suppress checks="[MethodName|ParameterName]"
+              files="/spring-cloud-previews/google-iam-admin-spring-starter/.*IAMSpringAutoConfiguration.java"/>
+    <suppress checks="[MethodName|ParameterName]"
+              files="/spring-cloud-previews/google-cloud-gsuite-addons-spring-starter/.*GSuiteAddOnsSpringAutoConfiguration.java"/>
+
 </suppressions>

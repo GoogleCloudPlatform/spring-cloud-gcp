@@ -23,12 +23,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import brave.Tracer;
 import brave.TracingCustomizer;
 import brave.handler.SpanHandler;
-import brave.http.HttpRequestParser;
-import brave.http.HttpTracingCustomizer;
+import brave.propagation.TraceContextOrSamplingFlags;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfigurationTests.MultipleSpanHandlersConfig.GcpTraceService;
+import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfigurationTests.MultipleSpanHandlersConfig.OtherSender;
 import com.google.devtools.cloudtrace.v2.BatchWriteSpansRequest;
 import com.google.devtools.cloudtrace.v2.Span;
 import com.google.devtools.cloudtrace.v2.TraceServiceGrpc;
@@ -47,16 +49,17 @@ import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
-import org.springframework.cloud.sleuth.Tracer;
-import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import zipkin2.Call;
 import zipkin2.CheckResult;
+import zipkin2.codec.BytesEncoder;
 import zipkin2.codec.Encoding;
 import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.reporter.AsyncReporter;
@@ -67,17 +70,21 @@ import zipkin2.reporter.stackdriver.StackdriverSender;
 /** Tests for auto-config. */
 class StackdriverTraceAutoConfigurationTests {
 
-  private ApplicationContextRunner contextRunner =
-      new ApplicationContextRunner()
-          .withConfiguration(
-              AutoConfigurations.of(
-                  StackdriverTraceAutoConfiguration.class,
-                  GcpContextAutoConfiguration.class,
-                  BraveAutoConfiguration.class,
-                  RefreshAutoConfiguration.class))
-          .withUserConfiguration(MockConfiguration.class)
-          .withPropertyValues(
-              "spring.cloud.gcp.project-id=proj", "spring.sleuth.sampler.probability=1.0");
+  private ApplicationContextRunner contextRunner;
+
+  @BeforeEach
+  void init() {
+    contextRunner = new ApplicationContextRunner()
+        .withConfiguration(
+            AutoConfigurations.of(
+                StackdriverTraceAutoConfiguration.class,
+                GcpContextAutoConfiguration.class,
+                BraveAutoConfiguration.class,
+                RefreshAutoConfiguration.class))
+        .withUserConfiguration(MockConfiguration.class)
+        .withPropertyValues(
+            "spring.cloud.gcp.project-id=proj");
+  }
 
   @Test
   void test() {
@@ -88,14 +95,21 @@ class StackdriverTraceAutoConfigurationTests {
             () -> SpanHandler.NOOP)
         .run(
             context -> {
-              assertThat(context.getBean(HttpRequestParser.class)).isNotNull();
-              assertThat(context.getBean(HttpTracingCustomizer.class)).isNotNull();
               assertThat(
                       context.getBean(
                           StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class))
                   .isNotNull();
               assertThat(context.getBean(ManagedChannel.class)).isNotNull();
             });
+  }
+
+  @Test
+  void testEncodingSchema() {
+    this.contextRunner
+        .run(
+            context -> assertThat(
+                context.getBean(BytesEncoder.class))
+                .isEqualTo(SpanBytesEncoder.PROTO3));
   }
 
   @Test
@@ -165,8 +179,6 @@ class StackdriverTraceAutoConfigurationTests {
         .withUserConfiguration(MultipleSpanHandlersConfig.class)
         .run(
             context -> {
-              assertThat(context.getBean(HttpRequestParser.class)).isNotNull();
-              assertThat(context.getBean(HttpTracingCustomizer.class)).isNotNull();
               assertThat(context.getBean(ManagedChannel.class)).isNotNull();
               assertThat(context.getBeansOfType(Sender.class)).hasSize(2);
               assertThat(context.getBeansOfType(Sender.class))
@@ -174,13 +186,18 @@ class StackdriverTraceAutoConfigurationTests {
               assertThat(context.getBeansOfType(SpanHandler.class))
                   .containsKeys("stackdriverSpanHandler", "otherSpanHandler");
 
-              org.springframework.cloud.sleuth.Span span =
-                  context.getBean(Tracer.class).nextSpan().name("foo").tag("foo", "bar").start();
-              span.end();
-              String spanId = span.context().spanId();
+              brave.Span span = context
+                  .getBean(Tracer.class)
+                  // always send the trace
+                  .nextSpan(TraceContextOrSamplingFlags.SAMPLED)
+                  .name("foo")
+                  .tag("foo", "bar")
+                  .start();
+              span.finish();
+              String spanId = span.context().spanIdString();
+              GcpTraceService gcpTraceService =
+                  context.getBean(GcpTraceService.class);
 
-              MultipleSpanHandlersConfig.GcpTraceService gcpTraceService =
-                  context.getBean(MultipleSpanHandlersConfig.GcpTraceService.class);
               await()
                   .atMost(10, TimeUnit.SECONDS)
                   .pollInterval(Duration.ofSeconds(1))
@@ -202,8 +219,8 @@ class StackdriverTraceAutoConfigurationTests {
                             .isEqualTo("bar");
                       });
 
-              MultipleSpanHandlersConfig.OtherSender sender =
-                  (MultipleSpanHandlersConfig.OtherSender) context.getBean("otherSender");
+              OtherSender sender =
+                  (OtherSender) context.getBean("otherSender");
               await()
                   .atMost(10, TimeUnit.SECONDS)
                   .untilAsserted(() -> assertThat(sender.isSpanSent()).isTrue());
@@ -299,9 +316,8 @@ class StackdriverTraceAutoConfigurationTests {
 
     @Bean
     SpanHandler otherSpanHandler(OtherSender otherSender) {
-      AsyncReporter reporter = AsyncReporter.create(otherSender);
-      SpanHandler spanHandler = AsyncZipkinSpanHandler.create(reporter);
-      return spanHandler;
+      AsyncReporter<zipkin2.Span> reporter = AsyncReporter.create(otherSender);
+      return AsyncZipkinSpanHandler.create(reporter);
     }
 
     @Bean
@@ -343,7 +359,7 @@ class StackdriverTraceAutoConfigurationTests {
     /** Used as implementation on the in-process gRPC server for verification. */
     static class GcpTraceService extends TraceServiceGrpc.TraceServiceImplBase {
 
-      private Map<String, Span> traces = new HashMap<>();
+      private final Map<String, Span> traces = new HashMap<>();
 
       boolean hasSpan(String spanId) {
         return this.traces.containsKey(spanId);

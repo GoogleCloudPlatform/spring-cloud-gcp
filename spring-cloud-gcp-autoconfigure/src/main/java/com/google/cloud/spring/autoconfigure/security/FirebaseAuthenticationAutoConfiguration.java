@@ -22,6 +22,7 @@ import com.google.cloud.spring.security.firebase.FirebaseJwtTokenDecoder;
 import com.google.cloud.spring.security.firebase.FirebaseTokenValidator;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -30,7 +31,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
@@ -44,7 +44,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * @since 1.2.2
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass(FirebaseTokenValidator.class)
 @ConditionalOnProperty(value = "spring.cloud.gcp.security.firebase.enabled", matchIfMissing = true)
 @AutoConfigureBefore(OAuth2ResourceServerAutoConfiguration.class)

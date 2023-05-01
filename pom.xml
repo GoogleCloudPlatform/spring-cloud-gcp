@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
-         child.project.url.inherit.append.path="false">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+	child.project.url.inherit.append.path="false">
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
-
+	<version>4.2.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -36,32 +34,32 @@
 	</distributionManagement>
 
 	<properties>
-
+		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
-		<spring-cloud-dependencies.version>2021.0.5</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
+		<spring-cloud-dependencies.version>2022.0.2</spring-cloud-dependencies.version>
+		<spring-boot-dependencies.version>3.0.6</spring-boot-dependencies.version>
+		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.1</java-cfenv.version>
-		<spring-native.version>0.10.5</spring-native.version>
+		<micrometer-tracing.verison>1.0.4</micrometer-tracing.verison>
 
 		<!-- Plugin versions -->
-		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-		<maven-failsafe-plugin.version>2.22.1</maven-failsafe-plugin.version>
-		<maven-flatten-plugin.version>1.3.0</maven-flatten-plugin.version>
+		<maven-failsafe-plugin.version>3.0.0</maven-failsafe-plugin.version>
+		<maven-flatten-plugin.version>1.4.1</maven-flatten-plugin.version>
 		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
 		<maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-		<maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
-		<maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.2.2</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.16</errorprone.version>
-
+		<errorprone.version>2.18.0</errorprone.version>
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
@@ -70,11 +68,14 @@
 		<checkstyle.skip>false</checkstyle.skip>
 		<javadoc.failOnError>false</javadoc.failOnError>
 		<javadoc.failOnWarnings>false</javadoc.failOnWarnings>
-
+		<!-- default to skip fmt-maven-plugin to avoid any conflict with custom style rules-->
+		<!-- set skip to false for running on generated code-->
+		<fmt.skip>true</fmt.skip>
 		<!-- Other defaults -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
-
+		<!-- exclude preview module code from sonar cloud analysis -->
+		<sonar.exclusions>spring-cloud-previews/**/*</sonar.exclusions>
 	</properties>
 
 	<dependencyManagement>
@@ -82,7 +83,7 @@
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-dependencies</artifactId>
-				<version>${project.version}</version>
+				<version>${spring-cloud-gcp-dependencies.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -144,16 +145,15 @@
 				<artifactId>java-cfenv-test-support</artifactId>
 				<version>${java-cfenv.version}</version>
 			</dependency>
+
 			<dependency>
-				<groupId>org.springframework.experimental</groupId>
-				<artifactId>spring-native-configuration</artifactId>
-				<version>${spring-native.version}</version>
+				<groupId>io.micrometer</groupId>
+				<artifactId>micrometer-tracing-bom</artifactId>
+				<version>${micrometer-tracing.verison}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
-			<dependency>
-				<groupId>org.springframework.experimental</groupId>
-				<artifactId>spring-aot</artifactId>
-				<version>${spring-native.version}</version>
-			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -283,6 +283,37 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<!--
+				Versions chosen to be the latest still compatible with Java 8.
+				Scoping formatter to generated modules for now as the main repo was re-formatted
+				through both automated (#868) and manual changes (#869), and running this formatter
+				from the parent POM updates a large number of files.
+				-->
+				<groupId>com.coveo</groupId>
+				<artifactId>fmt-maven-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<style>google</style>
+					<verbose>true</verbose>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.google.googlejavaformat</groupId>
+						<artifactId>google-java-format</artifactId>
+						<version>1.7</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
@@ -338,10 +369,8 @@
 				<module>spring-cloud-gcp-security-firebase</module>
 				<module>spring-cloud-gcp-vision</module>
 				<module>spring-cloud-gcp-kms</module>
-				<module>spring-cloud-gcp-native-support</module>
 
-				<!-- Generated Modules -->
-				<module>generated</module>
+				<module>spring-cloud-previews</module>
 				<!-- Docs and Samples -->
 				<module>docs</module>
 				<module>spring-cloud-gcp-samples</module>
@@ -357,7 +386,7 @@
 					<!-- activate with -P docFX -->
 					<name>docFX</name>
 				</property>
-				<jdk>11</jdk>
+				<jdk>17</jdk>
 			</activation>
 			<properties>
 				<!-- default config values -->
@@ -366,7 +395,7 @@
 				<projectname>spring-framework-on-google-cloud</projectname>
 				<excludeclasses></excludeclasses>
 				<excludePackages></excludePackages>
-				<source>8</source>
+				<source>17</source>
 				<sourceFileExclude></sourceFileExclude>
 			</properties>
 			<build>
@@ -423,7 +452,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.8</version>
+						<version>0.8.9</version>
 						<executions>
 							<execution>
 								<goals>
@@ -480,11 +509,11 @@
 				</pluginManagement>
 			</build>
 		</profile>
-		<!-- Error prone; JDK 8 requires a different configuration than 9+ -->
+
 		<profile>
-			<id>errorprone_java_9_and_up</id>
+			<id>errorprone_java_17_and_up</id>
 			<activation>
-				<jdk>[9,]</jdk>
+				<jdk>[17,]</jdk>
 			</activation>
 			<build>
 				<pluginManagement>
@@ -492,7 +521,7 @@
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-compiler-plugin</artifactId>
-							<version>3.10.1</version>
+							<version>${maven-compiler-plugin.version}</version>
 							<configuration>
 								<source>${maven.compiler.source}</source>
 								<target>${maven.compiler.target}</target>
@@ -522,41 +551,6 @@
 									</path>
 								</annotationProcessorPaths>
 							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
-		</profile>
-
-		<profile>
-			<id>errorprone_java8</id>
-			<activation>
-				<jdk>1.8</jdk>
-			</activation>
-			<properties>
-				<javac.version>9+181-r4173-1</javac.version>
-			</properties>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<artifactId>maven-compiler-plugin</artifactId>
-							<version>3.10.1</version>
-							<configuration>
-								<fork>true</fork>
-								<compilerArgs combine.children="append">
-									<arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
-									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
-									<arg>-parameters</arg>
-								</compilerArgs>
-							</configuration>
-							<dependencies>
-								<dependency>
-									<groupId>com.google.errorprone</groupId>
-									<artifactId>error_prone_core</artifactId>
-									<version>${errorprone.version}</version>
-								</dependency>
-							</dependencies>
 						</plugin>
 					</plugins>
 				</pluginManagement>
@@ -593,6 +587,8 @@
 				<module>spring-cloud-gcp-security-firebase</module>
 				<module>spring-cloud-gcp-vision</module>
 				<module>spring-cloud-gcp-kms</module>
+
+				<module>spring-cloud-previews</module>
 			</modules>
 			<build>
 				<pluginManagement>
@@ -669,18 +665,13 @@
 						</executions>
 						<configuration>
 							<!-- https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8212233 -->
-							<source>8</source>
+							<source>17</source>
 							<excludePackageNames>
 								com.example,
 								com.example.*,
 								<!-- Exclude samples and classes in the Firestore Google Client library packages -->
 								com.google.cloud.firestore
 							</excludePackageNames>
-							<links>
-								<link>https://googleapis.dev/java/google-cloud-vision/latest/</link>
-								<link>https://googleapis.dev/java/google-cloud-spanner/latest/</link>
-								<link>https://googleapis.dev/java/google-cloud-clients/latest/</link>
-							</links>
 						</configuration>
 					</plugin>
 					<plugin>
@@ -758,7 +749,7 @@
 			<name>Apache License, Version 2.0</name>
 			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
 			<comments>
-				Copyright 2015-2020 the original author or authors.
+				Copyright 2015-2022 the original author or authors.
 
 				Licensed under the Apache License, Version 2.0 (the "License");
 				you may not use this file except in compliance with the License.

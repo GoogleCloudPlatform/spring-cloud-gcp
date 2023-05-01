@@ -97,27 +97,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
    * Default {@link DefaultSubscriberFactory} constructor.
    *
    * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
-   * @deprecated Use the new {@link DefaultSubscriberFactory
-   *     (GcpProjectIdProvider,PubSubConfiguration)} instead
-   */
-  @Deprecated
-  public DefaultSubscriberFactory(GcpProjectIdProvider projectIdProvider) {
-    this(projectIdProvider, getBlankConfiguration(projectIdProvider));
-  }
-
-  private static PubSubConfiguration getBlankConfiguration(GcpProjectIdProvider projectIdProvider) {
-    if (projectIdProvider == null) {
-      return null;
-    }
-    PubSubConfiguration config = new PubSubConfiguration();
-    config.initialize(projectIdProvider.getProjectId());
-    return config;
-  }
-
-  /**
-   * Default {@link DefaultSubscriberFactory} constructor.
-   *
-   * @param projectIdProvider provides the default GCP project ID for selecting the subscriptions
    * @param pubSubConfiguration contains the subscriber properties to configure
    */
   public DefaultSubscriberFactory(
@@ -350,15 +329,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   }
 
   @Override
-  public SubscriberStub createSubscriberStub() {
-    try {
-      return GrpcSubscriberStub.create(buildGlobalSubscriberStubSettings());
-    } catch (IOException ex) {
-      throw new PubSubException("Error creating the SubscriberStub", ex);
-    }
-  }
-
-  @Override
   public SubscriberStub createSubscriberStub(String subscriptionName) {
     try {
       return GrpcSubscriberStub.create(buildSubscriberStubSettings(subscriptionName));
@@ -537,6 +507,15 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     return extension == null ? null : Duration.ofSeconds(extension);
   }
 
+  /**
+   * Sets the min duration per ack extension override for all subscriptions.
+   *
+   * @param minDurationPerAckExtension the min duration per ack extension
+   */
+  public void setMinDurationPerAckExtension(@Nullable Duration minDurationPerAckExtension) {
+    this.minDurationPerAckExtension = minDurationPerAckExtension;
+  }
+
   @Nullable
   Duration getMaxDurationPerAckExtension(String subscriptionName) {
     if (this.maxDurationPerAckExtension != null) {
@@ -546,6 +525,15 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
         this.pubSubConfiguration.computeMaxDurationPerAckExtension(subscriptionName, projectId);
 
     return extension == null ? null : Duration.ofSeconds(extension);
+  }
+
+  /**
+   * Sets the max duration per ack extension override for all subscriptions.
+   *
+   * @param maxDurationPerAckExtension the max duration per ack extension
+   */
+  public void setMaxDurationPerAckExtension(@Nullable Duration maxDurationPerAckExtension) {
+    this.maxDurationPerAckExtension = maxDurationPerAckExtension;
   }
 
   Integer getPullCount(String subscriptionName) {

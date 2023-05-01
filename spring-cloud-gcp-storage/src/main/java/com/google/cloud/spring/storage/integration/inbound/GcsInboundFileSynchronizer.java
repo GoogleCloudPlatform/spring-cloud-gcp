@@ -44,7 +44,7 @@ public class GcsInboundFileSynchronizer extends AbstractInboundFileSynchronizer<
 
   @Override
   protected long getModified(BlobInfo file) {
-    return file.getUpdateTime();
+    return file.getUpdateTimeOffsetDateTime().toInstant().toEpochMilli();
   }
 
   @Override

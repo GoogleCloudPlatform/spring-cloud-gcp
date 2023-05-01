@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.spanner.core.convert;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -41,6 +42,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.gson.Gson;
 import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.ConversionFailedException;
@@ -72,7 +74,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
             .to(Value.string("key1"))
             .set("innerTestEntities")
             .toStructArray(
-                Type.struct(StructField.of("value", Type.string())), Arrays.asList(innerStruct))
+                Type.struct(StructField.of("value", Type.string())), List.of(innerStruct))
             .build();
 
     OuterTestEntity result =
@@ -143,18 +145,18 @@ class ConverterAwareMappingSpannerEntityReaderTests {
             .to(Value.string("key1"))
             .set("innerLengths")
             .toStructArray(
-                Type.struct(StructField.of("string_col", Type.string())), Arrays.asList(colStruct))
+                Type.struct(StructField.of("string_col", Type.string())), List.of(colStruct))
             .build();
 
     ConverterAwareMappingSpannerEntityReader testReader = new ConverterAwareMappingSpannerEntityReader(new SpannerMappingContext(), new SpannerReadConverter(
-            Arrays.asList(
-                    new Converter<Struct, Integer>() {
-                @Nullable
-                @Override
-                public Integer convert(Struct source) {
-                  return source.getString("string_col").length();
-                }
-              })));
+        List.of(
+            new Converter<Struct, Integer>() {
+              @Nullable
+              @Override
+              public Integer convert(Struct source) {
+                return source.getString("string_col").length();
+              }
+            })));
     assertThatThrownBy(() -> testReader.read(OuterTestEntityFlatFaulty.class, rowStruct))
             .isInstanceOf(SpannerDataException.class)
             .hasMessage("The value in column with name innerLengths could not be converted to the corresponding"
@@ -178,7 +180,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
         new ConverterAwareMappingSpannerEntityReader(
                 new SpannerMappingContext(),
                 new SpannerReadConverter(
-                    Arrays.asList(
+                    List.of(
                         new Converter<Struct, Integer>() {
                           @Nullable
                           @Override
@@ -255,10 +257,11 @@ class ConverterAwareMappingSpannerEntityReaderTests {
 
 
     assertThatThrownBy(() -> this.spannerEntityReader.read(TestEntity.class, struct))
-            .isInstanceOf(ConversionFailedException.class)
-            .hasMessage("Failed to convert from type [java.lang.String] to type "
-                    + "[java.lang.Double] for value 'UNCONVERTABLE VALUE'; nested exception is "
-                    + "java.lang.NumberFormatException: For input string: \"UNCONVERTABLEVALUE\"");
+        .isInstanceOf(ConversionFailedException.class)
+        .hasMessage("Failed to convert from type [java.lang.String] to type "
+            + "[java.lang.Double] for value [UNCONVERTABLE VALUE]")
+        .hasStackTraceContaining(
+            "java.lang.NumberFormatException: For input string: \"UNCONVERTABLEVALUE\"");
   }
 
   @Test
@@ -289,7 +292,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
             .to(Value.string("key1"))
             .set("innerTestEntities")
             .toStructArray(
-                Type.struct(StructField.of("value", Type.string())), Arrays.asList(innerStruct))
+                Type.struct(StructField.of("value", Type.string())), List.of(innerStruct))
             .build();
 
     TestEntities.OuterTestEntityWithConstructor result =
@@ -327,7 +330,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
     Struct row = mock(Struct.class);
     when(row.getString("id")).thenReturn("1234");
     when(row.getType())
-        .thenReturn(Type.struct(Arrays.asList(Type.StructField.of("id", Type.string()))));
+        .thenReturn(Type.struct(List.of(StructField.of("id", Type.string()))));
     when(row.getColumnType("id")).thenReturn(Type.string());
 
     TestEntities.SimpleConstructorTester result =
@@ -357,18 +360,18 @@ class ConverterAwareMappingSpannerEntityReaderTests {
   }
 
   @Test
-  void zeroArgsListShouldThrowError() {
+  void zeroArgsListShouldNotThrowError() {
 
     Struct struct =
         Struct.newBuilder()
             .set("zeroArgsListOfObjects")
-            .to(Value.stringArray(Arrays.asList("hello", "world")))
+            .to(Value.stringArray(List.of("hello", "world")))
             .build();
-
-    assertThatThrownBy(() ->  this.spannerEntityReader.read(TestEntities.TestEntityWithListWithZeroTypeArgs.class, struct))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("in field 'zeroArgsListOfObjects': Unsupported number of type parameters found: 0 Only"
-                    + " collections of exactly 1 type parameter are supported.");
+    // Starting from Spring 3.0, Collection types without generics can be resolved to type with wildcard
+    // generics (i.e., "?"). For example, "zeroArgsListOfObjects" will be resolved to List<?>, rather
+    // than List.
+    assertThatNoException()
+        .isThrownBy(() -> this.spannerEntityReader.read(TestEntities.TestEntityWithListWithZeroTypeArgs.class, struct));
   }
 
   @Test

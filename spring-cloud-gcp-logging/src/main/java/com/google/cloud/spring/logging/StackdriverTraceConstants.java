@@ -36,13 +36,13 @@ public interface StackdriverTraceConstants {
   /** The JSON field name for the trace-id. */
   String TRACE_ID_ATTRIBUTE = "logging.googleapis.com/trace";
 
-  /** The name of the MDC parameter Spring Sleuth is storing the trace id at. */
+  /** The name of the MDC parameter Micrometer is storing the trace id at. */
   String MDC_FIELD_TRACE_ID = "traceId";
 
-  /** The name of the MDC parameter Spring Sleuth is storing the span id at. */
+  /** The name of the MDC parameter Micrometer is storing the span id at. */
   String MDC_FIELD_SPAN_ID = "spanId";
 
-  /** The name of the MDC parameter Spring Sleuth is storing the span export information at. */
+  /** The name of the MDC parameter Micrometer is storing the span export information at. */
   String MDC_FIELD_SPAN_EXPORT = "X-Span-Export";
 
   /**

@@ -24,7 +24,7 @@ Spring Framework to:
   - Exchange messages with Spring Integration using Google Cloud Pub/Sub
     on the background
 
-  - Trace the execution of your app with Spring Cloud Sleuth and Google
+  - Trace the execution of your app with Micrometer and Google
     Cloud Trace
 
   - Configure your app with Spring Cloud Config, backed up by the Google

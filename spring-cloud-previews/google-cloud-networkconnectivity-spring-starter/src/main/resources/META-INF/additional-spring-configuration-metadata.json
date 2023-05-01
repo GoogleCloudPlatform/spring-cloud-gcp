@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.networkconnectivity.v1.hub-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud networkconnectivity/HubService components.",
+      "defaultValue": true
+    }
+  ]
+}

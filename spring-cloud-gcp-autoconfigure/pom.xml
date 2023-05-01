@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-cloud-gcp</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>4.2.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -42,8 +42,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -86,8 +86,8 @@
         </dependency>
 
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <optional>true</optional>
             <!-- protobuf-java:2.6.0 included by MySQL Connector J is not compatible with
                  Google Cloud Java libraries. -->
@@ -117,27 +117,15 @@
             <scope>test</scope>
         </dependency>
 
-        <!--R2DBC : mySQL connector and driver -->
-        <dependency>
-            <groupId>com.google.cloud.sql</groupId>
-            <artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>dev.miku</groupId>
-            <artifactId>r2dbc-mysql</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-
-        <!--R2DBC : PostgreSQL connector and driver -->
+        <!--R2DBC : Postgresql connector and driver -->
         <dependency>
             <groupId>com.google.cloud.sql</groupId>
             <artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
             <optional>true</optional>
         </dependency>
+
         <dependency>
-            <groupId>io.r2dbc</groupId>
+            <groupId>org.postgresql</groupId>
             <artifactId>r2dbc-postgresql</artifactId>
             <optional>true</optional>
         </dependency>
@@ -183,19 +171,20 @@
 
         <!-- Trace -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-sleuth-autoconfigure</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.zipkin.reporter2</groupId>
-            <artifactId>zipkin-reporter-brave</artifactId>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-sleuth-brave</artifactId>
+            <groupId>io.zipkin.brave</groupId>
+            <artifactId>brave-instrumentation-messaging</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.zipkin.reporter2</groupId>
+            <artifactId>zipkin-reporter-brave</artifactId>
             <optional>true</optional>
         </dependency>
 

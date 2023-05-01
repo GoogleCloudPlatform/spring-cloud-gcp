@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>spring-cloud-gcp-starters</artifactId>
 		<groupId>com.google.cloud</groupId>
-		<version>3.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+		<version>4.2.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -19,12 +19,20 @@
 			<artifactId>spring-cloud-gcp-starter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-sleuth</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-sleuth-brave</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing-bridge-brave</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.zipkin.brave</groupId>
+			<artifactId>brave-instrumentation-messaging</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.zipkin.gcp</groupId>

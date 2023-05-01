@@ -28,17 +28,15 @@ MAVEN_SETTINGS_FILE=$(realpath .)/settings.xml
 setup_environment_secrets
 create_settings_xml_file $MAVEN_SETTINGS_FILE
 
+# workaround for nexus maven plugin issue with Java 16+: https://issues.sonatype.org/browse/OSSRH-66257
+export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
+
 # run unit tests
-./mvnw verify --show-version --batch-mode
-
-# change to release version
-./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
-
-# build and install the jars locally
-./mvnw clean install --batch-mode -DskipTests=true
+  mvn verify --show-version --batch-mode -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
 
 # stage release
-./mvnw deploy \
+  mvn deploy \
+  -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
   --batch-mode \
   --settings ${MAVEN_SETTINGS_FILE} \
   -DskipTests=true \
@@ -47,5 +45,15 @@ create_settings_xml_file $MAVEN_SETTINGS_FILE
   -Dgpg.homedir=${GPG_HOMEDIR} \
   -Drelease=true \
   --activate-profiles skip-unreleased-modules
+
+# promote release
+if [[ -n "${AUTORELEASE_PR}" ]]
+then
+    mvn nexus-staging:release \
+    --batch-mode \
+    --settings ${MAVEN_SETTINGS_FILE} \
+    -Drelease=true \
+    --activate-profiles skip-unreleased-modules
+fi
 
 popd

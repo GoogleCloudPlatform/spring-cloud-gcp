@@ -23,6 +23,9 @@ mail.properties
 .settings/
 .sts4-cache/
 
+# Ignore to avoid pushing maven wrapper jar as binary artifact
+.mvn/wrapper/maven-wrapper.jar
+
 # Because re-configuring the directory in the share plugin leads to side effect we ignore the file
 dependency-reduced-pom.xml
 .factorypath

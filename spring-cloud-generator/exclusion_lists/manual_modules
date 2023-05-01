@@ -1,0 +1,13 @@
+# this is a list of libraries that are already in the spring-cloud-gcp-starters folder and will be ignored by generate-library-list.sh
+google-cloud-bigquery
+google-cloud-pubsub
+google-cloud-datastore
+google-cloud-firestore
+google-cloud-spanner
+google-cloud-kms
+google-cloud-logging
+google-cloud-monitoring
+google-cloud-secretmanager
+google-cloud-resourcemanager
+google-cloud-storage
+google-cloud-vision

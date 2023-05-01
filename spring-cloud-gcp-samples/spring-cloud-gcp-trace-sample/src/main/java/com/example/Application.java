@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,30 +23,31 @@ import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAd
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.lang.NonNull;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /** Sample spring boot application. */
+@AutoConfiguration
 @SpringBootApplication
-@Component
 public class Application implements WebMvcConfigurer {
   private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
@@ -56,18 +57,20 @@ public class Application implements WebMvcConfigurer {
   @Value("${sampleTopic}")
   private String sampleTopic;
 
-  @Autowired PubSubTemplate pubSubTemplate;
+  private final SpanCustomizer spanCustomizer;
 
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
   }
 
-  @Bean
-  public RestTemplate restTemplate() {
-    return new RestTemplate();
+  public Application(SpanCustomizer spanCustomizer) {
+    this.spanCustomizer = spanCustomizer;
   }
 
-  @Autowired private SpanCustomizer spanCustomizer;
+  @Bean
+  public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    return builder.build();
+  }
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
@@ -75,8 +78,9 @@ public class Application implements WebMvcConfigurer {
         new HandlerInterceptor() {
           @Override
           public boolean preHandle(
-              HttpServletRequest request, HttpServletResponse response, Object handler)
-              throws Exception {
+              @NonNull HttpServletRequest request,
+              @NonNull HttpServletResponse response,
+              @NonNull Object handler) {
             spanCustomizer.tag("session-id", request.getSession().getId());
             spanCustomizer.tag("environment", "QA");
 
@@ -119,6 +123,6 @@ public class Application implements WebMvcConfigurer {
   public void messageReceiver(
       String payload,
       @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
-    LOGGER.info("Message arrived! Payload: " + payload);
+    LOGGER.info("Message arrived! Payload: {}", payload);
   }
 }
