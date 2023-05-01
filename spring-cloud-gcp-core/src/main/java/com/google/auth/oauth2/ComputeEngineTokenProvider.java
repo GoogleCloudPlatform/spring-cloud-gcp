@@ -59,7 +59,7 @@ public class ComputeEngineTokenProvider implements ReactiveTokenProvider {
                             try {
                                 String tokenValue = OAuth2Utils.validateString(gd, ACCESS_TOKEN, ERROR_PARSING_TOKEN_REFRESH_RESPONSE);
                                 int expiresInSeconds = OAuth2Utils.validateInt32(gd, EXPIRES_IN, ERROR_PARSING_TOKEN_REFRESH_RESPONSE);
-                                long expiresAtMilliseconds = computeEngineCredentials.clock.currentTimeMillis() + (long) (expiresInSeconds * 1000L);
+                                long expiresAtMilliseconds = computeEngineCredentials.clock.currentTimeMillis() + (expiresInSeconds * 1000L);
                                 AccessToken accessToken = new AccessToken(tokenValue, new Date(expiresAtMilliseconds));
                                 return Mono.just(accessToken);
                             } catch (IOException e) {
