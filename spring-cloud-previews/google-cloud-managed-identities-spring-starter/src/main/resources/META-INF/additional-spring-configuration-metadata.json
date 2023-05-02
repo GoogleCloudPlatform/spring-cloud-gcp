@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.managedidentities.v1.managed-identities-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud managedidentities/ManagedIdentitiesService components.",
+      "defaultValue": true
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.dataplex.v1.content-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dataplex/ContentService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.dataplex.v1.data-scan-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dataplex/DataScanService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.dataplex.v1.metadata-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dataplex/MetadataService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.dataplex.v1.dataplex-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dataplex/DataplexService components.",
+      "defaultValue": true
+    }
+  ]
+}
