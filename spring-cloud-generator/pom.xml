@@ -15,7 +15,7 @@
     <description>Spring Code Generator for Google Cloud</description>
 
     <properties>
-        <gapic-generator-java-bom.version>2.18.0</gapic-generator-java-bom.version>
+        <gapic-generator-java-bom.version>2.18.1-SNAPSHOT</gapic-generator-java-bom.version>
         <!-- [gapic-test]: protobuf.version for compiling protos used in unit testing
              this should be consistent with version in gapic-generator-java-bom -->
         <protobuf.version>3.21.12</protobuf.version>
@@ -39,7 +39,14 @@
             <groupId>com.google.api</groupId>
             <artifactId>gapic-generator-java</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.api</groupId>
+            <artifactId>gapic-generator-java</artifactId>
+            <version>${gapic-generator-java-bom.version}</version>
+            <type>test-jar</type>
+            <classifier>testlib</classifier>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-autoconfigure</artifactId>
