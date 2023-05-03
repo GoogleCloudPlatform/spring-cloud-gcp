@@ -1,5 +1,7 @@
 #!/bin/bash
 
+WORKING_DIR=`pwd` # spring-cloud-generator
+
 while getopts c: flag
 do
     case "${flag}" in
@@ -17,10 +19,10 @@ git clone https://github.com/googleapis/google-cloud-java.git
 # switch to the specified release commitish
 cd ./google-cloud-java
 git checkout $commitish
-cd -
 
+cd ${WORKING_DIR}
 # start file, always override is present
-filename=./library_list.txt
+filename=${WORKING_DIR}/scripts/resources/library_list.txt
 echo "# api_shortname, googleapis-folder, distribution_name:version, googleapis_committish, monorepo_folder" > $filename
 
 # loop through folders
@@ -55,7 +57,7 @@ for d in ./google-cloud-java/*java-*/; do
     continue
   fi
   # checks if library is in the manual modules exclusion list
-  if [[ $(cat exclusion_lists/manual_modules | tail -n+2 | grep $artifact_id | wc -l) -ne 0 ]] ; then
+  if [[ $(cat ${WORKING_DIR}/scripts/resources/manual_modules_exclusion_list.txt | tail -n+2 | grep $artifact_id | wc -l) -ne 0 ]] ; then
     echo "$artifact_id is already present in manual modules."
     continue
   fi
