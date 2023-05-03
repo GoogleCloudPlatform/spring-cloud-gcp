@@ -3,7 +3,7 @@
 	"config:base"
 	],
 	"baseBranches": ["main", "3.x"],
-	"useBaseBranchConfig": "merge",
+	"useBaseBranchConfig": merge,
 	"packageRules": [{
 		"matchPackageNames": [
 			"com.coveo:fmt-maven-plugin",
