@@ -1123,6 +1123,15 @@ same transaction. `performReadOnlyTransaction` and
 annotated methods because Cloud Spanner does not support transactions
 within transactions.
 
+Other Google Cloud database related libraries like datastore, firestore
+can introduce `PlatformTransactionManager` beans, and can interfere with 
+Spanner Transaction Manager. To disambiguate, explicitly specify the name of
+transaction manager bean for such `@Transactional` methods, for eg.
+
+```java
+@Transactional(transactionManager = "spannerTransactionManager")
+```
+
 #### DML Statements
 
 `SpannerTemplate` supports
