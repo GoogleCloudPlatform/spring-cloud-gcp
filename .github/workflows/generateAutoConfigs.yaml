@@ -59,22 +59,19 @@ jobs:
           java-version: 17
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install Bazel
-        continue-on-error: false
+      - run: bazelisk version
+      - uses: actions/setup-go@v3
+      - name: Install buildozer
         run: |
-          set -x
-          sudo apt-get install apt-transport-https curl gnupg
-          curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
-          sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
-          sudo apt update && sudo apt install bazel
-      - uses: bazelbuild/setup-bazelisk@v2
+          go install github.com/bazelbuild/buildtools/buildozer@latest
+          export PATH=$PATH:$(go env GOPATH)/bin
+          buildozer --version
       - name: Clean previews folder
         continue-on-error: false
         working-directory: spring-cloud-generator
         run: |
           set -x
-          bash reset-previews-folder.sh
+          bash scripts/reset-previews-folder.sh
       - name: Generate library list
         id: generate_library_list
         continue-on-error: false
@@ -83,10 +80,10 @@ jobs:
           set -x
           set -e
           echo "Libraries BOM version: $LIBRARIES_BOM_VERSION"
-          MONOREPO_TAG=v$(bash compute-monorepo-tag.sh -v $LIBRARIES_BOM_VERSION)
+          MONOREPO_TAG=v$(bash scripts/compute-monorepo-tag.sh -v $LIBRARIES_BOM_VERSION)
           echo "MONOREPO_COMMITISH=$MONOREPO_TAG" >> $GITHUB_OUTPUT
-          bash generate-library-list.sh -c $MONOREPO_TAG
-          cat library_list.txt
+          bash scripts/generate-library-list.sh -c $MONOREPO_TAG
+          cat scripts/resources/library_list.txt
         env:
           LIBRARIES_BOM_VERSION: ${{ steps.get_libraries_bom_version.outputs.LIBRARIES_BOM_VERSION }}
       - name: Compile non-autogen libraries
@@ -106,7 +103,9 @@ jobs:
         run: |
           set -x
           set -e
-          bash generate-all.sh -m $MONOREPO_COMMITISH
+          export PATH=$PATH:$(go env GOPATH)/bin
+          buildozer --version
+          bash scripts/generate-all.sh -m $MONOREPO_COMMITISH
         env:
           MONOREPO_COMMITISH: ${{ steps.generate_library_list.outputs.MONOREPO_COMMITISH }}
       - name: Check for generation errors

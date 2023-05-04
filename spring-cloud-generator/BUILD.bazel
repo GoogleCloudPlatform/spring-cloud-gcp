@@ -1,0 +1,17 @@
+load("@rules_java//java:defs.bzl", "java_binary", "java_proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_binary(
+    name = "protoc-gen-java_gapic_spring",
+    main_class = "com.google.cloud.generator.spring.Main",
+    runtime_deps = ["@maven//:com_google_cloud_spring_cloud_generator"],
+)
+
+# google-java-format
+java_binary(
+    name = "google_java_format_binary",
+    jvm_flags = ["-Xmx512m"],
+    main_class = "com.google.googlejavaformat.java.Main",
+    runtime_deps = ["@google_java_format_all_deps//jar"],
+)
