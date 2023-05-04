@@ -14,6 +14,20 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.3.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.2.0...v4.3.0) (2023-05-04)
+
+
+### Features
+
+* add support for insert and insertAll in DatastoreOperations ([#1729](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1729)) ([a478264](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a478264935743311ac9bb1d22f95553d317d84a5))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.14.0 (main) ([#1788](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1788)) ([2aa3992](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2aa3992f369c4c77eb18cdbace3d4cbf6b4339ca))
+* **deps:** update dependency org.springframework.cloud:spring-cloud-build to v3.1.7 ([#1778](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1778)) ([3ea39c8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3ea39c86e5faf1a7848e270fb9dca722e596eb34))
+* profile for jdk17 compiler arguments ([#1775](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1775)) ([277f814](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/277f8144fd98fbad917b5d80dea98c12e10f85c5))
+
 ## [4.2.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.1.4...v4.2.0) (2023-04-20)
 
 
