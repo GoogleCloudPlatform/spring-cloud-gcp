@@ -108,6 +108,12 @@ jobs:
           bash scripts/generate-all.sh -m $MONOREPO_COMMITISH
         env:
           MONOREPO_COMMITISH: ${{ steps.generate_library_list.outputs.MONOREPO_COMMITISH }}
+      - name: Sanity checks
+        continue-on-error: false
+        working-directory: spring-cloud-generator/scripts
+        run:
+          set -x
+          bash sanity_checks.sh
       - name: Check for generation errors
         continue-on-error: false
         working-directory: spring-cloud-generator
