@@ -1,0 +1,2 @@
+/** Spring Boot auto-configurations for localhost:7469. */
+package com.google.showcase.v1beta1.spring;

@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>spring-cloud-gcp-starters</artifactId>
 		<groupId>com.google.cloud</groupId>
-		<version>4.0.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+		<version>4.3.0</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -27,8 +27,8 @@
 			<artifactId>mysql-socket-factory</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
 			<!-- protobuf-java:2.6.0 included by MySQL Connector J is not compatible with
 						Google Cloud Java libraries. -->
 			<exclusions>

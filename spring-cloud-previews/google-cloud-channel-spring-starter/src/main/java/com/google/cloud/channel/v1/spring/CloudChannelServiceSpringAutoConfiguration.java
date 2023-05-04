@@ -88,7 +88,7 @@ public class CloudChannelServiceSpringAutoConfiguration {
 
   /**
    * Provides a default transport channel provider bean. The default is gRPC and will default to it
-   * unless the useRest option is provided to use HTTP transport instead
+   * unless the useRest option is supported and provided to use HTTP transport instead
    *
    * @return a default transport channel provider.
    */
@@ -398,6 +398,14 @@ public class CloudChannelServiceSpringAutoConfiguration {
       clientSettingsBuilder
           .listSubscribersSettings()
           .setRetrySettings(listSubscribersRetrySettings);
+
+      RetrySettings listEntitlementChangesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listEntitlementChangesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listEntitlementChangesSettings()
+          .setRetrySettings(listEntitlementChangesRetrySettings);
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
@@ -853,6 +861,20 @@ public class CloudChannelServiceSpringAutoConfiguration {
           .setRetrySettings(listSubscribersRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listSubscribers from properties.");
+      }
+    }
+    Retry listEntitlementChangesRetry = clientProperties.getListEntitlementChangesRetry();
+    if (listEntitlementChangesRetry != null) {
+      RetrySettings listEntitlementChangesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listEntitlementChangesSettings().getRetrySettings(),
+              listEntitlementChangesRetry);
+      clientSettingsBuilder
+          .listEntitlementChangesSettings()
+          .setRetrySettings(listEntitlementChangesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listEntitlementChanges from properties.");
       }
     }
     return clientSettingsBuilder.build();

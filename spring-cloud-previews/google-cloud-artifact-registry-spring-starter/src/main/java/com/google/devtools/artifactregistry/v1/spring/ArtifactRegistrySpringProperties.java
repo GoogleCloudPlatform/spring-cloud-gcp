@@ -55,6 +55,36 @@ public class ArtifactRegistrySpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getDockerImageRetry;
   /**
+   * Allow override of retry settings at method-level for listMavenArtifacts. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listMavenArtifactsRetry;
+  /**
+   * Allow override of retry settings at method-level for getMavenArtifact. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getMavenArtifactRetry;
+  /**
+   * Allow override of retry settings at method-level for listNpmPackages. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listNpmPackagesRetry;
+  /**
+   * Allow override of retry settings at method-level for getNpmPackage. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getNpmPackageRetry;
+  /**
+   * Allow override of retry settings at method-level for listPythonPackages. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listPythonPackagesRetry;
+  /**
+   * Allow override of retry settings at method-level for getPythonPackage. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getPythonPackageRetry;
+  /**
    * Allow override of retry settings at method-level for listRepositories. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -150,6 +180,16 @@ public class ArtifactRegistrySpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry updateProjectSettingsRetry;
   /**
+   * Allow override of retry settings at method-level for getVPCSCConfig. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getVPCSCConfigRetry;
+  /**
+   * Allow override of retry settings at method-level for updateVPCSCConfig. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateVPCSCConfigRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -211,6 +251,54 @@ public class ArtifactRegistrySpringProperties implements CredentialsSupplier {
 
   public void setGetDockerImageRetry(Retry getDockerImageRetry) {
     this.getDockerImageRetry = getDockerImageRetry;
+  }
+
+  public Retry getListMavenArtifactsRetry() {
+    return this.listMavenArtifactsRetry;
+  }
+
+  public void setListMavenArtifactsRetry(Retry listMavenArtifactsRetry) {
+    this.listMavenArtifactsRetry = listMavenArtifactsRetry;
+  }
+
+  public Retry getGetMavenArtifactRetry() {
+    return this.getMavenArtifactRetry;
+  }
+
+  public void setGetMavenArtifactRetry(Retry getMavenArtifactRetry) {
+    this.getMavenArtifactRetry = getMavenArtifactRetry;
+  }
+
+  public Retry getListNpmPackagesRetry() {
+    return this.listNpmPackagesRetry;
+  }
+
+  public void setListNpmPackagesRetry(Retry listNpmPackagesRetry) {
+    this.listNpmPackagesRetry = listNpmPackagesRetry;
+  }
+
+  public Retry getGetNpmPackageRetry() {
+    return this.getNpmPackageRetry;
+  }
+
+  public void setGetNpmPackageRetry(Retry getNpmPackageRetry) {
+    this.getNpmPackageRetry = getNpmPackageRetry;
+  }
+
+  public Retry getListPythonPackagesRetry() {
+    return this.listPythonPackagesRetry;
+  }
+
+  public void setListPythonPackagesRetry(Retry listPythonPackagesRetry) {
+    this.listPythonPackagesRetry = listPythonPackagesRetry;
+  }
+
+  public Retry getGetPythonPackageRetry() {
+    return this.getPythonPackageRetry;
+  }
+
+  public void setGetPythonPackageRetry(Retry getPythonPackageRetry) {
+    this.getPythonPackageRetry = getPythonPackageRetry;
   }
 
   public Retry getListRepositoriesRetry() {
@@ -363,6 +451,22 @@ public class ArtifactRegistrySpringProperties implements CredentialsSupplier {
 
   public void setUpdateProjectSettingsRetry(Retry updateProjectSettingsRetry) {
     this.updateProjectSettingsRetry = updateProjectSettingsRetry;
+  }
+
+  public Retry getGetVPCSCConfigRetry() {
+    return this.getVPCSCConfigRetry;
+  }
+
+  public void setGetVPCSCConfigRetry(Retry getVPCSCConfigRetry) {
+    this.getVPCSCConfigRetry = getVPCSCConfigRetry;
+  }
+
+  public Retry getUpdateVPCSCConfigRetry() {
+    return this.updateVPCSCConfigRetry;
+  }
+
+  public void setUpdateVPCSCConfigRetry(Retry updateVPCSCConfigRetry) {
+    this.updateVPCSCConfigRetry = updateVPCSCConfigRetry;
   }
 
   public Retry getListLocationsRetry() {

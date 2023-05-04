@@ -83,6 +83,16 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry approveRolloutRetry;
   /**
+   * Allow override of retry settings at method-level for advanceRollout. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry advanceRolloutRetry;
+  /**
+   * Allow override of retry settings at method-level for cancelRollout. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry cancelRolloutRetry;
+  /**
    * Allow override of retry settings at method-level for listRollouts. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -92,6 +102,11 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRolloutRetry;
+  /**
+   * Allow override of retry settings at method-level for ignoreJob. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry ignoreJobRetry;
   /**
    * Allow override of retry settings at method-level for retryJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -107,6 +122,11 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getJobRunRetry;
+  /**
+   * Allow override of retry settings at method-level for terminateJobRun. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry terminateJobRunRetry;
   /**
    * Allow override of retry settings at method-level for getConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -239,6 +259,22 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
     this.approveRolloutRetry = approveRolloutRetry;
   }
 
+  public Retry getAdvanceRolloutRetry() {
+    return this.advanceRolloutRetry;
+  }
+
+  public void setAdvanceRolloutRetry(Retry advanceRolloutRetry) {
+    this.advanceRolloutRetry = advanceRolloutRetry;
+  }
+
+  public Retry getCancelRolloutRetry() {
+    return this.cancelRolloutRetry;
+  }
+
+  public void setCancelRolloutRetry(Retry cancelRolloutRetry) {
+    this.cancelRolloutRetry = cancelRolloutRetry;
+  }
+
   public Retry getListRolloutsRetry() {
     return this.listRolloutsRetry;
   }
@@ -253,6 +289,14 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
 
   public void setGetRolloutRetry(Retry getRolloutRetry) {
     this.getRolloutRetry = getRolloutRetry;
+  }
+
+  public Retry getIgnoreJobRetry() {
+    return this.ignoreJobRetry;
+  }
+
+  public void setIgnoreJobRetry(Retry ignoreJobRetry) {
+    this.ignoreJobRetry = ignoreJobRetry;
   }
 
   public Retry getRetryJobRetry() {
@@ -277,6 +321,14 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
 
   public void setGetJobRunRetry(Retry getJobRunRetry) {
     this.getJobRunRetry = getJobRunRetry;
+  }
+
+  public Retry getTerminateJobRunRetry() {
+    return this.terminateJobRunRetry;
+  }
+
+  public void setTerminateJobRunRetry(Retry terminateJobRunRetry) {
+    this.terminateJobRunRetry = terminateJobRunRetry;
   }
 
   public Retry getGetConfigRetry() {

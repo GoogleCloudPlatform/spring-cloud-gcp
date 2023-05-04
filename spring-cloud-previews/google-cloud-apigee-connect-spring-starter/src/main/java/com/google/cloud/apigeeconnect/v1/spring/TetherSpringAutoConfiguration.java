@@ -85,16 +85,13 @@ public class TetherSpringAutoConfiguration {
 
   /**
    * Provides a default transport channel provider bean. The default is gRPC and will default to it
-   * unless the useRest option is provided to use HTTP transport instead
+   * unless the useRest option is supported and provided to use HTTP transport instead
    *
    * @return a default transport channel provider.
    */
   @Bean
   @ConditionalOnMissingBean(name = "defaultTetherTransportChannelProvider")
   public TransportChannelProvider defaultTetherTransportChannelProvider() {
-    if (this.clientProperties.getUseRest()) {
-      return TetherSettings.defaultHttpJsonTransportProviderBuilder().build();
-    }
     return TetherSettings.defaultTransportChannelProvider();
   }
 
@@ -116,15 +113,7 @@ public class TetherSpringAutoConfiguration {
       @Qualifier("defaultTetherTransportChannelProvider")
           TransportChannelProvider defaultTransportChannelProvider)
       throws IOException {
-    TetherSettings.Builder clientSettingsBuilder;
-    if (this.clientProperties.getUseRest()) {
-      clientSettingsBuilder = TetherSettings.newHttpJsonBuilder();
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Using REST (HTTP/JSON) transport.");
-      }
-    } else {
-      clientSettingsBuilder = TetherSettings.newBuilder();
-    }
+    TetherSettings.Builder clientSettingsBuilder = TetherSettings.newBuilder();
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)

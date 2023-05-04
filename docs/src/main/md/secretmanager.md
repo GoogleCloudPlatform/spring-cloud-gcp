@@ -8,10 +8,7 @@ documentation](https://cloud.google.com/blog/products/identity-security/introduc
 
 Spring Framework on Google Cloud provides:
 
-  - A property source which allows you to specify and load the secrets
-    of your Google Cloud project into your application context as a [Bootstrap
-    Property
-    Source](https://cloud.spring.io/spring-cloud-commons/multi/multi__spring_cloud_context_application_context_services.html#_the_bootstrap_application_context).
+  - A config data resource which allows you to specify and load the secrets of your Google Cloud project into your application context using [Spring Boot's Config Data API](https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4).
 
   - A `SecretManagerTemplate` which allows you to read, write, and
     update secrets in Secret Manager.
@@ -52,19 +49,12 @@ authentication properties.
 | `spring.cloud.gcp.secretmanager.project-id`                                                                     | The default Google Cloud project used to access Secret Manager API for the template and property source.                                                                                       | No       | By default, infers the project from [Application Default Credentials](https://cloud.google.com/docs/authentication/production). |
 | `spring.cloud.gcp.secretmanager.allow-default-secret`                                                           | Define the behavior when accessing a non-existent secret string/bytes. If set to `true`, `null` will be returned when accessing a non-existent secret; otherwise throwing an exception. | No | `false`                                                                                                                         |
 
-### Secret Manager Property Source
+### Secret Manager Config Data Resource
 
-The Spring Framework on Google Cloud integration for Google Cloud Secret Manager enables
-you to use Secret Manager as a bootstrap property source.
+The Spring Framework on Google Cloud integration for Google Cloud Secret Manager enables you to use Secret Manager as an external config data resource.
+This allows you to specify and load secrets from Google Cloud Secret Manager as properties into the application context using [Spring Boot's Config Data API](https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4).
 
-This allows you to specify and load secrets from Google Cloud Secret
-Manager as properties into the application context during the [Bootstrap
-Phase](https://cloud.spring.io/spring-cloud-commons/reference/html/#the-bootstrap-application-context),
-which refers to the initial phase when a Spring application is being
-loaded.
-
-The Secret Manager property source uses the following syntax to specify
-secrets:
+The Secret Manager config data resource uses the following syntax to specify secrets:
 
     # 1. Long form - specify the project ID, secret ID, and version
     sm://projects/<project-id>/secrets/<secret-id>/versions/<version-id>}
@@ -78,7 +68,7 @@ secrets:
     # 4. Short form - default project; specify secret + version
     #
     # The project is inferred from the spring.cloud.gcp.secretmanager.project-id setting
-    # in your bootstrap.properties (see Configuration) or from application-default credentials if
+    # in your application.properties (see Configuration) or from application-default credentials if
     # this is not set.
     sm://<secret-id>/<version>
     

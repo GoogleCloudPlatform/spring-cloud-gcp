@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 3.x
       - 2.x
   pull_request:
   workflow_dispatch:
@@ -23,7 +24,7 @@ jobs:
     steps:
     - name: Get current date
       id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d' --utc)"
+      run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
 
     - uses: actions/checkout@v2
 
@@ -99,7 +100,7 @@ jobs:
     steps:
       - name: Get current date
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d' --utc)"
+        run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
 
       - uses: actions/checkout@v2
 
