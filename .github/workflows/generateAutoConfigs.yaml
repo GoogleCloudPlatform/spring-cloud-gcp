@@ -113,7 +113,7 @@ jobs:
         working-directory: spring-cloud-generator/scripts
         run: |
           set -x
-          bash sanity_checks.sh
+          bash sanity-checks.sh
       - name: Check for generation errors
         continue-on-error: false
         working-directory: spring-cloud-generator
