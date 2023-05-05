@@ -11,6 +11,7 @@
 # required files such as pom.xml, [Client]AutoConfiguration.java, etc
 #
 WORKING_DIR=`pwd`
+set -xe # TODO remove x
 
 function fail() {
   echo "sanity check failed:"
