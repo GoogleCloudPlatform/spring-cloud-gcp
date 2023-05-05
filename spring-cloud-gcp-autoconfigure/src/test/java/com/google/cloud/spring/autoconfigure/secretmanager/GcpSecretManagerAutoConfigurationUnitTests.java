@@ -44,7 +44,7 @@ class GcpSecretManagerAutoConfigurationUnitTests {
   }
 
   @Test
-  void testSecretManagerWithSecretManagerProperties() {
+  void testProjectIdWithSecretManagerProperties() {
     contextRunner
         .withPropertyValues("spring.cloud.gcp.secretmanager.project-id=secretManagerProject")
         .run(
@@ -53,7 +53,7 @@ class GcpSecretManagerAutoConfigurationUnitTests {
   }
 
   @Test
-  void testSecretManagerWithGcpProperties() {
+  void testProjectIdWithGcpProperties() {
     contextRunner.run(
         ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class)
             .getProjectId()).isEqualTo("globalProject"));
