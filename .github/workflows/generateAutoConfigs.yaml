@@ -111,7 +111,7 @@ jobs:
       - name: Sanity checks
         continue-on-error: false
         working-directory: spring-cloud-generator/scripts
-        run:
+        run: |
           set -x
           bash sanity_checks.sh
       - name: Check for generation errors
