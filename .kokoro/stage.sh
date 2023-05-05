@@ -29,16 +29,10 @@ setup_environment_secrets
 create_settings_xml_file $MAVEN_SETTINGS_FILE
 
 # run unit tests
-./mvnw verify --show-version --batch-mode
-
-# change to release version
-./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
-
-# build and install the jars locally
-./mvnw clean install --batch-mode -DskipTests=true
+  mvn verify --show-version --batch-mode
 
 # stage release
-./mvnw deploy \
+  mvn deploy \
   --batch-mode \
   --settings ${MAVEN_SETTINGS_FILE} \
   -DskipTests=true \
@@ -48,10 +42,10 @@ create_settings_xml_file $MAVEN_SETTINGS_FILE
   -Drelease=true \
   --activate-profiles skip-unreleased-modules
 
-# promote release
+ promote release
 if [[ -n "${AUTORELEASE_PR}" ]]
 then
-  ./mvnw nexus-staging:release \
+    mvn nexus-staging:release \
     --batch-mode \
     --settings ${MAVEN_SETTINGS_FILE} \
     -Drelease=true \
