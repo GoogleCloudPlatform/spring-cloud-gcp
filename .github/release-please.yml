@@ -1,7 +1,10 @@
 primaryBranch: main
 releaseType: java-yoshi
 handleGHRelease: true
-extraFiles: ["README.adoc"]
+extraFiles: [
+  "README.adoc",
+  "spring-cloud-generator/scripts/resources/googleapis_modification_string.txt"
+]
 branches:
   - releaseType: java-yoshi
     handleGHRelease: true
