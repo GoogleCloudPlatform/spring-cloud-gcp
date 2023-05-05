@@ -23,8 +23,8 @@ cd ${WORKING_DIR}
 # with the name of the client library
 # args 1 - library name;
 save_error_info () {
-  mkdir -p failed-library-generations
-  mv tmp-generate-one-output failed-library-generations/$1
+  mkdir -p ${WORKING_DIR}/failed-library-generations
+  cp tmp-output ${WORKING_DIR}/failed-library-generations/$1
 }
 
 # runs generate-one.sh for each entry in library_list.txt
@@ -43,6 +43,7 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
     -x $googleapis_commitish 2>&1 | tee tmp-output || save_error_info "bazel_build"
 
 done <<< $libraries
+
 
 # install local snapshot jar for spring generator
 cd ${WORKING_DIR} && mvn install
