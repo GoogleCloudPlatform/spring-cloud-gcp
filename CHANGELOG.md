@@ -14,6 +14,22 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.5.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.9...v3.5.0) (2023-05-05)
+
+
+### Features
+
+* add support for insert and insertAll in DatastoreOperations ([#1729](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1729)) ([#1766](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1766)) ([420bb0e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/420bb0e6163688697602d69ebcf84735a19c6f78))
+
+
+### Dependencies
+
+* bump jacoco-maven-plugin from 0.8.8 to 0.8.10 ([#1772](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1772)) ([5e37371](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5e3737180697bc7fd7fa480571b35ab6214d7769))
+* bump libraries-bom from 26.13.0 to 26.14.0 ([#1787](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1787)) ([3fb0093](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3fb009349e5800250c105ef2bf131bb9e31f0aeb))
+* bump maven-checkstyle-plugin from 3.2.1 to 3.2.2 ([#1760](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1760)) ([7c58d4c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7c58d4c1511742540abeaaee2477a35e109c471c))
+* bump spring-cloud-build from 3.1.6 to 3.1.7 ([#1784](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1784)) ([276100e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/276100e76b3c06c4f058ff55000effe2fd70eee1))
+* bump spring-cloud-dependencies from 2021.0.6 to 2021.0.7 ([#1779](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1779)) ([e04a18b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e04a18b658a9f8ce13419616c95f53ad77237b4e))
+
 ## [3.4.9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.4.8...v3.4.9) (2023-04-20)
 
 
