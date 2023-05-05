@@ -23,8 +23,8 @@ cd ${WORKING_DIR}
 # with the name of the client library
 # args 1 - library name;
 save_error_info () {
-  mkdir -p failed-library-generations
-  mv tmp-generate-one-output failed-library-generations/$1
+  mkdir -p ${WORKING_DIR}/failed-library-generations
+  mv tmp-generate-one-output ${WORKING_DIR}/failed-library-generations/$1
 }
 
 # runs generate-one.sh for each entry in library_list.txt
