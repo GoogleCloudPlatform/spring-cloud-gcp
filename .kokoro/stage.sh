@@ -42,14 +42,14 @@ create_settings_xml_file $MAVEN_SETTINGS_FILE
   -Drelease=true \
   --activate-profiles skip-unreleased-modules
 
-# promote release
-#if [[ -n "${AUTORELEASE_PR}" ]]
-#then
-#    mvn nexus-staging:release \
-#    --batch-mode \
-#    --settings ${MAVEN_SETTINGS_FILE} \
-#    -Drelease=true \
-#    --activate-profiles skip-unreleased-modules
-#fi
+ promote release
+if [[ -n "${AUTORELEASE_PR}" ]]
+then
+    mvn nexus-staging:release \
+    --batch-mode \
+    --settings ${MAVEN_SETTINGS_FILE} \
+    -Drelease=true \
+    --activate-profiles skip-unreleased-modules
+fi
 
 popd
