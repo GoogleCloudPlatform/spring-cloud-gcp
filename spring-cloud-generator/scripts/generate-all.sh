@@ -40,9 +40,11 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
   echo "preparing bazel rules for $library_name"
   bash ${WORKING_DIR}/scripts/setup-build-rule.sh \
     -f $googleapis_location \
-    -x $googleapis_commitish 2>&1 | tee tmp-output || save_error_info "bazel_build"
+    -x $googleapis_commitish 2>&1 | tee tmp-output || save_error_info $library_name
 
 done <<< $libraries
+
+save_error_info "test"
 
 # install local snapshot jar for spring generator
 cd ${WORKING_DIR} && mvn install
