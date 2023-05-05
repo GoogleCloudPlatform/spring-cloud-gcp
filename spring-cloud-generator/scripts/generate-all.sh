@@ -24,7 +24,7 @@ cd ${WORKING_DIR}
 # args 1 - library name;
 save_error_info () {
   mkdir -p ${WORKING_DIR}/failed-library-generations
-  mv tmp-generate-one-output ${WORKING_DIR}/failed-library-generations/$1
+  mv tmp-output ${WORKING_DIR}/failed-library-generations/$1
 }
 
 # runs generate-one.sh for each entry in library_list.txt
