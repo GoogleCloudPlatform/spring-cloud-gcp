@@ -41,6 +41,22 @@ class GcpSecretManagerAutoConfigurationUnitTests {
   }
 
   @Test
+  void testSecretManagerWithProjectId() {
+    contextRunner
+        .withPropertyValues("spring.cloud.gcp.secretmanager.project-id=testProject")
+        .run(
+            ctx -> assertThat(ctx.getBean(GcpSecretManagerProperties.class)
+                .getProjectId()).isEqualTo("testProject"));
+  }
+
+  @Test
+  void testSecretManagerWithoutProjectId() {
+    contextRunner.run(
+        ctx -> assertThat(ctx.getBean(GcpSecretManagerProperties.class)
+            .getProjectId()).isNull());
+  }
+
+  @Test
   void testSecretManagerServiceClientExists() {
     contextRunner.run(
         ctx -> assertThat(ctx.getBean(SecretManagerServiceClient.class))
