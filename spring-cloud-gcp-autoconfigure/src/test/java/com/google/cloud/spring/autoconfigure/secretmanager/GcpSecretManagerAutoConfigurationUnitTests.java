@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,24 +36,27 @@ class GcpSecretManagerAutoConfigurationUnitTests {
   @BeforeEach
   void init() {
     contextRunner = new ApplicationContextRunner()
-        .withConfiguration(AutoConfigurations.of(GcpSecretManagerAutoConfiguration.class))
+        .withConfiguration(AutoConfigurations.of(
+            GcpSecretManagerAutoConfiguration.class,
+            GcpContextAutoConfiguration.class))
+        .withPropertyValues("spring.cloud.gcp.project-id=globalProject")
         .withUserConfiguration(TestConfig.class);
   }
 
   @Test
-  void testSecretManagerWithProjectId() {
+  void testSecretManagerWithSecretManagerProperties() {
     contextRunner
-        .withPropertyValues("spring.cloud.gcp.secretmanager.project-id=testProject")
+        .withPropertyValues("spring.cloud.gcp.secretmanager.project-id=secretManagerProject")
         .run(
-            ctx -> assertThat(ctx.getBean(GcpSecretManagerProperties.class)
-                .getProjectId()).isEqualTo("testProject"));
+            ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class)
+                .getProjectId()).isEqualTo("secretManagerProject"));
   }
 
   @Test
-  void testSecretManagerWithoutProjectId() {
+  void testSecretManagerWithGcpProperties() {
     contextRunner.run(
-        ctx -> assertThat(ctx.getBean(GcpSecretManagerProperties.class)
-            .getProjectId()).isNull());
+        ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class)
+            .getProjectId()).isEqualTo("globalProject"));
   }
 
   @Test
@@ -71,10 +74,6 @@ class GcpSecretManagerAutoConfigurationUnitTests {
   }
 
   static class TestConfig {
-    @Bean
-    public GcpProjectIdProvider projectIdProvider() {
-      return () -> "fake project";
-    }
 
     @Bean
     public CredentialsProvider googleCredentials() {
