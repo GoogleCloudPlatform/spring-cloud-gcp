@@ -71,7 +71,6 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
     -z $monorepo_commitish 2>&1 | tee tmp-output || save_error_info "GENERATE_ONE_$library_name"
   set +o pipefail
 done <<< $libraries
-save_error_info "test"
 rm tmp-output
 
 echo "run google-java-format on generated code"

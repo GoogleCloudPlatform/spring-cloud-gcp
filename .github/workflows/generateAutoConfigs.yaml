@@ -113,7 +113,7 @@ jobs:
         working-directory: spring-cloud-generator
         run: |
           set -xe
-          if [[ $(ls *failed-library-generations | wc -l) -eq 0 ]]; then
+          if [[ ! -d failed-library-generations ]] || [[ $(ls *failed-library-generations | wc -l) -eq 0 ]]; then
             echo 'no errors at generation'
             exit 0
           fi
