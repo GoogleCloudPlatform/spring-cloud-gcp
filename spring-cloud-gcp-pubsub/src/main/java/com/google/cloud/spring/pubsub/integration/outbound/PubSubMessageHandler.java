@@ -294,14 +294,24 @@ public class PubSubMessageHandler extends AbstractMessageHandler {
       this.message = message;
     }
 
-    @Override
-    public void accept(String messageId, Throwable throwable) {
+    private void handleSuccess(String messageId) {
       if (PubSubMessageHandler.this.successCallback != null) {
         PubSubMessageHandler.this.successCallback.onSuccess(messageId, message);
       }
+    }
 
+    private void handleFailure(Throwable throwable) {
       if (PubSubMessageHandler.this.failureCallback != null) {
         PubSubMessageHandler.this.failureCallback.onFailure(throwable, message);
+      }
+    }
+
+    @Override
+    public void accept(String messageId, Throwable throwable) {
+      if (throwable == null) {
+        handleSuccess(messageId);
+      } else {
+        handleFailure(throwable);
       }
     }
   }

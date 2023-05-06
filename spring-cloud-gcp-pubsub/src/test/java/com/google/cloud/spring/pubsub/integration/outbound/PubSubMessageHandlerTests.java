@@ -224,6 +224,7 @@ class PubSubMessageHandlerTests {
 
     AtomicReference<String> messageIdRef = new AtomicReference<>();
     AtomicReference<String> ackIdRef = new AtomicReference<>();
+    AtomicReference<Throwable> failureCauseRef = new AtomicReference<>();
 
     this.adapter.setSuccessCallback(
         (ackId, message) -> {
@@ -231,11 +232,17 @@ class PubSubMessageHandlerTests {
           ackIdRef.set(ackId);
         });
 
+    this.adapter.setFailureCallback(
+            (exception, message) -> {
+              failureCauseRef.set(exception);
+            });
+
     this.adapter.handleMessage(testMessage);
     Awaitility.await().atMost(Duration.ofSeconds(1)).untilAtomic(messageIdRef, notNullValue());
 
     assertThat(messageIdRef).hasValue("123");
     assertThat(ackIdRef).hasValue("published12345");
+    assertThat(failureCauseRef).hasValue(null);
   }
 
   @Test
@@ -249,8 +256,14 @@ class PubSubMessageHandlerTests {
     Message<String> testMessage =
         new GenericMessage<>("testPayload", Collections.singletonMap("message_id", "123"));
 
+    AtomicReference<String> ackIdRef = new AtomicReference<>();
     AtomicReference<Throwable> failureCauseRef = new AtomicReference<>();
     AtomicReference<String> messageIdRef = new AtomicReference<>();
+
+    this.adapter.setSuccessCallback(
+            (ackId, message) -> {
+              ackIdRef.set(ackId);
+            });
 
     this.adapter.setFailureCallback(
         (exception, message) -> {
@@ -264,5 +277,7 @@ class PubSubMessageHandlerTests {
     assertThat(messageIdRef).hasValue("123");
     Throwable cause = failureCauseRef.get();
     assertThat(cause).isInstanceOf(RuntimeException.class).hasMessage("boom!");
+
+    assertThat(ackIdRef).hasValue(null);
   }
 }
