@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.core;
+package com.google.cloud.spring.core.reactor;
 
 import java.io.IOException;
 
@@ -27,6 +27,7 @@ import com.google.auth.oauth2.UserCredentials;
 import com.google.auth.oauth2.ComputeEngineTokenProvider;
 import com.google.auth.oauth2.ServiceAccountTokenProvider;
 import com.google.auth.oauth2.UserCredentialsTokenProvider;
+import com.google.cloud.spring.core.ReactiveTokenProvider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
