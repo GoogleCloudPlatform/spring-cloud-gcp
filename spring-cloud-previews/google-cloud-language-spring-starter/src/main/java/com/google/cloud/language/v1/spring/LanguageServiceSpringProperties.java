@@ -65,6 +65,11 @@ public class LanguageServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry analyzeSyntaxRetry;
   /**
+   * Allow override of retry settings at method-level for classifyText. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry classifyTextRetry;
+  /**
    * Allow override of retry settings at method-level for annotateText. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -137,6 +142,14 @@ public class LanguageServiceSpringProperties implements CredentialsSupplier {
 
   public void setAnalyzeSyntaxRetry(Retry analyzeSyntaxRetry) {
     this.analyzeSyntaxRetry = analyzeSyntaxRetry;
+  }
+
+  public Retry getClassifyTextRetry() {
+    return this.classifyTextRetry;
+  }
+
+  public void setClassifyTextRetry(Retry classifyTextRetry) {
+    this.classifyTextRetry = classifyTextRetry;
   }
 
   public Retry getAnnotateTextRetry() {
