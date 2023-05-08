@@ -212,20 +212,6 @@ public class LanguageServiceSpringAutoConfiguration {
             "Configured method-level retry settings for analyzeSentiment from properties.");
       }
     }
-    Retry analyzeSentimentRetryCopy = clientProperties.getAnalyzeSentimentRetryCopy();
-    if (analyzeSentimentRetryCopy != null) {
-      RetrySettings analyzeSentimentRetrySettings =
-              RetryUtil.updateRetrySettings(
-                      clientSettingsBuilder.analyzeSentimentSettings().getRetrySettings(),
-                      analyzeSentimentRetryCopy);
-      clientSettingsBuilder
-              .analyzeSentimentSettings()
-              .setRetrySettings(analyzeSentimentRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-                "Configured method-level retry settings for analyzeSentiment from properties (copy).");
-      }
-    }
     Retry analyzeEntitiesRetry = clientProperties.getAnalyzeEntitiesRetry();
     if (analyzeEntitiesRetry != null) {
       RetrySettings analyzeEntitiesRetrySettings =
