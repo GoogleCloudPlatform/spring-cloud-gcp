@@ -19,6 +19,7 @@ package com.google.cloud.spring.data.datastore.core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.ArgumentMatchers.same;
@@ -28,6 +29,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.cloud.datastore.AggregationQuery;
+import com.google.cloud.datastore.AggregationResult;
+import com.google.cloud.datastore.AggregationResults;
 import com.google.cloud.datastore.Cursor;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.Datastore.TransactionCallable;
@@ -49,6 +53,7 @@ import com.google.cloud.datastore.Query.ResultType;
 import com.google.cloud.datastore.QueryResults;
 import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
+import com.google.cloud.datastore.aggregation.Aggregation;
 import com.google.cloud.spring.core.util.MapBuilder;
 import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
 import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
@@ -85,6 +90,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -1043,20 +1049,26 @@ class DatastoreTemplateTests {
 
   @Test
   void countTest() {
-    QueryResults<Key> queryResults = mock(QueryResults.class);
-    when(queryResults.getResultClass()).thenReturn((Class) Key.class);
-    doAnswer(
-            invocation -> {
-              Arrays.asList(this.key1, this.key2)
-                  .iterator()
-                  .forEachRemaining(invocation.getArgument(0));
-              return null;
-            })
-        .when(queryResults)
-        .forEachRemaining(any());
-    when(this.datastore.run(Query.newKeyQueryBuilder().setKind("custom_test_kind").build()))
-        .thenReturn(queryResults);
+    AggregationResult aggregationResult = mock(AggregationResult.class);
+    AggregationResults aggregationResults = mock(AggregationResults.class);
+    when(aggregationResult.get("total_count")).thenReturn(2L);
+    when(aggregationResults.iterator()).thenReturn(List.of(aggregationResult).iterator());
+
+    KeyQuery baseQuery = Query.newKeyQueryBuilder().setKind("custom_test_kind").build();
+    AggregationQuery countAggregationQuery = Query.newAggregationQueryBuilder()
+        .over(baseQuery)
+        .addAggregation(Aggregation.count().as("total_count"))
+        .build();
+
+    when(this.datastore.runAggregation(argThat(equalsTo(countAggregationQuery))))
+        .thenReturn(aggregationResults);
     assertThat(this.datastoreTemplate.count(TestEntity.class)).isEqualTo(2);
+  }
+
+  private ArgumentMatcher<AggregationQuery> equalsTo(AggregationQuery expectedAggregationQuery) {
+    return actualAggregationQuery ->
+        expectedAggregationQuery.getAggregations().equals(actualAggregationQuery.getAggregations())
+            && expectedAggregationQuery.getNestedStructuredQuery().equals(actualAggregationQuery.getNestedStructuredQuery());
   }
 
   @Test
