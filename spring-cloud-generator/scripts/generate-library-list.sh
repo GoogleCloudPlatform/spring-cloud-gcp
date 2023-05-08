@@ -33,7 +33,6 @@ for d in ./google-cloud-java/*java-*/; do
   api_shortname=$(cat $d/.repo-metadata.json | jq -r .api_shortname)
   distribution_name=$(cat $d/.repo-metadata.json | jq -r .distribution_name)
   library_type=$(cat $d/.repo-metadata.json | jq -r .library_type)
-  transport=$(cat $d/.repo-metadata.json | jq -r .transport)
   release_level=$(cat $d/.repo-metadata.json | jq -r .release_level)
   monorepo_folder=$(basename $d)
 
@@ -42,10 +41,6 @@ for d in ./google-cloud-java/*java-*/; do
   #  filter to in-scope libraries
   if [[ $library_type != *GAPIC_AUTO* ]] ; then
     echo "$d: non auto type: $library_type"
-    continue
-  fi
-  if [[ $transport != *grpc* ]] ; then
-    echo "$d: transport type not in scope: $transport"
     continue
   fi
   if [[ $group_id != "com.google.cloud" ]] ; then
