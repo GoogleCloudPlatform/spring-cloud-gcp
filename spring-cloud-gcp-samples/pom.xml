@@ -34,7 +34,7 @@
 		<app-engine-maven-plugin.version>2.4.4</app-engine-maven-plugin.version>
 
 		<!-- Deploy plugin is skipped for all samples but exists -->
-		<maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
+		<maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
 
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 		<integration-test.tags.include/>
