@@ -50,6 +50,11 @@ public class LanguageServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry analyzeSentimentRetry;
   /**
+   * Allow override of retry settings at method-level for analyzeSentiment. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry analyzeSentimentRetryCopy;
+  /**
    * Allow override of retry settings at method-level for analyzeEntities. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -118,6 +123,14 @@ public class LanguageServiceSpringProperties implements CredentialsSupplier {
 
   public void setAnalyzeSentimentRetry(Retry analyzeSentimentRetry) {
     this.analyzeSentimentRetry = analyzeSentimentRetry;
+  }
+
+  public Retry getAnalyzeSentimentRetryCopy() {
+    return this.analyzeSentimentRetryCopy;
+  }
+
+  public void setAnalyzeSentimentRetryCopy(Retry analyzeSentimentRetryCopy) {
+    this.analyzeSentimentRetryCopy = analyzeSentimentRetryCopy;
   }
 
   public Retry getAnalyzeEntitiesRetry() {
