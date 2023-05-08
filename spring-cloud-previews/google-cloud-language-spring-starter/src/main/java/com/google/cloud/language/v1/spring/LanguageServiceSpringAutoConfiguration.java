@@ -184,11 +184,6 @@ public class LanguageServiceSpringAutoConfiguration {
               clientSettingsBuilder.analyzeSyntaxSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.analyzeSyntaxSettings().setRetrySettings(analyzeSyntaxRetrySettings);
 
-      RetrySettings classifyTextRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.classifyTextSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.classifyTextSettings().setRetrySettings(classifyTextRetrySettings);
-
       RetrySettings annotateTextRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.annotateTextSettings().getRetrySettings(), serviceRetry);
@@ -247,16 +242,6 @@ public class LanguageServiceSpringAutoConfiguration {
       clientSettingsBuilder.analyzeSyntaxSettings().setRetrySettings(analyzeSyntaxRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for analyzeSyntax from properties.");
-      }
-    }
-    Retry classifyTextRetry = clientProperties.getClassifyTextRetry();
-    if (classifyTextRetry != null) {
-      RetrySettings classifyTextRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.classifyTextSettings().getRetrySettings(), classifyTextRetry);
-      clientSettingsBuilder.classifyTextSettings().setRetrySettings(classifyTextRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for classifyText from properties.");
       }
     }
     Retry annotateTextRetry = clientProperties.getAnnotateTextRetry();
