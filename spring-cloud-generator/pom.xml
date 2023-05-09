@@ -79,6 +79,29 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>download-test-protos</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="target/generated-test-sources/proto"/>
+                                <!-- download test protos from gapic-generator-java repo -->
+                                <get src="https://raw.githubusercontent.com/googleapis/gapic-generator-java/main/gapic-generator-java/src/test/proto/echo.proto"
+                                     dest="target/generated-test-sources/proto/echo.proto"/>
+                                <get src="https://raw.githubusercontent.com/googleapis/gapic-generator-java/main/gapic-generator-java/src/test/proto/wicked.proto"
+                                     dest="target/generated-test-sources/proto/wicked.proto"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <!-- [gapic-test]: compiling protos used in unit testing -->
                 <groupId>org.xolstice.maven.plugins</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>
@@ -95,7 +118,7 @@
                             <goal>test-compile</goal>
                         </goals>
                         <configuration>
-                            <protoTestSourceRoot>src/test/proto</protoTestSourceRoot>
+                            <protoTestSourceRoot>target/generated-test-sources/proto</protoTestSourceRoot>
                             <writeDescriptorSet>true</writeDescriptorSet>
                             <includeSourceInfoInDescriptorSet>true</includeSourceInfoInDescriptorSet>
                             <includeDependenciesInDescriptorSet>true</includeDependenciesInDescriptorSet>
