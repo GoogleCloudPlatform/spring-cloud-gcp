@@ -26,11 +26,11 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class MultipleDataModuleExample {
 
-  // A Spring Data Datastore repository
-  @Autowired PersonRepository personRepository;
+  // Internally uses a Spring Data Datastore repository
+  @Autowired private PersonService personService;
 
-  // A Spring Data Cloud Spanner repository
-  @Autowired TraderRepository traderRepository;
+  // Internally uses a Spring Data Cloud Spanner repository
+  @Autowired private TraderService traderService;
 
   public static void main(String[] args) {
     SpringApplication.run(MultipleDataModuleExample.class, args);
@@ -41,19 +41,19 @@ public class MultipleDataModuleExample {
     return args -> {
       System.out.println("Deleting all entities.");
 
-      this.personRepository.deleteAll();
-      this.traderRepository.deleteAll();
+      this.personService.deleteAll();
+      this.traderService.deleteAll();
 
-      System.out.println("The number of Person entities is now: " + this.personRepository.count());
-      System.out.println("The number of Trader entities is now: " + this.traderRepository.count());
+      System.out.println("The number of Person entities is now: " + this.personService.count());
+      System.out.println("The number of Trader entities is now: " + this.traderService.count());
 
       System.out.println("Saving one entity with each repository.");
 
-      this.traderRepository.save(new Trader("id1", "trader", "one"));
-      this.personRepository.save(new Person(1L, "person1"));
+      this.traderService.save(new Trader("id1", "trader", "one"));
+      this.personService.save(new Person(1L, "person1"));
 
-      System.out.println("The number of Person entities is now: " + this.personRepository.count());
-      System.out.println("The number of Trader entities is now: " + this.traderRepository.count());
+      System.out.println("The number of Person entities is now: " + this.personService.count());
+      System.out.println("The number of Trader entities is now: " + this.traderService.count());
     };
   }
 }
