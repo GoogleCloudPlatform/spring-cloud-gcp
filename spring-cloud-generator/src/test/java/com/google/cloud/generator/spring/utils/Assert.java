@@ -81,7 +81,8 @@ public class Assert {
 
       String sampleString = SampleCodeWriter.writeExecutableSample(sample, packkage + ".samples");
 
-      GoldenFileWriter.saveSampleCodegenToFile(clazz, sampleDirName.toLowerCase(), fileName, sampleString);
+      GoldenFileWriter.saveSampleCodegenToFile(
+          clazz, sampleDirName.toLowerCase(), fileName, sampleString);
       assertCodeEquals(goldenFilePath, sampleString);
     }
   }

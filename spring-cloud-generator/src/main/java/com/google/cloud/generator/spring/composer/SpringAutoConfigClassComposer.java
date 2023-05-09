@@ -112,7 +112,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
 
     Expr thisExpr = ValueExpr.withValue(ThisObjectValue.withType(dynamicTypes.get(className)));
     Transport transport = context.transport();
-    boolean hasRestOption = transport.equals(Transport.GRPC_REST)
+    boolean hasRestOption =
+        transport.equals(Transport.GRPC_REST)
             && service.hasAnyEnabledMethodsForTransport(Transport.REST);
     String serviceSettingsMethodName = JavaStyle.toLowerCamelCase(service.name()) + "Settings";
 

@@ -78,7 +78,8 @@ public class SpringPropertiesClassComposer implements ClassComposer {
     GapicServiceConfig gapicServiceConfig = context.serviceConfig();
     Map<String, TypeNode> dynamicTypes = createDynamicTypes(service, packageName);
     Transport transport = context.transport();
-    boolean hasRestOption = transport.equals(Transport.GRPC_REST)
+    boolean hasRestOption =
+        transport.equals(Transport.GRPC_REST)
             && service.hasAnyEnabledMethodsForTransport(Transport.REST);
 
     // TODO: this is the prefix user will use to set properties, may need to change depending on
