@@ -13,7 +13,7 @@
   <artifactId>cloud-spanner-spring-data-r2dbc</artifactId>
 
   <properties>
-    <spring-data-r2dbc.version>1.5.11</spring-data-r2dbc.version>
+    <spring-data-r2dbc.version>1.5.12</spring-data-r2dbc.version>
     <spring-test.version>5.3.27</spring-test.version>
   </properties>
 
