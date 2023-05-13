@@ -78,6 +78,7 @@ def java_gapic_spring_library(
         gapic_yaml = None,
         service_yaml = None,
         transport = None,
+        rest_numeric_enums = False,
         **kwargs):
     library_name = name + "-spring"
     raw_srcjar_name = name + "_raw"
@@ -89,6 +90,7 @@ def java_gapic_spring_library(
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
         transport = transport,
+        rest_numeric_enums = rest_numeric_enums,
         **kwargs
     )
 
@@ -105,6 +107,7 @@ def _java_gapic_spring_srcjar(
         gapic_yaml,
         service_yaml,
         transport,
+        rest_numeric_enums,
         # Can be used to provide a java_library with a customized generator,
         # like the one which dumps descriptor to a file for future debugging.
         java_generator_name = "java_gapic_spring",
@@ -127,6 +130,9 @@ def _java_gapic_spring_srcjar(
 
     if transport:
         opt_args.append("transport=%s" % transport)
+
+    if rest_numeric_enums:
+        opt_args.append("rest-numeric-enums")
 
     # Produces the GAPIC metadata file if this flag is set. to any value.
     # Protoc invocation: --java_gapic_opt=metadata
