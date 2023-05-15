@@ -34,6 +34,7 @@ add the following dependency to your `pom.xml`.
 |[java-binary-authorization](https://github.com/googleapis/google-cloud-java/blob/v1.10.0/java-binary-authorization/README.md)|com.google.cloud:google-cloud-binary-authorization-spring-starter|
 |[java-channel](https://github.com/googleapis/google-cloud-java/blob/v1.10.0/java-channel/README.md)|com.google.cloud:google-cloud-channel-spring-starter|
 |[java-cloudbuild](https://github.com/googleapis/google-cloud-java/blob/v1.10.0/java-cloudbuild/README.md)|com.google.cloud:google-cloud-build-spring-starter|
+|[java-compute](https://github.com/googleapis/google-cloud-java/blob/v1.10.0/java-compute/README.md)|com.google.cloud:google-cloud-compute-spring-starter|
 |[java-contact-center-insights](https://github.com/googleapis/google-cloud-java/blob/v1.10.0/java-contact-center-insights/README.md)|com.google.cloud:google-cloud-contact-center-insights-spring-starter|
 |[java-container](https://github.com/googleapis/google-cloud-java/blob/v1.10.0/java-container/README.md)|com.google.cloud:google-cloud-container-spring-starter|
 |[java-containeranalysis](https://github.com/googleapis/google-cloud-java/blob/v1.10.0/java-containeranalysis/README.md)|com.google.cloud:google-cloud-containeranalysis-spring-starter|
