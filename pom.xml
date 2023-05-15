@@ -144,16 +144,6 @@
 				<artifactId>java-cfenv-test-support</artifactId>
 				<version>${java-cfenv.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.springframework.experimental</groupId>
-				<artifactId>spring-native-configuration</artifactId>
-				<version>${spring-native.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.experimental</groupId>
-				<artifactId>spring-aot</artifactId>
-				<version>${spring-native.version}</version>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -338,7 +328,6 @@
 				<module>spring-cloud-gcp-security-firebase</module>
 				<module>spring-cloud-gcp-vision</module>
 				<module>spring-cloud-gcp-kms</module>
-				<module>spring-cloud-gcp-native-support</module>
 
 				<!-- Docs and Samples -->
 				<module>docs</module>
