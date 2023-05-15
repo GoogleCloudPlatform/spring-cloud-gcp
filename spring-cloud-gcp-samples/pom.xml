@@ -20,10 +20,6 @@
 	<properties>
 		<main.basedir>${basedir}/..</main.basedir>
 
-		<!-- Dependency versions -->
-		<google-cloud-graalvm-support.version>0.7.0</google-cloud-graalvm-support.version>
-		<testcontainers.version>1.18.0</testcontainers.version>
-
 		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
 		<maven-checkstyle-plugin.version>3.2.2</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
@@ -107,17 +103,6 @@
 		</profile>
 	</profiles>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.testcontainers</groupId>
-				<artifactId>testcontainers-bom</artifactId>
-				<version>${testcontainers.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<dependencies>
 		<!-- Needed for running JUnit 4 tests when depending on Spring Boot Ilford. -->
 		<dependency>
