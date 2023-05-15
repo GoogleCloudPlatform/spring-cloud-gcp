@@ -1,4 +1,4 @@
 # Format:
 # module:released-version:current-version
 
-cloud-spanner-r2dbc:1.2.1:1.2.1
+cloud-spanner-r2dbc:1.2.1:1.2.2-SNAPSHOT
