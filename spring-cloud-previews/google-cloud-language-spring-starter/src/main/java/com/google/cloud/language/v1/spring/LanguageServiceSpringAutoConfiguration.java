@@ -269,6 +269,19 @@ public class LanguageServiceSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for annotateText from properties.");
       }
     }
+
+    Retry annotateTextRetryCopy = clientProperties.getAnnotateTextRetry();
+    if (annotateTextRetryCopy != null) {
+      RetrySettings annotateTextRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.annotateTextSettings().getRetrySettings(),
+              annotateTextRetryCopy);
+      clientSettingsBuilder.annotateTextSettings().setRetrySettings(annotateTextRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for annotateText from properties.");
+      }
+    }
+
     return clientSettingsBuilder.build();
   }
 
