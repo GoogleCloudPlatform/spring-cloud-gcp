@@ -42,7 +42,7 @@ import org.springframework.util.MultiValueMap;
 @SpringBootTest(
     classes = DatastoreBookshelfExample.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+// @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
 class DatastoreBookshelfExampleIntegrationTests {
 
   @Autowired private DatastoreTemplate datastoreTemplate;
