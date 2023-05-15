@@ -75,7 +75,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 		<!-- exclude preview module code from sonar cloud analysis -->
-		<sonar.exclusions>spring-cloud-previews/!(google-cloud-language-spring-starter)/**</sonar.exclusions>
+		<sonar.exclusions>spring-cloud-previews/**/*</sonar.exclusions>
+		<sonar.coverage.exclusions>spring-cloud-previews/!(google-cloud-language-spring-starter)/**/*</sonar.coverage.exclusions>
 	</properties>
 
 	<dependencyManagement>
