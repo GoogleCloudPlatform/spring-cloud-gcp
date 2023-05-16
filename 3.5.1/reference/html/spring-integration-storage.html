@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Channel Adapters for Google Cloud Storage</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel2">
+<li><a href="#_channel_adapters_for_google_cloud_storage">Channel Adapters for Google Cloud Storage</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect2">
+<h3 id="_channel_adapters_for_google_cloud_storage"><a class="link" href="#_channel_adapters_for_google_cloud_storage">Channel Adapters for Google Cloud Storage</a></h3>
+<div class="paragraph">
+<p>The channel adapters for Google Cloud Storage allow you to read and write files to Google Cloud Storage through <code>MessageChannels</code>.</p>
+</div>
+<div class="paragraph">
+<p>Spring Framework on Google Cloud provides two inbound adapters, <code>GcsInboundFileSynchronizingMessageSource</code> and <code>GcsStreamingMessageSource</code>, and one outbound adapter, <code>GcsMessageHandler</code>.</p>
+</div>
+<div class="paragraph">
+<p>The Spring Integration Channel Adapters for Google Cloud Storage are included in the <code>spring-cloud-gcp-storage</code> module.</p>
+</div>
+<div class="paragraph">
+<p>To use the Storage portion of Spring Integration for Spring Framework on Google Cloud, you must also provide the <code>spring-integration-file</code> dependency, since it isn&#8217;t pulled transitively.</p>
+</div>
+<div class="paragraph">
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-gcp-storage&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.integration&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-integration-file&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gradle coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-starter-storage")
+    implementation("org.springframework.integration:spring-integration-file")
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_inbound_channel_adapter"><a class="link" href="#_inbound_channel_adapter">Inbound channel adapter</a></h4>
+<div class="paragraph">
+<p>The Google Cloud Storage inbound channel adapter polls a Google Cloud Storage bucket for new files and sends each of them in a <code>Message</code> payload to the <code>MessageChannel</code> specified in the <code>@InboundChannelAdapter</code> annotation.
+The files are temporarily stored in a folder in the local file system.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example of how to configure a Google Cloud Storage inbound channel adapter.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+@InboundChannelAdapter(channel = "new-file-channel", poller = @Poller(fixedDelay = "5000"))
+public MessageSource&lt;File&gt; synchronizerAdapter(Storage gcs) {
+  GcsInboundFileSynchronizer synchronizer = new GcsInboundFileSynchronizer(gcs);
+  synchronizer.setRemoteDirectory("your-gcs-bucket");
+
+  GcsInboundFileSynchronizingMessageSource synchAdapter =
+          new GcsInboundFileSynchronizingMessageSource(synchronizer);
+  synchAdapter.setLocalDirectory(new File("local-directory"));
+
+  return synchAdapter;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_inbound_streaming_channel_adapter"><a class="link" href="#_inbound_streaming_channel_adapter">Inbound streaming channel adapter</a></h4>
+<div class="paragraph">
+<p>The inbound streaming channel adapter is similar to the normal inbound channel adapter, except it does not require files to be stored in the file system.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example of how to configure a Google Cloud Storage inbound streaming channel adapter.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+@InboundChannelAdapter(channel = "streaming-channel", poller = @Poller(fixedDelay = "5000"))
+public MessageSource&lt;InputStream&gt; streamingAdapter(Storage gcs) {
+  GcsStreamingMessageSource adapter =
+          new GcsStreamingMessageSource(new GcsRemoteFileTemplate(new GcsSessionFactory(gcs)));
+  adapter.setRemoteDirectory("your-gcs-bucket");
+  return adapter;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you would like to process the files in your bucket in a specific order, you may pass in a <code>Comparator&lt;BlobInfo&gt;</code> to the constructor <code>GcsStreamingMessageSource</code> to sort the files being processed.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_outbound_channel_adapter"><a class="link" href="#_outbound_channel_adapter">Outbound channel adapter</a></h4>
+<div class="paragraph">
+<p>The outbound channel adapter allows files to be written to Google Cloud Storage.
+When it receives a <code>Message</code> containing a payload of type <code>File</code>, it writes that file to the Google Cloud Storage bucket specified in the adapter.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example of how to configure a Google Cloud Storage outbound channel adapter.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+@ServiceActivator(inputChannel = "writeFiles")
+public MessageHandler outboundChannelAdapter(Storage gcs) {
+  GcsMessageHandler outboundChannelAdapter = new GcsMessageHandler(new GcsSessionFactory(gcs));
+  outboundChannelAdapter.setRemoteDirectoryExpression(new ValueExpression&lt;&gt;("your-gcs-bucket"));
+
+  return outboundChannelAdapter;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_sample"><a class="link" href="#_sample">Sample</a></h4>
+<div class="paragraph">
+<p>See the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-integration-storage-sample">Spring Integration with Google Cloud Storage Sample Code</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
