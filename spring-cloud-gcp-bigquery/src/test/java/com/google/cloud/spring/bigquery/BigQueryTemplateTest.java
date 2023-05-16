@@ -60,7 +60,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @ExtendWith(MockitoExtension.class)
 class BigQueryTemplateTest {
@@ -103,20 +103,27 @@ class BigQueryTemplateTest {
     bigquery = options.getService();
     bqInitSettings.put("DATASET_NAME", DATASET);
     bqInitSettings.put("JSON_WRITER_BATCH_SIZE", JSON_WRITER_BATCH_SIZE);
-
     BigQueryTemplate bqTemplate =
         new BigQueryTemplate(
-            bigquery, bigQueryWriteClientMock, bqInitSettings, new DefaultManagedTaskScheduler());
+            bigquery, bigQueryWriteClientMock, bqInitSettings, getThreadPoolTaskScheduler());
     bqTemplateSpy = Mockito.spy(bqTemplate);
   }
 
-  private BigQueryOptions createBigQueryOptionsForProject(
-      BigQueryRpcFactory rpcFactory) {
+  private BigQueryOptions createBigQueryOptionsForProject(BigQueryRpcFactory rpcFactory) {
     return BigQueryOptions.newBuilder()
         .setProjectId(BigQueryTemplateTest.PROJECT)
         .setServiceRpcFactory(rpcFactory)
         .setRetrySettings(ServiceOptions.getNoRetrySettings())
         .build();
+  }
+
+  private ThreadPoolTaskScheduler getThreadPoolTaskScheduler() {
+    ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+    scheduler.setPoolSize(5);
+    scheduler.setThreadNamePrefix("gcp-bigquery");
+    scheduler.setDaemon(true);
+    scheduler.initialize();
+    return scheduler;
   }
 
   @Test
@@ -131,10 +138,8 @@ class BigQueryTemplateTest {
 
   @Test
   void setAutoDetectSchemaTest() {
-    assertThatCode(() -> bqTemplateSpy.setAutoDetectSchema(true))
-        .doesNotThrowAnyException();
-    assertThatCode(() -> bqTemplateSpy.setAutoDetectSchema(false))
-        .doesNotThrowAnyException();
+    assertThatCode(() -> bqTemplateSpy.setAutoDetectSchema(true)).doesNotThrowAnyException();
+    assertThatCode(() -> bqTemplateSpy.setAutoDetectSchema(false)).doesNotThrowAnyException();
   }
 
   @Test
@@ -143,8 +148,7 @@ class BigQueryTemplateTest {
         .doesNotThrowAnyException();
     assertThatCode(() -> bqTemplateSpy.setWriteDisposition(WRITE_APPEND))
         .doesNotThrowAnyException();
-    assertThatCode(() -> bqTemplateSpy.setWriteDisposition(WRITE_EMPTY))
-        .doesNotThrowAnyException();
+    assertThatCode(() -> bqTemplateSpy.setWriteDisposition(WRITE_EMPTY)).doesNotThrowAnyException();
   }
 
   @Test
@@ -245,7 +249,6 @@ class BigQueryTemplateTest {
     assertEquals(0, apiRes.getErrors().size());
   }
 
-
   @Test
   void writeJsonStreamFailsOnGenericWritingException()
       throws DescriptorValidationException, IOException, InterruptedException {
@@ -261,8 +264,6 @@ class BigQueryTemplateTest {
 
     CompletableFuture<WriteApiResponse> futRes =
         bqTemplateSpy.writeJsonStream(TABLE, jsonInputStream, getDefaultSchema());
-    assertThat(futRes)
-        .withFailMessage("boom!")
-        .failsWithin(Duration.ofSeconds(1));
+    assertThat(futRes).withFailMessage("boom!").failsWithin(Duration.ofSeconds(1));
   }
 }
