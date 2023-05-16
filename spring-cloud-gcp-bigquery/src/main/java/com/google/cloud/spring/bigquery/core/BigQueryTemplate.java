@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.bigquery.core;
 
+import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.FormatOptions;
 import com.google.cloud.bigquery.Job;
@@ -46,12 +47,15 @@ import java.nio.channels.Channels;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.Assert;
 import org.springframework.util.StreamUtils;
 
@@ -86,6 +90,7 @@ public class BigQueryTemplate implements BigQueryOperations {
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
 
   private final int jsonWriterBatchSize;
+  private final ScheduledExecutorService executorService;
 
   /**
    * A Full constructor which creates the {@link BigQuery} template.
@@ -115,6 +120,9 @@ public class BigQueryTemplate implements BigQueryOperations {
     this.datasetName = bqDatasetName;
     this.taskScheduler = taskScheduler;
     this.bigQueryWriteClient = bigQueryWriteClient;
+    ThreadPoolTaskScheduler threadPoolTaskScheduler = (ThreadPoolTaskScheduler) taskScheduler;
+    this.executorService =
+        FixedExecutorProvider.create(threadPoolTaskScheduler.getScheduledExecutor()).getExecutor();
   }
 
   /**
@@ -247,9 +255,7 @@ public class BigQueryTemplate implements BigQueryOperations {
   public CompletableFuture<WriteApiResponse> writeJsonStream(
       String tableName, InputStream jsonInputStream) {
 
-    CompletableFuture<WriteApiResponse> writeApiFutureResponse =
-        new CompletableFuture<>();
-
+    CompletableFuture<WriteApiResponse> writeApiFutureResponse = new CompletableFuture<>();
     Thread asyncTask =
         new Thread(
             () -> {
@@ -265,17 +271,21 @@ public class BigQueryTemplate implements BigQueryOperations {
                 Thread.currentThread().interrupt();
               }
             });
-    asyncTask
-        .start(); // run the thread async so that we can return the writeApiFutureResponse. This
+
+    executorService.schedule(asyncTask, 0, TimeUnit.MICROSECONDS); // schedule the task with 0 delay
+    // run the thread async so that we can return the writeApiFutureResponse. This
     // thread can be run in the ExecutorService when it has been wired-in
 
     // register success and failure callback
     writeApiFutureResponse.whenComplete(
         (writeApiResponse, exception) -> {
-          if (exception != null) {
-            asyncTask.interrupt(); // interrupt the thread as the developer might have cancelled the
-            // Future.
-            // This can be replaced with interrupting the ExecutorService when it has been wired-in
+          if (exception != null
+              && !writeApiResponse
+              .isSuccessful()) { // interrupt the thread as the developer might have cancelled
+            // the
+            // CompletableFuture. (Thread is running with the executor and we are explicitly
+            // interrupting it)
+            asyncTask.interrupt();
             logger.info("asyncTask interrupted");
             return;
           }
