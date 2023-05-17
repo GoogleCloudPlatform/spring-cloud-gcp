@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Cloud Runtime Configuration API</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#cloud-runtime-configuration-api">Cloud Runtime Configuration API</a>
+<ul class="sectlevel2">
+<li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_quick_start">Quick start</a></li>
+<li><a href="#_refreshing_the_configuration_at_runtime">Refreshing the configuration at runtime</a></li>
+<li><a href="#_sample">Sample</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cloud-runtime-configuration-api"><a class="link" href="#cloud-runtime-configuration-api">Cloud Runtime Configuration API</a></h2>
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+The Google Cloud Runtime Configuration service is in <strong>Beta</strong> status, and is only available in snapshot and milestone versions of the project. It&#8217;s also not available in the Spring Framework on Google Cloud BOM, unlike other modules.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Spring Framework on Google Cloud makes it possible to use the <a href="https://cloud.google.com/deployment-manager/runtime-configurator/reference/rest/">Google Runtime Configuration API</a> as a <a href="https://cloud.spring.io/spring-cloud-config/">Spring Cloud Config</a> server to remotely store your application configuration data.</p>
+</div>
+<div class="paragraph">
+<p>The Spring Framework on Google Cloud Config support is provided via its own Spring Boot starter.
+It enables the use of the Google Runtime Configuration API as a source for Spring Boot configuration properties.</p>
+</div>
+<div class="paragraph">
+<p>Maven coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-gcp-starter-config&lt;/artifactId&gt;
+    &lt;version&gt;4.3.1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gradle coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+    compile group: 'org.springframework.cloud',
+    name: 'spring-cloud-gcp-starter-config',
+    version: '4.3.1'
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<div class="paragraph">
+<p>The following parameters are configurable in Spring Framework on Google Cloud Config:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.config.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the Config client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.config.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of your application</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Value of the <code>spring.application.name</code> property.
+If none, <code>application</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.config.profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Active profile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Value of the <code>spring.profiles.active</code> property.
+If more than a single profile, last one is chosen</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.config.timeout-millis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout in milliseconds for connecting to the Google Runtime Configuration API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>60000</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.config.project-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Runtime Configuration API is hosted</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.config.credentials.location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the Google Runtime Configuration API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.config.credentials.encoded-key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64-encoded OAuth2 credentials for authenticating with the Google Runtime Configuration API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.config.credentials.scopes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://developers.google.com/identity/protocols/googlescopes">OAuth2 scope</a> for Spring Framework on Google Cloud Config credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.googleapis.com/auth/cloudruntimeconfig" class="bare">https://www.googleapis.com/auth/cloudruntimeconfig</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+These properties should be specified in a <a href="https://cloud.spring.io/spring-cloud-static/spring-cloud.html#_the_bootstrap_application_context"><code>bootstrap.yml</code>/<code>bootstrap.properties</code></a> file, rather than the usual <code>applications.yml</code>/<code>application.properties</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Core properties, as described in <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a>, do not apply to Spring Framework on Google Cloud Config.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_quick_start"><a class="link" href="#_quick_start">Quick start</a></h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a configuration in the Google Runtime Configuration API that is called <code>${spring.application.name}_${spring.profiles.active}</code>.
+In other words, if <code>spring.application.name</code> is <code>myapp</code> and <code>spring.profiles.active</code> is <code>prod</code>, the configuration should be called <code>myapp_prod</code>.</p>
+<div class="paragraph">
+<p>In order to do that, you should have the <a href="https://cloud.google.com/sdk/">Google Cloud SDK</a> installed, own a Google Cloud Project and run the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">gcloud init # if this is your first Google Cloud SDK run.
+gcloud beta runtime-config configs create myapp_prod
+gcloud beta runtime-config configs variables set myapp.queue-size 25 --config-name myapp_prod</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configure your <code>bootstrap.properties</code> file with your application&#8217;s configuration data:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">spring.application.name=myapp
+spring.profiles.active=prod</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add the <code>@ConfigurationProperties</code> annotation to a Spring-managed bean:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">@Component
+@ConfigurationProperties("myapp")
+public class SampleConfig {
+
+  private int queueSize;
+
+  public int getQueueSize() {
+    return this.queueSize;
+  }
+
+  public void setQueueSize(int queueSize) {
+    this.queueSize = queueSize;
+  }
+}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>When your Spring application starts, the <code>queueSize</code> field value will be set to 25 for the above <code>SampleConfig</code> bean.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_refreshing_the_configuration_at_runtime"><a class="link" href="#_refreshing_the_configuration_at_runtime">Refreshing the configuration at runtime</a></h3>
+<div class="paragraph">
+<p><a href="https://cloud.spring.io/spring-cloud-static/docs/1.0.x/spring-cloud.html#_endpoints">Spring Cloud</a> provides support to have configuration parameters be reloadable with the POST request to <code>/actuator/refresh</code> endpoint.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add the Spring Boot Actuator dependency:</p>
+<div class="paragraph">
+<p>Maven coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gradle coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add <code>@RefreshScope</code> to your Spring configuration class to have parameters be reloadable at runtime.</p>
+</li>
+<li>
+<p>Add <code>management.endpoints.web.exposure.include=refresh</code> to your <code>application.properties</code> to allow unrestricted access to <code>/actuator/refresh</code>.</p>
+</li>
+<li>
+<p>Update a property with <code>gcloud</code>:</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ gcloud beta runtime-config configs variables set \
+  myapp.queue_size 200 \
+  --config-name myapp_prod</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Send a POST request to the refresh endpoint:</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ curl -XPOST https://myapp.host.com/actuator/refresh</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
+<div class="paragraph">
+<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-config-sample">sample application</a> and a <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-runtime-config/index.html">codelab</a> are available.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
