@@ -44,9 +44,9 @@ import org.threeten.bp.Duration;
 class LanguageAutoConfigurationTests {
 
   private static final String SERVICE_CREDENTIAL_LOCATION =
-      "src/test/resources/fake-credential-key.json";
+      "../../spring-cloud-generator/autoconfiguration-tests/resources/fake-credential-key.json";
   private static final String TOP_LEVEL_CREDENTIAL_LOCATION =
-      "src/test/resources/fake-credential-key-2.json";
+      "../../spring-cloud-generator/autoconfiguration-tests/resources/fake-credential-key-2.json";
   private static final String SERVICE_CREDENTIAL_CLIENT_ID = "45678";
   private static final String TOP_LEVEL_CREDENTIAL_CLIENT_ID = "12345";
   private static final String SERVICE_OVERRIDE_CLIENT_ID = "56789";
@@ -68,6 +68,8 @@ class LanguageAutoConfigurationTests {
 
   @Test
   void testLanguageServiceClientCreated() {
+    String path = ClassLoader.getSystemClassLoader().getResource("").getPath();
+    System.out.println(path);
     this.contextRunner.run(
         ctx -> {
           LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
