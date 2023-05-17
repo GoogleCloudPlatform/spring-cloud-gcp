@@ -16,12 +16,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @EnabledIfSystemProperty(named = "it.vision", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {VisionTestConfiguration.class})
-public class CloudVisionTemplateIntegrationTests {
+class CloudVisionTemplateIntegrationTests {
 
   @Autowired private CloudVisionTemplate cloudVisionTemplate;
 
   @Test
-  public void testExtractTextFromSinglePagePdf() {
+  void testExtractTextFromSinglePagePdf() {
     Resource dummyPdf = new ClassPathResource("documents/single-page-dummy.pdf");
 
     List<String> extractedTexts = cloudVisionTemplate.extractTextFromPdf(dummyPdf);
@@ -30,7 +30,7 @@ public class CloudVisionTemplateIntegrationTests {
   }
 
   @Test
-  public void testExtractTextFromMultiPagePdf() {
+  void testExtractTextFromMultiPagePdf() {
     Resource dummyPdf = new ClassPathResource("documents/multi-page-dummy.pdf");
 
     List<String> extractedTexts = cloudVisionTemplate.extractTextFromPdf(dummyPdf);
