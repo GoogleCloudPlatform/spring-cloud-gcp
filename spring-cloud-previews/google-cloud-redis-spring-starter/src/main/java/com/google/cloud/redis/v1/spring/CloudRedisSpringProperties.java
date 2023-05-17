@@ -57,6 +57,16 @@ public class CloudRedisSpringProperties implements CredentialsSupplier {
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getInstanceAuthStringRetry;
+  /**
+   * Allow override of retry settings at method-level for listLocations. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listLocationsRetry;
+  /**
+   * Allow override of retry settings at method-level for getLocation. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getLocationRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -117,5 +127,21 @@ public class CloudRedisSpringProperties implements CredentialsSupplier {
 
   public void setGetInstanceAuthStringRetry(Retry getInstanceAuthStringRetry) {
     this.getInstanceAuthStringRetry = getInstanceAuthStringRetry;
+  }
+
+  public Retry getListLocationsRetry() {
+    return this.listLocationsRetry;
+  }
+
+  public void setListLocationsRetry(Retry listLocationsRetry) {
+    this.listLocationsRetry = listLocationsRetry;
+  }
+
+  public Retry getGetLocationRetry() {
+    return this.getLocationRetry;
+  }
+
+  public void setGetLocationRetry(Retry getLocationRetry) {
+    this.getLocationRetry = getLocationRetry;
   }
 }
