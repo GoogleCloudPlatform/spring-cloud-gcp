@@ -253,7 +253,7 @@ public class SpringWriter {
                 + "  </dependencies>\n"
                 + "\n"
                 + "  <build>\n"
-                + "    <testSourceDirectory>../../spring-cloud-generator/autoconfiguration-tests</testSourceDirectory>\n"
+                + "    <testSourceDirectory>../../spring-cloud-generator/autoconfiguration-tests/%s</testSourceDirectory>\n"
                 + "  </build>\n"
                 + "\n"
                 + "</project>",
@@ -262,7 +262,8 @@ public class SpringWriter {
             springStarterName,
             clientLibraryShortName,
             clientLibraryGroupId,
-            clientLibraryName));
+            clientLibraryName,
+            springStarterArtifactId));
 
     return sb.toString();
   }
