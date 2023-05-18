@@ -68,8 +68,6 @@ class LanguageAutoConfigurationTests {
 
   @Test
   void testLanguageServiceClientCreated() {
-    String path = ClassLoader.getSystemClassLoader().getResource("").getPath();
-    System.out.println(path);
     this.contextRunner.run(
         ctx -> {
           LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
