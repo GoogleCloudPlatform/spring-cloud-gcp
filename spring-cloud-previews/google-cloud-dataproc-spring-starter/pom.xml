@@ -33,7 +33,7 @@
   </dependencies>
 
   <build>
-    <testSourceDirectory>../../spring-cloud-generator/autoconfiguration-tests</testSourceDirectory>
+    <testSourceDirectory>../../spring-cloud-generator/autoconfiguration-tests/google-cloud-dataproc-spring-starter</testSourceDirectory>
   </build>
 
 </project>
