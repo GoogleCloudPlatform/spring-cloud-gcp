@@ -256,37 +256,32 @@ public class BigQueryTemplate implements BigQueryOperations {
       String tableName, InputStream jsonInputStream) {
 
     CompletableFuture<WriteApiResponse> writeApiFutureResponse = new CompletableFuture<>();
-    Thread asyncTask =
-        new Thread(
-            () -> {
-              try {
-                WriteApiResponse apiResponse = getWriteApiResponse(tableName, jsonInputStream);
-                writeApiFutureResponse.complete(apiResponse);
-              } catch (DescriptorValidationException | IOException e) {
-                writeApiFutureResponse.completeExceptionally(e);
-                logger.warn(String.format("Error: %s %n", e.getMessage()), e);
-              } catch (Exception e) {
-                writeApiFutureResponse.completeExceptionally(e);
-                // Restore interrupted state in case of an InterruptedException
-                Thread.currentThread().interrupt();
-              }
-            });
+    Runnable asyncTask =
+        () -> {
+          try {
+            WriteApiResponse apiResponse = getWriteApiResponse(tableName, jsonInputStream);
+            writeApiFutureResponse.complete(apiResponse);
+          } catch (DescriptorValidationException | IOException e) {
+            writeApiFutureResponse.completeExceptionally(e);
+            Thread.currentThread().interrupt();
+            logger.warn(String.format("Error: %s %n", e.getMessage()), e);
+          } catch (Exception e) {
+            writeApiFutureResponse.completeExceptionally(e);
+            // Restore interrupted state in case of an InterruptedException
+            Thread.currentThread().interrupt();
+            logger.warn(String.format("Error: %s %n", e.getMessage()), e);
+          }
+        };
 
     executorService.schedule(asyncTask, 0, TimeUnit.MICROSECONDS); // schedule the task with 0 delay
     // run the thread async so that we can return the writeApiFutureResponse. This
     // thread can be run in the ExecutorService when it has been wired-in
 
-    // register success and failure callback
+    // register success and failure callback which simply logs the event
     writeApiFutureResponse.whenComplete(
         (writeApiResponse, exception) -> {
-          if (exception != null
-              && !writeApiResponse
-              .isSuccessful()) { // interrupt the thread as the developer might have cancelled
-            // the
-            // CompletableFuture. (Thread is running with the executor and we are explicitly
-            // interrupting it)
-            asyncTask.interrupt();
-            logger.info("asyncTask interrupted");
+          if (exception != null || !writeApiResponse.isSuccessful()) {
+            logger.error("asyncTask interrupted", exception);
             return;
           }
           logger.info("Data successfully written");
