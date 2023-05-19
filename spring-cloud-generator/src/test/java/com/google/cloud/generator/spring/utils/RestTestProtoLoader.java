@@ -29,7 +29,6 @@ import com.google.longrunning.OperationsProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.StructProto;
-import com.google.showcase.v1beta1.ComplianceOuterClass;
 import com.google.showcase.v1beta1.EchoOuterClass;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,39 +47,6 @@ public class RestTestProtoLoader extends TestProtoLoader {
 
   public static RestTestProtoLoader instance() {
     return INSTANCE;
-  }
-
-  public GapicContext parseCompliance() {
-    FileDescriptor complianceFileDescriptor = ComplianceOuterClass.getDescriptor();
-    ServiceDescriptor complianceServiceDescriptor = complianceFileDescriptor.getServices().get(0);
-    assertThat(complianceServiceDescriptor.getName()).isEqualTo("Compliance");
-
-    Map<String, Message> messageTypes = Parser.parseMessages(complianceFileDescriptor);
-    Map<String, ResourceName> resourceNames = Parser.parseResourceNames(complianceFileDescriptor);
-    Set<ResourceName> outputResourceNames = new HashSet<>();
-    List<Service> services =
-        Parser.parseService(
-            complianceFileDescriptor,
-            messageTypes,
-            resourceNames,
-            Optional.empty(),
-            outputResourceNames);
-
-    String jsonFilename = "showcase_grpc_service_config.json";
-    Path jsonPath = Paths.get(getTestFilesDirectory(), jsonFilename);
-    Optional<GapicServiceConfig> configOpt = ServiceConfigParser.parse(jsonPath.toString());
-    assertThat(configOpt.isPresent()).isTrue();
-    GapicServiceConfig config = configOpt.get();
-
-    return GapicContext.builder()
-        .setMessages(messageTypes)
-        .setResourceNames(resourceNames)
-        .setServices(services)
-        .setServiceConfig(config)
-        .setHelperResourceNames(outputResourceNames)
-        .setTransport(getTransport())
-        .setRestNumericEnumsEnabled(true)
-        .build();
   }
 
   public GapicContext parseEcho() {

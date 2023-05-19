@@ -34,13 +34,10 @@ public class SpringPropertiesClassComposerTest {
   private GapicContext echoGrpcRestContext;
   private GapicContext echoRestContext;
   private GapicContext wickedContext;
-
-  private GapicContext complianceContext;
   private Service echoProtoService;
   private Service echoGrpcRestProtoService;
   private Service echoRestProtoService;
   private Service wickedProtoService;
-  private Service complianceProtoService;
 
   @Before
   public void setUp() {
@@ -52,8 +49,6 @@ public class SpringPropertiesClassComposerTest {
     this.echoRestProtoService = this.echoRestContext.services().get(0);
     this.wickedContext = GrpcRestTestProtoLoader.instance().parseShowcaseWicked();
     this.wickedProtoService = this.wickedContext.services().get(0);
-    this.complianceContext = RestTestProtoLoader.instance().parseCompliance();
-    this.complianceProtoService = this.complianceContext.services().get(0);
   }
 
   @Test
@@ -87,10 +82,10 @@ public class SpringPropertiesClassComposerTest {
 
   @Test
   public void generatePropertiesClazzRestTest() {
-    assertThat(this.complianceContext.transport()).isEqualTo(Transport.REST);
+    assertThat(this.echoRestContext.transport()).isEqualTo(Transport.REST);
     GapicClass clazz =
         SpringPropertiesClassComposer.instance()
-            .generate(this.complianceContext, this.complianceProtoService);
+            .generate(this.echoRestContext, this.echoRestProtoService);
     String fileName = clazz.classDefinition().classIdentifier() + "Rest.golden";
     Assert.assertGoldenClass(this.getClass(), clazz, fileName);
   }

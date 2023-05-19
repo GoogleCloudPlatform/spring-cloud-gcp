@@ -35,12 +35,10 @@ public class SpringAutoConfigClassComposerTest {
   private GapicContext echoRestContext;
   private GapicContext wickedContext;
 
-  private GapicContext complianceContext;
   private Service echoProtoService;
   private Service echoGrpcRestProtoService;
   private Service echoRestProtoService;
   private Service wickedProtoService;
-  private Service complianceProtoService;
 
   @Before
   public void setUp() {
@@ -52,8 +50,6 @@ public class SpringAutoConfigClassComposerTest {
     this.echoRestProtoService = this.echoRestContext.services().get(0);
     this.wickedContext = GrpcRestTestProtoLoader.instance().parseShowcaseWicked();
     this.wickedProtoService = this.wickedContext.services().get(0);
-    this.complianceContext = RestTestProtoLoader.instance().parseCompliance();
-    this.complianceProtoService = this.complianceContext.services().get(0);
   }
 
   @Test
@@ -87,10 +83,10 @@ public class SpringAutoConfigClassComposerTest {
 
   @Test
   public void generateAutoConfigClazzRestTest() {
-    assertThat(this.complianceContext.transport()).isEqualTo(Transport.REST);
+    assertThat(this.echoRestContext.transport()).isEqualTo(Transport.REST);
     GapicClass clazz =
         SpringAutoConfigClassComposer.instance()
-            .generate(this.complianceContext, this.complianceProtoService);
+            .generate(this.echoRestContext, this.echoRestProtoService);
     String fileName = clazz.classDefinition().classIdentifier() + "Rest.golden";
     Assert.assertGoldenClass(this.getClass(), clazz, fileName);
   }
