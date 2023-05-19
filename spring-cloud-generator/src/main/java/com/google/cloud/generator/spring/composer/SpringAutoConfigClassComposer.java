@@ -109,12 +109,9 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
     GapicClass.Kind kind = Kind.MAIN;
 
     GapicServiceConfig gapicServiceConfig = context.serviceConfig();
+    Transport transport = context.transport();
 
     Expr thisExpr = ValueExpr.withValue(ThisObjectValue.withType(dynamicTypes.get(className)));
-    Transport transport = context.transport();
-    boolean hasRestOption =
-        transport.equals(Transport.GRPC_REST)
-            && service.hasAnyEnabledMethodsForTransport(Transport.REST);
     String serviceSettingsMethodName = JavaStyle.toLowerCamelCase(service.name()) + "Settings";
 
     ClassDefinition classDef =
@@ -132,16 +129,16 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
                     createConstructor(service, className, dynamicTypes, thisExpr),
                     createTransportChannelProviderBeanMethod(
                         service,
+                        transport,
                         transportChannelProviderName,
                         dynamicTypes,
-                        thisExpr,
-                        hasRestOption),
+                        thisExpr),
                     createSettingsBeanMethod(
                         service,
+                        transport,
                         transportChannelProviderName,
                         dynamicTypes,
                         thisExpr,
-                        hasRestOption,
                         serviceSettingsMethodName),
                     createClientBeanMethod(dynamicTypes, service, serviceSettingsMethodName),
                     createUserAgentHeaderProviderMethod(
@@ -351,10 +348,10 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
 
   private static MethodDefinition createTransportChannelProviderBeanMethod(
       Service service,
+      Transport transport,
       String methodName,
       Map<String, TypeNode> types,
-      Expr thisExpr,
-      boolean hasRestOption) {
+      Expr thisExpr) {
     AssignmentExpr nameStringAssignmentExpr =
         AssignmentExpr.builder()
             .setVariableExpr(
@@ -379,6 +376,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
                 Arrays.asList(
                     AnnotationNode.withType(STATIC_TYPES.get("Bean")), conditionalOnMissingBean));
 
+    // For GRPC-only or REST-only libraries, use default provider
     // LanguageServiceSettings.defaultTransportChannelProvider()
     MethodInvocationExpr defaultTransportChannelProviderExpr =
         MethodInvocationExpr.builder()
@@ -387,7 +385,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setReturnType(STATIC_TYPES.get("TransportChannelProvider"))
             .build();
 
-    if (hasRestOption) {
+    // For GRPC+REST libraries, choose provider according to configuration property
+    if (ComposerUtils.shouldSupportRestOptionWithGrpcDefault(transport, service)) {
       //      if (this.clientProperties.isUseRest()) {
       //        return LanguageServiceSettings.defaultHttpJsonTransportProviderBuilder().build();
       //      }
@@ -451,10 +450,10 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
 
   private static MethodDefinition createSettingsBeanMethod(
       Service service,
+      Transport transport,
       String transportChannelProviderName,
       Map<String, TypeNode> types,
       Expr thisExpr,
-      boolean hasRestOption,
       String serviceSettingsMethodName) {
     // argument variables:
     VariableExpr credentialsProviderVariableExpr =
@@ -499,10 +498,10 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setExprReferenceExpr(thisExpr)
             .build();
 
-    if (hasRestOption) {
-      // For GRPC+REST libraries
+    if (ComposerUtils.shouldSupportRestOptionWithGrpcDefault(transport, service)) {
+      // For GRPC+REST libraries, choose builder according to configuration property
       // LanguageServiceSettings.Builder clientSettingsBuilder;
-      //    if (this.clientProperties.isUseRest()) {
+      //    if (this.clientProperties.getUseRest()) {
       //      clientSettingsBuilder = LanguageServiceSettings.newHttpJsonBuilder();
       //    } else {
       //      clientSettingsBuilder = LanguageServiceSettings.newBuilder();
@@ -554,7 +553,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
       bodyStatements.add(setClientSettingsBuilderStatement);
 
     } else {
-      // For GRPC-only libraries
+      // For GRPC-only or REST-only libraries, use default builder
       // LanguageServiceSettings.Builder clientSettingsBuilder =
       // LanguageServiceSettings.newBuilder();
 
