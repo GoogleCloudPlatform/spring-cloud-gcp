@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -125,7 +126,6 @@ class BigQueryTemplateTest {
     scheduler.initialize();
     return scheduler;
   }
-
   @Test
   void getDatasetNameTest() {
     assertThat(bqTemplateSpy.getDatasetName()).isEqualTo(DATASET);
@@ -225,6 +225,44 @@ class BigQueryTemplateTest {
     WriteApiResponse apiRes = futRes.get();
     assertTrue(apiRes.isSuccessful());
     assertEquals(0, apiRes.getErrors().size());
+  }
+
+  @Test
+  void writeJsonStreamNegativeTest()
+      throws DescriptorValidationException, IOException, InterruptedException, ExecutionException {
+    InputStream jsonInputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
+    WriteApiResponse apiResponse = new WriteApiResponse();
+    apiResponse.setSuccessful(false);
+    doReturn(apiResponse)
+        .when(bqTemplateSpy)
+        .getWriteApiResponse(any(String.class), any(InputStream.class));
+
+    CompletableFuture<WriteApiResponse> futRes =
+        bqTemplateSpy.writeJsonStream(TABLE, jsonInputStream);
+    WriteApiResponse apiRes = futRes.get();
+    assertThat(apiRes.isSuccessful()).isFalse();
+    assertEquals(0, apiRes.getErrors().size());
+  }
+
+  @Test
+  void writeJsonStreamThrowTest()
+      throws DescriptorValidationException, IOException, InterruptedException, ExecutionException {
+    InputStream jsonInputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
+    String failureMsg = "Operation failed";
+    Exception ioException = new IOException(failureMsg);
+    doThrow(ioException)
+        .when(bqTemplateSpy)
+        .getWriteApiResponse(any(String.class), any(InputStream.class));
+
+    CompletableFuture<WriteApiResponse> futRes =
+        bqTemplateSpy.writeJsonStream(TABLE, jsonInputStream);
+    try {
+      futRes.get();
+      fail();
+    } catch (Exception ex) {
+      assertThat(ex.getCause() instanceof IOException).isTrue();
+      assertThat(ex.getCause().getMessage()).isEqualTo(failureMsg);
+    }
   }
 
   @Test
