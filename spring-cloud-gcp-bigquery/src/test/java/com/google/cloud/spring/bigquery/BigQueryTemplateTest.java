@@ -126,6 +126,7 @@ class BigQueryTemplateTest {
     scheduler.initialize();
     return scheduler;
   }
+
   @Test
   void getDatasetNameTest() {
     assertThat(bqTemplateSpy.getDatasetName()).isEqualTo(DATASET);
