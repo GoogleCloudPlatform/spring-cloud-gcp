@@ -33,7 +33,7 @@ GAPIC_RULE_FULL="$(buildozer 'print rule' $googleapis_folder/BUILD.bazel:%java_g
 buildozer "new java_gapic_spring_library $SPRING_RULE_NAME" $googleapis_folder/BUILD.bazel:__pkg__
 
 # Copy attributes from java_gapic_library rule
-attrs_array=("srcs" "grpc_service_config" "gapic_yaml" "service_yaml" "transport" "rest_numeric_enums")
+attrs_array=("srcs" "grpc_service_config" "gapic_yaml" "service_yaml" "transport")
 for attribute in "${attrs_array[@]}"
   do
     echo "$attribute"
