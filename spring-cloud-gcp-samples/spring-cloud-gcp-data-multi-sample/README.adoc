@@ -1,6 +1,7 @@
 = Spring Framework on Google Cloud Cloud Spanner and Datastore Combined Usage Example
 
 This code sample demonstrates how to use both link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-spanner[Spring Data Cloud Spanner] and link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-datastore[Spring Data Cloud Datastore] using the Spring Data Cloud Datastore modules in a single Spring application.
+This sample also demonstrates usage of transactions with both modules.
 
 == Running the example
 

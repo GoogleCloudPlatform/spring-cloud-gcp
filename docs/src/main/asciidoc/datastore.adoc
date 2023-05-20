@@ -854,6 +854,13 @@ This feature requires a bean of `DatastoreTransactionManager`, which is provided
 If a method annotated with `@Transactional` calls another method also annotated, then both methods will work within the same transaction.
 `performTransaction` cannot be used in `@Transactional` annotated methods because Cloud Datastore does not support transactions within transactions.
 
+Other Google Cloud database-related integrations like Spanner and Firestore can introduce `PlatformTransactionManager` beans, and can interfere with Datastore Transaction Manager. To disambiguate, explicitly specify the name of the transaction manager bean for such `@Transactional` methods. Example:
+
+[source,java]
+----
+@Transactional(transactionManager = "datastoreTransactionManager")
+----
+
 ==== Read-Write Support for Maps
 
 You can work with Maps of type `Map<String, ?>` instead of with entity objects by directly reading and writing them to and from Cloud Datastore.
