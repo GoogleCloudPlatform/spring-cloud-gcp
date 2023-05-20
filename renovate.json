@@ -4,6 +4,7 @@
 	],
 	"baseBranches": ["main", "3.x"],
 	"useBaseBranchConfig": "merge",
+	"ignorePaths": [".kokoro/requirements.txt"],
 	"packageRules": [{
 		"matchPackageNames": [
 			"com.coveo:fmt-maven-plugin",

@@ -13,16 +13,12 @@
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>4.2.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.3.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
 	<properties>
 		<main.basedir>${basedir}/..</main.basedir>
-
-		<!-- Dependency versions -->
-		<google-cloud-graalvm-support.version>0.7.0</google-cloud-graalvm-support.version>
-		<testcontainers.version>1.18.0</testcontainers.version>
 
 		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
 		<maven-checkstyle-plugin.version>3.2.2</maven-checkstyle-plugin.version>
@@ -107,17 +103,6 @@
 		</profile>
 	</profiles>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.testcontainers</groupId>
-				<artifactId>testcontainers-bom</artifactId>
-				<version>${testcontainers.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<dependencies>
 		<!-- Needed for running JUnit 4 tests when depending on Spring Boot Ilford. -->
 		<dependency>

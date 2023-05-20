@@ -19,7 +19,6 @@ package com.google.cloud.spring.autoconfigure.secretmanager;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
-import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
@@ -46,15 +45,17 @@ public class GcpSecretManagerAutoConfiguration {
   private final GcpSecretManagerProperties properties;
   private final CredentialsProvider credentialsProvider;
 
-  public GcpSecretManagerAutoConfiguration(CredentialsProvider credentialsProvider,
-      GcpSecretManagerProperties properties) {
+  public GcpSecretManagerAutoConfiguration(
+      CredentialsProvider credentialsProvider,
+      GcpSecretManagerProperties properties,
+      GcpProjectIdProvider projectIdProvider) {
 
     this.credentialsProvider = credentialsProvider;
     this.properties = properties;
     this.gcpProjectIdProvider =
         properties.getProjectId() != null
             ? properties::getProjectId
-            : new DefaultGcpProjectIdProvider();
+            : projectIdProvider;
   }
 
   @Bean

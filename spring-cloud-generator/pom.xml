@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>spring-cloud-gcp</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <version>4.3.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+    </parent>
+
+    <groupId>com.google.cloud</groupId>
+    <artifactId>spring-cloud-generator</artifactId>
+    <name>Spring Code Generator for Google Cloud</name>
+    <description>Spring Code Generator for Google Cloud</description>
+
+    <properties>
+        <gapic-generator-java-bom.version>2.19.0</gapic-generator-java-bom.version>
+        <!-- [gapic-test]: protobuf.version for compiling protos used in unit testing
+             this should be consistent with version in gapic-generator-java-bom -->
+        <protobuf.version>3.21.12</protobuf.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Artifacts from gapic-generator-java monorepo -->
+                <groupId>com.google.api</groupId>
+                <artifactId>gapic-generator-java-bom</artifactId>
+                <version>${gapic-generator-java-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.api</groupId>
+            <artifactId>gapic-generator-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>spring-cloud-gcp-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <!-- [gapic-test]: dependency from using gapic-generator java testing framework-->
+            <groupId>io.github.java-diff-utils</groupId>
+            <artifactId>java-diff-utils</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <extensions>
+            <extension>
+                <!-- [gapic-test]: for use in protobuf-maven-plugin below -->
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.1</version>
+            </extension>
+        </extensions>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy-plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- [gapic-test]: compiling protos used in unit testing -->
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>0.6.1</version>
+                <configuration>
+                    <protocArtifact>
+                        com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
+                    </protocArtifact>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compile-test-protos</id>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <configuration>
+                            <protoTestSourceRoot>src/test/proto</protoTestSourceRoot>
+                            <writeDescriptorSet>true</writeDescriptorSet>
+                            <includeSourceInfoInDescriptorSet>true</includeSourceInfoInDescriptorSet>
+                            <includeDependenciesInDescriptorSet>true</includeDependenciesInDescriptorSet>
+                            <descriptorSetFileName>test-proto.descriptorset</descriptorSetFileName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

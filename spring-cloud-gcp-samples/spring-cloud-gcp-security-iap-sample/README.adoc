@@ -38,7 +38,7 @@ After deployed, follow steps link:https://cloud.google.com/iap/docs/app-engine-q
 
 == Running the Sample Locally
 
-In the link:src/main/resources/applications.properties[application.properties] file, you need to specify the value of `spring.cloud.gcp.security.iap.audience` to:
+In the link:src/main/resources/application.properties[application.properties] file, you need to specify the value of `spring.cloud.gcp.security.iap.audience` to:
 
 - A dummy value to just test run locally
 - Or, a real audience string in AppEngine format (`/projects/PROJECT_NUMBER/apps/PROJECT_ID`) to test with JWT token grabbed from application deployed in the previous step. link:https://cloud.google.com/iap/docs/signed-headers-howto#verifying_the_jwt_payload[This guide] explains the token/audience formats.

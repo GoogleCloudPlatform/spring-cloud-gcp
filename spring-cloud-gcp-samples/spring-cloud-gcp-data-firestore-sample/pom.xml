@@ -6,16 +6,12 @@
     <!-- Your own application should inherit from spring-boot-starter-parent -->
     <artifactId>spring-cloud-gcp-samples</artifactId>
     <groupId>com.google.cloud</groupId>
-    <version>4.2.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+    <version>4.3.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <name>Spring Framework on Google Cloud Code Sample - Spring Data Firestore</name>
   <artifactId>spring-cloud-gcp-data-firestore-sample</artifactId>
-
-  <properties>
-    <integration-test.tags.exclude>native</integration-test.tags.exclude>
-  </properties>
 
   <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
   <dependencyManagement>
@@ -35,10 +31,6 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>spring-cloud-gcp-starter-data-firestore</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>spring-cloud-gcp-autoconfigure</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -57,27 +49,8 @@
     </dependency>
 
     <dependency>
-      <!-- JUnit5 is required for Test Containers. -->
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>gcloud</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -98,124 +71,4 @@
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>native</id>
-      <activation>
-          <property>
-            <name>it.native</name>
-          </property>
-      </activation>
-      <properties>
-        <!-- Include only native tests, exclude all others -->
-        <integration-test.tags.include>native</integration-test.tags.include>
-        <integration-test.tags.exclude/>
-
-        <!-- Native build args -->
-        <native.build.args>
-          --enable-url-protocols=http,https
-          --no-fallback
-          --no-server
-        </native.build.args>
-
-        <!-- Paketo buildpacks used for building native image -->
-        <builder>paketobuildpacks/builder:tiny</builder>
-      </properties>
-
-      <dependencies>
-        <dependency>
-          <groupId>org.springframework.experimental</groupId>
-          <artifactId>spring-native</artifactId>
-          <version>${spring-native.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>com.google.cloud</groupId>
-          <artifactId>google-cloud-graalvm-support</artifactId>
-          <version>${google-cloud-graalvm-support.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-context-indexer</artifactId>
-          <optional>true</optional>
-        </dependency>
-      </dependencies>
-
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.springframework.experimental</groupId>
-            <artifactId>spring-aot-maven-plugin</artifactId>
-            <version>${spring-native.version}</version>
-            <dependencies>
-              <dependency>
-                <groupId>com.google.cloud</groupId>
-                <artifactId>spring-cloud-gcp-native-support</artifactId>
-                <version>${project.version}</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <id>test-generate</id>
-                <goals>
-                  <goal>test-generate</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>generate</id>
-                <goals>
-                  <goal>generate</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <configuration>
-              <classifier>${classifier}</classifier>
-              <image>
-                <builder>${builder}</builder>
-                <name>${project.artifactId}:test</name>
-                <env>
-                  <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
-                  <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>${native.build.args}</BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
-                </env>
-                <pullPolicy>IF_NOT_PRESENT</pullPolicy>
-              </image>
-            </configuration>
-            <executions>
-              <execution>
-                <id>build-docker-image-before-integration-tests</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>build-image</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <repositories>
-        <repository>
-          <id>spring-releases</id>
-          <name>Spring Releases</name>
-          <url>https://repo.spring.io/release</url>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>spring-releases</id>
-          <name>Spring Releases</name>
-          <url>https://repo.spring.io/release</url>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>
-
-  </profiles>
 </project>
