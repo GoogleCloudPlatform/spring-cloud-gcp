@@ -1344,6 +1344,14 @@ You can use this object just as you would a regular <code>DatastoreOperations</c
 If a method annotated with <code>@Transactional</code> calls another method also annotated, then both methods will work within the same transaction.
 <code>performTransaction</code> cannot be used in <code>@Transactional</code> annotated methods because Cloud Datastore does not support transactions within transactions.</p>
 </div>
+<div class="paragraph">
+<p>Other Google Cloud database-related integrations like Spanner and Firestore can introduce <code>PlatformTransactionManager</code> beans, and can interfere with Datastore Transaction Manager. To disambiguate, explicitly specify the name of the transaction manager bean for such <code>@Transactional</code> methods. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Transactional(transactionManager = "datastoreTransactionManager")</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
