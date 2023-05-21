@@ -269,6 +269,11 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
       subscriberBuilder.setSystemExecutorProvider(this.systemExecutorProvider);
     }
 
+    String endpoint = getPullEndpoint(subscriptionName);
+    if (endpoint != null) {
+      subscriberBuilder.setEndpoint(endpoint);
+    }
+
     FlowControlSettings flowControl = getFlowControlSettings(subscriptionName);
     if (flowControl != null) {
       subscriberBuilder.setFlowControlSettings(flowControl);
@@ -341,10 +346,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     SubscriberStubSettings.Builder subscriberStubSettings =
         buildStubSettingsWithoutConfigurations();
 
-    if (this.pullEndpoint != null) {
-      subscriberStubSettings.setEndpoint(this.pullEndpoint);
-    } else {
-      applyGlobalPullEndpoint(subscriberStubSettings);
+    String endpoint =
+        this.pullEndpoint != null
+            ? this.pullEndpoint
+            : this.pubSubConfiguration.getSubscriber().getPullEndpoint();
+    if (endpoint != null) {
+      subscriberStubSettings.setEndpoint(endpoint);
     }
 
     ExecutorProvider executor =
@@ -370,13 +377,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     }
 
     return subscriberStubSettings.build();
-  }
-
-  private void applyGlobalPullEndpoint(SubscriberStubSettings.Builder subscriberStubSettings) {
-    String endpoint = this.pubSubConfiguration.getSubscriber().getPullEndpoint();
-    if (endpoint != null) {
-      subscriberStubSettings.setEndpoint(endpoint);
-    }
   }
 
   SubscriberStubSettings buildSubscriberStubSettings(String subscriptionName) throws IOException {
