@@ -23,6 +23,7 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -31,7 +32,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @EnabledIfSystemProperty(named = "it.multisample", matches = "true")
 @TestPropertySource("classpath:application-test.properties")
-@EnableAutoConfiguration
+@SpringBootTest
 class MultipleDataModuleIntegrationTest {
 
   // The Spanner Repo
@@ -39,6 +40,10 @@ class MultipleDataModuleIntegrationTest {
 
   // The Datastore Repo
   @Autowired PersonRepository datastorePersonRepository;
+
+  @Autowired TraderService traderService;
+
+  @Autowired PersonService personService;
 
   @Test
   void testMultipleModulesTogether() {
@@ -54,5 +59,21 @@ class MultipleDataModuleIntegrationTest {
 
     assertThat(this.traderRepository.count()).isEqualTo(1L);
     assertThat(this.datastorePersonRepository.count()).isEqualTo(1L);
+  }
+
+  @Test
+  void testMultipleModulesTogetherWithTransaction() {
+
+    this.traderService.deleteAll();
+    this.personService.deleteAll();
+
+    assertThat(this.traderService.count()).isZero();
+    assertThat(this.personService.count()).isZero();
+
+    this.traderService.save(new Trader("id1", "trader", "one"));
+    this.personService.save(new Person(1L, "person1"));
+
+    assertThat(this.traderService.count()).isEqualTo(1L);
+    assertThat(this.personService.count()).isEqualTo(1L);
   }
 }
