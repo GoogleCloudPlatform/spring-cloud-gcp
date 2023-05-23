@@ -213,7 +213,7 @@ public class PubSubConfiguration {
    */
   public Integer computeParallelPullCount(String subscriptionName, String projectId) {
     Integer parallelPullCount =
-        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+        getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
             .getParallelPullCount();
 
     return parallelPullCount != null
@@ -232,7 +232,7 @@ public class PubSubConfiguration {
    */
   public Code[] computeRetryableCodes(String subscriptionName, String projectId) {
     Code[] retryableCodes =
-        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+        getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
             .getRetryableCodes();
     return retryableCodes != null ? retryableCodes : this.globalSubscriber.getRetryableCodes();
   }
@@ -248,7 +248,7 @@ public class PubSubConfiguration {
    */
   public Long computeMaxAckExtensionPeriod(String subscriptionName, String projectId) {
     Long maxAckExtensionPeriod =
-        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+        getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
         .getMaxAckExtensionPeriod();
 
     if (maxAckExtensionPeriod != null) {
@@ -272,7 +272,7 @@ public class PubSubConfiguration {
   @Nullable
   public Long computeMinDurationPerAckExtension(String subscriptionName, String projectId) {
     Long minDurationPerAckExtension =
-        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+        getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
             .getMinDurationPerAckExtension();
 
     if (minDurationPerAckExtension != null) {
@@ -294,7 +294,7 @@ public class PubSubConfiguration {
   @Nullable
   public Long computeMaxDurationPerAckExtension(String subscriptionName, String projectId) {
     Long maxDurationPerAckExtension =
-        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+        getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
             .getMaxDurationPerAckExtension();
 
     if (maxDurationPerAckExtension != null) {
@@ -315,7 +315,7 @@ public class PubSubConfiguration {
    */
   public String computePullEndpoint(String subscriptionName, String projectId) {
     String pullEndpoint =
-        getSubscriptionProperties(ProjectSubscriptionName.of(projectId, subscriptionName))
+        getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
         .getPullEndpoint();
     return pullEndpoint != null ? pullEndpoint : this.globalSubscriber.getPullEndpoint();
   }
