@@ -43,8 +43,9 @@ public class SpringAutoconfigCommentComposer {
           + "configuration data files.";
 
   public static final String TRANSPORT_CHANNEL_PROVIDER_GENERAL_DESCRIPTION =
-      "Provides a default transport channel provider bean. The default is gRPC and will default to it unless the "
-          + "useRest option is supported and provided to use HTTP transport instead";
+      "Provides a default transport channel provider bean, corresponding to the client library's default "
+          + "transport channel provider. If the library supports both GRPC and REST transport, and "
+          + "the useRest property is configured, the HTTP/JSON transport provider will be used instead of GRPC.";
   public static final String TRANSPORT_CHANNEL_PROVIDER_RETURN =
       "a default transport channel provider.";
   public static final String CLIENT_SETTINGS_BEAN_GENERAL_DESCRIPTION =
