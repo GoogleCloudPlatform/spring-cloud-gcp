@@ -154,7 +154,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
       Map<String, TypeNode> types,
       GapicServiceConfig serviceConfig) {
 
-    // private final LanguageProperties clientProperties;
+    // Create clientProperties variable
     ExprStatement clientPropertiesStatement =
         ComposerUtils.createMemberVarStatement(
             "clientProperties",
@@ -187,7 +187,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
                 .setType(STATIC_TYPES.get("CredentialsProvider"))
                 .build());
 
-    // this.clientProperties = clientProperties;
+    // Assign this.clientProperties
     AssignmentExpr thisClientPropertiesAssignmentExpr =
         AssignmentExpr.builder()
             .setVariableExpr(
@@ -197,11 +197,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
     ExprStatement thisClientPropertiesAssignmentStatement =
         ExprStatement.withExpr(thisClientPropertiesAssignmentExpr);
 
-    // if (this.clientProperties.getCredentials().hasKey()) {
-    //    this.credentialsProvider = new DefaultCredentialsProvider(this.clientProperties);
-    //  } else {
-    //    this.credentialsProvider = credentialsProvider;
-    //  }
+    // If credentials configured through properties, create DefaultCredentialsProvider from properties
+    // Otherwise use credentialsProvider through constructor injection
     VariableExpr thisClientProperties =
         clientPropertiesVarExpr.toBuilder().setExprReferenceExpr(thisExpr).build();
     AssignmentExpr.Builder thisCredentialsProviderAssignmentExprBuilder =
@@ -271,13 +268,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
 
   private static List<AnnotationNode> createClassAnnotations(
       Service service, Map<String, TypeNode> types) {
-    // @AutoConfiguration
-    // @AutoConfigureAfter(GcpContextAutoConfiguration.class)
-    // @ConditionalOnClass(LanguageServiceClient.class)
-    // @ConditionalOnProperty(value =
-    // "com.google.cloud.language.v1.spring.auto.language-service.enabled", matchIfMissing = true)
-    // @EnableConfigurationProperties(LanguageProperties.class)
-
+    // Generates: @ConditionalOnProperty(value = <service-prefix>.enabled", matchIfMissing = true)
     AssignmentExpr valueStringAssignmentExpr =
         AssignmentExpr.builder()
             .setVariableExpr(
@@ -305,6 +296,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .addDescription(matchIfMissingAssignmentExpr)
             .build();
 
+    // Generates: @ConditionalOnClass(<Service>Client.class)
     AnnotationNode conditionalOnClassNode =
         AnnotationNode.builder()
             .setType(STATIC_TYPES.get("ConditionalOnClass"))
@@ -315,6 +307,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
                     .setStaticReferenceType(types.get("ServiceClient"))
                     .build())
             .build();
+
+    // Generates: @AutoConfigureAfter(GcpContextAutoConfiguration.class)
     AnnotationNode autoConfigureAfterNode =
         AnnotationNode.builder()
             .setType(STATIC_TYPES.get("AutoConfigureAfter"))
@@ -325,8 +319,12 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
                     .setStaticReferenceType(STATIC_TYPES.get("GcpContextAutoConfiguration"))
                     .build())
             .build();
+
+    // Generates: @AutoConfiguration
     AnnotationNode configurationNode =
         AnnotationNode.builder().setType(STATIC_TYPES.get("AutoConfiguration")).build();
+
+    // Generates: @EnableConfigurationProperties(<Service>SpringProperties.class)
     AnnotationNode enableConfigurationPropertiesNode =
         AnnotationNode.builder()
             .setType(STATIC_TYPES.get("EnableConfigurationProperties"))
@@ -376,8 +374,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
                 Arrays.asList(
                     AnnotationNode.withType(STATIC_TYPES.get("Bean")), conditionalOnMissingBean));
 
-    // For GRPC-only or REST-only libraries, use default provider
-    // LanguageServiceSettings.defaultTransportChannelProvider()
+    // For GRPC-only or REST-only libraries, generates code to use default provider:
+    // <Service>Settings.defaultTransportChannelProvider()
     MethodInvocationExpr defaultTransportChannelProviderExpr =
         MethodInvocationExpr.builder()
             .setMethodName("defaultTransportChannelProvider")
@@ -385,11 +383,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setReturnType(STATIC_TYPES.get("TransportChannelProvider"))
             .build();
 
-    // For GRPC+REST libraries, choose provider according to configuration property
+    // For GRPC+REST libraries, generates code to choose provider according to configuration property
     if (ComposerUtils.shouldSupportRestOptionWithGrpcDefault(transport, service)) {
-      //      if (this.clientProperties.isUseRest()) {
-      //        return LanguageServiceSettings.defaultHttpJsonTransportProviderBuilder().build();
-      //      }
       Variable clientPropertiesVar =
           Variable.builder()
               .setName("clientProperties")
@@ -408,7 +403,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
               .setExprReferenceExpr(thisClientPropertiesVarExpr)
               .build();
 
-      // LanguageServiceSettings.defaultHttpJsonTransportProviderBuilder().build()
+      // If useRest property is true, generates code to use HTTP/JSON transport provider:
+      // <Service>Settings.defaultHttpJsonTransportProviderBuilder().build()
       Expr defaultTransportProviderExprChain =
           MethodInvocationExpr.builder()
               .setStaticReferenceType(types.get("ServiceSettings"))
@@ -455,7 +451,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
       Map<String, TypeNode> types,
       Expr thisExpr,
       String serviceSettingsMethodName) {
-    // argument variables:
+
+    // Generates code for argument variables:
     VariableExpr credentialsProviderVariableExpr =
         VariableExpr.withVariable(
             Variable.builder()
@@ -499,13 +496,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .build();
 
     if (ComposerUtils.shouldSupportRestOptionWithGrpcDefault(transport, service)) {
-      // For GRPC+REST libraries, choose builder according to configuration property
-      // LanguageServiceSettings.Builder clientSettingsBuilder;
-      //    if (this.clientProperties.getUseRest()) {
-      //      clientSettingsBuilder = LanguageServiceSettings.newHttpJsonBuilder();
-      //    } else {
-      //      clientSettingsBuilder = LanguageServiceSettings.newBuilder();
-      //    }
+      // For GRPC+REST libraries, generates code to choose builder according to configuration property
       MethodInvocationExpr getUseRest =
           MethodInvocationExpr.builder()
               .setMethodName("getUseRest")
@@ -513,7 +504,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
               .setExprReferenceExpr(thisClientPropertiesVarExpr)
               .build();
 
-      // clientSettingsBuilder = LanguageServiceSettings.newHttpJsonBuilder();
+      // If useRest property is true, generates code to use HTTP/JSON builder:
+      // <Service>Settings.newHttpJsonBuilder()
       Expr newHttpJsonBuilderExpr =
           MethodInvocationExpr.builder()
               .setStaticReferenceType(types.get("ServiceSettings"))
@@ -527,7 +519,6 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
               .setValueExpr(newHttpJsonBuilderExpr)
               .build();
 
-      // clientSettingsBuilder = LanguageServiceSettings.newBuilder();
       AssignmentExpr newBuilderAssignmentExpr =
           AssignmentExpr.builder()
               .setVariableExpr(VariableExpr.withVariable(settingBuilderVariable))
@@ -553,10 +544,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
       bodyStatements.add(setClientSettingsBuilderStatement);
 
     } else {
-      // For GRPC-only or REST-only libraries, use default builder
-      // LanguageServiceSettings.Builder clientSettingsBuilder =
-      // LanguageServiceSettings.newBuilder();
-
+      // For GRPC-only or REST-only libraries, generates code to use default builder:
+      // <Service>Settings.newBuilder()
       AssignmentExpr clientSettingsBuilderAssignmentExpr =
           AssignmentExpr.builder()
               .setVariableExpr(settingsVarExpr)
@@ -582,15 +571,12 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setMethodName("setCredentialsProvider")
             .setArguments(thisCredentialsProvider)
             .build();
-    //    clientSettingsBuilder
-    //           .setTransportChannelProvider(defaultTransportChannelProvider)
     settingsBuilderExpr =
         MethodInvocationExpr.builder()
             .setExprReferenceExpr(settingsBuilderExpr)
             .setMethodName("setTransportChannelProvider")
             .setArguments(transportChannelProviderVariableExpr)
             .build();
-    //           .setHeaderProvider(this.serAgentHeaderProvider());
     MethodInvocationExpr userAgentHeaderProviderInvocation =
         MethodInvocationExpr.builder()
             .setExprReferenceExpr(thisExpr)
@@ -607,12 +593,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
 
     bodyStatements.add(ExprStatement.withExpr(settingsBuilderExpr));
 
-    //   if (this.clientProperties.getQuotaProjectId() != null) {
-    //     clientSettingsBuilder.setQuotaProjectId(clientProperties.getQuotaProjectId());
-    //     LOGGER.info("Quota project id set to: " + clientProperties.getQuotaProjectId()
-    //         + ", this overrides project id from credentials.");
-    //   }
-
+    // Set quota project ID if specified via configuration property
     MethodInvocationExpr getQuotaProjectId =
         MethodInvocationExpr.builder()
             .setMethodName("getQuotaProjectId")
@@ -622,7 +603,6 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
     RelationalOperationExpr projectIdIsNull =
         RelationalOperationExpr.notEqualToWithExprs(getQuotaProjectId, ValueExpr.createNullExpr());
 
-    //     clientSettingsBuilder.setQuotaProjectId(clientProperties.getQuotaProjectId());
     MethodInvocationExpr setQuotaProjectId =
         MethodInvocationExpr.builder()
             .setExprReferenceExpr(VariableExpr.withVariable(settingBuilderVariable))
@@ -647,14 +627,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
 
     bodyStatements.add(setQuotaProjectIdStatement);
 
-    //   if (this.clientProperties.getExecutorThreadCount() != null) {
-    //     ExecutorProvider executorProvider =
-    // LanguageServiceSettings.defaultExecutorProviderBuilder()
-    //         .setExecutorThreadCount(clientProperties.getExecutorThreadCount()).build();
-    //     clientSettingsBuilder
-    //         .setBackgroundExecutorProvider(executorProvider);
-    //   }
-
+    // Set executor thread count if specified via configuration property
     MethodInvocationExpr getExecutorThreadCount =
         MethodInvocationExpr.builder()
             .setMethodName("getExecutorThreadCount")
@@ -720,14 +693,13 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
     bodyStatements.add(setBackgroundExecutorProviderStatement);
 
     // If service-level properties configured, update retry settings for each method
-
     Variable serviceRetryPropertiesVar =
         Variable.builder().setName("serviceRetry").setType(types.get("Retry")).build();
 
     VariableExpr serviceRetryPropertiesVarExpr =
         VariableExpr.builder().setVariable(serviceRetryPropertiesVar).setIsDecl(true).build();
 
-    // clientProperties.getRetry()
+    // Service-level retry configuration: clientProperties.getRetry()
     MethodInvocationExpr serviceRetryPropertiesExpr =
         MethodInvocationExpr.builder()
             .setExprReferenceExpr(VariableExpr.withVariable(clientPropertiesVar))
@@ -735,7 +707,6 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setReturnType(types.get("Retry"))
             .build();
 
-    // Retry retrySettings = clientProperties.getRetrySettings();
     AssignmentExpr serviceRetrySettingsExpr =
         AssignmentExpr.builder()
             .setVariableExpr(serviceRetryPropertiesVarExpr)
@@ -784,7 +755,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
       VariableExpr methodRetryPropertiesVarExpr =
           VariableExpr.builder().setVariable(methodRetryPropertiesVar).setIsDecl(true).build();
 
-      // clientProperties.get<Method>Retry()
+      // Method-level retry configuration: clientProperties.get<Method>Retry()
       MethodInvocationExpr methodRetryPropertiesExpr =
           MethodInvocationExpr.builder()
               .setExprReferenceExpr(VariableExpr.withVariable(clientPropertiesVar))
@@ -881,13 +852,13 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setType(STATIC_TYPES.get("RetrySettings"))
             .build();
 
-    // clientSettingsBuilder.analyzeSentimentSettings()
     MethodInvocationExpr methodSettingsExpr =
         MethodInvocationExpr.builder()
             .setExprReferenceExpr(VariableExpr.withVariable(settingBuilderVariable))
             .setMethodName(settingsVarName)
             .build();
 
+    // Generates code to get retry settings (client library defaults):
     // clientSettingsBuilder.analyzeSentimentSettings().getRetrySettings()
     MethodInvocationExpr getRetrySettingsExpr =
         MethodInvocationExpr.builder()
@@ -905,6 +876,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setReturnType(STATIC_TYPES.get("RetrySettings"))
             .build();
 
+    // Generates code to set retry settings:
     // clientSettingsBuilder.analyzeSentimentSettings().setRetrySettings(analyzeSentimentRetrySettings)
     MethodInvocationExpr setRetrySettingsExpr =
         MethodInvocationExpr.builder()
@@ -965,11 +937,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
 
   private static MethodDefinition createUserAgentHeaderProviderMethod(
       String serviceName, String className, Map<String, TypeNode> types, Expr thisExpr) {
-    // private HeaderProvider userAgentHeaderProvider() {
-    //   String springLibrary = "spring-autogen-language";
-    //   String version = this.getClass().getPackage().getImplementationVersion();
-    //   return () -> Collections.singletonMap("user-agent", springLibrary + "/" + version);
-    // }
+    // Generates method definition that returns a spring-specific HeaderProvider,
+    // with user-agent header set for metrics
     List<Statement> bodyStatements = new ArrayList<>();
 
     VariableExpr springLibStringVariableExpr =

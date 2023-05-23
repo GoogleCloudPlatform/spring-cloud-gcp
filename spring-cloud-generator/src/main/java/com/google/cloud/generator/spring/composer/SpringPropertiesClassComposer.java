@@ -77,8 +77,6 @@ public class SpringPropertiesClassComposer implements ClassComposer {
     Map<String, TypeNode> dynamicTypes = createDynamicTypes(service, packageName);
     Transport transport = context.transport();
 
-    // TODO: this is the prefix user will use to set properties, may need to change depending on
-    // branding.
     AnnotationNode classAnnotationNode =
         AnnotationNode.builder()
             .setType(STATIC_TYPES.get("ConfigurationProperties"))
@@ -101,7 +99,6 @@ public class SpringPropertiesClassComposer implements ClassComposer {
             .setImplementsTypes(Arrays.asList(STATIC_TYPES.get("CredentialsSupplier")))
             .build();
     return GapicClass.create(Kind.MAIN, classDef);
-    // return null;
   }
 
   private static List<Statement> createMemberVariables(
@@ -118,9 +115,8 @@ public class SpringPropertiesClassComposer implements ClassComposer {
     List<AnnotationNode> nestedPropertyAnnotations =
         Arrays.asList(AnnotationNode.withType(STATIC_TYPES.get("NestedConfigurationProperty")));
 
-    //   @NestedConfigurationProperty
-    //   private final Credentials credentials = new
-    // Credentials("https://www.googleapis.com/auth/cloud-language");
+    // Generates credentials variable:
+    // private final Credentials credentials = new Credentials("https://www.googleapis.com/auth/cloud-language");
     NewObjectExpr defaultCredentialScopes =
         builder()
             .setType(STATIC_TYPES.get("Credentials"))
@@ -138,13 +134,13 @@ public class SpringPropertiesClassComposer implements ClassComposer {
             nestedPropertyAnnotations);
     statements.add(SpringPropertiesCommentComposer.createCredentialsPropertyComment());
     statements.add(credentialsStatement);
-    //   private String quotaProjectId;
+    // Generates quotaProjectId variable
     ExprStatement quotaProjectIdVarStatement =
         ComposerUtils.createMemberVarStatement(
             "quotaProjectId", TypeNode.STRING, false, null, null);
     statements.add(SpringPropertiesCommentComposer.createQuotaProjectIdPropertyComment());
     statements.add(quotaProjectIdVarStatement);
-    //   private Integer executorThreadCount;
+    // Generates executorThreadCount variable
     ExprStatement executorThreadCountVarStatement =
         ComposerUtils.createMemberVarStatement(
             "executorThreadCount", TypeNode.INT_OBJECT, false, null, null);
@@ -164,7 +160,7 @@ public class SpringPropertiesClassComposer implements ClassComposer {
       statements.add(SpringPropertiesCommentComposer.createUseRestPropertyComment());
       statements.add(useRestVarStatement);
     }
-    //   private Retry retry;
+    // Generates retry variable;
     ExprStatement retryPropertiesStatement =
         ComposerUtils.createMemberVarStatement(
             "retry", types.get("Retry"), false, null, nestedPropertyAnnotations);
