@@ -27,7 +27,7 @@
 		<testcontainers.version>1.18.1</testcontainers.version>
 
 		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
-		<maven-checkstyle-plugin.version>3.2.2</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 
 		<!-- App engine plugin version, used to deploy sample apps -->
