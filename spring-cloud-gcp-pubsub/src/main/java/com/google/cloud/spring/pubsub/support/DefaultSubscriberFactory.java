@@ -190,7 +190,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   }
 
   /**
-   * Set the endpoint for synchronous pulling messages.
+   * Set the endpoint for pulling messages.
    *
    * @param pullEndpoint the pull endpoint to set
    */
