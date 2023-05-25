@@ -259,15 +259,11 @@ public class BigQueryTemplate implements BigQueryOperations {
           try {
             WriteApiResponse apiResponse = getWriteApiResponse(tableName, jsonInputStream);
             writeApiFutureResponse.complete(apiResponse);
-          } catch (DescriptorValidationException | IOException e) {
-            writeApiFutureResponse.completeExceptionally(e);
-            Thread.currentThread().interrupt();
-            logger.warn(String.format("Error: %s %n", e.getMessage()), e);
           } catch (Exception e) {
             writeApiFutureResponse.completeExceptionally(e);
             // Restore interrupted state in case of an InterruptedException
             Thread.currentThread().interrupt();
-            logger.warn(String.format("Error: %s %n", e.getMessage()), e);
+            logger.warn("Unable to get write API response.", e);
           }
         };
 
@@ -278,7 +274,7 @@ public class BigQueryTemplate implements BigQueryOperations {
     writeApiFutureResponse.whenComplete(
         (writeApiResponse, exception) -> {
           if (exception != null || !writeApiResponse.isSuccessful()) {
-            logger.error("asyncTask interrupted", exception);
+            logger.error("asyncTask interrupted");
             return;
           }
           logger.info("Data successfully written");
