@@ -239,40 +239,44 @@ class BigQueryTemplateTest {
   }
 
   @Test
-  void writeJsonStreamNegativeTest()
-      throws DescriptorValidationException, IOException, InterruptedException, ExecutionException {
-    InputStream jsonInputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
-    WriteApiResponse apiResponse = new WriteApiResponse();
-    apiResponse.setSuccessful(false);
-    doReturn(apiResponse)
-        .when(bqTemplateSpy)
-        .getWriteApiResponse(any(String.class), any(InputStream.class));
+  void writeJsonStreamNegativeTest() {
+    try (InputStream jsonInputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes())) {
+      WriteApiResponse apiResponse = new WriteApiResponse();
+      apiResponse.setSuccessful(false);
+      doReturn(apiResponse)
+          .when(bqTemplateSpy)
+          .getWriteApiResponse(any(String.class), any(InputStream.class));
 
-    CompletableFuture<WriteApiResponse> futRes =
-        bqTemplateSpy.writeJsonStream(TABLE, jsonInputStream);
-    WriteApiResponse apiRes = futRes.get();
-    assertThat(apiRes.isSuccessful()).isFalse();
-    assertEquals(0, apiRes.getErrors().size());
+      CompletableFuture<WriteApiResponse> futRes =
+          bqTemplateSpy.writeJsonStream(TABLE, jsonInputStream);
+      WriteApiResponse apiRes = futRes.get();
+      assertThat(apiRes.isSuccessful()).isFalse();
+      assertEquals(0, apiRes.getErrors().size());
+    } catch (Exception e) {
+      fail("Error initialising the InputStream");
+    }
   }
 
   @Test
-  void writeJsonStreamThrowTest()
-      throws DescriptorValidationException, IOException, InterruptedException, ExecutionException {
-    InputStream jsonInputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
-    String failureMsg = "Operation failed";
-    Exception ioException = new IOException(failureMsg);
-    doThrow(ioException)
-        .when(bqTemplateSpy)
-        .getWriteApiResponse(any(String.class), any(InputStream.class));
+  void writeJsonStreamThrowTest() {
+    try (InputStream jsonInputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes())) {
+      String failureMsg = "Operation failed";
+      Exception ioException = new IOException(failureMsg);
+      doThrow(ioException)
+          .when(bqTemplateSpy)
+          .getWriteApiResponse(any(String.class), any(InputStream.class));
 
-    CompletableFuture<WriteApiResponse> futRes =
-        bqTemplateSpy.writeJsonStream(TABLE, jsonInputStream);
-    try {
-      futRes.get();
-      fail();
-    } catch (Exception ex) {
-      assertThat(ex.getCause() instanceof IOException).isTrue();
-      assertThat(ex.getCause().getMessage()).isEqualTo(failureMsg);
+      CompletableFuture<WriteApiResponse> futRes =
+          bqTemplateSpy.writeJsonStream(TABLE, jsonInputStream);
+      try {
+        futRes.get();
+        fail();
+      } catch (Exception ex) {
+        assertThat(ex.getCause() instanceof IOException).isTrue();
+        assertThat(ex.getCause().getMessage()).isEqualTo(failureMsg);
+      }
+    } catch (Exception e) {
+      fail("Error initialising the InputStream");
     }
   }
 
