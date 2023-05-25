@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.bigquery.core;
 
-import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.FormatOptions;
 import com.google.cloud.bigquery.Job;
@@ -47,15 +46,13 @@ import java.nio.channels.Channels;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.Assert;
 import org.springframework.util.StreamUtils;
 
@@ -90,7 +87,7 @@ public class BigQueryTemplate implements BigQueryOperations {
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
 
   private final int jsonWriterBatchSize;
-  private final ScheduledExecutorService executorService;
+  private final ExecutorService jsonWriterExecutorService;
 
   /**
    * A Full constructor which creates the {@link BigQuery} template.
@@ -101,12 +98,15 @@ public class BigQueryTemplate implements BigQueryOperations {
    * @param bqInitSettings Properties required for initialisation of this class
    * @param taskScheduler the {@link TaskScheduler} used to poll for the status of long-running
    *     BigQuery operations
+   * @param jsonWriterExecutorService the {@link ExecutorService} used to run the thread required
+   *     for the BigQuery JSON Writer
    */
   public BigQueryTemplate(
       BigQuery bigQuery,
       BigQueryWriteClient bigQueryWriteClient,
       Map<String, Object> bqInitSettings,
-      TaskScheduler taskScheduler) {
+      TaskScheduler taskScheduler,
+      ExecutorService jsonWriterExecutorService) {
     String bqDatasetName = (String) bqInitSettings.get("DATASET_NAME");
     Assert.notNull(bigQuery, "BigQuery client object must not be null.");
     Assert.notNull(bqDatasetName, "Dataset name must not be null");
@@ -120,9 +120,7 @@ public class BigQueryTemplate implements BigQueryOperations {
     this.datasetName = bqDatasetName;
     this.taskScheduler = taskScheduler;
     this.bigQueryWriteClient = bigQueryWriteClient;
-    ThreadPoolTaskScheduler threadPoolTaskScheduler = (ThreadPoolTaskScheduler) taskScheduler;
-    this.executorService =
-        FixedExecutorProvider.create(threadPoolTaskScheduler.getScheduledExecutor()).getExecutor();
+    this.jsonWriterExecutorService = jsonWriterExecutorService;
   }
 
   /**
@@ -273,9 +271,8 @@ public class BigQueryTemplate implements BigQueryOperations {
           }
         };
 
-    executorService.schedule(asyncTask, 0, TimeUnit.MICROSECONDS); // schedule the task with 0 delay
-    // run the thread async so that we can return the writeApiFutureResponse. This
-    // thread can be run in the ExecutorService when it has been wired-in
+    jsonWriterExecutorService.submit(
+        asyncTask); // run the thread async so that we can return the writeApiFutureResponse
 
     // register success and failure callback which simply logs the event
     writeApiFutureResponse.whenComplete(
