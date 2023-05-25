@@ -29,6 +29,8 @@ import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -119,6 +121,12 @@ public class GcpBigQueryAutoConfiguration {
   }
 
   @Bean
+  @ConditionalOnMissingBean(name = "jsonWriterExecutorService")
+  public ExecutorService jsonWriterExecutorService() {
+    return Executors.newFixedThreadPool(threadPoolSize);
+  }
+
+  @Bean
   @ConditionalOnMissingBean(name = "bigQueryThreadPoolTaskScheduler")
   public ThreadPoolTaskScheduler bigQueryThreadPoolTaskScheduler() {
     ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
@@ -134,11 +142,16 @@ public class GcpBigQueryAutoConfiguration {
       BigQuery bigQuery,
       BigQueryWriteClient bigQueryWriteClient,
       @Qualifier("bigQueryThreadPoolTaskScheduler")
-          ThreadPoolTaskScheduler bigQueryThreadPoolTaskScheduler) {
+      ThreadPoolTaskScheduler bigQueryThreadPoolTaskScheduler,
+      @Qualifier("jsonWriterExecutorService") ExecutorService jsonWriterExecutorService) {
     Map<String, Object> bqInitSettings = new HashMap<>();
     bqInitSettings.put("DATASET_NAME", this.datasetName);
     bqInitSettings.put("JSON_WRITER_BATCH_SIZE", this.jsonWriterBatchSize);
     return new BigQueryTemplate(
-        bigQuery, bigQueryWriteClient, bqInitSettings, bigQueryThreadPoolTaskScheduler);
+        bigQuery,
+        bigQueryWriteClient,
+        bqInitSettings,
+        bigQueryThreadPoolTaskScheduler,
+        jsonWriterExecutorService);
   }
 }
