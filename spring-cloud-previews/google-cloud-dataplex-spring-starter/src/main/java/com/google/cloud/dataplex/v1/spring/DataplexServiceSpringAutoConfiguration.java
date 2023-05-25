@@ -223,6 +223,11 @@ public class DataplexServiceSpringAutoConfiguration {
               clientSettingsBuilder.listJobsSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listJobsSettings().setRetrySettings(listJobsRetrySettings);
 
+      RetrySettings runTaskRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.runTaskSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.runTaskSettings().setRetrySettings(runTaskRetrySettings);
+
       RetrySettings getJobRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getJobSettings().getRetrySettings(), serviceRetry);
@@ -392,6 +397,16 @@ public class DataplexServiceSpringAutoConfiguration {
       clientSettingsBuilder.listJobsSettings().setRetrySettings(listJobsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listJobs from properties.");
+      }
+    }
+    Retry runTaskRetry = clientProperties.getRunTaskRetry();
+    if (runTaskRetry != null) {
+      RetrySettings runTaskRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.runTaskSettings().getRetrySettings(), runTaskRetry);
+      clientSettingsBuilder.runTaskSettings().setRetrySettings(runTaskRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for runTask from properties.");
       }
     }
     Retry getJobRetry = clientProperties.getGetJobRetry();

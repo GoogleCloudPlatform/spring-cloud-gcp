@@ -174,6 +174,16 @@ public class CloudRedisSpringAutoConfiguration {
           .getInstanceAuthStringSettings()
           .setRetrySettings(getInstanceAuthStringRetrySettings);
 
+      RetrySettings listLocationsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listLocationsSettings().setRetrySettings(listLocationsRetrySettings);
+
+      RetrySettings getLocationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getLocationSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getLocationSettings().setRetrySettings(getLocationRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -210,6 +220,26 @@ public class CloudRedisSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getInstanceAuthString from properties.");
+      }
+    }
+    Retry listLocationsRetry = clientProperties.getListLocationsRetry();
+    if (listLocationsRetry != null) {
+      RetrySettings listLocationsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listLocationsSettings().getRetrySettings(), listLocationsRetry);
+      clientSettingsBuilder.listLocationsSettings().setRetrySettings(listLocationsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listLocations from properties.");
+      }
+    }
+    Retry getLocationRetry = clientProperties.getGetLocationRetry();
+    if (getLocationRetry != null) {
+      RetrySettings getLocationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getLocationSettings().getRetrySettings(), getLocationRetry);
+      clientSettingsBuilder.getLocationSettings().setRetrySettings(getLocationRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getLocation from properties.");
       }
     }
     return clientSettingsBuilder.build();
