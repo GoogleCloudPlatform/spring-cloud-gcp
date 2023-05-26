@@ -58,15 +58,100 @@
 						<version>3.1.1</version>
 						<executions>
 							<execution>
+								<id>spring-doc-resources</id>
 								<phase>clean</phase>
 								<goals>
 									<goal>install-file</goal>
 								</goals>
 								<configuration>
-									<file>spring-doc-resources-0.2.2.RELEASE.zip</file>
+									<file>src/lib/spring-doc-resources-0.2.2.RELEASE.zip</file>
 									<groupId>io.spring.docresources</groupId>
 									<artifactId>spring-doc-resources</artifactId>
 									<version>0.2.2.RELEASE</version>
+									<packaging>jar</packaging>
+								</configuration>
+							</execution>
+							<execution>
+								<id>spring-asciidoctor-extensions-block-switch</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>install-file</goal>
+								</goals>
+								<configuration>
+									<file>src/lib/spring-asciidoctor-extensions-0.6.0.zip</file>
+									<groupId>io.spring.asciidoctor</groupId>
+									<artifactId>spring-asciidoctor-extensions-block-switch</artifactId>
+									<version>0.6.0</version>
+									<packaging>jar</packaging>
+								</configuration>
+							</execution>
+							<execution>
+								<id>spring-asciidoctor-extensions-spring-boot</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>install-file</goal>
+								</goals>
+								<configuration>
+									<file>src/lib/spring-asciidoctor-extensions-0.6.0.zip</file>
+									<groupId>io.spring.asciidoctor</groupId>
+									<artifactId>spring-asciidoctor-extensions-spring-boot</artifactId>
+									<version>0.6.0</version>
+									<packaging>jar</packaging>
+								</configuration>
+							</execution>
+							<execution>
+								<id>spring-javaformat</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>install-file</goal>
+								</goals>
+								<configuration>
+									<file>src/lib/spring-javaformat-0.0.29.zip</file>
+									<groupId>io.spring.javaformat</groupId>
+									<artifactId>spring-javaformat</artifactId>
+									<version>0.0.29</version>
+									<packaging>jar</packaging>
+								</configuration>
+							</execution>
+							<execution>
+								<id>spring-javaformat-build</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>install-file</goal>
+								</goals>
+								<configuration>
+									<file>src/lib/spring-javaformat-0.0.29.zip</file>
+									<groupId>io.spring.javaformat</groupId>
+									<artifactId>spring-javaformat-build</artifactId>
+									<version>0.0.29</version>
+									<packaging>jar</packaging>
+								</configuration>
+							</execution>
+							<execution>
+								<id>spring-javaformat-checkstyle</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>install-file</goal>
+								</goals>
+								<configuration>
+									<file>src/lib/spring-javaformat-0.0.29.zip</file>
+									<groupId>io.spring.javaformat</groupId>
+									<artifactId>spring-javaformat-checkstyle</artifactId>
+									<version>0.0.29</version>
+									<packaging>jar</packaging>
+								</configuration>
+							</execution>
+							<execution>
+								<id>spring-javaformat-config</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>install-file</goal>
+								</goals>
+								<configuration>
+									<file>src/lib/spring-javaformat-0.0.29.zip</file>
+									<groupId>io.spring.javaformat</groupId>
+									<artifactId>spring-javaformat-config</artifactId>
+									<version>0.0.29</version>
 									<packaging>jar</packaging>
 								</configuration>
 							</execution>
@@ -116,7 +201,7 @@
 									<goal>install-file</goal>
 								</goals>
 								<configuration>
-									<file>spring-doc-resources-0.2.2.RELEASE.zip</file>
+									<file>src/lib/spring-doc-resources-0.2.2.RELEASE.zip</file>
 									<groupId>io.spring.docresources</groupId>
 									<artifactId>spring-doc-resources</artifactId>
 									<version>0.2.2.RELEASE</version>
