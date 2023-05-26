@@ -83,34 +83,6 @@
 								</configuration>
 							</execution>
 							<execution>
-								<id>spring-asciidoctor-extensions-block-switch</id>
-								<phase>clean</phase>
-								<goals>
-									<goal>install-file</goal>
-								</goals>
-								<configuration>
-									<file>src/lib/spring-asciidoctor-extensions-0.6.0.zip</file>
-									<groupId>io.spring.asciidoctor</groupId>
-									<artifactId>spring-asciidoctor-extensions-block-switch</artifactId>
-									<version>0.6.0</version>
-									<packaging>jar</packaging>
-								</configuration>
-							</execution>
-							<execution>
-								<id>spring-asciidoctor-extensions-spring-boot</id>
-								<phase>clean</phase>
-								<goals>
-									<goal>install-file</goal>
-								</goals>
-								<configuration>
-									<file>src/lib/spring-asciidoctor-extensions-0.6.0.zip</file>
-									<groupId>io.spring.asciidoctor</groupId>
-									<artifactId>spring-asciidoctor-extensions-spring-boot</artifactId>
-									<version>0.6.0</version>
-									<packaging>jar</packaging>
-								</configuration>
-							</execution>
-							<execution>
 								<id>spring-javaformat</id>
 								<phase>clean</phase>
 								<goals>
