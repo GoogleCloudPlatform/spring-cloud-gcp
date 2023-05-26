@@ -134,7 +134,7 @@ jobs:
         run: |
           ./mvnw \
             --batch-mode \
-            --activate-profiles docs,spring \
+            --activate-profiles docs \
             -DskipTests \
             -Dgpg.skip \
             -Dcheckstyle.skip \
