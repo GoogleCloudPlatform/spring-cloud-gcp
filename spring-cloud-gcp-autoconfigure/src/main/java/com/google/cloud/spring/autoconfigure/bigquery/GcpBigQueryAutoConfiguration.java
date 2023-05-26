@@ -147,6 +147,7 @@ public class GcpBigQueryAutoConfiguration {
     Map<String, Object> bqInitSettings = new HashMap<>();
     bqInitSettings.put("DATASET_NAME", this.datasetName);
     bqInitSettings.put("JSON_WRITER_BATCH_SIZE", this.jsonWriterBatchSize);
+    bqInitSettings.put("JSON_WRITER_THREAD_POOL_SIZE", this.threadPoolSize);
     return new BigQueryTemplate(
         bigQuery,
         bigQueryWriteClient,
