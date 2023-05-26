@@ -83,14 +83,15 @@ public class BigQueryTemplate implements BigQueryOperations {
   private static final int DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE =
       1000; // write records in batches of 1000
 
-  private int jsonWriterThreadPoolSize = 10; // default pool size per instance of BigQueryTemplate
+  private static final int DEFAULT_JSON_WRITER_THREAD_POOL_SIZE =
+      10; // default pool size per instance of BigQueryTemplate
 
   private static final int MIN_JSON_STREAM_WRITER_BATCH_SIZE = 10; // minimum batch size
 
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
 
   private final int jsonWriterBatchSize;
-  private ExecutorService jsonWriterExecutorService;
+  private final ExecutorService jsonWriterExecutorService;
 
   /**
    * A constructor which creates the {@link BigQuery} template with the default
@@ -108,8 +109,15 @@ public class BigQueryTemplate implements BigQueryOperations {
       BigQueryWriteClient bigQueryWriteClient,
       Map<String, Object> bqInitSettings,
       TaskScheduler taskScheduler) {
-    this(bigQuery, bigQueryWriteClient, bqInitSettings, taskScheduler, null);
-    this.jsonWriterExecutorService = Executors.newFixedThreadPool(jsonWriterThreadPoolSize);
+    this(
+        bigQuery,
+        bigQueryWriteClient,
+        bqInitSettings,
+        taskScheduler,
+        Executors.newFixedThreadPool(
+            (Integer)
+                bqInitSettings.getOrDefault(
+                    "JSON_WRITER_THREAD_POOL_SIZE", DEFAULT_JSON_WRITER_THREAD_POOL_SIZE)));
   }
 
   /**
@@ -135,6 +143,7 @@ public class BigQueryTemplate implements BigQueryOperations {
     Assert.notNull(bqDatasetName, "Dataset name must not be null");
     Assert.notNull(taskScheduler, "TaskScheduler must not be null");
     Assert.notNull(bigQueryWriteClient, "BigQueryWriteClient must not be null");
+    Assert.notNull(jsonWriterExecutorService, "ExecutorService must not be null");
     jsonWriterBatchSize =
         (Integer)
             bqInitSettings.getOrDefault(
