@@ -91,10 +91,11 @@ public class BigQueryTemplate implements BigQueryOperations {
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
 
   private final int jsonWriterBatchSize;
-  private final ExecutorService jsonWriterExecutorService;
+  private ExecutorService jsonWriterExecutorService;
 
   /**
-   * A Full constructor which creates the {@link BigQuery} template.
+   * A constructor which creates the {@link BigQuery} template with the default
+   * jsonWriterExecutorService
    *
    * @param bigQuery the underlying client object used to interface with BigQuery
    * @param bigQueryWriteClient the underlying BigQueryWriteClient reference use to connect with
@@ -108,19 +109,7 @@ public class BigQueryTemplate implements BigQueryOperations {
       BigQueryWriteClient bigQueryWriteClient,
       Map<String, Object> bqInitSettings,
       TaskScheduler taskScheduler) {
-    String bqDatasetName = (String) bqInitSettings.get("DATASET_NAME");
-    Assert.notNull(bigQuery, "BigQuery client object must not be null.");
-    Assert.notNull(bqDatasetName, "Dataset name must not be null");
-    Assert.notNull(taskScheduler, "TaskScheduler must not be null");
-    Assert.notNull(bigQueryWriteClient, "BigQueryWriteClient must not be null");
-    jsonWriterBatchSize =
-        (Integer)
-            bqInitSettings.getOrDefault(
-                "JSON_WRITER_BATCH_SIZE", DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE);
-    this.bigQuery = bigQuery;
-    this.datasetName = bqDatasetName;
-    this.taskScheduler = taskScheduler;
-    this.bigQueryWriteClient = bigQueryWriteClient;
+    this(bigQuery, bigQueryWriteClient, bqInitSettings, taskScheduler, null);
     this.jsonWriterExecutorService = getDefaultJsonWriterExecutorService();
   }
 
