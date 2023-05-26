@@ -83,8 +83,7 @@ public class BigQueryTemplate implements BigQueryOperations {
   private static final int DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE =
       1000; // write records in batches of 1000
 
-  private int jsonWriterThreadPoolSize =
-      10; // default pool size per instance of BigQueryTemplate. Use setter to override this
+  private int jsonWriterThreadPoolSize = 10; // default pool size per instance of BigQueryTemplate
 
   private static final int MIN_JSON_STREAM_WRITER_BATCH_SIZE = 10; // minimum batch size
 
@@ -110,17 +109,7 @@ public class BigQueryTemplate implements BigQueryOperations {
       Map<String, Object> bqInitSettings,
       TaskScheduler taskScheduler) {
     this(bigQuery, bigQueryWriteClient, bqInitSettings, taskScheduler, null);
-    this.jsonWriterExecutorService = getDefaultJsonWriterExecutorService();
-  }
-
-  private ExecutorService getDefaultJsonWriterExecutorService() {
-    return Executors.newFixedThreadPool(jsonWriterThreadPoolSize);
-  }
-
-  public void setJsonWriterThreadPoolSize(
-      int jsonWriterThreadPoolSize) { // this can be used for overriding the
-    // jsonWriterThreadPoolSize
-    this.jsonWriterThreadPoolSize = jsonWriterThreadPoolSize;
+    this.jsonWriterExecutorService = Executors.newFixedThreadPool(jsonWriterThreadPoolSize);
   }
 
   /**
