@@ -47,6 +47,7 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -82,12 +83,56 @@ public class BigQueryTemplate implements BigQueryOperations {
   private static final int DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE =
       1000; // write records in batches of 1000
 
+  private int jsonWriterThreadPoolSize =
+      10; // default pool size per instance of BigQueryTemplate. Use setter to override this
+
   private static final int MIN_JSON_STREAM_WRITER_BATCH_SIZE = 10; // minimum batch size
 
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
 
   private final int jsonWriterBatchSize;
   private final ExecutorService jsonWriterExecutorService;
+
+  /**
+   * A Full constructor which creates the {@link BigQuery} template.
+   *
+   * @param bigQuery the underlying client object used to interface with BigQuery
+   * @param bigQueryWriteClient the underlying BigQueryWriteClient reference use to connect with
+   *     BigQuery Storage Write Client
+   * @param bqInitSettings Properties required for initialisation of this class
+   * @param taskScheduler the {@link TaskScheduler} used to poll for the status of long-running
+   *     BigQuery operations
+   */
+  public BigQueryTemplate(
+      BigQuery bigQuery,
+      BigQueryWriteClient bigQueryWriteClient,
+      Map<String, Object> bqInitSettings,
+      TaskScheduler taskScheduler) {
+    String bqDatasetName = (String) bqInitSettings.get("DATASET_NAME");
+    Assert.notNull(bigQuery, "BigQuery client object must not be null.");
+    Assert.notNull(bqDatasetName, "Dataset name must not be null");
+    Assert.notNull(taskScheduler, "TaskScheduler must not be null");
+    Assert.notNull(bigQueryWriteClient, "BigQueryWriteClient must not be null");
+    jsonWriterBatchSize =
+        (Integer)
+            bqInitSettings.getOrDefault(
+                "JSON_WRITER_BATCH_SIZE", DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE);
+    this.bigQuery = bigQuery;
+    this.datasetName = bqDatasetName;
+    this.taskScheduler = taskScheduler;
+    this.bigQueryWriteClient = bigQueryWriteClient;
+    this.jsonWriterExecutorService = getDefaultJsonWriterExecutorService();
+  }
+
+  private ExecutorService getDefaultJsonWriterExecutorService() {
+    return Executors.newFixedThreadPool(jsonWriterThreadPoolSize);
+  }
+
+  public void setJsonWriterThreadPoolSize(
+      int jsonWriterThreadPoolSize) { // this can be used for overriding the
+    // jsonWriterThreadPoolSize
+    this.jsonWriterThreadPoolSize = jsonWriterThreadPoolSize;
+  }
 
   /**
    * A Full constructor which creates the {@link BigQuery} template.
