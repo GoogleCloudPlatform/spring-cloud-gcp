@@ -83,6 +83,7 @@ class BigQueryTemplateTest {
   private BigQueryOptions options;
   private final Map<String, Object> bqInitSettings = new HashMap<>();
   BigQueryTemplate bqTemplateSpy;
+  BigQueryTemplate bqTemplateDefaultPoolSpy;
 
   private Schema getDefaultSchema() {
     return Schema.of(
@@ -114,6 +115,15 @@ class BigQueryTemplateTest {
             getThreadPoolTaskScheduler(),
             getDefaultExecutor());
     bqTemplateSpy = Mockito.spy(bqTemplate);
+    BigQueryTemplate bqTemplateDefaultPool =
+        new BigQueryTemplate(
+            bigquery,
+            bigQueryWriteClientMock,
+            bqInitSettings,
+            getThreadPoolTaskScheduler(),
+            getDefaultExecutor());
+    bqTemplateDefaultPool.setJsonWriterThreadPoolSize(10);
+    bqTemplateDefaultPoolSpy = Mockito.spy(bqTemplateDefaultPool);
   }
 
   private ExecutorService getDefaultExecutor() {
@@ -233,6 +243,25 @@ class BigQueryTemplateTest {
 
     CompletableFuture<WriteApiResponse> futRes =
         bqTemplateSpy.writeJsonStream(TABLE, jsonInputStream);
+    WriteApiResponse apiRes = futRes.get();
+    assertTrue(apiRes.isSuccessful());
+    assertEquals(0, apiRes.getErrors().size());
+  }
+
+  @Test
+  void writeJsonStreamTestDefaultPool()
+      throws DescriptorValidationException, IOException, InterruptedException,
+      ExecutionException { // Tests the constructor which doesn't have jsonWriterExecutorService
+    // as the param
+
+    InputStream jsonInputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
+    WriteApiResponse apiResponse = new WriteApiResponse();
+    apiResponse.setSuccessful(true);
+    doReturn(apiResponse)
+        .when(bqTemplateDefaultPoolSpy)
+        .getWriteApiResponse(any(String.class), any(InputStream.class));
+    CompletableFuture<WriteApiResponse> futRes =
+        bqTemplateDefaultPoolSpy.writeJsonStream(TABLE, jsonInputStream);
     WriteApiResponse apiRes = futRes.get();
     assertTrue(apiRes.isSuccessful());
     assertEquals(0, apiRes.getErrors().size());
