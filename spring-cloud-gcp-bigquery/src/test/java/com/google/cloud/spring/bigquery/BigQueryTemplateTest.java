@@ -117,11 +117,7 @@ class BigQueryTemplateTest {
     bqTemplateSpy = Mockito.spy(bqTemplate);
     BigQueryTemplate bqTemplateDefaultPool =
         new BigQueryTemplate(
-            bigquery,
-            bigQueryWriteClientMock,
-            bqInitSettings,
-            getThreadPoolTaskScheduler(),
-            getDefaultExecutor());
+            bigquery, bigQueryWriteClientMock, bqInitSettings, getThreadPoolTaskScheduler());
     bqTemplateDefaultPool.setJsonWriterThreadPoolSize(10);
     bqTemplateDefaultPoolSpy = Mockito.spy(bqTemplateDefaultPool);
   }
