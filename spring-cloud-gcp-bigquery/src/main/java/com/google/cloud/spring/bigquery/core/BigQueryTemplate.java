@@ -319,7 +319,11 @@ public class BigQueryTemplate implements BigQueryOperations {
     writeApiFutureResponse.whenComplete(
         (writeApiResponse, exception) -> {
           if (exception != null || !writeApiResponse.isSuccessful()) {
-            logger.error("asyncTask interrupted");
+            if (exception != null) {
+              logger.error("asyncTask interrupted", exception);
+            } else {
+              logger.warn("Write operation failed");
+            }
             return;
           }
           logger.info("Data successfully written");
