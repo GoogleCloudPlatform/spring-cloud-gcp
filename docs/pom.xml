@@ -28,6 +28,10 @@
 
 	<repositories>
 		<repository>
+			<id>local-maven-repo</id>
+			<url>file:///${project.basedir}/local-maven-repo</url>
+		</repository>
+		<repository>
 			<id>spring-releases</id>
 			<name>Spring Releases</name>
 			<url>https://repo.spring.io/release</url>
@@ -37,6 +41,13 @@
 		</repository>
 	</repositories>
 	<pluginRepositories>
+		<pluginRepository>
+				<id>local-maven-repo</id>
+				<url>file:///${project.basedir}/local-maven-repo</url>
+			<releases>
+				<updatePolicy>always</updatePolicy>
+			</releases>
+		</pluginRepository>
 		<pluginRepository>
 			<id>spring-releases</id>
 			<name>Spring Releases</name>
@@ -177,6 +188,13 @@
 					<plugin>
 						<groupId>org.asciidoctor</groupId>
 						<artifactId>asciidoctor-maven-plugin</artifactId>
+						<dependencies>
+							<dependency>
+								<groupId>io.spring.asciidoctor</groupId>
+								<artifactId>spring-asciidoctor-extensions-spring-boot</artifactId>
+								<version>0.6.0</version>
+							</dependency>
+						</dependencies>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
