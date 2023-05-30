@@ -44,7 +44,6 @@
 		<spring-boot-dependencies.version>2.7.11</spring-boot-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.4.2</java-cfenv.version>
-		<spring-native.version>0.10.5</spring-native.version>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
