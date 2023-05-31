@@ -6,164 +6,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Spring Framework on Google Cloud Core</title>
-<link rel="stylesheet" href="css/spring.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-
-</style>
-<script type="text/javascript">
-function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
-function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
-			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
-		}
-	});
-}
-
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
-function blockIdForSwitchItem(item) {
-	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
-	return idComponents.sort().join("-")
-}
-
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
-
-</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
 
 </head>
-<body class="book toc2 toc-left">
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
 <li><a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core</a>
 <ul class="sectlevel2">
 <li><a href="#_configuration">Configuration</a></li>
@@ -179,7 +45,7 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="spring-cloud-gcp-core"><a class="link" href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core</a></h2>
+<h2 id="spring-cloud-gcp-core"><a class="anchor" href="#spring-cloud-gcp-core"></a><a class="link" href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Each Spring Framework on Google Cloud module uses <code>GcpProjectIdProvider</code> and <code>CredentialsProvider</code> to get the Google Cloud project ID and access credentials.</p>
@@ -192,7 +58,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -203,13 +69,13 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter")
 }</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<h3 id="_configuration"><a class="anchor" href="#_configuration"></a><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="paragraph">
 <p>The following options may be configured with Spring Cloud core.</p>
 </div>
@@ -237,15 +103,16 @@ window.onload = function() {
 </table>
 </div>
 <div class="sect2">
-<h3 id="_project_id"><a class="link" href="#_project_id">Project ID</a></h3>
+<h3 id="_project_id"><a class="anchor" href="#_project_id"></a><a class="link" href="#_project_id">Project ID</a></h3>
 <div class="paragraph">
 <p><code>GcpProjectIdProvider</code> is a functional interface that returns a Google Cloud project ID string.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface GcpProjectIdProvider {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface GcpProjectIdProvider {
 	String getProjectId();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -254,7 +121,8 @@ If a <code>spring.cloud.gcp.project-id</code> property is specified, the provide
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">spring.cloud.gcp.project-id=my-gcp-project-id</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">spring.cloud.gcp.project-id=my-gcp-project-id
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -282,15 +150,16 @@ If a <code>spring.cloud.gcp.project-id</code> property is specified, the provide
 </div>
 </div>
 <div class="sect2">
-<h3 id="_credentials"><a class="link" href="#_credentials">Credentials</a></h3>
+<h3 id="_credentials"><a class="anchor" href="#_credentials"></a><a class="link" href="#_credentials">Credentials</a></h3>
 <div class="paragraph">
 <p><code>CredentialsProvider</code> is a functional interface that returns the credentials to authenticate and authorize calls to Google Cloud Client Libraries.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface CredentialsProvider {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface CredentialsProvider {
   Credentials getCredentials() throws IOException;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -301,7 +170,7 @@ The next example specifies the credentials location property in the file system.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.credentials.location=file:/usr/local/key.json</code></pre>
+<pre class="highlight"><code>spring.cloud.gcp.credentials.location=file:/usr/local/key.json</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -335,7 +204,7 @@ The value should be the base64-encoded account private key in JSON format.</p>
 On App Engine Standard, the <a href="https://cloud.google.com/appengine/docs/standard/java/appidentity/">App Identity service account credentials</a> are used, on App Engine Flexible, the <a href="https://cloud.google.com/appengine/docs/flexible/java/service-account">Flexible service account credential</a> are used and on Google Compute Engine, the <a href="https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#using_the_compute_engine_default_service_account">Compute Engine Default Service Account</a> is used.</p>
 </div>
 <div class="sect3">
-<h4 id="_scopes"><a class="link" href="#_scopes">Scopes</a></h4>
+<h4 id="_scopes"><a class="anchor" href="#_scopes"></a><a class="link" href="#_scopes">Scopes</a></h4>
 <div class="paragraph">
 <p>By default, the credentials provided by the Spring Framework on Google Cloud Starter contain scopes for every service supported by Spring Framework on Google Cloud.</p>
 </div>
@@ -396,7 +265,7 @@ To do that, specify a comma-delimited list of <a href="https://developers.google
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin</code></pre>
+<pre class="highlight"><code>spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -404,27 +273,28 @@ To do that, specify a comma-delimited list of <a href="https://developers.google
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.credentials.scopes=DEFAULT_SCOPES,https://www.googleapis.com/auth/cloud-vision</code></pre>
+<pre class="highlight"><code>spring.cloud.gcp.credentials.scopes=DEFAULT_SCOPES,https://www.googleapis.com/auth/cloud-vision</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_environment"><a class="link" href="#_environment">Environment</a></h3>
+<h3 id="_environment"><a class="anchor" href="#_environment"></a><a class="link" href="#_environment">Environment</a></h3>
 <div class="paragraph">
 <p><code>GcpEnvironmentProvider</code> is a functional interface, auto-configured by the Spring Framework on Google Cloud starter, that returns a <code>GcpEnvironment</code> enum.
 The provider can help determine programmatically in which Google Cloud environment (App Engine Flexible, App Engine Standard, Kubernetes Engine or Compute Engine) the application is deployed.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface GcpEnvironmentProvider {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface GcpEnvironmentProvider {
 	GcpEnvironment getCurrentEnvironment();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_customizing_bean_scope"><a class="link" href="#_customizing_bean_scope">Customizing bean scope</a></h3>
+<h3 id="_customizing_bean_scope"><a class="anchor" href="#_customizing_bean_scope"></a><a class="link" href="#_customizing_bean_scope">Customizing bean scope</a></h3>
 <div class="paragraph">
 <p>Spring Framework on Google Cloud starters autoconfigure all necessary beans in the default singleton scope.
 If you need a particular bean or set of beans to be recreated dynamically (for example, to rotate credentials), there are two options:</p>
@@ -462,14 +332,15 @@ If your application refreshes any beans used by such <code>SmartLifecycle</code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 private PubSubInboundChannelAdapter pubSubAdapter;
 
 @EventListener(RefreshScopeRefreshedEvent.class)
 public void onRefreshScope(RefreshScopeRefreshedEvent event) {
   this.pubSubAdapter.stop();
   this.pubSubAdapter.start();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </td>
@@ -478,7 +349,7 @@ public void onRefreshScope(RefreshScopeRefreshedEvent event) {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_spring_initializr"><a class="link" href="#_spring_initializr">Spring Initializr</a></h3>
+<h3 id="_spring_initializr"><a class="anchor" href="#_spring_initializr"></a><a class="link" href="#_spring_initializr">Spring Initializr</a></h3>
 <div class="paragraph">
 <p>This starter is available from <a href="https://start.spring.io/">Spring Initializr</a> through the <code>GCP Support</code> entry.</p>
 </div>
@@ -486,10 +357,10 @@ public void onRefreshScope(RefreshScopeRefreshedEvent event) {
 </div>
 </div>
 </div>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script src="js/highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
-<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
-<script type="text/javascript" src="js/toc.js"></script>
+</div>
+  </div>
+</div>
 </body>
 </html>

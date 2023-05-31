@@ -7,160 +7,26 @@
 <meta name="generator" content="Asciidoctor 2.0.10">
 <meta name="author" content="João André Martins, Jisha Abubaker, Ray Tsang, Mike Eltsufin, Artem Bilan, Andreas Berger, Balint Pato, Chengyuan Zhao, Dmitry Solomakha, Elena Felder, Daniel Zou, Eddú Meléndez, Travis Tomsu">
 <title>Spring Framework on Google Cloud</title>
-<link rel="stylesheet" href="css/spring.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-
-</style>
-<script type="text/javascript">
-function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
-function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
-			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
-		}
-	});
-}
-
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
-function blockIdForSwitchItem(item) {
-	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
-	return idComponents.sort().join("-")
-}
-
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
-
-</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
 
 </head>
-<body id="spring-cloud-gcp-reference" class="book toc2 toc-left">
+<body id="spring-cloud-gcp-reference" class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
 <div id="header">
 <h1>Spring Framework on Google Cloud</h1>
 <div class="details">
@@ -180,7 +46,7 @@ window.onload = function() {
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
 <li><a href="#introduction">1. Introduction</a></li>
 <li><a href="#getting-started">2. Getting Started</a>
 <ul class="sectlevel2">
@@ -534,7 +400,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
    &lt;dependencies&gt;
        &lt;dependency&gt;
            &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
@@ -552,7 +418,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:4.3.2-SNAPSHOT")
 }</code></pre>
 </div>
@@ -804,7 +670,7 @@ These guides provide step-by-step instructions for building an application using
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -815,7 +681,7 @@ These guides provide step-by-step instructions for building an application using
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter")
 }</code></pre>
 </div>
@@ -855,9 +721,10 @@ These guides provide step-by-step instructions for building an application using
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface GcpProjectIdProvider {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface GcpProjectIdProvider {
     String getProjectId();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -866,7 +733,8 @@ If a <code>spring.cloud.gcp.project-id</code> property is specified, the provide
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">spring.cloud.gcp.project-id=my-gcp-project-id</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">spring.cloud.gcp.project-id=my-gcp-project-id
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -900,9 +768,10 @@ If a <code>spring.cloud.gcp.project-id</code> property is specified, the provide
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface CredentialsProvider {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface CredentialsProvider {
   Credentials getCredentials() throws IOException;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -913,7 +782,7 @@ The next example specifies the credentials location property in the file system.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.credentials.location=file:/usr/local/key.json</code></pre>
+<pre class="highlight"><code>spring.cloud.gcp.credentials.location=file:/usr/local/key.json</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1008,7 +877,7 @@ To do that, specify a comma-delimited list of <a href="https://developers.google
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin</code></pre>
+<pre class="highlight"><code>spring.cloud.gcp.credentials.scopes=https://www.googleapis.com/auth/pubsub,https://www.googleapis.com/auth/sqlservice.admin</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1016,7 +885,7 @@ To do that, specify a comma-delimited list of <a href="https://developers.google
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.gcp.credentials.scopes=DEFAULT_SCOPES,https://www.googleapis.com/auth/cloud-vision</code></pre>
+<pre class="highlight"><code>spring.cloud.gcp.credentials.scopes=DEFAULT_SCOPES,https://www.googleapis.com/auth/cloud-vision</code></pre>
 </div>
 </div>
 </div>
@@ -1029,9 +898,10 @@ The provider can help determine programmatically in which Google Cloud environme
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface GcpEnvironmentProvider {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface GcpEnvironmentProvider {
     GcpEnvironment getCurrentEnvironment();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -1074,14 +944,15 @@ If your application refreshes any beans used by such <code>SmartLifecycle</code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 private PubSubInboundChannelAdapter pubSubAdapter;
 
 @EventListener(RefreshScopeRefreshedEvent.class)
 public void onRefreshScope(RefreshScopeRefreshedEvent event) {
   this.pubSubAdapter.stop();
   this.pubSubAdapter.start();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </td>
@@ -1109,7 +980,7 @@ A Spring Boot starter is provided to auto-configure the various Storage componen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-storage&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1120,7 +991,7 @@ A Spring Boot starter is provided to auto-configure the various Storage componen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-storage")
 }</code></pre>
 </div>
@@ -1136,7 +1007,7 @@ The <code>Storage</code> bean (<a href="https://googleapis.dev/java/google-cloud
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 private Storage storage;
 
 public void createFile() {
@@ -1146,7 +1017,8 @@ public void createFile() {
         BlobInfo.newBuilder("my-app-storage-bucket", "subdirectory/my-file").build(),
             "file contents".getBytes()
     );
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -1161,8 +1033,9 @@ Spring Framework on Google Cloud adds a new resource type: a Google Cloud Storag
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Value("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]")
-private Resource gcsResource;</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Value("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]")
+private Resource gcsResource;
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1170,7 +1043,8 @@ private Resource gcsResource;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">SpringApplication.run(...).getResource("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]");</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">SpringApplication.run(...).getResource("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]");
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1181,12 +1055,13 @@ private Resource gcsResource;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Value("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]")
+<pre class="highlight"><code class="language-java" data-lang="java">@Value("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]")
 private Resource gcsResource;
 ...
 try (OutputStream os = ((WritableResource) gcsResource).getOutputStream()) {
   os.write("foo".getBytes());
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1224,7 +1099,8 @@ Returning a valid URL is necessary to support some features in the Spring ecosys
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">((GoogleStorageResource)gcsResource).getBlob().toBuilder().setContentType("text/html").build().update();</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">((GoogleStorageResource)gcsResource).getBlob().toBuilder().setContentType("text/html").build().update();
+</code></pre>
 </div>
 </div>
 </div>
@@ -1310,7 +1186,7 @@ The role of the starters is to read configuration from properties and assume def
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-sql-mysql&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1318,7 +1194,7 @@ The role of the starters is to read configuration from properties and assume def
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
 implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
 }</code></pre>
 </div>
@@ -1328,7 +1204,7 @@ implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
 &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
 &lt;artifactId&gt;spring-cloud-gcp-starter-sql-postgresql&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1336,7 +1212,7 @@ implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-sql-postgresql")
 }</code></pre>
 </div>
@@ -1359,9 +1235,10 @@ Coupled with Spring JDBC, it provides a
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public List&lt;Map&lt;String, Object&gt;&gt; listUsers() {
+<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;Map&lt;String, Object&gt;&gt; listUsers() {
     return jdbcTemplate.queryForList("SELECT * FROM user;");
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1444,7 +1321,7 @@ You can connect to your database with as little as a database and instance names
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-sql-postgres-r2dbc&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1471,11 +1348,12 @@ Similar to the JDBC support, you can connect to your database with as little as 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired R2dbcEntityTemplate template;
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired R2dbcEntityTemplate template;
 
 public Flux&lt;String&gt; listUsers() {
   return template.select(User.class).all().map(user -&gt; user.toString());
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1651,7 +1529,7 @@ This may be the case with HikariCP, if your logger is set to INFO or higher leve
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;configuration&gt;
   &lt;include resource="org/springframework/boot/logging/logback/base.xml"/&gt;
   &lt;logger name="com.zaxxer.hikari.pool" level="DEBUG"/&gt;
@@ -1680,7 +1558,7 @@ For example, in Maven:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
   &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
   &lt;version&gt;42.1.1&lt;/version&gt;
@@ -1730,7 +1608,7 @@ For example, in Maven:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-pubsub&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1741,7 +1619,7 @@ For example, in Maven:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-pubsub")
 }</code></pre>
 </div>
@@ -2259,7 +2137,7 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -2344,7 +2222,7 @@ Also, you need to set the following properties <code>spring.cloud.gcp.pubsub.hea
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
   &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -2442,8 +2320,9 @@ The topic name could either be a short topic name within the current project, or
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Map&lt;String, String&gt; headers = Collections.singletonMap("key1", "val1");
-pubSubTemplate.publish(topicName, "message", headers).get();</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, String&gt; headers = Collections.singletonMap("key1", "val1");
+pubSubTemplate.publish(topicName, "message", headers).get();
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2458,10 +2337,11 @@ Additionally, if you are using multiple publishers, you will want to set the <co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Map&lt;String, String&gt; headers =
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, String&gt; headers =
     Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1");
 pubSubTemplate.publish(topicName, "message1", headers).get();
-pubSubTemplate.publish(topicName, "message2", headers).get();</code></pre>
+pubSubTemplate.publish(topicName, "message2", headers).get();
+</code></pre>
 </div>
 </div>
 </div>
@@ -2481,7 +2361,7 @@ The subscription name could either be a short subscription name within the curre
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Subscriber subscriber =
+<pre class="highlight"><code class="language-java" data-lang="java">Subscriber subscriber =
     pubSubTemplate.subscribe(
         subscriptionName,
         message -&gt; {
@@ -2491,7 +2371,8 @@ The subscription name could either be a short subscription name within the curre
                   + " subscription: "
                   + message.getPubsubMessage().getData().toStringUtf8());
           message.ack();
-        });</code></pre>
+        });
+</code></pre>
 </div>
 </div>
 </div>
@@ -2531,10 +2412,11 @@ For a command-line application, a way to keep the application running is to have
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Scheduled (fixedRate = 1, timeUnit = TimeUnit.MINUTES)
+<pre class="highlight"><code class="language-java" data-lang="java">@Scheduled (fixedRate = 1, timeUnit = TimeUnit.MINUTES)
 public void fakeScheduledTask() {
     // do nothing
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2559,7 +2441,7 @@ This is different from subscribing to a subscription, in the sense that subscrib
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">int maxMessages = 10;
+<pre class="highlight"><code class="language-java" data-lang="java">int maxMessages = 10;
 boolean returnImmediately = false;
 List&lt;AcknowledgeablePubsubMessage&gt; messages =
     pubSubTemplate.pull(subscriptionName, maxMessages, returnImmediately);
@@ -2569,7 +2451,8 @@ pubSubTemplate.ack(messages);
 
 messages.forEach(
     message -&gt;
-        logger.info(message.getPubsubMessage().getData().toStringUtf8()));</code></pre>
+        logger.info(message.getPubsubMessage().getData().toStringUtf8()));
+</code></pre>
 </div>
 </div>
 </div>
@@ -2661,7 +2544,7 @@ See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> f
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public Subscription newSubscription() {
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription newSubscription() {
     // Must use the fully-qualified topic name.
     String fullDeadLetterTopic = PubSubTopicUtils
                         .toTopicName(DEAD_LETTER_TOPIC, gcpProjectIdProvider.getProjectId())
@@ -2673,7 +2556,8 @@ See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> f
                     .setDeadLetterTopic(fullDeadLetterTopic)
                     .setMaxDeliveryAttempts(6)
                     .build()));
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2688,13 +2572,14 @@ See <a href="https://cloud.google.com/pubsub/docs/dead-letter-topics">here</a> f
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Note: The ObjectMapper is used to convert Java POJOs to and from JSON.
+<pre class="highlight"><code class="language-java" data-lang="java">// Note: The ObjectMapper is used to convert Java POJOs to and from JSON.
 // You will have to configure your own instance if you are unable to depend
 // on the ObjectMapper provided by Spring Boot starters.
 @Bean
 public PubSubMessageConverter pubSubMessageConverter() {
   return new JacksonPubSubMessageConverter(new ObjectMapper());
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -2715,7 +2600,7 @@ Other implementations of the <code>PubSubMessageConverter</code> can also be con
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">static class TestUser {
+<pre class="highlight"><code class="language-java" data-lang="java">static class TestUser {
 
   String username;
 
@@ -2736,7 +2621,8 @@ Other implementations of the <code>PubSubMessageConverter</code> can also be con
   void setPassword(String password) {
     this.password = password;
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2744,10 +2630,11 @@ Other implementations of the <code>PubSubMessageConverter</code> can also be con
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">TestUser user = new TestUser();
+<pre class="highlight"><code class="language-java" data-lang="java">TestUser user = new TestUser();
 user.setUsername("John");
 user.setPassword("password");
-pubSubTemplate.publish(topicName, user);</code></pre>
+pubSubTemplate.publish(topicName, user);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2755,7 +2642,7 @@ pubSubTemplate.publish(topicName, user);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">int maxMessages = 1;
+<pre class="highlight"><code class="language-java" data-lang="java">int maxMessages = 1;
 boolean returnImmediately = false;
 List&lt;ConvertedAcknowledgeablePubsubMessage&lt;TestUser&gt;&gt; messages =
     pubSubTemplate.pullAndConvert(
@@ -2766,7 +2653,8 @@ ConvertedAcknowledgeablePubsubMessage&lt;TestUser&gt; message = messages.get(0);
 // acknowledge the message
 message.ack();
 
-TestUser receivedTestUser = message.getPayload();</code></pre>
+TestUser receivedTestUser = message.getPayload();
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2783,13 +2671,14 @@ The combination of the Pub/Sub starter and the Project Reactor dependencies will
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 PubSubReactiveFactory reactiveFactory;
 
 // ...
 
 Flux&lt;AcknowledgeablePubsubMessage&gt; flux
-                = reactiveFactory.poll("exampleSubscription", 1000);</code></pre>
+                = reactiveFactory.poll("exampleSubscription", 1000);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2808,7 +2697,8 @@ For example, if you only want to fetch 5 messages, you can use <code>limitReques
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Flux&lt;AcknowledgeablePubsubMessage&gt; fiveMessageFlux = flux.limitRequest(5);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Flux&lt;AcknowledgeablePubsubMessage&gt; fiveMessageFlux = flux.limitRequest(5);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2816,7 +2706,8 @@ For example, if you only want to fetch 5 messages, you can use <code>limitReques
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">flux.doOnNext(AcknowledgeablePubsubMessage::ack);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">flux.doOnNext(AcknowledgeablePubsubMessage::ack);
+</code></pre>
 </div>
 </div>
 </div>
@@ -2848,7 +2739,8 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public Topic createTopic(String topicName)</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public Topic createTopic(String topicName)
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2856,9 +2748,10 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public void newTopic() {
+<pre class="highlight"><code class="language-java" data-lang="java">public void newTopic() {
     pubSubAdmin.createTopic("topicName");
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -2869,7 +2762,8 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public void deleteTopic(String topicName)</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public void deleteTopic(String topicName)
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2877,9 +2771,10 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public void deleteTopic() {
+<pre class="highlight"><code class="language-java" data-lang="java">public void deleteTopic() {
     pubSubAdmin.deleteTopic("topicName");
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -2890,7 +2785,8 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public List&lt;Topic&gt; listTopics</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;Topic&gt; listTopics
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2898,8 +2794,9 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;String&gt; topics =
-    pubSubAdmin.listTopics().stream().map(Topic::getName).toList();</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; topics =
+    pubSubAdmin.listTopics().stream().map(Topic::getName).toList();
+</code></pre>
 </div>
 </div>
 </div>
@@ -2910,7 +2807,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public Subscription createSubscription(String subscriptionName, String topicName)
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription createSubscription(String subscriptionName, String topicName)
 
 public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline)
 
@@ -2919,7 +2816,8 @@ public Subscription createSubscription(
 
 public Subscription createSubscription(String subscriptionName, String topicName, Integer ackDeadline, String pushEndpoint)
 
-public Subscription createSubscription(Subscriber.Builder builder)</code></pre>
+public Subscription createSubscription(Subscriber.Builder builder)
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2932,9 +2830,10 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public Subscription newSubscription() {
+<pre class="highlight"><code class="language-java" data-lang="java">public Subscription newSubscription() {
     return pubSubAdmin.createSubscription("subscriptionName", "topicName", 15);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -2945,7 +2844,8 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public void deleteSubscription(String subscriptionName)</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public void deleteSubscription(String subscriptionName)
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2953,9 +2853,10 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public void deleteSubscription() {
+<pre class="highlight"><code class="language-java" data-lang="java">public void deleteSubscription() {
     pubSubAdmin.deleteSubscription("subscriptionName");
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -2966,7 +2867,8 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public List&lt;Subscription&gt; listSubscriptions()</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;Subscription&gt; listSubscriptions()
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2974,10 +2876,11 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;String&gt; subscriptions =
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; subscriptions =
     pubSubAdmin.listSubscriptions().stream()
         .map(Subscription::getName)
-        .toList();</code></pre>
+        .toList();
+</code></pre>
 </div>
 </div>
 </div>
@@ -3016,7 +2919,7 @@ This enables messaging between different processes, applications or microservice
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
   &lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-pubsub&lt;/artifactId&gt;
@@ -3033,7 +2936,7 @@ This enables messaging between different processes, applications or microservice
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-pubsub")
     implementation("org.springframework.integration:spring-integration-core")
 }</code></pre>
@@ -3068,7 +2971,7 @@ The subscription name could either be a short subscription name within the curre
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public MessageChannel pubsubInputChannel() {
     return new PublishSubscribeChannel();
 }
@@ -3083,7 +2986,8 @@ public PubSubInboundChannelAdapter messageChannelAdapter(
     adapter.setAckMode(AckMode.MANUAL);
 
     return adapter;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3182,7 +3086,7 @@ Users can extract the <code>BasicAcknowledgeablePubsubMessage</code> using the <
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 @ServiceActivator(inputChannel = "pubsubInputChannel")
 public MessageHandler messageReceiver() {
     return message -&gt; {
@@ -3191,7 +3095,8 @@ public MessageHandler messageReceiver() {
               message.getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE, BasicAcknowledgeablePubsubMessage.class);
         originalMessage.ack();
     };
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -3215,7 +3120,7 @@ Otherwise, the adapter will assume that processing completed successfully and wi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public MessageChannel pubsubInputChannel() {
     return new PublishSubscribeChannel();
 }
@@ -3236,7 +3141,8 @@ public PubSubInboundChannelAdapter messageChannelAdapter(
 @ServiceActivator(inputChannel =  "pubsubErrors")
 public void pubsubErrorHandler(Message&lt;MessagingException&gt; message) {
     LOGGER.warn("This message will be automatically acked because error handler completes successfully");
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3244,7 +3150,7 @@ public void pubsubErrorHandler(Message&lt;MessagingException&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@ServiceActivator(inputChannel =  "pubsubErrors")
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel =  "pubsubErrors")
 public void pubsubErrorHandler(Message&lt;MessagingException&gt; exceptionMessage) {
 
     BasicAcknowledgeablePubsubMessage originalMessage =
@@ -3252,7 +3158,8 @@ public void pubsubErrorHandler(Message&lt;MessagingException&gt; exceptionMessag
         .getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE);
 
     originalMessage.nack();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -3294,7 +3201,7 @@ The subscription name could either be a short subscription name within the curre
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 @InboundChannelAdapter(channel = "pubsubInputChannel", poller = @Poller(fixedDelay = "100"))
 public MessageSource&lt;Object&gt; pubsubAdapter(PubSubTemplate pubSubTemplate) {
     PubSubMessageSource messageSource = new PubSubMessageSource(pubSubTemplate,  "exampleSubscription");
@@ -3303,7 +3210,8 @@ public MessageSource&lt;Object&gt; pubsubAdapter(PubSubTemplate pubSubTemplate) 
     messageSource.setBlockOnPull(true);
     messageSource.setMaxFetchSize(100);
     return messageSource;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3316,13 +3224,14 @@ The object can be used for manually (n)acking the message.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@ServiceActivator(inputChannel = "pubsubInputChannel")
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = "pubsubInputChannel")
 public void messageReceiver(String payload,
         @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) AcknowledgeablePubsubMessage message)
             throws InterruptedException {
     LOGGER.info("Message arrived by Synchronous Pull! Payload: " + payload);
     message.ack();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -3367,11 +3276,12 @@ The topic name could either be a short topic name within the current project, or
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 @ServiceActivator(inputChannel = "pubsubOutputChannel")
 public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
     return new PubSubMessageHandler(pubsubTemplate, "topicName");
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3389,8 +3299,9 @@ Both callbacks include the original message as the second argument.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">adapter.setSuccessCallback((ackId, message) -&gt; {});
-adapter.setFailureCallback((cause, message) -&gt; {});</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">adapter.setSuccessCallback((ackId, message) -&gt; {});
+adapter.setFailureCallback((cause, message) -&gt; {});
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3398,7 +3309,7 @@ adapter.setFailureCallback((cause, message) -&gt; {});</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 private MessageChannel pubsubOutputChannel;
 
 public void handleMessage(Message&lt;?&gt; msg) throws MessagingException {
@@ -3406,7 +3317,8 @@ public void handleMessage(Message&lt;?&gt; msg) throws MessagingException {
         .withPayload(msg.getPayload())
         .setHeader(GcpPubSubHeaders.TOPIC, "customTopic").build();
     pubsubOutputChannel.send(message);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3414,8 +3326,9 @@ public void handleMessage(Message&lt;?&gt; msg) throws MessagingException {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">PubSubMessageHandler adapter = new PubSubMessageHandler(pubSubTemplate, "myDefaultTopic");
-adapter.setTopicExpressionString("headers['sendToTopic']");</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">PubSubMessageHandler adapter = new PubSubMessageHandler(pubSubTemplate, "myDefaultTopic");
+adapter.setTopicExpressionString("headers['sendToTopic']");
+</code></pre>
 </div>
 </div>
 </div>
@@ -3439,11 +3352,12 @@ Remember to set <code>spring.cloud.gcp.pubsub.publisher.enable-message-ordering<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">PubSubMessageHandler adapter = ...
+<pre class="highlight"><code class="language-java" data-lang="java">PubSubMessageHandler adapter = ...
 ...
 PubSubHeaderMapper headerMapper = new PubSubHeaderMapper();
 headerMapper.setOutboundHeaderPatterns("!foo", "!bar", "!prefix_*", "*");
-adapter.setHeaderMapper(headerMapper);</code></pre>
+adapter.setHeaderMapper(headerMapper);
+</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -3503,7 +3417,7 @@ However, because it comes last in the list, <a href="https://docs.spring.io/spri
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-storage&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -3518,7 +3432,7 @@ However, because it comes last in the list, <a href="https://docs.spring.io/spri
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-storage")
     implementation("org.springframework.integration:spring-integration-file")
 }</code></pre>
@@ -3535,7 +3449,7 @@ The files are temporarily stored in a folder in the local file system.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 @InboundChannelAdapter(channel = "new-file-channel", poller = @Poller(fixedDelay = "5000"))
 public MessageSource&lt;File&gt; synchronizerAdapter(Storage gcs) {
   GcsInboundFileSynchronizer synchronizer = new GcsInboundFileSynchronizer(gcs);
@@ -3546,7 +3460,8 @@ public MessageSource&lt;File&gt; synchronizerAdapter(Storage gcs) {
   synchAdapter.setLocalDirectory(new File("local-directory"));
 
   return synchAdapter;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -3560,14 +3475,15 @@ public MessageSource&lt;File&gt; synchronizerAdapter(Storage gcs) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 @InboundChannelAdapter(channel = "streaming-channel", poller = @Poller(fixedDelay = "5000"))
 public MessageSource&lt;InputStream&gt; streamingAdapter(Storage gcs) {
   GcsStreamingMessageSource adapter =
           new GcsStreamingMessageSource(new GcsRemoteFileTemplate(new GcsSessionFactory(gcs)));
   adapter.setRemoteDirectory("your-gcs-bucket");
   return adapter;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3585,14 +3501,15 @@ When it receives a <code>Message</code> containing a payload of type <code>File<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 @ServiceActivator(inputChannel = "writeFiles")
 public MessageHandler outboundChannelAdapter(Storage gcs) {
   GcsMessageHandler outboundChannelAdapter = new GcsMessageHandler(new GcsSessionFactory(gcs));
   outboundChannelAdapter.setRemoteDirectoryExpression(new ValueExpression&lt;&gt;("your-gcs-bucket"));
 
   return outboundChannelAdapter;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -3619,7 +3536,7 @@ public MessageHandler outboundChannelAdapter(Storage gcs) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-pubsub-stream-binder&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -3630,7 +3547,7 @@ public MessageHandler outboundChannelAdapter(Storage gcs) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-pubsub-stream-binder")
 }</code></pre>
 </div>
@@ -3707,7 +3624,7 @@ If synchronous sending is preferred (for example, to allow propagating errors ba
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.{PRODUCER_NAME}.destination=myEvents
+<pre class="highlight"><code>spring.cloud.stream.bindings.{PRODUCER_NAME}.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.auto-create-resources=true</code></pre>
 </div>
 </div>
@@ -3724,7 +3641,7 @@ These options are described in detail in the <a href="#inbound-channel-adapter-u
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs"># How to set the ACK mode of the consumer endpoint.
+<pre class="highlight"><code># How to set the ACK mode of the consumer endpoint.
 spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.ack-mode=AUTO_ACK</code></pre>
 </div>
 </div>
@@ -3752,7 +3669,7 @@ Then when the binder shuts down, the library automatically cleans up all Pub/Sub
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
+<pre class="highlight"><code>spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-resources=false</code></pre>
 </div>
 </div>
@@ -3765,7 +3682,7 @@ spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-res
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
+<pre class="highlight"><code>spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-resources=true
 
 # specify consumer group, and avoid anonymous consumer group generation
@@ -3824,14 +3741,15 @@ For example, for a consumer to allow only two headers, provide a comma separated
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public ConsumerEndpointCustomizer&lt;PubSubInboundChannelAdapter&gt; messageChannelAdapter() {
     return (endpoint, destinationName, group) -&gt; {
         NamedComponent namedComponent = (NamedComponent) endpoint.getOutputChannel();
         String channelName = namedComponent.getBeanName();
         endpoint.setErrorChannelName(channelName + ".errors");
     };
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -3844,7 +3762,7 @@ This means that the only requirement for turning your application into a sink is
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">@Bean
+<pre class="highlight"><code>@Bean
 public Consumer&lt;UserMessage&gt; logUserMessage() {
   return userMessage -&gt; {
     // process message
@@ -3859,7 +3777,7 @@ Alternatively, the function can return a reactive stream, which will be used as 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">@Bean
+<pre class="highlight"><code>@Bean
 Supplier&lt;Flux&lt;UserMessage&gt;&gt; generateUserMessages() {
   return () -&gt; /* flux creation logic */;
 }</code></pre>
@@ -3900,7 +3818,7 @@ The binder also creates anonymous subscriptions for each project using the <code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-bus-pubsub&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -3911,9 +3829,10 @@ The binder also creates anonymous subscriptions for each project using the <code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="groovy" class="language-groovy hljs">dependencies {
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-bus-pubsub")
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="sect2">
@@ -3980,7 +3899,7 @@ However, on Google Cloud, instead of running and maintaining your own Zipkin ins
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-trace&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -3991,7 +3910,7 @@ However, on Google Cloud, instead of running and maintaining your own Zipkin ins
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-trace")
 }</code></pre>
 </div>
@@ -4193,7 +4112,7 @@ Read <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsing
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">management.tracing.sampling.probability=1.0              # Send 100% of the request traces to Cloud Trace.</code></pre>
+<pre class="highlight"><code>management.tracing.sampling.probability=1.0              # Send 100% of the request traces to Cloud Trace.</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4231,7 +4150,7 @@ To do this you can use respectively <code>StackdriverTraceAutoConfiguration.REPO
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
 public class Application implements WebMvcConfigurer {
 
     public static void main(String[] args) {
@@ -4253,7 +4172,8 @@ public class Application implements WebMvcConfigurer {
             }
         });
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4276,7 +4196,7 @@ It&#8217;s set to <code>false</code> by default, but when set to <code>true</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs"># Enable Pub/Sub tracing using this property
+<pre class="highlight"><code># Enable Pub/Sub tracing using this property
 spring.cloud.gcp.trace.pubsub.enabled=true</code></pre>
 </div>
 </div>
@@ -4297,7 +4217,7 @@ spring.cloud.gcp.trace.pubsub.enabled=true</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-logging&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -4308,7 +4228,7 @@ spring.cloud.gcp.trace.pubsub.enabled=true</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-logging")
 }</code></pre>
 </div>
@@ -4380,7 +4300,7 @@ This appender builds a Cloud Logging log entry from a JUL or Logback log entry, 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;configuration&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
   &lt;include resource="com/google/cloud/spring/logging/logback-appender.xml" /&gt;
 
   &lt;root level="INFO"&gt;
@@ -4442,7 +4362,7 @@ This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;configuration&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
   &lt;include resource="com/google/cloud/spring/logging/logback-appender.xml" /&gt;
 
   &lt;appender name="ASYNC_STACKDRIVER" class="ch.qos.logback.classic.AsyncAppender"&gt;
@@ -4466,7 +4386,7 @@ This can also be set via the <code>STACKDRIVER_LOG_FLUSH_LEVEL</code> environmen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;configuration&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
   &lt;include resource="com/google/cloud/spring/logging/logback-json-appender.xml" /&gt;
 
   &lt;root level="INFO"&gt;
@@ -4614,7 +4534,7 @@ This setting is only evaluated if <code>includeFormattedMessage</code> is <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;configuration &gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration &gt;
   &lt;property name="projectId" value="${projectId:-${GOOGLE_CLOUD_PROJECT}}"/&gt;
 
   &lt;appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender"&gt;
@@ -4673,7 +4593,7 @@ Also, it can be customized.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-metrics&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -4684,7 +4604,7 @@ Also, it can be customized.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-metrics")
 }</code></pre>
 </div>
@@ -4760,7 +4680,7 @@ This could lead to the following warning inside your applications logs:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="txt" class="language-txt hljs">2022-08-15 10:26:00.248  WARN 1 --- [trics-publisher] i.m.s.StackdriverMeterRegistry           : failed to send metrics to Stackdriver</code></pre>
+<pre class="highlight"><code class="language-txt" data-lang="txt">2022-08-15 10:26:00.248  WARN 1 --- [trics-publisher] i.m.s.StackdriverMeterRegistry           : failed to send metrics to Stackdriver</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4768,7 +4688,7 @@ This could lead to the following warning inside your applications logs:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="txt" class="language-txt hljs">One or more TimeSeries could not be written:
+<pre class="highlight"><code class="language-txt" data-lang="txt">One or more TimeSeries could not be written:
 One or more points were written more frequently than the maximum sampling period configured for the metric.: global{} timeSeries[4]: custom.googleapis.com/process/uptime{};
 One or more points were written more frequently than the maximum sampling period configured for the metric.: global{} timeSeries[6]: custom.googleapis.com/system/load/average/1m{};
 One or more points ...</code></pre>
@@ -4779,7 +4699,7 @@ One or more points ...</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="txt" class="language-txt hljs">Caused by: io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2Exception: Header size exceeded max allowed size (10240)</code></pre>
+<pre class="highlight"><code class="language-txt" data-lang="txt">Caused by: io.grpc.netty.shaded.io.netty.handler.codec.http2.Http2Exception: Header size exceeded max allowed size (10240)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4791,7 +4711,7 @@ To avoid these conflicts and in order to distinguish between applications/instan
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">management:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">management:
   metrics:
     tags:
       app: my-foobar-service
@@ -4824,7 +4744,7 @@ Spring Framework on Google Cloud adds Spring Data support for <a href="https://c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-data-spanner&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -4835,7 +4755,7 @@ Spring Framework on Google Cloud adds Spring Data support for <a href="https://c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-data-spanner")
 }</code></pre>
 </div>
@@ -4849,7 +4769,7 @@ To use the starter, see the coordinates see below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-data-spanner&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -4860,7 +4780,7 @@ To use the starter, see the coordinates see below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-data-spanner")
 }</code></pre>
 </div>
@@ -5071,7 +4991,7 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "traders")
+<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "traders")
 public class Trader {
 
     @PrimaryKey
@@ -5084,7 +5004,8 @@ public class Trader {
 
     @NotMapped
     Double temporaryNumber;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5101,7 +5022,7 @@ Arguments that are not directly set to properties are not supported.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "traders")
+<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "traders")
 public class Trader {
     @PrimaryKey
     @Column(name = "trader_id")
@@ -5118,7 +5039,8 @@ public class Trader {
         this.traderId = traderId;
         this.firstName = firstName;
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -5139,10 +5061,11 @@ To do that, you can use <a href="https://docs.spring.io/spring/docs/current/spri
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "trades_#{tableNameSuffix}")
+<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "trades_#{tableNameSuffix}")
 public class Trade {
     // ...
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5164,7 +5087,7 @@ You have to annotate all of your POJO&#8217;s fields that the primary key consis
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "trades")
+<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "trades")
 public class Trade {
     @PrimaryKey(keyOrder = 2)
     @Column(name = "trade_id")
@@ -5181,7 +5104,8 @@ public class Trade {
     private Double shares;
 
     private String symbol;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5191,7 +5115,7 @@ In our example the DDL to create the table and its primary key is as follows:</p
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="sql" class="language-sql hljs">CREATE TABLE trades (
+<pre class="highlight"><code class="language-sql" data-lang="sql">CREATE TABLE trades (
     trader_id STRING(MAX),
     trade_id STRING(MAX),
     action STRING(15),
@@ -5252,7 +5176,7 @@ Embedding allows reuse of columns between multiple entities, and can be useful f
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class X {
+<pre class="highlight"><code class="language-java" data-lang="java">class X {
   @PrimaryKey
   String grandParentId;
 
@@ -5281,7 +5205,8 @@ class B {
 
   @Column(name = "child_value")
   String value;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5289,7 +5214,7 @@ class B {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="sql" class="language-sql hljs">CREATE TABLE items (
+<pre class="highlight"><code class="language-sql" data-lang="sql">CREATE TABLE items (
     grandParentId STRING(MAX),
     parentId STRING(MAX),
     id STRING(MAX),
@@ -5330,7 +5255,7 @@ Cloud Spanner also provides automatic cascading delete or enforces the deletion 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "Singers")
+<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "Singers")
 class Singer {
   @PrimaryKey
   long SingerId;
@@ -5354,7 +5279,8 @@ class Album {
   long AlbumId;
 
   String AlbumTitle;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5364,7 +5290,7 @@ The schema needed to create them can also be generated using the <code>SpannerSc
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 SpannerSchemaUtils schemaUtils;
 
 @Autowired
@@ -5375,7 +5301,8 @@ SpannerDatabaseAdminTemplate databaseAdmin;
 List&lt;String&gt; createStrings = this.schemaUtils.getCreateTableDdlStringsForInterleavedHierarchy(Singer.class);
 
 // Create the tables and also create the database if necessary
-this.databaseAdmin.executeDdlStrings(createStrings, true);</code></pre>
+this.databaseAdmin.executeDdlStrings(createStrings, true);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5383,7 +5310,7 @@ this.databaseAdmin.executeDdlStrings(createStrings, true);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="sql" class="language-sql hljs">CREATE TABLE Singers (
+<pre class="highlight"><code class="language-sql" data-lang="sql">CREATE TABLE Singers (
   SingerId   INT64 NOT NULL,
   FirstName  STRING(1024),
   LastName   STRING(1024),
@@ -5418,8 +5345,9 @@ On read, all of the interleaved child rows are also all read.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Interleaved(lazy = true)
-List&lt;Album&gt; albums;</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Interleaved(lazy = true)
+List&lt;Album&gt; albums;
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5444,7 +5372,7 @@ That can be easily achieved with the <code>@Where</code> annotation, which is de
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "participants")
+<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "participants")
 public class Participant {
   //...
   boolean active;
@@ -5459,7 +5387,8 @@ public class Agreement {
   List&lt;Participant&gt; participants;
   Person person;
   //...
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -5547,7 +5476,7 @@ Alternatively, you can also provide a customized bean of type <code>Gson</code> 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "traders")
+<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "traders")
 public class Trader {
 
     @PrimaryKey
@@ -5562,7 +5491,8 @@ public class Details {
     String name;
     String affiliation;
     Boolean isActive;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -5577,7 +5507,8 @@ public class Details {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Double&gt; curve;</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Double&gt; curve;
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5598,12 +5529,13 @@ Cloud Spanner requires STRUCT values appear in ARRAYs at the root level: <code>S
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class TwoInts {
+<pre class="highlight"><code class="language-java" data-lang="java">class TwoInts {
 
   int val1;
 
   int val2;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -5670,12 +5602,13 @@ Cloud Spanner requires STRUCT values appear in ARRAYs at the root level: <code>S
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table(name = "trades")
+<pre class="highlight"><code class="language-java" data-lang="java">@Table(name = "trades")
 public class Trade {
   //...
   Person person;
   //...
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5683,12 +5616,13 @@ public class Trade {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Person {
+<pre class="highlight"><code class="language-java" data-lang="java">public class Person {
 
   public String firstName;
   public String lastName;
 
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5696,7 +5630,7 @@ public class Trade {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">  public class PersonWriteConverter implements Converter&lt;Person, String&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">  public class PersonWriteConverter implements Converter&lt;Person, String&gt; {
 
     @Override
     public String convert(Person person) {
@@ -5713,7 +5647,8 @@ public class Trade {
       person.lastName = s.split(" ")[1];
       return person;
     }
-  }</code></pre>
+  }
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5721,7 +5656,7 @@ public class Trade {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 public class ConverterConfiguration {
 
     @Bean
@@ -5730,7 +5665,8 @@ public class ConverterConfiguration {
                 Arrays.asList(new PersonWriteConverter()),
                 Arrays.asList(new PersonReadConverter()));
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5770,7 +5706,7 @@ It provides:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
 public class SpannerTemplateExample {
 
     @Autowired
@@ -5786,7 +5722,8 @@ public class SpannerTemplateExample {
         List&lt;Trade&gt; tradesByAction = spannerTemplate.findAll(Trade.class);
         //...
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5857,7 +5794,8 @@ By using <code>SpannerTemplate</code>, you can run SQL queries that map to POJOs
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT * FROM trades"));</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT * FROM trades"));
+</code></pre>
 </div>
 </div>
 </div>
@@ -5871,7 +5809,8 @@ By using <code>SpannerTemplate</code>, you can run SQL queries that map to POJOs
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Trade&gt; trades = this.spannerTemplate.readAll(Trade.class);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Trade&gt; trades = this.spannerTemplate.readAll(Trade.class);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5894,9 +5833,10 @@ With <code>SpannerTemplate</code> you can specify the <code>Timestamp</code> by 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// a read with options:
+<pre class="highlight"><code class="language-java" data-lang="java">// a read with options:
 SpannerReadOptions spannerReadOptions = new SpannerReadOptions().setTimestamp(myTimestamp);
-List&lt;Trade&gt; trades = this.spannerTemplate.readAll(Trade.class, spannerReadOptions);</code></pre>
+List&lt;Trade&gt; trades = this.spannerTemplate.readAll(Trade.class, spannerReadOptions);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5904,9 +5844,10 @@ List&lt;Trade&gt; trades = this.spannerTemplate.readAll(Trade.class, spannerRead
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// a query with options:
+<pre class="highlight"><code class="language-java" data-lang="java">// a query with options:
 SpannerQueryOptions spannerQueryOptions = new SpannerQueryOptions().setTimestamp(myTimestamp);
-List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT * FROM trades"), spannerQueryOptions);</code></pre>
+List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT * FROM trades"), spannerQueryOptions);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5924,8 +5865,9 @@ Bounded staleness lets Cloud Spanner choose any point in time later than or equa
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">SpannerReadOptions spannerReadOptions = new SpannerReadOptions().setIndex("TradesByTrader");
-List&lt;Trade&gt; trades = this.spannerTemplate.readAll(Trade.class, spannerReadOptions);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">SpannerReadOptions spannerReadOptions = new SpannerReadOptions().setIndex("TradesByTrader");
+List&lt;Trade&gt; trades = this.spannerTemplate.readAll(Trade.class, spannerReadOptions);
+</code></pre>
 </div>
 </div>
 </div>
@@ -5937,8 +5879,9 @@ The following will get only the first two rows of the query:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">SpannerQueryOptions spannerQueryOptions = new SpannerQueryOptions().setLimit(2).setOffset(3);
-List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT * FROM trades"), spannerQueryOptions);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">SpannerQueryOptions spannerQueryOptions = new SpannerQueryOptions().setLimit(2).setOffset(3);
+List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT * FROM trades"), spannerQueryOptions);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5953,7 +5896,8 @@ However, queries on the Template API support sorting through standard SQL and al
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Trade&gt; trades = this.spannerTemplate.queryAll(Trade.class, Sort.by("action"));</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Trade&gt; trades = this.spannerTemplate.queryAll(Trade.class, Sort.by("action"));
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5963,7 +5907,8 @@ Sorting on columns of Cloud Spanner types STRING and BYTES can be done while ign
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Sort.by(Order.desc("action").ignoreCase())</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Sort.by(Order.desc("action").ignoreCase())
+</code></pre>
 </div>
 </div>
 </div>
@@ -5976,8 +5921,9 @@ This setting also applies to nested structs and their corresponding nested POJO 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT action, symbol FROM trades"),
-    new SpannerQueryOptions().setAllowMissingResultSetColumns(true));</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Trade&gt; trades = this.spannerTemplate.query(Trade.class, Statement.of("SELECT action, symbol FROM trades"),
+    new SpannerQueryOptions().setAllowMissingResultSetColumns(true));
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6054,8 +6000,9 @@ The row with the original primary key values will not be affected.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Trade t = new Trade();
-this.spannerTemplate.insert(t);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Trade t = new Trade();
+this.spannerTemplate.insert(t);
+</code></pre>
 </div>
 </div>
 </div>
@@ -6066,8 +6013,9 @@ this.spannerTemplate.insert(t);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// t was retrieved from a previous operation
-this.spannerTemplate.update(t);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">// t was retrieved from a previous operation
+this.spannerTemplate.update(t);
+</code></pre>
 </div>
 </div>
 </div>
@@ -6078,8 +6026,9 @@ this.spannerTemplate.update(t);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// t was retrieved from a previous operation or it's new
-this.spannerTemplate.upsert(t);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">// t was retrieved from a previous operation or it's new
+this.spannerTemplate.upsert(t);
+</code></pre>
 </div>
 </div>
 </div>
@@ -6092,8 +6041,9 @@ However, if the Optional is occupied by an empty set, then no columns will be wr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// t was retrieved from a previous operation or it's new
-this.spannerTemplate.update(t, "symbol", "action");</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">// t was retrieved from a previous operation or it's new
+this.spannerTemplate.update(t, "symbol", "action");
+</code></pre>
 </div>
 </div>
 </div>
@@ -6121,7 +6071,7 @@ Partitioned DML queries have performance benefits but also have restrictions and
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 SpannerOperations mySpannerOperations;
 
 public String doWorkInsideTransaction() {
@@ -6133,7 +6083,8 @@ public String doWorkInsideTransaction() {
       return "transaction completed";
     }
   );
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6162,7 +6113,7 @@ You can use this object just as you would a regular <code>SpannerOperations</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 SpannerOperations mySpannerOperations;
 
 public String doWorkInsideTransaction() {
@@ -6174,7 +6125,8 @@ public String doWorkInsideTransaction() {
       return "transaction completed";
     }
   );
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6218,7 +6170,8 @@ If a method annotated with <code>@Transactional</code> calls another method also
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Transactional(transactionManager = "spannerTransactionManager")</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Transactional(transactionManager = "spannerTransactionManager")
+</code></pre>
 </div>
 </div>
 </div>
@@ -6241,8 +6194,9 @@ DML statements can also be run in transactions by using <code>performReadWriteTr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TraderRepository extends SpannerRepository&lt;Trader, String&gt; {
-}</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TraderRepository extends SpannerRepository&lt;Trader, String&gt; {
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6261,14 +6215,15 @@ If the domain POJO type only has a single primary key column, then the primary k
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
 
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
 
     @Autowired
     SpannerTemplate spannerTemplate;
@@ -6293,7 +6248,8 @@ If the domain POJO type only has a single primary key column, then the primary k
         int count = this.tradeRepository.countByAction("BUY");
 
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="sect3">
@@ -6321,7 +6277,7 @@ These transactions work very similarly to those of <code>SpannerOperations</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 SpannerRepository myRepo;
 
 public String doWorkInsideTransaction() {
@@ -6333,7 +6289,8 @@ public String doWorkInsideTransaction() {
       return "transaction completed";
     }
   );
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6356,7 +6313,7 @@ Comparisons using Struct parameters are limited to <a href="https://cloud.google
 <h4 id="query-methods-by-convention"><a class="anchor" href="#query-methods-by-convention"></a><a class="link" href="#query-methods-by-convention">13.5.1. Query methods by convention</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
     List&lt;Trade&gt; findByAction(String action);
 
     int countByAction(String action);
@@ -6364,7 +6321,8 @@ Comparisons using Struct parameters are limited to <a href="https://cloud.google
     // Named methods are powerful, but can get unwieldy
     List&lt;Trade&gt; findTop3DistinctByActionAndSymbolIgnoreCaseOrTraderIdOrderBySymbolDesc(
             String action, String symbol, String traderId);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6378,7 +6336,7 @@ Comparisons using Struct parameters are limited to <a href="https://cloud.google
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="sql" class="language-sql hljs">SELECT DISTINCT * FROM trades
+<pre class="highlight"><code class="language-sql" data-lang="sql">SELECT DISTINCT * FROM trades
 WHERE ACTION = ? AND LOWER(SYMBOL) = LOWER(?) AND TRADER_ID = ?
 ORDER BY SYMBOL DESC
 LIMIT 3</code></pre>
@@ -6446,7 +6404,8 @@ The Spring Data "AllIgnoreCase" phrase appended at the end of the method name is
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Trade&gt; findBySymbolLike(String symbolFragment);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Trade&gt; findBySymbolLike(String symbolFragment);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6457,7 +6416,8 @@ The Spring Data "AllIgnoreCase" phrase appended at the end of the method name is
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Trade&gt; findBySymbolContains(String symbolFragment);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;Trade&gt; findBySymbolContains(String symbolFragment);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6513,11 +6473,12 @@ However, to ensure the correct sort order of the final result set, sort options 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    @Query("SELECT * FROM trades")
+<pre class="highlight"><code class="language-java" data-lang="java">    @Query("SELECT * FROM trades")
     List&lt;Trade&gt; fetchTrades(Pageable pageable);
 
     @Query("SELECT * FROM trades ORDER BY price DESC LIMIT 1")
-    Trade topTrade(Pageable pageable);</code></pre>
+    Trade topTrade(Pageable pageable);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6525,8 +6486,9 @@ However, to ensure the correct sort order of the final result set, sort options 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    List&lt;Trade&gt; customSortedTrades = tradeRepository.fetchTrades(PageRequest
-                .of(2, 2, org.springframework.data.domain.Sort.by(Order.asc("id"))));</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">    List&lt;Trade&gt; customSortedTrades = tradeRepository.fetchTrades(PageRequest
+                .of(2, 2, org.springframework.data.domain.Sort.by(Order.asc("id"))));
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6537,7 +6499,7 @@ However, to ensure the correct sort order of the final result set, sort options 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    @Query("SELECT COUNT(1) FROM trades WHERE action = @action")
+<pre class="highlight"><code class="language-java" data-lang="java">    @Query("SELECT COUNT(1) FROM trades WHERE action = @action")
     int countByActionQuery(String action);
 
     @Query("SELECT EXISTS(SELECT COUNT(1) FROM trades WHERE action = @action)")
@@ -6547,7 +6509,8 @@ However, to ensure the correct sort order of the final result set, sort options 
     String getFirstString(@Param("action") String action);
 
     @Query("SELECT action FROM trades WHERE action = @action")
-    List&lt;String&gt; getFirstStringList(@Param("action") String action);</code></pre>
+    List&lt;String&gt; getFirstStringList(@Param("action") String action);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6556,8 +6519,9 @@ The <code>dmlStatement</code> boolean setting must be set on <code>@Query</code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    @Query(value = "DELETE FROM trades WHERE action = @action", dmlStatement = true)
-    long deleteByActionQuery(String action);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">    @Query(value = "DELETE FROM trades WHERE action = @action", dmlStatement = true)
+    long deleteByActionQuery(String action);
+</code></pre>
 </div>
 </div>
 <div class="sect4">
@@ -6568,15 +6532,16 @@ You can specify the query for a method in the properties file by providing the S
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">Trade.fetchByActionNamedQuery=SELECT * FROM trades WHERE trades.action = @tag0</code></pre>
+<pre class="highlight"><code class="language-properties" data-lang="properties">Trade.fetchByActionNamedQuery=SELECT * FROM trades WHERE trades.action = @tag0</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
     // This method uses the query from the properties file instead of one generated based on name.
     List&lt;Trade&gt; fetchByActionNamedQuery(@Param("tag0") String action);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -6587,10 +6552,11 @@ You can specify the query for a method in the properties file by providing the S
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends SpannerRepository&lt;Trade, String[]&gt; {
     @Query("SELECT * FROM trades WHERE trades.action = @tag0")
     List&lt;Trade&gt; fetchByActionNamedQuery(@Param("tag0") String action);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6603,8 +6569,9 @@ A full example would look like:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("SELECT * FROM :com.example.Trade: WHERE trades.action = @tag0")
-List&lt;Trade&gt; fetchByActionNamedQuery(String action);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Query("SELECT * FROM :com.example.Trade: WHERE trades.action = @tag0")
+List&lt;Trade&gt; fetchByActionNamedQuery(String action);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6615,9 +6582,10 @@ List&lt;Trade&gt; fetchByActionNamedQuery(String action);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("SELECT * FROM :com.example.Trade: WHERE trades.action = @tag0
+<pre class="highlight"><code class="language-java" data-lang="java">@Query("SELECT * FROM :com.example.Trade: WHERE trades.action = @tag0
   AND price &gt; #{#priceRadius * -1} AND price &lt; #{#priceRadius * 2}")
-List&lt;Trade&gt; fetchByActionNamedQuery(String action, Double priceRadius);</code></pre>
+List&lt;Trade&gt; fetchByActionNamedQuery(String action, Double priceRadius);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6634,7 +6602,7 @@ You can define projection interfaces based on domain types and add query methods
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeProjection {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeProjection {
 
     String getAction();
 
@@ -6650,7 +6618,8 @@ public interface TradeRepository extends SpannerRepository&lt;Trade, Key&gt; {
 
     @Query("SELECT action, symbol FROM trades WHERE action = @action")
     List&lt;TradeProjection&gt; findByQuery(String action);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6692,7 +6661,7 @@ You can enable nullability checks. For more details please see <a href="https://
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
   &lt;artifactId&gt;spring-boot-starter-data-rest&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -6703,9 +6672,10 @@ You can enable nullability checks. For more details please see <a href="https://
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@RepositoryRestResource(collectionResourceRel = "trades", path = "trades")
+<pre class="highlight"><code class="language-java" data-lang="java">@RepositoryRestResource(collectionResourceRel = "trades", path = "trades")
 public interface TradeRepository extends SpannerRepository&lt;Trade, Key&gt; {
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -6728,14 +6698,15 @@ For classes that have composite keys (multiple <code>@PrimaryKey</code> fields),
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Component
+<pre class="highlight"><code class="language-java" data-lang="java">@Component
 class MySpecialIdConverter extends SpannerKeyIdConverter {
 
     @Override
     protected String getUrlIdSeparator() {
         return ":";
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6750,7 +6721,7 @@ class MySpecialIdConverter extends SpannerKeyIdConverter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 private SpannerSchemaUtils spannerSchemaUtils;
 
 @Autowired
@@ -6763,7 +6734,8 @@ public void createTable(SpannerPersistentEntity entity) {
       spannerDatabaseAdminTemplate.executeDdlStrings(Arrays.asList(
             spannerSchemaUtils.getCreateTableDDLString(entity.getType())), true);
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6839,7 +6811,7 @@ public void createTable(SpannerPersistentEntity entity) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Table
+<pre class="highlight"><code class="language-java" data-lang="java">@Table
 public class SimpleEntity {
     @PrimaryKey
     String id;
@@ -6849,7 +6821,8 @@ public class SimpleEntity {
 
     @LastModifiedDate
     DateTime lastTouched;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6860,7 +6833,7 @@ public class SimpleEntity {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 @EnableSpannerAuditing
 public class Config {
 
@@ -6868,7 +6841,8 @@ public class Config {
     public AuditorAware&lt;String&gt; auditorProvider() {
         return () -&gt; Optional.of("YOUR_USERNAME_HERE");
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6877,7 +6851,7 @@ One alternative is to use Spring Security&#8217;s <code>User</code> type:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class SpringSecurityAuditorAware implements AuditorAware&lt;User&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">class SpringSecurityAuditorAware implements AuditorAware&lt;User&gt; {
 
   public Optional&lt;User&gt; getCurrentAuditor() {
 
@@ -6887,7 +6861,8 @@ One alternative is to use Spring Security&#8217;s <code>User</code> type:</p>
               .map(Authentication::getPrincipal)
               .map(User.class::cast);
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6902,10 +6877,11 @@ The default bean uses the instance ID, database name, and project ID options you
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    @Bean
+<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
     public DatabaseIdProvider databaseIdProvider() {
         // return custom connection options provider
-    }</code></pre>
+    }
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6933,7 +6909,7 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -7067,7 +7043,7 @@ Spring Framework on Google Cloud adds Spring Data support for <a href="https://c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-data-datastore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -7078,7 +7054,7 @@ Spring Framework on Google Cloud adds Spring Data support for <a href="https://c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-data-datastore")
 }</code></pre>
 </div>
@@ -7092,7 +7068,7 @@ To use the starter, see the coordinates below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-data-datastore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -7103,7 +7079,7 @@ To use the starter, see the coordinates below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-data-datastore")
 }</code></pre>
 </div>
@@ -7270,7 +7246,7 @@ The emulator will be properly stopped after the Spring application context shutd
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity(name = "traders")
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity(name = "traders")
 public class Trader {
 
     @Id
@@ -7283,7 +7259,8 @@ public class Trader {
 
     @Transient
     Double temporaryNumber;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7300,7 +7277,7 @@ Arguments that are not directly set to properties are not supported.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity(name = "traders")
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity(name = "traders")
 public class Trader {
 
     @Id
@@ -7318,7 +7295,8 @@ public class Trader {
         this.traderId = traderId;
         this.firstName = firstName;
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -7338,7 +7316,7 @@ public class Trader {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity(name = "trades")
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity(name = "trades")
 public class Trade {
     @Id
     @Field(name = "trade_id")
@@ -7354,7 +7332,8 @@ public class Trade {
     Double shares;
 
     String symbol;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7469,7 +7448,7 @@ The <code>@Field</code> annotation optionally provides a different field name th
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity
 public class Singer {
 
     @Id
@@ -7478,7 +7457,8 @@ public class Singer {
     String name;
 
     Album album;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7486,11 +7466,12 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Album {
+<pre class="highlight"><code class="language-java" data-lang="java">public class Album {
     String albumName;
 
     LocalDate date;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7498,7 +7479,7 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    // Converter to write custom Album type
+<pre class="highlight"><code class="language-java" data-lang="java">    // Converter to write custom Album type
     static final Converter&lt;Album, String&gt; ALBUM_STRING_CONVERTER =
             new Converter&lt;Album, String&gt;() {
                 @Override
@@ -7515,7 +7496,8 @@ public class Singer {
                     String[] parts = s.split(" ");
                     return new Album(parts[0], LocalDate.parse(parts[parts.length - 1], DateTimeFormatter.ISO_DATE));
                 }
-            };</code></pre>
+            };
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7523,7 +7505,7 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 public class ConverterConfiguration {
     @Bean
     public DatastoreCustomConversions datastoreCustomConversions() {
@@ -7532,7 +7514,8 @@ public class ConverterConfiguration {
                         ALBUM_STRING_CONVERTER,
                         STRING_ALBUM_CONVERTER));
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -7563,7 +7546,7 @@ Instead of a field of type <code>Album</code>, we would like to have a field of 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity
 public class Singer {
 
     @Id
@@ -7572,7 +7555,8 @@ public class Singer {
     String name;
 
     Set&lt;Album&gt; albums;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7580,13 +7564,14 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">static final Converter&lt;List&lt;?&gt;, Set&lt;?&gt;&gt; LIST_SET_CONVERTER =
+<pre class="highlight"><code class="language-java" data-lang="java">static final Converter&lt;List&lt;?&gt;, Set&lt;?&gt;&gt; LIST_SET_CONVERTER =
             new Converter&lt;List&lt;?&gt;, Set&lt;?&gt;&gt;() {
                 @Override
                 public Set&lt;?&gt; convert(List&lt;?&gt; source) {
                     return Collections.unmodifiableSet(new HashSet&lt;&gt;(source));
                 }
-            };</code></pre>
+            };
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7594,7 +7579,7 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 public class ConverterConfiguration {
     @Bean
     public DatastoreCustomConversions datastoreCustomConversions() {
@@ -7604,7 +7589,8 @@ public class ConverterConfiguration {
                         ALBUM_STRING_CONVERTER,
                         STRING_ALBUM_CONVERTER));
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -7616,7 +7602,7 @@ When reading and querying entities using <code>DatastoreRepository</code> or <co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity(name = "pets")
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity(name = "pets")
 @DiscriminatorField(field = "pet_type")
 abstract class Pet {
     @Id
@@ -7647,7 +7633,8 @@ class Pug extends Dog {
     String speak() {
         return "woof woof";
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7696,7 +7683,7 @@ Any value set in the discrimination field will be overwritten upon write to Clou
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="json" class="language-json hljs">{
+<pre class="highlight"><code class="language-json" data-lang="json">{
   "name" : "Alexander",
   "age" : 47,
   "child" : {"name" : "Philip"  }
@@ -7708,10 +7695,10 @@ Any value set in the discrimination field will be overwritten upon write to Clou
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import org.springframework.data.annotation.Id;
 
-@Entity("parents")
+</span><span class="fold-block">@Entity("parents")
 public class Parent {
   @Id
   String name;
@@ -7722,7 +7709,8 @@ public class Parent {
 @Entity
 public class Child {
   String name;
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7753,11 +7741,11 @@ We can store trees in Cloud Datastore using this feature:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Embedded;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import com.google.cloud.spring.data.datastore.core.mapping.Embedded;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import org.springframework.data.annotation.Id;
 
-@Entity
+</span><span class="fold-block">@Entity
 public class EmbeddableTreeNode {
   @Id
   long value;
@@ -7775,7 +7763,8 @@ public class EmbeddableTreeNode {
     this.left = left;
     this.right = right;
   }
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="sect4">
@@ -7797,10 +7786,10 @@ To do that, we need to create a field of type <code>List&lt;EmbeddableTreeNode&g
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Embedded;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import com.google.cloud.spring.data.datastore.core.mapping.Embedded;
 import org.springframework.data.annotation.Id;
 
-public class EmbeddableTreeNode {
+</span><span class="fold-block">public class EmbeddableTreeNode {
   @Id
   long value;
 
@@ -7813,7 +7802,8 @@ public class EmbeddableTreeNode {
   public EmbeddableTreeNode(List&lt;EmbeddableTreeNode&gt; children) {
     this.children = children;
   }
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7846,11 +7836,11 @@ Instead, the relationship is captured in the descendants' keys, which refer to t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import org.springframework.data.annotation.Id;
 
-@Entity("orders")
+</span><span class="fold-block">@Entity("orders")
 public class ShoppingOrder {
   @Id
   long id;
@@ -7867,7 +7857,8 @@ public class Item {
   String name;
 
   Timestamp timeAddedToOrder;
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7945,10 +7936,10 @@ Because entity keys are immutable in Cloud Datastore, to change the key of a chi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import org.springframework.data.annotation.Reference;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import org.springframework.data.annotation.Reference;
 import org.springframework.data.annotation.Id;
 
-@Entity
+</span><span class="fold-block">@Entity
 public class ShoppingOrder {
   @Id
   long id;
@@ -7968,7 +7959,8 @@ public class Item {
   String name;
 
   Timestamp timeAddedToOrder;
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8007,7 +7999,7 @@ The order of collection-like reference properties is not preserved when reading 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
 public class DatastoreTemplateExample {
 
     @Autowired
@@ -8023,7 +8015,8 @@ public class DatastoreTemplateExample {
         List&lt;Trader&gt; traders = datastoreTemplate.findAll(Trader.class);
         //...
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8046,11 +8039,12 @@ public class DatastoreTemplateExample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">  &lt;T&gt; Iterable&lt;T&gt; query(Query&lt;? extends BaseEntity&gt; query, Class&lt;T&gt; entityClass);
+<pre class="highlight"><code class="language-java" data-lang="java">  &lt;T&gt; Iterable&lt;T&gt; query(Query&lt;? extends BaseEntity&gt; query, Class&lt;T&gt; entityClass);
 
   &lt;A, T&gt; Iterable&lt;T&gt; query(Query&lt;A&gt; query, Function&lt;A, T&gt; entityFunc);
 
-  Iterable&lt;Key&gt; queryKeys(Query&lt;Key&gt; query);</code></pre>
+  Iterable&lt;Key&gt; queryKeys(Query&lt;Key&gt; query);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8077,11 +8071,12 @@ public class DatastoreTemplateExample {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Trader trader = this.datastoreTemplate.findById("trader1", Trader.class);
+<pre class="highlight"><code class="language-java" data-lang="java">Trader trader = this.datastoreTemplate.findById("trader1", Trader.class);
 
 List&lt;Trader&gt; traders = this.datastoreTemplate.findAllById(Arrays.asList("trader1", "trader2"), Trader.class);
 
-List&lt;Trader&gt; allTraders = this.datastoreTemplate.findAll(Trader.class);</code></pre>
+List&lt;Trader&gt; allTraders = this.datastoreTemplate.findAll(Trader.class);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8099,9 +8094,9 @@ To disable indexing on a particular field, <code>@Unindexed</code> annotation ca
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
 
-public class ExampleItem {
+</span><span class="fold-block">public class ExampleItem {
     long indexedField;
 
     @Unindexed
@@ -8109,7 +8104,8 @@ public class ExampleItem {
 
     @Unindexed
     List&lt;String&gt; unindexedListField;
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8142,8 +8138,9 @@ The entity with the original ID value will not be affected.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Trader t = new Trader();
-this.datastoreTemplate.save(t);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Trader t = new Trader();
+this.datastoreTemplate.save(t);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8164,7 +8161,7 @@ In contrast, the <code>insert</code> method will fail if an entity already exist
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 DatastoreOperations myDatastoreOperations;
 
 public String doWorkInsideTransaction() {
@@ -8176,7 +8173,8 @@ public String doWorkInsideTransaction() {
       return "transaction completed";
     }
   );
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8209,7 +8207,8 @@ If a method annotated with <code>@Transactional</code> calls another method also
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Transactional(transactionManager = "datastoreTransactionManager")</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Transactional(transactionManager = "datastoreTransactionManager")
+</code></pre>
 </div>
 </div>
 </div>
@@ -8241,7 +8240,7 @@ Converters for custom value types can be added (see <a href="#custom-types">Cust
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Map&lt;String, Long&gt; map = new HashMap&lt;&gt;();
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Long&gt; map = new HashMap&lt;&gt;();
 map.put("field1", 1L);
 map.put("field2", 2L);
 map.put("field3", 3L);
@@ -8252,7 +8251,8 @@ keyForMap = datastoreTemplate.createKey("kindName", "id");
 datastoreTemplate.writeMap(keyForMap, map);
 
 // read a map
-Map&lt;String, Long&gt; loadedMap = datastoreTemplate.findByIdAsMap(keyForMap, Long.class);</code></pre>
+Map&lt;String, Long&gt; loadedMap = datastoreTemplate.findByIdAsMap(keyForMap, Long.class);
+</code></pre>
 </div>
 </div>
 </div>
@@ -8267,8 +8267,9 @@ Map&lt;String, Long&gt; loadedMap = datastoreTemplate.findByIdAsMap(keyForMap, L
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
-}</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8280,7 +8281,7 @@ The second type parameter, <code>String</code> in this case, refers to the type 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
 
     @Autowired
     TraderRepository traderRepository;
@@ -8297,7 +8298,8 @@ The second type parameter, <code>String</code> in this case, refers to the type 
 
         int count = this.traderRepository.count();
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8308,7 +8310,7 @@ Filtering parameters can be of types supported by your configured custom convert
 <h4 id="query-methods-by-convention-2"><a class="anchor" href="#query-methods-by-convention-2"></a><a class="link" href="#query-methods-by-convention-2">14.5.1. Query methods by convention</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&gt; {
   List&lt;Trader&gt; findByAction(String action);
 
   // throws an exception if no results
@@ -8334,7 +8336,8 @@ Filtering parameters can be of types supported by your configured custom convert
   List&lt;TestEntity&gt; findBySymbol(String symbol, Sort sort);
 
   Stream&lt;TestEntity&gt; findBySymbol(String symbol);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8477,8 +8480,9 @@ It enables dynamic query generation based on a user-provided object. See <a href
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">userRepository.findAll(
-    Example.of(new User(null, null, "Smith"))</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">userRepository.findAll(
+    Example.of(new User(null, null, "Smith"))
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8486,8 +8490,9 @@ It enables dynamic query generation based on a user-provided object. See <a href
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">userRepository.findAll(
-    Example.of(new User(null, null, "Smith"), ExampleMatcher.matching().withIncludeNullValues())</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">userRepository.findAll(
+    Example.of(new User(null, null, "Smith"), ExampleMatcher.matching().withIncludeNullValues())
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8529,7 +8534,7 @@ userRepository.findBy(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
 
   @Query("SELECT * FROM traders WHERE name = @trader_name")
   List&lt;Trader&gt; tradersByName(@Param("trader_name") String traderName);
@@ -8548,7 +8553,8 @@ userRepository.findBy(
 
   @Query("SELECT * FROM traders WHERE name = @trader_name")
   Page&lt;Trader&gt; tradersByNamePage(@Param("trader_name") String traderName, Pageable pageable);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8568,8 +8574,9 @@ userRepository.findBy(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs"> Slice&lt;Trader&gt; slice1 = tradersByNamePage("Dave", PageRequest.of(0, 5));
- Slice&lt;Trader&gt; slice2 = tradersByNamePage("Dave", slice1.getPageable().next());</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java"> Slice&lt;Trader&gt; slice1 = tradersByNamePage("Dave", PageRequest.of(0, 5));
+ Slice&lt;Trader&gt; slice2 = tradersByNamePage("Dave", slice1.getPageable().next());
+</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8636,11 +8643,12 @@ Selecting this special <code>__key__</code> column is especially useful and effi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query(value = "SELECT __key__ from test_entities_ci")
+<pre class="highlight"><code class="language-java" data-lang="java">@Query(value = "SELECT __key__ from test_entities_ci")
 List&lt;Key&gt; getKeys();
 
 @Query(value = "SELECT __key__ from test_entities_ci limit 1")
-Key getKey();</code></pre>
+Key getKey();
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8651,8 +8659,9 @@ Key getKey();</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("select * from  test_entities_ci where size = @size and __key__ = @id")
-LinkedList&lt;TestEntity&gt; findEntities(@Param("size") long size, @Param("id") Key id);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Query("select * from  test_entities_ci where size = @size and __key__ = @id")
+LinkedList&lt;TestEntity&gt; findEntities(@Param("size") long size, @Param("id") Key id);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8660,7 +8669,8 @@ LinkedList&lt;TestEntity&gt; findEntities(@Param("size") long size, @Param("id")
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">this.testEntityRepository.findEntities(1L, datastoreTemplate.createKey(TestEntity.class, 1L))</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">this.testEntityRepository.findEntities(1L, datastoreTemplate.createKey(TestEntity.class, 1L))
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8668,9 +8678,10 @@ LinkedList&lt;TestEntity&gt; findEntities(@Param("size") long size, @Param("id")
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("SELECT * FROM |com.example.Trade| WHERE trades.action = @act
+<pre class="highlight"><code class="language-java" data-lang="java">@Query("SELECT * FROM |com.example.Trade| WHERE trades.action = @act
   AND price &gt; :#{#priceRadius * -1} AND price &lt; :#{#priceRadius * 2}")
-List&lt;Trade&gt; fetchByActionNamedQuery(@Param("act") String action, @Param("priceRadius") Double r);</code></pre>
+List&lt;Trade&gt; fetchByActionNamedQuery(@Param("act") String action, @Param("priceRadius") Double r);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8684,8 +8695,9 @@ For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("SELECT * FROM |com.example.Trade| WHERE trades.action = @act")
-List&lt;Trade&gt; fetchByActionNamedQuery(@Param("act") String action);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Query("SELECT * FROM |com.example.Trade| WHERE trades.action = @act")
+List&lt;Trade&gt; fetchByActionNamedQuery(@Param("act") String action);
+</code></pre>
 </div>
 </div>
 </div>
@@ -8713,17 +8725,18 @@ annotated with <code>DiscriminatorField</code>.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">Trader.fetchByName=SELECT * FROM traders WHERE name = @tag0</code></pre>
+<pre class="highlight"><code class="language-properties" data-lang="properties">Trader.fetchByName=SELECT * FROM traders WHERE name = @tag0</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
 
     // This method uses the query from the properties file instead of one generated based on name.
     List&lt;Trader&gt; fetchByName(@Param("tag0") String traderName);
 
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -8738,7 +8751,7 @@ annotated with <code>DiscriminatorField</code>.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 DatastoreRepository myRepo;
 
 public String doWorkInsideTransaction() {
@@ -8750,7 +8763,8 @@ public String doWorkInsideTransaction() {
       return "transaction completed";
     }
   );
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -8762,7 +8776,7 @@ You can define projection interfaces based on domain types and add query methods
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeProjection {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeProjection {
 
     String getAction();
 
@@ -8778,7 +8792,8 @@ public interface TradeRepository extends DatastoreRepository&lt;Trade, Key&gt; {
 
     @Query("SELECT action, symbol FROM trades WHERE action = @action")
     List&lt;TradeProjection&gt; findByQuery(String action);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8798,7 +8813,7 @@ As a result, accessing underlying properties take the form <code>target.&lt;prop
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
   &lt;artifactId&gt;spring-boot-starter-data-rest&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -8809,9 +8824,10 @@ As a result, accessing underlying properties take the form <code>target.&lt;prop
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@RepositoryRestResource(collectionResourceRel = "trades", path = "trades")
+<pre class="highlight"><code class="language-java" data-lang="java">@RepositoryRestResource(collectionResourceRel = "trades", path = "trades")
 public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&gt; {
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8884,7 +8900,7 @@ public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity
 public class SimpleEntity {
     @Id
     String id;
@@ -8894,7 +8910,8 @@ public class SimpleEntity {
 
     @LastModifiedDate
     DateTime lastTouched;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8905,7 +8922,7 @@ public class SimpleEntity {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 @EnableDatastoreAuditing
 public class Config {
 
@@ -8913,7 +8930,8 @@ public class Config {
     public AuditorAware&lt;String&gt; auditorProvider() {
         return () -&gt; Optional.of("YOUR_USERNAME_HERE");
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8922,7 +8940,7 @@ One alternative is to use Spring Security&#8217;s <code>User</code> type:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class SpringSecurityAuditorAware implements AuditorAware&lt;User&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">class SpringSecurityAuditorAware implements AuditorAware&lt;User&gt; {
 
   public Optional&lt;User&gt; getCurrentAuditor() {
 
@@ -8932,7 +8950,8 @@ One alternative is to use Spring Security&#8217;s <code>User</code> type:</p>
               .map(Authentication::getPrincipal)
               .map(User.class::cast);
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8947,10 +8966,11 @@ This is the recommended method for multi-tenancy in Cloud Datastore.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    @Bean
+<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
     public DatastoreNamespaceProvider namespaceProvider() {
         // return custom Supplier of a namespace string.
-    }</code></pre>
+    }
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8973,7 +8993,7 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -9020,7 +9040,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-data-firestore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -9031,7 +9051,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-data-firestore")
 }</code></pre>
 </div>
@@ -9041,7 +9061,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-data-firestore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -9052,7 +9072,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-data-firestore")
 }</code></pre>
 </div>
@@ -9210,10 +9230,10 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.firestore.annotation.DocumentId;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.spring.data.firestore.Document;
 
-@Document(collectionName = "usersCollection")
+</span><span class="fold-block">@Document(collectionName = "usersCollection")
 public class User {
   /** Used to test @PropertyName annotation on a field. */
   @PropertyName("drink")
@@ -9240,7 +9260,8 @@ public class User {
   public void setAge(Integer age) {
     this.age = age;
   }
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9287,7 +9308,7 @@ They are stored as embedded documents (or arrays, correspondingly) in the Cloud 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Document(collectionName = "usersCollection")
+<pre class="highlight"><code class="language-java" data-lang="java">@Document(collectionName = "usersCollection")
 public class User {
   /** Used to test @PropertyName annotation on a field. */
   @PropertyName("drink")
@@ -9342,7 +9363,8 @@ public class User {
 
     public Address() {}
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -9357,7 +9379,7 @@ public class User {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface UserRepository extends FirestoreReactiveRepository&lt;User&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface UserRepository extends FirestoreReactiveRepository&lt;User&gt; {
   Flux&lt;User&gt; findBy(Pageable pageable);
 
   Flux&lt;User&gt; findByAge(Integer age);
@@ -9397,7 +9419,8 @@ public class User {
   Flux&lt;User&gt; findByPetsContainsAndAgeIn(String pets, List&lt;Integer&gt; ages);
 
   Mono&lt;Long&gt; countByAgeIsGreaterThan(Integer age);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9420,7 +9443,7 @@ You can refer to nested fields using <a href="https://docs.spring.io/spring-data
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
 
   @Autowired UserRepository userRepository;
 
@@ -9453,7 +9476,8 @@ You can refer to nested fields using <a href="https://docs.spring.io/spring-data
         .expectNext(0L)
         .verifyComplete();
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9482,7 +9506,7 @@ Custom queries with <code>@Query</code> annotation are not supported since there
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
 public class FirestoreTemplateExample {
 
     @Autowired
@@ -9500,7 +9524,8 @@ public class FirestoreTemplateExample {
     public Mono&lt;Long&gt; removeAllUsers() {
         return this.firestoreOperations.deleteAll(User.class);
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9524,7 +9549,7 @@ public class FirestoreTemplateExample {
 <h3 id="query-methods-by-convention-3"><a class="anchor" href="#query-methods-by-convention-3"></a><a class="link" href="#query-methods-by-convention-3">15.5. Query methods by convention</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
   void partTreeRepositoryMethodTest() {
     User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
     u1.favoriteDrink = "tea";
@@ -9562,7 +9587,8 @@ public class FirestoreTemplateExample {
                 .block())
         .containsExactly(u2);
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9629,9 +9655,10 @@ In order to use it, you would need to autowire <code>ReactiveFirestoreTransactio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
   @Autowired ReactiveFirestoreTransactionManager txManager;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9640,10 +9667,11 @@ Note that you can switch between read-only and read-write transactions using <co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+<pre class="highlight"><code class="language-java" data-lang="java">DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
 transactionDefinition.setReadOnly(false);
 TransactionalOperator operator =
-    TransactionalOperator.create(this.txManager, transactionDefinition);</code></pre>
+    TransactionalOperator.create(this.txManager, transactionDefinition);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9651,7 +9679,7 @@ TransactionalOperator operator =
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">User alice = new User("Alice", 29);
+<pre class="highlight"><code class="language-java" data-lang="java">User alice = new User("Alice", 29);
 User bob = new User("Bob", 60);
 
 this.userRepository
@@ -9672,7 +9700,8 @@ this.userRepository
     .block();
 
 assertThat(this.userRepository.findAll().map(User::getAge).collectList().block())
-    .containsExactlyInAnyOrder(28, 59);</code></pre>
+    .containsExactlyInAnyOrder(28, 59);
+</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9715,7 +9744,7 @@ If a method annotated with <code>@Transactional</code> calls another method also
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class UserService {
+<pre class="highlight"><code class="language-java" data-lang="java">class UserService {
   @Autowired private UserRepository userRepository;
 
   @Transactional
@@ -9729,7 +9758,8 @@ If a method annotated with <code>@Transactional</code> calls another method also
             })
         .then();
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -9741,10 +9771,11 @@ If a method annotated with <code>@Transactional</code> calls another method also
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public UserService userService() {
   return new UserService();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9752,9 +9783,10 @@ public UserService userService() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
   @Autowired UserService userService;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9792,8 +9824,9 @@ The parent doesn&#8217;t have to exist in Firestore, but should have a non-empty
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
-FirestoreReactiveOperations firestoreTemplate;</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+FirestoreReactiveOperations firestoreTemplate;
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9801,7 +9834,7 @@ FirestoreReactiveOperations firestoreTemplate;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">FirestoreReactiveOperations bobTemplate =
+<pre class="highlight"><code class="language-java" data-lang="java">FirestoreReactiveOperations bobTemplate =
     this.firestoreTemplate.withParent(new User("Bob", 60));
 
 PhoneNumber phoneNumber = new PhoneNumber("111-222-333");
@@ -9809,7 +9842,8 @@ bobTemplate.save(phoneNumber).block();
 assertThat(bobTemplate.findAll(PhoneNumber.class).collectList().block())
     .containsExactly(phoneNumber);
 bobTemplate.deleteAll(PhoneNumber.class).block();
-assertThat(bobTemplate.findAll(PhoneNumber.class).collectList().block()).isEmpty();</code></pre>
+assertThat(bobTemplate.findAll(PhoneNumber.class).collectList().block()).isEmpty();
+</code></pre>
 </div>
 </div>
 </div>
@@ -9821,8 +9855,9 @@ If you would like to retrieve it, you can add a field of <code>com.google.cloud.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@UpdateTime
-Timestamp updateTime;</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@UpdateTime
+Timestamp updateTime;
+</code></pre>
 </div>
 </div>
 <div class="sect4">
@@ -9833,8 +9868,9 @@ To enable that, you need to set <code>version</code> parameter to <code>true</co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@UpdateTime(version = true)
-Timestamp updateTime;</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@UpdateTime(version = true)
+Timestamp updateTime;
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9862,7 +9898,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-firestore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -9873,7 +9909,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-firestore")
 }</code></pre>
 </div>
@@ -9885,7 +9921,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 Firestore firestore;
 
  void writeDocumentFromObject() throws ExecutionException, InterruptedException {
@@ -9909,7 +9945,8 @@ Firestore firestore;
    LOGGER.info("read: " + user);
 
    return user;
- }</code></pre>
+ }
+</code></pre>
 </div>
 </div>
 </div>
@@ -10003,7 +10040,7 @@ Everything else is exactly the same as setting up redis-backed Spring caching.</
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-cache&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -10018,10 +10055,11 @@ Everything else is exactly the same as setting up redis-backed Spring caching.</
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Cacheable("cache1")
+<pre class="highlight"><code class="language-java" data-lang="java">@Cacheable("cache1")
 public String hello(@PathVariable String name) {
     ....
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -10057,7 +10095,7 @@ public String hello(@PathVariable String name) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-bigquery&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -10068,7 +10106,7 @@ public String hello(@PathVariable String name) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-bigquery")
 }</code></pre>
 </div>
@@ -10140,7 +10178,7 @@ public String hello(@PathVariable String name) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// BigQuery client object provided by our autoconfiguration.
+<pre class="highlight"><code class="language-java" data-lang="java">// BigQuery client object provided by our autoconfiguration.
 @Autowired
 BigQuery bigquery;
 
@@ -10155,7 +10193,8 @@ public void runQuery() throws InterruptedException {
       System.out.println(val);
     }
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -10175,7 +10214,7 @@ The autoconfigured <code>BigQueryTemplate</code> instance will use the dataset p
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// BigQuery client object provided by our autoconfiguration.
+<pre class="highlight"><code class="language-java" data-lang="java">// BigQuery client object provided by our autoconfiguration.
 @Autowired
 BigQueryTemplate bigQueryTemplate;
 
@@ -10188,7 +10227,8 @@ public void loadData(InputStream dataInputStream, String tableName) {
 
   // After the future is complete, the data is successfully loaded.
   Job job = bigQueryJobFuture.get();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -10197,7 +10237,7 @@ public void loadData(InputStream dataInputStream, String tableName) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// BigQuery client object provided by our autoconfiguration.
+<pre class="highlight"><code class="language-java" data-lang="java">// BigQuery client object provided by our autoconfiguration.
 @Autowired
 BigQueryTemplate bigQueryTemplate;
 
@@ -10216,7 +10256,8 @@ BigQueryTemplate bigQueryTemplate;
       // TODO(developer): process the List of StorageError
     }
     // else the write process has been successful
-  }</code></pre>
+  }
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -10225,7 +10266,7 @@ BigQueryTemplate bigQueryTemplate;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// BigQuery client object provided by our autoconfiguration.
+<pre class="highlight"><code class="language-java" data-lang="java">// BigQuery client object provided by our autoconfiguration.
 @Autowired
 BigQueryTemplate bigQueryTemplate;
 
@@ -10245,7 +10286,8 @@ BigQueryTemplate bigQueryTemplate;
       // TODO(developer): process the List of StorageError
     }
     // else the write process has been successful
-  }</code></pre>
+  }
+</code></pre>
 </div>
 </div>
 </div>
@@ -10261,7 +10303,7 @@ This is useful for incorporating BigQuery data loading operations in a Spring In
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public DirectChannel bigQueryWriteDataChannel() {
   return new DirectChannel();
 }
@@ -10278,7 +10320,8 @@ public MessageHandler messageSender(BigQueryTemplate bigQueryTemplate) {
   messageHandler.setFormatOptions(FormatOptions.csv());
   messageHandler.setOutputChannel(bigQueryJobReplyChannel());
   return messageHandler;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="sect3">
@@ -10403,7 +10446,7 @@ If <code>spring.cloud.gcp.security.iap.audience</code> is not provided, the appl
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">No qualifying bean of type 'com.google.cloud.spring.security.iap.AudienceProvider' available.</code></pre>
+<pre class="highlight"><code>No qualifying bean of type 'com.google.cloud.spring.security.iap.AudienceProvider' available.</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -10424,7 +10467,7 @@ If you create a custom <a href="https://docs.spring.io/spring-security/site/docs
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-security-iap&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -10435,7 +10478,7 @@ If you create a custom <a href="https://docs.spring.io/spring-security/site/docs
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-security-iap")
 }</code></pre>
 </div>
@@ -10556,7 +10599,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-vision&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -10567,7 +10610,7 @@ Modifying registry, algorithm, and header properties might be useful for testing
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-vision")
 }</code></pre>
 </div>
@@ -10623,7 +10666,7 @@ The storage starter is necessary because the Cloud Vision API will process your 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-vision&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -10638,7 +10681,7 @@ The storage starter is necessary because the Cloud Vision API will process your 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-vision")
   implementation("com.google.cloud:spring-cloud-gcp-starter-storage")
 }</code></pre>
@@ -10695,7 +10738,7 @@ Below is a code sample of how this is done using the Cloud Vision Spring Templat
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 private ResourceLoader resourceLoader;
 
 @Autowired
@@ -10706,7 +10749,8 @@ public void processImage() {
   AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(
       imageResource, Type.LABEL_DETECTION);
   System.out.println("Image Classification results: " + response.getLabelAnnotationsList());
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -10765,7 +10809,7 @@ Below is a code sample of how this is done using the Cloud Vision Spring Templat
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 private ResourceLoader resourceLoader;
 
 @Autowired
@@ -10782,7 +10826,8 @@ public void processPdf() {
     .forEach(
         annotateImageResponse -&gt;
             System.out.println(annotateImageResponse.getFullTextAnnotation().getText()));
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
@@ -10954,7 +10999,7 @@ A detailed summary of its features can be found in the <a href="https://cloud.go
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-secretmanager&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -10965,7 +11010,7 @@ A detailed summary of its features can be found in the <a href="https://cloud.go
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-secretmanager")
 }</code></pre>
 </div>
@@ -11036,7 +11081,7 @@ This allows you to specify and load secrets from Google Cloud Secret Manager as 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs"># 1. Long form - specify the project ID, secret ID, and version
+<pre class="highlight"><code># 1. Long form - specify the project ID, secret ID, and version
 sm://projects/&lt;project-id&gt;/secrets/&lt;secret-id&gt;/versions/&lt;version-id&gt;}
 
 # 2.  Long form - specify project ID, secret ID, and use latest version
@@ -11065,7 +11110,7 @@ sm://&lt;secret-id&gt;</code></pre>
 <p>In your <code>application.properties</code> file:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs"># Example of the project-secret long-form syntax.
+<pre class="highlight"><code># Example of the project-secret long-form syntax.
 spring.config.import=sm://
 spring.datasource.password=${sm://projects/my-gcp-project/secrets/my-secret}</code></pre>
 </div>
@@ -11078,7 +11123,7 @@ spring.datasource.password=${sm://projects/my-gcp-project/secrets/my-secret}</co
 <p>Access the value using the <code>@Value</code> annotation.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">// Example of using shortest form syntax.
+<pre class="highlight"><code>// Example of using shortest form syntax.
 @Value("${sm://my-secret}")</code></pre>
 </div>
 </div>
@@ -11096,8 +11141,9 @@ spring.datasource.password=${sm://projects/my-gcp-project/secrets/my-secret}</co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
-private SecretManagerTemplate secretManagerTemplate;</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+private SecretManagerTemplate secretManagerTemplate;
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -11115,7 +11161,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">&lt;dependency&gt;
+<pre class="highlight"><code>&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -11126,7 +11172,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">management.endpoints.web.exposure.include=refresh</code></pre>
+<pre class="highlight"><code>management.endpoints.web.exposure.include=refresh</code></pre>
 </div>
 </div>
 </li>
@@ -11137,7 +11183,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 <p>To refresh the secret, send the following command to your application sever:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">curl -X POST http://[host]:[port]/actuator/refresh</code></pre>
+<pre class="highlight"><code>curl -X POST http://[host]:[port]/actuator/refresh</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -11157,7 +11203,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">`spring.cloud.gcp.secretmanager.allow-default-secret=true`</code></pre>
+<pre class="highlight"><code>`spring.cloud.gcp.secretmanager.allow-default-secret=true`</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -11191,7 +11237,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-kms&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -11202,7 +11248,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-kms")
 }</code></pre>
 </div>
@@ -11266,7 +11312,7 @@ private SecretManagerTemplate secretManagerTemplate;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs"> 1. Shortest form - specify the key by key ring ID, and key ID.
+<pre class="highlight"><code> 1. Shortest form - specify the key by key ring ID, and key ID.
  The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
  the default Google Cloud project (such as using application-default-credentials) is used.
  The location is assumed to be `global`.
@@ -11326,7 +11372,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-config&lt;/artifactId&gt;
     &lt;version&gt;4.3.2-SNAPSHOT&lt;/version&gt;
@@ -11338,7 +11384,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     compile group: 'org.springframework.cloud',
     name: 'spring-cloud-gcp-starter-config',
     version: '4.3.2-SNAPSHOT'
@@ -11453,7 +11499,7 @@ In other words, if <code>spring.application.name</code> is <code>myapp</code> an
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">gcloud init # if this is your first Google Cloud SDK run.
+<pre class="highlight"><code>gcloud init # if this is your first Google Cloud SDK run.
 gcloud beta runtime-config configs create myapp_prod
 gcloud beta runtime-config configs variables set myapp.queue-size 25 --config-name myapp_prod</code></pre>
 </div>
@@ -11463,7 +11509,7 @@ gcloud beta runtime-config configs variables set myapp.queue-size 25 --config-na
 <p>Configure your <code>bootstrap.properties</code> file with your application&#8217;s configuration data:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.application.name=myapp
+<pre class="highlight"><code>spring.application.name=myapp
 spring.profiles.active=prod</code></pre>
 </div>
 </div>
@@ -11472,7 +11518,7 @@ spring.profiles.active=prod</code></pre>
 <p>Add the <code>@ConfigurationProperties</code> annotation to a Spring-managed bean:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">@Component
+<pre class="highlight"><code>@Component
 @ConfigurationProperties("myapp")
 public class SampleConfig {
 
@@ -11520,7 +11566,7 @@ public class SampleConfig {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 }</code></pre>
 </div>
@@ -11573,7 +11619,7 @@ Our Pub/Sub, Cloud Spanner, Storage, Cloud Trace and Cloud SQL MySQL and Postgre
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-cloudfoundry&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -11625,7 +11671,7 @@ The tag should simply be the Cloud Foundry name for the Google Service.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">$ cf create-user-provided-service user-spanner-service -t "google-spanner" ...</code></pre>
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ cf create-user-provided-service user-spanner-service -t "google-spanner" ...</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -11756,7 +11802,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <div class="listingblock">
 <div class="title">Before (pom.xml)</div>
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
   &lt;dependencies&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
@@ -11779,7 +11825,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <div class="listingblock">
 <div class="title">After (pom.xml)</div>
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
   &lt;dependencies&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;com.google.cloud&lt;/groupId&gt; <i class="conum" data-value="2"></i><b>(2)</b>
@@ -11865,7 +11911,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <div class="listingblock">
 <div class="title">logback-spring.xml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;configuration&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
   &lt;include resource="com/google/cloud/spring/logging/logback-appender.xml" /&gt;
   ...
 &lt;/configuration&gt;</code></pre>
@@ -11938,7 +11984,7 @@ This will allow you to not specify versions for any of the Maven dependencies an
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
     &lt;dependencies&gt;
         &lt;dependency&gt;
             &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
@@ -12152,10 +12198,10 @@ Note that <code>spring.cloud.gcp.trace.enabled=true</code> is still required if 
 </div>
 </div>
 </div>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script src="js/highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
-<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
-<script type="text/javascript" src="js/toc.js"></script>
+</div>
+  </div>
+</div>
 </body>
 </html>

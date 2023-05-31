@@ -6,164 +6,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Spring Data Cloud Firestore</title>
-<link rel="stylesheet" href="css/spring.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-
-</style>
-<script type="text/javascript">
-function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
-function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
-			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
-		}
-	});
-}
-
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
-function blockIdForSwitchItem(item) {
-	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
-	return idComponents.sort().join("-")
-}
-
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
-
-</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
 
 </head>
-<body class="book toc2 toc-left">
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
 <li><a href="#_spring_data_cloud_firestore">Spring Data Cloud Firestore</a>
 <ul class="sectlevel2">
 <li><a href="#_configuration">Configuration</a></li>
@@ -185,7 +51,7 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_spring_data_cloud_firestore"><a class="link" href="#_spring_data_cloud_firestore">Spring Data Cloud Firestore</a></h2>
+<h2 id="_spring_data_cloud_firestore"><a class="anchor" href="#_spring_data_cloud_firestore"></a><a class="link" href="#_spring_data_cloud_firestore">Spring Data Cloud Firestore</a></h2>
 <div class="sectionbody">
 <div class="admonitionblock note">
 <table>
@@ -209,7 +75,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-data-firestore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -220,7 +86,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-data-firestore")
 }</code></pre>
 </div>
@@ -230,7 +96,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-data-firestore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -241,15 +107,15 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-data-firestore")
 }</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<h3 id="_configuration"><a class="anchor" href="#_configuration"></a><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="sect3">
-<h4 id="_properties"><a class="link" href="#_properties">Properties</a></h4>
+<h4 id="_properties"><a class="anchor" href="#_properties"></a><a class="link" href="#_properties">Properties</a></h4>
 <div class="paragraph">
 <p>The Spring Boot starter for Google Cloud Firestore provides the following configuration options:</p>
 </div>
@@ -313,7 +179,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </table>
 </div>
 <div class="sect3">
-<h4 id="_supported_types"><a class="link" href="#_supported_types">Supported types</a></h4>
+<h4 id="_supported_types"><a class="anchor" href="#_supported_types"></a><a class="link" href="#_supported_types">Supported types</a></h4>
 <div class="paragraph">
 <p>You may use the following field types when defining your persistent entities or when binding query parameters:</p>
 </div>
@@ -365,7 +231,7 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 </div>
 </div>
 <div class="sect3">
-<h4 id="_reactive_repository_settings"><a class="link" href="#_reactive_repository_settings">Reactive Repository settings</a></h4>
+<h4 id="_reactive_repository_settings"><a class="anchor" href="#_reactive_repository_settings"></a><a class="link" href="#_reactive_repository_settings">Reactive Repository settings</a></h4>
 <div class="paragraph">
 <p>Spring Data Repositories can be configured via the <code>@EnableReactiveFirestoreRepositories</code> annotation on your main <code>@Configuration</code> class.
 With our Spring Boot Starter for Spring Data Cloud Firestore, <code>@EnableReactiveFirestoreRepositories</code> is automatically added.
@@ -373,7 +239,7 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 </div>
 <div class="sect3">
-<h4 id="_autoconfiguration"><a class="link" href="#_autoconfiguration">Autoconfiguration</a></h4>
+<h4 id="_autoconfiguration"><a class="anchor" href="#_autoconfiguration"></a><a class="link" href="#_autoconfiguration">Autoconfiguration</a></h4>
 <div class="paragraph">
 <p>Our Spring Boot autoconfiguration creates the following beans available in the Spring application context:</p>
 </div>
@@ -393,16 +259,16 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 </div>
 <div class="sect2">
-<h3 id="_object_mapping"><a class="link" href="#_object_mapping">Object Mapping</a></h3>
+<h3 id="_object_mapping"><a class="anchor" href="#_object_mapping"></a><a class="link" href="#_object_mapping">Object Mapping</a></h3>
 <div class="paragraph">
 <p>Spring Data Cloud Firestore allows you to map domain POJOs to <a href="https://firebase.google.com/docs/firestore/data-model#collections">Cloud Firestore collections</a> and documents via annotations:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.firestore.annotation.DocumentId;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.spring.data.firestore.Document;
 
-@Document(collectionName = "usersCollection")
+</span><span class="fold-block">@Document(collectionName = "usersCollection")
 public class User {
   /** Used to test @PropertyName annotation on a field. */
   @PropertyName("drink")
@@ -429,7 +295,8 @@ public class User {
   public void setAge(Integer age) {
     this.age = age;
   }
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -465,7 +332,7 @@ Internally we use Firestore client library object mapping. See <a href="https://
 </table>
 </div>
 <div class="sect3">
-<h4 id="_embedded_entities_and_lists"><a class="link" href="#_embedded_entities_and_lists">Embedded entities and lists</a></h4>
+<h4 id="_embedded_entities_and_lists"><a class="anchor" href="#_embedded_entities_and_lists"></a><a class="link" href="#_embedded_entities_and_lists">Embedded entities and lists</a></h4>
 <div class="paragraph">
 <p>Spring Data Cloud Firestore supports embedded properties of custom types and lists.
 Given a custom POJO definition, you can have properties of this type or lists of this type in your entities.
@@ -476,7 +343,7 @@ They are stored as embedded documents (or arrays, correspondingly) in the Cloud 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Document(collectionName = "usersCollection")
+<pre class="highlight"><code class="language-java" data-lang="java">@Document(collectionName = "usersCollection")
 public class User {
   /** Used to test @PropertyName annotation on a field. */
   @PropertyName("drink")
@@ -531,13 +398,14 @@ public class User {
 
     public Address() {}
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_reactive_repositories"><a class="link" href="#_reactive_repositories">Reactive Repositories</a></h3>
+<h3 id="_reactive_repositories"><a class="anchor" href="#_reactive_repositories"></a><a class="link" href="#_reactive_repositories">Reactive Repositories</a></h3>
 <div class="paragraph">
 <p><a href="https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/reactive/ReactiveCrudRepository.html">Spring Data Repositories</a> is an abstraction that can reduce boilerplate code.</p>
 </div>
@@ -546,7 +414,7 @@ public class User {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface UserRepository extends FirestoreReactiveRepository&lt;User&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface UserRepository extends FirestoreReactiveRepository&lt;User&gt; {
   Flux&lt;User&gt; findBy(Pageable pageable);
 
   Flux&lt;User&gt; findByAge(Integer age);
@@ -586,7 +454,8 @@ public class User {
   Flux&lt;User&gt; findByPetsContainsAndAgeIn(String pets, List&lt;Integer&gt; ages);
 
   Mono&lt;Long&gt; countByAgeIsGreaterThan(Integer age);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -609,7 +478,7 @@ You can refer to nested fields using <a href="https://docs.spring.io/spring-data
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
 
   @Autowired UserRepository userRepository;
 
@@ -642,7 +511,8 @@ You can refer to nested fields using <a href="https://docs.spring.io/spring-data
         .expectNext(0L)
         .verifyComplete();
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -662,7 +532,7 @@ Custom queries with <code>@Query</code> annotation are not supported since there
 </div>
 </div>
 <div class="sect2">
-<h3 id="_firestore_operations_template"><a class="link" href="#_firestore_operations_template">Firestore Operations &amp; Template</a></h3>
+<h3 id="_firestore_operations_template"><a class="anchor" href="#_firestore_operations_template"></a><a class="link" href="#_firestore_operations_template">Firestore Operations &amp; Template</a></h3>
 <div class="paragraph">
 <p><code>FirestoreOperations</code> and its implementation, <code>FirestoreTemplate</code>, provides the Template pattern familiar to Spring developers.</p>
 </div>
@@ -671,7 +541,7 @@ Custom queries with <code>@Query</code> annotation are not supported since there
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
 public class FirestoreTemplateExample {
 
 	@Autowired
@@ -689,7 +559,8 @@ public class FirestoreTemplateExample {
 	public Mono&lt;Long&gt; removeAllUsers() {
 		return this.firestoreOperations.deleteAll(User.class);
 	}
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -710,10 +581,10 @@ public class FirestoreTemplateExample {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_query_methods_by_convention"><a class="link" href="#_query_methods_by_convention">Query methods by convention</a></h3>
+<h3 id="_query_methods_by_convention"><a class="anchor" href="#_query_methods_by_convention"></a><a class="link" href="#_query_methods_by_convention">Query methods by convention</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
   void partTreeRepositoryMethodTest() {
     User u1 = new User("Cloud", 22, null, null, new Address("1 First st., NYC", "USA"));
     u1.favoriteDrink = "tea";
@@ -751,7 +622,8 @@ public class FirestoreTemplateExample {
                 .block())
         .containsExactly(u2);
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -811,16 +683,17 @@ If <code>in</code> operation is used in combination with <code>contains</code> o
 </div>
 </div>
 <div class="sect2">
-<h3 id="_transactions"><a class="link" href="#_transactions">Transactions</a></h3>
+<h3 id="_transactions"><a class="anchor" href="#_transactions"></a><a class="link" href="#_transactions">Transactions</a></h3>
 <div class="paragraph">
 <p>Read-only and read-write transactions are provided by <code>TransactionalOperator</code> (see this <a href="https://spring.io/blog/2019/05/16/reactive-transactions-with-spring">blog post</a> on reactive transactions for details).
 In order to use it, you would need to autowire <code>ReactiveFirestoreTransactionManager</code> like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
   @Autowired ReactiveFirestoreTransactionManager txManager;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -829,10 +702,11 @@ Note that you can switch between read-only and read-write transactions using <co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+<pre class="highlight"><code class="language-java" data-lang="java">DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
 transactionDefinition.setReadOnly(false);
 TransactionalOperator operator =
-    TransactionalOperator.create(this.txManager, transactionDefinition);</code></pre>
+    TransactionalOperator.create(this.txManager, transactionDefinition);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -840,7 +714,7 @@ TransactionalOperator operator =
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">User alice = new User("Alice", 29);
+<pre class="highlight"><code class="language-java" data-lang="java">User alice = new User("Alice", 29);
 User bob = new User("Bob", 60);
 
 this.userRepository
@@ -861,7 +735,8 @@ this.userRepository
     .block();
 
 assertThat(this.userRepository.findAll().map(User::getAge).collectList().block())
-    .containsExactlyInAnyOrder(28, 59);</code></pre>
+    .containsExactlyInAnyOrder(28, 59);
+</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -881,7 +756,7 @@ Otherwise, the commit operation is performed.
 </table>
 </div>
 <div class="sect3">
-<h4 id="_declarative_transactions_with_transactional_annotation"><a class="link" href="#_declarative_transactions_with_transactional_annotation">Declarative Transactions with @Transactional Annotation</a></h4>
+<h4 id="_declarative_transactions_with_transactional_annotation"><a class="anchor" href="#_declarative_transactions_with_transactional_annotation"></a><a class="link" href="#_declarative_transactions_with_transactional_annotation">Declarative Transactions with @Transactional Annotation</a></h4>
 <div class="paragraph">
 <p>This feature requires a bean of <code>SpannerTransactionManager</code>, which is provided when using <code>spring-cloud-gcp-starter-data-firestore</code>.</p>
 </div>
@@ -904,7 +779,7 @@ If a method annotated with <code>@Transactional</code> calls another method also
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class UserService {
+<pre class="highlight"><code class="language-java" data-lang="java">class UserService {
   @Autowired private UserRepository userRepository;
 
   @Transactional
@@ -918,7 +793,8 @@ If a method annotated with <code>@Transactional</code> calls another method also
             })
         .then();
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -930,10 +806,11 @@ If a method annotated with <code>@Transactional</code> calls another method also
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public UserService userService() {
   return new UserService();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -941,9 +818,10 @@ public UserService userService() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
   @Autowired UserService userService;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -954,7 +832,7 @@ If no error occurs, the transaction will be committed.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_subcollections"><a class="link" href="#_subcollections">Subcollections</a></h3>
+<h3 id="_subcollections"><a class="anchor" href="#_subcollections"></a><a class="link" href="#_subcollections">Subcollections</a></h3>
 <div class="paragraph">
 <p>A subcollection is a collection associated with a specific entity.
 Documents in subcollections can contain subcollections as well, allowing you to further nest data. You can nest data up to 100 levels deep.</p>
@@ -981,8 +859,9 @@ The parent doesn&#8217;t have to exist in Firestore, but should have a non-empty
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
-FirestoreReactiveOperations firestoreTemplate;</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+FirestoreReactiveOperations firestoreTemplate;
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -990,7 +869,7 @@ FirestoreReactiveOperations firestoreTemplate;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">FirestoreReactiveOperations bobTemplate =
+<pre class="highlight"><code class="language-java" data-lang="java">FirestoreReactiveOperations bobTemplate =
     this.firestoreTemplate.withParent(new User("Bob", 60));
 
 PhoneNumber phoneNumber = new PhoneNumber("111-222-333");
@@ -998,32 +877,35 @@ bobTemplate.save(phoneNumber).block();
 assertThat(bobTemplate.findAll(PhoneNumber.class).collectList().block())
     .containsExactly(phoneNumber);
 bobTemplate.deleteAll(PhoneNumber.class).block();
-assertThat(bobTemplate.findAll(PhoneNumber.class).collectList().block()).isEmpty();</code></pre>
+assertThat(bobTemplate.findAll(PhoneNumber.class).collectList().block()).isEmpty();
+</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_update_time_and_optimistic_locking"><a class="link" href="#_update_time_and_optimistic_locking">Update Time and Optimistic Locking</a></h3>
+<h3 id="_update_time_and_optimistic_locking"><a class="anchor" href="#_update_time_and_optimistic_locking"></a><a class="link" href="#_update_time_and_optimistic_locking">Update Time and Optimistic Locking</a></h3>
 <div class="paragraph">
 <p>Firestore stores update time for every document.
 If you would like to retrieve it, you can add a field of <code>com.google.cloud.Timestamp</code> type to your entity and annotate it with <code>@UpdateTime</code> annotation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@UpdateTime
-Timestamp updateTime;</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@UpdateTime
+Timestamp updateTime;
+</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_using_update_time_for_optimistic_locking"><a class="link" href="#_using_update_time_for_optimistic_locking">Using update time for optimistic locking</a></h5>
+<h5 id="_using_update_time_for_optimistic_locking"><a class="anchor" href="#_using_update_time_for_optimistic_locking"></a><a class="link" href="#_using_update_time_for_optimistic_locking">Using update time for optimistic locking</a></h5>
 <div class="paragraph">
 <p>A field annotated with <code>@UpdateTime</code> can be used for optimistic locking.
 To enable that, you need to set <code>version</code> parameter to <code>true</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@UpdateTime(version = true)
-Timestamp updateTime;</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@UpdateTime(version = true)
+Timestamp updateTime;
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1036,7 +918,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 </div>
 </div>
 <div class="sect2">
-<h3 id="_cloud_firestore_spring_boot_starter"><a class="link" href="#_cloud_firestore_spring_boot_starter">Cloud Firestore Spring Boot Starter</a></h3>
+<h3 id="_cloud_firestore_spring_boot_starter"><a class="anchor" href="#_cloud_firestore_spring_boot_starter"></a><a class="link" href="#_cloud_firestore_spring_boot_starter">Cloud Firestore Spring Boot Starter</a></h3>
 <div class="paragraph">
 <p>If you prefer using Firestore client only, Spring Framework on Google Cloud provides a convenience starter which automatically configures authentication settings and client objects needed to begin using <a href="https://cloud.google.com/firestore/">Google Cloud Firestore</a> in native mode.</p>
 </div>
@@ -1051,7 +933,7 @@ It uses this field&#8217;s value as a document version and checks that the versi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-firestore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1062,19 +944,19 @@ It uses this field&#8217;s value as a document version and checks that the versi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-firestore")
 }</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_using_cloud_firestore"><a class="link" href="#_using_cloud_firestore">Using Cloud Firestore</a></h4>
+<h4 id="_using_cloud_firestore"><a class="anchor" href="#_using_cloud_firestore"></a><a class="link" href="#_using_cloud_firestore">Using Cloud Firestore</a></h4>
 <div class="paragraph">
 <p>The starter automatically configures and registers a <code>Firestore</code> bean in the Spring application context. To start using it, simply use the <code>@Autowired</code> annotation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 Firestore firestore;
 
  void writeDocumentFromObject() throws ExecutionException, InterruptedException {
@@ -1098,13 +980,14 @@ Firestore firestore;
    LOGGER.info("read: " + user);
 
    return user;
- }</code></pre>
+ }
+</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_emulator_usage"><a class="link" href="#_emulator_usage">Emulator Usage</a></h3>
+<h3 id="_emulator_usage"><a class="anchor" href="#_emulator_usage"></a><a class="link" href="#_emulator_usage">Emulator Usage</a></h3>
 <div class="paragraph">
 <p>The Google Cloud Firebase SDK provides a local, in-memory emulator for Cloud Firestore, which you can use to develop and test your application.</p>
 </div>
@@ -1137,7 +1020,7 @@ spring.cloud.gcp.firestore.host-port=${EMULATOR_HOSTPORT}</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_samples"><a class="link" href="#_samples">Samples</a></h3>
+<h3 id="_samples"><a class="anchor" href="#_samples"></a><a class="link" href="#_samples">Samples</a></h3>
 <div class="paragraph">
 <p>Spring Framework on Google Cloud provides Firestore sample applications to demonstrate API usage:</p>
 </div>
@@ -1153,7 +1036,7 @@ spring.cloud.gcp.firestore.host-port=${EMULATOR_HOSTPORT}</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_test"><a class="link" href="#_test">Test</a></h3>
+<h3 id="_test"><a class="anchor" href="#_test"></a><a class="link" href="#_test">Test</a></h3>
 <div class="paragraph">
 <p><code>Testcontainers</code> provides a <code>gcloud</code> module which offers <code>FirestoreEmulatorContainer</code>. See more at the <a href="https://www.testcontainers.org/modules/gcloud/#firestore">docs</a></p>
 </div>
@@ -1161,10 +1044,10 @@ spring.cloud.gcp.firestore.host-port=${EMULATOR_HOSTPORT}</pre>
 </div>
 </div>
 </div>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script src="js/highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
-<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
-<script type="text/javascript" src="js/toc.js"></script>
+</div>
+  </div>
+</div>
 </body>
 </html>

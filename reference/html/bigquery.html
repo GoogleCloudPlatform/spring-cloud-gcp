@@ -6,164 +6,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>BigQuery</title>
-<link rel="stylesheet" href="css/spring.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-
-</style>
-<script type="text/javascript">
-function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
-function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
-			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
-		}
-	});
-}
-
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
-function blockIdForSwitchItem(item) {
-	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
-	return idComponents.sort().join("-")
-}
-
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
-
-</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
 
 </head>
-<body class="book toc2 toc-left">
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
 <li><a href="#_bigquery">BigQuery</a>
 <ul class="sectlevel2">
 <li><a href="#_configuration">Configuration</a></li>
@@ -176,7 +42,7 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_bigquery"><a class="link" href="#_bigquery">BigQuery</a></h2>
+<h2 id="_bigquery"><a class="anchor" href="#_bigquery"></a><a class="link" href="#_bigquery">BigQuery</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://cloud.google.com/bigquery">Google Cloud BigQuery</a> is a fully managed, petabyte scale, low cost analytics data warehouse.</p>
@@ -199,7 +65,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-bigquery&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -210,13 +76,13 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-bigquery")
 }</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<h3 id="_configuration"><a class="anchor" href="#_configuration"></a><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="paragraph">
 <p>The following application properties may be configured with Spring Framework on Google Cloud BigQuery libraries.</p>
 </div>
@@ -273,7 +139,7 @@ window.onload = function() {
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="_bigquery_client_object"><a class="link" href="#_bigquery_client_object">BigQuery Client Object</a></h4>
+<h4 id="_bigquery_client_object"><a class="anchor" href="#_bigquery_client_object"></a><a class="link" href="#_bigquery_client_object">BigQuery Client Object</a></h4>
 <div class="paragraph">
 <p>The <code>GcpBigQueryAutoConfiguration</code> class configures an instance of <a href="https://googleapis.dev/java/google-cloud-clients/latest/com/google/cloud/bigquery/BigQuery.html"><code>BigQuery</code></a> for you by inferring your credentials and Project ID from the machine&#8217;s environment.</p>
 </div>
@@ -282,7 +148,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// BigQuery client object provided by our autoconfiguration.
+<pre class="highlight"><code class="language-java" data-lang="java">// BigQuery client object provided by our autoconfiguration.
 @Autowired
 BigQuery bigquery;
 
@@ -297,7 +163,8 @@ public void runQuery() throws InterruptedException {
       System.out.println(val);
     }
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -306,7 +173,7 @@ For more information, see the <a href="https://cloud.google.com/bigquery/docs/re
 </div>
 </div>
 <div class="sect3">
-<h4 id="_bigquerytemplate"><a class="link" href="#_bigquerytemplate">BigQueryTemplate</a></h4>
+<h4 id="_bigquerytemplate"><a class="anchor" href="#_bigquerytemplate"></a><a class="link" href="#_bigquerytemplate">BigQueryTemplate</a></h4>
 <div class="paragraph">
 <p>The <code>BigQueryTemplate</code> class is a wrapper over the <code>BigQuery</code> client object and makes it easier to load data into BigQuery tables.
 A <code>BigQueryTemplate</code> is scoped to a single dataset.
@@ -317,7 +184,7 @@ The autoconfigured <code>BigQueryTemplate</code> instance will use the dataset p
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// BigQuery client object provided by our autoconfiguration.
+<pre class="highlight"><code class="language-java" data-lang="java">// BigQuery client object provided by our autoconfiguration.
 @Autowired
 BigQueryTemplate bigQueryTemplate;
 
@@ -330,7 +197,8 @@ public void loadData(InputStream dataInputStream, String tableName) {
 
   // After the future is complete, the data is successfully loaded.
   Job job = bigQueryJobFuture.get();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -339,7 +207,7 @@ public void loadData(InputStream dataInputStream, String tableName) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// BigQuery client object provided by our autoconfiguration.
+<pre class="highlight"><code class="language-java" data-lang="java">// BigQuery client object provided by our autoconfiguration.
 @Autowired
 BigQueryTemplate bigQueryTemplate;
 
@@ -358,7 +226,8 @@ BigQueryTemplate bigQueryTemplate;
       // TODO(developer): process the List of StorageError
     }
     // else the write process has been successful
-  }</code></pre>
+  }
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -367,7 +236,7 @@ BigQueryTemplate bigQueryTemplate;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// BigQuery client object provided by our autoconfiguration.
+<pre class="highlight"><code class="language-java" data-lang="java">// BigQuery client object provided by our autoconfiguration.
 @Autowired
 BigQueryTemplate bigQueryTemplate;
 
@@ -387,13 +256,14 @@ BigQueryTemplate bigQueryTemplate;
       // TODO(developer): process the List of StorageError
     }
     // else the write process has been successful
-  }</code></pre>
+  }
+</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_spring_integration"><a class="link" href="#_spring_integration">Spring Integration</a></h3>
+<h3 id="_spring_integration"><a class="anchor" href="#_spring_integration"></a><a class="link" href="#_spring_integration">Spring Integration</a></h3>
 <div class="paragraph">
 <p>Spring Framework on Google Cloud BigQuery also provides a Spring Integration message handler <code>BigQueryFileMessageHandler</code>.
 This is useful for incorporating BigQuery data loading operations in a Spring Integration pipeline.</p>
@@ -403,7 +273,7 @@ This is useful for incorporating BigQuery data loading operations in a Spring In
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public DirectChannel bigQueryWriteDataChannel() {
   return new DirectChannel();
 }
@@ -420,11 +290,12 @@ public MessageHandler messageSender(BigQueryTemplate bigQueryTemplate) {
   messageHandler.setFormatOptions(FormatOptions.csv());
   messageHandler.setOutputChannel(bigQueryJobReplyChannel());
   return messageHandler;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_bigquery_message_handling"><a class="link" href="#_bigquery_message_handling">BigQuery Message Handling</a></h4>
+<h4 id="_bigquery_message_handling"><a class="anchor" href="#_bigquery_message_handling"></a><a class="link" href="#_bigquery_message_handling">BigQuery Message Handling</a></h4>
 <div class="paragraph">
 <p>The <code>BigQueryFileMessageHandler</code> accepts the following message payload types for loading into BigQuery: <code>java.io.File</code>, <code>byte[]</code>, <code>org.springframework.core.io.Resource</code>, and <code>java.io.InputStream</code>.
 The message payload will be streamed and written to the BigQuery table you specify.</p>
@@ -458,7 +329,7 @@ The headers are specified by the class <code>BigQuerySpringMessageHeaders</code>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_bigquery_message_reply"><a class="link" href="#_bigquery_message_reply">BigQuery Message Reply</a></h4>
+<h4 id="_bigquery_message_reply"><a class="anchor" href="#_bigquery_message_reply"></a><a class="link" href="#_bigquery_message_reply">BigQuery Message Reply</a></h4>
 <div class="paragraph">
 <p>After the <code>BigQueryFileMessageHandler</code> processes a message to load data to your BigQuery table, it will respond with a <code>Job</code> on the reply channel.
 The <a href="https://googleapis.dev/java/google-cloud-clients/latest/index.html?com/google/cloud/bigquery/package-summary.html">Job object</a> provides metadata and information about the load file operation.</p>
@@ -486,7 +357,7 @@ This is needed to indicate that you wish to reply on the built-in async support 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
+<h3 id="_sample"><a class="anchor" href="#_sample"></a><a class="link" href="#_sample">Sample</a></h3>
 <div class="paragraph">
 <p>A BigQuery <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-bigquery-sample">sample application</a> is available.</p>
 </div>
@@ -494,10 +365,10 @@ This is needed to indicate that you wish to reply on the built-in async support 
 </div>
 </div>
 </div>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script src="js/highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
-<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
-<script type="text/javascript" src="js/toc.js"></script>
+</div>
+  </div>
+</div>
 </body>
 </html>

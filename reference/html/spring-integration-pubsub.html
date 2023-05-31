@@ -6,171 +6,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Channel Adapters for Cloud Pub/Sub</title>
-<link rel="stylesheet" href="css/spring.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-
-</style>
-<script type="text/javascript">
-function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
-function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
-			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
-		}
-	});
-}
-
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
-function blockIdForSwitchItem(item) {
-	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
-	return idComponents.sort().join("-")
-}
-
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
-
-</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
 
 </head>
-<body class="book toc2 toc-left">
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel2">
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel2">
 <li><a href="#_channel_adapters_for_cloud_pubsub">Channel Adapters for Cloud Pub/Sub</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect2">
-<h3 id="_channel_adapters_for_cloud_pubsub"><a class="link" href="#_channel_adapters_for_cloud_pubsub">Channel Adapters for Cloud Pub/Sub</a></h3>
+<h3 id="_channel_adapters_for_cloud_pubsub"><a class="anchor" href="#_channel_adapters_for_cloud_pubsub"></a><a class="link" href="#_channel_adapters_for_cloud_pubsub">Channel Adapters for Cloud Pub/Sub</a></h3>
 <div class="paragraph">
 <p>The channel adapters for Google Cloud Pub/Sub connect your Spring <a href="https://docs.spring.io/spring-integration/reference/html/channel.html"><code>MessageChannels</code></a> to Google Cloud Pub/Sub topics and subscriptions.
 This enables messaging between different processes, applications or microservices backed up by Google Cloud Pub/Sub.</p>
@@ -183,7 +49,7 @@ This enables messaging between different processes, applications or microservice
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
   &lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-pubsub&lt;/artifactId&gt;
@@ -200,14 +66,14 @@ This enables messaging between different processes, applications or microservice
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-pubsub")
     implementation("org.springframework.integration:spring-integration-core")
 }</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_inbound_channel_adapter_using_pubsub_streaming_pull"><a class="link" href="#_inbound_channel_adapter_using_pubsub_streaming_pull">Inbound channel adapter (using Pub/Sub Streaming Pull)</a></h4>
+<h4 id="_inbound_channel_adapter_using_pubsub_streaming_pull"><a class="anchor" href="#_inbound_channel_adapter_using_pubsub_streaming_pull"></a><a class="link" href="#_inbound_channel_adapter_using_pubsub_streaming_pull">Inbound channel adapter (using Pub/Sub Streaming Pull)</a></h4>
 <div class="paragraph">
 <p><code>PubSubInboundChannelAdapter</code> is the inbound channel adapter for Spring Framework on Google Cloud Pub/Sub that listens to a Spring Framework on Google Cloud Pub/Sub subscription for new messages.
 It converts new messages to an internal Spring <a href="https://docs.spring.io/spring-integration/reference/html/messaging-construction-chapter.html#message"><code>Message</code></a> and then sends it to the bound output channel.</p>
@@ -235,7 +101,7 @@ The subscription name could either be a short subscription name within the curre
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public MessageChannel pubsubInputChannel() {
     return new PublishSubscribeChannel();
 }
@@ -250,7 +116,8 @@ public PubSubInboundChannelAdapter messageChannelAdapter(
     adapter.setAckMode(AckMode.MANUAL);
 
     return adapter;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -264,7 +131,7 @@ It requires the channel we just created and a <code>SubscriberFactory</code>, wh
 The Spring Boot starter for Spring Framework on Google Cloud Pub/Sub provides a configured <code>PubSubSubscriberOperations</code> object.</p>
 </div>
 <div class="sect4">
-<h5 id="_acknowledging_messages_and_handling_failures"><a class="link" href="#_acknowledging_messages_and_handling_failures">Acknowledging messages and handling failures</a></h5>
+<h5 id="_acknowledging_messages_and_handling_failures"><a class="anchor" href="#_acknowledging_messages_and_handling_failures"></a><a class="link" href="#_acknowledging_messages_and_handling_failures">Acknowledging messages and handling failures</a></h5>
 <div class="paragraph">
 <p>When working with Cloud Pub/Sub, it is important to understand the concept of <code>ackDeadline</code>&#8201;&#8212;&#8201;the amount of time Cloud Pub/Sub will wait until attempting redelivery of an outstanding message.
 Each subscription has a default <code>ackDeadline</code> applied to all messages sent to it.
@@ -342,14 +209,14 @@ Cloud Pub/Sub will attempt redelivery according to subscription <code>ackDeadlin
 To trigger default error behavior (nacking in <code>AUTO</code> mode; neither acking nor nacking in <code>AUTO_ACK</code> mode), propagate the error back to the adapter by throwing an exception from the <a href="#_error_handling">Error Handling flow</a>.</p>
 </div>
 <div class="sect5">
-<h6 id="_manual_ackingnacking"><a class="link" href="#_manual_ackingnacking">Manual acking/nacking</a></h6>
+<h6 id="_manual_ackingnacking"><a class="anchor" href="#_manual_ackingnacking"></a><a class="link" href="#_manual_ackingnacking">Manual acking/nacking</a></h6>
 <div class="paragraph">
 <p>The adapter attaches a <code>BasicAcknowledgeablePubsubMessage</code> object to the <code>Message</code> headers.
 Users can extract the <code>BasicAcknowledgeablePubsubMessage</code> using the <code>GcpPubSubHeaders.ORIGINAL_MESSAGE</code> key and use it to ack (or nack) a message.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 @ServiceActivator(inputChannel = "pubsubInputChannel")
 public MessageHandler messageReceiver() {
     return message -&gt; {
@@ -358,12 +225,13 @@ public MessageHandler messageReceiver() {
               message.getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE, BasicAcknowledgeablePubsubMessage.class);
         originalMessage.ack();
     };
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
 <div class="sect5">
-<h6 id="_error_handling"><a class="link" href="#_error_handling">Error Handling</a></h6>
+<h6 id="_error_handling"><a class="anchor" href="#_error_handling"></a><a class="link" href="#_error_handling">Error Handling</a></h6>
 <div class="paragraph">
 <p>If you want to have more control over message processing in case of an error, you need to associate the <code>PubSubInboundChannelAdapter</code> with a Spring Integration error channel and specify the behavior to be invoked with <code>@ServiceActivator</code>.</p>
 </div>
@@ -382,7 +250,7 @@ Otherwise, the adapter will assume that processing completed successfully and wi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public MessageChannel pubsubInputChannel() {
     return new PublishSubscribeChannel();
 }
@@ -403,7 +271,8 @@ public PubSubInboundChannelAdapter messageChannelAdapter(
 @ServiceActivator(inputChannel =  "pubsubErrors")
 public void pubsubErrorHandler(Message&lt;MessagingException&gt; message) {
 	LOGGER.warn("This message will be automatically acked because error handler completes successfully");
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -411,7 +280,7 @@ public void pubsubErrorHandler(Message&lt;MessagingException&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@ServiceActivator(inputChannel =  "pubsubErrors")
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel =  "pubsubErrors")
 public void pubsubErrorHandler(Message&lt;MessagingException&gt; exceptionMessage) {
 
 	BasicAcknowledgeablePubsubMessage originalMessage =
@@ -419,14 +288,15 @@ public void pubsubErrorHandler(Message&lt;MessagingException&gt; exceptionMessag
 	    .getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE);
 
 	originalMessage.nack();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_pollable_message_source_using_pubsub_synchronous_pull"><a class="link" href="#_pollable_message_source_using_pubsub_synchronous_pull">Pollable Message Source (using Pub/Sub Synchronous Pull)</a></h4>
+<h4 id="_pollable_message_source_using_pubsub_synchronous_pull"><a class="anchor" href="#_pollable_message_source_using_pubsub_synchronous_pull"></a><a class="link" href="#_pollable_message_source_using_pubsub_synchronous_pull">Pollable Message Source (using Pub/Sub Synchronous Pull)</a></h4>
 <div class="paragraph">
 <p>While <code>PubSubInboundChannelAdapter</code>, through the underlying Asynchronous Pull Pub/Sub mechanism, provides the best performance for high-volume applications that receive a steady flow of messages, it can create load balancing anomalies due to message caching.
 This behavior is most obvious when publishing a large batch of small messages that take a long time to process individually.
@@ -461,7 +331,7 @@ The subscription name could either be a short subscription name within the curre
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 @InboundChannelAdapter(channel = "pubsubInputChannel", poller = @Poller(fixedDelay = "100"))
 public MessageSource&lt;Object&gt; pubsubAdapter(PubSubTemplate pubSubTemplate) {
 	PubSubMessageSource messageSource = new PubSubMessageSource(pubSubTemplate,  "exampleSubscription");
@@ -470,7 +340,8 @@ public MessageSource&lt;Object&gt; pubsubAdapter(PubSubTemplate pubSubTemplate) 
 	messageSource.setBlockOnPull(true);
 	messageSource.setMaxFetchSize(100);
 	return messageSource;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -483,13 +354,14 @@ The object can be used for manually (n)acking the message.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@ServiceActivator(inputChannel = "pubsubInputChannel")
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = "pubsubInputChannel")
 public void messageReceiver(String payload,
         @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) AcknowledgeablePubsubMessage message)
             throws InterruptedException {
     LOGGER.info("Message arrived by Synchronous Pull! Payload: " + payload);
     message.ack();
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -507,7 +379,7 @@ Streaming pull does not expose this information due to limitations of the underl
 </div>
 </div>
 <div class="sect3">
-<h4 id="_outbound_channel_adapter"><a class="link" href="#_outbound_channel_adapter">Outbound channel adapter</a></h4>
+<h4 id="_outbound_channel_adapter"><a class="anchor" href="#_outbound_channel_adapter"></a><a class="link" href="#_outbound_channel_adapter">Outbound channel adapter</a></h4>
 <div class="paragraph">
 <p><code>PubSubMessageHandler</code> is the outbound channel adapter for Spring Framework on Google Cloud Pub/Sub that listens for new messages on a Spring <code>MessageChannel</code>.
 It uses <code>PubSubTemplate</code> to post them to a Spring Framework on Google Cloud Pub/Sub topic.</p>
@@ -534,11 +406,12 @@ The topic name could either be a short topic name within the current project, or
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 @ServiceActivator(inputChannel = "pubsubOutputChannel")
 public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
     return new PubSubMessageHandler(pubsubTemplate, "topicName");
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -556,8 +429,9 @@ Both callbacks include the original message as the second argument.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">adapter.setSuccessCallback((ackId, message) -&gt; {});
-adapter.setFailureCallback((cause, message) -&gt; {});</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">adapter.setSuccessCallback((ackId, message) -&gt; {});
+adapter.setFailureCallback((cause, message) -&gt; {});
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -565,7 +439,7 @@ adapter.setFailureCallback((cause, message) -&gt; {});</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 private MessageChannel pubsubOutputChannel;
 
 public void handleMessage(Message&lt;?&gt; msg) throws MessagingException {
@@ -573,7 +447,8 @@ public void handleMessage(Message&lt;?&gt; msg) throws MessagingException {
         .withPayload(msg.getPayload())
         .setHeader(GcpPubSubHeaders.TOPIC, "customTopic").build();
     pubsubOutputChannel.send(message);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -581,13 +456,14 @@ public void handleMessage(Message&lt;?&gt; msg) throws MessagingException {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">PubSubMessageHandler adapter = new PubSubMessageHandler(pubSubTemplate, "myDefaultTopic");
-adapter.setTopicExpressionString("headers['sendToTopic']");</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">PubSubMessageHandler adapter = new PubSubMessageHandler(pubSubTemplate, "myDefaultTopic");
+adapter.setTopicExpressionString("headers['sendToTopic']");
+</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_header_mapping"><a class="link" href="#_header_mapping">Header mapping</a></h4>
+<h4 id="_header_mapping"><a class="anchor" href="#_header_mapping"></a><a class="link" href="#_header_mapping">Header mapping</a></h4>
 <div class="paragraph">
 <p>These channel adapters contain header mappers that allow you to map, or filter out, headers from Spring to Google Cloud Pub/Sub messages, and vice-versa.
 By default, the inbound channel adapter maps every header on the Google Cloud Pub/Sub messages to the Spring messages produced by the adapter.
@@ -606,11 +482,12 @@ Remember to set <code>spring.cloud.gcp.pubsub.publisher.enable-message-ordering<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">PubSubMessageHandler adapter = ...
+<pre class="highlight"><code class="language-java" data-lang="java">PubSubMessageHandler adapter = ...
 ...
 PubSubHeaderMapper headerMapper = new PubSubHeaderMapper();
 headerMapper.setOutboundHeaderPatterns("!foo", "!bar", "!prefix_*", "*");
-adapter.setHeaderMapper(headerMapper);</code></pre>
+adapter.setHeaderMapper(headerMapper);
+</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -632,7 +509,7 @@ However, because it comes last in the list, <a href="https://docs.spring.io/spri
 </div>
 </div>
 <div class="sect3">
-<h4 id="_samples"><a class="link" href="#_samples">Samples</a></h4>
+<h4 id="_samples"><a class="anchor" href="#_samples"></a><a class="link" href="#_samples">Samples</a></h4>
 <div class="paragraph">
 <p>Available examples:</p>
 </div>
@@ -652,10 +529,10 @@ However, because it comes last in the list, <a href="https://docs.spring.io/spri
 </div>
 </div>
 </div>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script src="js/highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
-<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
-<script type="text/javascript" src="js/toc.js"></script>
+</div>
+  </div>
+</div>
 </body>
 </html>

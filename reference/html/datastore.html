@@ -6,164 +6,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Spring Data Cloud Datastore</title>
-<link rel="stylesheet" href="css/spring.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-
-</style>
-<script type="text/javascript">
-function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
-function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
-			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
-		}
-	});
-}
-
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
-function blockIdForSwitchItem(item) {
-	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
-	return idComponents.sort().join("-")
-}
-
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
-
-</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
 
 </head>
-<body class="book toc2 toc-left">
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
 <li><a href="#spring-data-cloud-datastore">Spring Data Cloud Datastore</a>
 <ul class="sectlevel2">
 <li><a href="#_configuration">Configuration</a></li>
@@ -184,7 +50,7 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="spring-data-cloud-datastore"><a class="link" href="#spring-data-cloud-datastore">Spring Data Cloud Datastore</a></h2>
+<h2 id="spring-data-cloud-datastore"><a class="anchor" href="#spring-data-cloud-datastore"></a><a class="link" href="#spring-data-cloud-datastore">Spring Data Cloud Datastore</a></h2>
 <div class="sectionbody">
 <div class="admonitionblock note">
 <table>
@@ -207,7 +73,7 @@ Spring Framework on Google Cloud adds Spring Data support for <a href="https://c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-data-datastore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -218,7 +84,7 @@ Spring Framework on Google Cloud adds Spring Data support for <a href="https://c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-data-datastore")
 }</code></pre>
 </div>
@@ -232,7 +98,7 @@ To use the starter, see the coordinates below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-data-datastore&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -243,7 +109,7 @@ To use the starter, see the coordinates below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-data-datastore")
 }</code></pre>
 </div>
@@ -252,7 +118,7 @@ To use the starter, see the coordinates below.</p>
 <p>This setup takes care of bringing in the latest compatible version of Cloud Java Cloud Datastore libraries as well.</p>
 </div>
 <div class="sect2">
-<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<h3 id="_configuration"><a class="anchor" href="#_configuration"></a><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="paragraph">
 <p>To setup Spring Data Cloud Datastore, you have to configure the following:</p>
 </div>
@@ -264,7 +130,7 @@ To use the starter, see the coordinates below.</p>
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_cloud_datastore_settings"><a class="link" href="#_cloud_datastore_settings">Cloud Datastore settings</a></h4>
+<h4 id="_cloud_datastore_settings"><a class="anchor" href="#_cloud_datastore_settings"></a><a class="link" href="#_cloud_datastore_settings">Cloud Datastore settings</a></h4>
 <div class="paragraph">
 <p>You can use the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-datastore">Spring Boot Starter for Spring Data Datastore</a> to autoconfigure Google Cloud Datastore in your Spring application.
 It contains all the necessary setup that makes it easy to authenticate with your Google Cloud project.
@@ -360,7 +226,7 @@ The following configuration options are available:</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_repository_settings"><a class="link" href="#_repository_settings">Repository settings</a></h4>
+<h4 id="_repository_settings"><a class="anchor" href="#_repository_settings"></a><a class="link" href="#_repository_settings">Repository settings</a></h4>
 <div class="paragraph">
 <p>Spring Data Repositories can be configured via the <code>@EnableDatastoreRepositories</code> annotation on your main <code>@Configuration</code> class.
 With our Spring Boot Starter for Spring Data Cloud Datastore, <code>@EnableDatastoreRepositories</code> is automatically added.
@@ -368,7 +234,7 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 </div>
 <div class="sect3">
-<h4 id="_autoconfiguration"><a class="link" href="#_autoconfiguration">Autoconfiguration</a></h4>
+<h4 id="_autoconfiguration"><a class="anchor" href="#_autoconfiguration"></a><a class="link" href="#_autoconfiguration">Autoconfiguration</a></h4>
 <div class="paragraph">
 <p>Our Spring Boot autoconfiguration creates the following beans available in the Spring application context:</p>
 </div>
@@ -387,7 +253,7 @@ It is not required to add it to any other class, unless there is a need to overr
 </div>
 </div>
 <div class="sect3">
-<h4 id="_datastore_emulator_autoconfiguration"><a class="link" href="#_datastore_emulator_autoconfiguration">Datastore Emulator Autoconfiguration</a></h4>
+<h4 id="_datastore_emulator_autoconfiguration"><a class="anchor" href="#_datastore_emulator_autoconfiguration"></a><a class="link" href="#_datastore_emulator_autoconfiguration">Datastore Emulator Autoconfiguration</a></h4>
 <div class="paragraph">
 <p>This Spring Boot autoconfiguration can also configure and start a local Datastore Emulator server if enabled by property.</p>
 </div>
@@ -404,13 +270,13 @@ The emulator will be properly stopped after the Spring application context shutd
 </div>
 </div>
 <div class="sect2">
-<h3 id="_object_mapping"><a class="link" href="#_object_mapping">Object Mapping</a></h3>
+<h3 id="_object_mapping"><a class="anchor" href="#_object_mapping"></a><a class="link" href="#_object_mapping">Object Mapping</a></h3>
 <div class="paragraph">
 <p>Spring Data Cloud Datastore allows you to map domain POJOs to Cloud Datastore kinds and entities via annotations:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity(name = "traders")
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity(name = "traders")
 public class Trader {
 
 	@Id
@@ -423,7 +289,8 @@ public class Trader {
 
 	@Transient
 	Double temporaryNumber;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -431,7 +298,7 @@ public class Trader {
 These properties will not be written to or read from Cloud Datastore.</p>
 </div>
 <div class="sect3">
-<h4 id="_constructors"><a class="link" href="#_constructors">Constructors</a></h4>
+<h4 id="_constructors"><a class="anchor" href="#_constructors"></a><a class="link" href="#_constructors">Constructors</a></h4>
 <div class="paragraph">
 <p>Simple constructors are supported on POJOs.
 The constructor arguments can be a subset of the persistent properties.
@@ -440,7 +307,7 @@ Arguments that are not directly set to properties are not supported.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity(name = "traders")
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity(name = "traders")
 public class Trader {
 
 	@Id
@@ -458,18 +325,19 @@ public class Trader {
 	    this.traderId = traderId;
 	    this.firstName = firstName;
 	}
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_kind"><a class="link" href="#_kind">Kind</a></h4>
+<h4 id="_kind"><a class="anchor" href="#_kind"></a><a class="link" href="#_kind">Kind</a></h4>
 <div class="paragraph">
 <p>The <code>@Entity</code> annotation can provide the name of the Cloud Datastore kind that stores instances of the annotated class, one per row.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_keys"><a class="link" href="#_keys">Keys</a></h4>
+<h4 id="_keys"><a class="anchor" href="#_keys"></a><a class="link" href="#_keys">Keys</a></h4>
 <div class="paragraph">
 <p><code>@Id</code> identifies the property corresponding to the ID value.</p>
 </div>
@@ -478,7 +346,7 @@ public class Trader {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity(name = "trades")
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity(name = "trades")
 public class Trade {
 	@Id
 	@Field(name = "trade_id")
@@ -494,7 +362,8 @@ public class Trade {
 	Double shares;
 
 	String symbol;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -504,7 +373,7 @@ Because primitive <code>long</code> ID properties cannot be <code>null</code> an
 </div>
 </div>
 <div class="sect3">
-<h4 id="_fields"><a class="link" href="#_fields">Fields</a></h4>
+<h4 id="_fields"><a class="anchor" href="#_fields"></a><a class="link" href="#_fields">Fields</a></h4>
 <div class="paragraph">
 <p>All accessible properties on POJOs are automatically recognized as a Cloud Datastore field.
 Field naming is generated by the <code>PropertyNameFieldNamingStrategy</code> by default defined on the <code>DatastoreMappingContext</code> bean.
@@ -512,7 +381,7 @@ The <code>@Field</code> annotation optionally provides a different field name th
 </div>
 </div>
 <div class="sect3">
-<h4 id="_supported_types"><a class="link" href="#_supported_types">Supported Types</a></h4>
+<h4 id="_supported_types"><a class="anchor" href="#_supported_types"></a><a class="link" href="#_supported_types">Supported Types</a></h4>
 <div class="paragraph">
 <p>Spring Data Cloud Datastore supports the following types for regular fields and elements of collections:</p>
 </div>
@@ -584,7 +453,7 @@ The <code>@Field</code> annotation optionally provides a different field name th
 </div>
 </div>
 <div class="sect3">
-<h4 id="_custom_types"><a class="link" href="#_custom_types">Custom types</a></h4>
+<h4 id="_custom_types"><a class="anchor" href="#_custom_types"></a><a class="link" href="#_custom_types">Custom types</a></h4>
 <div class="paragraph">
 <p>Custom converters can be used extending the type support for user defined types.</p>
 </div>
@@ -609,7 +478,7 @@ The <code>@Field</code> annotation optionally provides a different field name th
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity
 public class Singer {
 
 	@Id
@@ -618,7 +487,8 @@ public class Singer {
 	String name;
 
 	Album album;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -626,11 +496,12 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Album {
+<pre class="highlight"><code class="language-java" data-lang="java">public class Album {
 	String albumName;
 
 	LocalDate date;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -638,7 +509,7 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">	// Converter to write custom Album type
+<pre class="highlight"><code class="language-java" data-lang="java">	// Converter to write custom Album type
 	static final Converter&lt;Album, String&gt; ALBUM_STRING_CONVERTER =
 			new Converter&lt;Album, String&gt;() {
 				@Override
@@ -655,7 +526,8 @@ public class Singer {
 					String[] parts = s.split(" ");
 					return new Album(parts[0], LocalDate.parse(parts[parts.length - 1], DateTimeFormatter.ISO_DATE));
 				}
-			};</code></pre>
+			};
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -663,7 +535,7 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 public class ConverterConfiguration {
 	@Bean
 	public DatastoreCustomConversions datastoreCustomConversions() {
@@ -672,12 +544,13 @@ public class ConverterConfiguration {
 						ALBUM_STRING_CONVERTER,
 						STRING_ALBUM_CONVERTER));
 	}
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_collections_and_arrays"><a class="link" href="#_collections_and_arrays">Collections and arrays</a></h4>
+<h4 id="_collections_and_arrays"><a class="anchor" href="#_collections_and_arrays"></a><a class="link" href="#_collections_and_arrays">Collections and arrays</a></h4>
 <div class="paragraph">
 <p>Arrays and collections (types that implement <code>java.util.Collection</code>) of supported types are supported.
 They are stored as <code>com.google.cloud.datastore.ListValue</code>.
@@ -686,7 +559,7 @@ Elements are converted to Cloud Datastore supported types individually. <code>by
 </div>
 </div>
 <div class="sect3">
-<h4 id="_custom_converter_for_collections"><a class="link" href="#_custom_converter_for_collections">Custom Converter for collections</a></h4>
+<h4 id="_custom_converter_for_collections"><a class="anchor" href="#_custom_converter_for_collections"></a><a class="link" href="#_custom_converter_for_collections">Custom Converter for collections</a></h4>
 <div class="paragraph">
 <p>Users can provide converters from  <code>List&lt;?&gt;</code> to the custom collection type.
 Only read converter is necessary, the Collection API is used on the write side to convert a collection to the internal list type.</p>
@@ -703,7 +576,7 @@ Instead of a field of type <code>Album</code>, we would like to have a field of 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity
 public class Singer {
 
 	@Id
@@ -712,7 +585,8 @@ public class Singer {
 	String name;
 
 	Set&lt;Album&gt; albums;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -720,13 +594,14 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">static final Converter&lt;List&lt;?&gt;, Set&lt;?&gt;&gt; LIST_SET_CONVERTER =
+<pre class="highlight"><code class="language-java" data-lang="java">static final Converter&lt;List&lt;?&gt;, Set&lt;?&gt;&gt; LIST_SET_CONVERTER =
 			new Converter&lt;List&lt;?&gt;, Set&lt;?&gt;&gt;() {
 				@Override
 				public Set&lt;?&gt; convert(List&lt;?&gt; source) {
 					return Collections.unmodifiableSet(new HashSet&lt;&gt;(source));
 				}
-			};</code></pre>
+			};
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -734,7 +609,7 @@ public class Singer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 public class ConverterConfiguration {
 	@Bean
 	public DatastoreCustomConversions datastoreCustomConversions() {
@@ -744,19 +619,20 @@ public class ConverterConfiguration {
 						ALBUM_STRING_CONVERTER,
 						STRING_ALBUM_CONVERTER));
 	}
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_inheritance_hierarchies"><a class="link" href="#_inheritance_hierarchies">Inheritance Hierarchies</a></h4>
+<h4 id="_inheritance_hierarchies"><a class="anchor" href="#_inheritance_hierarchies"></a><a class="link" href="#_inheritance_hierarchies">Inheritance Hierarchies</a></h4>
 <div class="paragraph">
 <p>Java entity types related by inheritance can be stored in the same Kind.
 When reading and querying entities using <code>DatastoreRepository</code> or <code>DatastoreTemplate</code> with a superclass as the type parameter, you can receive instances of subclasses if you annotate the superclass and its subclasses with <code>DiscriminatorField</code> and <code>DiscriminatorValue</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity(name = "pets")
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity(name = "pets")
 @DiscriminatorField(field = "pet_type")
 abstract class Pet {
 	@Id
@@ -787,7 +663,8 @@ class Pug extends Dog {
 	String speak() {
 		return "woof woof";
 	}
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -805,7 +682,7 @@ Any value set in the discrimination field will be overwritten upon write to Clou
 </div>
 </div>
 <div class="sect2">
-<h3 id="_relationships"><a class="link" href="#_relationships">Relationships</a></h3>
+<h3 id="_relationships"><a class="anchor" href="#_relationships"></a><a class="link" href="#_relationships">Relationships</a></h3>
 <div class="paragraph">
 <p>There are three ways to represent relationships between entities that are described in this section:</p>
 </div>
@@ -827,7 +704,7 @@ Any value set in the discrimination field will be overwritten upon write to Clou
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_embedded_entities"><a class="link" href="#_embedded_entities">Embedded Entities</a></h4>
+<h4 id="_embedded_entities"><a class="anchor" href="#_embedded_entities"></a><a class="link" href="#_embedded_entities">Embedded Entities</a></h4>
 <div class="paragraph">
 <p>Fields whose types are also annotated with <code>@Entity</code> are converted to <code>EntityValue</code> and stored inside the parent entity.</p>
 </div>
@@ -836,7 +713,7 @@ Any value set in the discrimination field will be overwritten upon write to Clou
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="json" class="language-json hljs">{
+<pre class="highlight"><code class="language-json" data-lang="json">{
   "name" : "Alexander",
   "age" : 47,
   "child" : {"name" : "Philip"  }
@@ -848,10 +725,10 @@ Any value set in the discrimination field will be overwritten upon write to Clou
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import org.springframework.data.annotation.Id;
 
-@Entity("parents")
+</span><span class="fold-block">@Entity("parents")
 public class Parent {
   @Id
   String name;
@@ -862,7 +739,8 @@ public class Parent {
 @Entity
 public class Child {
   String name;
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -893,11 +771,11 @@ We can store trees in Cloud Datastore using this feature:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Embedded;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import com.google.cloud.spring.data.datastore.core.mapping.Embedded;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import org.springframework.data.annotation.Id;
 
-@Entity
+</span><span class="fold-block">@Entity
 public class EmbeddableTreeNode {
   @Id
   long value;
@@ -915,11 +793,12 @@ public class EmbeddableTreeNode {
     this.left = left;
     this.right = right;
   }
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_maps"><a class="link" href="#_maps">Maps</a></h5>
+<h5 id="_maps"><a class="anchor" href="#_maps"></a><a class="link" href="#_maps">Maps</a></h5>
 <div class="paragraph">
 <p>Maps will be stored as embedded entities where the key values become the field names in the embedded entity.
 The value types in these maps can be any regularly supported property type, and the key values will be converted to String using the configured converters.</p>
@@ -937,10 +816,10 @@ To do that, we need to create a field of type <code>List&lt;EmbeddableTreeNode&g
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Embedded;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import com.google.cloud.spring.data.datastore.core.mapping.Embedded;
 import org.springframework.data.annotation.Id;
 
-public class EmbeddableTreeNode {
+</span><span class="fold-block">public class EmbeddableTreeNode {
   @Id
   long value;
 
@@ -953,7 +832,8 @@ public class EmbeddableTreeNode {
   public EmbeddableTreeNode(List&lt;EmbeddableTreeNode&gt; children) {
     this.children = children;
   }
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -975,7 +855,7 @@ public class EmbeddableTreeNode {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_ancestor_descendant_relationships"><a class="link" href="#_ancestor_descendant_relationships">Ancestor-Descendant Relationships</a></h4>
+<h4 id="_ancestor_descendant_relationships"><a class="anchor" href="#_ancestor_descendant_relationships"></a><a class="link" href="#_ancestor_descendant_relationships">Ancestor-Descendant Relationships</a></h4>
 <div class="paragraph">
 <p>Parent-child relationships are supported via the <code>@Descendants</code> annotation.</p>
 </div>
@@ -986,11 +866,11 @@ Instead, the relationship is captured in the descendants' keys, which refer to t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import org.springframework.data.annotation.Id;
 
-@Entity("orders")
+</span><span class="fold-block">@Entity("orders")
 public class ShoppingOrder {
   @Id
   long id;
@@ -1007,7 +887,8 @@ public class Item {
   String name;
 
   Timestamp timeAddedToOrder;
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1079,16 +960,16 @@ Because entity keys are immutable in Cloud Datastore, to change the key of a chi
 </div>
 </div>
 <div class="sect3">
-<h4 id="_key_reference_relationships"><a class="link" href="#_key_reference_relationships">Key Reference Relationships</a></h4>
+<h4 id="_key_reference_relationships"><a class="anchor" href="#_key_reference_relationships"></a><a class="link" href="#_key_reference_relationships">Key Reference Relationships</a></h4>
 <div class="paragraph">
 <p>General relationships can be stored using the <code>@Reference</code> annotation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import org.springframework.data.annotation.Reference;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import org.springframework.data.annotation.Reference;
 import org.springframework.data.annotation.Id;
 
-@Entity
+</span><span class="fold-block">@Entity
 public class ShoppingOrder {
   @Id
   long id;
@@ -1108,7 +989,8 @@ public class Item {
   String name;
 
   Timestamp timeAddedToOrder;
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1138,7 +1020,7 @@ The order of collection-like reference properties is not preserved when reading 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_datastore_operations_template"><a class="link" href="#_datastore_operations_template">Datastore Operations &amp; Template</a></h3>
+<h3 id="_datastore_operations_template"><a class="anchor" href="#_datastore_operations_template"></a><a class="link" href="#_datastore_operations_template">Datastore Operations &amp; Template</a></h3>
 <div class="paragraph">
 <p><code>DatastoreOperations</code> and its implementation, <code>DatastoreTemplate</code>, provides the Template pattern familiar to Spring developers.</p>
 </div>
@@ -1147,7 +1029,7 @@ The order of collection-like reference properties is not preserved when reading 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
 public class DatastoreTemplateExample {
 
 	@Autowired
@@ -1163,7 +1045,8 @@ public class DatastoreTemplateExample {
 		List&lt;Trader&gt; traders = datastoreTemplate.findAll(Trader.class);
 		//...
 	}
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1180,17 +1063,18 @@ public class DatastoreTemplateExample {
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_gql_query"><a class="link" href="#_gql_query">GQL Query</a></h4>
+<h4 id="_gql_query"><a class="anchor" href="#_gql_query"></a><a class="link" href="#_gql_query">GQL Query</a></h4>
 <div class="paragraph">
 <p>In addition to retrieving entities by their IDs, you can also submit queries.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">  &lt;T&gt; Iterable&lt;T&gt; query(Query&lt;? extends BaseEntity&gt; query, Class&lt;T&gt; entityClass);
+<pre class="highlight"><code class="language-java" data-lang="java">  &lt;T&gt; Iterable&lt;T&gt; query(Query&lt;? extends BaseEntity&gt; query, Class&lt;T&gt; entityClass);
 
   &lt;A, T&gt; Iterable&lt;T&gt; query(Query&lt;A&gt; query, Function&lt;A, T&gt; entityFunc);
 
-  Iterable&lt;Key&gt; queryKeys(Query&lt;Key&gt; query);</code></pre>
+  Iterable&lt;Key&gt; queryKeys(Query&lt;Key&gt; query);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1211,17 +1095,18 @@ public class DatastoreTemplateExample {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_find_by_ids"><a class="link" href="#_find_by_ids">Find by ID(s)</a></h4>
+<h4 id="_find_by_ids"><a class="anchor" href="#_find_by_ids"></a><a class="link" href="#_find_by_ids">Find by ID(s)</a></h4>
 <div class="paragraph">
 <p>Using <code>DatastoreTemplate</code> you can find entities by id. For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Trader trader = this.datastoreTemplate.findById("trader1", Trader.class);
+<pre class="highlight"><code class="language-java" data-lang="java">Trader trader = this.datastoreTemplate.findById("trader1", Trader.class);
 
 List&lt;Trader&gt; traders = this.datastoreTemplate.findAllById(Arrays.asList("trader1", "trader2"), Trader.class);
 
-List&lt;Trader&gt; allTraders = this.datastoreTemplate.findAll(Trader.class);</code></pre>
+List&lt;Trader&gt; allTraders = this.datastoreTemplate.findAll(Trader.class);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1229,7 +1114,7 @@ List&lt;Trader&gt; allTraders = this.datastoreTemplate.findAll(Trader.class);</c
 In the example above the first two reads utilize keys, while the third is run by using a query based on the corresponding Kind of <code>Trader</code>.</p>
 </div>
 <div class="sect4">
-<h5 id="_indexes"><a class="link" href="#_indexes">Indexes</a></h5>
+<h5 id="_indexes"><a class="anchor" href="#_indexes"></a><a class="link" href="#_indexes">Indexes</a></h5>
 <div class="paragraph">
 <p>By default, all fields are indexed.
 To disable indexing on a particular field, <code>@Unindexed</code> annotation can be used.</p>
@@ -1239,9 +1124,9 @@ To disable indexing on a particular field, <code>@Unindexed</code> annotation ca
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
+<pre class="highlight"><code class="language-java" data-lang="java"><span class="fold-block hide-when-folded">import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
 
-public class ExampleItem {
+</span><span class="fold-block">public class ExampleItem {
 	long indexedField;
 
 	@Unindexed
@@ -1249,7 +1134,8 @@ public class ExampleItem {
 
 	@Unindexed
 	List&lt;String&gt; unindexedListField;
-}</code></pre>
+}
+</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1257,21 +1143,21 @@ public class ExampleItem {
 </div>
 </div>
 <div class="sect4">
-<h5 id="_read_with_offsets_limits_and_sorting"><a class="link" href="#_read_with_offsets_limits_and_sorting">Read with offsets, limits, and sorting</a></h5>
+<h5 id="_read_with_offsets_limits_and_sorting"><a class="anchor" href="#_read_with_offsets_limits_and_sorting"></a><a class="link" href="#_read_with_offsets_limits_and_sorting">Read with offsets, limits, and sorting</a></h5>
 <div class="paragraph">
 <p><code>DatastoreRepository</code> and custom-defined entity repositories implement the Spring Data <code>PagingAndSortingRepository</code>, which supports offsets and limits using page numbers and page sizes.
 Paging and sorting options are also supported in <code>DatastoreTemplate</code> by supplying a <code>DatastoreQueryOptions</code> to <code>findAll</code>.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_partial_read"><a class="link" href="#_partial_read">Partial read</a></h5>
+<h5 id="_partial_read"><a class="anchor" href="#_partial_read"></a><a class="link" href="#_partial_read">Partial read</a></h5>
 <div class="paragraph">
 <p>This feature is not supported yet.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_write_update"><a class="link" href="#_write_update">Write / Update</a></h4>
+<h4 id="_write_update"><a class="anchor" href="#_write_update"></a><a class="link" href="#_write_update">Write / Update</a></h4>
 <div class="paragraph">
 <p>The write methods of <code>DatastoreOperations</code> accept a POJO and writes all of its properties to Datastore.
 The required Datastore kind and entity metadata is obtained from the given object&#8217;s actual type.</p>
@@ -1282,8 +1168,9 @@ The entity with the original ID value will not be affected.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Trader t = new Trader();
-this.datastoreTemplate.save(t);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Trader t = new Trader();
+this.datastoreTemplate.save(t);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1291,20 +1178,20 @@ this.datastoreTemplate.save(t);</code></pre>
 In contrast, the <code>insert</code> method will fail if an entity already exists.</p>
 </div>
 <div class="sect4">
-<h5 id="_partial_update"><a class="link" href="#_partial_update">Partial Update</a></h5>
+<h5 id="_partial_update"><a class="anchor" href="#_partial_update"></a><a class="link" href="#_partial_update">Partial Update</a></h5>
 <div class="paragraph">
 <p>This feature is not supported yet.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_transactions"><a class="link" href="#_transactions">Transactions</a></h4>
+<h4 id="_transactions"><a class="anchor" href="#_transactions"></a><a class="link" href="#_transactions">Transactions</a></h4>
 <div class="paragraph">
 <p>Read and write transactions are provided by <code>DatastoreOperations</code> via the <code>performTransaction</code> method:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 DatastoreOperations myDatastoreOperations;
 
 public String doWorkInsideTransaction() {
@@ -1316,7 +1203,8 @@ public String doWorkInsideTransaction() {
       return "transaction completed";
     }
   );
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1335,7 +1223,7 @@ You can use this object just as you would a regular <code>DatastoreOperations</c
 <p>Because of Cloud Datastore&#8217;s consistency guarantees, there are <a href="https://cloud.google.com/datastore/docs/concepts/transactions#what_can_be_done_in_a_transaction">limitations</a> to the operations and relationships among entities used inside transactions.</p>
 </div>
 <div class="sect4">
-<h5 id="_declarative_transactions_with_transactional_annotation"><a class="link" href="#_declarative_transactions_with_transactional_annotation">Declarative Transactions with @Transactional Annotation</a></h5>
+<h5 id="_declarative_transactions_with_transactional_annotation"><a class="anchor" href="#_declarative_transactions_with_transactional_annotation"></a><a class="link" href="#_declarative_transactions_with_transactional_annotation">Declarative Transactions with @Transactional Annotation</a></h5>
 <div class="paragraph">
 <p>This feature requires a bean of <code>DatastoreTransactionManager</code>, which is provided when using <code>spring-cloud-gcp-starter-data-datastore</code>.</p>
 </div>
@@ -1349,13 +1237,14 @@ If a method annotated with <code>@Transactional</code> calls another method also
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Transactional(transactionManager = "datastoreTransactionManager")</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Transactional(transactionManager = "datastoreTransactionManager")
+</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_read_write_support_for_maps"><a class="link" href="#_read_write_support_for_maps">Read-Write Support for Maps</a></h4>
+<h4 id="_read_write_support_for_maps"><a class="anchor" href="#_read_write_support_for_maps"></a><a class="link" href="#_read_write_support_for_maps">Read-Write Support for Maps</a></h4>
 <div class="paragraph">
 <p>You can work with Maps of type <code>Map&lt;String, ?&gt;</code> instead of with entity objects by directly reading and writing them to and from Cloud Datastore.</p>
 </div>
@@ -1381,7 +1270,7 @@ Converters for custom value types can be added (see <a href="#_custom_types">Cus
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Map&lt;String, Long&gt; map = new HashMap&lt;&gt;();
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Long&gt; map = new HashMap&lt;&gt;();
 map.put("field1", 1L);
 map.put("field2", 2L);
 map.put("field3", 3L);
@@ -1392,13 +1281,14 @@ keyForMap = datastoreTemplate.createKey("kindName", "id");
 datastoreTemplate.writeMap(keyForMap, map);
 
 // read a map
-Map&lt;String, Long&gt; loadedMap = datastoreTemplate.findByIdAsMap(keyForMap, Long.class);</code></pre>
+Map&lt;String, Long&gt; loadedMap = datastoreTemplate.findByIdAsMap(keyForMap, Long.class);
+</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_repositories"><a class="link" href="#_repositories">Repositories</a></h3>
+<h3 id="_repositories"><a class="anchor" href="#_repositories"></a><a class="link" href="#_repositories">Repositories</a></h3>
 <div class="paragraph">
 <p><a href="https://docs.spring.io/spring-data/data-commons/docs/current/reference/html/#repositories">Spring Data Repositories</a> are an abstraction that can reduce boilerplate code.</p>
 </div>
@@ -1407,8 +1297,9 @@ Map&lt;String, Long&gt; loadedMap = datastoreTemplate.findByIdAsMap(keyForMap, L
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
-}</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1420,7 +1311,7 @@ The second type parameter, <code>String</code> in this case, refers to the type 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyApplication {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
 
 	@Autowired
 	TraderRepository traderRepository;
@@ -1437,7 +1328,8 @@ The second type parameter, <code>String</code> in this case, refers to the type 
 
 		int count = this.traderRepository.count();
 	}
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1445,10 +1337,10 @@ The second type parameter, <code>String</code> in this case, refers to the type 
 Filtering parameters can be of types supported by your configured custom converters.</p>
 </div>
 <div class="sect3">
-<h4 id="_query_methods_by_convention"><a class="link" href="#_query_methods_by_convention">Query methods by convention</a></h4>
+<h4 id="_query_methods_by_convention"><a class="anchor" href="#_query_methods_by_convention"></a><a class="link" href="#_query_methods_by_convention">Query methods by convention</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&gt; {
   List&lt;Trader&gt; findByAction(String action);
 
   // throws an exception if no results
@@ -1474,7 +1366,8 @@ Filtering parameters can be of types supported by your configured custom convert
   List&lt;TestEntity&gt; findBySymbol(String symbol, Sort sort);
 
   Stream&lt;TestEntity&gt; findBySymbol(String symbol);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1566,7 +1459,7 @@ Methods that return <code>Slice</code>, on the other hand, do not run any additi
 </div>
 </div>
 <div class="sect3">
-<h4 id="_empty_result_handling_in_repository_methods"><a class="link" href="#_empty_result_handling_in_repository_methods">Empty result handling in repository methods</a></h4>
+<h4 id="_empty_result_handling_in_repository_methods"><a class="anchor" href="#_empty_result_handling_in_repository_methods"></a><a class="link" href="#_empty_result_handling_in_repository_methods">Empty result handling in repository methods</a></h4>
 <div class="paragraph">
 <p>Java <code>java.util.Optional</code> can be used to indicate the potential absence of a return value.</p>
 </div>
@@ -1589,13 +1482,13 @@ You can enable nullability checks. For more details please see <a href="https://
 </div>
 </div>
 <div class="sect3">
-<h4 id="_query_by_example"><a class="link" href="#_query_by_example">Query by example</a></h4>
+<h4 id="_query_by_example"><a class="anchor" href="#_query_by_example"></a><a class="link" href="#_query_by_example">Query by example</a></h4>
 <div class="paragraph">
 <p>Query by Example is an alternative querying technique.
 It enables dynamic query generation based on a user-provided object. See <a href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#query-by-example">Spring Data Documentation</a> for details.</p>
 </div>
 <div class="sect4">
-<h5 id="_unsupported_features"><a class="link" href="#_unsupported_features">Unsupported features:</a></h5>
+<h5 id="_unsupported_features"><a class="anchor" href="#_unsupported_features"></a><a class="link" href="#_unsupported_features">Unsupported features:</a></h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1617,8 +1510,9 @@ It enables dynamic query generation based on a user-provided object. See <a href
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">userRepository.findAll(
-    Example.of(new User(null, null, "Smith"))</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">userRepository.findAll(
+    Example.of(new User(null, null, "Smith"))
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1626,8 +1520,9 @@ It enables dynamic query generation based on a user-provided object. See <a href
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">userRepository.findAll(
-    Example.of(new User(null, null, "Smith"), ExampleMatcher.matching().withIncludeNullValues())</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">userRepository.findAll(
+    Example.of(new User(null, null, "Smith"), ExampleMatcher.matching().withIncludeNullValues())
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1645,7 +1540,7 @@ userRepository.findBy(
 </div>
 </div>
 <div class="sect3">
-<h4 id="_custom_gql_query_methods"><a class="link" href="#_custom_gql_query_methods">Custom GQL query methods</a></h4>
+<h4 id="_custom_gql_query_methods"><a class="anchor" href="#_custom_gql_query_methods"></a><a class="link" href="#_custom_gql_query_methods">Custom GQL query methods</a></h4>
 <div class="paragraph">
 <p>Custom GQL queries can be mapped to repository methods in one of two ways:</p>
 </div>
@@ -1660,7 +1555,7 @@ userRepository.findBy(
 </ul>
 </div>
 <div class="sect4">
-<h5 id="_query_methods_with_annotation"><a class="link" href="#_query_methods_with_annotation">Query methods with annotation</a></h5>
+<h5 id="_query_methods_with_annotation"><a class="anchor" href="#_query_methods_with_annotation"></a><a class="link" href="#_query_methods_with_annotation">Query methods with annotation</a></h5>
 <div class="paragraph">
 <p>Using the <code>@Query</code> annotation:</p>
 </div>
@@ -1669,7 +1564,7 @@ userRepository.findBy(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
 
   @Query("SELECT * FROM traders WHERE name = @trader_name")
   List&lt;Trader&gt; tradersByName(@Param("trader_name") String traderName);
@@ -1688,7 +1583,8 @@ userRepository.findBy(
 
   @Query("SELECT * FROM traders WHERE name = @trader_name")
   Page&lt;Trader&gt; tradersByNamePage(@Param("trader_name") String traderName, Pageable pageable);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1708,8 +1604,9 @@ userRepository.findBy(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs"> Slice&lt;Trader&gt; slice1 = tradersByNamePage("Dave", PageRequest.of(0, 5));
- Slice&lt;Trader&gt; slice2 = tradersByNamePage("Dave", slice1.getPageable().next());</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java"> Slice&lt;Trader&gt; slice1 = tradersByNamePage("Dave", PageRequest.of(0, 5));
+ Slice&lt;Trader&gt; slice2 = tradersByNamePage("Dave", slice1.getPageable().next());
+</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1776,11 +1673,12 @@ Selecting this special <code>__key__</code> column is especially useful and effi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query(value = "SELECT __key__ from test_entities_ci")
+<pre class="highlight"><code class="language-java" data-lang="java">@Query(value = "SELECT __key__ from test_entities_ci")
 List&lt;Key&gt; getKeys();
 
 @Query(value = "SELECT __key__ from test_entities_ci limit 1")
-Key getKey();</code></pre>
+Key getKey();
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1791,8 +1689,9 @@ Key getKey();</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("select * from  test_entities_ci where size = @size and __key__ = @id")
-LinkedList&lt;TestEntity&gt; findEntities(@Param("size") long size, @Param("id") Key id);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Query("select * from  test_entities_ci where size = @size and __key__ = @id")
+LinkedList&lt;TestEntity&gt; findEntities(@Param("size") long size, @Param("id") Key id);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1800,7 +1699,8 @@ LinkedList&lt;TestEntity&gt; findEntities(@Param("size") long size, @Param("id")
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">this.testEntityRepository.findEntities(1L, datastoreTemplate.createKey(TestEntity.class, 1L))</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">this.testEntityRepository.findEntities(1L, datastoreTemplate.createKey(TestEntity.class, 1L))
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1808,9 +1708,10 @@ LinkedList&lt;TestEntity&gt; findEntities(@Param("size") long size, @Param("id")
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("SELECT * FROM |com.example.Trade| WHERE trades.action = @act
+<pre class="highlight"><code class="language-java" data-lang="java">@Query("SELECT * FROM |com.example.Trade| WHERE trades.action = @act
   AND price &gt; :#{#priceRadius * -1} AND price &lt; :#{#priceRadius * 2}")
-List&lt;Trade&gt; fetchByActionNamedQuery(@Param("act") String action, @Param("priceRadius") Double r);</code></pre>
+List&lt;Trade&gt; fetchByActionNamedQuery(@Param("act") String action, @Param("priceRadius") Double r);
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1824,13 +1725,14 @@ For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Query("SELECT * FROM |com.example.Trade| WHERE trades.action = @act")
-List&lt;Trade&gt; fetchByActionNamedQuery(@Param("act") String action);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Query("SELECT * FROM |com.example.Trade| WHERE trades.action = @act")
+List&lt;Trade&gt; fetchByActionNamedQuery(@Param("act") String action);
+</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_query_methods_with_named_queries_properties"><a class="link" href="#_query_methods_with_named_queries_properties">Query methods with named queries properties</a></h5>
+<h5 id="_query_methods_with_named_queries_properties"><a class="anchor" href="#_query_methods_with_named_queries_properties"></a><a class="link" href="#_query_methods_with_named_queries_properties">Query methods with named queries properties</a></h5>
 <div class="paragraph">
 <p>You can also specify queries with Cloud Datastore parameter tags and SpEL expressions in properties files.</p>
 </div>
@@ -1853,23 +1755,24 @@ annotated with <code>DiscriminatorField</code>.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">Trader.fetchByName=SELECT * FROM traders WHERE name = @tag0</code></pre>
+<pre class="highlight"><code class="language-properties" data-lang="properties">Trader.fetchByName=SELECT * FROM traders WHERE name = @tag0</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TraderRepository extends DatastoreRepository&lt;Trader, String&gt; {
 
 	// This method uses the query from the properties file instead of one generated based on name.
 	List&lt;Trader&gt; fetchByName(@Param("tag0") String traderName);
 
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_transactions_2"><a class="link" href="#_transactions_2">Transactions</a></h4>
+<h4 id="_transactions_2"><a class="anchor" href="#_transactions_2"></a><a class="link" href="#_transactions_2">Transactions</a></h4>
 <div class="paragraph">
 <p>These transactions work very similarly to those of <code>DatastoreOperations</code>, but is specific to the repository&#8217;s domain type and provides repository functions instead of template functions.</p>
 </div>
@@ -1878,7 +1781,7 @@ annotated with <code>DiscriminatorField</code>.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 DatastoreRepository myRepo;
 
 public String doWorkInsideTransaction() {
@@ -1890,19 +1793,20 @@ public String doWorkInsideTransaction() {
       return "transaction completed";
     }
   );
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_projections"><a class="link" href="#_projections">Projections</a></h4>
+<h4 id="_projections"><a class="anchor" href="#_projections"></a><a class="link" href="#_projections">Projections</a></h4>
 <div class="paragraph">
 <p>Spring Data Cloud Datastore supports <a href="https://docs.spring.io/spring-data/data-commons/docs/current/reference/html/#projections">projections</a>.
 You can define projection interfaces based on domain types and add query methods that return them in your repository:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public interface TradeProjection {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TradeProjection {
 
 	String getAction();
 
@@ -1918,7 +1822,8 @@ public interface TradeRepository extends DatastoreRepository&lt;Trade, Key&gt; {
 
 	@Query("SELECT action, symbol FROM trades WHERE action = @action")
 	List&lt;TradeProjection&gt; findByQuery(String action);
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1932,13 +1837,13 @@ As a result, accessing underlying properties take the form <code>target.&lt;prop
 </div>
 </div>
 <div class="sect3">
-<h4 id="_rest_repositories"><a class="link" href="#_rest_repositories">REST Repositories</a></h4>
+<h4 id="_rest_repositories"><a class="anchor" href="#_rest_repositories"></a><a class="link" href="#_rest_repositories">REST Repositories</a></h4>
 <div class="paragraph">
 <p>When running with Spring Boot, repositories can be exposed as REST services by simply adding this dependency to your pom file:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
   &lt;artifactId&gt;spring-boot-starter-data-rest&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1949,9 +1854,10 @@ As a result, accessing underlying properties take the form <code>target.&lt;prop
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@RepositoryRestResource(collectionResourceRel = "trades", path = "trades")
+<pre class="highlight"><code class="language-java" data-lang="java">@RepositoryRestResource(collectionResourceRel = "trades", path = "trades")
 public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&gt; {
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1966,7 +1872,7 @@ public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&
 </div>
 </div>
 <div class="sect2">
-<h3 id="_events"><a class="link" href="#_events">Events</a></h3>
+<h3 id="_events"><a class="anchor" href="#_events"></a><a class="link" href="#_events">Events</a></h3>
 <div class="paragraph">
 <p>Spring Data Cloud Datastore publishes events extending the Spring Framework&#8217;s <code>ApplicationEvent</code> to the context that can be received by <code>ApplicationListener</code> beans you register.</p>
 </div>
@@ -2018,13 +1924,13 @@ public interface TradeRepository extends DatastoreRepository&lt;Trade, String[]&
 </table>
 </div>
 <div class="sect2">
-<h3 id="_auditing"><a class="link" href="#_auditing">Auditing</a></h3>
+<h3 id="_auditing"><a class="anchor" href="#_auditing"></a><a class="link" href="#_auditing">Auditing</a></h3>
 <div class="paragraph">
 <p>Spring Data Cloud Datastore supports the <code>@LastModifiedDate</code> and <code>@LastModifiedBy</code> auditing annotations for properties:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Entity
+<pre class="highlight"><code class="language-java" data-lang="java">@Entity
 public class SimpleEntity {
     @Id
     String id;
@@ -2034,7 +1940,8 @@ public class SimpleEntity {
 
     @LastModifiedDate
     DateTime lastTouched;
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2045,7 +1952,7 @@ public class SimpleEntity {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 @EnableDatastoreAuditing
 public class Config {
 
@@ -2053,7 +1960,8 @@ public class Config {
     public AuditorAware&lt;String&gt; auditorProvider() {
         return () -&gt; Optional.of("YOUR_USERNAME_HERE");
     }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2062,7 +1970,7 @@ One alternative is to use Spring Security&#8217;s <code>User</code> type:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class SpringSecurityAuditorAware implements AuditorAware&lt;User&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">class SpringSecurityAuditorAware implements AuditorAware&lt;User&gt; {
 
   public Optional&lt;User&gt; getCurrentAuditor() {
 
@@ -2072,7 +1980,8 @@ One alternative is to use Spring Security&#8217;s <code>User</code> type:</p>
 			  .map(Authentication::getPrincipal)
 			  .map(User.class::cast);
   }
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2080,17 +1989,18 @@ One alternative is to use Spring Security&#8217;s <code>User</code> type:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_partitioning_data_by_namespace"><a class="link" href="#_partitioning_data_by_namespace">Partitioning Data by Namespace</a></h3>
+<h3 id="_partitioning_data_by_namespace"><a class="anchor" href="#_partitioning_data_by_namespace"></a><a class="link" href="#_partitioning_data_by_namespace">Partitioning Data by Namespace</a></h3>
 <div class="paragraph">
 <p>You can <a href="https://cloud.google.com/datastore/docs/concepts/multitenancy">partition your data by using more than one namespace</a>.
 This is the recommended method for multi-tenancy in Cloud Datastore.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    @Bean
+<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
     public DatastoreNamespaceProvider namespaceProvider() {
         // return custom Supplier of a namespace string.
-    }</code></pre>
+    }
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2103,9 +2013,9 @@ Every read, write, query, and transaction you perform will utilize the namespace
 </div>
 </div>
 <div class="sect2">
-<h3 id="_spring_boot_actuator_support"><a class="link" href="#_spring_boot_actuator_support">Spring Boot Actuator Support</a></h3>
+<h3 id="_spring_boot_actuator_support"><a class="anchor" href="#_spring_boot_actuator_support"></a><a class="link" href="#_spring_boot_actuator_support">Spring Boot Actuator Support</a></h3>
 <div class="sect3">
-<h4 id="_cloud_datastore_health_indicator"><a class="link" href="#_cloud_datastore_health_indicator">Cloud Datastore Health Indicator</a></h4>
+<h4 id="_cloud_datastore_health_indicator"><a class="anchor" href="#_cloud_datastore_health_indicator"></a><a class="link" href="#_cloud_datastore_health_indicator">Cloud Datastore Health Indicator</a></h4>
 <div class="paragraph">
 <p>If you are using Spring Boot Actuator, you can take advantage of the Cloud Datastore health indicator called <code>datastore</code>.
 The health indicator will verify whether Cloud Datastore is up and accessible by your application.
@@ -2113,7 +2023,7 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -2122,13 +2032,13 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 </div>
 </div>
 <div class="sect2">
-<h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
+<h3 id="_sample"><a class="anchor" href="#_sample"></a><a class="link" href="#_sample">Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-basic-sample">Simple Spring Boot Application</a> and more advanced <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-sample">Sample Spring Boot Application</a> are provided to show how to use the Spring Data Cloud Datastore starter and template.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_test"><a class="link" href="#_test">Test</a></h3>
+<h3 id="_test"><a class="anchor" href="#_test"></a><a class="link" href="#_test">Test</a></h3>
 <div class="paragraph">
 <p><code>Testcontainers</code> provides a <code>gcloud</code> module which offers <code>DatastoreEmulatorContainer</code>. See more at the <a href="https://www.testcontainers.org/modules/gcloud/#datastore">docs</a></p>
 </div>
@@ -2136,10 +2046,10 @@ To enable it, all you need to do is add the <a href="https://docs.spring.io/spri
 </div>
 </div>
 </div>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script src="js/highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
-<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
-<script type="text/javascript" src="js/toc.js"></script>
+</div>
+  </div>
+</div>
 </body>
 </html>

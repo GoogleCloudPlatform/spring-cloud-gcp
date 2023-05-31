@@ -6,164 +6,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Google Cloud Key Management Service</title>
-<link rel="stylesheet" href="css/spring.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-
-</style>
-<script type="text/javascript">
-function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
-function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
-			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
-		}
-	});
-}
-
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
-function blockIdForSwitchItem(item) {
-	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
-	return idComponents.sort().join("-")
-}
-
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
-
-</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
 
 </head>
-<body class="book toc2 toc-left">
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
 <li><a href="#_google_cloud_key_management_service">Google Cloud Key Management Service</a>
 <ul class="sectlevel2">
 <li><a href="#_dependency_setup">Dependency Setup</a></li>
@@ -177,7 +43,7 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_google_cloud_key_management_service"><a class="link" href="#_google_cloud_key_management_service">Google Cloud Key Management Service</a></h2>
+<h2 id="_google_cloud_key_management_service"><a class="anchor" href="#_google_cloud_key_management_service"></a><a class="link" href="#_google_cloud_key_management_service">Google Cloud Key Management Service</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The <a href="https://cloud.google.com/kms/docs">Google Cloud Key Management Service (KMS)</a> allows you to create, import, and manage cryptographic keys and perform cryptographic operations in a single centralized cloud service.</p>
@@ -186,7 +52,7 @@ window.onload = function() {
 <p>Spring Framework on Google Cloud offers a utility template class <code>KmsTemplate</code> which allows you to conveniently encrypt and decrypt binary or text data.</p>
 </div>
 <div class="sect2">
-<h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
+<h3 id="_dependency_setup"><a class="anchor" href="#_dependency_setup"></a><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
 <div class="paragraph">
 <p>To begin using this library, add the <code>spring-cloud-gcp-starter-kms</code> artifact to your project.</p>
 </div>
@@ -195,7 +61,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-kms&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -206,14 +72,14 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-kms")
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<h3 id="_configuration"><a class="anchor" href="#_configuration"></a><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="paragraph">
 <p>The following options may be configured with Spring Framework on Google Cloud KMS libraries.</p>
 </div>
@@ -253,7 +119,7 @@ window.onload = function() {
 </table>
 </div>
 <div class="sect2">
-<h3 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h3>
+<h3 id="_basic_usage"><a class="anchor" href="#_basic_usage"></a><a class="link" href="#_basic_usage">Basic Usage</a></h3>
 <div class="paragraph">
 <p>Once you have added the <code>spring-cloud-gcp-starter-kms</code> to your project, the autoconfiguration class <code>com.google.cloud.spring.autoconfigure.kms.GcpKmsAutoConfiguration</code> will be activated for your project.</p>
 </div>
@@ -264,13 +130,13 @@ window.onload = function() {
 <p>The template class automatically validates the CRC32 checksums received responses from Cloud KMS APIs to verify correctness of the response.</p>
 </div>
 <div class="sect3">
-<h4 id="_cloud_kms_key_id_format"><a class="link" href="#_cloud_kms_key_id_format">Cloud KMS Key ID format</a></h4>
+<h4 id="_cloud_kms_key_id_format"><a class="anchor" href="#_cloud_kms_key_id_format"></a><a class="link" href="#_cloud_kms_key_id_format">Cloud KMS Key ID format</a></h4>
 <div class="paragraph">
 <p>Spring Framework on Google Cloud offers the following key syntax to specify Cloud KMS keys in your project:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs"> 1. Shortest form - specify the key by key ring ID, and key ID.
+<pre class="highlight"><code> 1. Shortest form - specify the key by key ring ID, and key ID.
  The project is inferred from the spring.cloud.gcp.kms.project-id if set, otherwise
  the default Google Cloud project (such as using application-default-credentials) is used.
  The location is assumed to be `global`.
@@ -296,7 +162,7 @@ window.onload = function() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
+<h3 id="_sample"><a class="anchor" href="#_sample"></a><a class="link" href="#_sample">Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-kms-sample">Cloud KMS Sample Application</a> is provided which demonstrates basic encryption and decryption operations.</p>
 </div>
@@ -304,10 +170,10 @@ window.onload = function() {
 </div>
 </div>
 </div>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script src="js/highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
-<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
-<script type="text/javascript" src="js/toc.js"></script>
+</div>
+  </div>
+</div>
 </body>
 </html>

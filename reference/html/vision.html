@@ -6,164 +6,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Cloud Vision</title>
-<link rel="stylesheet" href="css/spring.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-
-</style>
-<script type="text/javascript">
-function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
-function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
-			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
-		}
-	});
-}
-
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
-function blockIdForSwitchItem(item) {
-	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
-	return idComponents.sort().join("-")
-}
-
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
-
-</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
 
 </head>
-<body class="book toc2 toc-left">
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
 <li><a href="#cloud-vision">Cloud Vision</a>
 <ul class="sectlevel2">
 <li><a href="#_dependency_setup">Dependency Setup</a></li>
@@ -179,7 +45,7 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="cloud-vision"><a class="link" href="#cloud-vision">Cloud Vision</a></h2>
+<h2 id="cloud-vision"><a class="anchor" href="#cloud-vision"></a><a class="link" href="#cloud-vision">Cloud Vision</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The <a href="https://cloud.google.com/vision/">Google Cloud Vision API</a> allows users to leverage machine learning algorithms for processing images and documents including: image classification, face detection, text extraction, optical character recognition, and others.</p>
@@ -211,7 +77,7 @@ window.onload = function() {
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
+<h3 id="_dependency_setup"><a class="anchor" href="#_dependency_setup"></a><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
 <div class="paragraph">
 <p>To begin using this library, add the <code>spring-cloud-gcp-starter-vision</code> artifact to your project.</p>
 </div>
@@ -220,7 +86,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-vision&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -231,14 +97,14 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-vision")
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<h3 id="_configuration"><a class="anchor" href="#_configuration"></a><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="paragraph">
 <p>The following options may be configured with Spring Framework on Google Cloud Vision libraries.</p>
 </div>
@@ -277,7 +143,7 @@ window.onload = function() {
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="_cloud_vision_ocr_dependencies"><a class="link" href="#_cloud_vision_ocr_dependencies">Cloud Vision OCR Dependencies</a></h4>
+<h4 id="_cloud_vision_ocr_dependencies"><a class="anchor" href="#_cloud_vision_ocr_dependencies"></a><a class="link" href="#_cloud_vision_ocr_dependencies">Cloud Vision OCR Dependencies</a></h4>
 <div class="paragraph">
 <p>If you are interested in applying optical character recognition (OCR) on documents for your project, you&#8217;ll need to add both <code>spring-cloud-gcp-starter-vision</code> and <code>spring-cloud-gcp-starter-storage</code> to your dependencies.
 The storage starter is necessary because the Cloud Vision API will process your documents and write OCR output files all within your Google Cloud Storage buckets.</p>
@@ -287,7 +153,7 @@ The storage starter is necessary because the Cloud Vision API will process your 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-gcp-starter-vision&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -302,7 +168,7 @@ The storage starter is necessary because the Cloud Vision API will process your 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
   implementation("com.google.cloud:spring-cloud-gcp-starter-vision")
   implementation("com.google.cloud:spring-cloud-gcp-starter-storage")
 }</code></pre>
@@ -311,7 +177,7 @@ The storage starter is necessary because the Cloud Vision API will process your 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_image_analysis"><a class="link" href="#_image_analysis">Image Analysis</a></h3>
+<h3 id="_image_analysis"><a class="anchor" href="#_image_analysis"></a><a class="link" href="#_image_analysis">Image Analysis</a></h3>
 <div class="paragraph">
 <p>The <code>CloudVisionTemplate</code> allows you to easily analyze images; it provides the following method for interfacing with Cloud Vision:</p>
 </div>
@@ -352,14 +218,14 @@ Additionally, you may consult the <a href="https://cloud.google.com/vision/docs/
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_detect_image_labels_example"><a class="link" href="#_detect_image_labels_example">Detect Image Labels Example</a></h4>
+<h4 id="_detect_image_labels_example"><a class="anchor" href="#_detect_image_labels_example"></a><a class="link" href="#_detect_image_labels_example">Detect Image Labels Example</a></h4>
 <div class="paragraph">
 <p><a href="https://cloud.google.com/vision/docs/detecting-labels">Image labeling</a> refers to producing labels that describe the contents of an image.
 Below is a code sample of how this is done using the Cloud Vision Spring Template.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 private ResourceLoader resourceLoader;
 
 @Autowired
@@ -370,13 +236,14 @@ public void processImage() {
   AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(
       imageResource, Type.LABEL_DETECTION);
   System.out.println("Image Classification results: " + response.getLabelAnnotationsList());
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_file_analysis"><a class="link" href="#_file_analysis">File Analysis</a></h3>
+<h3 id="_file_analysis"><a class="anchor" href="#_file_analysis"></a><a class="link" href="#_file_analysis">File Analysis</a></h3>
 <div class="paragraph">
 <p>The <code>CloudVisionTemplate</code> allows you to easily analyze PDF, TIFF and GIF documents; it provides the following method for interfacing with Cloud Vision:</p>
 </div>
@@ -422,14 +289,14 @@ Additionally, you may consult the <a href="https://cloud.google.com/vision/docs/
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_running_text_detection_example"><a class="link" href="#_running_text_detection_example">Running Text Detection Example</a></h4>
+<h4 id="_running_text_detection_example"><a class="anchor" href="#_running_text_detection_example"></a><a class="link" href="#_running_text_detection_example">Running Text Detection Example</a></h4>
 <div class="paragraph">
 <p><a href="https://cloud.google.com/vision/docs/file-small-batch">Detect text in files</a> refers to extracting text from small document such as PDF or TIFF.
 Below is a code sample of how this is done using the Cloud Vision Spring Template.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 private ResourceLoader resourceLoader;
 
 @Autowired
@@ -446,13 +313,14 @@ public void processPdf() {
     .forEach(
         annotateImageResponse -&gt;
             System.out.println(annotateImageResponse.getFullTextAnnotation().getText()));
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_document_ocr_template"><a class="link" href="#_document_ocr_template">Document OCR Template</a></h3>
+<h3 id="_document_ocr_template"><a class="anchor" href="#_document_ocr_template"></a><a class="link" href="#_document_ocr_template">Document OCR Template</a></h3>
 <div class="paragraph">
 <p>The <code>DocumentOcrTemplate</code> allows you to easily run <a href="https://cloud.google.com/vision/docs/pdf">optical character recognition (OCR)</a> on your PDF and TIFF documents stored in your Google Storage bucket.</p>
 </div>
@@ -460,7 +328,7 @@ public void processPdf() {
 <p>First, you will need to create a bucket in <a href="https://console.cloud.google.com/storage">Google Cloud Storage</a> and <a href="https://cloud.google.com/storage/docs/uploading-objects#storage-upload-object-java">upload the documents you wish to process into the bucket</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="_running_ocr_on_a_document"><a class="link" href="#_running_ocr_on_a_document">Running OCR on a Document</a></h4>
+<h4 id="_running_ocr_on_a_document"><a class="anchor" href="#_running_ocr_on_a_document"></a><a class="link" href="#_running_ocr_on_a_document">Running OCR on a Document</a></h4>
 <div class="paragraph">
 <p>When OCR is run on a document, the Cloud Vision APIs will output a collection of OCR output files in JSON which describe the text content, bounding rectangles of words and letters, and other information about the document.</p>
 </div>
@@ -489,7 +357,7 @@ It is recommended to register callbacks to the returned CompletableFuture or ign
 </div>
 </div>
 <div class="sect3">
-<h4 id="_running_ocr_example"><a class="link" href="#_running_ocr_example">Running OCR Example</a></h4>
+<h4 id="_running_ocr_example"><a class="anchor" href="#_running_ocr_example"></a><a class="link" href="#_running_ocr_example">Running OCR Example</a></h4>
 <div class="paragraph">
 <p>Below is a code snippet of how to run OCR on a document stored in a Google Storage bucket and read the text in the first page of the document.</p>
 </div>
@@ -517,7 +385,7 @@ public void runOcrOnDocument() {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_reading_ocr_output_files"><a class="link" href="#_reading_ocr_output_files">Reading OCR Output Files</a></h4>
+<h4 id="_reading_ocr_output_files"><a class="anchor" href="#_reading_ocr_output_files"></a><a class="link" href="#_reading_ocr_output_files">Reading OCR Output Files</a></h4>
 <div class="paragraph">
 <p>In some use-cases, you may need to directly read OCR output files stored in Google Cloud Storage.</p>
 </div>
@@ -539,7 +407,7 @@ Reads a single OCR output file and returns the parsed contents.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_reading_ocr_output_files_example"><a class="link" href="#_reading_ocr_output_files_example">Reading OCR Output Files Example</a></h4>
+<h4 id="_reading_ocr_output_files_example"><a class="anchor" href="#_reading_ocr_output_files_example"></a><a class="link" href="#_reading_ocr_output_files_example">Reading OCR Output Files Example</a></h4>
 <div class="paragraph">
 <p>The code snippet below describes how to read the OCR output files of a single document.</p>
 </div>
@@ -570,7 +438,7 @@ public void parseSingleOutputFile() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
+<h3 id="_sample"><a class="anchor" href="#_sample"></a><a class="link" href="#_sample">Sample</a></h3>
 <div class="paragraph">
 <p>Samples are provided to show example usages of Spring Framework on Google Cloud with Google Cloud Vision.</p>
 </div>
@@ -589,10 +457,10 @@ The application generates labels describing the content inside the images you sp
 </div>
 </div>
 </div>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script src="js/highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
-<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
-<script type="text/javascript" src="js/toc.js"></script>
+</div>
+  </div>
+</div>
 </body>
 </html>

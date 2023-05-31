@@ -6,164 +6,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Migration Guide from Spring Cloud GCP 3.x to 4.x</title>
-<link rel="stylesheet" href="css/spring.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-
-</style>
-<script type="text/javascript">
-function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
-function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
-			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
-		}
-	});
-}
-
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
-function blockIdForSwitchItem(item) {
-	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
-	return idComponents.sort().join("-")
-}
-
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
-
-</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
 
 </head>
-<body class="book toc2 toc-left">
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
 <li><a href="#_migration_guide_from_spring_cloud_gcp_3_x_to_4_x">Migration Guide from Spring Cloud GCP 3.x to 4.x</a>
 <ul class="sectlevel2">
 <li><a href="#_before_you_start">Before you start</a></li>
@@ -177,12 +43,12 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_migration_guide_from_spring_cloud_gcp_3_x_to_4_x"><a class="link" href="#_migration_guide_from_spring_cloud_gcp_3_x_to_4_x">Migration Guide from Spring Cloud GCP 3.x to 4.x</a></h2>
+<h2 id="_migration_guide_from_spring_cloud_gcp_3_x_to_4_x"><a class="anchor" href="#_migration_guide_from_spring_cloud_gcp_3_x_to_4_x"></a><a class="link" href="#_migration_guide_from_spring_cloud_gcp_3_x_to_4_x">Migration Guide from Spring Cloud GCP 3.x to 4.x</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_before_you_start"><a class="link" href="#_before_you_start">Before you start</a></h3>
+<h3 id="_before_you_start"><a class="anchor" href="#_before_you_start"></a><a class="link" href="#_before_you_start">Before you start</a></h3>
 <div class="sect3">
-<h4 id="_upgrade_to_the_3_x_version"><a class="link" href="#_upgrade_to_the_3_x_version">Upgrade to the 3.x version</a></h4>
+<h4 id="_upgrade_to_the_3_x_version"><a class="anchor" href="#_upgrade_to_the_3_x_version"></a><a class="link" href="#_upgrade_to_the_3_x_version">Upgrade to the 3.x version</a></h4>
 <div class="paragraph">
 <p>This doc assumes you are running with Spring Cloud GCP 3.x.</p>
 </div>
@@ -204,14 +70,14 @@ window.onload = function() {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_review_system_requirements"><a class="link" href="#_review_system_requirements">Review System requirements</a></h4>
+<h4 id="_review_system_requirements"><a class="anchor" href="#_review_system_requirements"></a><a class="link" href="#_review_system_requirements">Review System requirements</a></h4>
 <div class="paragraph">
 <p>Spring Cloud GCP 4.0 is built on Spring Boot 3.0 and Spring Framework 6.0, which requires Java 17 at minimum.
 If you are currently on Java 8 or Java 11, you need to upgrade your JDK before you can develop an application based on Spring Cloud GCP 4.0.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_review_deprecations_from_3_x"><a class="link" href="#_review_deprecations_from_3_x">Review Deprecations from 3.x</a></h4>
+<h4 id="_review_deprecations_from_3_x"><a class="anchor" href="#_review_deprecations_from_3_x"></a><a class="link" href="#_review_deprecations_from_3_x">Review Deprecations from 3.x</a></h4>
 <div class="paragraph">
 <p>Classes, methods and properties that were deprecated in Spring Cloud GCP 3.x have been removed in this release.
 Please ensure that you aren’t calling deprecated methods before upgrading.</p>
@@ -219,22 +85,22 @@ Please ensure that you aren’t calling deprecated methods before upgrading.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_upgrade_to_spring_cloud_gcp_4_0"><a class="link" href="#_upgrade_to_spring_cloud_gcp_4_0">Upgrade to Spring Cloud GCP 4.0</a></h3>
+<h3 id="_upgrade_to_spring_cloud_gcp_4_0"><a class="anchor" href="#_upgrade_to_spring_cloud_gcp_4_0"></a><a class="link" href="#_upgrade_to_spring_cloud_gcp_4_0">Upgrade to Spring Cloud GCP 4.0</a></h3>
 <div class="sect3">
-<h4 id="_spring_boot_3_0"><a class="link" href="#_spring_boot_3_0">Spring Boot 3.0</a></h4>
+<h4 id="_spring_boot_3_0"><a class="anchor" href="#_spring_boot_3_0"></a><a class="link" href="#_spring_boot_3_0">Spring Boot 3.0</a></h4>
 <div class="paragraph">
 <p>Spring Cloud GCP 4.0 builds on Spring Boot 3.0. Review the <a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide">Spring Boot 3.0 migration guide</a> before continuing.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_update_bill_of_materials_bom"><a class="link" href="#_update_bill_of_materials_bom">Update Bill of Materials (BOM)</a></h4>
+<h4 id="_update_bill_of_materials_bom"><a class="anchor" href="#_update_bill_of_materials_bom"></a><a class="link" href="#_update_bill_of_materials_bom">Update Bill of Materials (BOM)</a></h4>
 <div class="paragraph">
 <p>If you’re a Maven user, add our BOM to your pom.xml <code>&lt;dependencyManagement&gt;</code> section.
 This will allow you to not specify versions for any of the Maven dependencies and instead delegate versioning to the BOM.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
     &lt;dependencies&gt;
         &lt;dependency&gt;
             &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
@@ -248,7 +114,7 @@ This will allow you to not specify versions for any of the Maven dependencies an
 </div>
 </div>
 <div class="sect4">
-<h5 id="_review_dependencies"><a class="link" href="#_review_dependencies">Review Dependencies</a></h5>
+<h5 id="_review_dependencies"><a class="anchor" href="#_review_dependencies"></a><a class="link" href="#_review_dependencies">Review Dependencies</a></h5>
 <div class="paragraph">
 <p>Run <code>mvn dependency:tree</code> (<code>gradlew dependencies</code> for Gradle projects) to see the dependency tree of your project.
 Ensure Spring-related dependencies have matching versions:</p>
@@ -283,31 +149,31 @@ Ensure Spring-related dependencies have matching versions:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_cloud_bigquery"><a class="link" href="#_cloud_bigquery">Cloud BigQuery</a></h4>
+<h4 id="_cloud_bigquery"><a class="anchor" href="#_cloud_bigquery"></a><a class="link" href="#_cloud_bigquery">Cloud BigQuery</a></h4>
 <div class="paragraph">
 <p>Replaced <code>ListenableFuture</code> and <code>SettableListenableFuture</code> with <code>CompletableFuture</code> as the former two Classes are deprecated in Spring Framework 6.0.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_cloud_sql"><a class="link" href="#_cloud_sql">Cloud SQL</a></h4>
+<h4 id="_cloud_sql"><a class="anchor" href="#_cloud_sql"></a><a class="link" href="#_cloud_sql">Cloud SQL</a></h4>
 <div class="paragraph">
 <p>MySQL R2DBC is not supported by Spring Cloud GCP 4.0 due to <a href="https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/issues/990">compatibility issues</a> with the Mariadb driver.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_cloud_pubsub"><a class="link" href="#_cloud_pubsub">Cloud Pub/Sub</a></h4>
+<h4 id="_cloud_pubsub"><a class="anchor" href="#_cloud_pubsub"></a><a class="link" href="#_cloud_pubsub">Cloud Pub/Sub</a></h4>
 <div class="paragraph">
 <p>Replaced <code>ListenableFuture</code> and <code>SettableListenableFuture</code> with <code>CompletableFuture</code> as the former two Classes are deprecated in Spring Framework 6.0.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_spring_cloud_stream_binder_to_google_cloud_pubsub"><a class="link" href="#_spring_cloud_stream_binder_to_google_cloud_pubsub">Spring Cloud Stream binder to Google Cloud Pub/Sub</a></h4>
+<h4 id="_spring_cloud_stream_binder_to_google_cloud_pubsub"><a class="anchor" href="#_spring_cloud_stream_binder_to_google_cloud_pubsub"></a><a class="link" href="#_spring_cloud_stream_binder_to_google_cloud_pubsub">Spring Cloud Stream binder to Google Cloud Pub/Sub</a></h4>
 <div class="paragraph">
 <p>Change to functional model as annotation-based model is removed from Spring Cloud Stream 4.0.0.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_secret_manager"><a class="link" href="#_secret_manager">Secret Manager</a></h4>
+<h4 id="_secret_manager"><a class="anchor" href="#_secret_manager"></a><a class="link" href="#_secret_manager">Secret Manager</a></h4>
 <div class="paragraph">
 <p>To enable the application to fetch a secret from SecretManager, add <code>spring.config.import=sm://</code> in the <code>application.properties</code> or <code>application.yml</code> files and inject the secret into the application by adding <code>application.secret=${sm://your-secret-name}</code>.
 Do not write secret values in the file.</p>
@@ -317,7 +183,7 @@ Do not write secret values in the file.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_cloud_trace"><a class="link" href="#_cloud_trace">Cloud Trace</a></h4>
+<h4 id="_cloud_trace"><a class="anchor" href="#_cloud_trace"></a><a class="link" href="#_cloud_trace">Cloud Trace</a></h4>
 <div class="paragraph">
 <p>Annotation <code>org.springframework.cloud.sleuth.annotation.NewSpan</code> is deprecated in favor of <code>io.micrometer.observation.annotation.Observed</code> since Spring Boot 3.0 builds on Micrometer 1.0 rather than Spring Cloud Sleuth (which is excluded from the Spring Cloud release train).</p>
 </div>
@@ -332,16 +198,16 @@ Note that <code>spring.cloud.gcp.trace.enabled=true</code> is still required if 
 </div>
 </div>
 <div class="sect3">
-<h4 id="_cloud_vision"><a class="link" href="#_cloud_vision">Cloud Vision</a></h4>
+<h4 id="_cloud_vision"><a class="anchor" href="#_cloud_vision"></a><a class="link" href="#_cloud_vision">Cloud Vision</a></h4>
 <div class="paragraph">
 <p>Replaced <code>ListenableFuture</code> and <code>SettableListenableFuture</code> with <code>CompletableFuture</code> as the former two Classes are deprecated in Spring Framework 6.0.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration_changelog"><a class="link" href="#_configuration_changelog">Configuration Changelog</a></h3>
+<h3 id="_configuration_changelog"><a class="anchor" href="#_configuration_changelog"></a><a class="link" href="#_configuration_changelog">Configuration Changelog</a></h3>
 <div class="sect3">
-<h4 id="_removed"><a class="link" href="#_removed">Removed</a></h4>
+<h4 id="_removed"><a class="anchor" href="#_removed"></a><a class="link" href="#_removed">Removed</a></h4>
 <div class="paragraph">
 <p>The following properties are removed from the codebase thus no longer needed in your application.</p>
 </div>
@@ -368,9 +234,9 @@ Note that <code>spring.cloud.gcp.trace.enabled=true</code> is still required if 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_deprecated_items_removed"><a class="link" href="#_deprecated_items_removed">Deprecated Items Removed</a></h3>
+<h3 id="_deprecated_items_removed"><a class="anchor" href="#_deprecated_items_removed"></a><a class="link" href="#_deprecated_items_removed">Deprecated Items Removed</a></h3>
 <div class="sect3">
-<h4 id="_cloud_bigquery_2"><a class="link" href="#_cloud_bigquery_2">Cloud BigQuery</a></h4>
+<h4 id="_cloud_bigquery_2"><a class="anchor" href="#_cloud_bigquery_2"></a><a class="link" href="#_cloud_bigquery_2">Cloud BigQuery</a></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><code>BigQueryTemplate(BigQuery bigQuery, String datasetName)</code></dt>
@@ -385,7 +251,7 @@ Note that <code>spring.cloud.gcp.trace.enabled=true</code> is still required if 
 </div>
 </div>
 <div class="sect3">
-<h4 id="_cloud_datastore"><a class="link" href="#_cloud_datastore">Cloud Datastore</a></h4>
+<h4 id="_cloud_datastore"><a class="anchor" href="#_cloud_datastore"></a><a class="link" href="#_cloud_datastore">Cloud Datastore</a></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><code>DatastorePersistentPropertyImpl.getPersistentEntityTypes()</code></dt>
@@ -396,7 +262,7 @@ Note that <code>spring.cloud.gcp.trace.enabled=true</code> is still required if 
 </div>
 </div>
 <div class="sect3">
-<h4 id="_cloud_pubsub_2"><a class="link" href="#_cloud_pubsub_2">Cloud Pub/Sub</a></h4>
+<h4 id="_cloud_pubsub_2"><a class="anchor" href="#_cloud_pubsub_2"></a><a class="link" href="#_cloud_pubsub_2">Cloud Pub/Sub</a></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><code>DefaultSubscriberFactory(GcpProjectIdProvider)</code></dt>
@@ -419,7 +285,7 @@ Note that <code>spring.cloud.gcp.trace.enabled=true</code> is still required if 
 </div>
 </div>
 <div class="sect3">
-<h4 id="_cloud_spanner"><a class="link" href="#_cloud_spanner">Cloud Spanner</a></h4>
+<h4 id="_cloud_spanner"><a class="anchor" href="#_cloud_spanner"></a><a class="link" href="#_cloud_spanner">Cloud Spanner</a></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><code>SpannerPersistentEntityImpl(TypeInformation&lt;T&gt;)</code></dt>
@@ -434,7 +300,7 @@ Note that <code>spring.cloud.gcp.trace.enabled=true</code> is still required if 
 </div>
 </div>
 <div class="sect3">
-<h4 id="_cloud_trace_2"><a class="link" href="#_cloud_trace_2">Cloud Trace</a></h4>
+<h4 id="_cloud_trace_2"><a class="anchor" href="#_cloud_trace_2"></a><a class="link" href="#_cloud_trace_2">Cloud Trace</a></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><code>TracingSubscriberFactory.createSubscriberStub()</code></dt>
@@ -448,10 +314,10 @@ Note that <code>spring.cloud.gcp.trace.enabled=true</code> is still required if 
 </div>
 </div>
 </div>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script src="js/highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
-<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
-<script type="text/javascript" src="js/toc.js"></script>
+</div>
+  </div>
+</div>
 </body>
 </html>

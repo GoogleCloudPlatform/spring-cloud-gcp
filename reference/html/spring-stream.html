@@ -6,164 +6,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Spring Cloud Stream</title>
-<link rel="stylesheet" href="css/spring.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-
-</style>
-<script type="text/javascript">
-function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
-function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
-			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
-		}
-	});
-}
-
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
-function blockIdForSwitchItem(item) {
-	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
-	return idComponents.sort().join("-")
-}
-
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
-
-</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
 
 </head>
-<body class="book toc2 toc-left">
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
 <li><a href="#spring-cloud-stream">Spring Cloud Stream</a>
 <ul class="sectlevel2">
 <li><a href="#_overview">Overview</a></li>
@@ -177,7 +43,7 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="spring-cloud-stream"><a class="link" href="#spring-cloud-stream">Spring Cloud Stream</a></h2>
+<h2 id="spring-cloud-stream"><a class="anchor" href="#spring-cloud-stream"></a><a class="link" href="#spring-cloud-stream">Spring Cloud Stream</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring Framework on Google Cloud provides a <a href="https://cloud.spring.io/spring-cloud-stream/">Spring Cloud Stream</a> binder to Google Cloud Pub/Sub.</p>
@@ -190,7 +56,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-pubsub-stream-binder&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -201,13 +67,13 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-pubsub-stream-binder")
 }</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_overview"><a class="link" href="#_overview">Overview</a></h3>
+<h3 id="_overview"><a class="anchor" href="#_overview"></a><a class="link" href="#_overview">Overview</a></h3>
 <div class="paragraph">
 <p>This binder binds producers to Google Cloud Pub/Sub topics and consumers to subscriptions.</p>
 </div>
@@ -225,7 +91,7 @@ Partitioning is currently not supported by this binder.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<h3 id="_configuration"><a class="anchor" href="#_configuration"></a><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="paragraph">
 <p>You can configure the Spring Cloud Stream Binder for Google Cloud Pub/Sub to automatically generate the underlying resources, like the Google Cloud Pub/Sub topics and subscriptions for producers and consumers.
 For that, you can use the <code>spring.cloud.stream.gcp.pubsub.bindings.&lt;consumer/produer name&gt;.&lt;consumer|producer&gt;.auto-create-resources</code> property, which is turned ON by default.</p>
@@ -261,14 +127,14 @@ To use this binder with a <a href="https://cloud.google.com/pubsub/docs/emulator
 </table>
 </div>
 <div class="sect3">
-<h4 id="_producer_synchronous_sending_configuration"><a class="link" href="#_producer_synchronous_sending_configuration">Producer Synchronous Sending Configuration</a></h4>
+<h4 id="_producer_synchronous_sending_configuration"><a class="anchor" href="#_producer_synchronous_sending_configuration"></a><a class="link" href="#_producer_synchronous_sending_configuration">Producer Synchronous Sending Configuration</a></h4>
 <div class="paragraph">
 <p>By default, this binder will send messages to Cloud Pub/Sub asynchronously.
 If synchronous sending is preferred (for example, to allow propagating errors back to the sender), set <code>spring.cloud.stream.gcp.pubsub.default.producer.sync</code> property to <code>true</code>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_producer_destination_configuration"><a class="link" href="#_producer_destination_configuration">Producer Destination Configuration</a></h4>
+<h4 id="_producer_destination_configuration"><a class="anchor" href="#_producer_destination_configuration"></a><a class="link" href="#_producer_destination_configuration">Producer Destination Configuration</a></h4>
 <div class="paragraph">
 <p>If automatic resource creation is turned ON and the topic corresponding to the destination name does not exist, it will be created.</p>
 </div>
@@ -278,13 +144,13 @@ If synchronous sending is preferred (for example, to allow propagating errors ba
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.{PRODUCER_NAME}.destination=myEvents
+<pre class="highlight"><code>spring.cloud.stream.bindings.{PRODUCER_NAME}.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.auto-create-resources=true</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_consumer_destination_configuration"><a class="link" href="#_consumer_destination_configuration">Consumer Destination Configuration</a></h4>
+<h4 id="_consumer_destination_configuration"><a class="anchor" href="#_consumer_destination_configuration"></a><a class="link" href="#_consumer_destination_configuration">Consumer Destination Configuration</a></h4>
 <div class="paragraph">
 <p>A <code>PubSubInboundChannelAdapter</code> will be configured for your consumer endpoint.
 You may adjust the ack mode of the consumer endpoint using the <code>ack-mode</code> property.
@@ -295,7 +161,7 @@ These options are described in detail in the <a href="#inbound-channel-adapter-u
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs"># How to set the ACK mode of the consumer endpoint.
+<pre class="highlight"><code># How to set the ACK mode of the consumer endpoint.
 spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.ack-mode=AUTO_ACK</code></pre>
 </div>
 </div>
@@ -323,7 +189,7 @@ Then when the binder shuts down, the library automatically cleans up all Pub/Sub
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
+<pre class="highlight"><code>spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-resources=false</code></pre>
 </div>
 </div>
@@ -336,7 +202,7 @@ spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-res
 <div class="listingblock">
 <div class="title">application.properties</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
+<pre class="highlight"><code>spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-resources=true
 
 # specify consumer group, and avoid anonymous consumer group generation
@@ -358,7 +224,7 @@ spring.cloud.stream.bindings.{CONSUMER_NAME}.group=consumerGroup1</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_header_mapping"><a class="link" href="#_header_mapping">Header Mapping</a></h4>
+<h4 id="_header_mapping"><a class="anchor" href="#_header_mapping"></a><a class="link" href="#_header_mapping">Header Mapping</a></h4>
 <div class="paragraph">
 <p>You can filter incoming and outgoing message headers with <code>allowHeaders</code> property.
 For example, for a consumer to allow only two headers, provide a comma separated list like this:</p>
@@ -386,7 +252,7 @@ For example, for a consumer to allow only two headers, provide a comma separated
 </div>
 </div>
 <div class="sect3">
-<h4 id="_endpoint_customization"><a class="link" href="#_endpoint_customization">Endpoint Customization</a></h4>
+<h4 id="_endpoint_customization"><a class="anchor" href="#_endpoint_customization"></a><a class="link" href="#_endpoint_customization">Endpoint Customization</a></h4>
 <div class="paragraph">
 <p>You may customize channel routing by defining a <code>ConsumerEndpointCustomizer</code> in your autoconfiguration. This is useful if you want to customize the default configurations provided by the Pub/Sub Spring Cloud Stream Binder.</p>
 </div>
@@ -395,27 +261,28 @@ For example, for a consumer to allow only two headers, provide a comma separated
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public ConsumerEndpointCustomizer&lt;PubSubInboundChannelAdapter&gt; messageChannelAdapter() {
     return (endpoint, destinationName, group) -&gt; {
         NamedComponent namedComponent = (NamedComponent) endpoint.getOutputChannel();
         String channelName = namedComponent.getBeanName();
         endpoint.setErrorChannelName(channelName + ".errors");
     };
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_binding_with_functions"><a class="link" href="#_binding_with_functions">Binding with Functions</a></h3>
+<h3 id="_binding_with_functions"><a class="anchor" href="#_binding_with_functions"></a><a class="link" href="#_binding_with_functions">Binding with Functions</a></h3>
 <div class="paragraph">
 <p>Since version 3.0, Spring Cloud Stream supports a functional programming model natively.
 This means that the only requirement for turning your application into a sink is presence of a <code>java.util.function.Consumer</code> bean in the application context.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">@Bean
+<pre class="highlight"><code>@Bean
 public Consumer&lt;UserMessage&gt; logUserMessage() {
   return userMessage -&gt; {
     // process message
@@ -430,7 +297,7 @@ Alternatively, the function can return a reactive stream, which will be used as 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">@Bean
+<pre class="highlight"><code>@Bean
 Supplier&lt;Flux&lt;UserMessage&gt;&gt; generateUserMessages() {
   return () -&gt; /* flux creation logic */;
 }</code></pre>
@@ -441,7 +308,7 @@ Supplier&lt;Flux&lt;UserMessage&gt;&gt; generateUserMessages() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
+<h3 id="_sample"><a class="anchor" href="#_sample"></a><a class="link" href="#_sample">Sample</a></h3>
 <div class="paragraph">
 <p>Sample applications are available:</p>
 </div>
@@ -456,10 +323,10 @@ Supplier&lt;Flux&lt;UserMessage&gt;&gt; generateUserMessages() {
 </div>
 </div>
 </div>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script src="js/highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
-<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
-<script type="text/javascript" src="js/toc.js"></script>
+</div>
+  </div>
+</div>
 </body>
 </html>

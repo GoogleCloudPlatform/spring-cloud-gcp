@@ -6,164 +6,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Migration Guide from Spring Framework on Google Cloud 1.x to 2.x</title>
-<link rel="stylesheet" href="css/spring.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-
-</style>
-<script type="text/javascript">
-function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
-function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
-			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
-		}
-	});
-}
-
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
-function blockIdForSwitchItem(item) {
-	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
-	return idComponents.sort().join("-")
-}
-
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
-
-</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
 
 </head>
-<body class="book toc2 toc-left">
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
 <li><a href="#_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x">Migration Guide from Spring Framework on Google Cloud 1.x to 2.x</a>
 <ul class="sectlevel2">
 <li><a href="#_maven_group_id_change">Maven Group ID Change</a></li>
@@ -176,10 +42,10 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x"><a class="link" href="#_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x">Migration Guide from Spring Framework on Google Cloud 1.x to 2.x</a></h2>
+<h2 id="_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x"><a class="anchor" href="#_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x"></a><a class="link" href="#_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x">Migration Guide from Spring Framework on Google Cloud 1.x to 2.x</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_maven_group_id_change"><a class="link" href="#_maven_group_id_change">Maven Group ID Change</a></h3>
+<h3 id="_maven_group_id_change"><a class="anchor" href="#_maven_group_id_change"></a><a class="link" href="#_maven_group_id_change">Maven Group ID Change</a></h3>
 <div class="paragraph">
 <p>Spring Cloud  <a href="https://spring.io/blog/2019/07/24/simplifying-the-spring-cloud-release-train">unbundled</a> Spring Framework on Google Cloud and other cloud providers from their release train.
 To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencies</code> bill of materials (BOM) and change the <code>spring-cloud-gcp</code> group IDs in your <code>pom.xml</code> files:</p>
@@ -187,7 +53,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <div class="listingblock">
 <div class="title">Before (pom.xml)</div>
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
   &lt;dependencies&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
@@ -210,7 +76,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <div class="listingblock">
 <div class="title">After (pom.xml)</div>
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
   &lt;dependencies&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;com.google.cloud&lt;/groupId&gt; <i class="conum" data-value="2"></i><b>(2)</b>
@@ -253,13 +119,13 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 </div>
 </div>
 <div class="sect2">
-<h3 id="_java_package_name_change"><a class="link" href="#_java_package_name_change">Java Package Name Change</a></h3>
+<h3 id="_java_package_name_change"><a class="anchor" href="#_java_package_name_change"></a><a class="link" href="#_java_package_name_change">Java Package Name Change</a></h3>
 <div class="paragraph">
 <p>All code in Spring Framework on Google Cloud has been moved from <code>org.springframework.cloud.gcp</code> over to the <code>com.google.cloud.spring</code> package.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_deprecated_items_removed"><a class="link" href="#_deprecated_items_removed">Deprecated Items Removed</a></h3>
+<h3 id="_deprecated_items_removed"><a class="anchor" href="#_deprecated_items_removed"></a><a class="link" href="#_deprecated_items_removed">Deprecated Items Removed</a></h3>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Property <code>spring.cloud.gcp.datastore.emulatorHost</code> </dt>
@@ -296,7 +162,7 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 <div class="listingblock">
 <div class="title">logback-spring.xml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;configuration&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
   &lt;include resource="com/google/cloud/spring/logging/logback-appender.xml" /&gt;
   ...
 &lt;/configuration&gt;</code></pre>
@@ -312,10 +178,10 @@ To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencie
 </div>
 </div>
 </div>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script src="js/highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
-<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
-<script type="text/javascript" src="js/toc.js"></script>
+</div>
+  </div>
+</div>
 </body>
 </html>

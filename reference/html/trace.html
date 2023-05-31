@@ -6,164 +6,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Cloud Trace</title>
-<link rel="stylesheet" href="css/spring.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<style>
-.hidden {
-	display: none;
-}
-
-.switch {
-	border-width: 1px 1px 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-	display: inline-block;
-}
-
-.switch--item {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #7a2518;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.switch--item:not(:first-child) {
-	border-width: 0 0 0 1px;
-	border-style: solid;
-	border-color: #7a2518;
-}
-
-.switch--item.selected {
-	background-color: #7a2519;
-	color: #ffffff;
-}
-
-</style>
-<script type="text/javascript">
-function addBlockSwitches() {
-	for (var primary of document.querySelectorAll('.primary')) {
-		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
-		switchItem.item.classList.add("selected");
-		var title = primary.querySelector('.title')
-		title.remove();
-	}
-	for (var secondary of document.querySelectorAll('.secondary')) {
-		var primary = findPrimary(secondary);
-		if (primary === null) {
-			console.error("Found secondary block with no primary sibling");
-		}
-		else {
-			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
-			switchItem.content.classList.add("hidden");
-			primary.append(switchItem.content);
-			secondary.remove();
-		}
-	}
-}
-
-function createElementFromHtml(html) {
-	var template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function createBlockSwitch(primary) {
-    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
-    primary.prepend(blockSwitch)
-	return blockSwitch;
-}
-
-function findPrimary(secondary) {
-	var candidate = secondary.previousElementSibling;
-	while (candidate != null && !candidate.classList.contains('primary')) {
-		candidate = candidate.previousElementSibling;
-	}
-	return candidate;
-}
-
-function createSwitchItem(block, blockSwitch) {
-	var blockName = block.querySelector('.title').textContent;
-	var content = block.querySelectorAll('.content').item(0);
-	var colist = nextSibling(block, '.colist');
-	if (colist != null) {
-		content.append(colist);
-	}
-	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
-	item.dataset.blockName = blockName;
-	content.dataset.blockName = blockName;
-	blockSwitch.append(item);
-	return {'item': item, 'content': content};
-}
-
-function nextSibling(element, selector) {
-	var sibling = element.nextElementSibling;
-	while (sibling) {
-		if (sibling.matches(selector)) {
-			return sibling;
-		}
-		sibling = sibling.nextElementSibling;
-	}
-}
-
-function globalSwitch() {
-	document.querySelectorAll(".switch--item").forEach(function(item) {
-		var blockId = blockIdForSwitchItem(item);
-		var handler = function(event) {
-			selectedText = event.target.textContent;
-			window.localStorage.setItem(blockId, selectedText);
-			for (var switchItem of document.querySelectorAll(".switch--item")) {
-				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
-					select(switchItem);
-				}
-			}
-		}
-		item.addEventListener("click", handler);
-		if (item.textContent === window.localStorage.getItem(blockId)) {
-			select(item);
-		}
-	});
-}
-
-function select(selected) {
-	for (var child of selected.parentNode.children) {
-		child.classList.remove("selected");
-	}
-	selected.classList.add("selected");
-	for (var child of selected.parentNode.parentNode.children) {
-		if (child.classList.contains("content")) {
-			if (selected.dataset.blockName === child.dataset.blockName) {
-				child.classList.remove("hidden");
-			}
-			else {
-				child.classList.add("hidden");
-			}
-		}
-	}	
-}
-
-function blockIdForSwitchItem(item) {
-	idComponents = []
-	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
-		idComponents.push(switchItem.textContent.toLowerCase());
-	}
-	return idComponents.sort().join("-")
-}
-
-window.onload = function() {
-	addBlockSwitches();
-	globalSwitch();
-};
-
-</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
 
 </head>
-<body class="book toc2 toc-left">
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
 <li><a href="#cloud-trace">Cloud Trace</a>
 <ul class="sectlevel2">
 <li><a href="#_tracing">Tracing</a></li>
@@ -180,7 +46,7 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="cloud-trace"><a class="link" href="#cloud-trace">Cloud Trace</a></h2>
+<h2 id="cloud-trace"><a class="anchor" href="#cloud-trace"></a><a class="link" href="#cloud-trace">Cloud Trace</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Google Cloud provides a managed distributed tracing service called <a href="https://cloud.google.com/trace/">Cloud Trace</a>, and <a href="https://micrometer.io/">Micrometer</a> can be used with it to easily instrument Spring Boot applications for observability.</p>
@@ -197,7 +63,7 @@ However, on Google Cloud, instead of running and maintaining your own Zipkin ins
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-trace&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -208,7 +74,7 @@ However, on Google Cloud, instead of running and maintaining your own Zipkin ins
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">dependencies {
+<pre class="highlight"><code>dependencies {
     implementation("com.google.cloud:spring-cloud-gcp-starter-trace")
 }</code></pre>
 </div>
@@ -232,7 +98,7 @@ Navigate to the <a href="https://console.cloud.google.com/apis/api/cloudtrace.go
 </table>
 </div>
 <div class="sect2">
-<h3 id="_tracing"><a class="link" href="#_tracing">Tracing</a></h3>
+<h3 id="_tracing"><a class="anchor" href="#_tracing"></a><a class="link" href="#_tracing">Tracing</a></h3>
 <div class="paragraph">
 <p>Micrometer uses the <a href="https://github.com/openzipkin/brave">Brave tracer</a> to generate traces.
 This integration enables Brave to use the <a href="https://github.com/openzipkin/zipkin-gcp/tree/main/propagation-stackdriver"><code>StackdriverTracePropagation</code></a> propagation.</p>
@@ -288,7 +154,7 @@ This field forces the decision of whether to trace the request; if omitted then 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_spring_boot_starter_for_cloud_trace"><a class="link" href="#_spring_boot_starter_for_cloud_trace">Spring Boot Starter for Cloud Trace</a></h3>
+<h3 id="_spring_boot_starter_for_cloud_trace"><a class="anchor" href="#_spring_boot_starter_for_cloud_trace"></a><a class="link" href="#_spring_boot_starter_for_cloud_trace">Spring Boot Starter for Cloud Trace</a></h3>
 <div class="paragraph">
 <p>Spring Boot Starter for Cloud Trace uses Micrometer and autoconfigures a <a href="https://github.com/openzipkin/zipkin-gcp/blob/main/sender-stackdriver/src/main/java/zipkin2/reporter/stackdriver/StackdriverSender.java">StackdriverSender</a> that sends the Micrometer’s trace information to Cloud Trace.</p>
 </div>
@@ -410,7 +276,7 @@ Read <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsing
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">management.tracing.sampling.probability=1.0              # Send 100% of the request traces to Cloud Trace.</code></pre>
+<pre class="highlight"><code>management.tracing.sampling.probability=1.0              # Send 100% of the request traces to Cloud Trace.</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -431,7 +297,7 @@ Cloud Trace requires that every Span ID within a Trace to be unique, so Span joi
 </div>
 </div>
 <div class="sect2">
-<h3 id="_overriding_the_autoconfiguration"><a class="link" href="#_overriding_the_autoconfiguration">Overriding the autoconfiguration</a></h3>
+<h3 id="_overriding_the_autoconfiguration"><a class="anchor" href="#_overriding_the_autoconfiguration"></a><a class="link" href="#_overriding_the_autoconfiguration">Overriding the autoconfiguration</a></h3>
 <div class="paragraph">
 <p>You can send traces to multiple tracing systems. In order to get this to work, every tracing system needs to have a <code>Reporter&lt;Span&gt;</code> and <code>Sender</code>.
 If you want to override the provided beans you need to give them a specific name.
@@ -439,7 +305,7 @@ To do this you can use respectively <code>StackdriverTraceAutoConfiguration.REPO
 </div>
 </div>
 <div class="sect2">
-<h3 id="_customizing_spans"><a class="link" href="#_customizing_spans">Customizing spans</a></h3>
+<h3 id="_customizing_spans"><a class="anchor" href="#_customizing_spans"></a><a class="link" href="#_customizing_spans">Customizing spans</a></h3>
 <div class="paragraph">
 <p>You can add additional tags and annotations to spans by using the <code>brave.SpanCustomizer</code>, which is available in the application context.</p>
 </div>
@@ -448,7 +314,7 @@ To do this you can use respectively <code>StackdriverTraceAutoConfiguration.REPO
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
 public class Application implements WebMvcConfigurer {
 
 	public static void main(String[] args) {
@@ -470,7 +336,8 @@ public class Application implements WebMvcConfigurer {
 			}
 		});
 	}
-}</code></pre>
+}
+</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -478,7 +345,7 @@ public class Application implements WebMvcConfigurer {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_integration_with_logging"><a class="link" href="#_integration_with_logging">Integration with Logging</a></h3>
+<h3 id="_integration_with_logging"><a class="anchor" href="#_integration_with_logging"></a><a class="link" href="#_integration_with_logging">Integration with Logging</a></h3>
 <div class="paragraph">
 <p>Integration with Cloud Logging is available through the <a href="#cloud-logging">Cloud Logging Support</a>.
 If the Trace integration is used together with the Logging one, the request logs will be associated to the corresponding traces.
@@ -486,20 +353,20 @@ The trace logs can be viewed by going to the <a href="https://console.cloud.goog
 </div>
 </div>
 <div class="sect2">
-<h3 id="_pubsub_trace_instrumentation_experimental"><a class="link" href="#_pubsub_trace_instrumentation_experimental">Pub/Sub Trace Instrumentation (Experimental)</a></h3>
+<h3 id="_pubsub_trace_instrumentation_experimental"><a class="anchor" href="#_pubsub_trace_instrumentation_experimental"></a><a class="link" href="#_pubsub_trace_instrumentation_experimental">Pub/Sub Trace Instrumentation (Experimental)</a></h3>
 <div class="paragraph">
 <p>You can enable trace instrumentation and propagation for Pub/Sub messages by using the <code>spring.cloud.gcp.trace.pubsub.enabled=true</code> property.
 It&#8217;s set to <code>false</code> by default, but when set to <code>true</code>, trace spans will be created and propagated to Cloud Trace whenever the application sends or receives messages through <code>PubSubTemplate</code> or any other integration that builds on top of <code>PubSubTemplate</code>, such as the Spring Integration channel adapters, and the Spring Cloud Stream Binder.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs"># Enable Pub/Sub tracing using this property
+<pre class="highlight"><code># Enable Pub/Sub tracing using this property
 spring.cloud.gcp.trace.pubsub.enabled=true</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_sample"><a class="link" href="#_sample">Sample</a></h3>
+<h3 id="_sample"><a class="anchor" href="#_sample"></a><a class="link" href="#_sample">Sample</a></h3>
 <div class="paragraph">
 <p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample">sample application</a> and a <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-cloud-gcp-trace/index.html">codelab</a> are available.</p>
 </div>
@@ -507,10 +374,10 @@ spring.cloud.gcp.trace.pubsub.enabled=true</code></pre>
 </div>
 </div>
 </div>
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script src="js/highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
-<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
-<script type="text/javascript" src="js/toc.js"></script>
+</div>
+  </div>
+</div>
 </body>
 </html>
