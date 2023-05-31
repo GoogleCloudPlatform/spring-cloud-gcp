@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.cloud</groupId>
 		<artifactId>spring-cloud-build</artifactId>
-		<version>4.0.3</version>
+		<version>3.1.7</version>
 		<relativePath/>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -25,7 +25,8 @@
 		<!--maven-resources-plugin:3.2.0:copy-resources fails: https://issues.apache.org/jira/browse/MSHARED-966-->
 		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
 		<!-- override version inherited from spring-cloud-build parent to one that is available on Maven Central -->
-		<spring-asciidoctor-backends.version>0.0.4</spring-asciidoctor-backends.version>
+		<spring-asciidoctor-extensions-block.version>0.6.1</spring-asciidoctor-extensions-block.version>
+		<spring-asciidoctor-extensions-boot.version>0.6.1</spring-asciidoctor-extensions-boot.version>
 	</properties>
 
 
@@ -35,6 +36,26 @@
 			<id>docs</id>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-install-plugin</artifactId>
+						<version>3.1.1</version>
+						<executions>
+							<execution>
+								<phase>clean</phase>
+								<goals>
+									<goal>install-file</goal>
+								</goals>
+								<configuration>
+									<file>src/lib/spring-doc-resources-0.2.2.RELEASE.zip</file>
+									<groupId>io.spring.docresources</groupId>
+									<artifactId>spring-doc-resources</artifactId>
+									<version>0.2.2.RELEASE</version>
+									<packaging>jar</packaging>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 					<plugin>
 						<groupId>pl.project13.maven</groupId>
 						<artifactId>git-commit-id-plugin</artifactId>
