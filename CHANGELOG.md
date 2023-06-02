@@ -14,6 +14,31 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.4.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.3.1...v4.4.0) (2023-06-02)
+
+
+### Features
+
+* allow Spanner and Datastore Transaction Manager in same project ([#1412](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1412)) ([f937b36](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f937b36efb442e5294a357c1a5a14e529aac3fa4))
+
+
+### Bug Fixes
+
+* additional sample test for both transactionManager work together. ([#1848](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1848)) ([219adb3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/219adb3e18a8153917e6b1355b2cee7e7408feff))
+* **deps:** update dependency com.google.api:gapic-generator-java-bom to v2.20.0 ([#1895](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1895)) ([af9b81f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/af9b81f8df40ab0ae6c02ecbefe7c2fa07437042))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.16.0 (main) ([#1918](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1918)) ([4fe4034](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4fe4034b522d380f8290d88b98e3636f11517829))
+* **deps:** update spring cloud ([#1901](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1901)) ([0a3827a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0a3827a6e8b9fd05374a2fe99a0990563e5f0241))
+* pull-endpoint setting for async subscribers ([#1883](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1883)) ([f0c5d4c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f0c5d4c728d152469847cfba1134129130e16551))
+
+
+### Dependencies
+
+* bump commons-io from 2.11.0 to 2.12.0 ([#1867](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1867)) ([7fd064a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7fd064a5769b57af4d0ba407d66cd45a97aa5811))
+* bump gapic-generator-java-bom.version from 2.20.0 to 2.20.1 ([#1905](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1905)) ([745cdd5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/745cdd5fc0273769663ca1a9a571706cedeefeca))
+* bump maven-checkstyle-plugin from 3.2.2 to 3.3.0 ([#1889](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1889)) ([2ab9844](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2ab984489a1c5eebca6091726d13df2473bfe845))
+* bump maven-source-plugin from 3.2.1 to 3.3.0 ([#1886](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1886)) ([5937b07](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5937b07cbaffdf0652f47ab2850e8671de5fccdc))
+* bump spring-cloud-dependencies from 2022.0.2 to 2022.0.3 ([#1904](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1904)) ([99fcdb5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/99fcdb57a368e233b59e54af1aa5c47573e4108d))
+
 ## [4.3.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.3.0...v4.3.1) (2023-05-17)
 
 
