@@ -65,6 +65,46 @@ public class DataMigrationServiceSpringProperties implements CredentialsSupplier
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getConnectionProfileRetry;
+  /**
+   * Allow override of retry settings at method-level for getPrivateConnection. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getPrivateConnectionRetry;
+  /**
+   * Allow override of retry settings at method-level for listPrivateConnections. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listPrivateConnectionsRetry;
+  /**
+   * Allow override of retry settings at method-level for getConversionWorkspace. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getConversionWorkspaceRetry;
+  /**
+   * Allow override of retry settings at method-level for listConversionWorkspaces. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listConversionWorkspacesRetry;
+  /**
+   * Allow override of retry settings at method-level for describeDatabaseEntities. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry describeDatabaseEntitiesRetry;
+  /**
+   * Allow override of retry settings at method-level for searchBackgroundJobs. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry searchBackgroundJobsRetry;
+  /**
+   * Allow override of retry settings at method-level for describeConversionWorkspaceRevisions. If
+   * defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry describeConversionWorkspaceRevisionsRetry;
+  /**
+   * Allow override of retry settings at method-level for fetchStaticIps. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchStaticIpsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -133,5 +173,70 @@ public class DataMigrationServiceSpringProperties implements CredentialsSupplier
 
   public void setGetConnectionProfileRetry(Retry getConnectionProfileRetry) {
     this.getConnectionProfileRetry = getConnectionProfileRetry;
+  }
+
+  public Retry getGetPrivateConnectionRetry() {
+    return this.getPrivateConnectionRetry;
+  }
+
+  public void setGetPrivateConnectionRetry(Retry getPrivateConnectionRetry) {
+    this.getPrivateConnectionRetry = getPrivateConnectionRetry;
+  }
+
+  public Retry getListPrivateConnectionsRetry() {
+    return this.listPrivateConnectionsRetry;
+  }
+
+  public void setListPrivateConnectionsRetry(Retry listPrivateConnectionsRetry) {
+    this.listPrivateConnectionsRetry = listPrivateConnectionsRetry;
+  }
+
+  public Retry getGetConversionWorkspaceRetry() {
+    return this.getConversionWorkspaceRetry;
+  }
+
+  public void setGetConversionWorkspaceRetry(Retry getConversionWorkspaceRetry) {
+    this.getConversionWorkspaceRetry = getConversionWorkspaceRetry;
+  }
+
+  public Retry getListConversionWorkspacesRetry() {
+    return this.listConversionWorkspacesRetry;
+  }
+
+  public void setListConversionWorkspacesRetry(Retry listConversionWorkspacesRetry) {
+    this.listConversionWorkspacesRetry = listConversionWorkspacesRetry;
+  }
+
+  public Retry getDescribeDatabaseEntitiesRetry() {
+    return this.describeDatabaseEntitiesRetry;
+  }
+
+  public void setDescribeDatabaseEntitiesRetry(Retry describeDatabaseEntitiesRetry) {
+    this.describeDatabaseEntitiesRetry = describeDatabaseEntitiesRetry;
+  }
+
+  public Retry getSearchBackgroundJobsRetry() {
+    return this.searchBackgroundJobsRetry;
+  }
+
+  public void setSearchBackgroundJobsRetry(Retry searchBackgroundJobsRetry) {
+    this.searchBackgroundJobsRetry = searchBackgroundJobsRetry;
+  }
+
+  public Retry getDescribeConversionWorkspaceRevisionsRetry() {
+    return this.describeConversionWorkspaceRevisionsRetry;
+  }
+
+  public void setDescribeConversionWorkspaceRevisionsRetry(
+      Retry describeConversionWorkspaceRevisionsRetry) {
+    this.describeConversionWorkspaceRevisionsRetry = describeConversionWorkspaceRevisionsRetry;
+  }
+
+  public Retry getFetchStaticIpsRetry() {
+    return this.fetchStaticIpsRetry;
+  }
+
+  public void setFetchStaticIpsRetry(Retry fetchStaticIpsRetry) {
+    this.fetchStaticIpsRetry = fetchStaticIpsRetry;
   }
 }
