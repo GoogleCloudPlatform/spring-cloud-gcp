@@ -35,7 +35,7 @@
 
 	<properties>
 		<gcp-libraries-bom.version>26.16.0</gcp-libraries-bom.version>
-		<cloud-sql-socket-factory.version>1.11.1</cloud-sql-socket-factory.version>
+		<cloud-sql-socket-factory.version>1.11.2</cloud-sql-socket-factory.version>
 		<guava.version>31.1-jre</guava.version>
 		<r2dbc-postgres-driver.version>1.0.1.RELEASE</r2dbc-postgres-driver.version>
 	</properties>
