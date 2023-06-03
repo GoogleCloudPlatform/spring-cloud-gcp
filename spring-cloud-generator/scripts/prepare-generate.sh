@@ -1,14 +1,6 @@
 #!/bin/bash
 set -e
 
-while getopts v: flag
-do
-    case "${flag}" in
-        v) LIBRARIES_BOM_VERSION=${OPTARG};;
-        d) SPRING_GENERATOR_DIR=${OPTARG};;
-    esac
-done
-
 # If not provided, parse libraries-bom version from spring cloud gcp BOM
 if [[ -z "$LIBRARIES_BOM_VERSION" ]]; then
   LIBRARIES_BOM_VERSION=$(xmllint --xpath "string(//*[local-name()='gcp-libraries-bom.version'])" spring-cloud-gcp-dependencies/pom.xml
