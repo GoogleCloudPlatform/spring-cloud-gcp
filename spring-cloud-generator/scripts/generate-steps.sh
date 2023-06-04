@@ -23,7 +23,7 @@ function compute_monorepo_tag() {
 
 # Expected argument: $1 = Monorepo version tag (or committish)
 function generate_libraries_list(){
-  bash ${SPRING_GENERATOR_DIR}/scripts/generate-libraries-list.sh $1
+  bash ${SPRING_GENERATOR_DIR}/scripts/generate-library-list.sh $1
 }
 
 # When bazel prepare, build, or post-processing step fails, stores the captured stdout and stderr to a file
@@ -32,6 +32,7 @@ function generate_libraries_list(){
 function save_error_info () {
   mkdir -p ${SPRING_GENERATOR_DIR}/failed-library-generations
   cp tmp-output ${SPRING_GENERATOR_DIR}/failed-library-generations/$1
+  # TODO(emmwang): tmp-output still not cleanly removed - find missing cleanup location
   rm tmp-output
 }
 
@@ -54,8 +55,6 @@ function setup_googleapis(){
   buildozer 'delete' WORKSPACE:%maven_install
   # add custom maven_install rules
   perl -pi -e "s{(^_gapic_generator_java_version[^\n]*)}{\$1\n$(cat ../scripts/resources/googleapis_modification_string.txt)}" WORKSPACE
-  # remove empty package() call added from using target __pkg__
-  buildozer 'delete' WORKSPACE:%package
   # In repository_rules.bzl, add switch for new spring rule
   JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"\@spring_cloud_generator\/\/:java_gapic_spring.bzl\\\",\n    )"
   perl -0777 -pi -e "s/(rules\[\"java_gapic_library\"\] \= _switch\((.*?)\))/\$1\n$JAVA_SPRING_SWITCH/s" repository_rules.bzl
@@ -83,11 +82,11 @@ function prepare_bazel_build(){
   perl -0777 -pi -e "s/(load\((.*?)\"java_gapic_library\",)/\$1\n${SPRING_RULE_NAME}/s" ${GOOGLEAPIS_FOLDER}/BUILD.bazel
 
   # Add java_gapic_spring_library rule, with attrs copied from corresponding java_gapic_library rule
-  GAPIC_RULE_NAME="$(buildozer 'print name' $googleapis_folder/BUILD.bazel:%java_gapic_library)"
+  GAPIC_RULE_NAME="$(buildozer 'print name' ${GOOGLEAPIS_FOLDER}/BUILD.bazel:%java_gapic_library)"
   SPRING_RULE_NAME="${GAPIC_RULE_NAME}_spring"
-  GAPIC_RULE_FULL="$(buildozer 'print rule' $googleapis_folder/BUILD.bazel:%java_gapic_library)"
+  GAPIC_RULE_FULL="$(buildozer 'print rule' ${GOOGLEAPIS_FOLDER}/BUILD.bazel:%java_gapic_library)"
 
-  buildozer "new java_gapic_spring_library $SPRING_RULE_NAME" $googleapis_folder/BUILD.bazel:__pkg__
+  buildozer "new java_gapic_spring_library $SPRING_RULE_NAME" ${GOOGLEAPIS_FOLDER}/BUILD.bazel:__pkg__
 
   # Copy attributes from java_gapic_library rule
   attrs_array=("srcs" "grpc_service_config" "gapic_yaml" "service_yaml" "transport")
@@ -95,7 +94,7 @@ function prepare_bazel_build(){
     do
       echo "$attribute"
       if [[ $GAPIC_RULE_FULL = *"$attribute"* ]] ; then
-              buildozer "copy $attribute $GAPIC_RULE_NAME" $googleapis_folder/BUILD.bazel:$SPRING_RULE_NAME
+              buildozer "copy $attribute $GAPIC_RULE_NAME" ${GOOGLEAPIS_FOLDER}/BUILD.bazel:$SPRING_RULE_NAME
           else
               echo "attribute $attribute not found in java_gapic_library rule, skipping"
           fi
@@ -110,26 +109,26 @@ function bazel_build_all(){
 }
 
 # add module after line with pattern, check for existence.
-# args: 1 -  path-to-pom-file; 2 - string-pattern; 3 starter-artifact-id
+# args: 1 -  path-to-pom-file; 2 - starter-artifact-id
 function add_module_to_pom () {
   xmllint --debug --nsclean --xpath  "//*[local-name()='module']/text()" $1 \
-    | sort | uniq | grep -q $3 || module_list_is_empty=1
+    | sort | uniq | grep -q $2 || module_list_is_empty=1
   found_library_in_pom=$?
   if [[ found_library_in_pom -eq 0 ]] && [[ $module_list_is_empty -ne 1 ]]; then
-    echo "module $3 already found in $1 modules"
+    echo "module $2 already found in $1 modules"
   else
-    echo "adding module $3 to pom"
-    sed -i "/^[[:space:]]*<modules>/a\ \ \ \ <module>"$3"</module>" $1
+    echo "adding module $2 to pom"
+    sed -i "/^[[:space:]]*<modules>/a\ \ \ \ <module>"$2"</module>" $1
   fi
 }
 
 # args: 1 - monorepo-folder, 2 - monorepo-commitish, 3 - starter-artifact-id
 function add_line_to_readme() {
+    # TODO(emmwang): fix this function
     # check for existence and write line to spring-cloud-previews/README.md
     # format |client library name|starter maven artifact|
     echo -e "|[$1](https://github.com/googleapis/google-cloud-java/blob/$2/$1/README.md)|com.google.cloud:$3|" >> README.md
     {(grep -vw ".*:.*" README.md);(grep ".*:.*" README.md| sort | uniq)} > tmpfile && mv tmpfile README.md
-
 }
 
 function postprocess_library() {
@@ -137,10 +136,10 @@ function postprocess_library() {
   client_lib_artifactid=$2
   client_lib_groupid=$3
   parent_version=$4
-  googleapis_commitish=$5
-  monorepo_commitish=$6
-  googleapis_folder=$7
-  monorepo_folder=$8
+  googleapis_folder=$5
+  monorepo_folder=$6
+  googleapis_commitish=$7
+  monorepo_commitish=$8
   starter_artifactid="$client_lib_artifactid-spring-starter"
 
   cd ${SPRING_GENERATOR_DIR}
@@ -165,8 +164,7 @@ function postprocess_library() {
 }
 
 # $1 - location of module to run formatter on (e.g. spring-cloud-previews)
-# $2 - location of root repo (with maven wrapper)
 function run_formatter(){
   cd $1
-  ./$2/mvnw com.coveo:fmt-maven-plugin:format -Dfmt.skip=false
+  ./../mvnw com.coveo:fmt-maven-plugin:format -Dfmt.skip=false
 }
