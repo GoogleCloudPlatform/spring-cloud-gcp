@@ -1,0 +1,4 @@
+# Enforce top level code-owners CodeOwners
+*  @GoogleCloudPlatform/cloud-java-team-teamsync
+# Override the CodeOwners for the required submodules
+spring-cloud-gcp-bigquery/**  @GoogleCloudPlatform/cloud-java-frameworks-contributors-bigquery @GoogleCloudPlatform/cloud-java-team-teamsync
