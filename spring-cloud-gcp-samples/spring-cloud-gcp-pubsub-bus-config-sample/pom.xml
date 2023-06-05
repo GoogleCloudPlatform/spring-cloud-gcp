@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-cloud-gcp-samples</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>4.3.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>4.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,7 +14,7 @@
     <name>Spring Framework on Google Cloud Code Sample - Pub/Sub Bus Configuration Management</name>
 
     <properties>
-        <spring-cloud-config.version>4.0.2</spring-cloud-config.version>
+        <spring-cloud-config.version>4.0.3</spring-cloud-config.version>
     </properties>
 
     <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
