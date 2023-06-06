@@ -5,7 +5,7 @@
   <parent>
     <artifactId>cloud-spanner-r2dbc-parent</artifactId>
     <groupId>com.google.cloud</groupId>
-    <version>1.2.2</version><!-- {x-version-update:cloud-spanner-r2dbc:current} -->
+    <version>1.2.3-SNAPSHOT</version><!-- {x-version-update:cloud-spanner-r2dbc:current} -->
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
