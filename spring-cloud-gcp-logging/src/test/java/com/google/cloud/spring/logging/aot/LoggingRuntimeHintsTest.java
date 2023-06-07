@@ -16,28 +16,26 @@
 
 package com.google.cloud.spring.logging.aot;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.aot.hint.predicate.RuntimeHintsPredicates.reflection;
+
 import com.google.cloud.spring.logging.LoggingAppender;
 import com.google.cloud.spring.logging.StackdriverJsonLayout;
 import com.google.cloud.spring.logging.TraceIdLoggingEnhancer;
-import java.util.Arrays;
-import org.springframework.aot.hint.MemberCategory;
+import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.RuntimeHints;
-import org.springframework.aot.hint.RuntimeHintsRegistrar;
-import org.springframework.aot.hint.TypeReference;
 
-public class LoggingRuntimeHints implements RuntimeHintsRegistrar {
-  @Override
-  public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-    hints
-        .reflection()
-        .registerTypes(
-            Arrays.asList(
-                TypeReference.of(LoggingAppender.class),
-                TypeReference.of(TraceIdLoggingEnhancer.class),
-                TypeReference.of(StackdriverJsonLayout.class)),
-            hint ->
-                hint.withMembers(
-                    MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
-                    MemberCategory.INVOKE_PUBLIC_METHODS));
+class LoggingRuntimeHintsTest {
+
+  @Test
+  void shouldRegisterHints() {
+    RuntimeHints hints = new RuntimeHints();
+    new LoggingRuntimeHints().registerHints(hints, getClass().getClassLoader());
+    assertThat(reflection().onType(LoggingAppender.class)).isNotNull();
+
+    assertThat(hints)
+        .matches(reflection().onType(LoggingAppender.class))
+        .matches(reflection().onType(TraceIdLoggingEnhancer.class))
+        .matches(reflection().onType(StackdriverJsonLayout.class));
   }
 }
