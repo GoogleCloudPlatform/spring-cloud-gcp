@@ -79,56 +79,19 @@
 
 	<profiles>
 		<profile>
-			<id>native-sample</id>
-			<dependencies>
-				<dependency>
-					<groupId>org.junit.platform</groupId>
-					<artifactId>junit-platform-launcher</artifactId>
-					<version>1.9.3</version>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
+			<id>native-sample-config</id>
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>${maven-surefire-plugin.version}</version>
-						<configuration>
-							<!-- https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#integration-tests.no-starter-parent -->
-							<excludes combine.self="override" />
-							<includes>
-								<!--including all integration tests for testing purposes.-->
-								<include>${integration-test.pattern}</include>
-							</includes>
-							<classesDirectory>${project.build.outputDirectory}</classesDirectory>
-							<systemPropertyVariables>
-							</systemPropertyVariables>
-						</configuration>
-					</plugin>
-					<plugin>
 						<groupId>org.graalvm.buildtools</groupId>
 						<artifactId>native-maven-plugin</artifactId>
-						<version>0.9.22</version>
-						<extensions>true</extensions>
 						<configuration>
 							<buildArgs>
 								<buildArg>--trace-class-initialization=org.apache.commons.logging.LogFactoryService</buildArg>
 								<buildArg>--initialize-at-build-time=org.apache.commons.logging.LogFactory</buildArg>
 							</buildArgs>
-							<classesDirectory>${project.build.outputDirectory}</classesDirectory>
-							<metadataRepository>
-								<enabled>true</enabled>
-							</metadataRepository>
 						</configuration>
 						<executions>
-							<execution>
-								<id>native-test</id>
-								<goals>
-									<goal>test</goal>
-								</goals>
-								<phase>test</phase>
-							</execution>
 							<execution>
 								<id>build-native</id>
 								<goals>
@@ -138,18 +101,28 @@
 							</execution>
 						</executions>
 					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>nativeTest</id>
+			<build>
+				<plugins>
 					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>3.0.7</version>
-						<executions>
-							<execution>
-								<id>process-test-aot</id>
-								<goals>
-									<goal>process-test-aot</goal>
-								</goals>
-							</execution>
-						</executions>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<!-- https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#integration-tests.no-starter-parent -->
+							<classesDirectory>${project.build.outputDirectory}</classesDirectory>
+							<excludes combine.self="override" />
+							<includes>
+								<!--including all integration tests for testing purposes.-->
+								<include>${integration-test.pattern}</include>
+							</includes>
+							<systemPropertyVariables>
+								<it.logging>true</it.logging>
+							</systemPropertyVariables>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
