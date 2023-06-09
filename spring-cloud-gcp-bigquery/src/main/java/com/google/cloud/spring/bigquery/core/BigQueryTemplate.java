@@ -44,7 +44,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -298,16 +300,17 @@ public class BigQueryTemplate implements BigQueryOperations {
             logger.warn("Unable to get write API response.", e);
           }
         };
-
-    jsonWriterExecutorService.submit(
-        asyncTask); // run the thread async so that we can return the writeApiFutureResponse
-
-    // register success and failure callback which simply logs the event
+    ScheduledFuture<?> asyncTaskScheduledFuture =
+        taskScheduler.schedule(asyncTask, Instant.now()); // Run this task
+    // register success and failure callback
     writeApiFutureResponse.whenComplete(
         (writeApiResponse, exception) -> {
           if (exception != null || !writeApiResponse.isSuccessful()) {
             if (exception != null) {
               logger.error("asyncTask interrupted", exception);
+              if (exception instanceof CancellationException) { // user have cancelled it
+                asyncTaskScheduledFuture.cancel(true);
+              }
             } else {
               logger.warn("Write operation failed");
             }
