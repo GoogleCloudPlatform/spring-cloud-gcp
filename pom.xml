@@ -60,6 +60,7 @@
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
 		<errorprone.version>2.19.1</errorprone.version>
+		<native-maven-plugin.version>0.9.22</native-maven-plugin.version>
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
@@ -340,7 +341,7 @@
 			<plugin>
 				<groupId>org.graalvm.buildtools</groupId>
 				<artifactId>native-maven-plugin</artifactId>
-				<version>0.9.20</version>
+				<version>${native-maven-plugin.version}</version>
 				<extensions>true</extensions>
 			</plugin>
 		</plugins>
@@ -380,7 +381,7 @@
 				<plugin>
 					<groupId>org.graalvm.buildtools</groupId>
 					<artifactId>native-maven-plugin</artifactId>
-					<version>0.9.22</version>
+					<version>${native-maven-plugin.version}</version>
 					<configuration>
 						<buildArgs>
 							<buildArg>--trace-class-initialization=org.apache.commons.logging.LogFactoryService</buildArg>
@@ -404,7 +405,6 @@
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>3.0.7</version>
 					<executions>
 						<execution>
 							<id>process-test-aot</id>
