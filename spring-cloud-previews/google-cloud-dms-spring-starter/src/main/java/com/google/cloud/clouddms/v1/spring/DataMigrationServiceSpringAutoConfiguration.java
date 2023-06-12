@@ -186,6 +186,69 @@ public class DataMigrationServiceSpringAutoConfiguration {
           .getConnectionProfileSettings()
           .setRetrySettings(getConnectionProfileRetrySettings);
 
+      RetrySettings getPrivateConnectionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPrivateConnectionSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getPrivateConnectionSettings()
+          .setRetrySettings(getPrivateConnectionRetrySettings);
+
+      RetrySettings listPrivateConnectionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPrivateConnectionsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listPrivateConnectionsSettings()
+          .setRetrySettings(listPrivateConnectionsRetrySettings);
+
+      RetrySettings getConversionWorkspaceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getConversionWorkspaceSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getConversionWorkspaceSettings()
+          .setRetrySettings(getConversionWorkspaceRetrySettings);
+
+      RetrySettings listConversionWorkspacesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listConversionWorkspacesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listConversionWorkspacesSettings()
+          .setRetrySettings(listConversionWorkspacesRetrySettings);
+
+      RetrySettings describeDatabaseEntitiesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.describeDatabaseEntitiesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .describeDatabaseEntitiesSettings()
+          .setRetrySettings(describeDatabaseEntitiesRetrySettings);
+
+      RetrySettings searchBackgroundJobsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.searchBackgroundJobsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .searchBackgroundJobsSettings()
+          .setRetrySettings(searchBackgroundJobsRetrySettings);
+
+      RetrySettings describeConversionWorkspaceRevisionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder
+                  .describeConversionWorkspaceRevisionsSettings()
+                  .getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .describeConversionWorkspaceRevisionsSettings()
+          .setRetrySettings(describeConversionWorkspaceRevisionsRetrySettings);
+
+      RetrySettings fetchStaticIpsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchStaticIpsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.fetchStaticIpsSettings().setRetrySettings(fetchStaticIpsRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -257,6 +320,118 @@ public class DataMigrationServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getConnectionProfile from properties.");
+      }
+    }
+    Retry getPrivateConnectionRetry = clientProperties.getGetPrivateConnectionRetry();
+    if (getPrivateConnectionRetry != null) {
+      RetrySettings getPrivateConnectionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPrivateConnectionSettings().getRetrySettings(),
+              getPrivateConnectionRetry);
+      clientSettingsBuilder
+          .getPrivateConnectionSettings()
+          .setRetrySettings(getPrivateConnectionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getPrivateConnection from properties.");
+      }
+    }
+    Retry listPrivateConnectionsRetry = clientProperties.getListPrivateConnectionsRetry();
+    if (listPrivateConnectionsRetry != null) {
+      RetrySettings listPrivateConnectionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPrivateConnectionsSettings().getRetrySettings(),
+              listPrivateConnectionsRetry);
+      clientSettingsBuilder
+          .listPrivateConnectionsSettings()
+          .setRetrySettings(listPrivateConnectionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listPrivateConnections from properties.");
+      }
+    }
+    Retry getConversionWorkspaceRetry = clientProperties.getGetConversionWorkspaceRetry();
+    if (getConversionWorkspaceRetry != null) {
+      RetrySettings getConversionWorkspaceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getConversionWorkspaceSettings().getRetrySettings(),
+              getConversionWorkspaceRetry);
+      clientSettingsBuilder
+          .getConversionWorkspaceSettings()
+          .setRetrySettings(getConversionWorkspaceRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getConversionWorkspace from properties.");
+      }
+    }
+    Retry listConversionWorkspacesRetry = clientProperties.getListConversionWorkspacesRetry();
+    if (listConversionWorkspacesRetry != null) {
+      RetrySettings listConversionWorkspacesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listConversionWorkspacesSettings().getRetrySettings(),
+              listConversionWorkspacesRetry);
+      clientSettingsBuilder
+          .listConversionWorkspacesSettings()
+          .setRetrySettings(listConversionWorkspacesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listConversionWorkspaces from properties.");
+      }
+    }
+    Retry describeDatabaseEntitiesRetry = clientProperties.getDescribeDatabaseEntitiesRetry();
+    if (describeDatabaseEntitiesRetry != null) {
+      RetrySettings describeDatabaseEntitiesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.describeDatabaseEntitiesSettings().getRetrySettings(),
+              describeDatabaseEntitiesRetry);
+      clientSettingsBuilder
+          .describeDatabaseEntitiesSettings()
+          .setRetrySettings(describeDatabaseEntitiesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for describeDatabaseEntities from properties.");
+      }
+    }
+    Retry searchBackgroundJobsRetry = clientProperties.getSearchBackgroundJobsRetry();
+    if (searchBackgroundJobsRetry != null) {
+      RetrySettings searchBackgroundJobsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.searchBackgroundJobsSettings().getRetrySettings(),
+              searchBackgroundJobsRetry);
+      clientSettingsBuilder
+          .searchBackgroundJobsSettings()
+          .setRetrySettings(searchBackgroundJobsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for searchBackgroundJobs from properties.");
+      }
+    }
+    Retry describeConversionWorkspaceRevisionsRetry =
+        clientProperties.getDescribeConversionWorkspaceRevisionsRetry();
+    if (describeConversionWorkspaceRevisionsRetry != null) {
+      RetrySettings describeConversionWorkspaceRevisionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder
+                  .describeConversionWorkspaceRevisionsSettings()
+                  .getRetrySettings(),
+              describeConversionWorkspaceRevisionsRetry);
+      clientSettingsBuilder
+          .describeConversionWorkspaceRevisionsSettings()
+          .setRetrySettings(describeConversionWorkspaceRevisionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for describeConversionWorkspaceRevisions from properties.");
+      }
+    }
+    Retry fetchStaticIpsRetry = clientProperties.getFetchStaticIpsRetry();
+    if (fetchStaticIpsRetry != null) {
+      RetrySettings fetchStaticIpsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchStaticIpsSettings().getRetrySettings(),
+              fetchStaticIpsRetry);
+      clientSettingsBuilder.fetchStaticIpsSettings().setRetrySettings(fetchStaticIpsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for fetchStaticIps from properties.");
       }
     }
     return clientSettingsBuilder.build();
