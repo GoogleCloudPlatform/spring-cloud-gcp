@@ -24,7 +24,6 @@ import com.google.api.generator.gapic.composer.store.TypeStore;
 import com.google.api.generator.gapic.model.GapicClass;
 import com.google.api.generator.gapic.model.GapicContext;
 import com.google.api.generator.gapic.model.GapicPackageInfo;
-import com.google.api.generator.gapic.model.Transport;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,12 +65,8 @@ public class SpringComposer {
         .services()
         .forEach(
             s -> {
-              // Transport.REST is out of scope for Spring composers.
-              if (context.transport() == Transport.GRPC
-                  || context.transport() == Transport.GRPC_REST) {
-                clazzes.add(SpringAutoConfigClassComposer.instance().generate(context, s));
-                clazzes.add(SpringPropertiesClassComposer.instance().generate(context, s));
-              }
+              clazzes.add(SpringAutoConfigClassComposer.instance().generate(context, s));
+              clazzes.add(SpringPropertiesClassComposer.instance().generate(context, s));
             });
     return clazzes;
   }
