@@ -84,6 +84,20 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
+      - name: Print versions
+        run: |
+          echo "GRAALVM_HOME: $GRAALVM_HOME"
+          echo "JAVA_HOME: $JAVA_HOME"
+          java --version
+          gu --version
+          native-image --version
+      - name: Check active profiles
+        run: |
+          ../mvnw \
+            --batch-mode \
+            --activate-profiles native-sample-config,nativeTest \
+            --define notAllModules=true \
+            help:active-profiles
       - name: Native Tests
         id: intTest1
         continue-on-error: true
@@ -91,9 +105,8 @@ jobs:
           ../mvnw \
             --batch-mode \
             --activate-profiles native-sample-config,nativeTest \
-            -DnotAllModules=true \
+            --define notAllModules=true \
             --define maven.javadoc.skip=true \
-            --define skip.surefire.tests=true \
             test
         working-directory: ./spring-cloud-gcp-samples
       - name: Retry on Failure
@@ -103,9 +116,8 @@ jobs:
           ../mvnw \
             --batch-mode \
             --activate-profiles native-sample-config,nativeTest \
-            -DnotAllModules=true \
+            --define notAllModules=true \
             --define maven.javadoc.skip=true \
-            --define skip.surefire.tests=true \
             test
         working-directory: ./spring-cloud-gcp-samples
       - name: Aggregate Report
