@@ -82,7 +82,6 @@
     <module>google-cloud-containeranalysis-spring-starter</module>
     <module>google-cloud-container-spring-starter</module>
     <module>google-cloud-contact-center-insights-spring-starter</module>
-    <module>google-cloud-compute-spring-starter</module>
     <module>google-cloud-build-spring-starter</module>
     <module>google-cloud-channel-spring-starter</module>
     <module>google-cloud-binary-authorization-spring-starter</module>

@@ -86,10 +86,8 @@ public class IntentsSpringAutoConfiguration {
   }
 
   /**
-   * Provides a default transport channel provider bean, corresponding to the client library's
-   * default transport channel provider. If the library supports both GRPC and REST transport, and
-   * the useRest property is configured, the HTTP/JSON transport provider will be used instead of
-   * GRPC.
+   * Provides a default transport channel provider bean. The default is gRPC and will default to it
+   * unless the useRest option is supported and provided to use HTTP transport instead
    *
    * @return a default transport channel provider.
    */
