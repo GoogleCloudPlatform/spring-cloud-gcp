@@ -1,0 +1,122 @@
+name: Integration Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+    - 'spring-cloud-generator/**'
+    - 'spring-cloud-previews/**'
+  workflow_dispatch:
+
+
+jobs:
+  integrationTests:
+    if: |
+      github.actor != 'dependabot[bot]' && ((
+        github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
+      ) || (github.event_name != 'pull_request'))
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Set Up Authentication
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.SPRING_CLOUD_GCP_CI_SA_KEY }}
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: latest
+          project_id: spring-cloud-gcp-ci
+          export_default_credentials: true
+      - name: Install pubsub-emulator
+        if: ${{ matrix.it == 'pubsub-emulator' }}
+        run: |
+          gcloud components install pubsub-emulator beta && \
+            gcloud components update
+      - name: Maven go offline
+        id: mvn-offline
+        if: steps.mvn-cache.outputs.cache-hit != 'true'
+        run: ./mvnw compile dependency:go-offline
+      - name: Mvn install # Need this when the directory/pom structure changes
+        id: install1
+        continue-on-error: true
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --threads 1.5C \
+            --define maven.test.skip=true \
+            --define maven.javadoc.skip=true \
+            install
+      - name: Retry install on failure
+        id: install2
+        if: steps.install1.outcome == 'failure'
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --threads 1.5C \
+            --define maven.test.skip=true \
+            --define maven.javadoc.skip=true \
+            install
+      - name: Wait our turn for running integration tests
+        uses: softprops/turnstyle@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          continue-after-seconds: 1200 # 30 min
+          same-branch-only: false
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: '22.3.0'
+          java-version: '17'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+      - name: Integration Tests
+        id: intTest1
+        continue-on-error: true
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --activate-profiles native-sample-config,nativeTest \
+            --define maven.javadoc.skip=true \
+            --define skip.surefire.tests=true \
+            test
+        working-directory: ./spring-cloud-gcp-samples
+      - name: Retry on Failure
+        id: intTest2
+        if: steps.intTest1.outcome == 'failure'
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --activate-profiles native-sample-config,nativeTest \
+            --define maven.javadoc.skip=true \
+            --define skip.surefire.tests=true \
+            test
+        working-directory: ./spring-cloud-gcp-samples
+      - name: Aggregate Report
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --define aggregate=true \
+          surefire-report:report-only
+      - name: Archive logs
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v3
+        with:
+          name: Native Test Logs
+          path: |
+            **/target/failsafe-reports/*
+            **/target/site
