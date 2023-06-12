@@ -91,6 +91,7 @@ jobs:
           ../mvnw \
             --batch-mode \
             --activate-profiles native-sample-config,nativeTest \
+            -DnotAllModules=true \
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
             test
@@ -102,6 +103,7 @@ jobs:
           ../mvnw \
             --batch-mode \
             --activate-profiles native-sample-config,nativeTest \
+            -DnotAllModules=true \
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
             test

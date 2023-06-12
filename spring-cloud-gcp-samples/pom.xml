@@ -48,7 +48,7 @@
 			<id>default</id>
 			<activation>
 				<property>
-					<name>!not-all-modules</name>
+					<name>!notAllModules</name>
 				</property>
 			</activation>
 			<modules>
