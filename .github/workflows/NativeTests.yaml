@@ -98,6 +98,7 @@ jobs:
             --activate-profiles native-sample-config,nativeTest \
             --define notAllModules=true \
             help:active-profiles
+        working-directory: ./spring-cloud-gcp-samples
       - name: Native Tests
         id: intTest1
         continue-on-error: true
