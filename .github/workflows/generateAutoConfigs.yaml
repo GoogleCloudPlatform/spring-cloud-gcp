@@ -66,26 +66,6 @@ jobs:
           go install github.com/bazelbuild/buildtools/buildozer@latest
           export PATH=$PATH:$(go env GOPATH)/bin
           buildozer --version
-      - name: Clean previews folder
-        continue-on-error: false
-        working-directory: spring-cloud-generator
-        run: |
-          set -x
-          bash scripts/reset-previews-folder.sh
-      - name: Generate library list
-        id: generate_library_list
-        continue-on-error: false
-        working-directory: spring-cloud-generator
-        run: |
-          set -x
-          set -e
-          echo "Libraries BOM version: $LIBRARIES_BOM_VERSION"
-          MONOREPO_TAG=v$(bash scripts/compute-monorepo-tag.sh -v $LIBRARIES_BOM_VERSION)
-          echo "MONOREPO_COMMITISH=$MONOREPO_TAG" >> $GITHUB_OUTPUT
-          bash scripts/generate-library-list.sh -c $MONOREPO_TAG
-          cat scripts/resources/library_list.txt
-        env:
-          LIBRARIES_BOM_VERSION: ${{ steps.get_libraries_bom_version.outputs.LIBRARIES_BOM_VERSION }}
       - name: Compile non-autogen libraries
         continue-on-error: false
         run: |
@@ -97,23 +77,25 @@ jobs:
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
             install
+      # TODO(emmwang): Several environment variables can be optionally configured to use in script
+      # SPRING_GENERATOR_DIR
+      # LIBRARIES_BOM_VERSION
+      # MONOREPO_TAG
+      # LIBRARY_LIST_PATH
       - name: Generate libraries
         continue-on-error: false
         working-directory: spring-cloud-generator
         run: |
           set -x
-          set -e
-          export PATH=$PATH:$(go env GOPATH)/bin
-          buildozer --version
-          bash scripts/generate-all.sh -m $MONOREPO_COMMITISH
+          bash scripts/generate.sh
         env:
-          MONOREPO_COMMITISH: ${{ steps.generate_library_list.outputs.MONOREPO_COMMITISH }}
+          LIBRARIES_BOM_VERSION: ${{ steps.get_libraries_bom_version.outputs.LIBRARIES_BOM_VERSION }}
       - name: Sanity checks
         continue-on-error: false
-        working-directory: spring-cloud-generator/scripts
+        working-directory: spring-cloud-generator
         run: |
           set -x
-          bash sanity-checks.sh
+          bash scripts/sanity-checks.sh
       - name: Check for generation errors
         continue-on-error: false
         working-directory: spring-cloud-generator
