@@ -11,7 +11,7 @@ function reset_previews_folder() {
 
 # Expected argument: $1 = Libraries BOM version
 # From libraries bom version, outputs corresponding google-cloud-java monorepo version
-function compute_monorepo_tag() {
+function compute_monorepo_version() {
   libraries_bom_version=$1
   gapic_libraries_groupId='com.google.cloud'
   gapic_libraries_artifactId='gapic-libraries-bom'
@@ -27,13 +27,11 @@ function generate_libraries_list(){
 }
 
 # When bazel prepare, build, or post-processing step fails, stores the captured stdout and stderr to a file
-# with the name of the client library
-# args 1 - library name
+# with the name of the failed step (and client library name, if applicable)
+# args 1 - failed step identifier
 function save_error_info () {
   mkdir -p ${SPRING_GENERATOR_DIR}/failed-library-generations
   cp tmp-output ${SPRING_GENERATOR_DIR}/failed-library-generations/$1
-  # TODO(emmwang): tmp-output still not cleanly removed - find missing cleanup location
-  rm tmp-output
 }
 
 # Install local snapshot jar for spring generator
@@ -125,6 +123,9 @@ function add_module_to_pom () {
 # args: 1 - monorepo-folder, 2 - monorepo-commitish, 3 - starter-artifact-id
 function add_line_to_readme() {
     # TODO(emmwang): fix this function
+    echo "monorepo folder: $1"
+    echo "monorepo commitish: $2"
+    echo "starter artifact id: $3"
     # check for existence and write line to spring-cloud-previews/README.md
     # format |client library name|starter maven artifact|
     echo -e "|[$1](https://github.com/googleapis/google-cloud-java/blob/$2/$1/README.md)|com.google.cloud:$3|" >> README.md
@@ -139,8 +140,12 @@ function postprocess_library() {
   googleapis_folder=$5
   monorepo_folder=$6
   googleapis_commitish=$7
-  monorepo_commitish=$8
+  monorepo_tag=$8
   starter_artifactid="$client_lib_artifactid-spring-starter"
+
+  echo "monorepo folder: $monorepo_folder"
+  echo "monorepo commitish: $monorepo_commitish"
+  echo "starter artifact id: $starter_artifactid"
 
   cd ${SPRING_GENERATOR_DIR}
 
