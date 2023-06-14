@@ -23,7 +23,8 @@ function compute_monorepo_version() {
 
 # Expected argument: $1 = Monorepo version tag (or committish)
 function generate_libraries_list(){
-  bash ${SPRING_GENERATOR_DIR}/scripts/generate-library-list.sh $1
+  cd ${SPRING_GENERATOR_DIR}
+  bash scripts/generate-library-list.sh $1
 }
 
 # When bazel prepare, build, or post-processing step fails, stores the captured stdout and stderr to a file
