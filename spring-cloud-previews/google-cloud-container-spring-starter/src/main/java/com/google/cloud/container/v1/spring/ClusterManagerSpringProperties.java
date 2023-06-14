@@ -205,6 +205,11 @@ public class ClusterManagerSpringProperties implements CredentialsSupplier {
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listUsableSubnetworksRetry;
+  /**
+   * Allow override of retry settings at method-level for checkAutopilotCompatibility. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry checkAutopilotCompatibilityRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -497,5 +502,13 @@ public class ClusterManagerSpringProperties implements CredentialsSupplier {
 
   public void setListUsableSubnetworksRetry(Retry listUsableSubnetworksRetry) {
     this.listUsableSubnetworksRetry = listUsableSubnetworksRetry;
+  }
+
+  public Retry getCheckAutopilotCompatibilityRetry() {
+    return this.checkAutopilotCompatibilityRetry;
+  }
+
+  public void setCheckAutopilotCompatibilityRetry(Retry checkAutopilotCompatibilityRetry) {
+    this.checkAutopilotCompatibilityRetry = checkAutopilotCompatibilityRetry;
   }
 }

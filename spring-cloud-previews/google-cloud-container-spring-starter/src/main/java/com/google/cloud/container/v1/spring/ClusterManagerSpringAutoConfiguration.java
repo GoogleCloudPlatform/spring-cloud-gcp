@@ -350,6 +350,14 @@ public class ClusterManagerSpringAutoConfiguration {
           .listUsableSubnetworksSettings()
           .setRetrySettings(listUsableSubnetworksRetrySettings);
 
+      RetrySettings checkAutopilotCompatibilityRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.checkAutopilotCompatibilitySettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .checkAutopilotCompatibilitySettings()
+          .setRetrySettings(checkAutopilotCompatibilityRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -742,6 +750,20 @@ public class ClusterManagerSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listUsableSubnetworks from properties.");
+      }
+    }
+    Retry checkAutopilotCompatibilityRetry = clientProperties.getCheckAutopilotCompatibilityRetry();
+    if (checkAutopilotCompatibilityRetry != null) {
+      RetrySettings checkAutopilotCompatibilityRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.checkAutopilotCompatibilitySettings().getRetrySettings(),
+              checkAutopilotCompatibilityRetry);
+      clientSettingsBuilder
+          .checkAutopilotCompatibilitySettings()
+          .setRetrySettings(checkAutopilotCompatibilityRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for checkAutopilotCompatibility from properties.");
       }
     }
     return clientSettingsBuilder.build();
