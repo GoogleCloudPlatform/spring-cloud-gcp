@@ -32,7 +32,7 @@
 		<gcp-libraries-bom.version>26.17.0</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.12.0</cloud-sql-socket-factory.version>
 		<guava.version>31.1-jre</guava.version>
-		<r2dbc-mysql-driver.version>0.8.2.RELEASE</r2dbc-mysql-driver.version>
+		<r2dbc-mysql-driver.version>0.9.3</r2dbc-mysql-driver.version>
 		<r2dbc-postgres-driver.version>0.8.13.RELEASE</r2dbc-postgres-driver.version>
 	</properties>
 
@@ -275,13 +275,8 @@
 				<artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
-
-			<!-- Spring Boot 2.7 no longer manages this dependency.
-			     Replace with MariaDB driver once it's supported.
-			     https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory/issues/990
-			 -->
 			<dependency>
-				<groupId>dev.miku</groupId>
+				<groupId>io.asyncer</groupId>
 				<artifactId>r2dbc-mysql</artifactId>
 				<version>${r2dbc-mysql-driver.version}</version>
 			</dependency>

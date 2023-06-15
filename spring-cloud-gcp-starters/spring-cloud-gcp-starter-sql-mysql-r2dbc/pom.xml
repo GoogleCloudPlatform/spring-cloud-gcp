@@ -29,7 +29,7 @@
             <artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
         </dependency>
         <dependency>
-            <groupId>dev.miku</groupId>
+            <groupId>io.asyncer</groupId>
             <artifactId>r2dbc-mysql</artifactId>
         </dependency>
 
