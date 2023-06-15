@@ -15,10 +15,10 @@
     <description>Spring Code Generator for Google Cloud</description>
 
     <properties>
-        <gapic-generator-java-bom.version>2.20.1</gapic-generator-java-bom.version>
+        <gapic-generator-java-bom.version>2.21.0</gapic-generator-java-bom.version>
         <!-- [gapic-test]: protobuf.version for compiling protos used in unit testing
              this should be consistent with version in gapic-generator-java-bom -->
-        <protobuf.version>3.21.12</protobuf.version>
+        <protobuf.version>3.23.2</protobuf.version>
     </properties>
 
     <dependencyManagement>
@@ -56,6 +56,12 @@
             <groupId>io.github.java-diff-utils</groupId>
             <artifactId>java-diff-utils</artifactId>
             <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.truth</groupId>
+            <artifactId>truth</artifactId>
+            <version>1.1.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
