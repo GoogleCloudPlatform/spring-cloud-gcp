@@ -14,6 +14,28 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.5.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.4.0...v4.5.0) (2023-06-15)
+
+
+### Features
+
+* add google-cloud-compute-spring-starter to starter modules available for preview ([41b5c19](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/41b5c19856e059a193b6fcacf63951218fb17eed))
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.micrometer:micrometer-tracing-bom to v1.1.2 ([#1943](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1943)) ([2240e62](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2240e6248fead31c483b2e2027f8d6c3f271fa48))
+* Remove misleading Spanner DEBUG log for query elapsed time ([#1954](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1954)) ([51352ad](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/51352adf5f53a9e150cc4113b2a211180ba628c3)), closes [#1945](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1945)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.11.1 to 1.12.0 ([#1947](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1947)) ([b60efaf](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b60efaf925e7cf56a8efeb12a910b1d63c581261))
+* bump commons-io from 2.12.0 to 2.13.0 ([#1934](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1934)) ([da5c93a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/da5c93a66695580a28a4b8ec75418d7e360ee83a))
+* bump libraries-bom from 26.16.0 to 26.17.0 ([#1948](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1948)) ([5beb0e6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5beb0e6133710cd445742aa9a3035affcdc53bde))
+* bump micrometer-tracing-bom from 1.1.1 to 1.1.2 ([#1944](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1944)) ([c0bb763](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c0bb763974e7296c0eb5a1a10afb76ead163c9c9))
+* bump truth from 1.1.3 to 1.1.4 ([#1942](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1942)) ([79402f5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/79402f59b1c289836c662a45ca751e31588d8214))
+
 ## [4.4.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.3.1...v4.4.0) (2023-06-02)
 
 
