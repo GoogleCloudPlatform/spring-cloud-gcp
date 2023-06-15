@@ -51,7 +51,7 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
   done
 done <<< "$libraries"
 
-starters=$(find ../../spring-cloud-previews -maxdepth 1 -name "google-*" -type d -printf "%p\n")
+starters=$(find ${SPRING_GENERATOR_DIR}/../spring-cloud-previews -maxdepth 1 -name "google-*" -type d -printf "%p\n")
 # confirms library_list and generated folders have the same length
 lib_list_n_entries=$(cat $LIBRARY_LIST_PATH | tail -n+2 | wc -l)
 gen_folders_n_entries=$(printf "$starters" | cut -d' ' -f1- | wc -l)
