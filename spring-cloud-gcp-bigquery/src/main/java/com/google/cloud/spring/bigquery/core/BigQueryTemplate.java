@@ -48,8 +48,6 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -93,11 +91,9 @@ public class BigQueryTemplate implements BigQueryOperations {
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
 
   private final int jsonWriterBatchSize;
-  private final ExecutorService jsonWriterExecutorService;
 
   /**
-   * A constructor which creates the {@link BigQuery} template with the default
-   * jsonWriterExecutorService
+   * A Full constructor which creates the {@link BigQuery} template.
    *
    * @param bigQuery the underlying client object used to interface with BigQuery
    * @param bigQueryWriteClient the underlying BigQueryWriteClient reference use to connect with
@@ -111,41 +107,11 @@ public class BigQueryTemplate implements BigQueryOperations {
       BigQueryWriteClient bigQueryWriteClient,
       Map<String, Object> bqInitSettings,
       TaskScheduler taskScheduler) {
-    this(
-        bigQuery,
-        bigQueryWriteClient,
-        bqInitSettings,
-        taskScheduler,
-        Executors.newFixedThreadPool(
-            (Integer)
-                bqInitSettings.getOrDefault(
-                    "JSON_WRITER_THREAD_POOL_SIZE", DEFAULT_JSON_WRITER_THREAD_POOL_SIZE)));
-  }
-
-  /**
-   * A Full constructor which creates the {@link BigQuery} template.
-   *
-   * @param bigQuery the underlying client object used to interface with BigQuery
-   * @param bigQueryWriteClient the underlying BigQueryWriteClient reference use to connect with
-   *     BigQuery Storage Write Client
-   * @param bqInitSettings Properties required for initialisation of this class
-   * @param taskScheduler the {@link TaskScheduler} used to poll for the status of long-running
-   *     BigQuery operations
-   * @param jsonWriterExecutorService the {@link ExecutorService} used to run the thread required
-   *     for the BigQuery JSON Writer
-   */
-  public BigQueryTemplate(
-      BigQuery bigQuery,
-      BigQueryWriteClient bigQueryWriteClient,
-      Map<String, Object> bqInitSettings,
-      TaskScheduler taskScheduler,
-      ExecutorService jsonWriterExecutorService) {
     String bqDatasetName = (String) bqInitSettings.get("DATASET_NAME");
     Assert.notNull(bigQuery, "BigQuery client object must not be null.");
     Assert.notNull(bqDatasetName, "Dataset name must not be null");
     Assert.notNull(taskScheduler, "TaskScheduler must not be null");
     Assert.notNull(bigQueryWriteClient, "BigQueryWriteClient must not be null");
-    Assert.notNull(jsonWriterExecutorService, "ExecutorService must not be null");
     jsonWriterBatchSize =
         (Integer)
             bqInitSettings.getOrDefault(
@@ -154,7 +120,6 @@ public class BigQueryTemplate implements BigQueryOperations {
     this.datasetName = bqDatasetName;
     this.taskScheduler = taskScheduler;
     this.bigQueryWriteClient = bigQueryWriteClient;
-    this.jsonWriterExecutorService = jsonWriterExecutorService;
   }
 
   /**
