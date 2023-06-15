@@ -123,14 +123,10 @@ function add_module_to_pom () {
 
 # args: 1 - monorepo-folder, 2 - monorepo-commitish, 3 - starter-artifact-id
 function add_line_to_readme() {
-    # TODO(emmwang): fix this function
-    echo "monorepo folder: $1"
-    echo "monorepo commitish: $2"
-    echo "starter artifact id: $3"
     # check for existence and write line to spring-cloud-previews/README.md
     # format |client library name|starter maven artifact|
     echo -e "|[$1](https://github.com/googleapis/google-cloud-java/blob/$2/$1/README.md)|com.google.cloud:$3|" >> README.md
-    {(grep -vw ".*:.*" README.md);(grep ".*:.*" README.md| sort | uniq)} > tmpfile && mv tmpfile README.md
+    {(grep -vw "|.*:.*|" README.md);(grep "|.*:.*|" README.md| sort | uniq)} > tmpfile && mv tmpfile README.md
 }
 
 function postprocess_library() {
@@ -141,7 +137,7 @@ function postprocess_library() {
   googleapis_folder=$5
   monorepo_folder=$6
   googleapis_commitish=$7
-  monorepo_tag=$8
+  monorepo_commitish=$8
   starter_artifactid="$client_lib_artifactid-spring-starter"
 
   echo "monorepo folder: $monorepo_folder"
