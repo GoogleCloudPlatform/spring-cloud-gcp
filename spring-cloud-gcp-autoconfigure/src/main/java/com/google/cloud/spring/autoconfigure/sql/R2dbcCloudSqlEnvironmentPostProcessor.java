@@ -108,7 +108,7 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
         && isOnClasspath("com.google.cloud.sql.CredentialFactory")
         && isOnClasspath("io.r2dbc.spi.ConnectionFactory")) {
       if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderMysql")
-          && isOnClasspath("dev.miku.r2dbc.mysql.MySqlConnectionFactoryProvider")) {
+          && isOnClasspath("io.asyncer.r2dbc.mysql.MySqlConnectionFactoryProvider")) {
         return DatabaseType.MYSQL;
       } else if (isOnClasspath("com.google.cloud.sql.core.GcpConnectionFactoryProviderPostgres")
           && isOnClasspath("io.r2dbc.postgresql.PostgresqlConnectionFactoryProvider")) {

@@ -108,7 +108,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
         .withPropertyValues(
             "spring.cloud.gcp.sql.databaseName=my-database",
             "spring.cloud.gcp.sql.instanceConnectionName=my-project:region:my-instance")
-        .withClassLoader(excludeDriverPackages(new String[] {"dev.miku.r2dbc.mysql"}))
+        .withClassLoader(excludeDriverPackages(new String[] {"io.asyncer.r2dbc.mysql"}))
         .run(
             context -> {
               assertThat(context.getEnvironment().getProperty("spring.r2dbc.url"))
@@ -192,7 +192,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
     // Because `FilteredClassLoader` accepts a list of packages to remove from classpath,
     // `driverPackagesToInclude` is used to calculate the inverse list of packages to _exclude_.
     Set<String> driverPackagesToExclude = new HashSet<>(
-        Arrays.asList("io.r2dbc.postgresql", "dev.miku.r2dbc.mysql"));
+        Arrays.asList("io.r2dbc.postgresql", "io.asyncer.r2dbc.mysql"));
     Arrays.stream(driverPackagesToInclude)
         .forEach(driverPackagesToExclude::remove);
 

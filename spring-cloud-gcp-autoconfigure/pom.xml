@@ -124,7 +124,7 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>dev.miku</groupId>
+            <groupId>io.asyncer</groupId>
             <artifactId>r2dbc-mysql</artifactId>
             <optional>true</optional>
         </dependency>
