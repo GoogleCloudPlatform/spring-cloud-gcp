@@ -82,6 +82,9 @@ jobs:
         working-directory: spring-cloud-generator
         run: |
           set -x
+          set -e
+          export PATH=$PATH:$(go env GOPATH)/bin
+          buildozer --version
           bash scripts/generate.sh
         env:
           LIBRARIES_BOM_VERSION: ${{ steps.get_libraries_bom_version.outputs.LIBRARIES_BOM_VERSION }}
