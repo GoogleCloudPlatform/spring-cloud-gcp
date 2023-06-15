@@ -6,8 +6,8 @@
   <parent>
     <groupId>com.google.cloud</groupId>
     <artifactId>spring-cloud-gcp-starters</artifactId>
-    <version>4.3.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
-   <relativePath>../../../spring-cloud-gcp-starters/pom.xml</relativePath>
+    <version>4.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+    <relativePath>../../../spring-cloud-gcp-starters/pom.xml</relativePath>
   </parent>
   <artifactId>gapic-showcase-spring-starter</artifactId>
   <version>${project.parent.version}-preview</version>

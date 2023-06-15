@@ -342,30 +342,30 @@ class EchoAutoConfigurationTests {
                   .isEqualTo(customMethodMultiplier);
               assertThat(pagedExpandRetrySettings.getRpcTimeoutMultiplier())
                   .isEqualTo(customMethodMultiplier);
-              assertThat(pagedExpandRetrySettings.getInitialRetryDelay()).isEqualTo(customMethodDuration);
-              assertThat(pagedExpandRetrySettings.getInitialRpcTimeout()).isEqualTo(customMethodDuration);
-              assertThat(pagedExpandRetrySettings.getMaxRetryDelay()).isEqualTo(customMethodDuration);
-              assertThat(pagedExpandRetrySettings.getMaxRpcTimeout()).isEqualTo(customMethodDuration);
-              assertThat(pagedExpandRetrySettings.getTotalTimeout()).isEqualTo(customMethodDuration);
-              assertThat(pagedExpandRetrySettings.getMaxAttempts()).isEqualTo(customMethodMaxAttempts);
+              assertThat(pagedExpandRetrySettings.getInitialRetryDelay())
+                  .isEqualTo(customMethodDuration);
+              assertThat(pagedExpandRetrySettings.getInitialRpcTimeout())
+                  .isEqualTo(customMethodDuration);
+              assertThat(pagedExpandRetrySettings.getMaxRetryDelay())
+                  .isEqualTo(customMethodDuration);
+              assertThat(pagedExpandRetrySettings.getMaxRpcTimeout())
+                  .isEqualTo(customMethodDuration);
+              assertThat(pagedExpandRetrySettings.getTotalTimeout())
+                  .isEqualTo(customMethodDuration);
+              assertThat(pagedExpandRetrySettings.getMaxAttempts())
+                  .isEqualTo(customMethodMaxAttempts);
 
               // Service-level overrides should be used for echo
               assertThat(echoRetrySettings.getRetryDelayMultiplier())
                   .isEqualTo(customServiceMultiplier);
               assertThat(echoRetrySettings.getRpcTimeoutMultiplier())
                   .isEqualTo(customServiceMultiplier);
-              assertThat(echoRetrySettings.getInitialRetryDelay())
-                  .isEqualTo(customServiceDuration);
-              assertThat(echoRetrySettings.getInitialRpcTimeout())
-                  .isEqualTo(customServiceDuration);
-              assertThat(echoRetrySettings.getMaxRetryDelay())
-                  .isEqualTo(customServiceDuration);
-              assertThat(echoRetrySettings.getMaxRpcTimeout())
-                  .isEqualTo(customServiceDuration);
-              assertThat(echoRetrySettings.getTotalTimeout())
-                  .isEqualTo(customServiceDuration);
-              assertThat(echoRetrySettings.getMaxAttempts())
-                  .isEqualTo(customServiceMaxAttempts);
+              assertThat(echoRetrySettings.getInitialRetryDelay()).isEqualTo(customServiceDuration);
+              assertThat(echoRetrySettings.getInitialRpcTimeout()).isEqualTo(customServiceDuration);
+              assertThat(echoRetrySettings.getMaxRetryDelay()).isEqualTo(customServiceDuration);
+              assertThat(echoRetrySettings.getMaxRpcTimeout()).isEqualTo(customServiceDuration);
+              assertThat(echoRetrySettings.getTotalTimeout()).isEqualTo(customServiceDuration);
+              assertThat(echoRetrySettings.getMaxAttempts()).isEqualTo(customServiceMaxAttempts);
             });
   }
 }
