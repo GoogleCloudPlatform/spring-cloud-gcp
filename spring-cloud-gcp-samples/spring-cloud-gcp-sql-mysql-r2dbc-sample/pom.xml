@@ -35,10 +35,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.asyncer</groupId>
-            <artifactId>r2dbc-mysql</artifactId>
-        </dependency>
 
         <!-- Test-related dependencies. -->
         <dependency>
