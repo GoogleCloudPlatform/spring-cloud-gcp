@@ -56,8 +56,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -109,20 +107,12 @@ class BigQueryTemplateTest {
     bqInitSettings.put("JSON_WRITER_BATCH_SIZE", JSON_WRITER_BATCH_SIZE);
     BigQueryTemplate bqTemplate =
         new BigQueryTemplate(
-            bigquery,
-            bigQueryWriteClientMock,
-            bqInitSettings,
-            getThreadPoolTaskScheduler(),
-            getDefaultExecutor());
+            bigquery, bigQueryWriteClientMock, bqInitSettings, getThreadPoolTaskScheduler());
     bqTemplateSpy = Mockito.spy(bqTemplate);
     BigQueryTemplate bqTemplateDefaultPool =
         new BigQueryTemplate(
             bigquery, bigQueryWriteClientMock, bqInitSettings, getThreadPoolTaskScheduler());
     bqTemplateDefaultPoolSpy = Mockito.spy(bqTemplateDefaultPool);
-  }
-
-  private ExecutorService getDefaultExecutor() {
-    return Executors.newFixedThreadPool(10);
   }
 
   private BigQueryOptions createBigQueryOptionsForProject(BigQueryRpcFactory rpcFactory) {
