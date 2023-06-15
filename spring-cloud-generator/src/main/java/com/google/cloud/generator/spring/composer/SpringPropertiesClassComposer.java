@@ -41,7 +41,6 @@ import com.google.api.generator.gapic.composer.common.ClassComposer;
 import com.google.api.generator.gapic.model.GapicClass;
 import com.google.api.generator.gapic.model.GapicClass.Kind;
 import com.google.api.generator.gapic.model.GapicContext;
-import com.google.api.generator.gapic.model.GapicServiceConfig;
 import com.google.api.generator.gapic.model.Method;
 import com.google.api.generator.gapic.model.Service;
 import com.google.api.generator.gapic.model.Transport;
@@ -75,15 +74,9 @@ public class SpringPropertiesClassComposer implements ClassComposer {
   public GapicClass generate(GapicContext context, Service service) {
     String packageName = Utils.getSpringPackageName(service.pakkage());
     String className = Utils.getServicePropertiesClassName(service);
-    GapicServiceConfig gapicServiceConfig = context.serviceConfig();
     Map<String, TypeNode> dynamicTypes = createDynamicTypes(service, packageName);
     Transport transport = context.transport();
-    boolean hasRestOption =
-        (transport.equals(Transport.GRPC_REST) || transport.equals(Transport.REST))
-            && service.hasAnyEnabledMethodsForTransport(Transport.REST);
 
-    // TODO: this is the prefix user will use to set properties, may need to change depending on
-    // branding.
     AnnotationNode classAnnotationNode =
         AnnotationNode.builder()
             .setType(STATIC_TYPES.get("ConfigurationProperties"))
@@ -99,23 +92,19 @@ public class SpringPropertiesClassComposer implements ClassComposer {
             .setName(className)
             .setScope(ScopeNode.PUBLIC)
             .setStatements(
-                createMemberVariables(
-                    service, packageName, dynamicTypes, gapicServiceConfig, hasRestOption))
+                createMemberVariables(service, transport, dynamicTypes))
             .setMethods(
-                createGetterSetters(service, dynamicTypes, gapicServiceConfig, hasRestOption))
+                createGetterSetters(service, transport, dynamicTypes))
             .setAnnotations(Arrays.asList(classAnnotationNode))
             .setImplementsTypes(Arrays.asList(STATIC_TYPES.get("CredentialsSupplier")))
             .build();
     return GapicClass.create(Kind.MAIN, classDef);
-    // return null;
   }
 
   private static List<Statement> createMemberVariables(
       Service service,
-      String packageName,
-      Map<String, TypeNode> types,
-      GapicServiceConfig serviceConfig,
-      boolean hasRestOption) {
+      Transport transport,
+      Map<String, TypeNode> types) {
 
     String serviceName = service.name();
     List<Statement> statements = new ArrayList<>();
@@ -126,9 +115,8 @@ public class SpringPropertiesClassComposer implements ClassComposer {
     List<AnnotationNode> nestedPropertyAnnotations =
         Arrays.asList(AnnotationNode.withType(STATIC_TYPES.get("NestedConfigurationProperty")));
 
-    //   @NestedConfigurationProperty
-    //   private final Credentials credentials = new
-    // Credentials("https://www.googleapis.com/auth/cloud-language");
+    // Generates credentials variable:
+    // private final Credentials credentials = new Credentials("https://www.googleapis.com/auth/cloud-language");
     NewObjectExpr defaultCredentialScopes =
         builder()
             .setType(STATIC_TYPES.get("Credentials"))
@@ -146,19 +134,21 @@ public class SpringPropertiesClassComposer implements ClassComposer {
             nestedPropertyAnnotations);
     statements.add(SpringPropertiesCommentComposer.createCredentialsPropertyComment());
     statements.add(credentialsStatement);
-    //   private String quotaProjectId;
+    // Generates quotaProjectId variable
     ExprStatement quotaProjectIdVarStatement =
         ComposerUtils.createMemberVarStatement(
             "quotaProjectId", TypeNode.STRING, false, null, null);
     statements.add(SpringPropertiesCommentComposer.createQuotaProjectIdPropertyComment());
     statements.add(quotaProjectIdVarStatement);
-    //   private Integer executorThreadCount;
+    // Generates executorThreadCount variable
     ExprStatement executorThreadCountVarStatement =
         ComposerUtils.createMemberVarStatement(
             "executorThreadCount", TypeNode.INT_OBJECT, false, null, null);
     statements.add(SpringPropertiesCommentComposer.createExecutorThreadCountPropertyComment());
     statements.add(executorThreadCountVarStatement);
-    if (hasRestOption) {
+    // For GRPC+REST libraries, provide configuration property to override GRPC default and use REST transport instead
+    // For GRPC-only and REST-only libraries, this property is not provided
+    if (ComposerUtils.shouldSupportRestOptionWithGrpcDefault(transport, service)) {
       ExprStatement useRestVarStatement =
           ComposerUtils.createMemberVarStatement(
               "useRest",
@@ -170,7 +160,7 @@ public class SpringPropertiesClassComposer implements ClassComposer {
       statements.add(SpringPropertiesCommentComposer.createUseRestPropertyComment());
       statements.add(useRestVarStatement);
     }
-    //   private Retry retry;
+    // Generates retry variable;
     ExprStatement retryPropertiesStatement =
         ComposerUtils.createMemberVarStatement(
             "retry", types.get("Retry"), false, null, nestedPropertyAnnotations);
@@ -193,9 +183,8 @@ public class SpringPropertiesClassComposer implements ClassComposer {
 
   private static List<MethodDefinition> createGetterSetters(
       Service service,
-      Map<String, TypeNode> types,
-      GapicServiceConfig gapicServiceConfig,
-      boolean hasRestOption) {
+      Transport transport,
+      Map<String, TypeNode> types) {
 
     TypeNode thisClassType = types.get(Utils.getServicePropertiesClassName(service));
     List<MethodDefinition> methodDefinitions = new ArrayList<>();
@@ -209,7 +198,7 @@ public class SpringPropertiesClassComposer implements ClassComposer {
     methodDefinitions.add(
         createGetterMethod(thisClassType, "quotaProjectId", TypeNode.STRING, null));
     methodDefinitions.add(createSetterMethod(thisClassType, "quotaProjectId", TypeNode.STRING));
-    if (hasRestOption) {
+    if (ComposerUtils.shouldSupportRestOptionWithGrpcDefault(transport, service)) {
       methodDefinitions.add(createGetterMethod(thisClassType, "useRest", TypeNode.BOOLEAN, null));
       methodDefinitions.add(createSetterMethod(thisClassType, "useRest", TypeNode.BOOLEAN));
     }

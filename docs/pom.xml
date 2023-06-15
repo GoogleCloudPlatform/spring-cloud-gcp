@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.cloud</groupId>
 		<artifactId>spring-cloud-build</artifactId>
-		<version>3.1.7</version>
+		<version>4.0.3</version>
 		<relativePath/>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -13,7 +13,7 @@
 	<name>Spring Framework on Google Cloud Documentation</name>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-docs</artifactId>
-	<version>4.3.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.4.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 
 	<properties>
@@ -24,28 +24,11 @@
 
 		<!--maven-resources-plugin:3.2.0:copy-resources fails: https://issues.apache.org/jira/browse/MSHARED-966-->
 		<maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+		<!-- override version inherited from spring-cloud-build parent to one that is available on Maven Central -->
+		<spring-asciidoctor-backends.version>0.0.4</spring-asciidoctor-backends.version>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>spring-releases</id>
-			<name>Spring Releases</name>
-			<url>https://repo.spring.io/release</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-releases</id>
-			<name>Spring Releases</name>
-			<url>https://repo.spring.io/release</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+
 
 	<profiles>
 		<profile>

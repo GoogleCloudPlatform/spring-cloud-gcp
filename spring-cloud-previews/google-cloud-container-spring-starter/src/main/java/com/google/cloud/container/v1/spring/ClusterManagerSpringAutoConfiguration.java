@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,8 +86,10 @@ public class ClusterManagerSpringAutoConfiguration {
   }
 
   /**
-   * Provides a default transport channel provider bean. The default is gRPC and will default to it
-   * unless the useRest option is supported and provided to use HTTP transport instead
+   * Provides a default transport channel provider bean, corresponding to the client library's
+   * default transport channel provider. If the library supports both GRPC and REST transport, and
+   * the useRest property is configured, the HTTP/JSON transport provider will be used instead of
+   * GRPC.
    *
    * @return a default transport channel provider.
    */
@@ -347,6 +349,14 @@ public class ClusterManagerSpringAutoConfiguration {
       clientSettingsBuilder
           .listUsableSubnetworksSettings()
           .setRetrySettings(listUsableSubnetworksRetrySettings);
+
+      RetrySettings checkAutopilotCompatibilityRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.checkAutopilotCompatibilitySettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .checkAutopilotCompatibilitySettings()
+          .setRetrySettings(checkAutopilotCompatibilityRetrySettings);
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
@@ -740,6 +750,20 @@ public class ClusterManagerSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listUsableSubnetworks from properties.");
+      }
+    }
+    Retry checkAutopilotCompatibilityRetry = clientProperties.getCheckAutopilotCompatibilityRetry();
+    if (checkAutopilotCompatibilityRetry != null) {
+      RetrySettings checkAutopilotCompatibilityRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.checkAutopilotCompatibilitySettings().getRetrySettings(),
+              checkAutopilotCompatibilityRetry);
+      clientSettingsBuilder
+          .checkAutopilotCompatibilitySettings()
+          .setRetrySettings(checkAutopilotCompatibilityRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for checkAutopilotCompatibility from properties.");
       }
     }
     return clientSettingsBuilder.build();

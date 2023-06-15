@@ -24,10 +24,16 @@ import com.google.api.generator.engine.ast.ScopeNode;
 import com.google.api.generator.engine.ast.TypeNode;
 import com.google.api.generator.engine.ast.Variable;
 import com.google.api.generator.engine.ast.VariableExpr;
+import com.google.api.generator.gapic.model.Service;
+import com.google.api.generator.gapic.model.Transport;
 import java.util.Collections;
 import java.util.List;
 
 public class ComposerUtils {
+
+  public static Boolean shouldSupportRestOptionWithGrpcDefault(Transport transport, Service service) {
+    return transport.equals(Transport.GRPC_REST) && service.hasAnyEnabledMethodsForTransport(Transport.REST);
+  }
 
   public static ExprStatement createMemberVarStatement(
       String varName,
