@@ -275,6 +275,11 @@
 				<artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>io.asyncer</groupId>
+				<artifactId>r2dbc-mysql</artifactId>
+				<version>0.9.3</version>
+			</dependency>
 
 			<!-- Spring Boot 2.7 no longer manages this dependency.
 			     Replace with MariaDB driver once it's supported.
