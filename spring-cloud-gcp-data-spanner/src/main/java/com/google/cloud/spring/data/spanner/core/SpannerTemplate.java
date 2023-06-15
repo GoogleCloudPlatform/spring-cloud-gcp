@@ -495,9 +495,6 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
   }
 
   public ResultSet executeQuery(Statement statement, SpannerQueryOptions options) {
-
-    long startTime = LOGGER.isDebugEnabled() ? System.currentTimeMillis() : 0;
-
     ResultSet resultSet = performQuery(statement, options);
     if (LOGGER.isDebugEnabled()) {
       String message;
@@ -507,7 +504,6 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
         message = getQueryLogMessageWithOptions(statement, options);
       }
       LOGGER.debug(message);
-      LOGGER.debug("Query elapsed milliseconds: " + (System.currentTimeMillis() - startTime));
     }
     return resultSet;
   }

@@ -17,7 +17,7 @@
 package com.example;
 
 import com.google.cloud.spanner.KeySet;
-import com.google.cloud.spring.data.spanner.core.SpannerOperations;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import java.util.Arrays;
@@ -38,7 +38,7 @@ public class SpannerTemplateExample {
 
   private static final String TEMPLATE_TRADER_1 = "template_trader1";
 
-  @Autowired private SpannerOperations spannerOperations;
+  @Autowired private SpannerTemplate spannerTemplate;
 
   @Autowired private SpannerSchemaUtils spannerSchemaUtils;
 
@@ -46,29 +46,29 @@ public class SpannerTemplateExample {
 
   public void runExample() {
     createTablesIfNotExists();
-    this.spannerOperations.delete(Trader.class, KeySet.all());
-    this.spannerOperations.delete(Trade.class, KeySet.all());
+    this.spannerTemplate.delete(Trader.class, KeySet.all());
+    this.spannerTemplate.delete(Trade.class, KeySet.all());
 
     Trader trader = new Trader(TEMPLATE_TRADER_1, "John", "Doe");
 
-    this.spannerOperations.insert(trader);
+    this.spannerTemplate.insert(trader);
 
     Trade t =
         new Trade(
             "1", "BUY", 100.0, 50.0, "STOCK1", TEMPLATE_TRADER_1, Arrays.asList(99.0, 101.00));
 
-    this.spannerOperations.insert(t);
+    this.spannerTemplate.insert(t);
 
     t.setTradeId("2");
     t.setTraderId(TEMPLATE_TRADER_1);
     t.setAction("SELL");
-    this.spannerOperations.insert(t);
+    this.spannerTemplate.insert(t);
 
     t.setTradeId("1");
     t.setTraderId("template_trader2");
-    this.spannerOperations.insert(t);
+    this.spannerTemplate.insert(t);
 
-    List<Trade> tradesByAction = this.spannerOperations.readAll(Trade.class);
+    List<Trade> tradesByAction = this.spannerTemplate.readAll(Trade.class);
     LOGGER.info("All trades created by the example:");
     for (Trade trade : tradesByAction) {
       LOGGER.info(trade);
