@@ -77,11 +77,6 @@ jobs:
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
             install
-      # TODO(emmwang): Several environment variables can be optionally configured to use in script
-      # SPRING_GENERATOR_DIR
-      # LIBRARIES_BOM_VERSION
-      # MONOREPO_TAG
-      # LIBRARY_LIST_PATH
       - name: Generate libraries
         continue-on-error: false
         working-directory: spring-cloud-generator
