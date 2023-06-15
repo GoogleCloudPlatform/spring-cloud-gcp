@@ -14,6 +14,15 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.5.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.5.2...v3.5.3) (2023-06-15)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.11.1 to 1.12.0 ([#1950](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1950)) ([dcafef2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/dcafef2abd2f2287ad196bac79a865bff8dee8d8))
+* bump commons-io from 2.11.0 to 2.13.0 ([#1935](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1935)) ([f3114de](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f3114de9b64a518d62966195cf58313b87cb9f51))
+* bump libraries-bom from 26.16.0 to 26.17.0 ([#1949](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1949)) ([41cde8c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/41cde8c47313cf855b6ddd8700b6630b9fcf61cb))
+
 ## [3.5.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.5.1...v3.5.2) (2023-06-02)
 
 
