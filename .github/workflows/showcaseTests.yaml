@@ -18,6 +18,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
+      - name: Install buildozer
+        run: |
+          go install github.com/bazelbuild/buildtools/buildozer@latest
+          export PATH=$PATH:$(go env GOPATH)/bin
+          buildozer --version
       - name: Mvn install
         id: mvn-install
         run: |
