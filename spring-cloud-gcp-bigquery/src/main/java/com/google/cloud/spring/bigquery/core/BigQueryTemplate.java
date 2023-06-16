@@ -83,9 +83,6 @@ public class BigQueryTemplate implements BigQueryOperations {
   private static final int DEFAULT_JSON_STREAM_WRITER_BATCH_SIZE =
       1000; // write records in batches of 1000
 
-  private static final int DEFAULT_JSON_WRITER_THREAD_POOL_SIZE =
-      10; // default pool size per instance of BigQueryTemplate
-
   private static final int MIN_JSON_STREAM_WRITER_BATCH_SIZE = 10; // minimum batch size
 
   private final Logger logger = LoggerFactory.getLogger(BigQueryTemplate.class);
@@ -270,18 +267,16 @@ public class BigQueryTemplate implements BigQueryOperations {
     // register success and failure callback
     writeApiFutureResponse.whenComplete(
         (writeApiResponse, exception) -> {
-          if (exception != null || !writeApiResponse.isSuccessful()) {
-            if (exception != null) {
-              logger.error("asyncTask interrupted", exception);
-              if (exception instanceof CancellationException) { // user have cancelled it
-                asyncTaskScheduledFuture.cancel(true);
-              }
-            } else {
-              logger.warn("Write operation failed");
+          if (exception != null) {
+            logger.error("asyncTask interrupted", exception);
+            if (exception instanceof CancellationException) { // user have cancelled it
+              asyncTaskScheduledFuture.cancel(true);
             }
-            return;
+          } else if (writeApiResponse != null && !writeApiResponse.isSuccessful()) {
+            logger.warn("Write operation failed");
+          } else {
+            logger.info("Data successfully written");
           }
-          logger.info("Data successfully written");
         });
 
     return writeApiFutureResponse;
