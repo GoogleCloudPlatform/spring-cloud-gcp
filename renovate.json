@@ -10,7 +10,7 @@
     },
     {
       "matchPackageNames": ["org.springframework.cloud:spring-cloud-dependencies"],
-      "allowedVersions": "<2022.0"
+      "allowedVersions": "<2022.0.0"
     },
     {
       "matchPackageNames": ["org.springframework.cloud:spring-cloud-config"],
