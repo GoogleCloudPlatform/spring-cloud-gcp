@@ -2,31 +2,31 @@
   "packageRules": [
     {
       "matchPackageNames": ["org.springframework.boot:spring-boot-dependencies"],
-      "allowedVersions": "<3.0.0"
+      "allowedVersions": "<4.0.0"
     },
     {
       "matchPackageNames": ["org.springframework.boot:spring-boot-starter-parent"],
-      "allowedVersions": "<3.0.0"
+      "allowedVersions": "<4.0.0"
     },
     {
       "matchPackageNames": ["org.springframework.cloud:spring-cloud-dependencies"],
-      "allowedVersions": "<2022.0.0"
+      "allowedVersions": "<2023.0"
     },
     {
       "matchPackageNames": ["org.springframework.cloud:spring-cloud-config"],
-      "allowedVersions": "<4.0.0"
+      "allowedVersions": "<5.0.0"
     },
     {
       "matchPackageNames": ["org.springframework.cloud:spring-cloud-function"],
-      "allowedVersions": "<4.0.0"
+      "allowedVersions": "<5.0.0"
     },
     {
       "matchPackageNames": ["org.springframework.cloud:spring-cloud-dependencies-parent"],
-      "allowedVersions": "<4.0.0"
+      "allowedVersions": "<5.0.0"
     },
     {
       "matchPackageNames": ["org.springframework.shell:spring-shell-starter"],
-      "allowedVersions": "<3.0.0"
+      "allowedVersions": "<4.0.0"
     }
   ],
   "labels": [
