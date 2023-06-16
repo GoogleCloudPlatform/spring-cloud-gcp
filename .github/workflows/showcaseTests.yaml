@@ -1,0 +1,36 @@
+name: Showcase Tests for Spring Auto-Configurations
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'spring-cloud-generator/**'
+  workflow_dispatch:
+
+jobs:
+  showcaseTests:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Mvn install
+        id: mvn-install
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --show-version \
+            --threads 1.5C \
+            --define maven.test.skip=true \
+            --define maven.javadoc.skip=true \
+            install
+
+      - name: Verify generation of showcase-spring-starter
+        working-directory: spring-cloud-generator
+        id: verify-showcase-spring-starter
+        run: |
+          bash scripts/setup-showcase.sh
+
+      - name: Unit tests for showcase-spring-starter
+        working-directory: spring-cloud-generator
+        run: |
+          cd showcase/showcase-spring-starter && mvn verify

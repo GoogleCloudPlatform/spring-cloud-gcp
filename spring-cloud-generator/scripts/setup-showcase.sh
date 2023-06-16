@@ -111,7 +111,7 @@ function generate_showcase_spring_starter(){
   # Add version for showcase
   sed -i '/^ *<artifactId>gapic-showcase<\/artifactId>*/a \ \ \ \ \ \ <version>0.0.1-SNAPSHOT</version>' ${SHOWCASE_STARTER_DIR}/pom.xml
   # Update relative path to parent pom (different repo structure)
-  RELATIVE_PATH="\ \ \ \ <relativePath>..\/..\/..\/spring-cloud-gcp-starters\/pom.xml<\/relativePath>"
+  RELATIVE_PATH="\ \ \ \ <relativePath>..\/..\/..\/..\/spring-cloud-gcp-starters\/pom.xml<\/relativePath>"
   sed -i 's/^ *<relativePath>.*/'"$RELATIVE_PATH"'/g' showcase-spring-starter-generated/pom.xml
 
   # Run google-java-format on generated code
