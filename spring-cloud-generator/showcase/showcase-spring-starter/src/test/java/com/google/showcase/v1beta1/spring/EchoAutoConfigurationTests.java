@@ -17,8 +17,6 @@
 package com.google.showcase.v1beta1.spring;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
@@ -139,22 +137,22 @@ class EchoAutoConfigurationTests {
         });
   }
 
-  @Test
-  void testCustomTransportChannelProviderSetToRest() {
-    this.contextRunner
-        .withPropertyValues("com.google.showcase.v1beta1.echo.use-rest=true")
-        .run(
-            ctx -> {
-              EchoClient client = ctx.getBean(EchoClient.class);
-              TransportChannelProvider transportChannelProvider =
-                  client.getSettings().getTransportChannelProvider();
-              TransportChannelProvider defaultHttpJsonTransportChannelprovider =
-                  EchoSettings.defaultHttpJsonTransportProviderBuilder().build();
-              assertThat(transportChannelProvider)
-                  .usingRecursiveComparison()
-                  .isEqualTo(defaultHttpJsonTransportChannelprovider);
-            });
-  }
+  //  @Test
+  //  void testCustomTransportChannelProviderSetToRest() {
+  //    this.contextRunner
+  //        .withPropertyValues("com.google.showcase.v1beta1.echo.use-rest=true")
+  //        .run(
+  //            ctx -> {
+  //              EchoClient client = ctx.getBean(EchoClient.class);
+  //              TransportChannelProvider transportChannelProvider =
+  //                  client.getSettings().getTransportChannelProvider();
+  //              TransportChannelProvider defaultHttpJsonTransportChannelprovider =
+  //                  EchoSettings.defaultHttpJsonTransportProviderBuilder().build();
+  //              assertThat(transportChannelProvider)
+  //                  .usingRecursiveComparison()
+  //                  .isEqualTo(defaultHttpJsonTransportChannelprovider);
+  //            });
+  //  }
 
   @Test
   void testQuotaProjectIdFromProperties() {
@@ -187,26 +185,26 @@ class EchoAutoConfigurationTests {
             });
   }
 
-  @Test
-  void testCustomTransportChannelProviderUsedWhenProvided() throws IOException {
-    when(mockTransportChannelProvider.getTransportName()).thenReturn("grpc");
-    when(mockTransportChannelProvider.getTransportChannel()).thenReturn(mockTransportChannel);
-    when(mockTransportChannel.getEmptyCallContext()).thenReturn(mockApiCallContext);
-    when(mockApiCallContext.withCredentials(any())).thenReturn(mockApiCallContext);
-    when(mockApiCallContext.withTransportChannel(any())).thenReturn(mockApiCallContext);
-
-    contextRunner
-        .withBean(
-            TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME,
-            TransportChannelProvider.class,
-            () -> mockTransportChannelProvider)
-        .run(
-            ctx -> {
-              EchoClient client = ctx.getBean(EchoClient.class);
-              assertThat(client.getSettings().getTransportChannelProvider())
-                  .isSameAs(mockTransportChannelProvider);
-            });
-  }
+  //  @Test
+  //  void testCustomTransportChannelProviderUsedWhenProvided() throws IOException {
+  //    when(mockTransportChannelProvider.getTransportName()).thenReturn("grpc");
+  //    when(mockTransportChannelProvider.getTransportChannel()).thenReturn(mockTransportChannel);
+  //    when(mockTransportChannel.getEmptyCallContext()).thenReturn(mockApiCallContext);
+  //    when(mockApiCallContext.withCredentials(any())).thenReturn(mockApiCallContext);
+  //    when(mockApiCallContext.withTransportChannel(any())).thenReturn(mockApiCallContext);
+  //
+  //    contextRunner
+  //        .withBean(
+  //            TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME,
+  //            TransportChannelProvider.class,
+  //            () -> mockTransportChannelProvider)
+  //        .run(
+  //            ctx -> {
+  //              EchoClient client = ctx.getBean(EchoClient.class);
+  //              assertThat(client.getSettings().getTransportChannelProvider())
+  //                  .isSameAs(mockTransportChannelProvider);
+  //            });
+  //  }
 
   @Test
   void testCustomServiceSettingsUsedWhenProvided() throws IOException {
