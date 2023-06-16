@@ -47,7 +47,8 @@ function generate_showcase_spring_starter(){
   # Compute the parent project version.
   cd ${SPRING_ROOT_DIR}
   PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
-  GAPIC_GENERATOR_JAVA_VERSION=$(./mvnw help:evaluate -Dexpression=gapic-generator-java-bom.version -q -DforceStdout)
+  cd ${SPRING_GENERATOR_DIR}
+  GAPIC_GENERATOR_JAVA_VERSION=$(./../mvnw help:evaluate -Dexpression=gapic-generator-java-bom.version -q -DforceStdout)
 
   # Install local snapshot jar for spring generator
   # TODO(emmwang): this might need an install of spring-cloud-gcp from root
@@ -62,8 +63,8 @@ function generate_showcase_spring_starter(){
   # Can instead download googleapis (for generation setup) and gapic-showcase (for protos)
 
   # Install showcase client libraries locally
-  # TODO(emmwang): this might need an install of sdk-platform-java from root
-  cd sdk-platform-java/showcase && mvn clean install
+  cd sdk-platform-java && mvn clean install -B -ntp -DskipTests -Dclirr.skip -Dcheckstyle.skip
+  cd showcase && mvn clean install
 
   # Modify sdk-platform-java/WORKSPACE adapted from setup-googleapi-rules.sh
   # Add local_repository() rule for spring_cloud_generator package
@@ -90,7 +91,7 @@ function generate_showcase_spring_starter(){
               buildozer "copy $attribute $GAPIC_RULE_NAME" BUILD.bazel:$SPRING_RULE_NAME
           else
               echo "attribute $attribute not found in java_gapic_library rule, skipping"
-          fi
+      fi
     done
 
   # Invoke bazel target for generating showcase-spring-starter
@@ -111,8 +112,8 @@ function generate_showcase_spring_starter(){
   # Add version for showcase
   sed -i '/^ *<artifactId>gapic-showcase<\/artifactId>*/a \ \ \ \ \ \ <version>0.0.1-SNAPSHOT</version>' ${SHOWCASE_STARTER_DIR}/pom.xml
   # Update relative path to parent pom (different repo structure)
-  RELATIVE_PATH="\ \ \ \ <relativePath>..\/..\/..\/..\/spring-cloud-gcp-starters\/pom.xml<\/relativePath>"
-  sed -i 's/^ *<relativePath>.*/'"$RELATIVE_PATH"'/g' showcase-spring-starter-generated/pom.xml
+  RELATIVE_PATH="\ \ \ \ <relativePath>..\/..\/..\/spring-cloud-gcp-starters\/pom.xml<\/relativePath>"
+  sed -i 's/^ *<relativePath>.*/'"$RELATIVE_PATH"'/g' ${SHOWCASE_STARTER_DIR}/pom.xml
 
   # Run google-java-format on generated code
   cd ${SHOWCASE_STARTER_DIR}

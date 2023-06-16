@@ -32,6 +32,7 @@ jobs:
         working-directory: spring-cloud-generator
         id: verify-showcase-spring-starter
         run: |
+          set -x
           bash scripts/setup-showcase.sh
 
       - name: Unit tests for showcase-spring-starter
