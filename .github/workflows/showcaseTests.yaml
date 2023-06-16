@@ -41,7 +41,7 @@ jobs:
           set -e
           export PATH=$PATH:$(go env GOPATH)/bin
           buildozer --version
-          bash scripts/setup-showcase.sh
+          bash scripts/generate-showcase.sh
       - name: Unit tests for showcase-spring-starter
         working-directory: spring-cloud-generator
         run: |

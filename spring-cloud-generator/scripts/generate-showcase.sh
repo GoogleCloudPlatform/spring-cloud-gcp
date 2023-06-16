@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# To VERIFY: ./scripts/setup-showcase.sh
-# To UPDATE: /scripts/setup-showcase.sh -u
+# To VERIFY: ./scripts/generate-showcase.sh
+# To UPDATE: /scripts/generate-showcase.sh -u
 UPDATE=0
 while getopts u flag
 do
@@ -51,7 +51,6 @@ function generate_showcase_spring_starter(){
   GAPIC_GENERATOR_JAVA_VERSION=$(./../mvnw help:evaluate -Dexpression=gapic-generator-java-bom.version -q -DforceStdout)
 
   # Install local snapshot jar for spring generator
-  # TODO(emmwang): this might need an install of spring-cloud-gcp from root
   cd ${SPRING_GENERATOR_DIR} && mvn install
 
   # Clone sdk-platform-java (with showcase library)
@@ -131,11 +130,3 @@ if [[ UPDATE -ne 0 ]]; then
     generate_showcase_spring_starter ${SHOWCASE_STARTER_NEW_DIR}
     verify ${SHOWCASE_STARTER_OLD_DIR} ${SHOWCASE_STARTER_NEW_DIR}
 fi
-
-
-
-
-
-
-
-
