@@ -46,6 +46,7 @@
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<maven.sources.skip>true</maven.sources.skip>
 		<sonar.skip>true</sonar.skip>
+		<cloud-spanner-r2dbc.version>1.2.2</cloud-spanner-r2dbc.version>
 	</properties>
 
 	<modules>
@@ -84,6 +85,7 @@
 		<module>spring-cloud-gcp-kotlin-samples</module>
 		<module>spring-cloud-gcp-metrics-sample</module>
 		<module>spring-cloud-gcp-kms-sample</module>
+		<module>spring-cloud-spanner-r2dbc-samples</module>
 	</modules>
 
 	<profiles>

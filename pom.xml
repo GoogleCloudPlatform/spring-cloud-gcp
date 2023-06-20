@@ -339,6 +339,7 @@
 				<module>spring-cloud-gcp-vision</module>
 				<module>spring-cloud-gcp-kms</module>
 				<module>spring-cloud-gcp-native-support</module>
+				<module>spring-cloud-spanner-spring-data-r2dbc</module>
 
 				<!-- Docs and Samples -->
 				<module>docs</module>

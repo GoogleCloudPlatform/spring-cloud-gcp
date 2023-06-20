@@ -1,9 +1,0 @@
-# maven
-target
-
-# intellij / idea
-*.iml
-.idea
-
-# binary files like maven-wrapper.jar
-*.jar
