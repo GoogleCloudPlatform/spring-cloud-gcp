@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -60,7 +61,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @ExtendWith(MockitoExtension.class)
 class BigQueryTemplateTest {
@@ -80,6 +81,7 @@ class BigQueryTemplateTest {
   private BigQueryOptions options;
   private final Map<String, Object> bqInitSettings = new HashMap<>();
   BigQueryTemplate bqTemplateSpy;
+  BigQueryTemplate bqTemplateDefaultPoolSpy;
 
   private Schema getDefaultSchema() {
     return Schema.of(
@@ -103,20 +105,31 @@ class BigQueryTemplateTest {
     bigquery = options.getService();
     bqInitSettings.put("DATASET_NAME", DATASET);
     bqInitSettings.put("JSON_WRITER_BATCH_SIZE", JSON_WRITER_BATCH_SIZE);
-
     BigQueryTemplate bqTemplate =
         new BigQueryTemplate(
-            bigquery, bigQueryWriteClientMock, bqInitSettings, new DefaultManagedTaskScheduler());
+            bigquery, bigQueryWriteClientMock, bqInitSettings, getThreadPoolTaskScheduler());
     bqTemplateSpy = Mockito.spy(bqTemplate);
+    BigQueryTemplate bqTemplateDefaultPool =
+        new BigQueryTemplate(
+            bigquery, bigQueryWriteClientMock, bqInitSettings, getThreadPoolTaskScheduler());
+    bqTemplateDefaultPoolSpy = Mockito.spy(bqTemplateDefaultPool);
   }
 
-  private BigQueryOptions createBigQueryOptionsForProject(
-      BigQueryRpcFactory rpcFactory) {
+  private BigQueryOptions createBigQueryOptionsForProject(BigQueryRpcFactory rpcFactory) {
     return BigQueryOptions.newBuilder()
         .setProjectId(BigQueryTemplateTest.PROJECT)
         .setServiceRpcFactory(rpcFactory)
         .setRetrySettings(ServiceOptions.getNoRetrySettings())
         .build();
+  }
+
+  private ThreadPoolTaskScheduler getThreadPoolTaskScheduler() {
+    ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+    scheduler.setPoolSize(5);
+    scheduler.setThreadNamePrefix("gcp-bigquery");
+    scheduler.setDaemon(true);
+    scheduler.initialize();
+    return scheduler;
   }
 
   @Test
@@ -131,10 +144,8 @@ class BigQueryTemplateTest {
 
   @Test
   void setAutoDetectSchemaTest() {
-    assertThatCode(() -> bqTemplateSpy.setAutoDetectSchema(true))
-        .doesNotThrowAnyException();
-    assertThatCode(() -> bqTemplateSpy.setAutoDetectSchema(false))
-        .doesNotThrowAnyException();
+    assertThatCode(() -> bqTemplateSpy.setAutoDetectSchema(true)).doesNotThrowAnyException();
+    assertThatCode(() -> bqTemplateSpy.setAutoDetectSchema(false)).doesNotThrowAnyException();
   }
 
   @Test
@@ -143,8 +154,7 @@ class BigQueryTemplateTest {
         .doesNotThrowAnyException();
     assertThatCode(() -> bqTemplateSpy.setWriteDisposition(WRITE_APPEND))
         .doesNotThrowAnyException();
-    assertThatCode(() -> bqTemplateSpy.setWriteDisposition(WRITE_EMPTY))
-        .doesNotThrowAnyException();
+    assertThatCode(() -> bqTemplateSpy.setWriteDisposition(WRITE_EMPTY)).doesNotThrowAnyException();
   }
 
   @Test
@@ -224,6 +234,67 @@ class BigQueryTemplateTest {
   }
 
   @Test
+  void writeJsonStreamTestDefaultPool()
+      throws DescriptorValidationException, IOException, InterruptedException,
+      ExecutionException { // Tests the constructor which doesn't have jsonWriterExecutorService
+    // as the param
+
+    InputStream jsonInputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
+    WriteApiResponse apiResponse = new WriteApiResponse();
+    apiResponse.setSuccessful(true);
+    doReturn(apiResponse)
+        .when(bqTemplateDefaultPoolSpy)
+        .getWriteApiResponse(any(String.class), any(InputStream.class));
+    CompletableFuture<WriteApiResponse> futRes =
+        bqTemplateDefaultPoolSpy.writeJsonStream(TABLE, jsonInputStream);
+    WriteApiResponse apiRes = futRes.get();
+    assertTrue(apiRes.isSuccessful());
+    assertEquals(0, apiRes.getErrors().size());
+  }
+
+  @Test
+  void writeJsonStreamNegativeTest() {
+    try (InputStream jsonInputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes())) {
+      WriteApiResponse apiResponse = new WriteApiResponse();
+      apiResponse.setSuccessful(false);
+      doReturn(apiResponse)
+          .when(bqTemplateSpy)
+          .getWriteApiResponse(any(String.class), any(InputStream.class));
+
+      CompletableFuture<WriteApiResponse> futRes =
+          bqTemplateSpy.writeJsonStream(TABLE, jsonInputStream);
+      WriteApiResponse apiRes = futRes.get();
+      assertThat(apiRes.isSuccessful()).isFalse();
+      assertEquals(0, apiRes.getErrors().size());
+    } catch (Exception e) {
+      fail("Error initialising the InputStream");
+    }
+  }
+
+  @Test
+  void writeJsonStreamThrowTest() {
+    try (InputStream jsonInputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes())) {
+      String failureMsg = "Operation failed";
+      Exception ioException = new IOException(failureMsg);
+      doThrow(ioException)
+          .when(bqTemplateSpy)
+          .getWriteApiResponse(any(String.class), any(InputStream.class));
+
+      CompletableFuture<WriteApiResponse> futRes =
+          bqTemplateSpy.writeJsonStream(TABLE, jsonInputStream);
+      try {
+        futRes.get();
+        fail();
+      } catch (Exception ex) {
+        assertThat(ex.getCause() instanceof IOException).isTrue();
+        assertThat(ex.getCause().getMessage()).isEqualTo(failureMsg);
+      }
+    } catch (Exception e) {
+      fail("Error initialising the InputStream");
+    }
+  }
+
+  @Test
   void writeJsonStreamWithSchemaTest()
       throws DescriptorValidationException, IOException, InterruptedException, ExecutionException {
 
@@ -245,7 +316,6 @@ class BigQueryTemplateTest {
     assertEquals(0, apiRes.getErrors().size());
   }
 
-
   @Test
   void writeJsonStreamFailsOnGenericWritingException()
       throws DescriptorValidationException, IOException, InterruptedException {
@@ -261,8 +331,6 @@ class BigQueryTemplateTest {
 
     CompletableFuture<WriteApiResponse> futRes =
         bqTemplateSpy.writeJsonStream(TABLE, jsonInputStream, getDefaultSchema());
-    assertThat(futRes)
-        .withFailMessage("boom!")
-        .failsWithin(Duration.ofSeconds(1));
+    assertThat(futRes).withFailMessage("boom!").failsWithin(Duration.ofSeconds(1));
   }
 }
