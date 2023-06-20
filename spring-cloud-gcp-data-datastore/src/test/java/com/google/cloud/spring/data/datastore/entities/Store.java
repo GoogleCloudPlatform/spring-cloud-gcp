@@ -18,49 +18,44 @@ package com.google.cloud.spring.data.datastore.entities;
 
 import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-
 import org.springframework.data.annotation.Id;
 
 @Entity(name = "store")
 public class Store {
-	@Id
-	private Key id;
+  @Id private Key id;
 
-	private String name;
+  private String name;
 
-	public Store(String name) {
-		this.name = name;
-	}
+  public Store(String name) {
+    this.name = name;
+  }
 
-	@Override
-	public String toString() {
-		return "Store{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "Store{" + "id=" + id + ", name='" + name + '\'' + '}';
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (!(o instanceof Store)) {
-			return false;
-		}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Store)) {
+      return false;
+    }
 
-		Store store = (Store) o;
+    Store store = (Store) o;
 
-		if (id != null ? !id.equals(store.id) : store.id != null) {
-			return false;
-		}
-		return name != null ? name.equals(store.name) : store.name == null;
-	}
+    if (id != null ? !id.equals(store.id) : store.id != null) {
+      return false;
+    }
+    return name != null ? name.equals(store.name) : store.name == null;
+  }
 
-	@Override
-	public int hashCode() {
-		int result = id != null ? id.hashCode() : 0;
-		result = 31 * result + (name != null ? name.hashCode() : 0);
-		return result;
-	}
+  @Override
+  public int hashCode() {
+    int result = id != null ? id.hashCode() : 0;
+    result = 31 * result + (name != null ? name.hashCode() : 0);
+    return result;
+  }
 }

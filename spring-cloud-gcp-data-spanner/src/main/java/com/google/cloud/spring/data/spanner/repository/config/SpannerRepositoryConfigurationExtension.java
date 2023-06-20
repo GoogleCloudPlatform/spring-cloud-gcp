@@ -16,73 +16,64 @@
 
 package com.google.cloud.spring.data.spanner.repository.config;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Collections;
-
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.data.spanner.repository.support.SpannerRepositoryFactoryBean;
-import org.w3c.dom.Element;
-
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Collections;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.data.config.ParsingUtils;
 import org.springframework.data.repository.config.AnnotationRepositoryConfigurationSource;
 import org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport;
 import org.springframework.data.repository.config.XmlRepositoryConfigurationSource;
+import org.w3c.dom.Element;
 
 /**
  * A boilerplate class configuring the instantiation of Spanner repositories.
  *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class SpannerRepositoryConfigurationExtension
-		extends RepositoryConfigurationExtensionSupport {
+    extends RepositoryConfigurationExtensionSupport {
 
-	@Override
-	protected String getModulePrefix() {
-		return "spanner";
-	}
+  @Override
+  protected String getModulePrefix() {
+    return "spanner";
+  }
 
-	@Override
-	public String getRepositoryFactoryBeanClassName() {
-		return SpannerRepositoryFactoryBean.class.getName();
-	}
+  @Override
+  public String getRepositoryFactoryBeanClassName() {
+    return SpannerRepositoryFactoryBean.class.getName();
+  }
 
-	@Override
-	public void postProcess(BeanDefinitionBuilder builder,
-			AnnotationRepositoryConfigurationSource config) {
-		AnnotationAttributes attributes = config.getAttributes();
+  @Override
+  public void postProcess(
+      BeanDefinitionBuilder builder, AnnotationRepositoryConfigurationSource config) {
+    AnnotationAttributes attributes = config.getAttributes();
 
-		builder.addPropertyReference("spannerTemplate",
-				attributes.getString("spannerTemplateRef"));
-		builder.addPropertyReference("spannerMappingContext",
-				attributes.getString("spannerMappingContextRef"));
+    builder.addPropertyReference("spannerTemplate", attributes.getString("spannerTemplateRef"));
+    builder.addPropertyReference(
+        "spannerMappingContext", attributes.getString("spannerMappingContextRef"));
+  }
 
-	}
+  @Override
+  protected Collection<Class<? extends Annotation>> getIdentifyingAnnotations() {
+    return Collections.singleton(Table.class);
+  }
 
-	@Override
-	protected Collection<Class<? extends Annotation>> getIdentifyingAnnotations() {
-		return Collections.singleton(Table.class);
-	}
+  @Override
+  protected Collection<Class<?>> getIdentifyingTypes() {
+    return Collections.singleton(SpannerRepository.class);
+  }
 
-	@Override
-	protected Collection<Class<?>> getIdentifyingTypes() {
-		return Collections.singleton(SpannerRepository.class);
-	}
+  @Override
+  public void postProcess(BeanDefinitionBuilder builder, XmlRepositoryConfigurationSource config) {
+    Element element = config.getElement();
 
-	@Override
-	public void postProcess(BeanDefinitionBuilder builder,
-			XmlRepositoryConfigurationSource config) {
-		Element element = config.getElement();
-
-		ParsingUtils.setPropertyReference(builder, element, "spanner-template-ref",
-				"spannerTemplate");
-		ParsingUtils.setPropertyReference(builder, element, "spanner-mapping-context-ref",
-				"spannerMappingContext");
-	}
+    ParsingUtils.setPropertyReference(builder, element, "spanner-template-ref", "spannerTemplate");
+    ParsingUtils.setPropertyReference(
+        builder, element, "spanner-mapping-context-ref", "spannerMappingContext");
+  }
 }

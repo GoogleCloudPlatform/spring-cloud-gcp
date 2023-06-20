@@ -18,42 +18,34 @@ package com.google.cloud.spring.storage.integration;
 
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
-
 import org.springframework.integration.file.remote.session.Session;
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.file.remote.session.SharedSessionCapable;
 import org.springframework.util.Assert;
 
-/**
- * A session factory implementation for Google Cloud Storage.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- */
+/** A session factory implementation for Google Cloud Storage. */
 public class GcsSessionFactory implements SessionFactory<BlobInfo>, SharedSessionCapable {
 
-	private Storage gcs;
+  private Storage gcs;
 
-	public GcsSessionFactory(Storage gcs) {
-		Assert.notNull(gcs, "The GCS client can't be null.");
-		this.gcs = gcs;
-	}
+  public GcsSessionFactory(Storage gcs) {
+    Assert.notNull(gcs, "The GCS client can't be null.");
+    this.gcs = gcs;
+  }
 
-	@Override
-	public Session<BlobInfo> getSession() {
-		return new GcsSession(this.gcs);
-	}
+  @Override
+  public Session<BlobInfo> getSession() {
+    return new GcsSession(this.gcs);
+  }
 
-	@Override
-	public boolean isSharedSession() {
-		return true;
-	}
+  @Override
+  public boolean isSharedSession() {
+    return true;
+  }
 
-	/**
-	 * Does nothing - this object doesn't need to be reset to be shared.
-	 */
-	@Override
-	public void resetSharedSession() {
-		// Storage object doesn't need to be reset to be shared.
-	}
+  /** Does nothing - this object doesn't need to be reset to be shared. */
+  @Override
+  public void resetSharedSession() {
+    // Storage object doesn't need to be reset to be shared.
+  }
 }

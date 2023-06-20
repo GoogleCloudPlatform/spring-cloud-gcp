@@ -21,20 +21,15 @@ import org.springframework.dao.DataAccessException;
 /**
  * Exceptions for Spring Data Cloud Spanner.
  *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- * @author Balint Pato
- *
  * @since 1.1
  */
 public class SpannerDataException extends DataAccessException {
 
-	public SpannerDataException(String message) {
-		super(message);
-	}
+  public SpannerDataException(String message) {
+    super(message);
+  }
 
-	public SpannerDataException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
+  public SpannerDataException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

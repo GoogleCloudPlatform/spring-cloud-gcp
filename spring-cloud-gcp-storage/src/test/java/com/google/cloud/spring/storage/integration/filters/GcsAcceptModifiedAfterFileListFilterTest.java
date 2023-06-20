@@ -16,66 +16,60 @@
 
 package com.google.cloud.spring.storage.integration.filters;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.google.cloud.storage.BlobInfo;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Tests for GcsAcceptModifiedAfterFileListFilter.
- *
- * @author Hosain Al Ahmad
- */
+import com.google.cloud.storage.BlobInfo;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.junit.jupiter.api.Test;
+
+/** Tests for GcsAcceptModifiedAfterFileListFilter. */
 class GcsAcceptModifiedAfterFileListFilterTest {
 
-	@Test
-	void addDiscardCallback() {
-		GcsAcceptModifiedAfterFileListFilter filter = new GcsAcceptModifiedAfterFileListFilter();
+  @Test
+  void addDiscardCallback() {
+    GcsAcceptModifiedAfterFileListFilter filter = new GcsAcceptModifiedAfterFileListFilter();
 
-		AtomicBoolean callbackTriggered = new AtomicBoolean(false);
-		filter.addDiscardCallback(blobInfo -> callbackTriggered.set(true));
+    AtomicBoolean callbackTriggered = new AtomicBoolean(false);
+    filter.addDiscardCallback(blobInfo -> callbackTriggered.set(true));
 
-		BlobInfo blobInfo = mock(BlobInfo.class);
-		when(blobInfo.getUpdateTime()).thenReturn(1L);
+    BlobInfo blobInfo = mock(BlobInfo.class);
+    when(blobInfo.getUpdateTime()).thenReturn(1L);
 
-		filter.accept(blobInfo);
+    filter.accept(blobInfo);
 
-		assertThat(callbackTriggered.get())
-				.isTrue();
-	}
+    assertThat(callbackTriggered.get()).isTrue();
+  }
 
-	@Test
-	void filterFiles() {
+  @Test
+  void filterFiles() {
 
-		Instant now = Instant.now();
+    Instant now = Instant.now();
 
-		BlobInfo oldBlob = mock(BlobInfo.class);
-		when(oldBlob.getUpdateTime()).thenReturn(now.toEpochMilli() - 1);
+    BlobInfo oldBlob = mock(BlobInfo.class);
+    when(oldBlob.getUpdateTime()).thenReturn(now.toEpochMilli() - 1);
 
-		BlobInfo currentBlob = mock(BlobInfo.class);
-		when(currentBlob.getUpdateTime()).thenReturn(now.toEpochMilli());
+    BlobInfo currentBlob = mock(BlobInfo.class);
+    when(currentBlob.getUpdateTime()).thenReturn(now.toEpochMilli());
 
-		BlobInfo newBlob = mock(BlobInfo.class);
-		when(newBlob.getUpdateTime()).thenReturn(now.toEpochMilli() + 1);
+    BlobInfo newBlob = mock(BlobInfo.class);
+    when(newBlob.getUpdateTime()).thenReturn(now.toEpochMilli() + 1);
 
-		ArrayList<BlobInfo> expected = new ArrayList<>();
-		expected.add(currentBlob);
-		expected.add(newBlob);
+    ArrayList<BlobInfo> expected = new ArrayList<>();
+    expected.add(currentBlob);
+    expected.add(newBlob);
 
-		assertThat(
-				new GcsAcceptModifiedAfterFileListFilter(now).filterFiles(new BlobInfo[] { oldBlob, currentBlob, newBlob }))
-						.isEqualTo(expected);
-	}
+    assertThat(
+            new GcsAcceptModifiedAfterFileListFilter(now)
+                .filterFiles(new BlobInfo[] {oldBlob, currentBlob, newBlob}))
+        .isEqualTo(expected);
+  }
 
-	@Test
-	void supportsSingleFileFiltering() {
-		assertThat(new GcsAcceptModifiedAfterFileListFilter().supportsSingleFileFiltering())
-				.isTrue();
-	}
+  @Test
+  void supportsSingleFileFiltering() {
+    assertThat(new GcsAcceptModifiedAfterFileListFilter().supportsSingleFileFiltering()).isTrue();
+  }
 }

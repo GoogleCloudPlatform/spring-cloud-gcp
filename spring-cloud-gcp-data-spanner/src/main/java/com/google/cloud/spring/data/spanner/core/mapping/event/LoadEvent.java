@@ -17,47 +17,43 @@
 package com.google.cloud.spring.data.spanner.core.mapping.event;
 
 import java.util.Objects;
-
 import org.springframework.context.ApplicationEvent;
 
-/**
- * This event read operation on Cloud Spanner.
- *
- * @author Chengyuan Zhao
- */
+/** This event read operation on Cloud Spanner. */
 public class LoadEvent extends ApplicationEvent {
 
-	/**
-	 * Constructor.
-	 * @param source The entities that were read from Cloud Spanner.This is never
-	 *     {@code null}.
-	 */
-	public LoadEvent(Iterable source) {
-		super(source);
-	}
+  /**
+   * Constructor.
+   *
+   * @param source The entities that were read from Cloud Spanner.This is never {@code null}.
+   */
+  public LoadEvent(Iterable source) {
+    super(source);
+  }
 
-	/**
-	 * Returns the entities that were loaded.
-	 * @return the entities that were read from Cloud Spanner.
-	 */
-	public Iterable getRetrievedEntities() {
-		return (Iterable) getSource();
-	}
+  /**
+   * Returns the entities that were loaded.
+   *
+   * @return the entities that were read from Cloud Spanner.
+   */
+  public Iterable getRetrievedEntities() {
+    return (Iterable) getSource();
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		AfterQueryEvent that = (AfterQueryEvent) o;
-		return Objects.equals(getRetrievedEntities(), that.getRetrievedEntities());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    AfterQueryEvent that = (AfterQueryEvent) o;
+    return Objects.equals(getRetrievedEntities(), that.getRetrievedEntities());
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getRetrievedEntities());
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(getRetrievedEntities());
+  }
 }

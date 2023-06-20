@@ -16,38 +16,34 @@
 
 package com.example;
 
-import java.util.List;
-
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.data.spanner.repository.query.Query;
-
+import java.util.List;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-/**
- * A sample repository.
- *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- */
+/** A sample repository. */
 @RepositoryRestResource(collectionResourceRel = "trades_repository", path = "trades")
 public interface TradeRepository extends SpannerRepository<Trade, Key> {
 
-	List<Trade> findTop3DistinctByActionAndSymbolOrTraderIdOrderBySymbolDesc(
-			String action, String symbol, String traderId);
+  List<Trade> findTop3DistinctByActionAndSymbolOrTraderIdOrderBySymbolDesc(
+      String action, String symbol, String traderId);
 
-	List<Trade> findByAction(String action);
+  List<Trade> findByAction(String action);
 
-	@Query("SELECT * FROM trades_repository limit 1")
-	Trade getAnyOneTrade();
+  @Query("SELECT * FROM trades_repository limit 1")
+  Trade getAnyOneTrade();
 
-	@Query("SELECT trade_id from trades_repository where action = @action")
-	List<String> getTradeIds(@Param("action") String action);
+  @Query("SELECT trade_id from trades_repository where action = @action")
+  List<String> getTradeIds(@Param("action") String action);
 
-	int countByAction(String action);
+  int countByAction(String action);
 
-	// This method uses the query from the properties file instead of one generated based on
-	// name.
-	List<Trade> fetchByActionNamedQuery(@Param("tag0") String action);
+  // This method uses the query from the properties file instead of one generated based on
+  // name.
+  List<Trade> fetchByActionNamedQuery(@Param("tag0") String action);
+
+  List<Trade> findByActionAndSymbol(Pageable pageable, String action, String symbol);
 }

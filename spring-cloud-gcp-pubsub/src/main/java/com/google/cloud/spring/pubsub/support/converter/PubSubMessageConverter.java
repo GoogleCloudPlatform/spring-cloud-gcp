@@ -16,50 +16,45 @@
 
 package com.google.cloud.spring.pubsub.support.converter;
 
-import java.util.Map;
-
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
+import java.util.Map;
 
-/**
- * Interface for converters that can convert POJOs to and from Pub/Sub messages.
- *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
- */
+/** Interface for converters that can convert POJOs to and from Pub/Sub messages. */
 public interface PubSubMessageConverter {
 
-	/**
-	 * Create a {@code PubsubMessage} given an object for the payload and a map of headers.
-	 * @param payload the object to place into the message payload
-	 * @param headers the headers of the message
-	 * @return the PubsubMessage ready to be sent
-	 */
-	PubsubMessage toPubSubMessage(Object payload, Map<String, String> headers);
+  /**
+   * Create a {@code PubsubMessage} given an object for the payload and a map of headers.
+   *
+   * @param payload the object to place into the message payload
+   * @param headers the headers of the message
+   * @return the PubsubMessage ready to be sent
+   */
+  PubsubMessage toPubSubMessage(Object payload, Map<String, String> headers);
 
-	/**
-	 * Convert the payload of a given {@code PubsubMessage} to a desired Java type.
-	 * @param message the message containing the payload of the object
-	 * @param payloadType the desired type of the object
-	 * @param <T> the type of the payload
-	 * @return the object converted from the message's payload
-	 */
-	<T> T fromPubSubMessage(PubsubMessage message, Class<T> payloadType);
+  /**
+   * Convert the payload of a given {@code PubsubMessage} to a desired Java type.
+   *
+   * @param message the message containing the payload of the object
+   * @param payloadType the desired type of the object
+   * @param <T> the type of the payload
+   * @return the object converted from the message's payload
+   */
+  <T> T fromPubSubMessage(PubsubMessage message, Class<T> payloadType);
 
-	default PubsubMessage byteStringToPubSubMessage(ByteString payload, Map<String, String> headers) {
-		PubsubMessage.Builder pubsubMessageBuilder = PubsubMessage.newBuilder()
-				.setData(payload);
+  default PubsubMessage byteStringToPubSubMessage(ByteString payload, Map<String, String> headers) {
+    PubsubMessage.Builder pubsubMessageBuilder = PubsubMessage.newBuilder().setData(payload);
 
-		if (headers != null) {
-			pubsubMessageBuilder.putAllAttributes(headers);
+    if (headers != null) {
+      pubsubMessageBuilder.putAllAttributes(headers);
 
-			if (headers.containsKey(GcpPubSubHeaders.ORDERING_KEY)) {
-				pubsubMessageBuilder.removeAttributes(GcpPubSubHeaders.ORDERING_KEY);
-				pubsubMessageBuilder.setOrderingKey(headers.get(GcpPubSubHeaders.ORDERING_KEY));
-			}
-		}
+      if (headers.containsKey(GcpPubSubHeaders.ORDERING_KEY)) {
+        pubsubMessageBuilder.removeAttributes(GcpPubSubHeaders.ORDERING_KEY);
+        pubsubMessageBuilder.setOrderingKey(headers.get(GcpPubSubHeaders.ORDERING_KEY));
+      }
+    }
 
-		return pubsubMessageBuilder.build();
-	}
+    return pubsubMessageBuilder.build();
+  }
 }

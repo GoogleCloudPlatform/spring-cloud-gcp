@@ -16,38 +16,33 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
-import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
-import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 class TracePubSubBeanPostProcessor implements BeanPostProcessor {
-	private final BeanFactory beanFactory;
+  private final BeanFactory beanFactory;
 
-	private PubSubTracing tracing;
+  private PubSubTracing tracing;
 
-	TracePubSubBeanPostProcessor(BeanFactory beanFactory) {
-		this.beanFactory = beanFactory;
-	}
+  TracePubSubBeanPostProcessor(BeanFactory beanFactory) {
+    this.beanFactory = beanFactory;
+  }
 
-	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		if (bean instanceof PublisherFactory) {
-			return new CachingPublisherFactory(new TracingPublisherFactory(pubSubTracing(), (PublisherFactory) bean));
-		}
-		else if (bean instanceof SubscriberFactory) {
-			return new TracingSubscriberFactory(pubSubTracing(), (SubscriberFactory) bean);
-		}
-		return bean;
-	}
+  @Override
+  public Object postProcessBeforeInitialization(Object bean, String beanName)
+      throws BeansException {
+    if (bean instanceof SubscriberFactory) {
+      return new TracingSubscriberFactory(pubSubTracing(), (SubscriberFactory) bean);
+    }
+    return bean;
+  }
 
-	PubSubTracing pubSubTracing() {
-		if (this.tracing == null) {
-			this.tracing = this.beanFactory.getBean(PubSubTracing.class);
-		}
-		return this.tracing;
-	}
+  PubSubTracing pubSubTracing() {
+    if (this.tracing == null) {
+      this.tracing = this.beanFactory.getBean(PubSubTracing.class);
+    }
+    return this.tracing;
+  }
 }

@@ -16,75 +16,72 @@
 
 package com.google.cloud.spring.secretmanager.it;
 
-import java.time.Duration;
-
-import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.awaitility.Awaitility.await;
 
-/**
- * Integration tests for {@link SecretManagerTemplate}.
- *
- * @author Daniel Zou
- * @author Mike Eltsufin
- */
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { SecretManagerTestConfiguration.class })
-public class SecretManagerTemplateIntegrationTests {
+import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
+import java.time.Duration;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-	@Autowired
-	SecretManagerTemplate secretManagerTemplate;
+/** Integration tests for {@link SecretManagerTemplate}. */
+@EnabledIfSystemProperty(named = "it.secretmanager", matches = "true")
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {SecretManagerTestConfiguration.class})
+class SecretManagerTemplateIntegrationTests {
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(System.getProperty("it.secretmanager"))
-				.as("Secret manager integration tests are disabled. "
-						+ "Please use '-Dit.secretmanager=true' to enable them.")
-				.isEqualTo("true");
-	}
+  @Autowired SecretManagerTemplate secretManagerTemplate;
 
-	@Test
-	public void testReadWriteSecrets() {
-		secretManagerTemplate.createSecret("test-secret-1234", "1234");
+  @Test
+  void testReadWriteSecrets() {
+    secretManagerTemplate.createSecret("test-secret-1234", "1234");
 
-		await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
-			String secretString = secretManagerTemplate.getSecretString("test-secret-1234");
-			assertThat(secretString).isEqualTo("1234");
+    await()
+        .atMost(Duration.ofSeconds(5))
+        .untilAsserted(
+            () -> {
+              String secretString = secretManagerTemplate.getSecretString("test-secret-1234");
+              assertThat(secretString).isEqualTo("1234");
 
-			byte[] secretBytes = secretManagerTemplate.getSecretBytes("test-secret-1234");
-			assertThat(secretBytes).isEqualTo("1234".getBytes());
-		});
-	}
+              byte[] secretBytes = secretManagerTemplate.getSecretBytes("test-secret-1234");
+              assertThat(secretBytes).isEqualTo("1234".getBytes());
+            });
+  }
 
-	@Test(expected = com.google.api.gax.rpc.NotFoundException.class)
-	public void testReadMissingSecret() {
-		secretManagerTemplate.getSecretBytes("test-NON-EXISTING-secret");
-	}
+  @Test
+  void testReadMissingSecret() {
 
-	@Test
-	public void testUpdateSecrets() {
-		secretManagerTemplate.createSecret("test-update-secret", "5555");
-		await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
-			String secretString = secretManagerTemplate.getSecretString("test-update-secret");
-			assertThat(secretString).isEqualTo("5555");
-		});
+    assertThatThrownBy(() -> secretManagerTemplate.getSecretBytes("test-NON-EXISTING-secret"))
+              .isInstanceOf(com.google.api.gax.rpc.NotFoundException.class);
+  }
 
-		secretManagerTemplate.createSecret("test-update-secret", "6666");
-		await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> {
-			String secretString = secretManagerTemplate.getSecretString("test-update-secret");
-			assertThat(secretString).isEqualTo("6666");
+  @Test
+  void testUpdateSecrets() {
+    secretManagerTemplate.createSecret("test-update-secret", "5555");
+    await()
+        .atMost(Duration.ofSeconds(5))
+        .untilAsserted(
+            () -> {
+              String secretString = secretManagerTemplate.getSecretString("test-update-secret");
+              assertThat(secretString).isEqualTo("5555");
+            });
 
-			byte[] secretBytes = secretManagerTemplate.getSecretBytes("test-update-secret");
-			assertThat(secretBytes).isEqualTo("6666".getBytes());
-		});
-	}
+    secretManagerTemplate.createSecret("test-update-secret", "6666");
+    await()
+        .atMost(Duration.ofSeconds(10))
+        .untilAsserted(
+            () -> {
+              String secretString = secretManagerTemplate.getSecretString("test-update-secret");
+              assertThat(secretString).isEqualTo("6666");
+
+              byte[] secretBytes = secretManagerTemplate.getSecretBytes("test-update-secret");
+              assertThat(secretBytes).isEqualTo("6666".getBytes());
+            });
+  }
 }

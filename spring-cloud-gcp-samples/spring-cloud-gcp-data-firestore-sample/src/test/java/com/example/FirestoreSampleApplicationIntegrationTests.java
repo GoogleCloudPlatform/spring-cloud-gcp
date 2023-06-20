@@ -16,98 +16,85 @@
 
 package com.example;
 
-import java.util.Arrays;
-import java.util.List;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import java.util.Arrays;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = FirestoreSampleApplication.class)
+@EnabledIfSystemProperty(named = "it.firestore", matches = "true")
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(
+    webEnvironment = WebEnvironment.RANDOM_PORT,
+    classes = FirestoreSampleApplication.class)
 @TestPropertySource("classpath:application-test.properties")
-public class FirestoreSampleApplicationIntegrationTests {
-	private static final User ALPHA_USER = new User("Alpha", 49, singletonList(new Pet("rat", "Snowflake")));
-	private static final List<PhoneNumber> ALPHA_PHONE_NUMBERS = Arrays.asList(
-			new PhoneNumber("555666777"),
-			new PhoneNumber("777666555")
-	);
-	private static final User BETA_USER = new User("Beta", 23, emptyList());
-	private static final User DELTA_USER = new User("Delta", 49, Arrays.asList(
-			new Pet("fish", "Dory"),
-			new Pet("spider", "Man")
-	));
+class FirestoreSampleApplicationIntegrationTests {
+  private static final User ALPHA_USER =
+      new User("Alpha", 49, singletonList(new Pet("rat", "Snowflake")));
+  private static final List<PhoneNumber> ALPHA_PHONE_NUMBERS =
+      Arrays.asList(new PhoneNumber("555666777"), new PhoneNumber("777666555"));
+  private static final User BETA_USER = new User("Beta", 23, emptyList());
+  private static final User DELTA_USER =
+      new User("Delta", 49, Arrays.asList(new Pet("fish", "Dory"), new Pet("spider", "Man")));
 
-	@Autowired
-	FirestoreTemplate firestoreTemplate;
+  private static final User NULL_NAME_USER = new User(null, 23, emptyList());
 
-	@Autowired
-	TestRestTemplate restTemplate;
+  @Autowired FirestoreTemplate firestoreTemplate;
 
-	private TestUserClient testUserClient;
+  @Autowired TestRestTemplate restTemplate;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat("Firestore Spring Data tests are "
-						+ "disabled. Please use '-Dit.firestore=true' to enable them. ",
-				System.getProperty("it.firestore"), is("true"));
-	}
+  private TestUserClient testUserClient;
 
-	@Before
-	public void cleanupEnvironment() {
-		testUserClient = new TestUserClient(restTemplate.getRestTemplate());
-		firestoreTemplate.deleteAll(User.class).block();
-	}
+  @BeforeEach
+  void cleanupEnvironment() {
+    testUserClient = new TestUserClient(restTemplate.getRestTemplate());
+    firestoreTemplate.deleteAll(User.class).block();
+  }
 
-	@Test
-	public void saveUserTest() {
-		testUserClient.removePhonesForUser("Alpha");
-		List<User> users = testUserClient.listUsers();
-		assertThat(users).isEmpty();
+  @Test
+  void saveUserTest() {
+    testUserClient.removePhonesForUser("Alpha");
+    List<User> users = testUserClient.listUsers();
+    assertThat(users).isEmpty();
 
-		testUserClient.saveUser(ALPHA_USER, ALPHA_PHONE_NUMBERS);
-		testUserClient.saveUser(BETA_USER, emptyList());
-		testUserClient.saveUser(DELTA_USER, emptyList());
+    testUserClient.saveUser(ALPHA_USER, ALPHA_PHONE_NUMBERS);
+    testUserClient.saveUser(BETA_USER, emptyList());
+    testUserClient.saveUser(DELTA_USER, emptyList());
+    User savedUser = testUserClient.saveUser(NULL_NAME_USER, emptyList());
+    //ensures that a user saved with null id has an id assigned by firestore
+    assertThat(savedUser.getName()).isNotNull();
 
-		List<User> allUsers = testUserClient.listUsers();
-		assertThat(allUsers)
-				.map(User::getName)
-				.containsExactlyInAnyOrder("Alpha", "Beta", "Delta");
+    List<User> allUsers = testUserClient.listUsers();
+    assertThat(allUsers).map(User::getName)
+        .containsExactlyInAnyOrder("Alpha", "Beta", "Delta", savedUser.getName());
 
-		List<User> users49 = testUserClient.findUsersByAge(49);
-		assertThat(users49).containsExactlyInAnyOrder(
-				ALPHA_USER,
-				DELTA_USER
-		);
-		List<PhoneNumber> phoneNumbers = testUserClient.listPhoneNumbers("Alpha");
-		assertThat(phoneNumbers)
-				.map(PhoneNumber::getNumber)
-				.containsExactlyInAnyOrder("555666777", "777666555");
+    List<User> users49 = testUserClient.findUsersByAge(49);
+    assertThat(users49).containsExactlyInAnyOrder(ALPHA_USER, DELTA_USER);
+    List<PhoneNumber> phoneNumbers = testUserClient.listPhoneNumbers("Alpha");
+    assertThat(phoneNumbers)
+        .map(PhoneNumber::getNumber)
+        .containsExactlyInAnyOrder("555666777", "777666555");
 
-		testUserClient.removeUserByName("Alpha");
-		phoneNumbers = testUserClient.listPhoneNumbers("Alpha");
-		assertThat(phoneNumbers)
-				.map(PhoneNumber::getNumber)
-				.containsExactlyInAnyOrder("555666777", "777666555");
+    testUserClient.removeUserByName("Alpha");
+    phoneNumbers = testUserClient.listPhoneNumbers("Alpha");
+    assertThat(phoneNumbers)
+        .map(PhoneNumber::getNumber)
+        .containsExactlyInAnyOrder("555666777", "777666555");
 
-		testUserClient.removePhonesForUser("Alpha");
-		phoneNumbers = testUserClient.listPhoneNumbers("Alpha");
-		assertThat(phoneNumbers)
-				.isEmpty();
-	}
+    testUserClient.removePhonesForUser("Alpha");
+    phoneNumbers = testUserClient.listPhoneNumbers("Alpha");
+    assertThat(phoneNumbers).isEmpty();
+  }
 }

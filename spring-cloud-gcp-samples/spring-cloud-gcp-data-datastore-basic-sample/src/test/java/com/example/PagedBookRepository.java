@@ -18,18 +18,12 @@ package com.example;
 
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.Query;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-/**
- * A Book repository for testing Pages in a Spring Boot setting.
- *
- * @author Chengyuan Zhao
- *
- */
+/** A Book repository for testing Pages in a Spring Boot setting. */
 public interface PagedBookRepository extends DatastoreRepository<Book, Long> {
 
-	@Query("SELECT * FROM books")
-	Page<Book> getAllBooksByPage(Pageable pageable);
+  @Query("SELECT * FROM books")
+  Page<Book> getAllBooksByPage(Pageable pageable);
 }

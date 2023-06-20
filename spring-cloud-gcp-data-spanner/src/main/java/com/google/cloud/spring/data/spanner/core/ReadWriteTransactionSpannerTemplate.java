@@ -16,10 +16,6 @@
 
 package com.google.cloud.spring.data.spanner.core;
 
-import java.util.Collection;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.ReadContext;
@@ -30,70 +26,76 @@ import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import java.util.Collection;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
- * A {@link SpannerTemplate} that performs all operations in a single transaction. This
- * template is not intended for the user to directly instantiate.
- *
- * @author Chengyuan Zhao
+ * A {@link SpannerTemplate} that performs all operations in a single transaction. This template is
+ * not intended for the user to directly instantiate.
  *
  * @since 1.1
  */
 class ReadWriteTransactionSpannerTemplate extends SpannerTemplate {
 
-	private TransactionContext transactionContext;
+  private TransactionContext transactionContext;
 
-	ReadWriteTransactionSpannerTemplate(Supplier<DatabaseClient> databaseClient,
-			SpannerMappingContext mappingContext,
-			SpannerEntityProcessor spannerEntityProcessor,
-			SpannerMutationFactory spannerMutationFactory,
-			SpannerSchemaUtils spannerSchemaUtils,
-			TransactionContext transactionContext) {
-		super(databaseClient, mappingContext, spannerEntityProcessor,
-				spannerMutationFactory, spannerSchemaUtils);
-		this.transactionContext = transactionContext;
-	}
+  ReadWriteTransactionSpannerTemplate(
+      Supplier<DatabaseClient> databaseClient,
+      SpannerMappingContext mappingContext,
+      SpannerEntityProcessor spannerEntityProcessor,
+      SpannerMutationFactory spannerMutationFactory,
+      SpannerSchemaUtils spannerSchemaUtils,
+      TransactionContext transactionContext) {
+    super(
+        databaseClient,
+        mappingContext,
+        spannerEntityProcessor,
+        spannerMutationFactory,
+        spannerSchemaUtils);
+    this.transactionContext = transactionContext;
+  }
 
-	@Override
-	protected void applyMutations(Collection<Mutation> mutations) {
-		this.transactionContext.buffer(mutations);
-	}
+  @Override
+  protected void applyMutations(Collection<Mutation> mutations) {
+    this.transactionContext.buffer(mutations);
+  }
 
-	@Override
-	protected ReadContext getReadContext() {
-		return this.transactionContext;
-	}
+  @Override
+  protected ReadContext getReadContext() {
+    return this.transactionContext;
+  }
 
-	@Override
-	public long executeDmlStatement(Statement statement) {
-		return this.transactionContext.executeUpdate(statement);
-	}
+  @Override
+  public long executeDmlStatement(Statement statement) {
+    return this.transactionContext.executeUpdate(statement);
+  }
 
-	@Override
-	public long executePartitionedDmlStatement(Statement statement) {
-		throw new SpannerDataException(
-				"A read-write transaction template cannot execute partitioned DML.");
-	}
+  @Override
+  public long executePartitionedDmlStatement(Statement statement) {
+    throw new SpannerDataException(
+        "A read-write transaction template cannot execute partitioned DML.");
+  }
 
-	@Override
-	protected ReadContext getReadContext(TimestampBound timestampBound) {
-		throw new SpannerDataException(
-				"Getting stale snapshot read contexts is not supported"
-						+ " in read-write transaction templates.");
-	}
+  @Override
+  protected ReadContext getReadContext(TimestampBound timestampBound) {
+    throw new SpannerDataException(
+        "Getting stale snapshot read contexts is not supported"
+            + " in read-write transaction templates.");
+  }
 
-	@Override
-	public <T> T performReadWriteTransaction(Function<SpannerTemplate, T> operations) {
-		throw new SpannerDataException(
-				"A read-write transaction is already under execution. "
-						+ "Opening sub-transactions is not supported!");
-	}
+  @Override
+  public <T> T performReadWriteTransaction(Function<SpannerTemplate, T> operations) {
+    throw new SpannerDataException(
+        "A read-write transaction is already under execution. "
+            + "Opening sub-transactions is not supported!");
+  }
 
-	@Override
-	public <T> T performReadOnlyTransaction(Function<SpannerTemplate, T> operations,
-			SpannerReadOptions readOptions) {
-		throw new SpannerDataException(
-				"A read-write transaction is already under execution. "
-						+ "Opening sub-transactions is not supported!");
-	}
+  @Override
+  public <T> T performReadOnlyTransaction(
+      Function<SpannerTemplate, T> operations, SpannerReadOptions readOptions) {
+    throw new SpannerDataException(
+        "A read-write transaction is already under execution. "
+            + "Opening sub-transactions is not supported!");
+  }
 }

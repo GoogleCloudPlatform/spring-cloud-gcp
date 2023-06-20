@@ -16,92 +16,90 @@
 
 package com.google.cloud.spring.autoconfigure.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.core.DefaultGcpEnvironmentProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
 import org.springframework.context.annotation.Bean;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+/** Tests for the top-level context auto-configuration. */
+class GcpContextAutoConfigurationTests {
 
-/**
- * Tests for the top-level context auto-configuration.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- * @author Serhat Soydan
- */
-public class GcpContextAutoConfigurationTests {
+  private ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(AutoConfigurations.of(GcpContextAutoConfiguration.class))
+          .withUserConfiguration(TestConfiguration.class);
 
-	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(GcpContextAutoConfiguration.class))
-			.withUserConfiguration(TestConfiguration.class);
+  @Test
+  void testGetProjectIdProvider_withGcpProperties() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.projectId=tonberry")
+        .run(
+            context -> {
+              GcpProjectIdProvider projectIdProvider = context.getBean(GcpProjectIdProvider.class);
+              assertThat(projectIdProvider.getProjectId()).isEqualTo("tonberry");
+            });
+  }
 
-	@Test
-	public void testGetProjectIdProvider_withGcpProperties() {
-		this.contextRunner.withPropertyValues("spring.cloud.gcp.projectId=tonberry")
-				.run(context -> {
-					GcpProjectIdProvider projectIdProvider =
-							context.getBean(GcpProjectIdProvider.class);
-					assertThat(projectIdProvider.getProjectId()).isEqualTo("tonberry");
-				});
-	}
+  @Test
+  void testGetProjectIdProvider_withoutGcpProperties() {
+    this.contextRunner.run(
+        context -> {
+          GcpProjectIdProvider projectIdProvider = context.getBean(GcpProjectIdProvider.class);
+          assertThat(projectIdProvider).isInstanceOf(DefaultGcpProjectIdProvider.class);
+        });
+  }
 
-	@Test
-	public void testGetProjectIdProvider_withoutGcpProperties() {
-		this.contextRunner.run(context -> {
-			GcpProjectIdProvider projectIdProvider =
-					context.getBean(GcpProjectIdProvider.class);
-			assertThat(projectIdProvider).isInstanceOf(DefaultGcpProjectIdProvider.class);
-		});
-	}
+  @Test
+  void testEnvironmentProvider() {
+    this.contextRunner.run(
+        context -> {
+          GcpEnvironmentProvider environmentProvider =
+              context.getBean(GcpEnvironmentProvider.class);
+          assertThat(environmentProvider).isNotNull();
+          assertThat(environmentProvider).isInstanceOf(DefaultGcpEnvironmentProvider.class);
+        });
+  }
 
-	@Test
-	public void testEnvironmentProvider() {
-		this.contextRunner
-				.run(context -> {
-					GcpEnvironmentProvider environmentProvider = context.getBean(GcpEnvironmentProvider.class);
-					assertThat(environmentProvider).isNotNull();
-					assertThat(environmentProvider).isInstanceOf(DefaultGcpEnvironmentProvider.class);
-				});
-	}
+  @Test
+  void testGetProjectIdProviderBeanExistence_withGcpCoreEnabled() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.core.enabled=true")
+        .run(checkNumberOfBeansOfTypeGcpProjectIdProvider(1));
+  }
 
-	@Test
-	public void testGetProjectIdProviderBeanExistence_withGcpCoreEnabled() {
-		this.contextRunner.withPropertyValues("spring.cloud.gcp.core.enabled=true")
-				.run(checkNumberOfBeansOfTypeGcpProjectIdProvider(1));
-	}
+  @Test
+  void testGetProjectIdProviderBeanExistence_withGcpCoreMissing() {
+    this.contextRunner.run(checkNumberOfBeansOfTypeGcpProjectIdProvider(1));
+  }
 
-	@Test
-	public void testGetProjectIdProviderBeanExistence_withGcpCoreMissing() {
-		this.contextRunner.run(checkNumberOfBeansOfTypeGcpProjectIdProvider(1));
-	}
+  @Test
+  void testGetProjectIdProviderBeanExistence_withGcpCoreDisabled() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.core.enabled=false")
+        .run(checkNumberOfBeansOfTypeGcpProjectIdProvider(0));
+  }
 
-	@Test
-	public void testGetProjectIdProviderBeanExistence_withGcpCoreDisabled() {
-		this.contextRunner.withPropertyValues("spring.cloud.gcp.core.enabled=false")
-				.run(checkNumberOfBeansOfTypeGcpProjectIdProvider(0));
-	}
+  private ContextConsumer<AssertableApplicationContext>
+      checkNumberOfBeansOfTypeGcpProjectIdProvider(int count) {
+    return context -> assertThat(context.getBeansOfType(GcpProjectIdProvider.class)).hasSize(count);
+  }
 
-	private ContextConsumer<AssertableApplicationContext> checkNumberOfBeansOfTypeGcpProjectIdProvider(int count) {
-		return context -> assertThat(context.getBeansOfType(GcpProjectIdProvider.class))
-				.hasSize(count);
-	}
+  private static class TestConfiguration {
 
-	private static class TestConfiguration {
-
-		@Bean
-		public CredentialsProvider googleCredentials() {
-			return () -> mock(Credentials.class);
-		}
-	}
+    @Bean
+    public CredentialsProvider googleCredentials() {
+      return () -> mock(Credentials.class);
+    }
+  }
 }

@@ -20,7 +20,6 @@ import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
-
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health.Builder;
 
@@ -31,34 +30,33 @@ import org.springframework.boot.actuate.health.Health.Builder;
  *
  * <p>If there is no error, this health indicator will signal "up".
  *
- * @author ikeyat
- *
  * @since 2.0.6
  */
 public class SpannerHealthIndicator extends AbstractHealthIndicator {
 
-	private Statement validationStatement;
+  private Statement validationStatement;
 
-	private SpannerTemplate spannerTemplate;
+  private SpannerTemplate spannerTemplate;
 
-	/**
-	 * SpannerHealthIndicator constructor.
-	 *
-	 * @param spannerTemplate spannerTemplate to execute query
-	 * @param validationQuery query to execute
-	 */
-	public SpannerHealthIndicator(final SpannerTemplate spannerTemplate, String validationQuery) {
-		super("Spanner health check failed");
-		this.spannerTemplate = spannerTemplate;
-		this.validationStatement = Statement.of(validationQuery);
-	}
+  /**
+   * SpannerHealthIndicator constructor.
+   *
+   * @param spannerTemplate spannerTemplate to execute query
+   * @param validationQuery query to execute
+   */
+  public SpannerHealthIndicator(final SpannerTemplate spannerTemplate, String validationQuery) {
+    super("Spanner health check failed");
+    this.spannerTemplate = spannerTemplate;
+    this.validationStatement = Statement.of(validationQuery);
+  }
 
-	@Override
-	protected void doHealthCheck(Builder builder) throws Exception {
-		ResultSet resultSet = spannerTemplate.executeQuery(validationStatement, null);
-		// Touch the record
-		resultSet.next();
-		builder.up();
-	}
+  @Override
+  protected void doHealthCheck(Builder builder) throws Exception {
+    try (ResultSet resultSet = spannerTemplate.executeQuery(validationStatement, null)) {
+      // Touch the record
+      resultSet.next();
+    }
 
+    builder.up();
+  }
 }

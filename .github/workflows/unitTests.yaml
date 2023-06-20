@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 2.x
   pull_request:
   workflow_dispatch:
   schedule:
@@ -16,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [8, 11, 16]
+        java: [8, 11, 17]
     steps:
     - name: Get current date
       id: date
@@ -130,7 +131,7 @@ jobs:
         run: |
           ./mvnw \
             --batch-mode \
-            --activate-profiles docs,spring \
+            --activate-profiles docs \
             -DskipTests \
             -Dgpg.skip \
             -Dcheckstyle.skip \

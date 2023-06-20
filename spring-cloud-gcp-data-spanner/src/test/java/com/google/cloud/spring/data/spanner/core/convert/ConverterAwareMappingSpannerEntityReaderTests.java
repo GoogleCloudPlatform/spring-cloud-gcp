@@ -16,7 +16,12 @@
 
 package com.google.cloud.spring.data.spanner.core.convert;
 
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
@@ -34,294 +39,389 @@ import com.google.cloud.spring.data.spanner.core.convert.TestEntities.OuterTestH
 import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
+import com.google.gson.Gson;
+import java.util.Arrays;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+/** Tests for converting and reading Spanner entities and objects. */
+class ConverterAwareMappingSpannerEntityReaderTests {
 
-/**
- * Tests for converting and reading Spanner entities and objects.
- *
- * @author Chengyuan Zhao
- * @author Balint Pato
- */
-public class ConverterAwareMappingSpannerEntityReaderTests {
+  private SpannerEntityReader spannerEntityReader;
 
-	/**
-	 * used for checking exception messages and types.
-	 */
-	@Rule
-	public ExpectedException expectedEx = ExpectedException.none();
+  private SpannerReadConverter spannerReadConverter;
 
-	private SpannerEntityReader spannerEntityReader;
+  @BeforeEach
+  void setup() {
+    this.spannerReadConverter = new SpannerReadConverter();
+    SpannerMappingContext mappingContext = new SpannerMappingContext(new Gson());
+    this.spannerEntityReader =
+        new ConverterAwareMappingSpannerEntityReader(
+            mappingContext, this.spannerReadConverter);
+  }
 
-	private SpannerReadConverter spannerReadConverter;
+  @Test
+  void readNestedStructTest() {
+    Struct innerStruct = Struct.newBuilder().set("value").to(Value.string("inner-value")).build();
+    Struct outerStruct =
+        Struct.newBuilder()
+            .set("id")
+            .to(Value.string("key1"))
+            .set("innerTestEntities")
+            .toStructArray(
+                Type.struct(StructField.of("value", Type.string())), Arrays.asList(innerStruct))
+            .build();
 
-	@Before
-	public void setup() {
-		this.spannerReadConverter = new SpannerReadConverter();
-		this.spannerEntityReader = new ConverterAwareMappingSpannerEntityReader(
-				new SpannerMappingContext(), this.spannerReadConverter);
-	}
+    OuterTestEntity result =
+        this.spannerEntityReader.read(OuterTestEntity.class, outerStruct, null, true);
+    assertThat(result.id).isEqualTo("key1");
+    assertThat(result.innerTestEntities).hasSize(1);
+    assertThat(result.innerTestEntities.get(0).value).isEqualTo("inner-value");
+    assertThat(result.innerTestEntities.get(0).missingColumnValue).isNull();
+  }
 
-	@Test
-	public void readNestedStructTest() {
-		Struct innerStruct = Struct.newBuilder().set("value")
-				.to(Value.string("inner-value")).build();
-		Struct outerStruct = Struct.newBuilder().set("id").to(Value.string("key1"))
-				.set("innerTestEntities")
-				.toStructArray(Type.struct(StructField.of("value", Type.string())),
-						Arrays.asList(innerStruct))
-				.build();
+  @Test
+  void readNestedStructsAsStructsTest() {
+    Struct innerStruct = Struct.newBuilder().set("value").to(Value.string("inner-value")).build();
+    Struct outerStruct =
+        Struct.newBuilder()
+            .set("id")
+            .to(Value.string("key1"))
+            .set("innerStructs")
+            .toStructArray(
+                Type.struct(StructField.of("value", Type.string())), Arrays.asList(innerStruct))
+            .build();
 
-		OuterTestEntity result = this.spannerEntityReader.read(OuterTestEntity.class,
-				outerStruct, null, true);
-		assertThat(result.id).isEqualTo("key1");
-		assertThat(result.innerTestEntities).hasSize(1);
-		assertThat(result.innerTestEntities.get(0).value).isEqualTo("inner-value");
-		assertThat(result.innerTestEntities.get(0).missingColumnValue).isNull();
-	}
+    OuterTestHoldingStructsEntity result =
+        this.spannerEntityReader.read(OuterTestHoldingStructsEntity.class, outerStruct);
+    assertThat(result.id).isEqualTo("key1");
+    assertThat(result.innerStructs).hasSize(1);
+    assertThat(result.innerStructs.get(0).getString("value")).isEqualTo("inner-value");
+  }
 
-	@Test
-	public void readNestedStructsAsStructsTest() {
-		Struct innerStruct = Struct.newBuilder().set("value")
-				.to(Value.string("inner-value")).build();
-		Struct outerStruct = Struct.newBuilder().set("id").to(Value.string("key1"))
-				.set("innerStructs")
-				.toStructArray(Type.struct(StructField.of("value", Type.string())),
-						Arrays.asList(innerStruct))
-				.build();
+  @Test
+  void readNestedStructAsStructTest() {
+    Struct innerStruct = Struct.newBuilder().set("value").to(Value.string("inner-value")).build();
+    Struct outerStruct =
+        Struct.newBuilder()
+            .set("id")
+            .to(Value.string("key1"))
+            .set("innerStruct")
+            .to(innerStruct)
+            .build();
 
-		OuterTestHoldingStructsEntity result = this.spannerEntityReader
-				.read(OuterTestHoldingStructsEntity.class, outerStruct);
-		assertThat(result.id).isEqualTo("key1");
-		assertThat(result.innerStructs).hasSize(1);
-		assertThat(result.innerStructs.get(0).getString("value")).isEqualTo("inner-value");
-	}
+    OuterTestHoldingStructEntity result =
+        this.spannerEntityReader.read(OuterTestHoldingStructEntity.class, outerStruct);
+    assertThat(result.id).isEqualTo("key1");
+    assertThat(result.innerStruct.getString("value")).isEqualTo("inner-value");
+  }
 
-	@Test
-	public void readNestedStructAsStructTest() {
-		Struct innerStruct = Struct.newBuilder().set("value")
-				.to(Value.string("inner-value")).build();
-		Struct outerStruct = Struct.newBuilder().set("id").to(Value.string("key1"))
-				.set("innerStruct").to(innerStruct).build();
+  @Test
+  void readArraySingularMismatchTest() {
+    Struct rowStruct =
+        Struct.newBuilder()
+            .set("id")
+            .to(Value.string("key1"))
+            .set("innerTestEntities")
+            .to(Value.int64(3))
+            .build();
 
-		OuterTestHoldingStructEntity result = this.spannerEntityReader
-				.read(OuterTestHoldingStructEntity.class, outerStruct);
-		assertThat(result.id).isEqualTo("key1");
-		assertThat(result.innerStruct.getString("value")).isEqualTo("inner-value");
-	}
+    assertThatThrownBy(() -> this.spannerEntityReader.read(OuterTestEntity.class, rowStruct))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("Column is not an ARRAY type: innerTestEntities");
+  }
 
-	@Test
-	public void readArraySingularMismatchTest() {
-		this.expectedEx.expect(SpannerDataException.class);
-		this.expectedEx.expectMessage("Column is not an ARRAY type: innerTestEntities");
+  @Test
+  void readSingularArrayMismatchTest() {
+    Struct colStruct = Struct.newBuilder().set("string_col").to(Value.string("value")).build();
+    Struct rowStruct =
+        Struct.newBuilder()
+            .set("id")
+            .to(Value.string("key1"))
+            .set("innerLengths")
+            .toStructArray(
+                Type.struct(StructField.of("string_col", Type.string())), Arrays.asList(colStruct))
+            .build();
 
-		Struct rowStruct = Struct.newBuilder().set("id").to(Value.string("key1"))
-				.set("innerTestEntities").to(Value.int64(3)).build();
-		this.spannerEntityReader.read(OuterTestEntity.class, rowStruct);
-	}
+    ConverterAwareMappingSpannerEntityReader testReader = new ConverterAwareMappingSpannerEntityReader(new SpannerMappingContext(), new SpannerReadConverter(
+            Arrays.asList(
+                    new Converter<Struct, Integer>() {
+                @Nullable
+                @Override
+                public Integer convert(Struct source) {
+                  return source.getString("string_col").length();
+                }
+              })));
+    assertThatThrownBy(() -> testReader.read(OuterTestEntityFlatFaulty.class, rowStruct))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("The value in column with name innerLengths could not be converted to the corresponding"
+                    + " property in the entity. The property's type is class java.lang.Integer.");
+  }
 
-	@Test
-	public void readSingularArrayMismatchTest() {
-		this.expectedEx.expect(SpannerDataException.class);
-		this.expectedEx.expectMessage("The value in column with name innerLengths could not be converted " +
-				"to the corresponding property in the entity. The property's type is class java.lang.Integer.");
+  @Test
+  void readConvertedNestedStructTest() {
 
-		Struct colStruct = Struct.newBuilder().set("string_col").to(Value.string("value"))
-				.build();
-		Struct rowStruct = Struct.newBuilder().set("id").to(Value.string("key1"))
-				.set("innerLengths")
-				.toStructArray(Type.struct(StructField.of("string_col", Type.string())),
-						Arrays.asList(colStruct))
-				.build();
+    Struct colStruct = Struct.newBuilder().set("string_col").to(Value.string("value")).build();
+    Struct rowStruct =
+        Struct.newBuilder()
+            .set("id")
+            .to(Value.string("key1"))
+            .set("innerLengths")
+            .toStructArray(
+                Type.struct(StructField.of("string_col", Type.string())), Arrays.asList(colStruct))
+            .build();
 
-		new ConverterAwareMappingSpannerEntityReader(new SpannerMappingContext(),
-				new SpannerReadConverter(Arrays.asList(new Converter<Struct, Integer>() {
-					@Nullable
-					@Override
-					public Integer convert(Struct source) {
-						return source.getString("string_col").length();
-					}
-				}))).read(OuterTestEntityFlatFaulty.class, rowStruct);
-	}
+    OuterTestEntityFlat result =
+        new ConverterAwareMappingSpannerEntityReader(
+                new SpannerMappingContext(),
+                new SpannerReadConverter(
+                    Arrays.asList(
+                        new Converter<Struct, Integer>() {
+                          @Nullable
+                          @Override
+                          public Integer convert(Struct source) {
+                            return source.getString("string_col").length();
+                          }
+                        })))
+            .read(OuterTestEntityFlat.class, rowStruct);
+    assertThat(result.id).isEqualTo("key1");
+    assertThat(result.innerLengths).hasSize(1);
+    assertThat(result.innerLengths.get(0)).isEqualTo(5);
+  }
 
-	@Test
-	public void readConvertedNestedStructTest() {
-		Struct colStruct = Struct.newBuilder().set("string_col").to(Value.string("value"))
-				.build();
-		Struct rowStruct = Struct.newBuilder().set("id").to(Value.string("key1"))
-				.set("innerLengths")
-				.toStructArray(Type.struct(StructField.of("string_col", Type.string())),
-						Arrays.asList(colStruct))
-				.build();
+  @Test
+  void readNotFoundColumnTest() {
 
-		OuterTestEntityFlat result = new ConverterAwareMappingSpannerEntityReader(
-				new SpannerMappingContext(),
-				new SpannerReadConverter(Arrays.asList(new Converter<Struct, Integer>() {
-					@Nullable
-					@Override
-					public Integer convert(Struct source) {
-						return source.getString("string_col").length();
-					}
-				}))).read(OuterTestEntityFlat.class, rowStruct);
-		assertThat(result.id).isEqualTo("key1");
-		assertThat(result.innerLengths).hasSize(1);
-		assertThat(result.innerLengths.get(0)).isEqualTo(5);
-	}
+    Struct struct =
+        Struct.newBuilder()
+            .set("id")
+            .to(Value.string("key1"))
+            .set("custom_col")
+            .to(Value.string("string1"))
+            .set("booleanField")
+            .to(Value.bool(true))
+            .set("longField")
+            .to(Value.int64(3L))
+            .set("doubleArray")
+            .to(Value.float64Array(new double[] {3.33, 3.33, 3.33}))
+            .set("dateField")
+            .to(Value.date(Date.fromYearMonthDay(2018, 11, 22)))
+            .set("timestampField")
+            .to(Value.timestamp(Timestamp.ofTimeMicroseconds(333)))
+            .set("bytes")
+            .to(Value.bytes(ByteArray.copyFrom("string1")))
+            .build();
 
-	@Test
-	public void readNotFoundColumnTest() {
-		this.expectedEx.expect(SpannerDataException.class);
-		this.expectedEx.expectMessage("Unable to read column from Cloud Spanner results: id4");
-		Struct struct = Struct.newBuilder().set("id").to(Value.string("key1"))
-				.set("custom_col").to(Value.string("string1")).set("booleanField")
-				.to(Value.bool(true)).set("longField").to(Value.int64(3L))
-				.set("doubleArray")
-				.to(Value.float64Array(new double[] { 3.33, 3.33, 3.33 }))
-				.set("dateField").to(Value.date(Date.fromYearMonthDay(2018, 11, 22)))
-				.set("timestampField")
-				.to(Value.timestamp(Timestamp.ofTimeMicroseconds(333))).set("bytes")
-				.to(Value.bytes(ByteArray.copyFrom("string1"))).build();
+    assertThatThrownBy(() -> this.spannerEntityReader.read(TestEntity.class, struct))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("Unable to read column from Cloud Spanner results: id4");
+  }
 
-		this.spannerEntityReader.read(TestEntity.class, struct);
-	}
+  @Test
+  void readUnconvertableValueTest() {
 
-	@Test
-	public void readUnconvertableValueTest() {
-		this.expectedEx.expect(ConversionFailedException.class);
-		this.expectedEx.expectMessage("Failed to convert from type [java.lang.String] to type " +
-				"[java.lang.Double] for value 'UNCONVERTABLE VALUE'; nested exception is " +
-				"java.lang.NumberFormatException: For input string: \"UNCONVERTABLEVALUE\"");
-		Struct struct = Struct.newBuilder().set("id").to(Value.string("key1")).set("id2")
-				.to(Value.string("key2")).set("id3").to(Value.string("key3")).set("id4")
-				.to(Value.string("key4")).set("intField2").to(Value.int64(333L))
-				.set("custom_col").to(Value.string("WHITE")).set("booleanField")
-				.to(Value.bool(true)).set("longField").to(Value.int64(3L))
-				.set("doubleField").to(Value.string("UNCONVERTABLE VALUE"))
-				.set("doubleArray")
-				.to(Value.float64Array(new double[] { 3.33, 3.33, 3.33 }))
-				.set("dateField").to(Value.date(Date.fromYearMonthDay(2018, 11, 22)))
-				.set("timestampField")
-				.to(Value.timestamp(Timestamp.ofTimeMicroseconds(333))).set("bytes")
-				.to(Value.bytes(ByteArray.copyFrom("string1"))).build();
+    Struct struct =
+        Struct.newBuilder()
+            .set("id")
+            .to(Value.string("key1"))
+            .set("id2")
+            .to(Value.string("key2"))
+            .set("id3")
+            .to(Value.string("key3"))
+            .set("id4")
+            .to(Value.string("key4"))
+            .set("intField2")
+            .to(Value.int64(333L))
+            .set("custom_col")
+            .to(Value.string("WHITE"))
+            .set("booleanField")
+            .to(Value.bool(true))
+            .set("longField")
+            .to(Value.int64(3L))
+            .set("doubleField")
+            .to(Value.string("UNCONVERTABLE VALUE"))
+            .set("doubleArray")
+            .to(Value.float64Array(new double[] {3.33, 3.33, 3.33}))
+            .set("dateField")
+            .to(Value.date(Date.fromYearMonthDay(2018, 11, 22)))
+            .set("timestampField")
+            .to(Value.timestamp(Timestamp.ofTimeMicroseconds(333)))
+            .set("bytes")
+            .to(Value.bytes(ByteArray.copyFrom("string1")))
+            .build();
 
-		this.spannerEntityReader.read(TestEntity.class, struct);
-	}
 
-	@Test
-	public void readUnmatachableTypesTest() {
-		this.expectedEx.expect(SpannerDataException.class);
-		this.expectedEx.expectMessage("Unable to read column from Cloud Spanner results: id");
-		Struct struct = Struct.newBuilder().set("fieldWithUnsupportedType")
-				.to(Value.string("key1")).build();
-		this.spannerEntityReader.read(FaultyTestEntity.class, struct);
-	}
+    assertThatThrownBy(() -> this.spannerEntityReader.read(TestEntity.class, struct))
+            .isInstanceOf(ConversionFailedException.class)
+            .hasMessage("Failed to convert from type [java.lang.String] to type "
+                    + "[java.lang.Double] for value [UNCONVERTABLE VALUE]; nested exception is "
+                    + "java.lang.NumberFormatException: For input string: \"UNCONVERTABLEVALUE\"");
+  }
 
-	@Test
-	public void shouldReadEntityWithNoDefaultConstructor() {
-		Struct row = Struct.newBuilder().set("id").to(Value.string("1234")).build();
-		TestEntities.SimpleConstructorTester result = this.spannerEntityReader
-				.read(TestEntities.SimpleConstructorTester.class, row);
+  @Test
+  void readUnmatachableTypesTest() {
+    Struct struct =
+        Struct.newBuilder().set("fieldWithUnsupportedType").to(Value.string("key1")).build();
 
-		assertThat(result.id).isEqualTo("1234");
-	}
+    assertThatThrownBy(() -> this.spannerEntityReader.read(FaultyTestEntity.class, struct))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("Unable to read column from Cloud Spanner results: id");
+  }
 
-	@Test
-	public void readNestedStructWithConstructor() {
-		Struct innerStruct = Struct.newBuilder().set("value").to(Value.string("value"))
-				.build();
-		Struct outerStruct = Struct.newBuilder().set("id").to(Value.string("key1"))
-				.set("innerTestEntities")
-				.toStructArray(Type.struct(StructField.of("value", Type.string())),
-						Arrays.asList(innerStruct))
-				.build();
+  @Test
+  void shouldReadEntityWithNoDefaultConstructor() {
+    Struct row = Struct.newBuilder().set("id").to(Value.string("1234")).build();
+    TestEntities.SimpleConstructorTester result =
+        this.spannerEntityReader.read(TestEntities.SimpleConstructorTester.class, row);
 
-		TestEntities.OuterTestEntityWithConstructor result = this.spannerEntityReader
-				.read(TestEntities.OuterTestEntityWithConstructor.class, outerStruct, null, true);
-		assertThat(result.id).isEqualTo("key1");
-		assertThat(result.innerTestEntities).hasSize(1);
-		assertThat(result.innerTestEntities.get(0).value).isEqualTo("value");
-	}
+    assertThat(result.id).isEqualTo("1234");
+  }
 
-	@Test
-	public void testPartialConstructor() {
-		Struct struct = Struct.newBuilder()
-				.set("id").to(Value.string("key1"))
-				.set("custom_col").to(Value.string("string1"))
-				.set("booleanField").to(Value.bool(true))
-				.set("longField").to(Value.int64(3L))
-				.set("doubleField").to(Value.float64(3.14)).build();
+  @Test
+  void readNestedStructWithConstructor() {
+    Struct innerStruct = Struct.newBuilder().set("value").to(Value.string("value")).build();
+    Struct outerStruct =
+        Struct.newBuilder()
+            .set("id")
+            .to(Value.string("key1"))
+            .set("innerTestEntities")
+            .toStructArray(
+                Type.struct(StructField.of("value", Type.string())), Arrays.asList(innerStruct))
+            .build();
 
-		TestEntities.PartialConstructor result = this.spannerEntityReader.read(
-				TestEntities.PartialConstructor.class, struct);
-		assertThat(result.longField).isEqualTo(3L);
-		assertThat(result.doubleField).isEqualTo(3.14);
-	}
+    TestEntities.OuterTestEntityWithConstructor result =
+        this.spannerEntityReader.read(
+            TestEntities.OuterTestEntityWithConstructor.class, outerStruct, null, true);
+    assertThat(result.id).isEqualTo("key1");
+    assertThat(result.innerTestEntities).hasSize(1);
+    assertThat(result.innerTestEntities.get(0).value).isEqualTo("value");
+  }
 
-	@Test
-	public void ensureConstructorArgsAreReadOnce() {
-		Struct row = mock(Struct.class);
-		when(row.getString("id")).thenReturn("1234");
-		when(row.getType()).thenReturn(
-				Type.struct(Arrays.asList(Type.StructField.of("id", Type.string()))));
-		when(row.getColumnType("id")).thenReturn(Type.string());
+  @Test
+  void testPartialConstructor() {
+    Struct struct =
+        Struct.newBuilder()
+            .set("id")
+            .to(Value.string("key1"))
+            .set("custom_col")
+            .to(Value.string("string1"))
+            .set("booleanField")
+            .to(Value.bool(true))
+            .set("longField")
+            .to(Value.int64(3L))
+            .set("doubleField")
+            .to(Value.float64(3.14))
+            .build();
 
-		TestEntities.SimpleConstructorTester result = this.spannerEntityReader
-				.read(TestEntities.SimpleConstructorTester.class, row);
+    TestEntities.PartialConstructor result =
+        this.spannerEntityReader.read(TestEntities.PartialConstructor.class, struct);
+    assertThat(result.longField).isEqualTo(3L);
+    assertThat(result.doubleField).isEqualTo(3.14);
+  }
 
-		assertThat(result.id).isEqualTo("1234");
-		verify(row, times(1)).getString("id");
-	}
+  @Test
+  void ensureConstructorArgsAreReadOnce() {
+    Struct row = mock(Struct.class);
+    when(row.getString("id")).thenReturn("1234");
+    when(row.getType())
+        .thenReturn(Type.struct(Arrays.asList(Type.StructField.of("id", Type.string()))));
+    when(row.getColumnType("id")).thenReturn(Type.string());
 
-	@Test
-	public void testPartialConstructorWithNotEnoughArgs() {
-		this.expectedEx.expect(SpannerDataException.class);
-		this.expectedEx.expectMessage("Column not found: custom_col");
-		Struct struct = Struct.newBuilder().set("id").to(Value.string("key1"))
-				.set("booleanField").to(Value.bool(true)).set("longField")
-				.to(Value.int64(3L)).set("doubleField").to(Value.float64(3.14)).build();
+    TestEntities.SimpleConstructorTester result =
+        this.spannerEntityReader.read(TestEntities.SimpleConstructorTester.class, row);
 
-		this.spannerEntityReader.read(TestEntities.PartialConstructor.class, struct);
-	}
+    assertThat(result.id).isEqualTo("1234");
+    verify(row, times(1)).getString("id");
+  }
 
-	@Test
-	public void zeroArgsListShouldThrowError() {
-		this.expectedEx.expect(SpannerDataException.class);
-		this.expectedEx.expectMessage("in field 'zeroArgsListOfObjects': Unsupported number of " +
-				"type parameters found: 0 Only collections of exactly 1 type parameter are supported.");
-		Struct struct = Struct.newBuilder().set("zeroArgsListOfObjects")
-				.to(Value.stringArray(Arrays.asList("hello", "world"))).build();
-		this.spannerEntityReader
-				.read(TestEntities.TestEntityWithListWithZeroTypeArgs.class, struct);
-	}
+  @Test
+  void testPartialConstructorWithNotEnoughArgs() {
+    Struct struct =
+        Struct.newBuilder()
+            .set("id")
+            .to(Value.string("key1"))
+            .set("booleanField")
+            .to(Value.bool(true))
+            .set("longField")
+            .to(Value.int64(3L))
+            .set("doubleField")
+            .to(Value.float64(3.14))
+            .build();
 
-	@Test
-	public void readJsonFieldTest() {
-		Struct row = mock(Struct.class);
-		when(row.getString("id")).thenReturn("1234");
-		when(row.getType()).thenReturn(Type.struct(Arrays.asList(Type.StructField.of("id", Type.string()),
-				Type.StructField.of("params", Type.json()))));
-		when(row.getColumnType("id")).thenReturn(Type.string());
+    assertThatThrownBy(() -> this.spannerEntityReader.read(TestEntities.PartialConstructor.class, struct))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("Column not found: custom_col");
+  }
 
-		when(row.getJson("params")).thenReturn("{\"p1\":\"address line\",\"p2\":\"5\"}");
+  @Test
+  void zeroArgsListShouldThrowError() {
 
-		TestEntities.TestEntityJson result = this.spannerEntityReader.read(TestEntities.TestEntityJson.class, row);
+    Struct struct =
+        Struct.newBuilder()
+            .set("zeroArgsListOfObjects")
+            .to(Value.stringArray(Arrays.asList("hello", "world")))
+            .build();
 
-		assertThat(result.id).isEqualTo("1234");
+    assertThatThrownBy(() ->  this.spannerEntityReader.read(TestEntities.TestEntityWithListWithZeroTypeArgs.class, struct))
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("in field 'zeroArgsListOfObjects': Unsupported number of type parameters found: 0 Only"
+                    + " collections of exactly 1 type parameter are supported.");
+  }
 
-		assertThat(result.params.p1).isEqualTo("address line");
-		assertThat(result.params.p2).isEqualTo("5");
-	}
+  @Test
+  void readJsonFieldTest() {
+    Struct row = mock(Struct.class);
+    when(row.getString("id")).thenReturn("1234");
+    when(row.getType())
+        .thenReturn(
+            Type.struct(
+                Arrays.asList(
+                    Type.StructField.of("id", Type.string()),
+                    Type.StructField.of("params", Type.json()))));
+    when(row.getColumnType("id")).thenReturn(Type.string());
 
+    when(row.getJson("params")).thenReturn("{\"p1\":\"address line\",\"p2\":\"5\"}");
+
+    TestEntities.TestEntityJson result =
+        this.spannerEntityReader.read(TestEntities.TestEntityJson.class, row);
+
+    assertThat(result.id).isEqualTo("1234");
+
+    assertThat(result.params.p1).isEqualTo("address line");
+    assertThat(result.params.p2).isEqualTo("5");
+  }
+
+  @Test
+  void readArrayJsonFieldTest() {
+    Struct row = mock(Struct.class);
+    when(row.getString("id")).thenReturn("1234");
+    when(row.getType())
+        .thenReturn(
+            Type.struct(
+                Arrays.asList(
+                    Type.StructField.of("id", Type.string()),
+                    Type.StructField.of("paramsList", Type.array(Type.json())))));
+    when(row.getColumnType("id")).thenReturn(Type.string());
+
+    when(row.getColumnType("paramsList")).thenReturn(Type.array(Type.json()));
+    when(row.getJsonList("paramsList")).thenReturn(
+        Arrays.asList("{\"p1\":\"address line\",\"p2\":\"5\"}",
+            "{\"p1\":\"address line 2\",\"p2\":\"6\"}", null));
+
+    TestEntities.TestEntityJsonArray result =
+        this.spannerEntityReader.read(TestEntities.TestEntityJsonArray.class, row);
+
+    assertThat(result.id).isEqualTo("1234");
+
+    assertThat(result.paramsList.get(0).p1).isEqualTo("address line");
+    assertThat(result.paramsList.get(0).p2).isEqualTo("5");
+
+    assertThat(result.paramsList.get(1).p1).isEqualTo("address line 2");
+    assertThat(result.paramsList.get(1).p2).isEqualTo("6");
+
+    assertThat(result.paramsList.get(2)).isNull();
+  }
 }

@@ -16,27 +16,26 @@
 
 package com.google.cloud.spring.logging;
 
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link LoggingAppender}.
  *
- * @author Mike Eltsufin
  * @since 1.2
  */
-public class LoggingAppenderTests {
+class LoggingAppenderTests {
 
-	@Test
-	public void testGetLoggingOptions() {
-		LoggingAppender loggingAppender = new LoggingAppender();
-		loggingAppender.setCredentialsFile("src/test/resources/fake-project-key.json");
-		assertThat(loggingAppender.getLoggingOptions().getCredentials()).isNotNull();
-		assertThat(loggingAppender.getLoggingOptions().getProjectId()).isEqualTo("fake-project");
-		assertThat(loggingAppender.getLoggingOptions().getUserAgent())
-				.isNotNull()
-				.contains("spring-cloud-gcp-logging")
-				.contains("Spring");
-	}
+  @Test
+  void testGetLoggingOptions() {
+    LoggingAppender loggingAppender = new LoggingAppender();
+    loggingAppender.setCredentialsFile("src/test/resources/fake-project-key.json");
+    assertThat(loggingAppender.getLoggingOptions().getCredentials()).isNotNull();
+    assertThat(loggingAppender.getLoggingOptions().getProjectId()).isEqualTo("fake-project");
+    assertThat(loggingAppender.getLoggingOptions().getUserAgent())
+        .isNotNull()
+        .contains("spring-cloud-gcp-logging")
+        .contains("Spring");
+  }
 }

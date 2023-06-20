@@ -23,7 +23,6 @@ import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -36,35 +35,33 @@ import org.springframework.messaging.handler.annotation.Header;
 /**
  * Spring Boot Application demonstrating receiving PubSub messages via synchronous pull.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 @SpringBootApplication
 public class PollingReceiverApplication {
 
-	private static final Log LOGGER = LogFactory.getLog(PollingReceiverApplication.class);
+  private static final Log LOGGER = LogFactory.getLog(PollingReceiverApplication.class);
 
+  public static void main(String[] args) {
+    SpringApplication.run(PollingReceiverApplication.class, args);
+  }
 
-	public static void main(String[] args) {
-		SpringApplication.run(PollingReceiverApplication.class, args);
-	}
+  @Bean
+  @InboundChannelAdapter(channel = "pubsubInputChannel", poller = @Poller(fixedDelay = "100"))
+  public MessageSource<Object> pubsubAdapter(PubSubTemplate pubSubTemplate) {
+    PubSubMessageSource messageSource =
+        new PubSubMessageSource(pubSubTemplate, "exampleSubscription");
+    messageSource.setMaxFetchSize(5);
+    messageSource.setAckMode(AckMode.MANUAL);
+    messageSource.setPayloadType(String.class);
+    return messageSource;
+  }
 
-	@Bean
-	@InboundChannelAdapter(channel = "pubsubInputChannel", poller = @Poller(fixedDelay = "100"))
-	public MessageSource<Object> pubsubAdapter(PubSubTemplate pubSubTemplate) {
-		PubSubMessageSource messageSource = new PubSubMessageSource(pubSubTemplate,  "exampleSubscription");
-		messageSource.setMaxFetchSize(5);
-		messageSource.setAckMode(AckMode.MANUAL);
-		messageSource.setPayloadType(String.class);
-		return messageSource;
-	}
-
-	@ServiceActivator(inputChannel = "pubsubInputChannel")
-	public void messageReceiver(String payload,
-			@Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) AcknowledgeablePubsubMessage message) {
-		LOGGER.info("Message arrived by Synchronous Pull! Payload: " + payload);
-		message.ack();
-	}
-
+  @ServiceActivator(inputChannel = "pubsubInputChannel")
+  public void messageReceiver(
+      String payload,
+      @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) AcknowledgeablePubsubMessage message) {
+    LOGGER.info("Message arrived by Synchronous Pull! Payload: " + payload);
+    message.ack();
+  }
 }

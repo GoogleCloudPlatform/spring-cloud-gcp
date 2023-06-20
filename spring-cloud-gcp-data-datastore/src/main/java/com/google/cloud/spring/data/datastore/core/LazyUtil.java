@@ -16,14 +16,12 @@
 
 package com.google.cloud.spring.data.datastore.core;
 
+import com.google.cloud.datastore.Value;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.function.Supplier;
-
-import com.google.cloud.datastore.Value;
-import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
-
 import org.springframework.cglib.proxy.Callback;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.Factory;
@@ -35,133 +33,136 @@ import org.springframework.util.Assert;
 /**
  * Utilities used to support lazy loaded properties.
  *
- * @author Dmitry Solomakha
- *
  * @since 1.2.2
  */
 final class LazyUtil {
 
-	private static final ObjenesisStd objenesis = new ObjenesisStd();
+  private static final ObjenesisStd objenesis = new ObjenesisStd();
 
-	private LazyUtil() {
-	}
+  private LazyUtil() {}
 
-	/**
-	 * Returns a proxy that lazily loads the value provided by a supplier. The proxy also
-	 * stores the key(s) that can be used in case the value was not loaded. If the type of the
-	 * value is interface, {@link java.lang.reflect.Proxy} is used, otherwise cglib proxy is
-	 * used (creates a sub-class of the original type; the original class can't be final and
-	 * can't have final methods).
-	 * @param supplierFunc a function that provides the value
-	 * @param type the type of the value
-	 * @param keys Datastore key(s) that can be used when the parent entity is saved
-	 * @return true if the object is a proxy that was not evaluated
-	 */
-	static <T> T wrapSimpleLazyProxy(Supplier<T> supplierFunc, Class<T> type, Value keys) {
-		if (type.isInterface()) {
-			return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[] {type},
-				new SimpleLazyDynamicInvocationHandler<T>(supplierFunc, keys));
-		}
-		Factory factory = (Factory) objenesis.newInstance(getEnhancedTypeFor(type));
-		factory.setCallbacks(new Callback[] { new SimpleLazyDynamicInvocationHandler<T>(supplierFunc, keys) });
+  /**
+   * Returns a proxy that lazily loads the value provided by a supplier. The proxy also stores the
+   * key(s) that can be used in case the value was not loaded. If the type of the value is
+   * interface, {@link java.lang.reflect.Proxy} is used, otherwise cglib proxy is used (creates a
+   * sub-class of the original type; the original class can't be final and can't have final
+   * methods).
+   *
+   * @param supplierFunc a function that provides the value
+   * @param type the type of the value
+   * @param keys Datastore key(s) that can be used when the parent entity is saved
+   * @return true if the object is a proxy that was not evaluated
+   */
+  static <T> T wrapSimpleLazyProxy(Supplier<T> supplierFunc, Class<T> type, Value keys) {
+    if (type.isInterface()) {
+      return (T)
+          Proxy.newProxyInstance(
+              type.getClassLoader(),
+              new Class[] {type},
+              new SimpleLazyDynamicInvocationHandler<T>(supplierFunc, keys));
+    }
+    Factory factory = (Factory) objenesis.newInstance(getEnhancedTypeFor(type));
+    factory.setCallbacks(
+        new Callback[] {new SimpleLazyDynamicInvocationHandler<T>(supplierFunc, keys)});
 
-		return (T) factory;
-	}
+    return (T) factory;
+  }
 
-	private static Class<?> getEnhancedTypeFor(Class<?> type) {
-		Enhancer enhancer = new Enhancer();
-		enhancer.setSuperclass(type);
-		enhancer.setCallbackType(org.springframework.cglib.proxy.MethodInterceptor.class);
+  private static Class<?> getEnhancedTypeFor(Class<?> type) {
+    Enhancer enhancer = new Enhancer();
+    enhancer.setSuperclass(type);
+    enhancer.setCallbackType(org.springframework.cglib.proxy.MethodInterceptor.class);
 
-		return enhancer.createClass();
-	}
+    return enhancer.createClass();
+  }
 
-	/**
-	 * Check if the object is a lazy loaded proxy that hasn't been evaluated.
-	 * @param object an object
-	 * @return true if the object is a proxy that was not evaluated
-	 */
-	public static boolean isLazyAndNotLoaded(Object object) {
-		SimpleLazyDynamicInvocationHandler handler = getProxy(object);
-		if (handler != null) {
-			return !handler.isEvaluated() && handler.getKeys() != null;
-		}
-		return false;
-	}
+  /**
+   * Check if the object is a lazy loaded proxy that hasn't been evaluated.
+   *
+   * @param object an object
+   * @return true if the object is a proxy that was not evaluated
+   */
+  public static boolean isLazyAndNotLoaded(Object object) {
+    SimpleLazyDynamicInvocationHandler handler = getProxy(object);
+    if (handler != null) {
+      return !handler.isEvaluated() && handler.getKeys() != null;
+    }
+    return false;
+  }
 
-	/**
-	 * Extract keys from a proxy object.
-	 * @param object a proxy object
-	 * @return list of keys if the object is a proxy, null otherwise
-	 */
-	public static Value getKeys(Object object) {
-		SimpleLazyDynamicInvocationHandler handler = getProxy(object);
-		if (handler != null && !handler.isEvaluated()) {
-			return handler.getKeys();
-		}
-		return null;
-	}
+  /**
+   * Extract keys from a proxy object.
+   *
+   * @param object a proxy object
+   * @return list of keys if the object is a proxy, null otherwise
+   */
+  public static Value getKeys(Object object) {
+    SimpleLazyDynamicInvocationHandler handler = getProxy(object);
+    if (handler != null && !handler.isEvaluated()) {
+      return handler.getKeys();
+    }
+    return null;
+  }
 
-	private static SimpleLazyDynamicInvocationHandler getProxy(Object object) {
-		if (Proxy.isProxyClass(object.getClass())
-				&& (Proxy.getInvocationHandler(object) instanceof SimpleLazyDynamicInvocationHandler)) {
-			return (SimpleLazyDynamicInvocationHandler) Proxy
-					.getInvocationHandler(object);
-		}
-		else if (object instanceof Factory) {
-			Callback[] callbacks = ((Factory) object).getCallbacks();
-			if (callbacks != null && callbacks.length == 1
-					&& callbacks[0] instanceof SimpleLazyDynamicInvocationHandler) {
-				return (SimpleLazyDynamicInvocationHandler) callbacks[0];
-			}
-		}
-		return null;
-	}
+  private static SimpleLazyDynamicInvocationHandler getProxy(Object object) {
+    if (Proxy.isProxyClass(object.getClass())
+        && (Proxy.getInvocationHandler(object) instanceof SimpleLazyDynamicInvocationHandler)) {
+      return (SimpleLazyDynamicInvocationHandler) Proxy.getInvocationHandler(object);
+    } else if (object instanceof Factory) {
+      Callback[] callbacks = ((Factory) object).getCallbacks();
+      if (callbacks != null
+          && callbacks.length == 1
+          && callbacks[0] instanceof SimpleLazyDynamicInvocationHandler) {
+        return (SimpleLazyDynamicInvocationHandler) callbacks[0];
+      }
+    }
+    return null;
+  }
 
-	/**
-	 * Proxy class used for lazy loading.
-	 */
-	public static final class SimpleLazyDynamicInvocationHandler<T> implements InvocationHandler, MethodInterceptor {
+  /** Proxy class used for lazy loading. */
+  public static final class SimpleLazyDynamicInvocationHandler<T>
+      implements InvocationHandler, MethodInterceptor {
 
-		private final Supplier<T> supplierFunc;
+    private final Supplier<T> supplierFunc;
 
-		private final Value keys;
+    private final Value keys;
 
-		private boolean isEvaluated = false;
+    private boolean isEvaluated = false;
 
-		private T value;
+    private T value;
 
-		private SimpleLazyDynamicInvocationHandler(Supplier<T> supplierFunc, Value keys) {
-			Assert.notNull(supplierFunc, "A non-null supplier function is required for a lazy proxy.");
-			this.supplierFunc = supplierFunc;
-			this.keys = keys;
-		}
+    private SimpleLazyDynamicInvocationHandler(Supplier<T> supplierFunc, Value keys) {
+      Assert.notNull(supplierFunc, "A non-null supplier function is required for a lazy proxy.");
+      this.supplierFunc = supplierFunc;
+      this.keys = keys;
+    }
 
-		private boolean isEvaluated() {
-			return this.isEvaluated;
-		}
+    private boolean isEvaluated() {
+      return this.isEvaluated;
+    }
 
-		public Value getKeys() {
-			return this.keys;
-		}
+    public Value getKeys() {
+      return this.keys;
+    }
 
-		@Override
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			if (!this.isEvaluated) {
-				T newValue = this.supplierFunc.get();
-				if (newValue == null) {
-					throw new DatastoreDataException("Can't load referenced entity");
-				}
-				this.value = newValue;
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+      if (!this.isEvaluated) {
+        T newValue = this.supplierFunc.get();
+        if (newValue == null) {
+          throw new DatastoreDataException("Can't load referenced entity");
+        }
+        this.value = newValue;
 
-				this.isEvaluated = true;
-			}
-			return method.invoke(this.value, args);
-		}
+        this.isEvaluated = true;
+      }
+      return method.invoke(this.value, args);
+    }
 
-		@Override
-		public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
-			return invoke(o, method, objects);
-		}
-	}
+    @Override
+    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy)
+        throws Throwable {
+      return invoke(o, method, objects);
+    }
+  }
 }

@@ -18,32 +18,26 @@ package com.google.cloud.spring.data.datastore.it;
 
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 
-/**
- * A test entity for Datastore integration tests.
- *
- * @author Dmitry Solomakha
- */
+/** A test entity for Datastore integration tests. */
 @Entity
-public class EmbeddedEntity {
+class EmbeddedEntity {
 
-	private String stringField;
+  private String stringField;
 
-	public EmbeddedEntity(String stringField) {
-		this.stringField = stringField;
-	}
+  EmbeddedEntity(String stringField) {
+    this.stringField = stringField;
+  }
 
-	public String getStringField() {
-		return stringField;
-	}
+  String getStringField() {
+    return stringField;
+  }
 
-	public void setStringField(String stringField) {
-		this.stringField = stringField;
-	}
+  void setStringField(String stringField) {
+    this.stringField = stringField;
+  }
 
-	@Override
-	public String toString() {
-		return "EmbeddedEntity{" +
-				"stringField='" + stringField + '\'' +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "EmbeddedEntity{" + "stringField='" + stringField + '\'' + '}';
+  }
 }

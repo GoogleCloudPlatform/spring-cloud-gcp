@@ -16,17 +16,7 @@
 
 package com.google.cloud.spring.data.datastore.core.convert;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import static com.google.cloud.spring.data.datastore.core.util.ValueUtil.boxIfNeeded;
 
 import com.google.cloud.datastore.BaseEntity;
 import com.google.cloud.datastore.Blob;
@@ -41,7 +31,16 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingConte
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
 import com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType;
 import com.google.cloud.spring.data.datastore.core.util.ValueUtil;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -53,374 +52,400 @@ import org.springframework.data.util.TypeInformation;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-import static com.google.cloud.spring.data.datastore.core.util.ValueUtil.boxIfNeeded;
-
 /**
- * In order to support {@link CustomConversions}, this class applies 2-step conversions.
- * The first step produces one of
- * {@link org.springframework.data.mapping.model.SimpleTypeHolder}'s simple types. The
- * second step converts simple types to Datastore-native types. The second step is skipped
- * if the first one produces a Datastore-native type.
- *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
+ * In order to support {@link CustomConversions}, this class applies 2-step conversions. The first
+ * step produces one of {@link org.springframework.data.mapping.model.SimpleTypeHolder}'s simple
+ * types. The second step converts simple types to Datastore-native types. The second step is
+ * skipped if the first one produces a Datastore-native type.
  *
  * @since 1.1
  */
 public class TwoStepsConversions implements ReadWriteConversions {
-	private static final Converter<Blob, byte[]> BLOB_TO_BYTE_ARRAY_CONVERTER = new Converter<Blob, byte[]>() {
-		@Override
-		public byte[] convert(Blob source) {
-			return source.toByteArray();
-		}
-	};
+  private static final Converter<Blob, byte[]> BLOB_TO_BYTE_ARRAY_CONVERTER =
+      new Converter<Blob, byte[]>() {
+        @Override
+        public byte[] convert(Blob source) {
+          return source.toByteArray();
+        }
+      };
 
-	private static final Converter<byte[], Blob> BYTE_ARRAY_TO_BLOB_CONVERTER = new Converter<byte[], Blob>() {
-		@Override
-		public Blob convert(byte[] source) {
-			return Blob.copyFrom(source);
-		}
-	};
+  private static final Converter<byte[], Blob> BYTE_ARRAY_TO_BLOB_CONVERTER =
+      new Converter<byte[], Blob>() {
+        @Override
+        public Blob convert(byte[] source) {
+          return Blob.copyFrom(source);
+        }
+      };
 
-	private final GenericConversionService conversionService;
+  private final GenericConversionService conversionService;
 
-	private final GenericConversionService internalConversionService;
+  private final GenericConversionService internalConversionService;
 
-	private final CustomConversions customConversions;
+  private final CustomConversions customConversions;
 
-	private final ObjectToKeyFactory objectToKeyFactory;
+  private final ObjectToKeyFactory objectToKeyFactory;
 
-	private final DatastoreMappingContext datastoreMappingContext;
+  private final DatastoreMappingContext datastoreMappingContext;
 
-	private DatastoreEntityConverter datastoreEntityConverter;
+  private DatastoreEntityConverter datastoreEntityConverter;
 
-	private final Map<Class, Optional<Class<?>>> writeConverters = new ConcurrentHashMap<>();
+  private final Map<Class, Optional<Class<?>>> writeConverters = new ConcurrentHashMap<>();
 
-	public TwoStepsConversions(CustomConversions customConversions,
-			ObjectToKeyFactory objectToKeyFactory, DatastoreMappingContext datastoreMappingContext) {
-		this.objectToKeyFactory = objectToKeyFactory;
-		this.datastoreMappingContext = datastoreMappingContext;
-		this.conversionService = new DefaultConversionService();
-		this.internalConversionService = new DefaultConversionService();
-		this.customConversions = customConversions;
-		this.customConversions.registerConvertersIn(this.conversionService);
+  public TwoStepsConversions(
+      CustomConversions customConversions,
+      ObjectToKeyFactory objectToKeyFactory,
+      DatastoreMappingContext datastoreMappingContext) {
+    this.objectToKeyFactory = objectToKeyFactory;
+    this.datastoreMappingContext = datastoreMappingContext;
+    this.conversionService = new DefaultConversionService();
+    this.internalConversionService = new DefaultConversionService();
+    this.customConversions = customConversions;
+    this.customConversions.registerConvertersIn(this.conversionService);
 
-		this.internalConversionService.addConverter(BYTE_ARRAY_TO_BLOB_CONVERTER);
-		this.internalConversionService.addConverter(BLOB_TO_BYTE_ARRAY_CONVERTER);
-	}
+    this.internalConversionService.addConverter(BYTE_ARRAY_TO_BLOB_CONVERTER);
+    this.internalConversionService.addConverter(BLOB_TO_BYTE_ARRAY_CONVERTER);
+  }
 
-	@Override
-	public <T> T convertOnRead(Object val, Class targetCollectionType, Class targetComponentType) {
-		return (T) convertOnRead(val, EmbeddedType.NOT_EMBEDDED,
-				targetCollectionType,
-				ClassTypeInformation.from(targetComponentType));
-	}
+  @Override
+  public <T> T convertOnRead(Object val, Class targetCollectionType, Class targetComponentType) {
+    return (T)
+        convertOnRead(
+            val,
+            EmbeddedType.NOT_EMBEDDED,
+            targetCollectionType,
+            ClassTypeInformation.from(targetComponentType));
+  }
 
-	@Override
-	public <T> T convertOnRead(Object val, EmbeddedType embeddedType, TypeInformation targetTypeInformation) {
-		TypeInformation componentTypeInformation;
-		Class collectionType = null;
-		if (targetTypeInformation.isCollectionLike()) {
-			componentTypeInformation = targetTypeInformation.getComponentType();
-			collectionType = targetTypeInformation.getType();
-		}
-		else {
-			componentTypeInformation = targetTypeInformation;
-		}
-		return convertOnRead(val, embeddedType, collectionType, componentTypeInformation);
-	}
+  @Override
+  public <T> T convertOnRead(
+      Object val, EmbeddedType embeddedType, TypeInformation targetTypeInformation) {
+    TypeInformation componentTypeInformation;
+    Class collectionType = null;
+    if (ValueUtil.isCollectionLike(targetTypeInformation.getType())) {
+      componentTypeInformation = targetTypeInformation.getComponentType();
+      collectionType = targetTypeInformation.getType();
+    } else {
+      componentTypeInformation = targetTypeInformation;
+    }
+    return convertOnRead(val, embeddedType, collectionType, componentTypeInformation);
+  }
 
-	private <T> T convertOnRead(Object val, EmbeddedType embeddedType,
-			Class targetCollectionType, TypeInformation targetComponentType) {
-		if (val == null) {
-			return null;
-		}
-		BiFunction<Object, TypeInformation<?>, ?> readConverter;
-		switch (embeddedType) {
-		case EMBEDDED_MAP:
-			readConverter = (x, typeInformation) -> convertOnReadSingleEmbeddedMap(x,
-					typeInformation.getComponentType().getType(),
-					typeInformation.getMapValueType(), targetComponentType);
-			break;
-		case EMBEDDED_ENTITY:
-			readConverter = this::convertOnReadSingleEmbedded;
-			break;
-		case NOT_EMBEDDED:
-			readConverter = this::convertOnReadSingle;
-			break;
-		default:
-			throw new DatastoreDataException(
-					"Unexpected property embedded type: " + embeddedType);
-		}
+  private <T> T convertOnRead(
+      Object val,
+      EmbeddedType embeddedType,
+      Class targetCollectionType,
+      TypeInformation targetComponentType) {
+    if (val == null) {
+      return null;
+    }
+    BiFunction<Object, TypeInformation<?>, ?> readConverter;
+    switch (embeddedType) {
+      case EMBEDDED_MAP:
+        readConverter =
+            (x, typeInformation) ->
+                convertOnReadSingleEmbeddedMap(
+                    x,
+                    typeInformation.getComponentType().getType(),
+                    typeInformation.getMapValueType(),
+                    targetComponentType);
+        break;
+      case EMBEDDED_ENTITY:
+        readConverter = this::convertOnReadSingleEmbedded;
+        break;
+      case NOT_EMBEDDED:
+        readConverter = this::convertOnReadSingle;
+        break;
+      default:
+        throw new DatastoreDataException("Unexpected property embedded type: " + embeddedType);
+    }
 
-		if (ValueUtil.isCollectionLike(val.getClass())
-				&& targetCollectionType != null && targetComponentType != null) {
-			try {
-				List elements;
-				if (val.getClass().isArray()) {
-					elements = Collections.singletonList(val);
-				}
-				else {
-					elements = StreamSupport
-							.stream(((Iterable<?>) val).spliterator(), false)
-							.map(v -> {
-								Object o = (v instanceof Value) ? ((Value) v).get() : v;
-								return readConverter.apply(o, targetComponentType);
-							})
-							.collect(Collectors.toList());
-				}
-				return (T) convertCollection(elements, targetCollectionType);
-			}
-			catch (ConversionException | DatastoreDataException ex) {
-				throw new DatastoreDataException("Unable process elements of a collection", ex);
-			}
-		}
-		return (T) readConverter.apply(val, targetComponentType);
-	}
+    if (ValueUtil.isCollectionLike(val.getClass())
+        && targetCollectionType != null
+        && targetComponentType != null) {
+      // Convert collection.
+      try {
+        Assert.isInstanceOf(
+            Iterable.class, val, "Value passed to convertOnRead expected to be Iterable");
+        List elements =
+            StreamSupport.stream(((Iterable<?>) val).spliterator(), false)
+                .map(
+                    v -> {
+                      Object o = (v instanceof Value) ? ((Value) v).get() : v;
+                      return readConverter.apply(o, targetComponentType);
+                    })
+                .collect(Collectors.toList());
+        return (T) convertCollection(elements, targetCollectionType);
+      } catch (ConversionException | DatastoreDataException ex) {
+        throw new DatastoreDataException("Unable process elements of a collection", ex);
+      }
+    }
+    // Convert single value.
+    return (T) readConverter.apply(val, targetComponentType);
+  }
 
-	private <T, R> Map<T, R> convertOnReadSingleEmbeddedMap(Object value,
-			Class<T> keyType, TypeInformation<R> targetComponentType, TypeInformation componentType) {
-		Assert.notNull(value, "Cannot convert a null value.");
-		if (value instanceof BaseEntity) {
-			return this.datastoreEntityConverter.readAsMap((BaseEntity) value, componentType);
-		}
-		throw new DatastoreDataException(
-				"Embedded entity was expected, but " + value.getClass() + " found");
-	}
+  private <T, R> Map<T, R> convertOnReadSingleEmbeddedMap(
+      Object value,
+      Class<T> keyType,
+      TypeInformation<R> targetComponentType,
+      TypeInformation componentType) {
+    Assert.notNull(value, "Cannot convert a null value.");
+    if (value instanceof BaseEntity) {
+      return this.datastoreEntityConverter.readAsMap((BaseEntity) value, componentType);
+    }
+    throw new DatastoreDataException(
+        "Embedded entity was expected, but " + value.getClass() + " found");
+  }
 
-	@SuppressWarnings("unchecked")
-	private <T> T convertOnReadSingleEmbedded(Object value, TypeInformation<?> targetTypeInformation) {
-		Assert.notNull(value, "Cannot convert a null value.");
-		if (value instanceof BaseEntity) {
-			return (T) this.datastoreEntityConverter.read(targetTypeInformation.getType(),
-					(BaseEntity) value);
-		}
-		throw new DatastoreDataException("Embedded entity was expected, but "
-				+ value.getClass() + " found");
-	}
+  @SuppressWarnings("unchecked")
+  private <T> T convertOnReadSingleEmbedded(
+      Object value, TypeInformation<?> targetTypeInformation) {
+    Assert.notNull(value, "Cannot convert a null value.");
+    if (value instanceof BaseEntity) {
+      return (T)
+          this.datastoreEntityConverter.read(targetTypeInformation.getType(), (BaseEntity) value);
+    }
+    throw new DatastoreDataException(
+        "Embedded entity was expected, but " + value.getClass() + " found");
+  }
 
-	@SuppressWarnings("unchecked")
-	private <T> T convertOnReadSingle(Object val, TypeInformation<?> targetTypeInformation) {
-		if (val == null) {
-			return null;
-		}
-		Class targetType = boxIfNeeded(targetTypeInformation.getType());
-		Class sourceType = val.getClass();
-		Object result = null;
-		TypeTargets typeTargets = computeTypeTargets(targetType);
+  @SuppressWarnings("unchecked")
+  private <T> T convertOnReadSingle(Object val, TypeInformation<?> targetTypeInformation) {
+    if (val == null) {
+      return null;
+    }
+    Class targetType = boxIfNeeded(targetTypeInformation.getType());
+    Class sourceType = val.getClass();
+    Object result = null;
+    TypeTargets typeTargets = computeTypeTargets(targetType);
 
-		if (typeTargets.getFirstStepTarget() == null
-				&& typeTargets.getSecondStepTarget() == null
-				&& ClassUtils.isAssignable(targetType, val.getClass())) {
-			//neither first or second steps were applied, no conversion is necessary
-			result = val;
-		}
-		else if (typeTargets.getFirstStepTarget() == null && typeTargets.getSecondStepTarget() != null) {
-			//only second step was applied on write
-			result = this.internalConversionService.convert(val, targetType);
-		}
-		else if (typeTargets.getFirstStepTarget() != null && typeTargets.getSecondStepTarget() == null) {
-			//only first step was applied on write
-			result = this.conversionService.convert(val, targetType);
-		}
-		else if (typeTargets.getFirstStepTarget() != null && typeTargets.getSecondStepTarget() != null) {
-			//both steps were applied
-			Object secondStepVal = this.internalConversionService.convert(val,
-					typeTargets.getFirstStepTarget());
-			result = this.conversionService.convert(secondStepVal, targetType);
-		}
-		// if the value can be directly converted
-		else if (DatastoreNativeTypes.isNativeType(sourceType)
-				&& this.conversionService.canConvert(sourceType, targetType)) {
-			result = this.conversionService.convert(val, targetType);
-		}
-		else if (DatastoreNativeTypes.isNativeType(sourceType)
-				&& this.internalConversionService.canConvert(sourceType, targetType)) {
-			result = this.internalConversionService.convert(val, targetType);
-		}
+    if (typeTargets.getFirstStepTarget() == null
+        && typeTargets.getSecondStepTarget() == null
+        && ClassUtils.isAssignable(targetType, val.getClass())) {
+      // neither first or second steps were applied, no conversion is necessary
+      result = val;
+    } else if (typeTargets.getFirstStepTarget() == null
+        && typeTargets.getSecondStepTarget() != null) {
+      // only second step was applied on write
+      result = this.internalConversionService.convert(val, targetType);
+    } else if (typeTargets.getFirstStepTarget() != null
+        && typeTargets.getSecondStepTarget() == null) {
+      // only first step was applied on write
+      result = this.conversionService.convert(val, targetType);
+    } else if (typeTargets.getFirstStepTarget() != null
+        && typeTargets.getSecondStepTarget() != null) {
+      // both steps were applied
+      Object secondStepVal =
+          this.internalConversionService.convert(val, typeTargets.getFirstStepTarget());
+      result = this.conversionService.convert(secondStepVal, targetType);
+    } else if (DatastoreNativeTypes.isNativeType(sourceType)
+        && this.conversionService.canConvert(sourceType, targetType)) {
+      // the value can be directly converted
+      result = this.conversionService.convert(val, targetType);
+    } else if (DatastoreNativeTypes.isNativeType(sourceType)
+        && this.internalConversionService.canConvert(sourceType, targetType)) {
+      result = this.internalConversionService.convert(val, targetType);
+    }
 
-		if (result != null) {
-			return (T) result;
-		}
-		else {
-			throw new DatastoreDataException("Unable to convert " + val.getClass() + " to " + targetType);
-		}
+    if (result != null) {
+      return (T) result;
+    } else {
+      throw new DatastoreDataException("Unable to convert " + val.getClass() + " to " + targetType);
+    }
+  }
 
-	}
+  @Override
+  public Value convertOnWrite(Object proppertyVal, DatastorePersistentProperty persistentProperty) {
+    return convertOnWrite(
+        proppertyVal,
+        persistentProperty.getEmbeddedType(),
+        persistentProperty.getFieldName(),
+        persistentProperty.getTypeInformation());
+  }
 
-	@Override
-	public Value convertOnWrite(Object proppertyVal, DatastorePersistentProperty persistentProperty) {
-		return convertOnWrite(proppertyVal, persistentProperty.getEmbeddedType(),
-				persistentProperty.getFieldName(),
-				persistentProperty.getTypeInformation());
-	}
+  private Value convertOnWrite(
+      Object proppertyVal,
+      EmbeddedType embeddedType,
+      String fieldName,
+      TypeInformation typeInformation) {
+    Object val = proppertyVal;
 
-	private Value convertOnWrite(Object proppertyVal, EmbeddedType embeddedType,
-			String fieldName, TypeInformation typeInformation) {
-		Object val = proppertyVal;
+    Function<Object, Value> writeConverter = this::convertOnWriteSingle;
+    if (proppertyVal != null) {
+      switch (embeddedType) {
+        case EMBEDDED_MAP:
+          writeConverter =
+              x -> convertOnWriteSingleEmbeddedMap(x, fieldName, typeInformation.getMapValueType());
+          break;
+        case EMBEDDED_ENTITY:
+          writeConverter = x -> convertOnWriteSingleEmbedded(x, fieldName);
+          break;
+        case NOT_EMBEDDED:
+          writeConverter = this::convertOnWriteSingle;
+          break;
+        default:
+          throw new DatastoreDataException("Unexpected property embedded type: " + embeddedType);
+      }
+    }
 
-		Function<Object, Value> writeConverter = this::convertOnWriteSingle;
-		if (proppertyVal != null) {
-			switch (embeddedType) {
-			case EMBEDDED_MAP:
-				writeConverter = x -> convertOnWriteSingleEmbeddedMap(x, fieldName, typeInformation.getMapValueType());
-				break;
-			case EMBEDDED_ENTITY:
-				writeConverter = x -> convertOnWriteSingleEmbedded(x, fieldName);
-				break;
-			case NOT_EMBEDDED:
-				writeConverter = this::convertOnWriteSingle;
-				break;
-			default:
-				throw new DatastoreDataException(
-						"Unexpected property embedded type: " + embeddedType);
-			}
-		}
+    val = ValueUtil.toListIfArray(val);
 
-		val = ValueUtil.toListIfArray(val);
+    if (val instanceof Iterable) {
+      List<Value<?>> values = new ArrayList<>();
+      for (Object propEltValue : (Iterable) val) {
+        values.add(writeConverter.apply(propEltValue));
+      }
+      return ListValue.of(values);
+    }
+    return writeConverter.apply(val);
+  }
 
-		if (val instanceof Iterable) {
-			List<Value<?>> values = new ArrayList<>();
-			for (Object propEltValue : (Iterable) val) {
-				values.add(writeConverter.apply(propEltValue));
-			}
-			return ListValue.of(values);
-		}
-		return writeConverter.apply(val);
-	}
+  private EntityValue applyEntityValueBuilder(
+      Object val, String kindName, Consumer<Builder> consumer, boolean createKey) {
 
-	private EntityValue applyEntityValueBuilder(Object val, String kindName,
-			Consumer<Builder> consumer, boolean createKey) {
+    FullEntity.Builder<IncompleteKey> builder;
+    if (!createKey) {
+      builder = FullEntity.newBuilder();
+    } else {
+      /* The following does 3 sequential null checks. We only want an ID value if the object isn't null,
+        has an ID property, and the ID property isn't null.
+       */
+      Optional idProp =
+          Optional.ofNullable(val)
+              .map(v -> this.datastoreMappingContext.getPersistentEntity(v.getClass()))
+              .map(PersistentEntity::getIdProperty)
+              .map(
+                  id ->
+                      this.datastoreMappingContext
+                          .getPersistentEntity(val.getClass())
+                          .getPropertyAccessor(val)
+                          .getProperty(id));
 
-		FullEntity.Builder<IncompleteKey> builder;
-		if (!createKey) {
-			builder = FullEntity.newBuilder();
-		}
-		else {
-			/* The following does 3 sequential null checks. We only want an ID value if the object isn't null,
-				has an ID property, and the ID property isn't null.
-			* */
-			Optional idProp = Optional.ofNullable(val)
-					.map(v -> this.datastoreMappingContext.getPersistentEntity(v.getClass()))
-					.map(PersistentEntity::getIdProperty)
-					.map(id -> this.datastoreMappingContext.getPersistentEntity(val.getClass())
-							.getPropertyAccessor(val).getProperty(id));
+      IncompleteKey key =
+          idProp.isPresent()
+              ? this.objectToKeyFactory.getKeyFromId(idProp.get(), kindName)
+              : this.objectToKeyFactory.getIncompleteKey(kindName);
+      builder = FullEntity.newBuilder(key);
+    }
+    consumer.accept(builder);
+    return EntityValue.of(builder.build());
+  }
 
-			IncompleteKey key = idProp.isPresent() ? this.objectToKeyFactory.getKeyFromId(idProp.get(), kindName)
-					: this.objectToKeyFactory.getIncompleteKey(kindName);
-			builder = FullEntity.newBuilder(key);
-		}
-		consumer.accept(builder);
-		return EntityValue.of(builder.build());
-	}
+  private EntityValue convertOnWriteSingleEmbeddedMap(
+      Object val, String kindName, TypeInformation valueTypeInformation) {
+    return applyEntityValueBuilder(
+        null,
+        kindName,
+        builder -> {
+          for (Map.Entry<?, ?> e : ((Map<?, ?>) val).entrySet()) {
+            String field =
+                convertOnReadSingle(
+                    convertOnWriteSingle(e.getKey()).get(),
+                    ClassTypeInformation.from(String.class));
+            builder.set(
+                field,
+                convertOnWrite(
+                    e.getValue(),
+                    EmbeddedType.of(valueTypeInformation),
+                    field,
+                    valueTypeInformation));
+          }
+        },
+        false);
+  }
 
-	private EntityValue convertOnWriteSingleEmbeddedMap(Object val, String kindName,
-			TypeInformation valueTypeInformation) {
-		return applyEntityValueBuilder(null, kindName, builder -> {
-			for (Map.Entry<?, ?> e : ((Map<?, ?>) val).entrySet()) {
-				String field = convertOnReadSingle(convertOnWriteSingle(e.getKey()).get(),
-						ClassTypeInformation.from(String.class));
-				builder.set(field,
-						convertOnWrite(e.getValue(),
-								EmbeddedType.of(valueTypeInformation),
-								field, valueTypeInformation));
-			}
-		}, false);
-	}
+  private EntityValue convertOnWriteSingleEmbedded(Object val, String kindName) {
+    return applyEntityValueBuilder(
+        val, kindName, builder -> this.datastoreEntityConverter.write(val, builder), true);
+  }
 
-	private EntityValue convertOnWriteSingleEmbedded(Object val, String kindName) {
-		return applyEntityValueBuilder(val, kindName,
-				builder -> this.datastoreEntityConverter.write(val, builder), true);
-	}
+  @Override
+  @SuppressWarnings("unchecked")
+  public Value convertOnWriteSingle(Object propertyVal) {
+    Object result = propertyVal;
+    if (result != null) {
+      TypeTargets typeTargets = computeTypeTargets(result.getClass());
+      if (typeTargets.getFirstStepTarget() != null) {
+        result = this.conversionService.convert(propertyVal, typeTargets.getFirstStepTarget());
+      }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public Value convertOnWriteSingle(Object propertyVal) {
-		Object result = propertyVal;
-		if (result != null) {
-			TypeTargets typeTargets = computeTypeTargets(result.getClass());
-			if (typeTargets.getFirstStepTarget() != null) {
-				result = this.conversionService.convert(propertyVal, typeTargets.getFirstStepTarget());
-			}
+      if (typeTargets.getSecondStepTarget() != null) {
+        result = this.internalConversionService.convert(result, typeTargets.getSecondStepTarget());
+      }
+    }
+    return DatastoreNativeTypes.wrapValue(result);
+  }
 
-			if (typeTargets.getSecondStepTarget() != null) {
-				result = this.internalConversionService.convert(result, typeTargets.getSecondStepTarget());
-			}
-		}
-		return DatastoreNativeTypes.wrapValue(result);
-	}
+  private TypeTargets computeTypeTargets(Class<?> firstStepSource) {
+    Class<?> firstStepTarget = null;
+    Class<?> secondStepTarget = null;
 
-	private TypeTargets computeTypeTargets(Class<?> firstStepSource) {
-		Class<?> firstStepTarget = null;
-		Class<?> secondStepTarget = null;
+    if (!DatastoreNativeTypes.isNativeType(firstStepSource)) {
+      Optional<Class<?>> simpleType = this.customConversions.getCustomWriteTarget(firstStepSource);
+      if (simpleType.isPresent()) {
+        firstStepTarget = simpleType.get();
+      }
 
-		if (!DatastoreNativeTypes.isNativeType(firstStepSource)) {
-			Optional<Class<?>> simpleType = this.customConversions.getCustomWriteTarget(firstStepSource);
-			if (simpleType.isPresent()) {
-				firstStepTarget = simpleType.get();
-			}
+      Class<?> effectiveFirstStepTarget =
+          (firstStepTarget != null) ? firstStepTarget : firstStepSource;
 
-			Class<?> effectiveFirstStepTarget =
-					(firstStepTarget != null) ? firstStepTarget : firstStepSource;
+      Optional<Class<?>> datastoreBasicType = getCustomWriteTarget(effectiveFirstStepTarget);
 
-			Optional<Class<?>> datastoreBasicType = getCustomWriteTarget(effectiveFirstStepTarget);
+      if (datastoreBasicType.isPresent()) {
+        secondStepTarget = datastoreBasicType.get();
+      }
+    }
+    return new TypeTargets(firstStepTarget, secondStepTarget);
+  }
 
-			if (datastoreBasicType.isPresent()) {
-				secondStepTarget = datastoreBasicType.get();
-			}
-		}
-		return new TypeTargets(firstStepTarget, secondStepTarget);
-	}
+  @SuppressWarnings("unchecked")
+  public <T> T convertCollection(Object collection, Class<?> target) {
+    if (collection == null || target == null || ClassUtils.isAssignableValue(target, collection)) {
+      return (T) collection;
+    }
+    return (T) this.conversionService.convert(collection, target);
+  }
 
-	@SuppressWarnings("unchecked")
-	public <T> T convertCollection(Object collection, Class<?> target) {
-		if (collection == null || target == null || ClassUtils.isAssignableValue(target, collection)) {
-			return (T) collection;
-		}
-		return (T) this.conversionService.convert(collection, target);
-	}
+  private Optional<Class<?>> getCustomWriteTarget(Class<?> sourceType) {
+    if (DatastoreNativeTypes.isNativeType(sourceType)) {
+      return Optional.empty();
+    }
+    return this.writeConverters.computeIfAbsent(sourceType, this::getDatastoreCompatibleType);
+  }
 
-	private Optional<Class<?>> getCustomWriteTarget(Class<?> sourceType) {
-		if (DatastoreNativeTypes.isNativeType(sourceType)) {
-			return Optional.empty();
-		}
-		return this.writeConverters.computeIfAbsent(sourceType,
-				this::getDatastoreCompatibleType);
-	}
+  @Override
+  public Optional<Class<?>> getDatastoreCompatibleType(Class inputType) {
+    if (DatastoreNativeTypes.DATASTORE_NATIVE_TYPES.contains(inputType)) {
+      return Optional.of(inputType);
+    }
+    return DatastoreNativeTypes.DATASTORE_NATIVE_TYPES.stream()
+        .filter(
+            simpleType ->
+                this.internalConversionService.canConvert(inputType, simpleType)
+                    && this.internalConversionService.canConvert(simpleType, inputType))
+        .findAny();
+  }
 
-	@Override
-	public Optional<Class<?>> getDatastoreCompatibleType(Class inputType) {
-		if (DatastoreNativeTypes.DATASTORE_NATIVE_TYPES.contains(inputType)) {
-			return Optional.of(inputType);
-		}
-		return DatastoreNativeTypes.DATASTORE_NATIVE_TYPES.stream()
-				.filter(simpleType ->
-						this.internalConversionService.canConvert(inputType, simpleType)
-								&& this.internalConversionService.canConvert(simpleType, inputType))
-				.findAny();
-	}
+  @Override
+  public void registerEntityConverter(DatastoreEntityConverter datastoreEntityConverter) {
+    this.datastoreEntityConverter = datastoreEntityConverter;
+  }
 
-	@Override
-	public void registerEntityConverter(DatastoreEntityConverter datastoreEntityConverter) {
-		this.datastoreEntityConverter = datastoreEntityConverter;
-	}
+  private static class TypeTargets {
+    private Class<?> firstStepTarget;
 
-	private static class TypeTargets {
-		private Class<?> firstStepTarget;
+    private Class<?> secondStepTarget;
 
-		private Class<?> secondStepTarget;
+    TypeTargets(Class<?> firstStepTarget, Class<?> secondStepTarget) {
+      this.firstStepTarget = firstStepTarget;
+      this.secondStepTarget = secondStepTarget;
+    }
 
-		TypeTargets(Class<?> firstStepTarget, Class<?> secondStepTarget) {
-			this.firstStepTarget = firstStepTarget;
-			this.secondStepTarget = secondStepTarget;
-		}
+    Class<?> getFirstStepTarget() {
+      return this.firstStepTarget;
+    }
 
-		Class<?> getFirstStepTarget() {
-			return this.firstStepTarget;
-		}
-
-		Class<?> getSecondStepTarget() {
-			return this.secondStepTarget;
-		}
-	}
+    Class<?> getSecondStepTarget() {
+      return this.secondStepTarget;
+    }
+  }
 }

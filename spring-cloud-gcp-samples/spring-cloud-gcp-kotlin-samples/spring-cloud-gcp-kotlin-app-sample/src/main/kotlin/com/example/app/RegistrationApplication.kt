@@ -26,8 +26,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 /**
  * Starts the Kotlin Spring Boot sample application.
  *
- * @author Daniel Zou
- *
  * @since 1.1
  */
 @SpringBootApplication()

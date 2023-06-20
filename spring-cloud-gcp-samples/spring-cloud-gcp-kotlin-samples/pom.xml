@@ -7,14 +7,14 @@
 		<!-- Your own application should inherit from spring-boot-starter-parent -->
 		<artifactId>spring-cloud-gcp-samples</artifactId>
 		<groupId>com.google.cloud</groupId>
-		<version>3.0.0-SNAPSHOT</version>
+		<version>3.5.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-kotlin-samples</artifactId>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.5.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 
-	<name>Spring Cloud GCP Code Samples - Kotlin</name>
+	<name>Spring Framework on Google Cloud Code Samples - Kotlin</name>
 
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
@@ -75,35 +75,4 @@
 		</plugins>
 	</build>
 
-	<repositories>
-		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-		</pluginRepository>
-	</pluginRepositories>
 </project>

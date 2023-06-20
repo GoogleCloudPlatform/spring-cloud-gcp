@@ -6,14 +6,14 @@
 		<!-- Your own application should inherit from spring-boot-starter-parent -->
 		<artifactId>spring-cloud-gcp-integration-pubsub-sample</artifactId>
 		<groupId>com.google.cloud</groupId>
-		<version>3.0.0-SNAPSHOT</version>
+		<version>3.5.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>spring-cloud-gcp-integration-pubsub-sample-test</artifactId>
-	<name>Spring Cloud GCP Code Sample - Spring Integration Pub/Sub Integration Test</name>
+	<name>Spring Framework on Google Cloud Code Sample - Spring Integration Pub/Sub Integration Test</name>
 
-	<!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
+	<!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.11.0</version>
+			<version>2.13.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -70,7 +70,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.4.0</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>

@@ -4,10 +4,10 @@
 	<parent>
 		<groupId>com.google.cloud</groupId>
 		<artifactId>spring-cloud-gcp-starters</artifactId>
-		<version>3.0.0-SNAPSHOT</version>
+		<version>3.5.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 	<artifactId>spring-cloud-gcp-starter-config</artifactId>
-	<name>Spring Cloud GCP Starter - Config</name>
+	<name>Spring Framework on Google Cloud Starter - Config</name>
 	<description>Starter for Spring Cloud Config Client using Google Runtime Configuration API</description>
 	<url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-config</url>
 	<organization>

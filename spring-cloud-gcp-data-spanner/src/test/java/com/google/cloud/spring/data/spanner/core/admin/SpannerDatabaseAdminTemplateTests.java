@@ -16,11 +16,12 @@
 
 package com.google.cloud.spring.data.spanner.core.admin;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.paging.Page;
@@ -35,138 +36,164 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
 import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+/** Tests for the Spanner database admin template. */
+class SpannerDatabaseAdminTemplateTests {
 
-/**
- * Tests for the Spanner database admin template.
- *
- * @author Chengyuan Zhao
- */
-public class SpannerDatabaseAdminTemplateTests {
+  private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
 
-	private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
+  private DatabaseAdminClient databaseAdminClient;
 
-	private DatabaseAdminClient databaseAdminClient;
+  private DatabaseClient databaseClient;
 
-	private DatabaseClient databaseClient;
+  private DatabaseId databaseId;
 
-	private DatabaseId databaseId;
+  private Page<Database> mockDatabasePage;
 
-	private Page<Database> mockDatabasePage;
+  private List<String> ddlList;
 
-	private List<String> ddlList;
+  @BeforeEach
+  void setup() {
+    this.databaseAdminClient = mock(DatabaseAdminClient.class);
+    this.databaseClient = mock(DatabaseClient.class);
+    this.mockDatabasePage = mock(Page.class);
+    this.databaseId = DatabaseId.of("fakeproject", "fakeinstance", "fakedb");
+    this.spannerDatabaseAdminTemplate =
+        new SpannerDatabaseAdminTemplate(
+            this.databaseAdminClient, () -> this.databaseClient, () -> this.databaseId);
+    this.ddlList = new ArrayList<>();
+    this.ddlList.add("describe Something");
 
-	@Before
-	public void setup() {
-		this.databaseAdminClient = mock(DatabaseAdminClient.class);
-		this.databaseClient = mock(DatabaseClient.class);
-		this.mockDatabasePage = mock(Page.class);
-		this.databaseId = DatabaseId.of("fakeproject", "fakeinstance", "fakedb");
-		this.spannerDatabaseAdminTemplate = new SpannerDatabaseAdminTemplate(
-				this.databaseAdminClient, () -> this.databaseClient, () -> this.databaseId);
-		this.ddlList = new ArrayList<>();
-		this.ddlList.add("describe Something");
+    when(this.databaseAdminClient.listDatabases("fakeinstance")).thenReturn(this.mockDatabasePage);
+  }
 
-		when(this.databaseAdminClient.listDatabases("fakeinstance")).thenReturn(this.mockDatabasePage);
-	}
+  @Test
+  void getTableRelationshipsTest() {
+    ReadContext readContext = mock(ReadContext.class);
 
-	@Test
-	public void getTableRelationshipsTest() {
-		ReadContext readContext = mock(ReadContext.class);
+    Struct s1 =
+        Struct.newBuilder()
+            .set("table_name")
+            .to(Value.string("grandpa"))
+            .set("parent_table_name")
+            .to(Value.string(null))
+            .build();
+    Struct s2 =
+        Struct.newBuilder()
+            .set("table_name")
+            .to(Value.string("parent_a"))
+            .set("parent_table_name")
+            .to(Value.string("grandpa"))
+            .build();
+    Struct s3 =
+        Struct.newBuilder()
+            .set("table_name")
+            .to(Value.string("parent_b"))
+            .set("parent_table_name")
+            .to(Value.string("grandpa"))
+            .build();
+    Struct s4 =
+        Struct.newBuilder()
+            .set("table_name")
+            .to(Value.string("child"))
+            .set("parent_table_name")
+            .to(Value.string("parent_a"))
+            .build();
 
-		Struct s1 = Struct.newBuilder().set("table_name").to(Value.string("grandpa"))
-				.set("parent_table_name").to(Value.string(null)).build();
-		Struct s2 = Struct.newBuilder().set("table_name").to(Value.string("parent_a"))
-				.set("parent_table_name").to(Value.string("grandpa")).build();
-		Struct s3 = Struct.newBuilder().set("table_name").to(Value.string("parent_b"))
-				.set("parent_table_name").to(Value.string("grandpa")).build();
-		Struct s4 = Struct.newBuilder().set("table_name").to(Value.string("child"))
-				.set("parent_table_name").to(Value.string("parent_a")).build();
+    MockResults mockResults = new MockResults();
+    mockResults.structs = Arrays.asList(s1, s2, s3, s4);
+    ResultSet results = mock(ResultSet.class);
+    when(results.next()).thenAnswer(invocation -> mockResults.next());
+    when(results.getCurrentRowAsStruct()).thenAnswer(invocation -> mockResults.getCurrent());
+    when(this.databaseClient.singleUse()).thenReturn(readContext);
+    when(readContext.executeQuery(any())).thenReturn(results);
 
-		MockResults mockResults = new MockResults();
-		mockResults.structs = Arrays.asList(s1, s2, s3, s4);
-		ResultSet results = mock(ResultSet.class);
-		when(results.next()).thenAnswer(invocation -> mockResults.next());
-		when(results.getCurrentRowAsStruct())
-				.thenAnswer(invocation -> mockResults.getCurrent());
-		when(this.databaseClient.singleUse()).thenReturn(readContext);
-		when(readContext.executeQuery(any())).thenReturn(results);
+    Map<String, Set<String>> relationships =
+        this.spannerDatabaseAdminTemplate.getParentChildTablesMap();
 
-		Map<String, Set<String>> relationships = this.spannerDatabaseAdminTemplate
-				.getParentChildTablesMap();
+    assertThat(relationships).hasSize(2);
+    assertThat(relationships.get("grandpa")).containsExactlyInAnyOrder("parent_a", "parent_b");
+    assertThat(relationships.get("parent_a")).containsExactlyInAnyOrder("child");
 
-		assertThat(relationships).hasSize(2);
-		assertThat(relationships.get("grandpa")).containsExactlyInAnyOrder("parent_a", "parent_b");
-		assertThat(relationships.get("parent_a")).containsExactlyInAnyOrder("child");
+    assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("grandpa", "child"))
+        .as("verify grand-child relationship")
+        .isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("grandpa", "parent_a"))
+        .as("verify parent-child relationship")
+        .isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("parent_a", "child"))
+        .as("verify parent-child relationship")
+        .isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("grandpa", "parent_b"))
+        .as("verify parent-child relationship")
+        .isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("parent_a", "parent_b"))
+        .as("verify not parent-child relationship")
+        .isFalse();
+    assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("parent_b", "child"))
+        .as("verify not parent-child relationship")
+        .isFalse();
+  }
 
-		assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("grandpa", "child"))
-				.as("verify grand-child relationship").isTrue();
-		assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("grandpa", "parent_a"))
-				.as("verify parent-child relationship").isTrue();
-		assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("parent_a", "child"))
-				.as("verify parent-child relationship").isTrue();
-		assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("grandpa", "parent_b"))
-				.as("verify parent-child relationship").isTrue();
-		assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("parent_a", "parent_b"))
-				.as("verify not parent-child relationship").isFalse();
-		assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("parent_b", "child"))
-				.as("verify not parent-child relationship").isFalse();
-	}
+  @Test
+  void executeDdlStrings_createsDatabaseIfMissing() throws Exception {
+    when(this.mockDatabasePage.getValues())
+        .thenReturn(
+            Arrays.asList(new Database(this.databaseId, State.READY, this.databaseAdminClient)));
 
-	@Test
-	public void executeDdlStrings_createsDatabaseIfMissing() throws Exception {
-		when(this.mockDatabasePage.getValues()).thenReturn(Arrays.asList(
-				new Database(this.databaseId, State.READY, this.databaseAdminClient)));
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> mockFuture = mock(OperationFuture.class);
+    when(this.databaseAdminClient.updateDatabaseDdl("fakeinstance", "fakedb", this.ddlList, null))
+        .thenReturn(mockFuture);
+    when(mockFuture.get()).thenReturn(null);
 
-		OperationFuture<Void, UpdateDatabaseDdlMetadata> mockFuture = mock(OperationFuture.class);
-		when(this.databaseAdminClient.updateDatabaseDdl("fakeinstance", "fakedb", this.ddlList, null)).thenReturn(mockFuture);
-		when(mockFuture.get()).thenReturn(null);
+    this.spannerDatabaseAdminTemplate.executeDdlStrings(this.ddlList, true);
 
-		this.spannerDatabaseAdminTemplate.executeDdlStrings(this.ddlList, true);
+    verify(this.databaseAdminClient, times(0))
+        .createDatabase("fakeinstance", "fakedb", Arrays.asList("describe Something"));
+    verify(this.databaseAdminClient)
+        .updateDatabaseDdl("fakeinstance", "fakedb", this.ddlList, null);
+  }
 
-		verify(this.databaseAdminClient, times(0)).createDatabase("fakeinstance", "fakedb", Arrays.asList("describe Something"));
-		verify(this.databaseAdminClient).updateDatabaseDdl("fakeinstance", "fakedb", this.ddlList, null);
-	}
+  @Test
+  void executeDdlStrings_doesNotCreateDatabaseIfAlreadyPresent() throws Exception {
+    when(this.mockDatabasePage.getValues()).thenReturn(Arrays.asList());
 
-	@Test
-	public void executeDdlStrings_doesNotCreateDatabaseIfAlreadyPresent() throws Exception {
-		when(this.mockDatabasePage.getValues()).thenReturn(Arrays.asList());
+    OperationFuture<Database, CreateDatabaseMetadata> mockFuture = mock(OperationFuture.class);
+    when(this.databaseAdminClient.createDatabase("fakeinstance", "fakedb", this.ddlList))
+        .thenReturn(mockFuture);
+    when(mockFuture.get()).thenReturn(null);
 
-		OperationFuture<Database, CreateDatabaseMetadata> mockFuture = mock(OperationFuture.class);
-		when(this.databaseAdminClient.createDatabase("fakeinstance", "fakedb", this.ddlList)).thenReturn(mockFuture);
-		when(mockFuture.get()).thenReturn(null);
+    this.spannerDatabaseAdminTemplate.executeDdlStrings(this.ddlList, true);
 
-		this.spannerDatabaseAdminTemplate.executeDdlStrings(this.ddlList, true);
+    verify(this.databaseAdminClient)
+        .createDatabase("fakeinstance", "fakedb", Arrays.asList("describe Something"));
+    verify(this.databaseAdminClient, times(0))
+        .updateDatabaseDdl("fakeinstance", "fakedb", this.ddlList, null);
+  }
 
-		verify(this.databaseAdminClient).createDatabase("fakeinstance", "fakedb", Arrays.asList("describe Something"));
-		verify(this.databaseAdminClient, times(0)).updateDatabaseDdl("fakeinstance", "fakedb", this.ddlList, null);
-	}
+  private static class MockResults {
+    List<Struct> structs;
 
+    int counter = -1;
 
-	private static class MockResults {
-		List<Struct> structs;
+    boolean next() {
+      if (this.counter < this.structs.size() - 1) {
+        this.counter++;
+        return true;
+      }
+      this.counter = -1;
+      return false;
+    }
 
-		int counter = -1;
-
-		boolean next() {
-			if (this.counter < this.structs.size() - 1) {
-				this.counter++;
-				return true;
-			}
-			this.counter = -1;
-			return false;
-		}
-
-		Struct getCurrent() {
-			return this.structs.get(this.counter);
-		}
-	}
+    Struct getCurrent() {
+      return this.structs.get(this.counter);
+    }
+  }
 }

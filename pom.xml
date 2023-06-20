@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+         child.project.url.inherit.append.path="false">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.5.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 
-	<name>Spring Cloud GCP</name>
-	<description>Spring Cloud GCP</description>
+	<name>Spring Framework on Google Cloud</name>
+	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
 	<packaging>pom</packaging>
 
@@ -35,38 +36,45 @@
 	</distributionManagement>
 
 	<properties>
-		<app-engine-maven-plugin.version>2.4.1</app-engine-maven-plugin.version>
-		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.10.0</errorprone.version>
-		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
-		<java-cfenv.version>2.4.0</java-cfenv.version>
-		<javadoc.failOnError>false</javadoc.failOnError>
-		<javadoc.failOnWarnings>false</javadoc.failOnWarnings>
-		<maven-checkstyle-plugin.failOnViolation>true</maven-checkstyle-plugin.failOnViolation>
-		<maven-checkstyle-plugin.failsOnError>true</maven-checkstyle-plugin.failsOnError>
-		<maven-checkstyle-plugin.skip>false</maven-checkstyle-plugin.skip>
-		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
+		<project.parent.version>${project.version}</project.parent.version>
+
+		<!-- Dependency versions -->
+		<spring-cloud-dependencies.version>2021.0.7</spring-cloud-dependencies.version>
+		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
+		<spring-boot-dependencies.version>2.7.12</spring-boot-dependencies.version>
+		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
+		<java-cfenv.version>2.4.2</java-cfenv.version>
+		<spring-native.version>0.10.5</spring-native.version>
+
+		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 		<maven-failsafe-plugin.version>2.22.1</maven-failsafe-plugin.version>
-		<maven-flatten-plugin.version>1.2.7</maven-flatten-plugin.version>
-		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
-		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-		<maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
-		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+		<maven-flatten-plugin.version>1.5.0</maven-flatten-plugin.version>
+		<maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
+		<maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+		<maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+		<maven-source-plugin.version>3.3.0</maven-source-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<nexus-staging-plugin.version>1.6.8</nexus-staging-plugin.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
+		<maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
+		<checkstyle-rules.version>9.3</checkstyle-rules.version>
+		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
+		<errorprone.version>2.19.1</errorprone.version>
+
+
+		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
 		<skip.surefire.tests>${skipTests}</skip.surefire.tests>
 		<skipTests>false</skipTests>
-		<spring-cloud-build.version>3.1.0</spring-cloud-build.version>
-		<spring-cloud-dependencies.version>2021.0.0</spring-cloud-dependencies.version>
-		<spring-javaformat-checkstyle.version>0.0.29</spring-javaformat-checkstyle.version>
-		<zipkin-gcp.version>1.0.2</zipkin-gcp.version>
-		<spring-native.version>0.10.5</spring-native.version>
+		<checkstyle.skip>false</checkstyle.skip>
+		<javadoc.failOnError>false</javadoc.failOnError>
+		<javadoc.failOnWarnings>false</javadoc.failOnWarnings>
+		<!-- Other defaults -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 	</properties>
 
 	<dependencyManagement>
@@ -74,15 +82,15 @@
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-dependencies</artifactId>
-				<version>${project.version}</version>
+				<version>${spring-cloud-gcp-dependencies.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-build-dependencies</artifactId>
-				<version>${spring-cloud-build.version}</version>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot-dependencies.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -146,7 +154,6 @@
 				<artifactId>spring-aot</artifactId>
 				<version>${spring-native.version}</version>
 			</dependency>
-
 		</dependencies>
 	</dependencyManagement>
 
@@ -154,7 +161,17 @@
 		<dependency>
 			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
-			<version>4.1.1</version>
+			<version>4.2.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -162,7 +179,6 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Needed to run JUnit4 tests while inheriting from spring-cloud-build parent pom -->
 		<dependency>
 			<groupId>org.junit.vintage</groupId>
 			<artifactId>junit-vintage-engine</artifactId>
@@ -226,43 +242,11 @@
 					<version>${maven-checkstyle-plugin.version}</version>
 					<dependencies>
 						<dependency>
-							<groupId>io.spring.javaformat</groupId>
-							<artifactId>spring-javaformat-checkstyle</artifactId>
-							<version>${spring-javaformat-checkstyle.version}</version>
-						</dependency>
-						<dependency>
-							<groupId>org.springframework.cloud</groupId>
-							<artifactId>spring-cloud-build-tools</artifactId>
-							<version>${spring-cloud-build.version}</version>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>${checkstyle-rules.version}</version>
 						</dependency>
 					</dependencies>
-					<executions>
-						<execution>
-							<id>checkstyle-validation</id>
-							<phase>validate</phase>
-							<inherited>true</inherited>
-							<configuration>
-								<skip>${maven-checkstyle-plugin.skip}</skip>
-								<configLocation>checkstyle.xml</configLocation>
-								<headerLocation>checkstyle-header.txt</headerLocation>
-								<propertyExpansion>
-									checkstyle.build.directory=${project.build.directory}
-									checkstyle.suppressions.file=https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/spring-cloud-build-tools/src/checkstyle/checkstyle-suppressions.xml
-									checkstyle.additional.suppressions.file=${maven.multiModuleProjectDirectory}/src/checkstyle/checkstyle-suppressions.xml
-								</propertyExpansion>
-								<consoleOutput>true</consoleOutput>
-								<includeTestSourceDirectory>true</includeTestSourceDirectory>
-								<failsOnError>${maven-checkstyle-plugin.failsOnError}
-								</failsOnError>
-								<failOnViolation>
-									${maven-checkstyle-plugin.failOnViolation}
-								</failOnViolation>
-							</configuration>
-							<goals>
-								<goal>check</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -272,19 +256,28 @@
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>checkstyle-validation</id>
+						<id>validate-google-style</id>
 						<phase>validate</phase>
 						<goals>
 							<goal>check</goal>
 						</goals>
 						<configuration>
-							<!-- Checkstyle rules inherited from spring-cloud-build -->
+							<configLocation>google_checks.xml</configLocation>
 							<suppressionsLocation>src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
-							<consoleOutput>true</consoleOutput>
-							<failsOnError>true</failsOnError>
 							<failOnViolation>true</failOnViolation>
 							<violationSeverity>warning</violationSeverity>
+						</configuration>
+					</execution>
+					<execution>
+						<id>validate-custom</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<configLocation>src/checkstyle/custom-checks.xml</configLocation>
+							<headerLocation>src/checkstyle/java.header</headerLocation>
 						</configuration>
 					</execution>
 				</executions>
@@ -299,11 +292,6 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>appengine-maven-plugin</artifactId>
-				<version>${app-engine-maven-plugin.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -358,67 +346,58 @@
 			</modules>
 		</profile>
 
+
 		<profile>
-			<id>spring</id>
-			<repositories>
-				<repository>
-					<id>spring-milestones</id>
-					<name>Spring Milestones</name>
-					<url>https://repo.spring.io/milestone</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>spring-releases</id>
-					<name>Spring Releases</name>
-					<url>https://repo.spring.io/release</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>gcs-mirror</id>
-					<name>GCS Maven Mirror</name>
-					<url>https://maven-central.storage-download.googleapis.com/repos/central/data</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-				</repository>
-			</repositories>
-			<pluginRepositories>
-				<pluginRepository>
-					<id>spring-milestones</id>
-					<name>Spring Milestones</name>
-					<url>https://repo.spring.io/milestone</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</pluginRepository>
-				<pluginRepository>
-					<id>spring-releases</id>
-					<name>Spring Releases</name>
-					<url>https://repo.spring.io/release</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</pluginRepository>
-				<pluginRepository>
-					<id>gcs-mirror</id>
-					<name>GCS Maven Mirror</name>
-					<url>https://maven-central.storage-download.googleapis.com/repos/central/data</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-				</pluginRepository>
-			</pluginRepositories>
+			<!-- cloud RAD generation -->
+			<id>docFX</id>
+			<activation>
+				<property>
+					<!-- activate with -P docFX -->
+					<name>docFX</name>
+				</property>
+				<jdk>11</jdk>
+			</activation>
+			<properties>
+				<!-- default config values -->
+				<docletName>java-docfx-doclet-1.6.0</docletName>
+				<outputpath>${project.build.directory}/docfx-yml</outputpath>
+				<projectname>spring-framework-on-google-cloud</projectname>
+				<excludeclasses></excludeclasses>
+				<excludePackages></excludePackages>
+				<source>8</source>
+				<sourceFileExclude></sourceFileExclude>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${maven-javadoc-plugin.version}</version>
+						<configuration>
+							<doclet>com.microsoft.doclet.DocFxDoclet</doclet>
+							<useStandardDocletOptions>false</useStandardDocletOptions>
+							<!-- custom config with -Dproperty=value -->
+							<docletPath>${env.KOKORO_GFILE_DIR}/${docletName}.jar</docletPath>
+							<additionalOptions>
+								-outputpath ${outputpath}
+								-projectname ${projectname}
+								-excludeclasses ${excludeclasses}:
+								-excludepackages ${excludePackages}:
+								-disable-changelog true
+							</additionalOptions>
+							<doclint>none</doclint>
+							<show>protected</show>
+							<nohelp>true</nohelp>
+							<source>${source}</source>
+							<sourceFileExcludes>
+								<exclude>${sourceFileExclude}</exclude>
+							</sourceFileExcludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
+
 		<!-- Code Coverage -->
 		<profile>
 			<id>codecov</id>
@@ -442,7 +421,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.7</version>
+						<version>0.8.10</version>
 						<executions>
 							<execution>
 								<goals>
@@ -476,11 +455,23 @@
 							<artifactId>maven-surefire-plugin</artifactId>
 							<configuration>
 								<!-- illegal-access=permit is needed to make GCLIB proxying work, used in Datastore -->
-								<argLine>-Xms512m -Xmx512m --illegal-access=permit</argLine>
+								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED</argLine>
 								<skip>${skip.surefire.tests}</skip>
 								<excludes>
 									<exclude>${integration-test.pattern}</exclude>
 								</excludes>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-failsafe-plugin</artifactId>
+							<version>${maven-failsafe-plugin.version}</version>
+							<configuration>
+								<skip>${skip.failsafe.tests}</skip>
+								<includes>
+									<include>${integration-test.pattern}</include>
+								</includes>
+								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED</argLine>
 							</configuration>
 						</plugin>
 					</plugins>
@@ -499,7 +490,7 @@
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-compiler-plugin</artifactId>
-							<version>3.8.1</version>
+							<version>3.11.0</version>
 							<configuration>
 								<source>${maven.compiler.source}</source>
 								<target>${maven.compiler.target}</target>
@@ -507,7 +498,7 @@
 								<fork>true</fork>
 								<compilerArgs>
 									<arg>-XDcompilePolicy=simple</arg>
-									<arg>-Xplugin:ErrorProne</arg>
+									<arg>-Xplugin:ErrorProne -Xep:UnicodeInCode:OFF</arg>
 									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
 									<arg>-parameters</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
@@ -548,7 +539,7 @@
 					<plugins>
 						<plugin>
 							<artifactId>maven-compiler-plugin</artifactId>
-							<version>3.8.0</version>
+							<version>3.11.0</version>
 							<configuration>
 								<fork>true</fork>
 								<compilerArgs combine.children="append">
@@ -683,11 +674,6 @@
 								<!-- Exclude samples and classes in the Firestore Google Client library packages -->
 								com.google.cloud.firestore
 							</excludePackageNames>
-							<links>
-								<link>https://googleapis.dev/java/google-cloud-vision/latest/</link>
-								<link>https://googleapis.dev/java/google-cloud-spanner/latest/</link>
-								<link>https://googleapis.dev/java/google-cloud-clients/latest/</link>
-							</links>
 						</configuration>
 					</plugin>
 					<plugin>
@@ -736,6 +722,27 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+		<profile>
+			<id>compatibility-check</id>
+			<activation>
+				<property>
+					<name>compatibilityCheckRepository</name>
+				</property>
+			</activation>
+			<dependencyManagement>
+				<dependencies>
+					<!-- {x-cross-repo-check-dependency-mark} -->
+				</dependencies>
+			</dependencyManagement>
+
+			<repositories>
+				<repository>
+					<id>compatibility-check-repository</id>
+					<name>Repository for Compatibility Checl</name>
+					<url>${compatibilityCheckRepository}</url>
+				</repository>
+			</repositories>
 		</profile>
 	</profiles>
 

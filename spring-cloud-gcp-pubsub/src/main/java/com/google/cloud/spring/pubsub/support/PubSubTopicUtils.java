@@ -18,58 +18,54 @@ package com.google.cloud.spring.pubsub.support;
 
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.TopicName;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
  * Various utility methods for dealing with Pub/Sub topics.
  *
- * @author Mike Eltsufin
  * @since 1.2
  */
 public final class PubSubTopicUtils {
 
-	private PubSubTopicUtils() {
-	}
+  private PubSubTopicUtils() {}
 
-	/**
-	 * Create a {@link ProjectTopicName} based on a topic name within a project or the
-	 * fully-qualified topic name. If the specified topic is in the
-	 * {@code projects/<project_name>/topics/<topic_name>} format, then the {@code projectId} is
-	 * ignored}
-	 * @param topic the topic name in the project or the fully-qualified project name
-	 * @param projectId the project ID to use if the topic is not a fully-qualified name
-	 * @return the Pub/Sub object representing the topic name
-	 */
-	public static ProjectTopicName toProjectTopicName(String topic, @Nullable String projectId) {
-		Assert.notNull(topic, "The topic can't be null.");
+  /**
+   * Create a {@link ProjectTopicName} based on a topic name within a project or the fully-qualified
+   * topic name. If the specified topic is in the {@code
+   * projects/[project_name]/topics/[topic_name]} format, then the {@code projectId} is ignored}
+   *
+   * @param topic the topic name in the project or the fully-qualified project name
+   * @param projectId the project ID to use if the topic is not a fully-qualified name
+   * @return the Pub/Sub object representing the topic name
+   */
+  public static ProjectTopicName toProjectTopicName(String topic, @Nullable String projectId) {
+    Assert.notNull(topic, "The topic can't be null.");
 
-		ProjectTopicName projectTopicName = null;
+    ProjectTopicName projectTopicName = null;
 
-		if (ProjectTopicName.isParsableFrom(topic)) {
-			// Fully-qualified topic name in the "projects/<project_name>/topics/<topic_name>" format
-			projectTopicName = ProjectTopicName.parse(topic);
-		}
-		else {
-			Assert.notNull(projectId, "The project ID can't be null when using canonical topic name.");
-			projectTopicName = ProjectTopicName.of(projectId, topic);
-		}
+    if (ProjectTopicName.isParsableFrom(topic)) {
+      // Fully-qualified topic name in the "projects/[project_name]/topics/[topic_name]" format
+      projectTopicName = ProjectTopicName.parse(topic);
+    } else {
+      Assert.notNull(projectId, "The project ID can't be null when using canonical topic name.");
+      projectTopicName = ProjectTopicName.of(projectId, topic);
+    }
 
-		return projectTopicName;
-	}
+    return projectTopicName;
+  }
 
-	/**
-	 * Create a {@link TopicName} based on a topic name within a project or the
-	 * fully-qualified topic name. If the specified topic is in the
-	 * {@code projects/<project_name>/topics/<topic_name>} format, then the {@code projectId} is
-	 * ignored}
-	 * @param topic the topic name in the project or the fully-qualified project name
-	 * @param projectId the project ID to use if the topic is not a fully-qualified name
-	 * @return the Pub/Sub object representing the topic name
-	 */
-	public static TopicName toTopicName(String topic, @Nullable String projectId) {
-		ProjectTopicName ptn = toProjectTopicName(topic, projectId);
-		return TopicName.ofProjectTopicName(ptn.getProject(), ptn.getTopic());
-	}
+  /**
+   * Create a {@link TopicName} based on a topic name within a project or the fully-qualified topic
+   * name. If the specified topic is in the {@code projects/[project_name]/topics/[topic_name]}
+   * format, then the {@code projectId} is ignored}
+   *
+   * @param topic the topic name in the project or the fully-qualified project name
+   * @param projectId the project ID to use if the topic is not a fully-qualified name
+   * @return the Pub/Sub object representing the topic name
+   */
+  public static TopicName toTopicName(String topic, @Nullable String projectId) {
+    ProjectTopicName ptn = toProjectTopicName(topic, projectId);
+    return TopicName.ofProjectTopicName(ptn.getProject(), ptn.getTopic());
+  }
 }

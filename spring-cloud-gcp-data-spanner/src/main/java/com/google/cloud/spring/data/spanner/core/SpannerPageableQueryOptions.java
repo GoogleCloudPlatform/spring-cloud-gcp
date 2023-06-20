@@ -16,87 +16,81 @@
 
 package com.google.cloud.spring.data.spanner.core;
 
-import java.util.Set;
-
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Options;
 import com.google.cloud.spanner.TimestampBound;
-
+import java.util.Set;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.Assert;
 
 /**
  * Encapsulates Cloud Spanner query options with sort and paging.
  *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
- *
  * @since 1.1
  */
 public class SpannerPageableQueryOptions extends SpannerQueryOptions {
 
-	private Integer limit;
+  private Integer limit;
 
-	private Long offset;
+  private Long offset;
 
-	private Sort sort = Sort.unsorted();
+  private Sort sort = Sort.unsorted();
 
-	public Integer getLimit() {
-		return this.limit;
-	}
+  public Integer getLimit() {
+    return this.limit;
+  }
 
-	public SpannerPageableQueryOptions setLimit(Integer limit) {
-		this.limit = limit;
-		return this;
-	}
+  public SpannerPageableQueryOptions setLimit(Integer limit) {
+    this.limit = limit;
+    return this;
+  }
 
-	public Long getOffset() {
-		return this.offset;
-	}
+  public Long getOffset() {
+    return this.offset;
+  }
 
-	public SpannerPageableQueryOptions setOffset(Long offset) {
-		this.offset = offset;
-		return this;
-	}
+  public SpannerPageableQueryOptions setOffset(Long offset) {
+    this.offset = offset;
+    return this;
+  }
 
-	public Sort getSort() {
-		return this.sort;
-	}
+  public Sort getSort() {
+    return this.sort;
+  }
 
-	public SpannerPageableQueryOptions setSort(Sort sort) {
-		Assert.notNull(sort, "A valid sort is required.");
-		this.sort = sort;
-		return this;
-	}
+  public SpannerPageableQueryOptions setSort(Sort sort) {
+    Assert.notNull(sort, "A valid sort is required.");
+    this.sort = sort;
+    return this;
+  }
 
-	@Override
-	public SpannerPageableQueryOptions addQueryOption(Options.QueryOption queryOption) {
-		super.addQueryOption(queryOption);
-		return this;
-	}
+  @Override
+  public SpannerPageableQueryOptions addQueryOption(Options.QueryOption queryOption) {
+    super.addQueryOption(queryOption);
+    return this;
+  }
 
-	@Override
-	public SpannerPageableQueryOptions setIncludeProperties(Set<String> includeProperties) {
-		super.setIncludeProperties(includeProperties);
-		return this;
-	}
+  @Override
+  public SpannerPageableQueryOptions setIncludeProperties(Set<String> includeProperties) {
+    super.setIncludeProperties(includeProperties);
+    return this;
+  }
 
-	@Override
-	public SpannerPageableQueryOptions setTimestampBound(TimestampBound timestampBound) {
-		super.setTimestampBound(timestampBound);
-		return this;
-	}
+  @Override
+  public SpannerPageableQueryOptions setTimestampBound(TimestampBound timestampBound) {
+    super.setTimestampBound(timestampBound);
+    return this;
+  }
 
-	@Override
-	public SpannerPageableQueryOptions setTimestamp(Timestamp timestamp) {
-		super.setTimestamp(timestamp);
-		return this;
-	}
+  @Override
+  public SpannerPageableQueryOptions setTimestamp(Timestamp timestamp) {
+    super.setTimestamp(timestamp);
+    return this;
+  }
 
-	@Override
-	public SpannerPageableQueryOptions setAllowPartialRead(boolean allowPartialRead) {
-		super.setAllowPartialRead(allowPartialRead);
-		return this;
-	}
-
+  @Override
+  public SpannerPageableQueryOptions setAllowPartialRead(boolean allowPartialRead) {
+    super.setAllowPartialRead(allowPartialRead);
+    return this;
+  }
 }

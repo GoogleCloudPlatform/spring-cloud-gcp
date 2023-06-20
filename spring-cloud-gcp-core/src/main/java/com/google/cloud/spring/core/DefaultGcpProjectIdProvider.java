@@ -18,21 +18,17 @@ package com.google.cloud.spring.core;
 
 import com.google.cloud.ServiceOptions;
 
-/**
- * A project ID provider that wraps {@link ServiceOptions#getDefaultProjectId()}.
- *
- * @author João André Martins
- */
+/** A project ID provider that wraps {@link ServiceOptions#getDefaultProjectId()}. */
 public class DefaultGcpProjectIdProvider implements GcpProjectIdProvider {
 
-	/**
-	 * {@link ServiceOptions#getDefaultProjectId()} checks for the project ID in the
-	 * {@code GOOGLE_CLOUD_PROJECT} environment variable and the Metadata Server, among others.
-	 *
-	 * @return the project ID in the context
-	 */
-	@Override
-	public String getProjectId() {
-		return ServiceOptions.getDefaultProjectId();
-	}
+  /**
+   * {@link ServiceOptions#getDefaultProjectId()} checks for the project ID in the {@code
+   * GOOGLE_CLOUD_PROJECT} environment variable and the Metadata Server, among others.
+   *
+   * @return the project ID in the context
+   */
+  @Override
+  public String getProjectId() {
+    return ServiceOptions.getDefaultProjectId();
+  }
 }

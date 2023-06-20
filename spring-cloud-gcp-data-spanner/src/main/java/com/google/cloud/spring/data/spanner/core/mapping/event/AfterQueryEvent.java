@@ -16,70 +16,66 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping.event;
 
-import java.util.Objects;
-
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
+import java.util.Objects;
 
-/**
- * This event is published immediately following a read-by-query operation on Cloud
- * Spanner.
- *
- * @author Chengyuan Zhao
- */
+/** This event is published immediately following a read-by-query operation on Cloud Spanner. */
 public class AfterQueryEvent extends LoadEvent {
 
-	private final Statement query;
+  private final Statement query;
 
-	private final SpannerQueryOptions spannerQueryOptions;
+  private final SpannerQueryOptions spannerQueryOptions;
 
-	/**
-	 * Constructor.
-	 * @param source The entities that were read from Cloud Spanner.This is never
-	 *     {@code null}.
-	 * @param query the read query that was run.
-	 * @param spannerQueryOptions the options that were used to conduct the query. This may be
-	 *     {@code null} if the operation was a key-based read.
-	 */
-	public AfterQueryEvent(Iterable source, Statement query,
-			SpannerQueryOptions spannerQueryOptions) {
-		super(source);
-		this.query = query;
-		this.spannerQueryOptions = spannerQueryOptions;
-	}
+  /**
+   * Constructor.
+   *
+   * @param source The entities that were read from Cloud Spanner.This is never {@code null}.
+   * @param query the read query that was run.
+   * @param spannerQueryOptions the options that were used to conduct the query. This may be {@code
+   *     null} if the operation was a key-based read.
+   */
+  public AfterQueryEvent(
+      Iterable source, Statement query, SpannerQueryOptions spannerQueryOptions) {
+    super(source);
+    this.query = query;
+    this.spannerQueryOptions = spannerQueryOptions;
+  }
 
-	/**
-	 * Get the read query that was run.
-	 * @return the query statement.
-	 */
-	public Statement getQuery() {
-		return this.query;
-	}
+  /**
+   * Get the read query that was run.
+   *
+   * @return the query statement.
+   */
+  public Statement getQuery() {
+    return this.query;
+  }
 
-	/**
-	 * Get the options that were used to conduct the query.
-	 * @return This may be {@code null} if the operation was a key-based read.
-	 */
-	public SpannerQueryOptions getSpannerQueryOptions() {
-		return this.spannerQueryOptions;
-	}
+  /**
+   * Get the options that were used to conduct the query.
+   *
+   * @return This may be {@code null} if the operation was a key-based read.
+   */
+  public SpannerQueryOptions getSpannerQueryOptions() {
+    return this.spannerQueryOptions;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		AfterQueryEvent that = (AfterQueryEvent) o;
-		return Objects.equals(getRetrievedEntities(), that.getRetrievedEntities())
-				&& Objects.equals(getQuery(), that.getQuery())
-				&& Objects.equals(getSpannerQueryOptions(), that.getSpannerQueryOptions());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    AfterQueryEvent that = (AfterQueryEvent) o;
+    return Objects.equals(getRetrievedEntities(), that.getRetrievedEntities())
+        && Objects.equals(getQuery(), that.getQuery())
+        && Objects.equals(getSpannerQueryOptions(), that.getSpannerQueryOptions());
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getRetrievedEntities(), getQuery(), getSpannerQueryOptions());
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(getRetrievedEntities(), getQuery(), getSpannerQueryOptions());
+  }
 }

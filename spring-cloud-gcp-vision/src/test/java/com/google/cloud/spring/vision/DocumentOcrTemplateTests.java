@@ -16,49 +16,43 @@
 
 package com.google.cloud.spring.vision;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.google.cloud.spring.storage.GoogleStorageLocation;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import org.springframework.test.context.junit4.SpringRunner;
+@ExtendWith(SpringExtension.class)
+class DocumentOcrTemplateTests {
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+  private Storage storage;
 
-@RunWith(SpringRunner.class)
-public class DocumentOcrTemplateTests {
+  private ImageAnnotatorClient imageAnnotatorClient;
 
-	private Storage storage;
+  private DocumentOcrTemplate documentOcrTemplate;
 
-	private ImageAnnotatorClient imageAnnotatorClient;
+  @BeforeEach
+  void setupDocumentTemplateMocks() {
+    this.storage = Mockito.mock(Storage.class);
+    this.imageAnnotatorClient = Mockito.mock(ImageAnnotatorClient.class);
+    this.documentOcrTemplate = new DocumentOcrTemplate(imageAnnotatorClient, storage, Runnable::run, 10);
+  }
 
-	private DocumentOcrTemplate documentOcrTemplate;
+  @Test
+  void testValidateGcsFileInputs() {
+    GoogleStorageLocation folder = GoogleStorageLocation.forFolder("bucket", "path/to/folder/");
 
-	@Before
-	public void setupDocumentTemplateMocks() {
-		this.storage = Mockito.mock(Storage.class);
-		this.imageAnnotatorClient = Mockito.mock(ImageAnnotatorClient.class);
-		this.documentOcrTemplate = new DocumentOcrTemplate(
-				imageAnnotatorClient,
-				storage,
-				Runnable::run,
-				10);
-	}
+    assertThatThrownBy(() -> this.documentOcrTemplate.runOcrForDocument(folder, folder))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Provided document location is not a valid file location");
 
-	@Test
-	public void testValidateGcsFileInputs() {
-		GoogleStorageLocation folder = GoogleStorageLocation.forFolder(
-				"bucket", "path/to/folder/");
-
-		assertThatThrownBy(() -> this.documentOcrTemplate.runOcrForDocument(folder, folder))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessageContaining("Provided document location is not a valid file location");
-
-		assertThatThrownBy(() -> this.documentOcrTemplate.readOcrOutputFile(folder))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessageContaining("Provided jsonOutputFile location is not a valid file location");
-	}
+    assertThatThrownBy(() -> this.documentOcrTemplate.readOcrOutputFile(folder))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Provided jsonOutputFile location is not a valid file location");
+  }
 }

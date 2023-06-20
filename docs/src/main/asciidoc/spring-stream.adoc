@@ -1,11 +1,11 @@
 [#spring-cloud-stream]
 == Spring Cloud Stream
 
-Spring Cloud GCP provides a https://cloud.spring.io/spring-cloud-stream/[Spring Cloud Stream] binder to Google Cloud Pub/Sub.
+Spring Framework on Google Cloud provides a https://cloud.spring.io/spring-cloud-stream/[Spring Cloud Stream] binder to Google Cloud Pub/Sub.
 
 The provided binder relies on the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-pubsub/src/main/java/com/google/cloud/spring/pubsub/integration[Spring Integration Channel Adapters for Google Cloud Pub/Sub].
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
@@ -37,7 +37,7 @@ For that, you can use the `spring.cloud.stream.gcp.pubsub.bindings.<channelName>
 
 Starting with version 1.1, these and other binder properties can be configured globally for all the bindings, e.g. `spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources`.
 
-If you are using Pub/Sub auto-configuration from the Spring Cloud GCP Pub/Sub Starter, you should refer to the <<pubsub-configuration,configuration>> section for other Pub/Sub parameters.
+If you are using Pub/Sub auto-configuration from the Spring Framework on Google Cloud Pub/Sub Starter, you should refer to the <<pubsub-configuration,configuration>> section for other Pub/Sub parameters.
 
 NOTE: To use this binder with a https://cloud.google.com/pubsub/docs/emulator[running emulator], configure its host and port via `spring.cloud.gcp.pubsub.emulator-host`.
 
@@ -106,6 +106,27 @@ These resources will be created:
 
 * A topic named `myEvents`
 * A subscription named `myEvents.consumerGroup1`
+
+==== Header Mapping
+You can filter incoming and outgoing message headers with `allowHeaders` property.
+For example, for a consumer to allow only two headers, provide a comma separated list like this:
+
+.application.properties
+----
+spring.cloud.stream.gcp.pubsub.bindings.<consumerFunction>-in-0.consumer.allowedHeaders=allowed1, allowed2
+----
+Where <consumerFunction> should be replaced by the method which is consuming/reading messages from Cloud Pub/Sub and allowed1, allowed2 is the comma separated list of headers that the user wants to keep.
+
+
+
+A similar style is applicable for producers as well. For example:
+
+.application.properties
+----
+spring.cloud.stream.gcp.pubsub.bindings.<producerFunction>-out-0.producer.allowedHeaders=allowed3,allowed4
+----
+Where <producerFunction> should be replaced by the method which is producing/sending messages to Cloud Pub/Sub and allowed3, allowed4 is the comma separated list of headers that user wants to map. All other headers will be removed before the message is sent to Cloud Pub/Sub.
+
 
 
 ==== Endpoint Customization

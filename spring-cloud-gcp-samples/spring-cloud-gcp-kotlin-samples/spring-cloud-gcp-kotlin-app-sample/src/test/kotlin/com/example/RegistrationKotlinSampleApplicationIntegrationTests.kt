@@ -20,15 +20,13 @@ import com.example.app.Application
 import com.example.data.Person
 import org.assertj.core.api.Assertions.assertThat
 import org.awaitility.Awaitility.await
-import org.hamcrest.Matchers.`is`
-import org.junit.Assume.assumeThat
-import org.junit.BeforeClass
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -37,11 +35,10 @@ import java.util.concurrent.TimeUnit
 /**
  * Tests to verify the Kotlin sample app.
  *
- * @author Daniel Zou
- *
  * @since 1.1
  */
-@RunWith(SpringRunner::class)
+@ExtendWith(SpringExtension::class)
+@EnabledIfSystemProperty(named = "it.kotlin", matches = "true")
 @AutoConfigureMockMvc
 @SpringBootTest(
 		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -61,17 +58,6 @@ class RegistrationKotlinSampleApplicationIntegrationTests {
 
 	@Autowired
 	private lateinit var mockMvc: MockMvc
-
-	companion object {
-
-		@BeforeClass
-		@JvmStatic
-		fun prepare() {
-			assumeThat<String>(
-					"Kotlin Sample app tests are disabled. Please use '-Dit.kotlin=true' to enable them.",
-					System.getProperty("it.kotlin"), `is`("true"))
-		}
-	}
 
 	@Test
 	fun testRegisterPersonSuccessful() {

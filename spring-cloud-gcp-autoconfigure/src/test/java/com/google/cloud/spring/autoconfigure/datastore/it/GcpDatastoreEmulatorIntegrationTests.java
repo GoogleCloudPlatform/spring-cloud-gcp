@@ -16,7 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.datastore.it;
 
-import java.util.function.Supplier;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
@@ -33,9 +35,9 @@ import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreAutoConfigura
 import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreEmulatorAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import java.util.function.Supplier;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -43,117 +45,105 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.ResolvableType;
 import org.springframework.data.annotation.Id;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
-import static org.mockito.Mockito.mock;
-
 /**
  * Tests for Datastore Emulator integration with the datastore itself.
  *
- * @author Lucas Soares
- * @author Artem Bilan
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
-public class GcpDatastoreEmulatorIntegrationTests {
+@EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+class GcpDatastoreEmulatorIntegrationTests {
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Google Cloud Datastore integration tests are disabled. "
-						+ "Please use '-Dit.datastore=true' to enable them. ",
-				System.getProperty("it.datastore"), is("true"));
-	}
+  @Test
+  void testDatastoreEmulatorConfiguration() {
+    DatastoreOptions.Builder builder = DatastoreOptions.newBuilder();
 
-	@Test
-	public void testDatastoreEmulatorConfiguration() {
-		DatastoreOptions.Builder builder = DatastoreOptions.newBuilder();
+    new ApplicationContextRunner()
+        .withConfiguration(
+            AutoConfigurations.of(
+                GcpDatastoreAutoConfiguration.class,
+                GcpContextAutoConfiguration.class,
+                DatastoreTransactionManagerAutoConfiguration.class,
+                DatastoreRepositoriesAutoConfiguration.class,
+                GcpDatastoreEmulatorAutoConfiguration.class))
+        .withUserConfiguration(TestConfiguration.class)
+        .withPropertyValues(
+            "spring.cloud.gcp.project-id=test-project",
+            "spring.cloud.gcp.datastore.namespace=test-namespace",
+            "spring.cloud.gcp.datastore.emulator.port=8181",
+            "spring.cloud.gcp.datastore.emulator.enabled=true",
+            "spring.cloud.gcp.datastore.emulator.consistency=0.9")
+        .run(
+            context -> {
+              DatastoreTemplate datastore = context.getBean(DatastoreTemplate.class);
+              Datastore datastoreClient =
+                  (Datastore)
+                      ((Supplier)
+                              context.getBean(
+                                  context
+                                      .getBeanNamesForType(
+                                          ResolvableType.forClassWithGenerics(
+                                              Supplier.class, Datastore.class))[0]))
+                          .get();
+              GcpProjectIdProvider projectIdProvider = context.getBean(GcpProjectIdProvider.class);
 
-		new ApplicationContextRunner()
-				.withConfiguration(AutoConfigurations.of(GcpDatastoreAutoConfiguration.class,
-						GcpContextAutoConfiguration.class,
-						DatastoreTransactionManagerAutoConfiguration.class,
-						DatastoreRepositoriesAutoConfiguration.class,
-						GcpDatastoreEmulatorAutoConfiguration.class))
-				.withUserConfiguration(TestConfiguration.class)
-				.withPropertyValues("spring.cloud.gcp.project-id=test-project",
-						"spring.cloud.gcp.datastore.namespace=test-namespace",
-						"spring.cloud.gcp.datastore.emulator.port=8181",
-						"spring.cloud.gcp.datastore.emulator.enabled=true",
-						"spring.cloud.gcp.datastore.emulator.consistency=0.9")
-				.run(context -> {
-					DatastoreTemplate datastore = context.getBean(DatastoreTemplate.class);
-					Datastore datastoreClient = (Datastore) ((Supplier) context.getBean(context.getBeanNamesForType(
-							ResolvableType.forClassWithGenerics(Supplier.class, Datastore.class))[0])).get();
-					GcpProjectIdProvider projectIdProvider = context.getBean(GcpProjectIdProvider.class);
+              builder
+                  .setServiceFactory(datastoreOptions -> datastoreClient)
+                  .setProjectId(projectIdProvider.getProjectId());
 
-					builder.setServiceFactory(datastoreOptions -> datastoreClient)
-							.setProjectId(projectIdProvider.getProjectId());
+              EmulatorEntityTest entity = new EmulatorEntityTest();
+              entity.setProperty("property-test");
 
-					EmulatorEntityTest entity = new EmulatorEntityTest();
-					entity.setProperty("property-test");
+              datastore.save(entity);
 
-					datastore.save(entity);
+              assertThat(entity.getId()).isNotNull();
 
-					assertThat(entity.getId()).isNotNull();
+              assertThat(datastore.findById(entity.getId(), EmulatorEntityTest.class).getProperty())
+                  .isEqualTo("property-test");
+            });
 
-					assertThat(datastore.findById(entity.getId(), EmulatorEntityTest.class).getProperty())
-							.isEqualTo("property-test");
-				});
+    Datastore datastore = builder.build().getService();
 
-		Datastore datastore = builder.build().getService();
+    EntityQuery query =
+        Query.newEntityQueryBuilder()
+            .setKind("RandomKind")
+            .setFilter(StructuredQuery.PropertyFilter.eq("key", "value"))
+            .build();
 
-		EntityQuery query = Query.newEntityQueryBuilder().setKind("RandomKind")
-				.setFilter(StructuredQuery.PropertyFilter.eq("key", "value"))
-				.build();
+    assertThatExceptionOfType(DatastoreException.class).isThrownBy(() -> datastore.run(query));
+  }
 
-		assertThatExceptionOfType(DatastoreException.class)
-				.isThrownBy(() -> datastore.run(query));
-	}
+  /** Spring Boot config for tests. */
+  @AutoConfigurationPackage
+  static class TestConfiguration {
 
-	/**
-	 * Spring Boot config for tests.
-	 */
-	@AutoConfigurationPackage
-	static class TestConfiguration {
+    @Bean
+    public CredentialsProvider credentialsProvider() {
+      return () -> mock(Credentials.class);
+    }
+  }
 
-		@Bean
-		public CredentialsProvider credentialsProvider() {
-			return () -> mock(Credentials.class);
-		}
+  /** Document to be stored on Datastore. An instance of `LocalDatastoreHelper` as a bean. */
+  @com.google.cloud.spring.data.datastore.core.mapping.Entity
+  static class EmulatorEntityTest {
 
-	}
+    @Id private Long id;
 
-	/**
-	 * Document to be stored on Datastore. An instance of `LocalDatastoreHelper` as a bean.
-	 */
-	@com.google.cloud.spring.data.datastore.core.mapping.Entity
-	static class EmulatorEntityTest {
+    private String property;
 
-		@Id
-		private Long id;
+    public void setId(Long id) {
+      this.id = id;
+    }
 
-		private String property;
+    Long getId() {
+      return this.id;
+    }
 
-		public void setId(Long id) {
-			this.id = id;
-		}
+    void setProperty(String property) {
+      this.property = property;
+    }
 
-		Long getId() {
-			return this.id;
-		}
-
-		void setProperty(String property) {
-			this.property = property;
-		}
-
-		String getProperty() {
-			return this.property;
-		}
-
-	}
-
+    String getProperty() {
+      return this.property;
+    }
+  }
 }

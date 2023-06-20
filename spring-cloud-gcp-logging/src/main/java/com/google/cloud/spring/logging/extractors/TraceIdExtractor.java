@@ -18,18 +18,14 @@ package com.google.cloud.spring.logging.extractors;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * An extractor that can provide a trace ID from an HTTP request.
- *
- * @author Chengyuan Zhao
- */
+/** An extractor that can provide a trace ID from an HTTP request. */
 public interface TraceIdExtractor {
 
-	/**
-	 * Extract trace ID from the HTTP request.
-	 *
-	 * @param req the HTTP servlet request.
-	 * @return the trace ID or null, if none found.
-	 */
-	String extractTraceIdFromRequest(HttpServletRequest req);
+  /**
+   * Extract trace ID from the HTTP request.
+   *
+   * @param req the HTTP servlet request.
+   * @return the trace ID or null, if none found.
+   */
+  String extractTraceIdFromRequest(HttpServletRequest req);
 }

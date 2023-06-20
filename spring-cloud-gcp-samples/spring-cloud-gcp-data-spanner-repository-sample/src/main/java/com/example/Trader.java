@@ -16,148 +16,171 @@
 
 package com.example;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.spanner.v1.TypeCode;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Objects;
 
-/**
- * A sample entity.
- *
- * @author Mike Eltsufin
- */
+/** A sample entity. */
 @Table(name = "traders_repository")
 public class Trader {
-	@PrimaryKey
-	@Column(name = "trader_id")
-	private String traderId;
+  @PrimaryKey
+  @Column(name = "trader_id")
+  private String traderId;
 
-	@Column(name = "first_name")
-	private String firstName;
+  @Column(name = "first_name")
+  private String firstName;
 
-	@Column(name = "last_name")
-	private String lastName;
+  @Column(name = "last_name")
+  private String lastName;
 
-	@Column(name = "CREATED_ON")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd HH:mm:ss z")
-	private java.sql.Timestamp createdOn;
+  @Column(name = "CREATED_ON")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd HH:mm:ss z")
+  private java.sql.Timestamp createdOn;
 
-	@Column(name = "MODIFIED_ON")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd HH:mm:ss z")
-	private List<java.sql.Timestamp> modifiedOn;
+  @Column(name = "MODIFIED_ON")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd HH:mm:ss z")
+  private List<java.sql.Timestamp> modifiedOn;
 
-	@Interleaved(lazy = true)
-	private List<Trade> trades;
+  @Interleaved(lazy = true)
+  private List<Trade> trades;
 
-	@Column(name = "work_address", spannerType = TypeCode.JSON)
-	private Address workAddress;
+  @Column(name = "work_address", spannerType = TypeCode.JSON)
+  private Address workAddress;
 
-	@Column(name = "home_address", spannerType = TypeCode.JSON)
-	private Address homeAddress;
+  @Column(name = "home_address", spannerType = TypeCode.JSON)
+  private Address homeAddress;
 
-	public Trader() {
-	}
+  @Column(name = "address_list", spannerType = TypeCode.JSON)
+  private List<Address> addressList;
 
-	public Trader(String traderId, String firstName, String lastName) {
-		this.traderId = traderId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
+  public Trader() {}
 
-	public Trader(String traderId, String firstName, String lastName, Address workAddress) {
-		this.traderId = traderId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.workAddress = workAddress;
-	}
+  public Trader(String traderId, String firstName, String lastName) {
+    this.traderId = traderId;
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
 
-	public Trader(String traderId, String firstName, String lastName, Timestamp createdOn, List<Timestamp> modifiedOn) {
-		this.traderId = traderId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.createdOn = createdOn;
-		this.modifiedOn = modifiedOn;
-	}
+  public Trader(String traderId, String firstName, String lastName, Address workAddress) {
+    this.traderId = traderId;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.workAddress = workAddress;
+  }
 
-	public String getTraderId() {
-		return this.traderId;
-	}
+  public Trader(String traderId, String firstName, String lastName,
+      List<Address> addressList) {
+    this.traderId = traderId;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.addressList = addressList;
+  }
 
-	public void setTraderId(String traderId) {
-		this.traderId = traderId;
-	}
+  public Trader(
+      String traderId,
+      String firstName,
+      String lastName,
+      Timestamp createdOn,
+      List<Timestamp> modifiedOn) {
+    this.traderId = traderId;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.createdOn = createdOn;
+    this.modifiedOn = modifiedOn;
+  }
 
-	public String getFirstName() {
-		return this.firstName;
-	}
+  public String getTraderId() {
+    return this.traderId;
+  }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+  public void setTraderId(String traderId) {
+    this.traderId = traderId;
+  }
 
-	public String getLastName() {
-		return this.lastName;
-	}
+  public String getFirstName() {
+    return this.firstName;
+  }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-	public List<Trade> getTrades() {
-		return trades;
-	}
+  public String getLastName() {
+    return this.lastName;
+  }
 
-	public void setTrades(List<Trade> trades) {
-		this.trades = trades;
-	}
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-	public Address getWorkAddress() {
-		return workAddress;
-	}
+  public List<Trade> getTrades() {
+    return trades;
+  }
 
-	public void setHomeAddress(Address homeAddress) {
-		this.homeAddress = homeAddress;
-	}
+  public void setTrades(List<Trade> trades) {
+    this.trades = trades;
+  }
 
-	public Address getHomeAddress() {
-		return homeAddress;
-	}
+  public Address getWorkAddress() {
+    return workAddress;
+  }
 
-	@Override
-	public String toString() {
-		return "Trader{" +
-				"traderId='" + this.traderId + '\'' +
-				", firstName='" + this.firstName + '\'' +
-				", lastName='" + this.lastName + '\'' +
-				", createdOn=" + this.createdOn +
-				", modifiedOn=" + this.modifiedOn +
-				'}';
-	}
+  public void setHomeAddress(Address homeAddress) {
+    this.homeAddress = homeAddress;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		Trader trader = (Trader) o;
-		return Objects.equals(getTraderId(), trader.getTraderId()) &&
-				Objects.equals(getFirstName(), trader.getFirstName()) &&
-				Objects.equals(getLastName(), trader.getLastName()) &&
-				Objects.equals(this.createdOn, trader.createdOn) &&
-				Objects.equals(this.modifiedOn, trader.modifiedOn);
-	}
+  public Address getHomeAddress() {
+    return homeAddress;
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getTraderId(), getFirstName(), getLastName(), this.createdOn, this.modifiedOn);
-	}
+  public List<Address> getAddressList() {
+    return addressList;
+  }
+
+  @Override
+  public String toString() {
+    return "Trader{"
+        + "traderId='"
+        + this.traderId
+        + '\''
+        + ", firstName='"
+        + this.firstName
+        + '\''
+        + ", lastName='"
+        + this.lastName
+        + '\''
+        + ", createdOn="
+        + this.createdOn
+        + ", modifiedOn="
+        + this.modifiedOn
+        + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Trader trader = (Trader) o;
+    return Objects.equals(getTraderId(), trader.getTraderId())
+        && Objects.equals(getFirstName(), trader.getFirstName())
+        && Objects.equals(getLastName(), trader.getLastName())
+        && Objects.equals(this.createdOn, trader.createdOn)
+        && Objects.equals(this.modifiedOn, trader.modifiedOn);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        getTraderId(), getFirstName(), getLastName(), this.createdOn, this.modifiedOn);
+  }
 }

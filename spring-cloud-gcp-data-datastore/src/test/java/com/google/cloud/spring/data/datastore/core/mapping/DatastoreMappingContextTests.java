@@ -16,78 +16,71 @@
 
 package com.google.cloud.spring.data.datastore.core.mapping;
 
-import com.google.cloud.Timestamp;
-import org.junit.Test;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.data.util.ClassTypeInformation;
-import org.springframework.data.util.TypeInformation;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-/**
- * Tests for the `DatastoreMappingContext`.
- *
- * @author Chengyuan Zhao
- */
-public class DatastoreMappingContextTests {
-	@Test
-	public void testApplicationContextPassing() {
-		DatastorePersistentEntityImpl mockEntity = mock(
-				DatastorePersistentEntityImpl.class);
-		DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
-		ApplicationContext applicationContext = mock(ApplicationContext.class);
-		context.setApplicationContext(applicationContext);
+import com.google.cloud.Timestamp;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.data.util.TypeInformation;
 
-		context.createPersistentEntity(ClassTypeInformation.from(Object.class));
+/** Tests for the `DatastoreMappingContext`. */
+class DatastoreMappingContextTests {
+  @Test
+  void testApplicationContextPassing() {
+    DatastorePersistentEntityImpl mockEntity = mock(DatastorePersistentEntityImpl.class);
+    DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
+    ApplicationContext applicationContext = mock(ApplicationContext.class);
+    context.setApplicationContext(applicationContext);
 
-		verify(mockEntity, times(1)).setApplicationContext(applicationContext);
-	}
+    context.createPersistentEntity(ClassTypeInformation.from(Object.class));
 
-	@Test
-	public void testApplicationContextIsNotSet() {
-		DatastorePersistentEntityImpl mockEntity = mock(
-				DatastorePersistentEntityImpl.class);
-		DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
+    verify(mockEntity, times(1)).setApplicationContext(applicationContext);
+  }
 
-		context.createPersistentEntity(ClassTypeInformation.from(Object.class));
+  @Test
+  void testApplicationContextIsNotSet() {
+    DatastorePersistentEntityImpl mockEntity = mock(DatastorePersistentEntityImpl.class);
+    DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
 
-		verifyNoMoreInteractions(mockEntity);
-	}
+    context.createPersistentEntity(ClassTypeInformation.from(Object.class));
 
-	@Test
-	public void testGetInvalidEntity() {
-		DatastorePersistentEntityImpl mockEntity = mock(
-				DatastorePersistentEntityImpl.class);
-		DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
+    verifyNoMoreInteractions(mockEntity);
+  }
 
-		assertThatThrownBy(() -> context.getDatastorePersistentEntity(Integer.class))
-				.isInstanceOf(DatastoreDataException.class)
-				.hasMessage("Unable to find a DatastorePersistentEntity for: class java.lang.Integer");
-	}
+  @Test
+  void testGetInvalidEntity() {
+    DatastorePersistentEntityImpl mockEntity = mock(DatastorePersistentEntityImpl.class);
+    DatastoreMappingContext context = createDatastoreMappingContextWith(mockEntity);
 
-	@Test
-	public void testTimestampNotAnEntity() {
-		// Datastore native types like Timestamp should be considered simple type and no an entity
-		DatastoreMappingContext context = new DatastoreMappingContext();
-		assertThatThrownBy(() -> context.getDatastorePersistentEntity(Timestamp.class))
-				.isInstanceOf(DatastoreDataException.class)
-				.hasMessage("Unable to find a DatastorePersistentEntity for: class com.google.cloud.Timestamp");
-	}
+    assertThatThrownBy(() -> context.getDatastorePersistentEntity(Integer.class))
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessage("Unable to find a DatastorePersistentEntity for: class java.lang.Integer");
+  }
 
-	private DatastoreMappingContext createDatastoreMappingContextWith(
-			DatastorePersistentEntityImpl mockEntity) {
-		return new DatastoreMappingContext() {
-			@Override
-			@SuppressWarnings("unchecked")
-			protected DatastorePersistentEntityImpl constructPersistentEntity(
-					TypeInformation typeInformation) {
-				return mockEntity;
-			}
-		};
-	}
+  @Test
+  void testTimestampNotAnEntity() {
+    // Datastore native types like Timestamp should be considered simple type and no an entity
+    DatastoreMappingContext context = new DatastoreMappingContext();
+    assertThatThrownBy(() -> context.getDatastorePersistentEntity(Timestamp.class))
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessage(
+            "Unable to find a DatastorePersistentEntity for: class com.google.cloud.Timestamp");
+  }
+
+  private DatastoreMappingContext createDatastoreMappingContextWith(
+      DatastorePersistentEntityImpl mockEntity) {
+    return new DatastoreMappingContext() {
+      @Override
+      @SuppressWarnings("unchecked")
+      protected DatastorePersistentEntityImpl constructPersistentEntity(
+          TypeInformation typeInformation) {
+        return mockEntity;
+      }
+    };
+  }
 }

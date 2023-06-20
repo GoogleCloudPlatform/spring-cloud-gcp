@@ -16,16 +16,14 @@
 
 package com.example;
 
-import java.io.IOException;
-
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
+import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,46 +36,40 @@ import org.springframework.messaging.handler.annotation.Header;
 /**
  * Spring Boot Application demonstrating receiving PubSub messages via streaming pull.
  *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @SpringBootApplication
 public class ReceiverApplication {
 
-	private static final Log LOGGER = LogFactory.getLog(ReceiverApplication.class);
+  private static final Log LOGGER = LogFactory.getLog(ReceiverApplication.class);
 
-	public static void main(String[] args) throws IOException {
-		SpringApplication.run(ReceiverApplication.class, args);
-		System.out.println("Hit 'Enter' to terminate");
-		System.in.read();
-	}
+  public static void main(String[] args) throws IOException {
+    SpringApplication.run(ReceiverApplication.class, args);
+    System.out.println("Hit 'Enter' to terminate");
+    System.in.read();
+  }
 
-	@Bean
-	public MessageChannel pubsubInputChannel() {
-		return new DirectChannel();
-	}
+  @Bean
+  public MessageChannel pubsubInputChannel() {
+    return new DirectChannel();
+  }
 
-	@Bean
-	public PubSubInboundChannelAdapter messageChannelAdapter(
-			@Qualifier("pubsubInputChannel") MessageChannel inputChannel,
-			PubSubTemplate pubSubTemplate) {
-		PubSubInboundChannelAdapter adapter =
-				new PubSubInboundChannelAdapter(pubSubTemplate, "exampleSubscription");
-		adapter.setOutputChannel(inputChannel);
-		adapter.setAckMode(AckMode.MANUAL);
-		adapter.setPayloadType(String.class);
-		return adapter;
-	}
+  @Bean
+  public PubSubInboundChannelAdapter messageChannelAdapter(
+      @Qualifier("pubsubInputChannel") MessageChannel inputChannel, PubSubTemplate pubSubTemplate) {
+    PubSubInboundChannelAdapter adapter =
+        new PubSubInboundChannelAdapter(pubSubTemplate, "exampleSubscription");
+    adapter.setOutputChannel(inputChannel);
+    adapter.setAckMode(AckMode.MANUAL);
+    adapter.setPayloadType(String.class);
+    return adapter;
+  }
 
-	@ServiceActivator(inputChannel = "pubsubInputChannel")
-	public void messageReceiver(String payload,
-			@Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
-		LOGGER.info("Message arrived! Payload: " + payload);
-		message.ack();
-	}
-
+  @ServiceActivator(inputChannel = "pubsubInputChannel")
+  public void messageReceiver(
+      String payload,
+      @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
+    LOGGER.info("Message arrived! Payload: " + payload);
+    message.ack();
+  }
 }

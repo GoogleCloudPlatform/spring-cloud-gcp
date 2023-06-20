@@ -21,38 +21,37 @@ import com.google.cloud.logging.LoggingOptions;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 
 /**
- * A Google Cloud Java Logback {@link com.google.cloud.logging.logback.LoggingAppender}
- * wrapper that configures it for Spring Cloud GCP.
+ * A Google Cloud Java Logback {@link com.google.cloud.logging.logback.LoggingAppender} wrapper that
+ * configures it for Spring Cloud GCP.
  *
- * @author Mike Eltsufin
  * @since 1.2
  */
 public class LoggingAppender extends com.google.cloud.logging.logback.LoggingAppender {
-	private LoggingOptions loggingOptions;
+  private LoggingOptions loggingOptions;
 
-	/**
-	 * Wraps {@link com.google.cloud.logging.logback.LoggingAppender#getLoggingOptions()} to
-	 * add {@link UserAgentHeaderProvider} configuration, so that usage can be properly
-	 * attributed to Spring Cloud GCP.
-	 */
-	@Override
-	protected LoggingOptions getLoggingOptions() {
+  /**
+   * Wraps {@link com.google.cloud.logging.logback.LoggingAppender#getLoggingOptions()} to add
+   * {@link UserAgentHeaderProvider} configuration, so that usage can be properly attributed to
+   * Spring Cloud GCP.
+   */
+  @Override
+  protected LoggingOptions getLoggingOptions() {
 
-		if (loggingOptions == null) {
-			LoggingOptions.Builder loggingOptionsBuilder = LoggingOptions.newBuilder();
+    if (loggingOptions == null) {
+      LoggingOptions.Builder loggingOptionsBuilder = LoggingOptions.newBuilder();
 
-			// only credentials are set in the options of the parent class
-			Credentials credentials = super.getLoggingOptions().getCredentials();
-			if (credentials != null) {
-				loggingOptionsBuilder.setCredentials(credentials);
-			}
+      // only credentials are set in the options of the parent class
+      Credentials credentials = super.getLoggingOptions().getCredentials();
+      if (credentials != null) {
+        loggingOptionsBuilder.setCredentials(credentials);
+      }
 
-			// set User-Agent
-			loggingOptionsBuilder.setHeaderProvider(new UserAgentHeaderProvider(this.getClass()));
+      // set User-Agent
+      loggingOptionsBuilder.setHeaderProvider(new UserAgentHeaderProvider(this.getClass()));
 
-			this.loggingOptions = loggingOptionsBuilder.build();
-		}
+      this.loggingOptions = loggingOptionsBuilder.build();
+    }
 
-		return this.loggingOptions;
-	}
+    return this.loggingOptions;
+  }
 }

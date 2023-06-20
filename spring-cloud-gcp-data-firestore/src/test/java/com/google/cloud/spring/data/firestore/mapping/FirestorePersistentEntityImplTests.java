@@ -16,39 +16,32 @@
 
 package com.google.cloud.spring.data.firestore.mapping;
 
-import com.google.cloud.spring.data.firestore.Document;
-import org.junit.Test;
-
-import org.springframework.data.util.ClassTypeInformation;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Tests for {@link FirestorePersistentEntityImpl}.
- *
- * @author Daniel Zou
- */
-public class FirestorePersistentEntityImplTests {
+import com.google.cloud.spring.data.firestore.Document;
+import org.junit.jupiter.api.Test;
+import org.springframework.data.util.ClassTypeInformation;
 
-	@Test
-	public void testSetCollectionName() {
-		FirestorePersistentEntity<Student> firestorePersistentEntity = new FirestorePersistentEntityImpl<>(
-				ClassTypeInformation.from(Student.class));
-		assertThat(firestorePersistentEntity.collectionName()).isEqualTo("student");
-	}
+/** Tests for {@link FirestorePersistentEntityImpl}. */
+class FirestorePersistentEntityImplTests {
 
-	@Test
-	public void testInferCollectionName() {
-		FirestorePersistentEntity<Employee> firestorePersistentEntity = new FirestorePersistentEntityImpl<>(
-				ClassTypeInformation.from(Employee.class));
-		assertThat(firestorePersistentEntity.collectionName()).isEqualTo("employee_table");
-	}
+  @Test
+  void testSetCollectionName() {
+    FirestorePersistentEntity<Student> firestorePersistentEntity =
+        new FirestorePersistentEntityImpl<>(ClassTypeInformation.from(Student.class));
+    assertThat(firestorePersistentEntity.collectionName()).isEqualTo("student");
+  }
 
-	@Document
-	private static class Student {
-	}
+  @Test
+  void testInferCollectionName() {
+    FirestorePersistentEntity<Employee> firestorePersistentEntity =
+        new FirestorePersistentEntityImpl<>(ClassTypeInformation.from(Employee.class));
+    assertThat(firestorePersistentEntity.collectionName()).isEqualTo("employee_table");
+  }
 
-	@Document(collectionName = "employee_table")
-	private static class Employee {
-	}
+  @Document
+  private static class Student {}
+
+  @Document(collectionName = "employee_table")
+  private static class Employee {}
 }

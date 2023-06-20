@@ -16,93 +16,88 @@
 
 package com.google.cloud.spring.logging;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import com.google.cloud.logging.LogEntry;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.MDC;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Tests for {@link TraceIdLoggingEnhancer}.
- *
- * @author Mike Eltsufin
- */
-public class TraceIdLoggingEnhancerTests {
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import com.google.cloud.logging.LogEntry;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
 
-	TraceIdLoggingEnhancer enhancer = new TraceIdLoggingEnhancer();
+/** Tests for {@link TraceIdLoggingEnhancer}. */
+class TraceIdLoggingEnhancerTests {
 
-	@Before
-	public void before() {
-		enhancer.setProjectIdProvider(() -> "gcp-project");
-		MDC.clear();
-		TraceIdLoggingEnhancer.setCurrentTraceId(null);
-	}
+  TraceIdLoggingEnhancer enhancer = new TraceIdLoggingEnhancer();
 
-	@Test
-	public void testNoTraceIdAnywhere() {
-		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
+  @BeforeEach
+  void before() {
+    enhancer.setProjectIdProvider(() -> "gcp-project");
+    MDC.clear();
+    TraceIdLoggingEnhancer.setCurrentTraceId(null);
+  }
 
-		enhancer.enhanceLogEntry(logEntryBuilder);
+  @Test
+  void testNoTraceIdAnywhere() {
+    LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
 
-		LogEntry logEntry = logEntryBuilder.build();
+    enhancer.enhanceLogEntry(logEntryBuilder);
 
-		assertThat(logEntry.getTrace()).isNull();
-		assertThat(logEntry.getSpanId()).isNull();
-	}
+    LogEntry logEntry = logEntryBuilder.build();
 
-	@Test
-	public void testLoggingEventMDC() {
-		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
+    assertThat(logEntry.getTrace()).isNull();
+    assertThat(logEntry.getSpanId()).isNull();
+  }
 
-		ILoggingEvent mockLoggingEvent = mock(ILoggingEvent.class);
-		Map<String, String> map = new HashMap<>();
-		map.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid123");
-		map.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "sid123");
-		when(mockLoggingEvent.getMDCPropertyMap()).thenReturn(map);
+  @Test
+  void testLoggingEventMdc() {
 
-		MDC.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid-mdc");
-		MDC.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "sid-mdc");
+    ILoggingEvent mockLoggingEvent = mock(ILoggingEvent.class);
+    Map<String, String> map = new HashMap<>();
+    map.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid123");
+    map.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "sid123");
+    when(mockLoggingEvent.getMDCPropertyMap()).thenReturn(map);
 
-		enhancer.enhanceLogEntry(logEntryBuilder, mockLoggingEvent);
+    MDC.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid-mdc");
+    MDC.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "sid-mdc");
 
-		LogEntry logEntry = logEntryBuilder.build();
+    LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
+    enhancer.enhanceLogEntry(logEntryBuilder, mockLoggingEvent);
 
-		assertThat(logEntry.getTrace()).isEqualTo("projects/gcp-project/traces/tid123");
-		assertThat(logEntry.getSpanId()).isEqualTo("sid123");
-	}
+    LogEntry logEntry = logEntryBuilder.build();
 
-	@Test
-	public void testThreadLocalMDC() {
-		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
+    assertThat(logEntry.getTrace()).isEqualTo("projects/gcp-project/traces/tid123");
+    assertThat(logEntry.getSpanId()).isEqualTo("sid123");
+  }
 
-		MDC.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid123");
-		MDC.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "sid123");
+  @Test
+  void testThreadLocalMdc() {
+    LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
 
-		enhancer.enhanceLogEntry(logEntryBuilder);
+    MDC.put(StackdriverTraceConstants.MDC_FIELD_TRACE_ID, "tid123");
+    MDC.put(StackdriverTraceConstants.MDC_FIELD_SPAN_ID, "sid123");
 
-		LogEntry logEntry = logEntryBuilder.build();
+    enhancer.enhanceLogEntry(logEntryBuilder);
 
-		assertThat(logEntry.getTrace()).isEqualTo("projects/gcp-project/traces/tid123");
-		assertThat(logEntry.getSpanId()).isEqualTo("sid123");
-	}
+    LogEntry logEntry = logEntryBuilder.build();
 
-	@Test
-	public void testThreadLocalTraceId() {
-		TraceIdLoggingEnhancer.setCurrentTraceId("tid123");
-		LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
+    assertThat(logEntry.getTrace()).isEqualTo("projects/gcp-project/traces/tid123");
+    assertThat(logEntry.getSpanId()).isEqualTo("sid123");
+  }
 
-		enhancer.enhanceLogEntry(logEntryBuilder);
+  @Test
+  void testThreadLocalTraceId() {
+    TraceIdLoggingEnhancer.setCurrentTraceId("tid123");
+    LogEntry.Builder logEntryBuilder = LogEntry.newBuilder(null);
 
-		LogEntry logEntry = logEntryBuilder.build();
+    enhancer.enhanceLogEntry(logEntryBuilder);
 
-		assertThat(logEntry.getTrace()).isEqualTo("projects/gcp-project/traces/tid123");
-		assertThat(logEntry.getSpanId()).isNull();
-	}
+    LogEntry logEntry = logEntryBuilder.build();
+
+    assertThat(logEntry.getTrace()).isEqualTo("projects/gcp-project/traces/tid123");
+    assertThat(logEntry.getSpanId()).isNull();
+  }
 }

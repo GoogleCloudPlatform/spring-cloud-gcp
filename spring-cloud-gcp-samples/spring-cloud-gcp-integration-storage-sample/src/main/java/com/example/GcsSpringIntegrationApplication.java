@@ -16,10 +16,6 @@
 
 package com.example;
 
-import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Paths;
-
 import com.google.cloud.spring.storage.integration.GcsRemoteFileTemplate;
 import com.google.cloud.spring.storage.integration.GcsSessionFactory;
 import com.google.cloud.spring.storage.integration.inbound.GcsInboundFileSynchronizer;
@@ -27,9 +23,11 @@ import com.google.cloud.spring.storage.integration.inbound.GcsInboundFileSynchro
 import com.google.cloud.spring.storage.integration.inbound.GcsStreamingMessageSource;
 import com.google.cloud.spring.storage.integration.outbound.GcsMessageHandler;
 import com.google.cloud.storage.Storage;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Paths;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -42,106 +40,107 @@ import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.file.FileHeaders;
 import org.springframework.messaging.MessageHandler;
 
-/**
- * Storage Spring Integration sample app.
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- */
+/** Storage Spring Integration sample app. */
 @SpringBootApplication
 public class GcsSpringIntegrationApplication {
 
-	@Value("${gcs-read-bucket}")
-	private String gcsReadBucket;
+  @Value("${gcs-read-bucket}")
+  private String gcsReadBucket;
 
-	@Value("${gcs-write-bucket}")
-	private String gcsWriteBucket;
+  @Value("${gcs-write-bucket}")
+  private String gcsWriteBucket;
 
-	@Value("${gcs-local-directory}")
-	private String localDirectory;
+  @Value("${gcs-local-directory}")
+  private String localDirectory;
 
-	private static final Log LOGGER = LogFactory.getLog(GcsSpringIntegrationApplication.class);
+  private static final Log LOGGER = LogFactory.getLog(GcsSpringIntegrationApplication.class);
 
-	public static void main(String[] args) {
-		SpringApplication.run(GcsSpringIntegrationApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(GcsSpringIntegrationApplication.class, args);
+  }
 
-	/**
-	 * A file synchronizer that knows how to connect to the remote file system (GCS) and scan
-	 * it for new files and then download the files.
-	 * @param gcs a storage client to use
-	 * @return an inbound file synchronizer
-	 */
-	@Bean
-	public GcsInboundFileSynchronizer gcsInboundFileSynchronizer(Storage gcs) {
-		GcsInboundFileSynchronizer synchronizer = new GcsInboundFileSynchronizer(gcs);
-		synchronizer.setRemoteDirectory(this.gcsReadBucket);
+  /**
+   * A file synchronizer that knows how to connect to the remote file system (GCS) and scan it for
+   * new files and then download the files.
+   *
+   * @param gcs a storage client to use
+   * @return an inbound file synchronizer
+   */
+  @Bean
+  public GcsInboundFileSynchronizer gcsInboundFileSynchronizer(Storage gcs) {
+    GcsInboundFileSynchronizer synchronizer = new GcsInboundFileSynchronizer(gcs);
+    synchronizer.setRemoteDirectory(this.gcsReadBucket);
 
-		return synchronizer;
-	}
+    return synchronizer;
+  }
 
-	/**
-	 * An inbound channel adapter that polls the GCS bucket for new files and copies them to
-	 * the local filesystem. The resulting message source produces messages containing handles
-	 * to local files.
-	 * @param synchronizer an inbound file synchronizer
-	 * @return a message source
-	 */
-	@Bean
-	@InboundChannelAdapter(channel = "new-file-channel", poller = @Poller(fixedDelay = "5000"))
-	public MessageSource<File> synchronizerAdapter(GcsInboundFileSynchronizer synchronizer) {
-		GcsInboundFileSynchronizingMessageSource syncAdapter = new GcsInboundFileSynchronizingMessageSource(
-				synchronizer);
-		syncAdapter.setLocalDirectory(Paths.get(this.localDirectory).toFile());
+  /**
+   * An inbound channel adapter that polls the GCS bucket for new files and copies them to the local
+   * filesystem. The resulting message source produces messages containing handles to local files.
+   *
+   * @param synchronizer an inbound file synchronizer
+   * @return a message source
+   */
+  @Bean
+  @InboundChannelAdapter(channel = "new-file-channel", poller = @Poller(fixedDelay = "5000"))
+  public MessageSource<File> synchronizerAdapter(GcsInboundFileSynchronizer synchronizer) {
+    GcsInboundFileSynchronizingMessageSource syncAdapter =
+        new GcsInboundFileSynchronizingMessageSource(synchronizer);
+    syncAdapter.setLocalDirectory(Paths.get(this.localDirectory).toFile());
 
-		return syncAdapter;
-	}
+    return syncAdapter;
+  }
 
-	/**
-	 * A service activator that receives messages produced by the {@code synchronizerAdapter}
-	 * and simply outputs the file name of each to the console.
-	 * @return a message handler
-	 */
-	@Bean
-	@ServiceActivator(inputChannel = "new-file-channel")
-	public MessageHandler handleNewFileFromSynchronizer() {
-		return message -> {
-			File file = (File) message.getPayload();
-			LOGGER.info("File " + file.getName() + " received by the non-streaming inbound "
-					+ "channel adapter.");
-		};
-	}
+  /**
+   * A service activator that receives messages produced by the {@code synchronizerAdapter} and
+   * simply outputs the file name of each to the console.
+   *
+   * @return a message handler
+   */
+  @Bean
+  @ServiceActivator(inputChannel = "new-file-channel")
+  public MessageHandler handleNewFileFromSynchronizer() {
+    return message -> {
+      File file = (File) message.getPayload();
+      LOGGER.info(
+          "File "
+              + file.getName()
+              + " received by the non-streaming inbound "
+              + "channel adapter.");
+    };
+  }
 
-	/**
-	 * An inbound channel adapter that polls the remote directory and produces messages with
-	 * {@code InputStream} payload that can be used to read the data from remote files.
-	 * @param gcs a storage client to use
-	 * @return a message source
-	 */
-	@Bean
-	@InboundChannelAdapter(channel = "copy-channel", poller = @Poller(fixedDelay = "5000"))
-	public MessageSource<InputStream> streamingAdapter(Storage gcs) {
-		GcsStreamingMessageSource adapter = new GcsStreamingMessageSource(
-				new GcsRemoteFileTemplate(new GcsSessionFactory(gcs)));
-		adapter.setRemoteDirectory(this.gcsReadBucket);
-		return adapter;
-	}
+  /**
+   * An inbound channel adapter that polls the remote directory and produces messages with {@code
+   * InputStream} payload that can be used to read the data from remote files.
+   *
+   * @param gcs a storage client to use
+   * @return a message source
+   */
+  @Bean
+  @InboundChannelAdapter(channel = "copy-channel", poller = @Poller(fixedDelay = "5000"))
+  public MessageSource<InputStream> streamingAdapter(Storage gcs) {
+    GcsStreamingMessageSource adapter =
+        new GcsStreamingMessageSource(new GcsRemoteFileTemplate(new GcsSessionFactory(gcs)));
+    adapter.setRemoteDirectory(this.gcsReadBucket);
+    return adapter;
+  }
 
-	/**
-	 * A service activator that connects to a channel with messages containing
-	 * {@code InputStream} payloads and copies the file data to a remote directory on GCS.
-	 * @param gcs a storage client to use
-	 * @return a message handler
-	 */
-	@Bean
-	@ServiceActivator(inputChannel = "copy-channel")
-	public MessageHandler outboundChannelAdapter(Storage gcs) {
-		GcsMessageHandler outboundChannelAdapter = new GcsMessageHandler(new GcsSessionFactory(gcs));
-		outboundChannelAdapter.setRemoteDirectoryExpression(
-				new ValueExpression<>(this.gcsWriteBucket));
-		outboundChannelAdapter
-				.setFileNameGenerator(message -> message.getHeaders().get(FileHeaders.REMOTE_FILE, String.class));
+  /**
+   * A service activator that connects to a channel with messages containing {@code InputStream}
+   * payloads and copies the file data to a remote directory on GCS.
+   *
+   * @param gcs a storage client to use
+   * @return a message handler
+   */
+  @Bean
+  @ServiceActivator(inputChannel = "copy-channel")
+  public MessageHandler outboundChannelAdapter(Storage gcs) {
+    GcsMessageHandler outboundChannelAdapter = new GcsMessageHandler(new GcsSessionFactory(gcs));
+    outboundChannelAdapter.setRemoteDirectoryExpression(new ValueExpression<>(this.gcsWriteBucket));
+    outboundChannelAdapter.setFileNameGenerator(
+        message -> message.getHeaders().get(FileHeaders.REMOTE_FILE, String.class));
 
-		return outboundChannelAdapter;
-	}
+    return outboundChannelAdapter;
+  }
 }

@@ -16,52 +16,45 @@
 
 package com.example;
 
-import java.util.Objects;
-
 import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 
-/**
- * Represents individual personal musical instruments a {@link Singer} can own.
- *
- * @author Chengyuan Zhao
- */
+/** Represents individual personal musical instruments a {@link Singer} can own. */
 @Entity
 public class Instrument {
 
-	@Id
-	Key instrumentId;
+  @Id Key instrumentId;
 
-	private String type;
+  private String type;
 
-	public Instrument(String type) {
-		this.type = type;
-	}
+  public Instrument(String type) {
+    this.type = type;
+  }
 
-	public String getType() {
-		return this.type;
-	}
+  public String getType() {
+    return this.type;
+  }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+  public void setType(String type) {
+    this.type = type;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		Instrument instrument = (Instrument) o;
-		return this.type.equals(instrument.type);
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Instrument instrument = (Instrument) o;
+    return this.type.equals(instrument.type);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.type);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.type);
+  }
 }

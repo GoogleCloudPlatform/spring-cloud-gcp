@@ -16,7 +16,8 @@
 
 package com.google.cloud.spring.data.spanner.repository.it;
 
-import java.util.Collections;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
@@ -24,66 +25,50 @@ import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import com.google.cloud.spring.data.spanner.test.IntegrationTestConfiguration;
 import com.google.cloud.spring.data.spanner.test.domain.Singer;
 import com.google.cloud.spring.data.spanner.test.domain.SingerRepository;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import java.util.Collections;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
+/** Integration tests for Spanner Repository. */
 
-/**
- * Integration tests for Spanner Repository.
- *
- */
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { IntegrationTestConfiguration.class })
-public class SpannerRepositoryInsertIntegrationTests {
+@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {IntegrationTestConfiguration.class})
+class SpannerRepositoryInsertIntegrationTests {
 
-	@Autowired
-	SingerRepository singerRepository;
+  @Autowired SingerRepository singerRepository;
 
-	@Autowired
-	SpannerTemplate spannerTemplate;
+  @Autowired SpannerTemplate spannerTemplate;
 
-	@Autowired
-	protected SpannerSchemaUtils spannerSchemaUtils;
+  @Autowired protected SpannerSchemaUtils spannerSchemaUtils;
 
-	@Autowired
-	SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
+  @Autowired SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(System.getProperty("it.spanner"))
-						.as("Spanner integration tests are disabled. "
-										+ "Please use '-Dit.spanner=true' to enable them. ")
-						.isEqualTo("true");
-	}
+  @BeforeEach
+  void setUp() {
+    if (!this.spannerDatabaseAdminTemplate.tableExists("singers_list")) {
+      this.spannerDatabaseAdminTemplate.executeDdlStrings(
+          Collections.singleton(this.spannerSchemaUtils.getCreateTableDdlString(Singer.class)),
+          true);
+    }
+    this.singerRepository.deleteAll();
+  }
 
-	@Before
-	public void setUp() {
-		if (!this.spannerDatabaseAdminTemplate.tableExists("singers_list")) {
-			this.spannerDatabaseAdminTemplate.executeDdlStrings(
-							Collections.singleton(this.spannerSchemaUtils.getCreateTableDdlString(Singer.class)),
-							true);
-		}
-		this.singerRepository.deleteAll();
-	}
+  @AfterEach
+  void clearData() {
+    this.singerRepository.deleteAll();
+  }
 
-	@After
-	public void clearData() {
-		this.singerRepository.deleteAll();
-	}
-
-	@Test
-	public void insertTest() {
-		singerRepository.insert(1, "Cher", null);
-		Iterable<Singer> singers = singerRepository.findAll();
-		assertThat(singers).containsExactly(new Singer(1, "Cher", null));
-	}
+  @Test
+  void insertTest() {
+    singerRepository.insert(1, "Cher", null);
+    Iterable<Singer> singers = singerRepository.findAll();
+    assertThat(singers).containsExactly(new Singer(1, "Cher", null));
+  }
 }

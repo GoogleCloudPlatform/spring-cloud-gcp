@@ -23,8 +23,6 @@ import javax.persistence.Id
 /**
  * Data object representing a registered person.
  *
- * @author Daniel Zou
- *
  * @since 1.1
  */
 @Entity

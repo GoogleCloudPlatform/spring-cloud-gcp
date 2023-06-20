@@ -23,15 +23,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * Sample application for a binder.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 @SpringBootApplication
 @EnableScheduling
 public class PubSubBinderApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PubSubBinderApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(PubSubBinderApplication.class, args);
+  }
 }

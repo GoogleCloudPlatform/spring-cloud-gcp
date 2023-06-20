@@ -16,83 +16,56 @@
 
 package com.example;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.UUID;
-
-import org.apache.commons.io.output.TeeOutputStream;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
-
 /**
  * These tests verifies that the pubsub-integration-sample works.
  *
- * @author Dmitry Solomakha
- *
  * @since 1.1
  */
-public class SampleAppIntegrationTest {
+@EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
+@ExtendWith(OutputCaptureExtension.class)
+class SampleAppIntegrationTest {
 
-	private RestTemplate restTemplate = new RestTemplate();
+  private RestTemplate restTemplate = new RestTemplate();
 
-	private static PrintStream systemOut;
+  @Test
+  void testSample(CapturedOutput capturedOutput) throws Exception {
 
-	private static ByteArrayOutputStream baos;
+    SpringApplicationBuilder sender =
+        new SpringApplicationBuilder(SenderApplication.class).properties("server.port=8082");
+    sender.run();
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub-integration=true' "
-						+ "to enable them. ",
-				System.getProperty("it.pubsub-integration"), is("true"));
+    SpringApplicationBuilder receiver =
+        new SpringApplicationBuilder(ReceiverApplication.class).properties("server.port=8081");
+    receiver.run();
 
-		systemOut = System.out;
-		baos = new ByteArrayOutputStream();
-		TeeOutputStream out = new TeeOutputStream(systemOut, baos);
-		System.setOut(new PrintStream(out));
-	}
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    String message = "test message " + UUID.randomUUID();
+    map.add("message", message);
+    map.add("times", 1);
 
-	@AfterClass
-	public static void bringBack() {
-		System.setOut(systemOut);
-	}
+    this.restTemplate.postForObject("http://localhost:8082/postMessage", map, String.class);
 
-	@Test
-	public void testSample() throws Exception {
-
-		SpringApplicationBuilder sender = new SpringApplicationBuilder(SenderApplication.class)
-				.properties("server.port=8082");
-		sender.run();
-
-		SpringApplicationBuilder receiver = new SpringApplicationBuilder(ReceiverApplication.class)
-				.properties("server.port=8081");
-		receiver.run();
-
-		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		String message = "test message " + UUID.randomUUID();
-		map.add("message", message);
-		map.add("times", 1);
-
-		this.restTemplate.postForObject("http://localhost:8082/postMessage", map, String.class);
-
-		boolean messageReceived = false;
-		for (int i = 0; i < 100; i++) {
-			if (baos.toString().contains("Message arrived! Payload: " + message)) {
-				messageReceived = true;
-				break;
-			}
-			Thread.sleep(100);
-		}
-		assertThat(messageReceived).isTrue();
-	}
+    boolean messageReceived = false;
+    for (int i = 0; i < 100; i++) {
+      if (capturedOutput.toString().contains("Message arrived! Payload: " + message)) {
+        messageReceived = true;
+        break;
+      }
+      Thread.sleep(100);
+    }
+    assertThat(messageReceived).isTrue();
+  }
 }

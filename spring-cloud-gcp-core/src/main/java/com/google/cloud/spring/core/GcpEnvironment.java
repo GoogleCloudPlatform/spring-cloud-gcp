@@ -19,35 +19,22 @@ package com.google.cloud.spring.core;
 /**
  * Enumeration of valid individual GCP environments.
  *
- * @author Elena Felder
- *
  * @since 1.1
  */
 public enum GcpEnvironment {
 
-	/**
-	 * Matches Kubernetes instances.
-	 */
-	KUBERNETES_ENGINE,
+  /** Matches Kubernetes instances. */
+  KUBERNETES_ENGINE,
 
-	/**
-	 * Matches App Engine Flexible instances.
-	 */
-	APP_ENGINE_FLEXIBLE,
+  /** Matches App Engine Flexible instances. */
+  APP_ENGINE_FLEXIBLE,
 
-	/**
-	 * Matches App Engine Standard instances.
-	 */
-	APP_ENGINE_STANDARD,
+  /** Matches App Engine Standard instances. */
+  APP_ENGINE_STANDARD,
 
-	/**
-	 * Matches instances of Compute Engine that are not also AppEngine Flexible.
-	 */
-	COMPUTE_ENGINE,
+  /** Matches instances of Compute Engine that are not also AppEngine Flexible. */
+  COMPUTE_ENGINE,
 
-	/**
-	 * Matches nothing; environment cannot be identified.
-	 */
-	UNKNOWN
-
+  /** Matches nothing; environment cannot be identified. */
+  UNKNOWN
 }

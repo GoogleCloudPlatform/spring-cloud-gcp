@@ -16,24 +16,22 @@
 
 package com.google.cloud.spring.nativex.firestore;
 
-import java.util.List;
-
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.spring.data.firestore.Document;
+import java.util.List;
 import lombok.Data;
 import lombok.Value;
 
 @Document(collectionName = "usersCollection")
 @Data
 public class TestDocument {
-	@DocumentId
-	private String id;
-	private String name;
-	private List<Address> addresses;
+  @DocumentId private String id;
+  private String name;
+  private List<Address> addresses;
 
-	@Value
-	public static class Address {
-		String streetAddress;
-		String country;
-	}
+  @Value
+  public static class Address {
+    String streetAddress;
+    String country;
+  }
 }

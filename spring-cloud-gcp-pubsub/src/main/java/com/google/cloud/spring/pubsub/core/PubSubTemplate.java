@@ -16,11 +16,6 @@
 
 package com.google.cloud.spring.pubsub.core;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
@@ -32,7 +27,10 @@ import com.google.cloud.spring.pubsub.support.converter.ConvertedAcknowledgeable
 import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import com.google.pubsub.v1.PubsubMessage;
-
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import org.springframework.util.Assert;
 import org.springframework.util.concurrent.ListenableFuture;
 
@@ -41,175 +39,176 @@ import org.springframework.util.concurrent.ListenableFuture;
  *
  * <p>The main Google Cloud Pub/Sub integration component for publishing to topics and consuming
  * messages from subscriptions asynchronously or by pulling.
- *
- * @author Vinicius Carvalho
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Doug Hoard
- * @author Maurice Zeijen
  */
 public class PubSubTemplate implements PubSubOperations {
 
-	private final PubSubPublisherTemplate pubSubPublisherTemplate;
+  private final PubSubPublisherTemplate pubSubPublisherTemplate;
 
-	private final PubSubSubscriberTemplate pubSubSubscriberTemplate;
+  private final PubSubSubscriberTemplate pubSubSubscriberTemplate;
 
-	/**
-	 * Default {@link PubSubTemplate} constructor.
-	 * @param publisherFactory the {@link com.google.cloud.pubsub.v1.Publisher} factory to
-	 * publish to topics.
-	 * @param subscriberFactory the {@link com.google.cloud.pubsub.v1.Subscriber} factory
-	 * to subscribe to subscriptions.
-	 */
-	public PubSubTemplate(PublisherFactory publisherFactory,
-						SubscriberFactory subscriberFactory) {
-		Assert.notNull(publisherFactory, "The publisherFactory can't be null.");
-		Assert.notNull(subscriberFactory, "The subscriberFactory can't be null.");
+  /**
+   * Default {@link PubSubTemplate} constructor.
+   *
+   * @param publisherFactory the {@link com.google.cloud.pubsub.v1.Publisher} factory to publish to
+   *     topics.
+   * @param subscriberFactory the {@link com.google.cloud.pubsub.v1.Subscriber} factory to subscribe
+   *     to subscriptions.
+   */
+  public PubSubTemplate(PublisherFactory publisherFactory, SubscriberFactory subscriberFactory) {
+    Assert.notNull(publisherFactory, "The publisherFactory can't be null.");
+    Assert.notNull(subscriberFactory, "The subscriberFactory can't be null.");
 
-		this.pubSubPublisherTemplate = new PubSubPublisherTemplate(publisherFactory);
-		this.pubSubSubscriberTemplate = new PubSubSubscriberTemplate(subscriberFactory);
-	}
+    this.pubSubPublisherTemplate = new PubSubPublisherTemplate(publisherFactory);
+    this.pubSubSubscriberTemplate = new PubSubSubscriberTemplate(subscriberFactory);
+  }
 
-	/**
-	 * Default {@link PubSubTemplate} constructor that uses a {@link PubSubPublisherTemplate}
-	 * and a {@link PubSubSubscriberTemplate}.
-	 * @param pubSubPublisherTemplate the {@link PubSubPublisherTemplate} to
-	 * publish to topics.
-	 * @param pubSubSubscriberTemplate the {@link PubSubSubscriberTemplate} to
-	 * subscribe to subscriptions or pull messages
-	 * @since 1.1
-	 */
-	public PubSubTemplate(PubSubPublisherTemplate pubSubPublisherTemplate,
-						PubSubSubscriberTemplate pubSubSubscriberTemplate) {
-		Assert.notNull(pubSubPublisherTemplate, "The pubSubPublisherTemplate can't be null.");
-		Assert.notNull(pubSubSubscriberTemplate, "The pubSubSubscriberTemplate can't be null.");
+  /**
+   * Default {@link PubSubTemplate} constructor that uses a {@link PubSubPublisherTemplate} and a
+   * {@link PubSubSubscriberTemplate}.
+   *
+   * @param pubSubPublisherTemplate the {@link PubSubPublisherTemplate} to publish to topics.
+   * @param pubSubSubscriberTemplate the {@link PubSubSubscriberTemplate} to subscribe to
+   *     subscriptions or pull messages
+   * @since 1.1
+   */
+  public PubSubTemplate(
+      PubSubPublisherTemplate pubSubPublisherTemplate,
+      PubSubSubscriberTemplate pubSubSubscriberTemplate) {
+    Assert.notNull(pubSubPublisherTemplate, "The pubSubPublisherTemplate can't be null.");
+    Assert.notNull(pubSubSubscriberTemplate, "The pubSubSubscriberTemplate can't be null.");
 
-		this.pubSubPublisherTemplate = pubSubPublisherTemplate;
-		this.pubSubSubscriberTemplate = pubSubSubscriberTemplate;
-	}
+    this.pubSubPublisherTemplate = pubSubPublisherTemplate;
+    this.pubSubSubscriberTemplate = pubSubSubscriberTemplate;
+  }
 
-	public PubSubPublisherTemplate getPubSubPublisherTemplate() {
-		return this.pubSubPublisherTemplate;
-	}
+  public PubSubPublisherTemplate getPubSubPublisherTemplate() {
+    return this.pubSubPublisherTemplate;
+  }
 
-	public PubSubSubscriberTemplate getPubSubSubscriberTemplate() {
-		return this.pubSubSubscriberTemplate;
-	}
+  public PubSubSubscriberTemplate getPubSubSubscriberTemplate() {
+    return this.pubSubSubscriberTemplate;
+  }
 
-	public PubSubMessageConverter getMessageConverter() {
-		return this.pubSubPublisherTemplate.getMessageConverter();
-	}
+  public PubSubMessageConverter getMessageConverter() {
+    return this.pubSubPublisherTemplate.getMessageConverter();
+  }
 
-	public void setMessageConverter(PubSubMessageConverter messageConverter) {
-		Assert.notNull(messageConverter, "A valid Pub/Sub message converter is required.");
+  public void setMessageConverter(PubSubMessageConverter messageConverter) {
+    Assert.notNull(messageConverter, "A valid Pub/Sub message converter is required.");
 
-		this.pubSubPublisherTemplate.setMessageConverter(messageConverter);
-		this.pubSubSubscriberTemplate.setMessageConverter(messageConverter);
-	}
+    this.pubSubPublisherTemplate.setMessageConverter(messageConverter);
+    this.pubSubSubscriberTemplate.setMessageConverter(messageConverter);
+  }
 
-	/**
-	 * Uses the configured message converter to first convert the payload and headers to a
-	 * {@link PubsubMessage} and then publish it.
-	 */
-	@Override
-	public <T> ListenableFuture<String> publish(String topic, T payload,
-			Map<String, String> headers) {
-		return this.pubSubPublisherTemplate.publish(topic, payload, headers);
-	}
+  /**
+   * Uses the configured message converter to first convert the payload and headers to a {@link
+   * PubsubMessage} and then publish it.
+   */
+  @Override
+  public <T> ListenableFuture<String> publish(
+      String topic, T payload, Map<String, String> headers) {
+    return this.pubSubPublisherTemplate.publish(topic, payload, headers);
+  }
 
-	@Override
-	public <T> ListenableFuture<String> publish(String topic, T payload) {
-		return this.pubSubPublisherTemplate.publish(topic, payload, null);
-	}
+  @Override
+  public <T> ListenableFuture<String> publish(String topic, T payload) {
+    return this.pubSubPublisherTemplate.publish(topic, payload, null);
+  }
 
-	@Override
-	public ListenableFuture<String> publish(final String topic, PubsubMessage pubsubMessage) {
-		return this.pubSubPublisherTemplate.publish(topic, pubsubMessage);
-	}
+  @Override
+  public ListenableFuture<String> publish(final String topic, PubsubMessage pubsubMessage) {
+    return this.pubSubPublisherTemplate.publish(topic, pubsubMessage);
+  }
 
-	@Override
-	public Subscriber subscribe(String subscription, Consumer<BasicAcknowledgeablePubsubMessage> messageConsumer) {
-		return this.pubSubSubscriberTemplate.subscribe(subscription, messageConsumer);
-	}
+  @Override
+  public Subscriber subscribe(
+      String subscription, Consumer<BasicAcknowledgeablePubsubMessage> messageConsumer) {
+    return this.pubSubSubscriberTemplate.subscribe(subscription, messageConsumer);
+  }
 
-	@Override
-	public <T> Subscriber subscribeAndConvert(String subscription,
-			Consumer<ConvertedBasicAcknowledgeablePubsubMessage<T>> messageConsumer,
-			Class<T> payloadType) {
-		return this.pubSubSubscriberTemplate.subscribeAndConvert(subscription, messageConsumer, payloadType);
-	}
+  @Override
+  public <T> Subscriber subscribeAndConvert(
+      String subscription,
+      Consumer<ConvertedBasicAcknowledgeablePubsubMessage<T>> messageConsumer,
+      Class<T> payloadType) {
+    return this.pubSubSubscriberTemplate.subscribeAndConvert(
+        subscription, messageConsumer, payloadType);
+  }
 
+  @Override
+  public List<AcknowledgeablePubsubMessage> pull(
+      String subscription, Integer maxMessages, Boolean returnImmediately) {
+    return this.pubSubSubscriberTemplate.pull(subscription, maxMessages, returnImmediately);
+  }
 
-	@Override
-	public List<AcknowledgeablePubsubMessage> pull(String subscription, Integer maxMessages,
-			Boolean returnImmediately) {
-		return this.pubSubSubscriberTemplate.pull(subscription, maxMessages, returnImmediately);
-	}
+  @Override
+  public ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(
+      String subscription, Integer maxMessages, Boolean returnImmediately) {
+    return this.pubSubSubscriberTemplate.pullAsync(subscription, maxMessages, returnImmediately);
+  }
 
-	@Override
-	public ListenableFuture<List<AcknowledgeablePubsubMessage>> pullAsync(String subscription, Integer maxMessages,
-																			Boolean returnImmediately) {
-		return this.pubSubSubscriberTemplate.pullAsync(subscription, maxMessages, returnImmediately);
-	}
+  @Override
+  public <T> List<ConvertedAcknowledgeablePubsubMessage<T>> pullAndConvert(
+      String subscription, Integer maxMessages, Boolean returnImmediately, Class<T> payloadType) {
+    return this.pubSubSubscriberTemplate.pullAndConvert(
+        subscription, maxMessages, returnImmediately, payloadType);
+  }
 
-	@Override
-	public <T> List<ConvertedAcknowledgeablePubsubMessage<T>> pullAndConvert(String subscription, Integer maxMessages,
-			Boolean returnImmediately, Class<T> payloadType) {
-		return this.pubSubSubscriberTemplate.pullAndConvert(subscription, maxMessages, returnImmediately, payloadType);
-	}
+  @Override
+  public <T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(
+      String subscription, Integer maxMessages, Boolean returnImmediately, Class<T> payloadType) {
+    return this.pubSubSubscriberTemplate.pullAndConvertAsync(
+        subscription, maxMessages, returnImmediately, payloadType);
+  }
 
-	@Override
-	public <T> ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<T>>> pullAndConvertAsync(String subscription,
-			Integer maxMessages, Boolean returnImmediately, Class<T> payloadType) {
-		return this.pubSubSubscriberTemplate.pullAndConvertAsync(subscription, maxMessages, returnImmediately, payloadType);
-	}
+  @Override
+  public List<PubsubMessage> pullAndAck(
+      String subscription, Integer maxMessages, Boolean returnImmediately) {
+    return this.pubSubSubscriberTemplate.pullAndAck(subscription, maxMessages, returnImmediately);
+  }
 
-	@Override
-	public List<PubsubMessage> pullAndAck(String subscription, Integer maxMessages,
-			Boolean returnImmediately) {
-		return this.pubSubSubscriberTemplate.pullAndAck(subscription, maxMessages, returnImmediately);
-	}
+  @Override
+  public ListenableFuture<List<PubsubMessage>> pullAndAckAsync(
+      String subscription, Integer maxMessages, Boolean returnImmediately) {
+    return this.pubSubSubscriberTemplate.pullAndAckAsync(
+        subscription, maxMessages, returnImmediately);
+  }
 
-	@Override
-	public ListenableFuture<List<PubsubMessage>> pullAndAckAsync(String subscription, Integer maxMessages, Boolean returnImmediately) {
-		return this.pubSubSubscriberTemplate.pullAndAckAsync(subscription, maxMessages, returnImmediately);
-	}
+  @Override
+  public PubsubMessage pullNext(String subscription) {
+    return this.pubSubSubscriberTemplate.pullNext(subscription);
+  }
 
-	@Override
-	public PubsubMessage pullNext(String subscription) {
-		return this.pubSubSubscriberTemplate.pullNext(subscription);
-	}
+  @Override
+  public ListenableFuture<PubsubMessage> pullNextAsync(String subscription) {
+    return this.pubSubSubscriberTemplate.pullNextAsync(subscription);
+  }
 
-	@Override
-	public ListenableFuture<PubsubMessage> pullNextAsync(String subscription) {
-		return this.pubSubSubscriberTemplate.pullNextAsync(subscription);
-	}
+  @Override
+  public ListenableFuture<Void> ack(
+      Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages) {
+    return this.pubSubSubscriberTemplate.ack(acknowledgeablePubsubMessages);
+  }
 
-	@Override
-	public ListenableFuture<Void> ack(
-			Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages) {
-		return this.pubSubSubscriberTemplate.ack(acknowledgeablePubsubMessages);
-	}
+  @Override
+  public ListenableFuture<Void> nack(
+      Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages) {
+    return this.pubSubSubscriberTemplate.nack(acknowledgeablePubsubMessages);
+  }
 
-	@Override
-	public ListenableFuture<Void> nack(
-			Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages) {
-		return this.pubSubSubscriberTemplate.nack(acknowledgeablePubsubMessages);
-	}
+  @Override
+  public ListenableFuture<Void> modifyAckDeadline(
+      Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages,
+      int ackDeadlineSeconds) {
+    return this.pubSubSubscriberTemplate.modifyAckDeadline(
+        acknowledgeablePubsubMessages, ackDeadlineSeconds);
+  }
 
-	@Override
-	public ListenableFuture<Void> modifyAckDeadline(
-			Collection<? extends AcknowledgeablePubsubMessage> acknowledgeablePubsubMessages, int ackDeadlineSeconds) {
-		return this.pubSubSubscriberTemplate.modifyAckDeadline(acknowledgeablePubsubMessages, ackDeadlineSeconds);
-	}
+  public PublisherFactory getPublisherFactory() {
+    return this.pubSubPublisherTemplate.getPublisherFactory();
+  }
 
-	public PublisherFactory getPublisherFactory() {
-		return this.pubSubPublisherTemplate.getPublisherFactory();
-	}
-
-	public SubscriberFactory getSubscriberFactory() {
-		return this.pubSubSubscriberTemplate.getSubscriberFactory();
-	}
-
+  public SubscriberFactory getSubscriberFactory() {
+    return this.pubSubSubscriberTemplate.getSubscriberFactory();
+  }
 }

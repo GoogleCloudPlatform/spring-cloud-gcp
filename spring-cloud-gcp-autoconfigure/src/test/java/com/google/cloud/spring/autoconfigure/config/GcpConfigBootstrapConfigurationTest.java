@@ -16,71 +16,71 @@
 
 package com.google.cloud.spring.autoconfigure.config;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
+/** Tests for Config bootstrap configuration. */
+class GcpConfigBootstrapConfigurationTest {
 
-/**
- * Tests for Config bootstrap configuration.
- *
- * @author Jisha Abubaker
- * @author João André Martins
- * @author Chengyuan Zhao
- */
-public class GcpConfigBootstrapConfigurationTest {
+  private ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(AutoConfigurations.of(GcpConfigBootstrapConfiguration.class))
+          .withUserConfiguration(TestConfiguration.class);
 
-	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(GcpConfigBootstrapConfiguration.class))
-			.withUserConfiguration(TestConfiguration.class);
+  @Test
+  void testConfigurationValueDefaultsAreAsExpected() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.config.enabled=true")
+        .run(
+            context -> {
+              GcpConfigProperties config = context.getBean(GcpConfigProperties.class);
+              assertThat(config.getName()).isEqualTo("application");
+              assertThat(config.getProfile()).isEqualTo("default");
+              assertThat(config.getTimeoutMillis()).isEqualTo(60000);
+              assertThat(config.isEnabled()).isTrue();
+            });
+  }
 
-	@Test
-	public void testConfigurationValueDefaultsAreAsExpected() {
-		this.contextRunner.withPropertyValues("spring.cloud.gcp.config.enabled=true")
-				.run(context -> {
-					GcpConfigProperties config = context.getBean(GcpConfigProperties.class);
-					assertThat(config.getName()).isEqualTo("application");
-					assertThat(config.getProfile()).isEqualTo("default");
-					assertThat(config.getTimeoutMillis()).isEqualTo(60000);
-					assertThat(config.isEnabled()).isTrue();
-		});
-	}
+  @Test
+  void testConfigurationValuesAreCorrectlyLoaded() {
+    this.contextRunner
+        .withPropertyValues(
+            "spring.application.name=myapp",
+            "spring.profiles.active=prod",
+            "spring.cloud.gcp.config.timeoutMillis=120000",
+            "spring.cloud.gcp.config.enabled=true",
+            "spring.cloud.gcp.config.project-id=pariah")
+        .run(
+            context -> {
+              GcpConfigProperties config = context.getBean(GcpConfigProperties.class);
+              assertThat(config.getName()).isEqualTo("myapp");
+              assertThat(config.getProfile()).isEqualTo("prod");
+              assertThat(config.getTimeoutMillis()).isEqualTo(120000);
+              assertThat(config.isEnabled()).isTrue();
+              assertThat(config.getProjectId()).isEqualTo("pariah");
+            });
+  }
 
-	@Test
-	public void testConfigurationValuesAreCorrectlyLoaded() {
-		this.contextRunner.withPropertyValues("spring.application.name=myapp",
-				"spring.profiles.active=prod",
-				"spring.cloud.gcp.config.timeoutMillis=120000",
-				"spring.cloud.gcp.config.enabled=true",
-				"spring.cloud.gcp.config.project-id=pariah")
-				.run(context -> {
-					GcpConfigProperties config = context.getBean(GcpConfigProperties.class);
-					assertThat(config.getName()).isEqualTo("myapp");
-					assertThat(config.getProfile()).isEqualTo("prod");
-					assertThat(config.getTimeoutMillis()).isEqualTo(120000);
-					assertThat(config.isEnabled()).isTrue();
-					assertThat(config.getProjectId()).isEqualTo("pariah");
-				});
-	}
+  @Test
+  void testConfigurationDisabled() {
+    this.contextRunner.run(
+        context ->
+            assertThatExceptionOfType(NoSuchBeanDefinitionException.class)
+                .isThrownBy(() -> context.getBean(GcpConfigProperties.class)));
+  }
 
-	@Test
-	public void testConfigurationDisabled() {
-		this.contextRunner.run(context ->
-				assertThatExceptionOfType(NoSuchBeanDefinitionException.class).isThrownBy(() ->
-						context.getBean(GcpConfigProperties.class)));
-	}
+  private static class TestConfiguration {
 
-	private static class TestConfiguration {
-
-		@Bean
-		public GoogleConfigPropertySourceLocator googleConfigPropertySourceLocator() {
-			return mock(GoogleConfigPropertySourceLocator.class);
-		}
-	}
+    @Bean
+    public GoogleConfigPropertySourceLocator googleConfigPropertySourceLocator() {
+      return mock(GoogleConfigPropertySourceLocator.class);
+    }
+  }
 }

@@ -17,27 +17,22 @@
 package com.google.cloud.spring.data.spanner.repository.config;
 
 import java.lang.annotation.Annotation;
-
 import org.springframework.data.repository.config.RepositoryBeanDefinitionRegistrarSupport;
 import org.springframework.data.repository.config.RepositoryConfigurationExtension;
 
 /**
  * A boilerplate class to register Spanner repositories.
  *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
-public class SpannerRepositoriesRegistrar
-		extends RepositoryBeanDefinitionRegistrarSupport {
-	@Override
-	protected Class<? extends Annotation> getAnnotation() {
-		return EnableSpannerRepositories.class;
-	}
+public class SpannerRepositoriesRegistrar extends RepositoryBeanDefinitionRegistrarSupport {
+  @Override
+  protected Class<? extends Annotation> getAnnotation() {
+    return EnableSpannerRepositories.class;
+  }
 
-	@Override
-	protected RepositoryConfigurationExtension getExtension() {
-		return new SpannerRepositoryConfigurationExtension();
-	}
+  @Override
+  protected RepositoryConfigurationExtension getExtension() {
+    return new SpannerRepositoryConfigurationExtension();
+  }
 }

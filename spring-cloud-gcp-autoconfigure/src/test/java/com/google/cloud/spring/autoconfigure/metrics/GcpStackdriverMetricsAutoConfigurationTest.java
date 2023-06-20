@@ -16,13 +16,14 @@
 
 package com.google.cloud.spring.autoconfigure.metrics;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import io.micrometer.stackdriver.StackdriverConfig;
 import io.micrometer.stackdriver.StackdriverMeterRegistry;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverMetricsExportAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -30,44 +31,47 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/** Tests for auto-config. */
+class GcpStackdriverMetricsAutoConfigurationTest {
 
-/**
- * Tests for auto-config.
- *
- * @author Eddú Meléndez
- */
-public class GcpStackdriverMetricsAutoConfigurationTest {
+  private ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(
+              AutoConfigurations.of(
+                  GcpContextAutoConfiguration.class,
+                  GcpStackdriverMetricsAutoConfiguration.class,
+                  StackdriverMetricsExportAutoConfiguration.class,
+                  MetricsAutoConfiguration.class))
+          .withUserConfiguration(Config.class);
 
-	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(GcpContextAutoConfiguration.class, GcpStackdriverMetricsAutoConfiguration.class,
-					StackdriverMetricsExportAutoConfiguration.class, MetricsAutoConfiguration.class))
-			.withUserConfiguration(Config.class);
+  @Test
+  void testProjectIdIsSet() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.project-id=demo-project")
+        .run(
+            context ->
+                assertThat(context)
+                    .hasSingleBean(StackdriverConfig.class)
+                    .hasSingleBean(StackdriverMeterRegistry.class));
+  }
 
-	@Test
-	public void testProjectIdIsSet() {
-		this.contextRunner
-				.withPropertyValues("spring.cloud.gcp.project-id=demo-project")
-				.run(context -> assertThat(context).hasSingleBean(StackdriverConfig.class)
-						.hasSingleBean(StackdriverMeterRegistry.class));
-	}
+  @Test
+  void testMetricsProjectIdIsSet() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.metrics.project-id=demo-project")
+        .run(
+            context ->
+                assertThat(context)
+                    .hasSingleBean(StackdriverConfig.class)
+                    .hasSingleBean(StackdriverMeterRegistry.class));
+  }
 
-	@Test
-	public void testMetricsProjectIdIsSet() {
-		this.contextRunner
-				.withPropertyValues("spring.cloud.gcp.metrics.project-id=demo-project")
-				.run(context -> assertThat(context).hasSingleBean(StackdriverConfig.class)
-						.hasSingleBean(StackdriverMeterRegistry.class));
-	}
+  @Configuration
+  static class Config {
 
-	@Configuration
-	static class Config {
-
-		@Bean
-		public CredentialsProvider credentialsProvider() {
-			return NoCredentialsProvider.create();
-		}
-
-	}
-
+    @Bean
+    public CredentialsProvider credentialsProvider() {
+      return NoCredentialsProvider.create();
+    }
+  }
 }

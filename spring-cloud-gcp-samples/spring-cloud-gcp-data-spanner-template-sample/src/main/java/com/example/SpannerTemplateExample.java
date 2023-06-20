@@ -16,96 +16,86 @@
 
 package com.example;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-//import org.springframework.stereotype.Component;
 
-/**
- * Example usage of the Spanner Template.
- *
- * @author Balint Pato
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- */
-
+/** Example usage of the Spanner Template. */
 @SpringBootApplication
 public class SpannerTemplateExample {
-	private static final Log LOGGER = LogFactory.getLog(SpannerTemplateExample.class);
+  private static final Log LOGGER = LogFactory.getLog(SpannerTemplateExample.class);
 
-	@Autowired
-	private SpannerOperations spannerOperations;
+  private static final String TEMPLATE_TRADER_1 = "template_trader1";
 
-	@Autowired
-	private SpannerSchemaUtils spannerSchemaUtils;
+  @Autowired private SpannerOperations spannerOperations;
 
-	@Autowired
-	private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
+  @Autowired private SpannerSchemaUtils spannerSchemaUtils;
 
-	public void runExample() {
-		createTablesIfNotExists();
-		this.spannerOperations.delete(Trader.class, KeySet.all());
-		this.spannerOperations.delete(Trade.class, KeySet.all());
+  @Autowired private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
 
-		Trader trader = new Trader("template_trader1", "John", "Doe");
+  public void runExample() {
+    createTablesIfNotExists();
+    this.spannerOperations.delete(Trader.class, KeySet.all());
+    this.spannerOperations.delete(Trade.class, KeySet.all());
 
-		this.spannerOperations.insert(trader);
+    Trader trader = new Trader(TEMPLATE_TRADER_1, "John", "Doe");
 
-		Trade t = new Trade("1", "BUY", 100.0, 50.0, "STOCK1", "template_trader1", Arrays.asList(99.0, 101.00));
+    this.spannerOperations.insert(trader);
 
-		this.spannerOperations.insert(t);
+    Trade t =
+        new Trade(
+            "1", "BUY", 100.0, 50.0, "STOCK1", TEMPLATE_TRADER_1, Arrays.asList(99.0, 101.00));
 
-		t.setTradeId("2");
-		t.setTraderId("template_trader1");
-		t.setAction("SELL");
-		this.spannerOperations.insert(t);
+    this.spannerOperations.insert(t);
 
-		t.setTradeId("1");
-		t.setTraderId("template_trader2");
-		this.spannerOperations.insert(t);
+    t.setTradeId("2");
+    t.setTraderId(TEMPLATE_TRADER_1);
+    t.setAction("SELL");
+    this.spannerOperations.insert(t);
 
-		List<Trade> tradesByAction = this.spannerOperations.readAll(Trade.class);
-		LOGGER.info("All trades created by the example:");
-		for (Trade trade : tradesByAction) {
-			LOGGER.info(trade);
-		}
-	}
+    t.setTradeId("1");
+    t.setTraderId("template_trader2");
+    this.spannerOperations.insert(t);
 
-	void createTablesIfNotExists() {
-		if (!this.spannerDatabaseAdminTemplate.tableExists("trades_template")) {
-			this.spannerDatabaseAdminTemplate.executeDdlStrings(
-					Arrays.asList(
-							this.spannerSchemaUtils.getCreateTableDdlString(Trade.class)),
-					true);
-		}
+    List<Trade> tradesByAction = this.spannerOperations.readAll(Trade.class);
+    LOGGER.info("All trades created by the example:");
+    for (Trade trade : tradesByAction) {
+      LOGGER.info(trade);
+    }
+  }
 
-		if (!this.spannerDatabaseAdminTemplate.tableExists("traders_template")) {
-			this.spannerDatabaseAdminTemplate.executeDdlStrings(Arrays.asList(
-					this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
-		}
-	}
+  void createTablesIfNotExists() {
+    if (!this.spannerDatabaseAdminTemplate.tableExists("trades_template")) {
+      this.spannerDatabaseAdminTemplate.executeDdlStrings(
+          Collections.singletonList(this.spannerSchemaUtils.getCreateTableDdlString(Trade.class)), true);
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpannerTemplateExample.class, args);
-	}
+    if (!this.spannerDatabaseAdminTemplate.tableExists("traders_template")) {
+      this.spannerDatabaseAdminTemplate.executeDdlStrings(
+          Collections.singletonList(this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
+    }
+  }
 
-	@Bean
-	ApplicationRunner applicationRunner() {
-		return args -> {
-			LOGGER.info("Running the Spanner Template Example.");
-			runExample();
-		};
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(SpannerTemplateExample.class, args);
+  }
+
+  @Bean
+  ApplicationRunner applicationRunner() {
+    return args -> {
+      LOGGER.info("Running the Spanner Template Example.");
+      runExample();
+    };
+  }
 }

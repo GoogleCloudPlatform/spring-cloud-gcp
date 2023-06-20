@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.2</version>
+		<version>2.7.12</version>
 		<relativePath/>
 	</parent>
 
-	<name>Spring Cloud GCP Code Samples</name>
+	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.5.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
@@ -21,19 +21,28 @@
 	<properties>
 		<main.basedir>${basedir}/..</main.basedir>
 
-		<!-- Checkstyle version settings. Keep in sync with ../pom.xml -->
-		<spring-cloud-build-tools.version>3.0.1</spring-cloud-build-tools.version>
-		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
-		<app-engine-maven-plugin.version>2.4.1</app-engine-maven-plugin.version>
-		<spring-native.version>0.10.4</spring-native.version>
+		<!-- Dependency versions -->
+		<spring-native.version>0.12.2</spring-native.version>
 		<google-cloud-graalvm-support.version>0.7.0</google-cloud-graalvm-support.version>
-		<testcontainers.version>1.16.2</testcontainers.version>
-		<skip.surefire.tests>false</skip.surefire.tests>
-		<skip.failsafe.tests>false</skip.failsafe.tests>
+		<testcontainers.version>1.18.3</testcontainers.version>
+
+		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
+		<maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
+		<checkstyle-rules.version>9.3</checkstyle-rules.version>
+
+		<!-- App engine plugin version, used to deploy sample apps -->
+		<app-engine-maven-plugin.version>2.4.4</app-engine-maven-plugin.version>
+
+		<!-- Deploy plugin is skipped for all samples but exists -->
+		<maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
+
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 		<integration-test.tags.include/>
 		<integration-test.tags.exclude/>
-		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+
+		<!-- All checks except for javadoc AND SONAR enforced by default -->
+		<skip.surefire.tests>false</skip.surefire.tests>
+		<skip.failsafe.tests>false</skip.failsafe.tests>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<maven.sources.skip>true</maven.sources.skip>
 		<sonar.skip>true</sonar.skip>
@@ -63,6 +72,8 @@
 		<module>spring-cloud-gcp-integration-pubsub-json-sample</module>
 		<module>spring-cloud-gcp-security-iap-sample</module>
 		<module>spring-cloud-gcp-sql-postgres-sample</module>
+		<module>spring-cloud-gcp-sql-mysql-r2dbc-sample</module>
+		<module>spring-cloud-gcp-sql-postgres-r2dbc-sample</module>
 		<module>spring-cloud-gcp-vision-ocr-demo</module>
 		<module>spring-cloud-gcp-firestore-sample</module>
 		<module>spring-cloud-gcp-data-multi-sample</module>
@@ -75,7 +86,6 @@
 		<module>spring-cloud-gcp-kms-sample</module>
 	</modules>
 
-	<!-- Checkstyle on samples invoked during CI or manually when running locally. -->
 	<profiles>
 		<profile>
 			<id>spring-cloud-gcp-ci-it</id>
@@ -93,6 +103,7 @@
 								<spring.cloud.gcp.sql.instance-connection-name>spring-cloud-gcp-ci:us-central1:testmysql</spring.cloud.gcp.sql.instance-connection-name>
 								<spring.cloud.gcp.sql.database-name>code_samples_test_db</spring.cloud.gcp.sql.database-name>
 								<spring.datasource.password>test</spring.datasource.password>
+								<spring.r2dbc.password>test</spring.r2dbc.password>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
@@ -160,6 +171,18 @@
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>${maven-deploy-plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>${maven-checkstyle-plugin.version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>${checkstyle-rules.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -182,89 +205,34 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${maven-checkstyle-plugin.version}</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.springframework.cloud</groupId>
-						<artifactId>spring-cloud-build-tools</artifactId>
-						<version>${spring-cloud-build-tools.version}</version>
-					</dependency>
-				</dependencies>
 				<executions>
 					<execution>
-						<id>checkstyle-validation</id>
+						<id>validate-google-style</id>
 						<phase>validate</phase>
-						<configuration>
-							<propertyExpansion>
-								checkstyle.build.directory=${project.build.directory}
-								checkstyle.suppressions.file=${checkstyle.suppressions.file}
-								checkstyle.additional.suppressions.file=${checkstyle.additional.suppressions.file}
-							</propertyExpansion>
-							<configLocation>checkstyle.xml</configLocation>
-							<headerLocation>checkstyle-header.txt</headerLocation>
-							<consoleOutput>true</consoleOutput>
-							<includeTestSourceDirectory>true</includeTestSourceDirectory>
-							<failsOnError>true</failsOnError>
-							<failOnViolation>true</failOnViolation>
-							<suppressionsLocation>../src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
-							<violationSeverity>warning</violationSeverity>
-							<!-- exclude generated Spring AOT classes -->
-							<excludes>org/springframework/**/*.*</excludes>
-						</configuration>
 						<goals>
 							<goal>check</goal>
 						</goals>
+						<configuration>
+							<configLocation>google_checks.xml</configLocation>
+							<suppressionsLocation>../src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+							<includeTestSourceDirectory>true</includeTestSourceDirectory>
+							<failOnViolation>true</failOnViolation>
+							<violationSeverity>warning</violationSeverity>
+						</configuration>
+					</execution>
+					<execution>
+						<id>validate-custom</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<configLocation>../src/checkstyle/custom-checks.xml</configLocation>
+							<headerLocation>../src/checkstyle/java.header</headerLocation>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
-
-	<repositories>
-		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-release</id>
-			<name>Spring release</name>
-			<url>https://repo.spring.io/release</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-release</id>
-			<name>Spring release</name>
-			<url>https://repo.spring.io/release</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-		</pluginRepository>
-	</pluginRepositories>
 </project>

@@ -19,20 +19,16 @@ package com.example;
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 
-/**
- * An example band type that is stored in the same Kind with its parent type.
- *
- * @author Chengyuan Zhao
- */
+/** An example band type that is stored in the same Kind with its parent type. */
 @Entity
 @DiscriminatorValue("bluegrass")
 public class BluegrassBand extends Band {
-	public BluegrassBand(String name) {
-		super(name);
-	}
+  public BluegrassBand(String name) {
+    super(name);
+  }
 
-	@Override
-	public String toString() {
-		return this.name + " is into progressive bluegrass and folk-country.";
-	}
+  @Override
+  public String toString() {
+    return this.name + " is into progressive bluegrass and folk-country.";
+  }
 }

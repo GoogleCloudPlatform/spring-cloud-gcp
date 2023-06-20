@@ -19,41 +19,47 @@ package com.example;
 import java.util.Objects;
 
 public class Address {
-	private String streetName;
+  private String streetName;
 
-	private Long streetNumber;
+  private Long streetNumber;
 
-	private Boolean active;
+  private Boolean active;
 
-	public Address(Long streetNumber, String streetName, Boolean active) {
-		this.streetName = streetName;
-		this.streetNumber = streetNumber;
-		this.active = active;
-	}
+  public Address(Long streetNumber, String streetName, Boolean active) {
+    this.streetName = streetName;
+    this.streetNumber = streetNumber;
+    this.active = active;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		Address that = (Address) o;
-		return active == that.active && Objects.equals(streetName, that.streetName) && Objects.equals(streetNumber, that.streetNumber);
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Address)) {
+      return false;
+    }
+    Address that = (Address) o;
+    return Objects.equals(active, that.active)
+        && Objects.equals(streetName, that.streetName)
+        && Objects.equals(streetNumber, that.streetNumber);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(streetName, streetNumber, active);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(streetName, streetNumber, active);
+  }
 
-	@Override
-	public String toString() {
-		return "Address{" +
-				"number =" + streetNumber +
-				", street Name='" + streetName + '\'' +
-				", active=" + active +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "Address{"
+        + "number ="
+        + streetNumber
+        + ", street Name='"
+        + streetName
+        + '\''
+        + ", active="
+        + active
+        + '}';
+  }
 }

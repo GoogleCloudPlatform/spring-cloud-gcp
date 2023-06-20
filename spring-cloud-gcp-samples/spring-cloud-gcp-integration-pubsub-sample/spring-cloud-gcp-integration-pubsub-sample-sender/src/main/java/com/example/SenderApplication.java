@@ -20,7 +20,6 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -28,42 +27,39 @@ import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.MessageHandler;
 
-/**
- * Spring Integration Channel Adapters for Google Cloud Pub/Sub code sample.
- *
- * @author João André Martins
- */
+/** Spring Integration Channel Adapters for Google Cloud Pub/Sub code sample. */
 @SpringBootApplication
 public class SenderApplication {
 
-	private static final Log LOGGER = LogFactory.getLog(SenderApplication.class);
+  private static final Log LOGGER = LogFactory.getLog(SenderApplication.class);
 
-	public static void main(String[] args) {
-		SpringApplication.run(SenderApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(SenderApplication.class, args);
+  }
 
-	@Bean
-	@ServiceActivator(inputChannel = "pubSubOutputChannel")
-	public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
-		PubSubMessageHandler adapter =
-				new PubSubMessageHandler(pubsubTemplate, "exampleTopic");
-		adapter.setFailureCallback(
-				(exception, message) -> LOGGER.info("There was an error sending the message: " + message.getPayload()));
+  @Bean
+  @ServiceActivator(inputChannel = "pubSubOutputChannel")
+  public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
+    PubSubMessageHandler adapter = new PubSubMessageHandler(pubsubTemplate, "exampleTopic");
+    adapter.setFailureCallback(
+        (exception, message) ->
+            LOGGER.info("There was an error sending the message: " + message.getPayload()));
 
-		adapter.setSuccessCallback(
-				(messageId, message) -> LOGGER.info(
-						"Message was sent successfully;\n\tpublish ID = " + messageId
-								+ "\n\tmessage=" + message.getPayload()));
+    adapter.setSuccessCallback(
+        (messageId, message) ->
+            LOGGER.info(
+                "Message was sent successfully;\n\tpublish ID = "
+                    + messageId
+                    + "\n\tmessage="
+                    + message.getPayload()));
 
-		return adapter;
-	}
+    return adapter;
+  }
 
-	/**
-	 * interface for sending a message to Pub/Sub.
-	 */
-	@MessagingGateway(defaultRequestChannel = "pubSubOutputChannel")
-	public interface PubSubOutboundGateway {
+  /** interface for sending a message to Pub/Sub. */
+  @MessagingGateway(defaultRequestChannel = "pubSubOutputChannel")
+  public interface PubSubOutboundGateway {
 
-		void sendToPubSub(String text);
-	}
+    void sendToPubSub(String text);
+  }
 }

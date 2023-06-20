@@ -16,66 +16,59 @@
 
 package com.google.cloud.spring.storage.integration.inbound;
 
+import com.google.cloud.spring.storage.integration.GcsFileInfo;
+import com.google.cloud.spring.storage.integration.filters.GcsPersistentAcceptOnceFileListFilter;
+import com.google.cloud.storage.BlobInfo;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.google.cloud.spring.storage.integration.GcsFileInfo;
-import com.google.cloud.spring.storage.integration.filters.GcsPersistentAcceptOnceFileListFilter;
-import com.google.cloud.storage.BlobInfo;
-
 import org.springframework.integration.file.remote.AbstractFileInfo;
 import org.springframework.integration.file.remote.AbstractRemoteFileStreamingMessageSource;
 import org.springframework.integration.file.remote.RemoteFileTemplate;
 import org.springframework.integration.metadata.SimpleMetadataStore;
 
-/**
- * A streaming message source for Google Cloud Storage.
- *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Lukas Gemela
- */
+/** A streaming message source for Google Cloud Storage. */
 public class GcsStreamingMessageSource extends AbstractRemoteFileStreamingMessageSource<BlobInfo> {
 
-	public GcsStreamingMessageSource(RemoteFileTemplate<BlobInfo> template) {
-		this(template, null);
-	}
+  public GcsStreamingMessageSource(RemoteFileTemplate<BlobInfo> template) {
+    this(template, null);
+  }
 
-	/**
-	 * Creates a {@link GcsStreamingMessageSource} with a {@code comparator} which controls the order
-	 * that files are processed in.
-	 * @param template template making remote file calls to Google Cloud Storage
-	 * @param comparator defines the order that files should be processed based on {@link BlobInfo}.
+  /**
+   * Creates a {@link GcsStreamingMessageSource} with a {@code comparator} which controls the order
+   * that files are processed in.
    *
-	 * @since 1.2
-	 */
-	public GcsStreamingMessageSource(RemoteFileTemplate<BlobInfo> template, Comparator<BlobInfo> comparator) {
-		super(template, comparator);
-		doSetFilter(new GcsPersistentAcceptOnceFileListFilter(new SimpleMetadataStore(), "gcsStreamingMessageSource"));
-	}
+   * @param template template making remote file calls to Google Cloud Storage
+   * @param comparator defines the order that files should be processed based on {@link BlobInfo}.
+   * @since 1.2
+   */
+  public GcsStreamingMessageSource(
+      RemoteFileTemplate<BlobInfo> template, Comparator<BlobInfo> comparator) {
+    super(template, comparator);
+    doSetFilter(
+        new GcsPersistentAcceptOnceFileListFilter(
+            new SimpleMetadataStore(), "gcsStreamingMessageSource"));
+  }
 
-	@Override
-	public String getComponentType() {
-		return "gcp:gcs-inbound-streaming-channel-adapter";
-	}
+  @Override
+  public String getComponentType() {
+    return "gcp:gcs-inbound-streaming-channel-adapter";
+  }
 
-	@Override
-	public void setRemoteFileSeparator(String remoteFileSeparator) {
-		throw new UnsupportedOperationException("Google Cloud Storage doesn't support separators other than '/'.");
-	}
+  @Override
+  public void setRemoteFileSeparator(String remoteFileSeparator) {
+    throw new UnsupportedOperationException(
+        "Google Cloud Storage doesn't support separators other than '/'.");
+  }
 
-	@Override
-	protected List<AbstractFileInfo<BlobInfo>> asFileInfoList(Collection<BlobInfo> collection) {
-		return collection.stream()
-				.map(GcsFileInfo::new)
-				.collect(Collectors.toList());
-	}
+  @Override
+  protected List<AbstractFileInfo<BlobInfo>> asFileInfoList(Collection<BlobInfo> collection) {
+    return collection.stream().map(GcsFileInfo::new).collect(Collectors.toList());
+  }
 
-	@Override
-	protected boolean isDirectory(BlobInfo blobInfo) {
-		return blobInfo.isDirectory();
-	}
+  @Override
+  protected boolean isDirectory(BlobInfo blobInfo) {
+    return blobInfo.isDirectory();
+  }
 }

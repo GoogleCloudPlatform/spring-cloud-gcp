@@ -16,43 +16,37 @@
 
 package com.google.cloud.spring.data.datastore.repository.support;
 
-import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
-import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
-import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
-import org.junit.Before;
-import org.junit.Test;
-
-import org.springframework.data.repository.core.support.RepositoryFactorySupport;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-/**
- * Tests for the Datastore Repository factory bean.
- *
- * @author Chengyuan Zhao
- */
-public class DatastoreRepositoryFactoryBeanTests {
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
-	private DatastoreRepositoryFactoryBean<Object, String> datastoreRepositoryFactoryBean;
+/** Tests for the Datastore Repository factory bean. */
+class DatastoreRepositoryFactoryBeanTests {
 
-	private DatastoreMappingContext datastoreMappingContext = new DatastoreMappingContext();
+  private DatastoreRepositoryFactoryBean<Object, String> datastoreRepositoryFactoryBean;
 
-	private DatastoreTemplate datastoreTemplate = mock(DatastoreTemplate.class);
+  private DatastoreMappingContext datastoreMappingContext = new DatastoreMappingContext();
 
-	@Before
-	public void setUp() {
-		this.datastoreRepositoryFactoryBean = new DatastoreRepositoryFactoryBean(
-				DatastoreRepository.class);
-		this.datastoreRepositoryFactoryBean
-				.setDatastoreMappingContext(this.datastoreMappingContext);
-		this.datastoreRepositoryFactoryBean.setDatastoreTemplate(this.datastoreTemplate);
-	}
+  private DatastoreTemplate datastoreTemplate = mock(DatastoreTemplate.class);
 
-	@Test
-	public void createRepositoryFactoryTest() {
-		RepositoryFactorySupport factory = this.datastoreRepositoryFactoryBean
-				.createRepositoryFactory();
-		assertThat(factory.getClass()).isEqualTo(DatastoreRepositoryFactory.class);
-	}
+  @BeforeEach
+  void setUp() {
+    this.datastoreRepositoryFactoryBean =
+        new DatastoreRepositoryFactoryBean(DatastoreRepository.class);
+    this.datastoreRepositoryFactoryBean.setDatastoreMappingContext(this.datastoreMappingContext);
+    this.datastoreRepositoryFactoryBean.setDatastoreTemplate(this.datastoreTemplate);
+  }
+
+  @Test
+  void createRepositoryFactoryTest() {
+    RepositoryFactorySupport factory =
+        this.datastoreRepositoryFactoryBean.createRepositoryFactory();
+    assertThat(factory.getClass()).isEqualTo(DatastoreRepositoryFactory.class);
+  }
 }

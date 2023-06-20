@@ -19,7 +19,6 @@ package com.google.cloud.spring.autoconfigure.firestore;
 import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
 import com.google.cloud.spring.data.firestore.repository.config.FirestoreRepositoryConfigurationExtension;
 import com.google.cloud.spring.data.firestore.repository.support.FirestoreRepositoryFactoryBean;
-
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -30,16 +29,15 @@ import org.springframework.context.annotation.Import;
 /**
  * Automatically enables Firestore repositories support.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(FirestoreReactiveRepository.class)
-@ConditionalOnMissingBean({ FirestoreRepositoryFactoryBean.class,
-		FirestoreRepositoryConfigurationExtension.class })
+@ConditionalOnMissingBean({
+  FirestoreRepositoryFactoryBean.class,
+  FirestoreRepositoryConfigurationExtension.class
+})
 @ConditionalOnProperty(value = "spring.cloud.gcp.firestore.enabled", matchIfMissing = true)
-@Import({ FirestoreRepositoriesAutoConfigureRegistrar.class })
+@Import({FirestoreRepositoriesAutoConfigureRegistrar.class})
 @AutoConfigureBefore(GcpFirestoreAutoConfiguration.class)
-public class FirestoreRepositoriesAutoConfiguration {
-}
+public class FirestoreRepositoriesAutoConfiguration {}

@@ -16,53 +16,47 @@
 
 package com.google.cloud.spring.pubsub.core.publisher;
 
-import java.util.Map;
-
 import com.google.pubsub.v1.PubsubMessage;
-
+import java.util.Map;
 import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * An abstraction for Google Cloud Pub/Sub publisher operations.
  *
- * @author Vinicius Carvalho
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Doug Hoard
- *
  * @since 1.1
  */
 public interface PubSubPublisherOperations {
 
-	/**
-	 * Send a message to Pub/Sub.
-	 * @param topic canonical topic name, e.g., "topicName", or the fully-qualified topic name in the
-	 * {@code projects/<project_name>/topics/<topic_name>} format
-	 * @param payload an object that will be serialized and sent
-	 * @param headers the headers to publish
-	 * @param <T> the type of the payload to publish
-	 * @return the listenable future of the call
-	 */
-	<T> ListenableFuture<String> publish(String topic, T payload, Map<String, String> headers);
+  /**
+   * Send a message to Pub/Sub.
+   *
+   * @param topic short topic name, e.g., "topicName", or the fully-qualified topic name in the
+   *     {@code projects/[project_name]/topics/[topic_name]} format
+   * @param payload an object that will be serialized and sent
+   * @param headers the headers to publish
+   * @param <T> the type of the payload to publish
+   * @return the listenable future of the call
+   */
+  <T> ListenableFuture<String> publish(String topic, T payload, Map<String, String> headers);
 
-	/**
-	 * Send a message to Pub/Sub.
-	 * @param topic canonical topic name, e.g., "topicName", or the fully-qualified topic name in the
-	 * {@code projects/<project_name>/topics/<topic_name>} format
-	 * @param payload an object that will be serialized and sent
-	 * @param <T> the type of the payload to publish
-	 * @return the listenable future of the call
-	 */
-	<T> ListenableFuture<String> publish(String topic, T payload);
+  /**
+   * Send a message to Pub/Sub.
+   *
+   * @param topic short topic name, e.g., "topicName", or the fully-qualified topic name in the
+   *     {@code projects/[project_name]/topics/[topic_name]} format
+   * @param payload an object that will be serialized and sent
+   * @param <T> the type of the payload to publish
+   * @return the listenable future of the call
+   */
+  <T> ListenableFuture<String> publish(String topic, T payload);
 
-	/**
-	 * Send a message to Pub/Sub.
-	 * @param topic canonical topic name, e.g., "topicName", or the fully-qualified topic name in the
-	 * {@code projects/<project_name>/topics/<topic_name>} format
-	 * @param pubsubMessage a Google Cloud Pub/Sub API message
-	 * @return the listenable future of the call
-	 */
-	ListenableFuture<String> publish(String topic, PubsubMessage pubsubMessage);
-
+  /**
+   * Send a message to Pub/Sub.
+   *
+   * @param topic short topic name, e.g., "topicName", or the fully-qualified topic name in the
+   *     {@code projects/[project_name]/topics/[topic_name]} format
+   * @param pubsubMessage a Google Cloud Pub/Sub API message
+   * @return the listenable future of the call
+   */
+  ListenableFuture<String> publish(String topic, PubsubMessage pubsubMessage);
 }

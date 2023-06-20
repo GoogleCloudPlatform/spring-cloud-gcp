@@ -16,6 +16,14 @@
 
 package com.google.cloud.spring.data.spanner.core;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.cloud.spanner.AbortedException;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.ErrorCode;
@@ -25,14 +33,11 @@ import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionManager;
 import com.google.cloud.spanner.TransactionManager.TransactionState;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.UnexpectedRollbackException;
@@ -40,213 +45,188 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+/** Tests for the Spanner transaction manager. */
+class SpannerTransactionManagerTests {
 
-/**
- * Tests for the Spanner transaction manager.
- *
- * @author Alexander Khimich
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
- */
-public class SpannerTransactionManagerTests {
+  @Mock DatabaseClient databaseClient;
 
-	/**
-	 * checks the exception for messages and types.
-	 */
-	@Rule
-	public ExpectedException expectedEx = ExpectedException.none();
+  @Mock TransactionContext transactionContext;
 
-	@Mock
-	DatabaseClient databaseClient;
+  @Mock TransactionManager transactionManager;
 
-	@Mock
-	TransactionContext transactionContext;
+  @Mock DefaultTransactionStatus status;
 
-	@Mock
-	TransactionManager transactionManager;
+  SpannerTransactionManager.Tx tx;
 
-	@Mock
-	DefaultTransactionStatus status;
+  SpannerTransactionManager manager;
 
-	SpannerTransactionManager.Tx tx;
+  @BeforeEach
+  void initMocks() {
+    MockitoAnnotations.initMocks(this);
 
-	SpannerTransactionManager manager;
+    this.manager = new SpannerTransactionManager(() -> this.databaseClient);
 
-	@Before
-	public void initMocks() {
-		MockitoAnnotations.initMocks(this);
+    this.tx = new SpannerTransactionManager.Tx(databaseClient);
 
-		this.manager = new SpannerTransactionManager(() -> this.databaseClient);
+    when(status.getTransaction()).thenReturn(tx);
 
-		this.tx = new SpannerTransactionManager.Tx(databaseClient);
+    when(databaseClient.transactionManager()).thenReturn(this.transactionManager);
 
-		when(status.getTransaction()).thenReturn(tx);
+    TransactionSynchronizationManager.bindResource(this.databaseClient, tx);
+  }
 
-		when(databaseClient.transactionManager()).thenReturn(this.transactionManager);
+  @Test
+  void testDoGetTransactionStarted() {
+    when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
+    tx.transactionManager = transactionManager;
+    tx.transactionContext = transactionContext;
 
-		TransactionSynchronizationManager.bindResource(this.databaseClient, tx);
-	}
+    Assert.assertEquals(manager.doGetTransaction(), tx);
 
-	@Test
-	public void testDoGetTransactionStarted() {
-		when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
-		tx.transactionManager = transactionManager;
-		tx.transactionContext = transactionContext;
+    verify(this.databaseClient, never()).transactionManager();
+  }
 
-		Assert.assertEquals(manager.doGetTransaction(), tx);
+  @Test
+  void testDoGetTransactionStartedReadOnly() {
+    tx.transactionManager = transactionManager;
+    tx.transactionContext = transactionContext;
+    tx.isReadOnly = true;
 
-		verify(this.databaseClient, never()).transactionManager();
-	}
+    Assert.assertEquals(manager.doGetTransaction(), tx);
 
-	@Test
-	public void testDoGetTransactionStartedReadOnly() {
-		tx.transactionManager = transactionManager;
-		tx.transactionContext = transactionContext;
-		tx.isReadOnly = true;
+    verify(this.databaseClient, never()).transactionManager();
+  }
 
-		Assert.assertEquals(manager.doGetTransaction(), tx);
+  @Test
+  void testDoGetTransactionAborted() {
+    TransactionManager transactionManagerAborted = mock(TransactionManager.class);
+    when(transactionManagerAborted.getState()).thenReturn(TransactionState.ABORTED);
 
-		verify(this.databaseClient, never()).transactionManager();
-	}
+    tx.transactionManager = transactionManager;
 
+    TransactionManager transactionManagerNew = mock(TransactionManager.class);
+    when(transactionManagerNew.getState()).thenReturn(TransactionState.STARTED);
 
-	@Test
-	public void testDoGetTransactionAborted() {
-		TransactionManager transactionManagerAborted = mock(TransactionManager.class);
-		when(transactionManagerAborted.getState()).thenReturn(TransactionState.ABORTED);
+    when(this.databaseClient.transactionManager()).thenReturn(transactionManagerNew);
 
-		tx.transactionManager = transactionManager;
+    Assert.assertNotEquals(
+        "expected a new transaction but got the same one", tx, manager.doGetTransaction());
+  }
 
-		TransactionManager transactionManagerNew = mock(TransactionManager.class);
-		when(transactionManagerNew.getState()).thenReturn(TransactionState.STARTED);
+  @Test
+  void testDoBegin() {
+    when(transactionManager.begin()).thenReturn(transactionContext);
 
-		when(this.databaseClient.transactionManager()).thenReturn(transactionManagerNew);
+    TransactionSynchronizationManager.unbindResource(this.databaseClient);
 
-		Assert.assertNotEquals(
-				"expected a new transaction but got the same one", tx, manager.doGetTransaction());
-	}
+    TransactionDefinition definition = new DefaultTransactionDefinition();
 
-	@Test
-	public void testDoBegin() {
-		when(transactionManager.begin()).thenReturn(transactionContext);
+    manager.doBegin(tx, definition);
 
-		TransactionSynchronizationManager.unbindResource(this.databaseClient);
+    Assert.assertEquals(tx.getTransactionManager(), transactionManager);
+    Assert.assertEquals(tx.getTransactionContext(), transactionContext);
+    Assert.assertFalse(tx.isReadOnly());
 
-		TransactionDefinition definition = new DefaultTransactionDefinition();
+    verify(transactionManager, times(1)).begin();
+  }
 
-		manager.doBegin(tx, definition);
+  @Test
+  void testDoBeginReadOnly() {
+    when(transactionManager.begin()).thenReturn(transactionContext);
 
-		Assert.assertEquals(tx.getTransactionManager(), transactionManager);
-		Assert.assertEquals(tx.getTransactionContext(), transactionContext);
-		Assert.assertFalse(tx.isReadOnly());
+    DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+    definition.setReadOnly(true);
 
-		verify(transactionManager, times(1)).begin();
-	}
+    TransactionSynchronizationManager.unbindResource(this.databaseClient);
 
-	@Test
-	public void testDoBeginReadOnly() {
-		when(transactionManager.begin()).thenReturn(transactionContext);
+    manager.doBegin(tx, definition);
 
-		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-		definition.setReadOnly(true);
+    Assert.assertNull(tx.getTransactionManager());
+    Assert.assertNotNull(tx.getTransactionContext());
+    Assert.assertNotEquals(tx.getTransactionContext(), transactionContext);
+    Assert.assertTrue(tx.isReadOnly());
 
-		TransactionSynchronizationManager.unbindResource(this.databaseClient);
+    verify(transactionManager, times(0)).begin();
+    verify(transactionManager, times(0)).getState();
+  }
 
-		manager.doBegin(tx, definition);
+  @Test
+  void testDoCommit() {
+    when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
+    when(transactionManager.begin()).thenReturn(this.transactionContext);
+    doNothing().when(transactionManager).commit();
 
-		Assert.assertNull(tx.getTransactionManager());
-		Assert.assertNotNull(tx.getTransactionContext());
-		Assert.assertNotEquals(tx.getTransactionContext(), transactionContext);
-		Assert.assertTrue(tx.isReadOnly());
+    tx.transactionManager = transactionManager;
+    tx.transactionContext = transactionContext;
 
-		verify(transactionManager, times(0)).begin();
-		verify(transactionManager, times(0)).getState();
-	}
+    manager.doCommit(status);
 
-	@Test
-	public void testDoCommit() {
-		when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
-		when(transactionManager.begin()).thenReturn(this.transactionContext);
-		doNothing().when(transactionManager).commit();
+    verify(transactionManager, times(1)).commit();
+  }
 
-		tx.transactionManager = transactionManager;
-		tx.transactionContext = transactionContext;
+  @Test
+  void testDoCommitNotStarted() {
+    tx.transactionManager = transactionManager;
+    tx.transactionContext = transactionContext;
 
-		manager.doCommit(status);
+    manager.doCommit(status);
 
-		verify(transactionManager, times(1)).commit();
-	}
+    verify(transactionManager, never()).commit();
+    verify(this.transactionContext, never()).close();
+  }
 
-	@Test
-	public void testDoCommitNotStarted() {
-		tx.transactionManager = transactionManager;
-		tx.transactionContext = transactionContext;
+  @Test
+  void testDoCommitRollbackExceptions() {
 
-		manager.doCommit(status);
+    when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
+    Mockito.doThrow(AbortedException.class).when(transactionManager).commit();
 
-		verify(transactionManager, never()).commit();
-		verify(this.transactionContext, never()).close();
-	}
+    tx.transactionManager = transactionManager;
 
-	@Test
-	public void testDoCommitRollbackExceptions() {
+    assertThatThrownBy(() -> manager.doCommit(status))
+            .isInstanceOf(UnexpectedRollbackException.class)
+            .hasMessage("Transaction Got Rolled Back; "
+            + "nested exception is com.google.cloud.spanner.AbortedException");
+  }
 
-		this.expectedEx.expect(UnexpectedRollbackException.class);
-		this.expectedEx.expectMessage("Transaction Got Rolled Back; " +
-				"nested exception is com.google.cloud.spanner.AbortedException");
+  @Test
+  void testDoCommitDupeException() {
 
-		when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
-		Mockito.doThrow(AbortedException.class).when(transactionManager).commit();
+    SpannerException exception =
+        SpannerExceptionFactory.newSpannerException(
+            ErrorCode.ALREADY_EXISTS, "this is from a test");
 
-		tx.transactionManager = transactionManager;
+    when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
+    Mockito.doThrow(exception).when(transactionManager).commit();
 
-		manager.doCommit(status);
-	}
+    tx.transactionManager = transactionManager;
 
-	@Test
-	public void testDoCommitDupeException() {
+    assertThatThrownBy(() -> manager.doCommit(status))
+            .isInstanceOf(DuplicateKeyException.class)
+            .hasMessage("ALREADY_EXISTS; nested exception is "
+                    + "com.google.cloud.spanner.SpannerException: ALREADY_EXISTS: this is from a test");
+  }
 
-		this.expectedEx.expect(DuplicateKeyException.class);
-		this.expectedEx.expectMessage("ALREADY_EXISTS; nested exception is " +
-				"com.google.cloud.spanner.SpannerException: ALREADY_EXISTS: this is from a test");
+  @Test
+  void testDoRollback() {
+    when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
+    when(transactionManager.begin()).thenReturn(this.transactionContext);
+    doNothing().when(transactionManager).rollback();
 
-		SpannerException exception = SpannerExceptionFactory.newSpannerException(
-				ErrorCode.ALREADY_EXISTS, "this is from a test");
+    tx.transactionContext = transactionContext;
+    tx.transactionManager = transactionManager;
 
-		when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
-		Mockito.doThrow(exception).when(transactionManager).commit();
+    manager.doRollback(status);
 
-		tx.transactionManager = transactionManager;
+    verify(transactionManager, times(1)).rollback();
+  }
 
-		manager.doCommit(status);
-	}
+  @Test
+  void testDoRollbackNotStarted() {
+    tx.transactionManager = transactionManager;
 
-	@Test
-	public void testDoRollback() {
-		when(transactionManager.getState()).thenReturn(TransactionState.STARTED);
-		when(transactionManager.begin()).thenReturn(this.transactionContext);
-		doNothing().when(transactionManager).rollback();
+    manager.doRollback(status);
 
-		tx.transactionContext = transactionContext;
-		tx.transactionManager = transactionManager;
-
-		manager.doRollback(status);
-
-		verify(transactionManager, times(1)).rollback();
-	}
-
-	@Test
-	public void testDoRollbackNotStarted() {
-		tx.transactionManager = transactionManager;
-
-		manager.doRollback(status);
-
-		verify(transactionManager, never()).rollback();
-	}
+    verify(transactionManager, never()).rollback();
+  }
 }

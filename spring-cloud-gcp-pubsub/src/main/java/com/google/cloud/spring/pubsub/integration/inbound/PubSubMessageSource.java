@@ -16,16 +16,14 @@
 
 package com.google.cloud.spring.pubsub.integration.inbound;
 
-import java.util.ArrayDeque;
-import java.util.List;
-import java.util.Map;
-
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import com.google.cloud.spring.pubsub.support.converter.ConvertedAcknowledgeablePubsubMessage;
-
+import java.util.ArrayDeque;
+import java.util.List;
+import java.util.Map;
 import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.integration.endpoint.AbstractFetchLimitingMessageSource;
 import org.springframework.integration.endpoint.AbstractMessageSource;
@@ -35,116 +33,124 @@ import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 
 /**
- * A <a href="https://cloud.google.com/pubsub/docs/pull#pubsub-pull-messages-sync-java">PubSub Synchronous pull</a>
- * implementation of {@link AbstractMessageSource}.
- *
- * @author Elena Felder
+ * A <a href="https://cloud.google.com/pubsub/docs/pull#pubsub-pull-messages-sync-java">PubSub
+ * Synchronous pull</a> implementation of {@link AbstractMessageSource}.
  *
  * @since 1.2
  */
 public class PubSubMessageSource extends AbstractFetchLimitingMessageSource<Object> {
 
-	private final String subscriptionName;
+  private final String subscriptionName;
 
-	private final PubSubSubscriberOperations pubSubSubscriberOperations;
+  private final PubSubSubscriberOperations pubSubSubscriberOperations;
 
-	private AckMode ackMode = AckMode.AUTO;
+  private AckMode ackMode = AckMode.AUTO;
 
-	private HeaderMapper<Map<String, String>> headerMapper = new PubSubHeaderMapper();
+  private HeaderMapper<Map<String, String>> headerMapper = new PubSubHeaderMapper();
 
-	private Class<?> payloadType = byte[].class;
+  private Class<?> payloadType = byte[].class;
 
-	private boolean blockOnPull;
+  private boolean blockOnPull;
 
-	private final ArrayDeque<ConvertedAcknowledgeablePubsubMessage<?>> cachedMessages = new ArrayDeque<>();
+  private final ArrayDeque<ConvertedAcknowledgeablePubsubMessage<?>> cachedMessages =
+      new ArrayDeque<>();
 
-	public PubSubMessageSource(PubSubSubscriberOperations pubSubSubscriberOperations,
-			String subscriptionName) {
-		Assert.notNull(pubSubSubscriberOperations, "Pub/Sub subscriber template can't be null.");
-		Assert.notNull(subscriptionName, "Pub/Sub subscription name can't be null.");
-		this.pubSubSubscriberOperations = pubSubSubscriberOperations;
-		this.subscriptionName = subscriptionName;
-	}
+  /**
+   * Instantiates a Pub/Sub inbound message adapter to poll a given subscription for messages.
+   *
+   * @param pubSubSubscriberOperations {@link PubSubSubscriberOperations} to use
+   * @param subscriptionName short or fully qualified subscription name
+   */
+  public PubSubMessageSource(
+      PubSubSubscriberOperations pubSubSubscriberOperations, String subscriptionName) {
+    Assert.notNull(pubSubSubscriberOperations, "Pub/Sub subscriber template can't be null.");
+    Assert.notNull(subscriptionName, "Pub/Sub subscription name can't be null.");
+    this.pubSubSubscriberOperations = pubSubSubscriberOperations;
+    this.subscriptionName = subscriptionName;
+  }
 
-	public void setAckMode(AckMode ackMode) {
-		Assert.notNull(ackMode, "The acknowledgement mode can't be null.");
-		this.ackMode = ackMode;
-	}
+  public void setAckMode(AckMode ackMode) {
+    Assert.notNull(ackMode, "The acknowledgement mode can't be null.");
+    this.ackMode = ackMode;
+  }
 
-	public void setPayloadType(Class<?> payloadType) {
-		Assert.notNull(payloadType, "The payload type cannot be null.");
-		this.payloadType = payloadType;
-	}
+  public void setPayloadType(Class<?> payloadType) {
+    Assert.notNull(payloadType, "The payload type cannot be null.");
+    this.payloadType = payloadType;
+  }
 
-	public void setHeaderMapper(HeaderMapper<Map<String, String>> headerMapper) {
-		Assert.notNull(headerMapper, "The header mapper can't be null.");
-		this.headerMapper = headerMapper;
-	}
+  public void setHeaderMapper(HeaderMapper<Map<String, String>> headerMapper) {
+    Assert.notNull(headerMapper, "The header mapper can't be null.");
+    this.headerMapper = headerMapper;
+  }
 
-	/**
-	 * Instructs synchronous pull to wait until at least one message is available.
-	 * @param blockOnPull whether to block until a message is available
-	 */
-	public void setBlockOnPull(boolean blockOnPull) {
-		this.blockOnPull = blockOnPull;
-	}
+  /**
+   * Instructs synchronous pull to wait until at least one message is available.
+   *
+   * @param blockOnPull whether to block until a message is available
+   */
+  public void setBlockOnPull(boolean blockOnPull) {
+    this.blockOnPull = blockOnPull;
+  }
 
-	/**
-	 * Provides a single polled message.
-	 * <p>Messages are received from Pub/Sub by synchronous pull, in batches determined
-	 * by {@code fetchSize}.
-	 * @param fetchSize number of messages to fetch from Pub/Sub.
-	 * @return {@link Message} wrapper containing the original message.
-	 */
-	@Override
-	protected Object doReceive(int fetchSize) {
-		if (this.cachedMessages.isEmpty()) {
-			Integer maxMessages = (fetchSize > 0) ? fetchSize : 1;
+  /**
+   * Provides a single polled message.
+   *
+   * <p>Messages are received from Pub/Sub by synchronous pull, in batches determined by {@code
+   * fetchSize}.
+   *
+   * @param fetchSize number of messages to fetch from Pub/Sub.
+   * @return {@link Message} wrapper containing the original message.
+   */
+  @Override
+  protected Object doReceive(int fetchSize) {
+    if (this.cachedMessages.isEmpty()) {
+      Integer maxMessages = (fetchSize > 0) ? fetchSize : 1;
 
-			List<? extends ConvertedAcknowledgeablePubsubMessage<?>> messages = this.pubSubSubscriberOperations
-					.pullAndConvert(this.subscriptionName, maxMessages, !this.blockOnPull, this.payloadType);
-			if (messages.isEmpty()) {
-				return null;
-			}
-			else if (messages.size() == 1) {
-				// don't bother storing.
-				return processMessage(messages.get(0));
-			}
-			else {
-				this.cachedMessages.addAll(messages);
-			}
-		}
+      List<? extends ConvertedAcknowledgeablePubsubMessage<?>> messages =
+          this.pubSubSubscriberOperations.pullAndConvert(
+              this.subscriptionName, maxMessages, !this.blockOnPull, this.payloadType);
+      if (messages.isEmpty()) {
+        return null;
+      } else if (messages.size() == 1) {
+        // don't bother storing.
+        return processMessage(messages.get(0));
+      } else {
+        this.cachedMessages.addAll(messages);
+      }
+    }
 
-		return processMessage(this.cachedMessages.pollFirst());
-	}
+    return processMessage(this.cachedMessages.pollFirst());
+  }
 
-	@Override
-	public String getComponentType() {
-		return "gcp-pubsub:message-source";
-	}
+  @Override
+  public String getComponentType() {
+    return "gcp-pubsub:message-source";
+  }
 
-	/**
-	 * Applies header customizations and acknowledges the message, if necessary.
-	 * <p>{@link AckMode#AUTO} and {@link AckMode#AUTO_ACK} result in automatic acking on
-	 * success. {@link AckMode#AUTO} results in automatic nacking on failure.
-	 * @param message source Pub/Sub message.
-	 * @return {@link Message} wrapper containing the original message.
-	 */
-	private AbstractIntegrationMessageBuilder<?> processMessage(ConvertedAcknowledgeablePubsubMessage<?> message) {
-		if (message == null) {
-			return null;
-		}
+  /**
+   * Applies header customizations and acknowledges the message, if necessary.
+   *
+   * <p>{@link AckMode#AUTO} and {@link AckMode#AUTO_ACK} result in automatic acking on success.
+   * {@link AckMode#AUTO} results in automatic nacking on failure.
+   *
+   * @param message source Pub/Sub message.
+   * @return {@link Message} wrapper containing the original message.
+   */
+  private AbstractIntegrationMessageBuilder<?> processMessage(
+      ConvertedAcknowledgeablePubsubMessage<?> message) {
+    if (message == null) {
+      return null;
+    }
 
-		Map<String, Object> messageHeaders =
-				this.headerMapper.toHeaders(message.getPubsubMessage().getAttributesMap());
+    Map<String, Object> messageHeaders =
+        this.headerMapper.toHeaders(message.getPubsubMessage().getAttributesMap());
 
-		messageHeaders.put(GcpPubSubHeaders.ORIGINAL_MESSAGE, message);
-		messageHeaders.put(IntegrationMessageHeaderAccessor.ACKNOWLEDGMENT_CALLBACK,
-					new PubSubAcknowledgmentCallback(message, this.ackMode));
+    messageHeaders.put(GcpPubSubHeaders.ORIGINAL_MESSAGE, message);
+    messageHeaders.put(
+        IntegrationMessageHeaderAccessor.ACKNOWLEDGMENT_CALLBACK,
+        new PubSubAcknowledgmentCallback(message, this.ackMode));
 
-		return getMessageBuilderFactory()
-				.withPayload(message.getPayload())
-				.copyHeaders(messageHeaders);
-	}
-
+    return getMessageBuilderFactory().withPayload(message.getPayload()).copyHeaders(messageHeaders);
+  }
 }

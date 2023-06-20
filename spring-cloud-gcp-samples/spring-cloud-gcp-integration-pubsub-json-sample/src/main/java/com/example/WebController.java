@@ -16,11 +16,9 @@
 
 package com.example;
 
+import com.example.SenderConfiguration.PubSubPersonGateway;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.example.SenderConfiguration.PubSubPersonGateway;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,34 +27,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
-/**
- * Provides REST endpoint allowing you to send JSON payloads to a sample Pub/Sub topic for
- * demo.
- *
- * @author Daniel Zou
- */
+/** Provides REST endpoint allowing you to send JSON payloads to a sample Pub/Sub topic for demo. */
 @RestController
 public class WebController {
 
-	private final PubSubPersonGateway pubSubPersonGateway;
+  private final PubSubPersonGateway pubSubPersonGateway;
 
-	@Autowired
-	@Qualifier("ProcessedPersonsList")
-	private ArrayList<Person> processedPersonsList;
+  @Autowired
+  @Qualifier("ProcessedPersonsList")
+  private ArrayList<Person> processedPersonsList;
 
-	public WebController(PubSubPersonGateway pubSubPersonGateway) {
-		this.pubSubPersonGateway = pubSubPersonGateway;
-	}
+  public WebController(PubSubPersonGateway pubSubPersonGateway) {
+    this.pubSubPersonGateway = pubSubPersonGateway;
+  }
 
-	@PostMapping("/createPerson")
-	public RedirectView createUser(@RequestParam("name") String name, @RequestParam("age") int age) {
-		Person person = new Person(name, age);
-		this.pubSubPersonGateway.sendPersonToPubSub(person);
-		return new RedirectView("/");
-	}
+  @PostMapping("/createPerson")
+  public RedirectView createUser(@RequestParam("name") String name, @RequestParam("age") int age) {
+    Person person = new Person(name, age);
+    this.pubSubPersonGateway.sendPersonToPubSub(person);
+    return new RedirectView("/");
+  }
 
-	@GetMapping("/listPersons")
-	public List<Person> listPersons() {
-		return this.processedPersonsList;
-	}
+  @GetMapping("/listPersons")
+  public List<Person> listPersons() {
+    return this.processedPersonsList;
+  }
 }

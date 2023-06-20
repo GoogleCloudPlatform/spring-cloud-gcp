@@ -20,48 +20,48 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * Provides default JDBC driver class name and constructs the JDBC URL for Cloud SQL v2
- * when running on local laptop, or in a VM-based environment (e.g., Google Compute
- * Engine, Google Container Engine).
- *
- * @author Ray Tsang
- * @author João André Martins
- * @author Øystein Urdahl Hardeng
+ * Provides default JDBC driver class name and constructs the JDBC URL for Cloud SQL v2 when running
+ * on local laptop, or in a VM-based environment (e.g., Google Compute Engine, Google Container
+ * Engine).
  */
 public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider {
 
-	private final GcpCloudSqlProperties properties;
+  private final GcpCloudSqlProperties properties;
 
-	private final DatabaseType databaseType;
+  private final DatabaseType databaseType;
 
-	public DefaultCloudSqlJdbcInfoProvider(GcpCloudSqlProperties properties,
-			DatabaseType databaseType) {
-		this.properties = properties;
-		this.databaseType = databaseType;
-		Assert.hasText(this.properties.getDatabaseName(), "A database name must be provided.");
-		Assert.hasText(properties.getInstanceConnectionName(),
-				"An instance connection name must be provided in the format <PROJECT_ID>:<REGION>:<INSTANCE_ID>.");
-	}
+  public DefaultCloudSqlJdbcInfoProvider(
+      GcpCloudSqlProperties properties, DatabaseType databaseType) {
+    this.properties = properties;
+    this.databaseType = databaseType;
+    Assert.hasText(this.properties.getDatabaseName(), "A database name must be provided.");
+    Assert.hasText(
+        properties.getInstanceConnectionName(),
+        "An instance connection name must be provided in the format"
+            + " <PROJECT_ID>:<REGION>:<INSTANCE_ID>.");
+  }
 
-	@Override
-	public String getJdbcDriverClass() {
-		return this.databaseType.getJdbcDriverName();
-	}
+  @Override
+  public String getJdbcDriverClass() {
+    return this.databaseType.getJdbcDriverName();
+  }
 
-	@Override
-	public String getJdbcUrl() {
-		String jdbcUrl = String.format(this.databaseType.getJdbcUrlTemplate(),
-				this.properties.getDatabaseName(),
-				this.properties.getInstanceConnectionName());
+  @Override
+  public String getJdbcUrl() {
+    String jdbcUrl =
+        String.format(
+            this.databaseType.getJdbcUrlTemplate(),
+            this.properties.getDatabaseName(),
+            this.properties.getInstanceConnectionName());
 
-		if (StringUtils.hasText(properties.getIpTypes())) {
-			jdbcUrl += "&ipTypes=" + properties.getIpTypes();
-		}
+    if (StringUtils.hasText(properties.getIpTypes())) {
+      jdbcUrl += "&ipTypes=" + properties.getIpTypes();
+    }
 
-		if (properties.isEnableIamAuth()) {
-			jdbcUrl += "&enableIamAuth=true&sslmode=disable";
-		}
+    if (properties.isEnableIamAuth()) {
+      jdbcUrl += "&enableIamAuth=true&sslmode=disable";
+    }
 
-		return jdbcUrl;
-	}
+    return jdbcUrl;
+  }
 }

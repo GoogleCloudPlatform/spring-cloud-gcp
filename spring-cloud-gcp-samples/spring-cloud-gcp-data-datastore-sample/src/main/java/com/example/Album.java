@@ -16,62 +16,55 @@
 
 package com.example;
 
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-
-/**
- * Sample entity.
- *
- * @author Dmitry Solomakha
- */
+/** Sample entity. */
 @Entity
 public class Album implements Comparable<Album> {
-	private final String albumName;
+  private final String albumName;
 
-	private final LocalDate date;
+  private final LocalDate date;
 
-	Album(String albumName, LocalDate date) {
-		this.albumName = albumName;
-		this.date = date;
-	}
+  Album(String albumName, LocalDate date) {
+    this.albumName = albumName;
+    this.date = date;
+  }
 
-	String getAlbumName() {
-		return this.albumName;
-	}
+  String getAlbumName() {
+    return this.albumName;
+  }
 
-	LocalDate getDate() {
-		return this.date;
-	}
+  LocalDate getDate() {
+    return this.date;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		Album album = (Album) o;
-		return Objects.equals(getAlbumName(), album.getAlbumName())
-				&& Objects.equals(this.date, album.date);
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Album album = (Album) o;
+    return Objects.equals(getAlbumName(), album.getAlbumName())
+        && Objects.equals(this.date, album.date);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getAlbumName(), this.date);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(getAlbumName(), this.date);
+  }
 
-	@Override
-	public String toString() {
-		return "Album{" + "albumName='" + this.albumName + '\'' + ", date=" + this.date
-				+ '}';
-	}
+  @Override
+  public String toString() {
+    return "Album{" + "albumName='" + this.albumName + '\'' + ", date=" + this.date + '}';
+  }
 
-
-	@Override
-	public int compareTo(Album album) {
-		return this.albumName.compareTo(album.albumName);
-	}
+  @Override
+  public int compareTo(Album album) {
+    return this.albumName.compareTo(album.albumName);
+  }
 }

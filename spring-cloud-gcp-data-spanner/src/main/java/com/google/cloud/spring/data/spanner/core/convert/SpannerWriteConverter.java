@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.data.convert.CustomConversions;
@@ -29,30 +28,29 @@ import org.springframework.data.convert.CustomConversions;
 /**
  * A custom converter for writing values from entities to types for Spanner.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class SpannerWriteConverter extends SpannerCustomConverter {
 
-	public SpannerWriteConverter() {
-		this((Collection<Converter>) null);
-	}
+  public SpannerWriteConverter() {
+    this((Collection<Converter>) null);
+  }
 
-	public SpannerWriteConverter(Collection<Converter> readConverters) {
-		this(getCustomConversions(
-				Stream.concat(
-						Optional.ofNullable(readConverters).orElse(Collections.emptyList()).stream(),
-						SpannerConverters.DEFAULT_SPANNER_WRITE_CONVERTERS.stream())
-						.collect(Collectors.toList())));
-	}
+  public SpannerWriteConverter(Collection<Converter> readConverters) {
+    this(
+        getCustomConversions(
+            Stream.concat(
+                    Optional.ofNullable(readConverters).orElse(Collections.emptyList()).stream(),
+                    SpannerConverters.DEFAULT_SPANNER_WRITE_CONVERTERS.stream())
+                .collect(Collectors.toList())));
+  }
 
-	public SpannerWriteConverter(CustomConversions customConversions) {
-		this(customConversions, null);
-	}
+  public SpannerWriteConverter(CustomConversions customConversions) {
+    this(customConversions, null);
+  }
 
-	public SpannerWriteConverter(CustomConversions customConversions, GenericConversionService conversionService) {
-		super(customConversions, conversionService);
-	}
+  public SpannerWriteConverter(
+      CustomConversions customConversions, GenericConversionService conversionService) {
+    super(customConversions, conversionService);
+  }
 }

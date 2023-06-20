@@ -16,15 +16,12 @@
 
 package com.google.cloud.spring.autoconfigure.security;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.security.firebase.FirebaseJwtTokenDecoder;
 import com.google.cloud.spring.security.firebase.FirebaseTokenValidator;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -45,8 +42,6 @@ import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 /**
- *
- * @author Vinicius Carvalho
  * @since 1.2.2
  */
 @Configuration(proxyBeanMethods = false)
@@ -57,42 +52,47 @@ import org.springframework.web.client.RestTemplate;
 @EnableConfigurationProperties(FirebaseAuthenticationProperties.class)
 public class FirebaseAuthenticationAutoConfiguration {
 
-	private static final String ISSUER_TEMPLATE = "https://securetoken.google.com/%s";
+  private static final String ISSUER_TEMPLATE = "https://securetoken.google.com/%s";
 
-	private final String projectId;
+  private final String projectId;
 
-	public FirebaseAuthenticationAutoConfiguration(GcpProjectIdProvider gcpProjectIdProvider, FirebaseAuthenticationProperties properties) {
-		this.projectId = properties.getProjectId() != null ? properties.getProjectId() : gcpProjectIdProvider.getProjectId();
-	}
+  public FirebaseAuthenticationAutoConfiguration(
+      GcpProjectIdProvider gcpProjectIdProvider, FirebaseAuthenticationProperties properties) {
+    this.projectId =
+        properties.getProjectId() != null
+            ? properties.getProjectId()
+            : gcpProjectIdProvider.getProjectId();
+  }
 
-	@Bean
-	@ConditionalOnMissingBean(name = "firebaseJwtDelegatingValidator")
-	public DelegatingOAuth2TokenValidator<Jwt> firebaseJwtDelegatingValidator(JwtIssuerValidator jwtIssuerValidator, GcpProjectIdProvider gcpProjectIdProvider) {
-		List<OAuth2TokenValidator<Jwt>> validators = new ArrayList<>();
-		validators.add(new JwtTimestampValidator());
-		validators.add(jwtIssuerValidator);
-		validators.add(new FirebaseTokenValidator(projectId));
-		return new DelegatingOAuth2TokenValidator<>(validators);
-	}
+  @Bean
+  @ConditionalOnMissingBean(name = "firebaseJwtDelegatingValidator")
+  public DelegatingOAuth2TokenValidator<Jwt> firebaseJwtDelegatingValidator(
+      JwtIssuerValidator jwtIssuerValidator, GcpProjectIdProvider gcpProjectIdProvider) {
+    List<OAuth2TokenValidator<Jwt>> validators = new ArrayList<>();
+    validators.add(new JwtTimestampValidator());
+    validators.add(jwtIssuerValidator);
+    validators.add(new FirebaseTokenValidator(projectId));
+    return new DelegatingOAuth2TokenValidator<>(validators);
+  }
 
-	@Bean
-	@ConditionalOnMissingBean(name = "firebaseAuthenticationJwtDecoder")
-	public JwtDecoder firebaseAuthenticationJwtDecoder(
-			DelegatingOAuth2TokenValidator<Jwt> firebaseJwtDelegatingValidator,
-			FirebaseAuthenticationProperties properties) {
-		return new FirebaseJwtTokenDecoder(restOperations(), properties.getPublicKeysEndpoint(),
-				firebaseJwtDelegatingValidator);
-	}
+  @Bean
+  @ConditionalOnMissingBean(name = "firebaseAuthenticationJwtDecoder")
+  public JwtDecoder firebaseAuthenticationJwtDecoder(
+      DelegatingOAuth2TokenValidator<Jwt> firebaseJwtDelegatingValidator,
+      FirebaseAuthenticationProperties properties) {
+    return new FirebaseJwtTokenDecoder(
+        restOperations(), properties.getPublicKeysEndpoint(), firebaseJwtDelegatingValidator);
+  }
 
-	@Bean
-	public JwtIssuerValidator jwtIssuerValidator(GcpProjectIdProvider gcpProjectIdProvider) {
-		return new JwtIssuerValidator(String.format(ISSUER_TEMPLATE, projectId));
-	}
+  @Bean
+  public JwtIssuerValidator jwtIssuerValidator(GcpProjectIdProvider gcpProjectIdProvider) {
+    return new JwtIssuerValidator(String.format(ISSUER_TEMPLATE, projectId));
+  }
 
-	private RestOperations restOperations() {
-		SimpleClientHttpRequestFactory clientHttpRequestFactory = new SimpleClientHttpRequestFactory();
-		clientHttpRequestFactory.setConnectTimeout(5_000);
-		clientHttpRequestFactory.setReadTimeout(2_000);
-		return new RestTemplate(clientHttpRequestFactory);
-	}
+  private RestOperations restOperations() {
+    SimpleClientHttpRequestFactory clientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+    clientHttpRequestFactory.setConnectTimeout(5_000);
+    clientHttpRequestFactory.setReadTimeout(2_000);
+    return new RestTemplate(clientHttpRequestFactory);
+  }
 }

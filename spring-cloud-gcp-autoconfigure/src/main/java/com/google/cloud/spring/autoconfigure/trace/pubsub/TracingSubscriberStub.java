@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
-import java.util.concurrent.TimeUnit;
-
 import com.google.api.gax.rpc.BidiStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient.ListSnapshotsPagedResponse;
@@ -51,152 +49,158 @@ import com.google.pubsub.v1.StreamingPullResponse;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.UpdateSnapshotRequest;
 import com.google.pubsub.v1.UpdateSubscriptionRequest;
+import java.util.concurrent.TimeUnit;
 
 final class TracingSubscriberStub extends SubscriberStub {
-	private final SubscriberStub delegate;
+  private final SubscriberStub delegate;
 
-	private final PubSubTracing pubSubTracing;
+  private final PubSubTracing pubSubTracing;
 
-	TracingSubscriberStub(SubscriberStub subscriberStub, PubSubTracing pubSubTracing) {
-		this.delegate = subscriberStub;
-		this.pubSubTracing = pubSubTracing;
-	}
+  TracingSubscriberStub(SubscriberStub subscriberStub, PubSubTracing pubSubTracing) {
+    this.delegate = subscriberStub;
+    this.pubSubTracing = pubSubTracing;
+  }
 
-	/** Trace instrumented pull method. **/
-	@Override
-	public UnaryCallable<PullRequest, PullResponse> pullCallable() {
-		return new TracingPullCallable(delegate.pullCallable(), pubSubTracing);
-	}
+  /** Trace instrumented pull method. * */
+  @Override
+  public UnaryCallable<PullRequest, PullResponse> pullCallable() {
+    return new TracingPullCallable(delegate.pullCallable(), pubSubTracing);
+  }
 
-	// Simply delegated methods below...
+  // Simply delegated methods below...
 
-	@Override
-	public UnaryCallable<Subscription, Subscription> createSubscriptionCallable() {
-		return delegate.createSubscriptionCallable();
-	}
+  @Override
+  public UnaryCallable<Subscription, Subscription> createSubscriptionCallable() {
+    return delegate.createSubscriptionCallable();
+  }
 
-	@Override
-	public UnaryCallable<GetSubscriptionRequest, Subscription> getSubscriptionCallable() {
-		return delegate.getSubscriptionCallable();
-	}
+  @Override
+  public UnaryCallable<GetSubscriptionRequest, Subscription> getSubscriptionCallable() {
+    return delegate.getSubscriptionCallable();
+  }
 
-	@Override
-	public UnaryCallable<UpdateSubscriptionRequest, Subscription> updateSubscriptionCallable() {
-		return delegate.updateSubscriptionCallable();
-	}
+  @Override
+  public UnaryCallable<UpdateSubscriptionRequest, Subscription> updateSubscriptionCallable() {
+    return delegate.updateSubscriptionCallable();
+  }
 
-	@Override
-	public UnaryCallable<ListSubscriptionsRequest, ListSubscriptionsPagedResponse> listSubscriptionsPagedCallable() {
-		return delegate.listSubscriptionsPagedCallable();
-	}
+  @Override
+  public UnaryCallable<ListSubscriptionsRequest, ListSubscriptionsPagedResponse>
+      listSubscriptionsPagedCallable() {
+    return delegate.listSubscriptionsPagedCallable();
+  }
 
-	@Override
-	public UnaryCallable<ListSubscriptionsRequest, ListSubscriptionsResponse> listSubscriptionsCallable() {
-		return delegate.listSubscriptionsCallable();
-	}
+  @Override
+  public UnaryCallable<ListSubscriptionsRequest, ListSubscriptionsResponse>
+      listSubscriptionsCallable() {
+    return delegate.listSubscriptionsCallable();
+  }
 
-	@Override
-	public UnaryCallable<DeleteSubscriptionRequest, Empty> deleteSubscriptionCallable() {
-		return delegate.deleteSubscriptionCallable();
-	}
+  @Override
+  public UnaryCallable<DeleteSubscriptionRequest, Empty> deleteSubscriptionCallable() {
+    return delegate.deleteSubscriptionCallable();
+  }
 
-	@Override
-	public UnaryCallable<GetSnapshotRequest, Snapshot> getSnapshotCallable() {
-		return delegate.getSnapshotCallable();
-	}
+  @Override
+  public UnaryCallable<GetSnapshotRequest, Snapshot> getSnapshotCallable() {
+    return delegate.getSnapshotCallable();
+  }
 
-	@Override
-	public UnaryCallable<ModifyAckDeadlineRequest, Empty> modifyAckDeadlineCallable() {
-		return delegate.modifyAckDeadlineCallable();
-	}
+  @Override
+  public UnaryCallable<ModifyAckDeadlineRequest, Empty> modifyAckDeadlineCallable() {
+    return delegate.modifyAckDeadlineCallable();
+  }
 
-	@Override
-	public UnaryCallable<AcknowledgeRequest, Empty> acknowledgeCallable() {
-		return delegate.acknowledgeCallable();
-	}
+  @Override
+  public UnaryCallable<AcknowledgeRequest, Empty> acknowledgeCallable() {
+    return delegate.acknowledgeCallable();
+  }
 
-	@Override
-	public BidiStreamingCallable<StreamingPullRequest, StreamingPullResponse> streamingPullCallable() {
-		return delegate.streamingPullCallable();
-	}
+  @Override
+  public BidiStreamingCallable<StreamingPullRequest, StreamingPullResponse>
+      streamingPullCallable() {
+    return delegate.streamingPullCallable();
+  }
 
-	@Override
-	public UnaryCallable<ModifyPushConfigRequest, Empty> modifyPushConfigCallable() {
-		return delegate.modifyPushConfigCallable();
-	}
+  @Override
+  public UnaryCallable<ModifyPushConfigRequest, Empty> modifyPushConfigCallable() {
+    return delegate.modifyPushConfigCallable();
+  }
 
-	@Override
-	public UnaryCallable<ListSnapshotsRequest, ListSnapshotsPagedResponse> listSnapshotsPagedCallable() {
-		return delegate.listSnapshotsPagedCallable();
-	}
+  @Override
+  public UnaryCallable<ListSnapshotsRequest, ListSnapshotsPagedResponse>
+      listSnapshotsPagedCallable() {
+    return delegate.listSnapshotsPagedCallable();
+  }
 
-	@Override
-	public UnaryCallable<ListSnapshotsRequest, ListSnapshotsResponse> listSnapshotsCallable() {
-		return delegate.listSnapshotsCallable();
-	}
+  @Override
+  public UnaryCallable<ListSnapshotsRequest, ListSnapshotsResponse> listSnapshotsCallable() {
+    return delegate.listSnapshotsCallable();
+  }
 
-	@Override
-	public UnaryCallable<CreateSnapshotRequest, Snapshot> createSnapshotCallable() {
-		return delegate.createSnapshotCallable();
-	}
+  @Override
+  public UnaryCallable<CreateSnapshotRequest, Snapshot> createSnapshotCallable() {
+    return delegate.createSnapshotCallable();
+  }
 
-	@Override
-	public UnaryCallable<UpdateSnapshotRequest, Snapshot> updateSnapshotCallable() {
-		return delegate.updateSnapshotCallable();
-	}
+  @Override
+  public UnaryCallable<UpdateSnapshotRequest, Snapshot> updateSnapshotCallable() {
+    return delegate.updateSnapshotCallable();
+  }
 
-	@Override
-	public UnaryCallable<DeleteSnapshotRequest, Empty> deleteSnapshotCallable() {
-		return delegate.deleteSnapshotCallable();
-	}
+  @Override
+  public UnaryCallable<DeleteSnapshotRequest, Empty> deleteSnapshotCallable() {
+    return delegate.deleteSnapshotCallable();
+  }
 
-	@Override
-	public UnaryCallable<SeekRequest, SeekResponse> seekCallable() {
-		return delegate.seekCallable();
-	}
+  @Override
+  public UnaryCallable<SeekRequest, SeekResponse> seekCallable() {
+    return delegate.seekCallable();
+  }
 
-	@Override
-	public UnaryCallable<SetIamPolicyRequest, Policy> setIamPolicyCallable() {
-		return delegate.setIamPolicyCallable();
-	}
+  @Override
+  public UnaryCallable<SetIamPolicyRequest, Policy> setIamPolicyCallable() {
+    return delegate.setIamPolicyCallable();
+  }
 
-	@Override
-	public UnaryCallable<GetIamPolicyRequest, Policy> getIamPolicyCallable() {
-		return delegate.getIamPolicyCallable();
-	}
+  @Override
+  public UnaryCallable<GetIamPolicyRequest, Policy> getIamPolicyCallable() {
+    return delegate.getIamPolicyCallable();
+  }
 
-	@Override
-	public UnaryCallable<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsCallable() {
-		return delegate.testIamPermissionsCallable();
-	}
+  @Override
+  public UnaryCallable<TestIamPermissionsRequest, TestIamPermissionsResponse>
+      testIamPermissionsCallable() {
+    return delegate.testIamPermissionsCallable();
+  }
 
-	@Override
-	public void close() {
-		delegate.close();
-	}
+  @Override
+  public void close() {
+    delegate.close();
+  }
 
-	@Override
-	public void shutdown() {
-		delegate.shutdown();
-	}
+  @Override
+  public void shutdown() {
+    delegate.shutdown();
+  }
 
-	@Override
-	public boolean isShutdown() {
-		return delegate.isShutdown();
-	}
+  @Override
+  public boolean isShutdown() {
+    return delegate.isShutdown();
+  }
 
-	@Override
-	public boolean isTerminated() {
-		return delegate.isTerminated();
-	}
+  @Override
+  public boolean isTerminated() {
+    return delegate.isTerminated();
+  }
 
-	@Override
-	public void shutdownNow() {
-		delegate.shutdownNow();
-	}
+  @Override
+  public void shutdownNow() {
+    delegate.shutdownNow();
+  }
 
-	@Override
-	public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
-		return delegate.awaitTermination(l, timeUnit);
-	}
+  @Override
+  public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
+    return delegate.awaitTermination(l, timeUnit);
+  }
 }

@@ -18,70 +18,51 @@ package com.google.cloud.spring.logging;
 
 import org.springframework.util.Assert;
 
-/**
- * Constants for Stackdriver Trace.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- */
+/** Constants for Stackdriver Trace. */
 public interface StackdriverTraceConstants {
 
-	/**
-	 * The JSON field name for the log level (severity).
-	 */
-	String SEVERITY_ATTRIBUTE = "severity";
+  /** The JSON field name for the log level (severity). */
+  String SEVERITY_ATTRIBUTE = "severity";
 
-	/**
-	 * The JSON field name for the seconds of the timestamp.
-	 */
-	String TIMESTAMP_SECONDS_ATTRIBUTE = "timestampSeconds";
+  /** The JSON field name for the seconds of the timestamp. */
+  String TIMESTAMP_SECONDS_ATTRIBUTE = "timestampSeconds";
 
-	/**
-	 * The JSON field name for the nanos of the timestamp.
-	 */
-	String TIMESTAMP_NANOS_ATTRIBUTE = "timestampNanos";
+  /** The JSON field name for the nanos of the timestamp. */
+  String TIMESTAMP_NANOS_ATTRIBUTE = "timestampNanos";
 
-	/**
-	 * The JSON field name for the span-id.
-	 */
-	String SPAN_ID_ATTRIBUTE = "logging.googleapis.com/spanId";
+  /** The JSON field name for the span-id. */
+  String SPAN_ID_ATTRIBUTE = "logging.googleapis.com/spanId";
 
-	/**
-	 * The JSON field name for the trace-id.
-	 */
-	String TRACE_ID_ATTRIBUTE = "logging.googleapis.com/trace";
+  /** The JSON field name for the trace-id. */
+  String TRACE_ID_ATTRIBUTE = "logging.googleapis.com/trace";
 
-	/**
-	 * The name of the MDC parameter Spring Sleuth is storing the trace id at.
-	 */
-	String MDC_FIELD_TRACE_ID = "traceId";
+  /** The name of the MDC parameter Spring Sleuth is storing the trace id at. */
+  String MDC_FIELD_TRACE_ID = "traceId";
 
-	/**
-	 * The name of the MDC parameter Spring Sleuth is storing the span id at.
-	 */
-	String MDC_FIELD_SPAN_ID = "spanId";
+  /** The name of the MDC parameter Spring Sleuth is storing the span id at. */
+  String MDC_FIELD_SPAN_ID = "spanId";
 
-	/**
-	 * The name of the MDC parameter Spring Sleuth is storing the span export information at.
-	 */
-	String MDC_FIELD_SPAN_EXPORT = "X-Span-Export";
+  /** The name of the MDC parameter Spring Sleuth is storing the span export information at. */
+  String MDC_FIELD_SPAN_EXPORT = "X-Span-Export";
 
-	/**
-	 * The JSON field name for the service context.
-	 * @since 1.2
-	 */
-	String SERVICE_CONTEXT_ATTRIBUTE = "serviceContext";
+  /**
+   * The JSON field name for the service context.
+   *
+   * @since 1.2
+   */
+  String SERVICE_CONTEXT_ATTRIBUTE = "serviceContext";
 
-	/**
-	 * Composes the full trace name as expected by the Google Developers Console log viewer, to
-	 * enable trace correlation with log entries.
-	 * @param projectId the GCP project ID
-	 * @param traceId the trace ID
-	 * @return the trace name in the "projects/[GCP_PROJECT_ID]/trace/[TRACE_ID]" format
-	 */
-	static String composeFullTraceName(String projectId, String traceId) {
-		Assert.notNull(projectId, "The project ID can't be null.");
-		Assert.notNull(traceId, "The trace ID can't be null.");
-		return "projects/" + projectId + "/traces/" + traceId;
-	}
+  /**
+   * Composes the full trace name as expected by the Google Developers Console log viewer, to enable
+   * trace correlation with log entries.
+   *
+   * @param projectId the GCP project ID
+   * @param traceId the trace ID
+   * @return the trace name in the "projects/[GCP_PROJECT_ID]/trace/[TRACE_ID]" format
+   */
+  static String composeFullTraceName(String projectId, String traceId) {
+    Assert.notNull(projectId, "The project ID can't be null.");
+    Assert.notNull(traceId, "The trace ID can't be null.");
+    return "projects/" + projectId + "/traces/" + traceId;
+  }
 }

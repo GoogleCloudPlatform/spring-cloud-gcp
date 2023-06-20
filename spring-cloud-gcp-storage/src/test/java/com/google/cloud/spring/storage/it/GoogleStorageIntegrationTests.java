@@ -16,10 +16,7 @@
 
 package com.google.cloud.spring.storage.it;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.spring.core.Credentials;
@@ -30,11 +27,14 @@ import com.google.cloud.spring.storage.GoogleStorageProtocolResolver;
 import com.google.cloud.spring.storage.GoogleStorageResource;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -43,134 +43,117 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.StreamUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
+/** Integration for Google Cloud Storage. */
 
-/**
- * Integration for Google Cloud Storage.
- *
- * @author Chengyuan Zhao
- */
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {
-		GoogleStorageIntegrationTests.GoogleStorageIntegrationTestsConfiguration.class })
-public class GoogleStorageIntegrationTests {
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(
+    classes = {GoogleStorageIntegrationTests.GoogleStorageIntegrationTestsConfiguration.class})
+@EnabledIfSystemProperty(named = "it.storage", matches = "true")
+class GoogleStorageIntegrationTests {
 
-	private static final String CHILD_RELATIVE_NAME = "child";
+  private static final String CHILD_RELATIVE_NAME = "child";
 
-	@Autowired
-	private Storage storage;
+  @Autowired private Storage storage;
 
-	@Value("gs://${test.integration.storage.bucket}/integration-test")
-	private Resource resource;
+  @Value("gs://${test.integration.storage.bucket}/integration-test")
+  private Resource resource;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Storage integration tests are disabled. Please use '-Dit.storage=true' "
-						+ "to enable them. ",
-				System.getProperty("it.storage"), is("true"));
-	}
+  private GoogleStorageResource thisResource() {
+    return (GoogleStorageResource) this.resource;
+  }
 
-	private GoogleStorageResource thisResource() {
-		return (GoogleStorageResource) this.resource;
-	}
+  private GoogleStorageResource getChildResource() throws IOException {
+    return thisResource().createRelative(CHILD_RELATIVE_NAME);
+  }
 
-	private GoogleStorageResource getChildResource() throws IOException {
-		return thisResource().createRelative(CHILD_RELATIVE_NAME);
-	}
+  private void deleteResource(GoogleStorageResource googleStorageResource) throws IOException {
+    if (googleStorageResource.exists()) {
+      this.storage.delete(googleStorageResource.getBlob().getBlobId());
+    }
+  }
 
-	private void deleteResource(GoogleStorageResource googleStorageResource)
-			throws IOException {
-		if (googleStorageResource.exists()) {
-			this.storage.delete(googleStorageResource.getBlob().getBlobId());
-		}
-	}
+  @BeforeEach
+  void setUp() throws IOException {
+    deleteResource(thisResource());
+    deleteResource(getChildResource());
+  }
 
-	@Before
-	public void setUp() throws IOException {
-		deleteResource(thisResource());
-		deleteResource(getChildResource());
-	}
+  @Test
+  void createAndWriteTest() throws IOException {
 
-	@Test
-	public void createAndWriteTest() throws IOException {
+    String message = "test message";
 
-		String message = "test message";
+    thisResource().createBlob(message.getBytes());
 
-		thisResource().createBlob(message.getBytes());
+    assertThat(this.resource.exists()).isTrue();
 
-		assertThat(this.resource.exists()).isTrue();
+    try (InputStream is = this.resource.getInputStream()) {
+      assertThat(StreamUtils.copyToString(is, Charset.defaultCharset())).isEqualTo(message);
+    }
+  }
 
-		try (InputStream is = this.resource.getInputStream()) {
-			assertThat(StreamUtils.copyToString(is, Charset.defaultCharset())).isEqualTo(message);
-		}
-	}
+  @Test
+  void createWithContent() throws IOException {
 
-	@Test
-	public void createWithContent() throws IOException {
+    String message = "test message";
 
-		String message = "test message";
+    try (OutputStream os = thisResource().getOutputStream()) {
+      os.write(message.getBytes());
+    }
 
-		try (OutputStream os = thisResource().getOutputStream()) {
-			os.write(message.getBytes());
-		}
+    assertThat(this.resource.exists()).isTrue();
 
-		assertThat(this.resource.exists()).isTrue();
+    try (InputStream is = this.resource.getInputStream()) {
+      assertThat(StreamUtils.copyToString(is, Charset.defaultCharset())).isEqualTo(message);
+    }
 
-		try (InputStream is = this.resource.getInputStream()) {
-			assertThat(StreamUtils.copyToString(is, Charset.defaultCharset())).isEqualTo(message);
-		}
+    GoogleStorageResource childResource = getChildResource();
 
-		GoogleStorageResource childResource = getChildResource();
+    assertThat(childResource.exists()).isFalse();
 
-		assertThat(childResource.exists()).isFalse();
+    try (OutputStream os = childResource.getOutputStream()) {
+      os.write(message.getBytes());
+    }
 
-		try (OutputStream os = childResource.getOutputStream()) {
-			os.write(message.getBytes());
-		}
+    assertThat(childResource.exists()).isTrue();
 
-		assertThat(childResource.exists()).isTrue();
+    try (InputStream is = childResource.getInputStream()) {
+      assertThat(StreamUtils.copyToString(is, Charset.defaultCharset())).isEqualTo(message);
+    }
+  }
 
-		try (InputStream is = childResource.getInputStream()) {
-			assertThat(StreamUtils.copyToString(is, Charset.defaultCharset())).isEqualTo(message);
-		}
-	}
+  /** Spring config for the tests. */
+  @Configuration
+  @PropertySource("application-test.properties")
+  @Import(GoogleStorageProtocolResolver.class)
+  public static class GoogleStorageIntegrationTestsConfiguration {
 
+    @Bean
+    public static Storage storage(
+        CredentialsProvider credentialsProvider, GcpProjectIdProvider projectIdProvider)
+        throws IOException {
+      return StorageOptions.newBuilder()
+          .setCredentials(credentialsProvider.getCredentials())
+          .setProjectId(projectIdProvider.getProjectId())
+          .build()
+          .getService();
+    }
 
-	/**
-	 * Spring config for the tests.
-	 */
-	@Configuration
-	@PropertySource("application-test.properties")
-	@Import(GoogleStorageProtocolResolver.class)
-	public static class GoogleStorageIntegrationTestsConfiguration {
+    @Bean
+    public GcpProjectIdProvider gcpProjectIdProvider() {
+      return new DefaultGcpProjectIdProvider();
+    }
 
-		@Bean
-		public static Storage storage(CredentialsProvider credentialsProvider,
-				GcpProjectIdProvider projectIdProvider) throws IOException {
-			return StorageOptions.newBuilder()
-					.setCredentials(credentialsProvider.getCredentials())
-					.setProjectId(projectIdProvider.getProjectId()).build().getService();
-		}
-
-		@Bean
-		public GcpProjectIdProvider gcpProjectIdProvider() {
-			return new DefaultGcpProjectIdProvider();
-		}
-
-		@Bean
-		public CredentialsProvider credentialsProvider() {
-			try {
-				return new DefaultCredentialsProvider(Credentials::new);
-			}
-			catch (IOException ex) {
-				throw new RuntimeException(ex);
-			}
-		}
-	}
+    @Bean
+    public CredentialsProvider credentialsProvider() {
+      try {
+        return new DefaultCredentialsProvider(Credentials::new);
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+    }
+  }
 }

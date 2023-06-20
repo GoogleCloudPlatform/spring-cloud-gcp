@@ -16,45 +16,45 @@
 
 package com.google.cloud.spring.vision;
 
-import com.google.cloud.storage.Blob;
-import com.google.protobuf.InvalidProtocolBufferException;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class OcrPageRangeTests {
+import com.google.cloud.storage.Blob;
+import com.google.protobuf.InvalidProtocolBufferException;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-	private static final byte[] SINGLE_JSON_OUTPUT_PAGE = "{'responses':[{'fullTextAnnotation': {'text': 'hello_world'}}]}"
-			.getBytes();
+class OcrPageRangeTests {
 
-	@Test
-	public void testParseCorrectPageRange() {
-		Blob blob = Mockito.mock(Blob.class);
-		when(blob.getName()).thenReturn("blob-output-8-to-12.json");
-		when(blob.getContent()).thenReturn(SINGLE_JSON_OUTPUT_PAGE);
+  private static final byte[] SINGLE_JSON_OUTPUT_PAGE =
+      "{'responses':[{'fullTextAnnotation': {'text': 'hello_world'}}]}".getBytes();
 
-		OcrPageRange ocrPageRange = new OcrPageRange(blob);
-		assertThat(ocrPageRange.getStartPage()).isEqualTo(8);
-		assertThat(ocrPageRange.getEndPage()).isEqualTo(12);
-	}
+  @Test
+  void testParseCorrectPageRange() {
+    Blob blob = Mockito.mock(Blob.class);
+    when(blob.getName()).thenReturn("blob-output-8-to-12.json");
+    when(blob.getContent()).thenReturn(SINGLE_JSON_OUTPUT_PAGE);
 
-	@Test
-	public void testBlobCaching() throws InvalidProtocolBufferException {
-		Blob blob = Mockito.mock(Blob.class);
-		when(blob.getName()).thenReturn("blob-output-1-to-1.json");
-		when(blob.getContent()).thenReturn(SINGLE_JSON_OUTPUT_PAGE);
+    OcrPageRange ocrPageRange = new OcrPageRange(blob);
+    assertThat(ocrPageRange.getStartPage()).isEqualTo(8);
+    assertThat(ocrPageRange.getEndPage()).isEqualTo(12);
+  }
 
-		OcrPageRange ocrPageRange = new OcrPageRange(blob);
+  @Test
+  void testBlobCaching() throws InvalidProtocolBufferException {
+    Blob blob = Mockito.mock(Blob.class);
+    when(blob.getName()).thenReturn("blob-output-1-to-1.json");
+    when(blob.getContent()).thenReturn(SINGLE_JSON_OUTPUT_PAGE);
 
-		assertThat(ocrPageRange.getPage(1).getText()).isEqualTo("hello_world");
-		assertThat(ocrPageRange.getPage(1).getText()).isEqualTo("hello_world");
-		assertThat(ocrPageRange.getPages()).hasSize(1);
+    OcrPageRange ocrPageRange = new OcrPageRange(blob);
 
-		/* Retrieved content of blob 3 times, but getContent() only called once due to caching. */
-		verify(blob, times(1)).getContent();
-	}
+    assertThat(ocrPageRange.getPage(1).getText()).isEqualTo("hello_world");
+    assertThat(ocrPageRange.getPage(1).getText()).isEqualTo("hello_world");
+    assertThat(ocrPageRange.getPages()).hasSize(1);
+
+    /* Retrieved content of blob 3 times, but getContent() only called once due to caching. */
+    verify(blob, times(1)).getContent();
+  }
 }

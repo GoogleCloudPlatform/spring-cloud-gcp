@@ -16,8 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
-
-import java.util.concurrent.ConcurrentHashMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
@@ -25,78 +26,83 @@ import com.google.cloud.spring.pubsub.core.health.HealthTracker;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistryImpl;
 import com.google.pubsub.v1.ProjectSubscriptionName;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.concurrent.ConcurrentHashMap;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+@ExtendWith(MockitoExtension.class)
+class PubSubSubscriptionHealthIndicatorTests {
 
-@RunWith(MockitoJUnitRunner.class)
-public class PubSubSubscriptionHealthIndicatorTests {
+  @Mock private MetricServiceClient metricServiceClient;
 
-	@Mock
-	private MetricServiceClient metricServiceClient;
+  private PubSubSubscriptionHealthIndicator healthIndicator;
 
-	private PubSubSubscriptionHealthIndicator healthIndicator;
+  private static final String DEFAULT_PROJECT_ID = "project-id";
+  private static final int DEFAULT_LAG_THRESHOLD = 100;
+  private static final int DEFAULT_BACKLOG_THRESHOLD = 100;
+  private static final int MINUTE_INTERNAL = 1;
 
-	private static final String DEFAULT_PROJECT_ID = "project-id";
-	private static final int DEFAULT_LAG_THRESHOLD = 100;
-	private static final int DEFAULT_BACKLOG_THRESHOLD = 100;
-	private static final int MINUTE_INTERNAL = 1;
+  private ConcurrentHashMap<ProjectSubscriptionName, HealthTracker> healthTrackers =
+      new ConcurrentHashMap<>();
 
-	private ConcurrentHashMap<ProjectSubscriptionName, HealthTracker> healthTrackers = new ConcurrentHashMap<>();
+  @BeforeEach
+  void setUp() throws Exception {
+    ExecutorProvider executorProvider = mock(ExecutorProvider.class);
+    HealthTrackerRegistry trackerRegistry =
+        new HealthTrackerRegistryImpl(
+            DEFAULT_PROJECT_ID,
+            metricServiceClient,
+            DEFAULT_LAG_THRESHOLD,
+            DEFAULT_BACKLOG_THRESHOLD,
+            MINUTE_INTERNAL,
+            executorProvider,
+            healthTrackers);
+    healthIndicator = new PubSubSubscriptionHealthIndicator(trackerRegistry);
+    healthTrackers.clear();
+  }
 
-	@Before
-	public void setUp() throws Exception {
-		ExecutorProvider executorProvider = mock(ExecutorProvider.class);
-		HealthTrackerRegistry trackerRegistry = new HealthTrackerRegistryImpl(DEFAULT_PROJECT_ID, metricServiceClient, DEFAULT_LAG_THRESHOLD, DEFAULT_BACKLOG_THRESHOLD, MINUTE_INTERNAL, executorProvider, healthTrackers);
-		healthIndicator = new PubSubSubscriptionHealthIndicator(trackerRegistry);
-		healthTrackers.clear();
-	}
+  @Test
+  void testHealthCheckFailure() throws Exception {
+    ProjectSubscriptionName goodSubscription =
+        ProjectSubscriptionName.of("project", "good-subscription");
+    HealthTracker goodTracker = mock(HealthTracker.class);
+    when(goodTracker.messagesOverThreshold()).thenReturn(0L);
+    healthTrackers.put(goodSubscription, goodTracker);
 
-	@Test
-	public void testHealthCheckFailure() throws Exception {
-		ProjectSubscriptionName goodSubscription = ProjectSubscriptionName.of("project", "good-subscription");
-		HealthTracker goodTracker = mock(HealthTracker.class);
-		when(goodTracker.messagesOverThreshold()).thenReturn(0L);
-		healthTrackers.put(goodSubscription, goodTracker);
+    ProjectSubscriptionName badSubscription =
+        ProjectSubscriptionName.of("project", "bad-subscription");
+    HealthTracker badTracker = mock(HealthTracker.class);
+    long messagesInBacklog = 1000L;
+    when(badTracker.messagesOverThreshold()).thenReturn(messagesInBacklog);
+    when(badTracker.subscription()).thenReturn(badSubscription);
 
-		ProjectSubscriptionName badSubscription = ProjectSubscriptionName.of("project", "bad-subscription");
-		HealthTracker badTracker = mock(HealthTracker.class);
-		long messagesInBacklog = 1000L;
-		when(badTracker.messagesOverThreshold()).thenReturn(messagesInBacklog);
-		when(badTracker.subscription()).thenReturn(badSubscription);
+    healthTrackers.put(badSubscription, badTracker);
 
-		healthTrackers.put(badSubscription, badTracker);
+    Health.Builder builder = new Health.Builder();
+    healthIndicator.doHealthCheck(builder);
 
-		Health.Builder builder = new Health.Builder();
-		healthIndicator.doHealthCheck(builder);
+    Health health = builder.build();
+    assertThat(health.getStatus()).isEqualTo(Status.DOWN);
+    assertThat(health.getDetails()).containsEntry(badSubscription.toString(), messagesInBacklog);
+  }
 
-		Health health = builder.build();
-		assertThat(health.getStatus()).isEqualTo(Status.DOWN);
-		assertThat(health.getDetails()).containsEntry(badSubscription.toString(), messagesInBacklog);
-	}
+  @Test
+  void testHealthCheckSucceeded() throws Exception {
+    ProjectSubscriptionName key = ProjectSubscriptionName.of("project", "good-subscription");
+    HealthTracker healthTracker = mock(HealthTracker.class);
+    when(healthTracker.messagesOverThreshold()).thenReturn(0L);
 
-	@Test
-	public void testHealthCheckSucceeded() throws Exception {
-		ProjectSubscriptionName key = ProjectSubscriptionName.of("project", "good-subscription");
-		HealthTracker healthTracker = mock(HealthTracker.class);
-		when(healthTracker.messagesOverThreshold()).thenReturn(0L);
+    healthTrackers.put(key, healthTracker);
 
-		healthTrackers.put(key, healthTracker);
+    Health.Builder builder = new Health.Builder();
+    healthIndicator.doHealthCheck(builder);
 
-		Health.Builder builder = new Health.Builder();
-		healthIndicator.doHealthCheck(builder);
-
-		Health health = builder.build();
-		assertThat(health.getStatus()).isEqualTo(Status.UP);
-	}
-
+    Health health = builder.build();
+    assertThat(health.getStatus()).isEqualTo(Status.UP);
+  }
 }

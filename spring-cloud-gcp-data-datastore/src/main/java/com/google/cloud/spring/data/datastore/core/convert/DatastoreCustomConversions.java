@@ -16,14 +16,12 @@
 
 package com.google.cloud.spring.data.datastore.core.convert;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.google.cloud.datastore.BaseKey;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.CustomConversions;
 import org.springframework.data.convert.JodaTimeConverters;
@@ -33,63 +31,65 @@ import org.springframework.data.convert.ThreeTenBackPortConverters;
 /**
  * Value object to capture custom conversion. {@link DatastoreCustomConversions}
  *
- * @author Dmitry Solomakha
- *
  * @since 1.1
  */
 public class DatastoreCustomConversions extends CustomConversions {
 
-	private static final StoreConversions STORE_CONVERSIONS;
+  private static final StoreConversions STORE_CONVERSIONS;
 
-	private static final List<Converter<?, ?>> STORE_CONVERTERS;
+  private static final List<Converter<?, ?>> STORE_CONVERTERS;
 
-	static {
-		ArrayList<Converter<?, ?>> converters = new ArrayList<>();
-		converters.addAll(JodaTimeConverters.getConvertersToRegister());
-		converters.addAll(Jsr310Converters.getConvertersToRegister());
-		converters.addAll(ThreeTenBackPortConverters.getConvertersToRegister());
-		converters.add(new Converter<BaseKey, Long>() {
-			@Override
-			public Long convert(BaseKey key) {
-				Long id = null;
-				// embedded entities have IncompleteKey, and have no inner value
-				if (key instanceof Key) {
-					id = ((Key) key).getId();
-					if (id == null) {
-						throw new DatastoreDataException("The given key doesn't have a numeric ID but a conversion" +
-								" to Long was attempted: " + key);
-					}
-				}
-				return id;
-			}
-		});
-		converters.add(new Converter<BaseKey, String>() {
-			@Override
-			public String convert(BaseKey key) {
-				String name = null;
-				// embedded entities have IncompleteKey, and have no inner value
-				if (key instanceof Key) {
-					name = ((Key) key).getName();
-					if (name == null) {
-						throw new DatastoreDataException("The given key doesn't have a String name value but " +
-								"a conversion to String was attempted: " + key);
-					}
-				}
-				return name;
-			}
-		});
-		STORE_CONVERTERS = Collections.unmodifiableList(converters);
+  static {
+    ArrayList<Converter<?, ?>> converters = new ArrayList<>();
+    converters.addAll(JodaTimeConverters.getConvertersToRegister());
+    converters.addAll(Jsr310Converters.getConvertersToRegister());
+    converters.addAll(ThreeTenBackPortConverters.getConvertersToRegister());
+    converters.add(
+        new Converter<BaseKey, Long>() {
+          @Override
+          public Long convert(BaseKey key) {
+            Long id = null;
+            // embedded entities have IncompleteKey, and have no inner value
+            if (key instanceof Key) {
+              id = ((Key) key).getId();
+              if (id == null) {
+                throw new DatastoreDataException(
+                    "The given key doesn't have a numeric ID but a conversion"
+                        + " to Long was attempted: "
+                        + key);
+              }
+            }
+            return id;
+          }
+        });
+    converters.add(
+        new Converter<BaseKey, String>() {
+          @Override
+          public String convert(BaseKey key) {
+            String name = null;
+            // embedded entities have IncompleteKey, and have no inner value
+            if (key instanceof Key) {
+              name = ((Key) key).getName();
+              if (name == null) {
+                throw new DatastoreDataException(
+                    "The given key doesn't have a String name value but "
+                        + "a conversion to String was attempted: "
+                        + key);
+              }
+            }
+            return name;
+          }
+        });
+    STORE_CONVERTERS = Collections.unmodifiableList(converters);
 
-		STORE_CONVERSIONS =
-				StoreConversions.of(DatastoreNativeTypes.HOLDER, STORE_CONVERTERS);
-	}
+    STORE_CONVERSIONS = StoreConversions.of(DatastoreNativeTypes.HOLDER, STORE_CONVERTERS);
+  }
 
-	public DatastoreCustomConversions() {
-		this(Collections.emptyList());
-	}
+  public DatastoreCustomConversions() {
+    this(Collections.emptyList());
+  }
 
-	public DatastoreCustomConversions(List<?> converters) {
-		super(STORE_CONVERSIONS, converters);
-	}
-
+  public DatastoreCustomConversions(List<?> converters) {
+    super(STORE_CONVERSIONS, converters);
+  }
 }

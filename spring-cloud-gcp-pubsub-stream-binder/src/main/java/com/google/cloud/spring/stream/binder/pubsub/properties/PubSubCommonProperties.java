@@ -19,18 +19,28 @@ package com.google.cloud.spring.stream.binder.pubsub.properties;
 /**
  * Properties common to consumers and producers.
  *
- * @author Mike Eltsufin
  * @since 1.1
  */
 public class PubSubCommonProperties {
 
-	private boolean autoCreateResources = true;
+  private boolean autoCreateResources = true;
 
-	public boolean isAutoCreateResources() {
-		return this.autoCreateResources;
-	}
+  public boolean isAutoCreateResources() {
+    return this.autoCreateResources;
+  }
 
-	public void setAutoCreateResources(boolean autoCreateResources) {
-		this.autoCreateResources = autoCreateResources;
-	}
+  public void setAutoCreateResources(boolean autoCreateResources) {
+    this.autoCreateResources = autoCreateResources;
+  }
+
+  private  String[] allowedHeaders;
+
+  public  String[] getAllowedHeaders() {
+    return this.allowedHeaders;
+  }
+
+  public void setAllowedHeaders(String[] headers) {
+    this.allowedHeaders = headers;
+  }
+
 }

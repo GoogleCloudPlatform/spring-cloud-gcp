@@ -16,55 +16,48 @@
 
 package com.google.cloud.spring.data.firestore.mapping;
 
-import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.annotation.DocumentId;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+/** Tests for {@link FirestorePersistentPropertyImpl}. */
+@ExtendWith(SpringExtension.class)
+class FirestorePersistentPropertyImplTest {
 
-/**
- * Tests for {@link FirestorePersistentPropertyImpl}.
- */
-@RunWith(MockitoJUnitRunner.class)
-public class FirestorePersistentPropertyImplTest {
+  @Mock Property mockProperty;
 
-	@Mock
-	Property mockProperty;
+  @Mock PersistentEntity mockPersistentEntity;
 
-	@Mock
-	PersistentEntity mockPersistentEntity;
+  @Mock SimpleTypeHolder mockSimpleTypeHolder;
 
-	@Mock
-	SimpleTypeHolder mockSimpleTypeHolder;
+  @Test
+  void testGetFieldName_isIdProperty() throws NoSuchFieldException {
+    when(mockProperty.getName()).thenReturn("id");
+    when(mockProperty.getField()).thenReturn(Optional.of(TestEntity.class.getField("id")));
+    when(mockPersistentEntity.getTypeInformation())
+        .thenReturn(ClassTypeInformation.from(TestEntity.class));
+    when(mockPersistentEntity.getType()).thenReturn(TestEntity.class);
 
-	@Test
-	public void testGetFieldName_isIdProperty() throws NoSuchFieldException {
-		when(mockProperty.getName()).thenReturn("id");
-		when(mockProperty.getField()).thenReturn(Optional.of(TestEntity.class.getField("id")));
-		when(mockPersistentEntity.getTypeInformation())
-				.thenReturn(ClassTypeInformation.from(TestEntity.class));
-		when(mockPersistentEntity.getType()).thenReturn(TestEntity.class);
+    FirestorePersistentPropertyImpl firestorePersistentProperty =
+        new FirestorePersistentPropertyImpl(
+            mockProperty, mockPersistentEntity, mockSimpleTypeHolder);
+    assertThat(firestorePersistentProperty.getFieldName())
+        .isEqualTo(FieldPath.documentId().toString());
+  }
 
-		FirestorePersistentPropertyImpl firestorePersistentProperty = new FirestorePersistentPropertyImpl(
-				mockProperty, mockPersistentEntity, mockSimpleTypeHolder);
-		assertThat(firestorePersistentProperty.getFieldName())
-				.isEqualTo(FieldPath.documentId().toString());
-	}
+  static class TestEntity {
 
-	static class TestEntity {
-
-		@DocumentId
-		public String id;
-	}
+    @DocumentId public String id;
+  }
 }

@@ -16,12 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.firestore;
 
-import java.net.URI;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.firestore.FirestoreOptions;
@@ -33,9 +27,12 @@ import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
+import java.net.URI;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
-import reactor.core.publisher.Flux;
-
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -43,104 +40,100 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import reactor.core.publisher.Flux;
 
 /**
  * Provides autoconfiguration to use the Firestore emulator if enabled.
  *
  * @since 1.2.3
- * @author Daniel Zou
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty("spring.cloud.gcp.firestore.emulator.enabled")
 @AutoConfigureBefore(GcpFirestoreAutoConfiguration.class)
 @EnableConfigurationProperties(GcpFirestoreProperties.class)
 public class GcpFirestoreEmulatorAutoConfiguration {
-	private final String hostPort;
-	private final String projectId;
-	private final String rootPath;
+  private final String hostPort;
+  private final String projectId;
+  private final String rootPath;
 
-	GcpFirestoreEmulatorAutoConfiguration(GcpFirestoreProperties properties) {
-		this.hostPort = properties.getHostPort();
-		this.projectId = StringUtils.defaultIfEmpty(properties.getProjectId(), "unused");
-		this.rootPath = String.format("projects/%s/databases/(default)", this.projectId);
-	}
+  GcpFirestoreEmulatorAutoConfiguration(GcpFirestoreProperties properties) {
+    this.hostPort = properties.getHostPort();
+    this.projectId = StringUtils.defaultIfEmpty(properties.getProjectId(), "unused");
+    this.rootPath = String.format("projects/%s/databases/(default)", this.projectId);
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	public FirestoreOptions firestoreOptions() {
-		return FirestoreOptions.newBuilder()
-				.setCredentials(emulatorCredentials())
-				.setProjectId(projectId)
-				.setChannelProvider(
-						InstantiatingGrpcChannelProvider.newBuilder()
-								.setEndpoint(this.hostPort)
-								.setChannelConfigurator(ManagedChannelBuilder::usePlaintext)
-								.build())
-				.build();
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  public FirestoreOptions firestoreOptions() {
+    return FirestoreOptions.newBuilder()
+        .setCredentials(emulatorCredentials())
+        .setProjectId(projectId)
+        .setChannelProvider(
+            InstantiatingGrpcChannelProvider.newBuilder()
+                .setEndpoint(this.hostPort)
+                .setChannelConfigurator(ManagedChannelBuilder::usePlaintext)
+                .build())
+        .build();
+  }
 
-	private Credentials emulatorCredentials() {
-		final Map<String, List<String>> headerMap = new HashMap<>();
-		headerMap.put("Authorization", Collections.singletonList("Bearer owner"));
-		headerMap.put(
-				"google-cloud-resource-prefix", Collections.singletonList(rootPath));
+  private Credentials emulatorCredentials() {
+    final Map<String, List<String>> headerMap = new HashMap<>();
+    headerMap.put("Authorization", Collections.singletonList("Bearer owner"));
+    headerMap.put("google-cloud-resource-prefix", Collections.singletonList(rootPath));
 
-		return new Credentials() {
-			@Override
-			public String getAuthenticationType() {
-				return null;
-			}
+    return new Credentials() {
+      @Override
+      public String getAuthenticationType() {
+        return null;
+      }
 
-			@Override
-			public Map<String, List<String>> getRequestMetadata(URI uri) {
-				return headerMap;
-			}
+      @Override
+      public Map<String, List<String>> getRequestMetadata(URI uri) {
+        return headerMap;
+      }
 
-			@Override
-			public boolean hasRequestMetadata() {
-				return true;
-			}
+      @Override
+      public boolean hasRequestMetadata() {
+        return true;
+      }
 
-			@Override
-			public boolean hasRequestMetadataOnly() {
-				return true;
-			}
+      @Override
+      public boolean hasRequestMetadataOnly() {
+        return true;
+      }
 
-			@Override
-			public void refresh() {
-				// no-op
-			}
-		};
-	}
+      @Override
+      public void refresh() {
+        // no-op
+      }
+    };
+  }
 
-	/**
-	 * Reactive Firestore autoconfiguration to enable emulator use.
-	 */
-	@ConditionalOnClass({ FirestoreGrpc.FirestoreStub.class, Flux.class })
-	@AutoConfigureBefore(FirestoreReactiveAutoConfiguration.class)
-	class ReactiveFirestoreEmulatorAutoConfiguration {
-		@Bean
-		@ConditionalOnMissingBean
-		public FirestoreTemplate firestoreTemplate(FirestoreGrpc.FirestoreStub firestoreStub,
-				FirestoreClassMapper classMapper, FirestoreMappingContext firestoreMappingContext) {
-			return new FirestoreTemplate(
-					firestoreStub,
-					rootPath + "/documents",
-					classMapper,
-					firestoreMappingContext);
-		}
+  /** Reactive Firestore autoconfiguration to enable emulator use. */
+  @ConditionalOnClass({FirestoreGrpc.FirestoreStub.class, Flux.class})
+  @AutoConfigureBefore(FirestoreReactiveAutoConfiguration.class)
+  class ReactiveFirestoreEmulatorAutoConfiguration {
+    @Bean
+    @ConditionalOnMissingBean
+    public FirestoreTemplate firestoreTemplate(
+        FirestoreGrpc.FirestoreStub firestoreStub,
+        FirestoreClassMapper classMapper,
+        FirestoreMappingContext firestoreMappingContext) {
+      return new FirestoreTemplate(
+          firestoreStub, rootPath + "/documents", classMapper, firestoreMappingContext);
+    }
 
-		@Bean
-		@ConditionalOnMissingBean
-		public FirestoreGrpc.FirestoreStub firestoreGrpcStub() {
-			ManagedChannel channel = ManagedChannelBuilder
-					.forTarget(GcpFirestoreEmulatorAutoConfiguration.this.hostPort)
-					.usePlaintext()
-					.build();
+    @Bean
+    @ConditionalOnMissingBean
+    public FirestoreGrpc.FirestoreStub firestoreGrpcStub() {
+      ManagedChannel channel =
+          ManagedChannelBuilder.forTarget(GcpFirestoreEmulatorAutoConfiguration.this.hostPort)
+              .usePlaintext()
+              .build();
 
-			return FirestoreGrpc.newStub(channel)
-					.withCallCredentials(MoreCallCredentials.from(emulatorCredentials()))
-					.withExecutor(Runnable::run);
-		}
-	}
+      return FirestoreGrpc.newStub(channel)
+          .withCallCredentials(MoreCallCredentials.from(emulatorCredentials()))
+          .withExecutor(Runnable::run);
+    }
+  }
 }

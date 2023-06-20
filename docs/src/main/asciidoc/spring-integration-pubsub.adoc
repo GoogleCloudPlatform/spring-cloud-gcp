@@ -5,7 +5,7 @@ This enables messaging between different processes, applications or micro-servic
 
 The Spring Integration Channel Adapters for Google Cloud Pub/Sub are included in the `spring-cloud-gcp-pubsub` module and can be autoconfigured by using the `spring-cloud-gcp-starter-pubsub` module in combination with a Spring Integration dependency.
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
@@ -32,7 +32,7 @@ dependencies {
 
 ==== Inbound channel adapter (using Pub/Sub Streaming Pull)
 
-`PubSubInboundChannelAdapter` is the inbound channel adapter for GCP Pub/Sub that listens to a GCP Pub/Sub subscription for new messages.
+`PubSubInboundChannelAdapter` is the inbound channel adapter for Spring Framework on Google Cloud Pub/Sub that listens to a Spring Framework on Google Cloud Pub/Sub subscription for new messages.
 It converts new messages to an internal Spring https://docs.spring.io/spring-integration/reference/html/messaging-construction-chapter.html#message[`Message`] and then sends it to the bound output channel.
 
 Google Pub/Sub treats message payloads as byte arrays.
@@ -42,6 +42,8 @@ The `PubSubInboundChannelAdapter` delegates the conversion to the desired payloa
 
 
 To use the inbound channel adapter, a `PubSubInboundChannelAdapter` must be provided and configured on the user application side.
+
+NOTE: The subscription name could either be a short subscription name within the current project, or the fully-qualified name referring to a subscription in a different project using the `projects/[project_name]/subscriptions/[subscription_name]` format.
 
 [source,java]
 ----
@@ -69,14 +71,14 @@ Depending on your use case, you might want to use a `MessageChannel` other than 
 
 Then, we declare a `PubSubInboundChannelAdapter` bean.
 It requires the channel we just created and a `SubscriberFactory`, which creates `Subscriber` objects from the Google Cloud Java Client for Pub/Sub.
-The Spring Boot starter for GCP Pub/Sub provides a configured `PubSubSubscriberOperations` object.
+The Spring Boot starter for Spring Framework on Google Cloud Pub/Sub provides a configured `PubSubSubscriberOperations` object.
 
 ===== Acknowledging messages and handling failures
 When working with Cloud Pub/Sub, it is important to understand the concept of `ackDeadline` -- the amount of time Cloud Pub/Sub will wait until attempting redelivery of an outstanding message.
 Each subscription has a default `ackDeadline` applied to all messages sent to it.
 Additionally, the Cloud Pub/Sub client library can extend each streamed message's `ackDeadline` until the message processing completes, fails or until the maximum extension period elapses.
 
-NOTE: In the Pub/Sub client library, default maximum extension period is an hour. However, Spring Cloud GCP disables this auto-extension behavior.
+NOTE: In the Pub/Sub client library, default maximum extension period is an hour. However, Spring Framework on Google Cloud disables this auto-extension behavior.
 Use the `spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period` property to re-enable it.
 
 Acknowledging (acking) a message removes it from Pub/Sub's known outstanding messages. Nacking a message resets its acknowledgement deadline to 0, forcing immediate redelivery.
@@ -190,7 +192,7 @@ public void pubsubErrorHandler(Message<MessagingException> exceptionMessage) {
 While `PubSubInboundChannelAdapter`, through the underlying Asynchronous Pull Pub/Sub mechanism, provides the best performance for high-volume applications that receive a steady flow of messages, it can create load balancing anomalies due to message caching.
 This behavior is most obvious when publishing a large batch of small messages that take a long time to process individually.
 It manifests as one subscriber taking up most messages, even if multiple subscribers are available to take on the work.
-For a more detailed explanation of this scenario, see https://cloud.google.com/pubsub/docs/pull#streamingpull_dealing_with_large_backlogs_of_small_messages[GCP Pub/Sub documentation].
+For a more detailed explanation of this scenario, see https://cloud.google.com/pubsub/docs/pull#streamingpull_dealing_with_large_backlogs_of_small_messages[Spring Framework on Google Cloud Pub/Sub documentation].
 
 In such a scenario, a `PubSubMessageSource` can help spread the load between different subscribers more evenly.
 
@@ -201,6 +203,8 @@ This can be overridden by using `setBlockOnPull()` method to wait for at least o
 
 By default, `PubSubMessageSource` pulls from the subscription one message at a time.
 To pull a batch of messages on each request, use the `setMaxFetchSize()` method to set the batch size.
+
+NOTE: The subscription name could either be a short subscription name within the current project, or the fully-qualified name referring to a subscription in a different project using the `projects/[project_name]/subscriptions/[subscription_name]` format.
 
 [source,java]
 ----
@@ -238,14 +242,16 @@ Streaming pull does not expose this information due to limitations of the underl
 
 ==== Outbound channel adapter
 
-`PubSubMessageHandler` is the outbound channel adapter for GCP Pub/Sub that listens for new messages on a Spring `MessageChannel`.
-It uses `PubSubTemplate` to post them to a GCP Pub/Sub topic.
+`PubSubMessageHandler` is the outbound channel adapter for Spring Framework on Google Cloud Pub/Sub that listens for new messages on a Spring `MessageChannel`.
+It uses `PubSubTemplate` to post them to a Spring Framework on Google Cloud Pub/Sub topic.
 
 To construct a Pub/Sub representation of the message, the outbound channel adapter needs to convert the Spring `Message` payload to a byte array representation expected by Pub/Sub.
 It delegates this conversion to the `PubSubTemplate`.
 To customize the conversion, you can specify a `PubSubMessageConverter` in the `PubSubTemplate` that should convert the `Object` payload and headers of the Spring `Message` to a `PubsubMessage`.
 
 To use the outbound channel adapter, a `PubSubMessageHandler` bean must be provided and configured on the user application side.
+
+NOTE: The topic name could either be a short topic name within the current project, or the fully-qualified name referring to a topic in a different project using the `projects/[project_name]/topics/[topic_name]` format.
 
 [source,java]
 ----
@@ -256,7 +262,7 @@ public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
 }
 ----
 
-The provided `PubSubTemplate` contains all the necessary configuration to publish messages to a GCP Pub/Sub topic.
+The provided `PubSubTemplate` contains all the necessary configuration to publish messages to a Spring Framework on Google Cloud Pub/Sub topic.
 
 `PubSubMessageHandler` publishes messages asynchronously by default.
 A publish timeout can be configured for synchronous publishing.
@@ -321,7 +327,7 @@ NOTE: The order in which the patterns are declared in `PubSubHeaderMapper.setOut
 The first patterns have precedence over the following ones.
 
 In the previous example, the `"*"` pattern means every header is mapped.
-However, because it comes last in the list, https://docs.spring.io/spring-integration/api/org/springframework/integration/util/PatternMatchUtils.html#smartMatch-java.lang.String-java.lang.String...-[the previous patterns take precedence].
+However, because it comes last in the list, https://docs.spring.io/spring-integration/api/org/springframework/integration/support/utils/PatternMatchUtils.html[the previous patterns take precedence].
 
 ==== Samples
 

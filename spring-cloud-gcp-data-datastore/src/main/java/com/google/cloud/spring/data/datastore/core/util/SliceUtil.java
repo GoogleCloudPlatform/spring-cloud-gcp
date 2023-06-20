@@ -20,30 +20,28 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
- * @author Dmitry Solomakha
- *
- * @since 1.2
+ *  @since 1.2
  */
 public final class SliceUtil {
 
-	private SliceUtil() {
-	}
+  private SliceUtil() {}
 
-	/**
-	 * Cut array into slices of a given size and call consumer on each of them.
-	 * @param <T> the type of the elements.
-	 * @param elements the array to be sliced.
-	 * @param sliceSize the max size of a slice.
-	 * @param consumer the consumer to be called on every slice.
-	 */
-	public static <T> void sliceAndExecute(T[] elements, int sliceSize, Consumer<T[]> consumer) {
-		int numSlices = (int) (Math.ceil((double) elements.length / sliceSize));
-		for (int i = 0; i < numSlices; i++) {
-			int start = i * sliceSize;
-			int end = Math.min(start + sliceSize, elements.length);
+  /**
+   * Cut array into slices of a given size and call consumer on each of them.
+   *
+   * @param <T> the type of the elements.
+   * @param elements the array to be sliced.
+   * @param sliceSize the max size of a slice.
+   * @param consumer the consumer to be called on every slice.
+   */
+  public static <T> void sliceAndExecute(T[] elements, int sliceSize, Consumer<T[]> consumer) {
+    int numSlices = (int) (Math.ceil((double) elements.length / sliceSize));
+    for (int i = 0; i < numSlices; i++) {
+      int start = i * sliceSize;
+      int end = Math.min(start + sliceSize, elements.length);
 
-			T[] slice = Arrays.copyOfRange(elements, start, end);
-			consumer.accept(slice);
-		}
-	}
+      T[] slice = Arrays.copyOfRange(elements, start, end);
+      consumer.accept(slice);
+    }
+  }
 }

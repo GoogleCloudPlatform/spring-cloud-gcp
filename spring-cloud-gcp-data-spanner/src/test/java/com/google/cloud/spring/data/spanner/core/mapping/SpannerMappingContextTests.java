@@ -16,16 +16,6 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.data.mapping.model.FieldNamingStrategy;
-import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
-import org.springframework.data.util.ClassTypeInformation;
-import org.springframework.data.util.TypeInformation;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
@@ -33,73 +23,76 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-/**
- * Tests for the Spanner mapping context.
- *
- * @author Chengyuan Zhao
- */
-@RunWith(SpringRunner.class)
-public class SpannerMappingContextTests {
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.mapping.model.FieldNamingStrategy;
+import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
+import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.data.util.TypeInformation;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-	@Test
-	public void testNullSetFieldNamingStrategy() {
-		SpannerMappingContext context = new SpannerMappingContext();
+/** Tests for the Spanner mapping context. */
+@ExtendWith(SpringExtension.class)
+class SpannerMappingContextTests {
 
-		context.setFieldNamingStrategy(null);
-		assertThat(context.getFieldNamingStrategy())
-				.isEqualTo(PropertyNameFieldNamingStrategy.INSTANCE);
-	}
+  @Test
+  void testNullSetFieldNamingStrategy() {
+    SpannerMappingContext context = new SpannerMappingContext();
 
-	@Test
-	public void testSetFieldNamingStrategy() {
-		SpannerMappingContext context = new SpannerMappingContext();
-		FieldNamingStrategy strat = mock(FieldNamingStrategy.class);
-		context.setFieldNamingStrategy(strat);
-		assertThat(context.getFieldNamingStrategy()).isSameAs(strat);
-	}
+    context.setFieldNamingStrategy(null);
+    assertThat(context.getFieldNamingStrategy())
+        .isEqualTo(PropertyNameFieldNamingStrategy.INSTANCE);
+  }
 
-	@Test
-	public void testApplicationContextPassing() {
-		SpannerPersistentEntityImpl mockEntity = mock(SpannerPersistentEntityImpl.class);
-		SpannerMappingContext context = createSpannerMappingContextWith(mockEntity);
-		ApplicationContext applicationContext = mock(ApplicationContext.class);
-		context.setApplicationContext(applicationContext);
+  @Test
+  void testSetFieldNamingStrategy() {
+    SpannerMappingContext context = new SpannerMappingContext();
+    FieldNamingStrategy strat = mock(FieldNamingStrategy.class);
+    context.setFieldNamingStrategy(strat);
+    assertThat(context.getFieldNamingStrategy()).isSameAs(strat);
+  }
 
-		context.createPersistentEntity(ClassTypeInformation.from(Object.class));
+  @Test
+  void testApplicationContextPassing() {
+    SpannerPersistentEntityImpl mockEntity = mock(SpannerPersistentEntityImpl.class);
+    SpannerMappingContext context = createSpannerMappingContextWith(mockEntity);
+    ApplicationContext applicationContext = mock(ApplicationContext.class);
+    context.setApplicationContext(applicationContext);
 
-		verify(mockEntity, times(1)).setApplicationContext(applicationContext);
-	}
+    context.createPersistentEntity(ClassTypeInformation.from(Object.class));
 
+    verify(mockEntity, times(1)).setApplicationContext(applicationContext);
+  }
 
-	@Test
-	public void testApplicationContextIsNotSet() {
-		SpannerPersistentEntityImpl mockEntity = mock(SpannerPersistentEntityImpl.class);
-		SpannerMappingContext context = createSpannerMappingContextWith(mockEntity);
+  @Test
+  void testApplicationContextIsNotSet() {
+    SpannerPersistentEntityImpl mockEntity = mock(SpannerPersistentEntityImpl.class);
+    SpannerMappingContext context = createSpannerMappingContextWith(mockEntity);
 
-		context.createPersistentEntity(ClassTypeInformation.from(Object.class));
+    context.createPersistentEntity(ClassTypeInformation.from(Object.class));
 
-		verifyNoMoreInteractions(mockEntity);
-	}
+    verifyNoMoreInteractions(mockEntity);
+  }
 
-	@Test
-	public void testGetInvalidSpannerEntity() {
-		SpannerPersistentEntityImpl mockEntity = mock(SpannerPersistentEntityImpl.class);
-		SpannerMappingContext context = createSpannerMappingContextWith(mockEntity);
+  @Test
+  void testGetInvalidSpannerEntity() {
+    SpannerPersistentEntityImpl mockEntity = mock(SpannerPersistentEntityImpl.class);
+    SpannerMappingContext context = createSpannerMappingContextWith(mockEntity);
 
-		assertThatThrownBy(() -> context.getPersistentEntityOrFail(Integer.class))
-				.isInstanceOf(SpannerDataException.class);
-	}
+    assertThatThrownBy(() -> context.getPersistentEntityOrFail(Integer.class))
+        .isInstanceOf(SpannerDataException.class);
+  }
 
-	private SpannerMappingContext createSpannerMappingContextWith(
-			SpannerPersistentEntityImpl mockEntity) {
-		return new SpannerMappingContext() {
-			@Override
-			@SuppressWarnings("unchecked")
-			protected  SpannerPersistentEntityImpl constructPersistentEntity(
-					TypeInformation typeInformation) {
-				return mockEntity;
-			}
-		};
-	}
-
+  private SpannerMappingContext createSpannerMappingContextWith(
+      SpannerPersistentEntityImpl mockEntity) {
+    return new SpannerMappingContext() {
+      @Override
+      @SuppressWarnings("unchecked")
+      protected SpannerPersistentEntityImpl constructPersistentEntity(
+          TypeInformation typeInformation) {
+        return mockEntity;
+      }
+    };
+  }
 }

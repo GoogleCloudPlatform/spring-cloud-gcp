@@ -16,40 +16,38 @@
 
 package com.google.cloud.spring.core;
 
-
 import com.google.cloud.MetadataConfig;
 import com.google.cloud.ServiceOptions;
 
 /**
- * Environment-specific implementation determining whether the current GCP environment matches the passed in parameter.
+ * Environment-specific implementation determining whether the current GCP environment matches the
+ * passed in parameter.
  *
  * <p>Delegates the decision to {@link GcpEnvironment}.
- *
- * @author Elena Felder
  *
  * @since 1.1
  */
 public class DefaultGcpEnvironmentProvider implements GcpEnvironmentProvider {
 
-	@Override
-	public GcpEnvironment getCurrentEnvironment() {
+  @Override
+  public GcpEnvironment getCurrentEnvironment() {
 
-		if (System.getenv("GAE_INSTANCE") != null) {
-			return GcpEnvironment.APP_ENGINE_FLEXIBLE;
-		}
+    if (System.getenv("GAE_INSTANCE") != null) {
+      return GcpEnvironment.APP_ENGINE_FLEXIBLE;
+    }
 
-		if (System.getenv("KUBERNETES_SERVICE_HOST") != null) {
-			return GcpEnvironment.KUBERNETES_ENGINE;
-		}
+    if (System.getenv("KUBERNETES_SERVICE_HOST") != null) {
+      return GcpEnvironment.KUBERNETES_ENGINE;
+    }
 
-		if (ServiceOptions.getAppEngineAppId() != null) {
-			return GcpEnvironment.APP_ENGINE_STANDARD;
-		}
+    if (ServiceOptions.getAppEngineAppId() != null) {
+      return GcpEnvironment.APP_ENGINE_STANDARD;
+    }
 
-		if (MetadataConfig.getInstanceId() != null) {
-			return GcpEnvironment.COMPUTE_ENGINE;
-		}
+    if (MetadataConfig.getInstanceId() != null) {
+      return GcpEnvironment.COMPUTE_ENGINE;
+    }
 
-		return GcpEnvironment.UNKNOWN;
-	}
+    return GcpEnvironment.UNKNOWN;
+  }
 }

@@ -16,19 +16,6 @@
 
 package com.google.cloud.spring.data.datastore.repository.query;
 
-import java.util.Optional;
-
-import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
-import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import org.springframework.data.repository.core.NamedQueries;
-import org.springframework.data.repository.query.Parameter;
-import org.springframework.data.repository.query.Parameters;
-import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -40,70 +27,82 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Tests for the Query Method lookup class.
- *
- * @author Chengyuan Zhao
- */
-public class DatastoreQueryLookupStrategyTests {
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.data.repository.core.NamedQueries;
+import org.springframework.data.repository.query.Parameter;
+import org.springframework.data.repository.query.Parameters;
+import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 
-	private DatastoreTemplate datastoreTemplate;
+/** Tests for the Query Method lookup class. */
+class DatastoreQueryLookupStrategyTests {
 
-	private DatastoreMappingContext datastoreMappingContext;
+  private DatastoreTemplate datastoreTemplate;
 
-	private DatastoreQueryMethod queryMethod;
+  private DatastoreMappingContext datastoreMappingContext;
 
-	private DatastoreQueryLookupStrategy datastoreQueryLookupStrategy;
+  private DatastoreQueryMethod queryMethod;
 
-	private QueryMethodEvaluationContextProvider evaluationContextProvider;
+  private DatastoreQueryLookupStrategy datastoreQueryLookupStrategy;
 
-	@Before
-	public void initMocks() {
-		this.datastoreTemplate = mock(DatastoreTemplate.class);
-		this.datastoreMappingContext = new DatastoreMappingContext();
-		this.queryMethod = mock(DatastoreQueryMethod.class);
-		this.evaluationContextProvider = mock(QueryMethodEvaluationContextProvider.class);
-		this.datastoreQueryLookupStrategy = getDatastoreQueryLookupStrategy();
-	}
+  private QueryMethodEvaluationContextProvider evaluationContextProvider;
 
-	@Test
-	public void resolveSqlQueryTest() {
-		String queryName = "fakeNamedQueryName";
-		String query = "fake query";
-		when(this.queryMethod.getNamedQueryName()).thenReturn(queryName);
-		Query queryAnnotation = mock(Query.class);
-		when(this.queryMethod.getQueryAnnotation()).thenReturn(queryAnnotation);
-		NamedQueries namedQueries = mock(NamedQueries.class);
+  @BeforeEach
+  void initMocks() {
+    this.datastoreTemplate = mock(DatastoreTemplate.class);
+    this.datastoreMappingContext = new DatastoreMappingContext();
+    this.queryMethod = mock(DatastoreQueryMethod.class);
+    this.evaluationContextProvider = mock(QueryMethodEvaluationContextProvider.class);
+    this.datastoreQueryLookupStrategy = getDatastoreQueryLookupStrategy();
+  }
 
-		Parameters parameters = mock(Parameters.class);
+  @Test
+  void resolveSqlQueryTest() {
+    String queryName = "fakeNamedQueryName";
+    String query = "fake query";
+    when(this.queryMethod.getNamedQueryName()).thenReturn(queryName);
+    Query queryAnnotation = mock(Query.class);
+    when(this.queryMethod.getQueryAnnotation()).thenReturn(queryAnnotation);
+    NamedQueries namedQueries = mock(NamedQueries.class);
 
-		Mockito.<Parameters>when(this.queryMethod.getParameters())
-				.thenReturn(parameters);
+    Parameters parameters = mock(Parameters.class);
 
-		when(parameters.getNumberOfParameters()).thenReturn(1);
-		when(parameters.getParameter(anyInt())).thenAnswer(invocation -> {
-			Parameter param = mock(Parameter.class);
-			when(param.getName()).thenReturn(Optional.of("tag"));
-			Mockito.<Class>when(param.getType()).thenReturn(Object.class);
-			return param;
-		});
+    Mockito.<Parameters>when(this.queryMethod.getParameters()).thenReturn(parameters);
 
-		when(namedQueries.hasQuery(queryName)).thenReturn(true);
-		when(namedQueries.getQuery(queryName)).thenReturn(query);
+    when(parameters.getNumberOfParameters()).thenReturn(1);
+    when(parameters.getParameter(anyInt()))
+        .thenAnswer(
+            invocation -> {
+              Parameter param = mock(Parameter.class);
+              when(param.getName()).thenReturn(Optional.of("tag"));
+              Mockito.<Class>when(param.getType()).thenReturn(Object.class);
+              return param;
+            });
 
-		this.datastoreQueryLookupStrategy.resolveQuery(null, null, null, namedQueries);
+    when(namedQueries.hasQuery(queryName)).thenReturn(true);
+    when(namedQueries.getQuery(queryName)).thenReturn(query);
 
-		verify(this.datastoreQueryLookupStrategy, times(1)).createGqlDatastoreQuery(
-				eq(Object.class), same(this.queryMethod), eq(query));
-	}
+    this.datastoreQueryLookupStrategy.resolveQuery(null, null, null, namedQueries);
 
-	private DatastoreQueryLookupStrategy getDatastoreQueryLookupStrategy() {
-		DatastoreQueryLookupStrategy spannerQueryLookupStrategy = spy(
-				new DatastoreQueryLookupStrategy(this.datastoreMappingContext,
-						this.datastoreTemplate, this.evaluationContextProvider));
-		doReturn(Object.class).when(spannerQueryLookupStrategy).getEntityType(any());
-		doReturn(this.queryMethod).when(spannerQueryLookupStrategy)
-				.createQueryMethod(any(), any(), any());
-		return spannerQueryLookupStrategy;
-	}
+    verify(this.datastoreQueryLookupStrategy, times(1))
+        .createGqlDatastoreQuery(eq(Object.class), same(this.queryMethod), eq(query));
+  }
+
+  private DatastoreQueryLookupStrategy getDatastoreQueryLookupStrategy() {
+    DatastoreQueryLookupStrategy spannerQueryLookupStrategy =
+        spy(
+            new DatastoreQueryLookupStrategy(
+                this.datastoreMappingContext,
+                this.datastoreTemplate,
+                this.evaluationContextProvider));
+    doReturn(Object.class).when(spannerQueryLookupStrategy).getEntityType(any());
+    doReturn(this.queryMethod)
+        .when(spannerQueryLookupStrategy)
+        .createQueryMethod(any(), any(), any());
+    return spannerQueryLookupStrategy;
+  }
 }

@@ -16,47 +16,37 @@
 
 package com.google.cloud.spring.logging;
 
-import java.util.List;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Tests for the logging-web-mvc configurer.
- *
- * @author Mike Eltsufin
- */
-@RunWith(MockitoJUnitRunner.class)
-public class LoggingWebMvcConfigurerTests {
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 
-	@Mock
-	private TraceIdLoggingWebMvcInterceptor interceptor;
+/** Tests for the logging-web-mvc configurer. */
+@ExtendWith(MockitoExtension.class)
+class LoggingWebMvcConfigurerTests {
 
-	@Test
-	public void testAddInterceptors() {
-		LoggingWebMvcConfigurer adapter =
-				new LoggingWebMvcConfigurer(this.interceptor, () -> "remission");
-		TestInterceptorRegistry registry = new TestInterceptorRegistry();
+  @Mock private TraceIdLoggingWebMvcInterceptor interceptor;
 
-		adapter.addInterceptors(registry);
+  @Test
+  void testAddInterceptors() {
+    LoggingWebMvcConfigurer adapter =
+        new LoggingWebMvcConfigurer(this.interceptor, () -> "remission");
+    TestInterceptorRegistry registry = new TestInterceptorRegistry();
 
-		assertThat(registry.doGetInterceptors()).hasSize(1);
-		assertThat(registry.doGetInterceptors().get(0)).isEqualTo(this.interceptor);
-	}
+    adapter.addInterceptors(registry);
 
-	/**
-	 * Test interceptor registry that makes interceptors list accessible.
-	 */
-	private static class TestInterceptorRegistry extends InterceptorRegistry {
-		public List<Object> doGetInterceptors() {
-			return super.getInterceptors();
-		}
-	}
+    assertThat(registry.doGetInterceptors()).hasSize(1);
+    assertThat(registry.doGetInterceptors().get(0)).isEqualTo(this.interceptor);
+  }
 
+  /** Test interceptor registry that makes interceptors list accessible. */
+  private static class TestInterceptorRegistry extends InterceptorRegistry {
+    public List<Object> doGetInterceptors() {
+      return super.getInterceptors();
+    }
+  }
 }

@@ -19,39 +19,36 @@ package com.google.cloud.spring.logging;
 /**
  * This class provides the service context data for stackdriver error reporting.
  *
- * Reference:  https://cloud.google.com/error-reporting/reference/rest/v1beta1/ServiceContext
+ * <p>Reference: https://cloud.google.com/error-reporting/reference/rest/v1beta1/ServiceContext
  *
- * @author Stefan Dieringer
  * @since 1.2
  */
 public class StackdriverErrorReportingServiceContext {
 
-	private String service;
+  private String service;
 
-	private String version;
+  private String version;
 
-	public StackdriverErrorReportingServiceContext() {
+  public StackdriverErrorReportingServiceContext() {}
 
-	}
+  public StackdriverErrorReportingServiceContext(String service, String version) {
+    this.service = service;
+    this.version = version;
+  }
 
-	public StackdriverErrorReportingServiceContext(String service, String version) {
-		this.service = service;
-		this.version = version;
-	}
+  public String getService() {
+    return this.service;
+  }
 
-	public String getService() {
-		return this.service;
-	}
+  public void setService(String service) {
+    this.service = service;
+  }
 
-	public void setService(String service) {
-		this.service = service;
-	}
+  public String getVersion() {
+    return this.version;
+  }
 
-	public String getVersion() {
-		return this.version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
+  public void setVersion(String version) {
+    this.version = version;
+  }
 }

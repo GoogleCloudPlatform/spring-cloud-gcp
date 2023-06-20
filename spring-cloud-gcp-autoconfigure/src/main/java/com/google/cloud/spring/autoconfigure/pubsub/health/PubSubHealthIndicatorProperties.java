@@ -18,50 +18,40 @@ package com.google.cloud.spring.autoconfigure.pubsub.health;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * Properties for Pub/Sub Health Indicator.
- *
- * @author Patrik Hörlin
- */
+/** Properties for Pub/Sub Health Indicator. */
 @ConfigurationProperties("spring.cloud.gcp.pubsub.health")
 public class PubSubHealthIndicatorProperties {
 
-	/**
-	 * Subscription to health check against by pulling a message.
-	 */
-	private String subscription;
+  /** Subscription to health check against by pulling a message. */
+  private String subscription;
 
-	/**
-	 * Milliseconds to wait for response from Pub/Sub before timing out.
-	 */
-	private Long timeoutMillis = 2000L;
+  /** Milliseconds to wait for response from Pub/Sub before timing out. */
+  private Long timeoutMillis = 2000L;
 
-	/**
-	 * Whether to acknowledge messages pulled from {@link #subscription}.
-	 */
-	private boolean acknowledgeMessages = false;
+  /** Whether to acknowledge messages pulled from {@link #subscription}. */
+  private boolean acknowledgeMessages = false;
 
-	public String getSubscription() {
-		return subscription;
-	}
+  public String getSubscription() {
+    return subscription;
+  }
 
-	public void setSubscription(String subscription) {
-		this.subscription = subscription;
-	}
+  public void setSubscription(String subscription) {
+    this.subscription = subscription;
+  }
 
-	public Long getTimeoutMillis() {
-		return timeoutMillis;
-	}
+  public Long getTimeoutMillis() {
+    return timeoutMillis;
+  }
 
-	public void setTimeoutMillis(Long timeoutMillis) {
-		this.timeoutMillis = timeoutMillis;
-	}
+  public void setTimeoutMillis(Long timeoutMillis) {
+    this.timeoutMillis = timeoutMillis;
+  }
 
-	public boolean isAcknowledgeMessages() {
-		return acknowledgeMessages;
-	}
+  public boolean isAcknowledgeMessages() {
+    return acknowledgeMessages;
+  }
 
-	public void setAcknowledgeMessages(boolean acknowledgeMessages) {
-		this.acknowledgeMessages = acknowledgeMessages;
-	}
+  public void setAcknowledgeMessages(boolean acknowledgeMessages) {
+    this.acknowledgeMessages = acknowledgeMessages;
+  }
 }

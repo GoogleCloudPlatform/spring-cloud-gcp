@@ -5,16 +5,16 @@
 	<parent>
 		<groupId>org.springframework.cloud</groupId>
 		<artifactId>spring-cloud-dependencies-parent</artifactId>
-		<version>3.0.4</version>
+		<version>3.1.4</version>
 		<relativePath/>
 	</parent>
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-dependencies</artifactId>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.5.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 
-	<name>Spring Cloud GCP Dependencies</name>
-	<description>Spring Cloud GCP Dependencies</description>
+	<name>Spring Framework on Google Cloud Dependencies</name>
+	<description>Spring Framework on Google Cloud Dependencies</description>
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -29,15 +29,26 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>24.0.0</gcp-libraries-bom.version>
-		<cloud-sql-socket-factory.version>1.4.0</cloud-sql-socket-factory.version>
-		<guava.version>31.0.1-jre</guava.version>
+		<gcp-libraries-bom.version>26.17.0</gcp-libraries-bom.version>
+		<cloud-sql-socket-factory.version>1.12.0</cloud-sql-socket-factory.version>
+		<guava.version>31.1-jre</guava.version>
+		<r2dbc-mysql-driver.version>0.9.3</r2dbc-mysql-driver.version>
+		<r2dbc-postgres-driver.version>0.8.13.RELEASE</r2dbc-postgres-driver.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 
-			<!-- Overriding Guava from libraries-bom; Spring Cloud GCP does not require Java 7 support -->
+			<!-- Addresses https://tanzu.vmware.com/security/cve-2022-22963 -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-function-dependencies</artifactId>
+				<version>3.2.7</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			
+			<!-- Overriding Guava from libraries-bom; Spring Framework on Google Cloud does not require Java 7 support -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava-bom</artifactId>
@@ -185,6 +196,16 @@
 			</dependency>
 			<dependency>
 				<groupId>com.google.cloud</groupId>
+				<artifactId>spring-cloud-gcp-starter-sql-mysql-r2dbc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>spring-cloud-gcp-starter-sql-postgres-r2dbc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-starter-trace</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -248,7 +269,35 @@
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
 
-			<!--Google Cloud Platform Libraries BOM -->
+			<!-- spring-cloud-gcp-starter-sql-mysql-r2dbc -->
+			<dependency>
+				<groupId>com.google.cloud.sql</groupId>
+				<artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
+				<version>${cloud-sql-socket-factory.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.asyncer</groupId>
+				<artifactId>r2dbc-mysql</artifactId>
+				<version>${r2dbc-mysql-driver.version}</version>
+			</dependency>
+
+			<!-- spring-cloud-gcp-starter-sql-postgres-r2dbc -->
+			<dependency>
+				<groupId>com.google.cloud.sql</groupId>
+				<artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
+				<version>${cloud-sql-socket-factory.version}</version>
+			</dependency>
+
+			<!-- Spring Boot 2.7 no longer manages this dependency.
+     			 Replace with org.postgres group ID once Spring Boot 2.6 is out of support.
+ 			-->
+			<dependency>
+				<groupId>io.r2dbc</groupId>
+				<artifactId>r2dbc-postgresql</artifactId>
+				<version>${r2dbc-postgres-driver.version}</version>
+			</dependency>
+
+			<!--Google Cloud Libraries BOM -->
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>libraries-bom</artifactId>
@@ -260,59 +309,6 @@
 	</dependencyManagement>
 
 	<profiles>
-		<profile>
-			<id>spring</id>
-			<repositories>
-				<repository>
-					<id>spring-snapshots</id>
-					<name>Spring Snapshots</name>
-					<url>https://repo.spring.io/snapshot</url>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-				</repository>
-				<repository>
-					<id>spring-milestones</id>
-					<name>Spring Milestones</name>
-					<url>https://repo.spring.io/milestone</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>spring-releases</id>
-					<name>Spring Releases</name>
-					<url>https://repo.spring.io/release</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-			<pluginRepositories>
-				<pluginRepository>
-					<id>spring-snapshots</id>
-					<name>Spring Snapshots</name>
-					<url>https://repo.spring.io/snapshot</url>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-				</pluginRepository>
-				<pluginRepository>
-					<id>spring-milestones</id>
-					<name>Spring Milestones</name>
-					<url>https://repo.spring.io/milestone</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</pluginRepository>
-			</pluginRepositories>
-		</profile>
 
     <!--
     		Release profile must be defined here as well since spring-cloud-gcp-dependencies
@@ -330,7 +326,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>3.1.0</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -344,7 +340,7 @@
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.8</version>
+						<version>1.6.13</version>
 						<extensions>true</extensions>
 						<configuration>
 							<serverId>ossrh</serverId>
@@ -364,12 +360,12 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-enforcer-plugin</artifactId>
-						<version>3.0.0</version>
+						<version>3.3.0</version>
 						<dependencies>
 							<dependency>
 								<groupId>com.google.cloud.tools</groupId>
 								<artifactId>linkage-checker-enforcer-rules</artifactId>
-								<version>1.5.12</version>
+								<version>1.5.13</version>
 							</dependency>
 						</dependencies>
 						<executions>

@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.kms;
 
-import java.nio.charset.StandardCharsets;
-
 import com.google.cloud.kms.v1.CryptoKeyName;
 import com.google.cloud.kms.v1.DecryptRequest;
 import com.google.cloud.kms.v1.DecryptResponse;
@@ -28,100 +26,97 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.common.hash.Hashing;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Int64Value;
+import java.nio.charset.StandardCharsets;
 
 /**
- * Offers convenience methods for performing common operations on KMS including
- * encrypting and decrypting text.
- *
- * @author Emmanouil Gkatziouras
+ * Offers convenience methods for performing common operations on KMS including encrypting and
+ * decrypting text.
  */
 public class KmsTemplate implements KmsOperations {
 
-	private final KeyManagementServiceClient client;
+  private final KeyManagementServiceClient client;
 
-	private final GcpProjectIdProvider projectIdProvider;
+  private final GcpProjectIdProvider projectIdProvider;
 
-	public KmsTemplate(
-			KeyManagementServiceClient keyManagementServiceClient,
-			GcpProjectIdProvider projectIdProvider) {
-		this.client = keyManagementServiceClient;
-		this.projectIdProvider = projectIdProvider;
-	}
+  public KmsTemplate(
+      KeyManagementServiceClient keyManagementServiceClient,
+      GcpProjectIdProvider projectIdProvider) {
+    this.client = keyManagementServiceClient;
+    this.projectIdProvider = projectIdProvider;
+  }
 
-	@Override
-	public byte[] encryptText(String cryptoKey, String text) {
-		byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
-		return encryptBytes(cryptoKey, bytes);
-	}
+  @Override
+  public byte[] encryptText(String cryptoKey, String text) {
+    byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+    return encryptBytes(cryptoKey, bytes);
+  }
 
-	@Override
-	public byte[] encryptBytes(String cryptoKey, byte[] bytes) {
-		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKey, projectIdProvider);
+  @Override
+  public byte[] encryptBytes(String cryptoKey, byte[] bytes) {
+    CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKey, projectIdProvider);
 
-		long crc32c = longCrc32c(bytes);
+    long crc32c = longCrc32c(bytes);
 
-		EncryptRequest request = EncryptRequest.newBuilder()
-				.setName(cryptoKeyName.toString())
-				.setPlaintext(ByteString.copyFrom(bytes))
-				.setPlaintextCrc32C(
-						Int64Value.newBuilder().setValue(crc32c).build())
-				.build();
+    EncryptRequest request =
+        EncryptRequest.newBuilder()
+            .setName(cryptoKeyName.toString())
+            .setPlaintext(ByteString.copyFrom(bytes))
+            .setPlaintextCrc32C(Int64Value.newBuilder().setValue(crc32c).build())
+            .build();
 
-		EncryptResponse response = client.encrypt(request);
-		assertCrcMatch(response);
-		return response.getCiphertext().toByteArray();
-	}
+    EncryptResponse response = client.encrypt(request);
+    assertCrcMatch(response);
+    return response.getCiphertext().toByteArray();
+  }
 
-	@Override
-	public String decryptText(String cryptoKey, byte[] cipherText) {
-		byte[] decryptedBytes = decryptBytes(cryptoKey, cipherText);
-		return new String(decryptedBytes, StandardCharsets.UTF_8);
-	}
+  @Override
+  public String decryptText(String cryptoKey, byte[] cipherText) {
+    byte[] decryptedBytes = decryptBytes(cryptoKey, cipherText);
+    return new String(decryptedBytes, StandardCharsets.UTF_8);
+  }
 
-	@Override
-	public byte[] decryptBytes(String cryptoKey, byte[] cipherText) {
-		CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKey, projectIdProvider);
+  @Override
+  public byte[] decryptBytes(String cryptoKey, byte[] cipherText) {
+    CryptoKeyName cryptoKeyName = KmsPropertyUtils.getCryptoKeyName(cryptoKey, projectIdProvider);
 
-		ByteString encryptedByteString = ByteString.copyFrom(cipherText);
-		long crc32c = longCrc32c(encryptedByteString);
+    ByteString encryptedByteString = ByteString.copyFrom(cipherText);
+    long crc32c = longCrc32c(encryptedByteString);
 
-		DecryptRequest request =
-				DecryptRequest.newBuilder()
-						.setName(cryptoKeyName.toString())
-						.setCiphertext(encryptedByteString)
-						.setCiphertextCrc32C(
-								Int64Value.newBuilder().setValue(crc32c).build())
-						.build();
+    DecryptRequest request =
+        DecryptRequest.newBuilder()
+            .setName(cryptoKeyName.toString())
+            .setCiphertext(encryptedByteString)
+            .setCiphertextCrc32C(Int64Value.newBuilder().setValue(crc32c).build())
+            .build();
 
-		DecryptResponse response = client.decrypt(request);
-		assertCrcMatch(response);
-		return response.getPlaintext().toByteArray();
-	}
+    DecryptResponse response = client.decrypt(request);
+    assertCrcMatch(response);
+    return response.getPlaintext().toByteArray();
+  }
 
-	private long longCrc32c(ByteString plaintextByteString) {
-		return longCrc32c(plaintextByteString.toByteArray());
-	}
+  private long longCrc32c(ByteString plaintextByteString) {
+    return longCrc32c(plaintextByteString.toByteArray());
+  }
 
-	private long longCrc32c(byte[] bytes) {
-		return Hashing.crc32c().hashBytes(bytes).padToLong();
-	}
+  private long longCrc32c(byte[] bytes) {
+    return Hashing.crc32c().hashBytes(bytes).padToLong();
+  }
 
-	private void assertCrcMatch(EncryptResponse response) {
-		long expected = response.getCiphertextCrc32C().getValue();
-		long received = longCrc32c(response.getCiphertext());
+  private void assertCrcMatch(EncryptResponse response) {
+    long expected = response.getCiphertextCrc32C().getValue();
+    long received = longCrc32c(response.getCiphertext());
 
-		if (expected != received) {
-			throw new KmsException("Encryption: response from server corrupted");
-		}
-	}
+    if (expected != received) {
+      throw new KmsException("Encryption: response from server corrupted");
+    }
+  }
 
-	private void assertCrcMatch(DecryptResponse response) {
-		long expected = response.getPlaintextCrc32C().getValue();
-		long received = longCrc32c(response.getPlaintext());
+  private void assertCrcMatch(DecryptResponse response) {
+    long expected = response.getPlaintextCrc32C().getValue();
+    long received = longCrc32c(response.getPlaintext());
 
-		if (expected != received) {
-			throw new KmsException("Decryption : response from server corrupted");
-		}
-	}
-
+    if (expected != received) {
+      throw new KmsException("Decryption : response from server corrupted");
+    }
+  }
 }

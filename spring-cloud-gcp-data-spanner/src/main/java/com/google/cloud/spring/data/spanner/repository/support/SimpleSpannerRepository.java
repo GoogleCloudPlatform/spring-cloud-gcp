@@ -16,16 +16,15 @@
 
 package com.google.cloud.spring.data.spanner.repository.support;
 
-import java.util.Optional;
-import java.util.function.Function;
-
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
-
+import java.util.Collections;
+import java.util.Optional;
+import java.util.function.Function;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -37,143 +36,154 @@ import org.springframework.util.Assert;
  *
  * @param <T> the entity type of the repository
  * @param <I> the id type of the entity
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class SimpleSpannerRepository<T, I> implements SpannerRepository<T, I> {
 
-	private static final String NON_NULL_ID_REQUIRED = "A non-null ID is required.";
+  private static final String NON_NULL_ID_REQUIRED = "A non-null ID is required.";
 
-	private final SpannerTemplate spannerTemplate;
+  private final SpannerTemplate spannerTemplate;
 
-	private final Class<T> entityType;
+  private final Class<T> entityType;
 
-	public SimpleSpannerRepository(SpannerTemplate spannerTemplate, Class<T> entityType) {
-		Assert.notNull(spannerTemplate, "A valid SpannerTemplate object is required.");
-		Assert.notNull(entityType, "A valid entity type is required.");
-		this.spannerTemplate = spannerTemplate;
-		this.entityType = entityType;
-	}
+  public SimpleSpannerRepository(SpannerTemplate spannerTemplate, Class<T> entityType) {
+    Assert.notNull(spannerTemplate, "A valid SpannerTemplate object is required.");
+    Assert.notNull(entityType, "A valid entity type is required.");
+    this.spannerTemplate = spannerTemplate;
+    this.entityType = entityType;
+  }
 
-	@Override
-	public SpannerOperations getSpannerTemplate() {
-		return this.spannerTemplate;
-	}
+  @Override
+  public SpannerOperations getSpannerTemplate() {
+    return this.spannerTemplate;
+  }
 
-	@Override
-	public <A> A performReadOnlyTransaction(
-			Function<SpannerRepository<T, I>, A> operations) {
-		return this.spannerTemplate
-				.performReadOnlyTransaction(
-						transactionSpannerOperations -> operations
-								.apply(new SimpleSpannerRepository<>(
-										transactionSpannerOperations, this.entityType)),
-						null);
-	}
+  @Override
+  public <A> A performReadOnlyTransaction(Function<SpannerRepository<T, I>, A> operations) {
+    return this.spannerTemplate.performReadOnlyTransaction(
+        transactionSpannerOperations ->
+            operations.apply(
+                new SimpleSpannerRepository<>(transactionSpannerOperations, this.entityType)),
+        null);
+  }
 
-	@Override
-	public <A> A performReadWriteTransaction(
-			Function<SpannerRepository<T, I>, A> operations) {
-		return this.spannerTemplate
-				.performReadWriteTransaction(transactionSpannerOperations -> operations
-						.apply(new SimpleSpannerRepository<>(transactionSpannerOperations,
-								this.entityType)));
-	}
+  @Override
+  public <A> A performReadWriteTransaction(Function<SpannerRepository<T, I>, A> operations) {
+    return this.spannerTemplate.performReadWriteTransaction(
+        transactionSpannerOperations ->
+            operations.apply(
+                new SimpleSpannerRepository<>(transactionSpannerOperations, this.entityType)));
+  }
 
-	@Override
-	public <S extends T> S save(S entity) {
-		Assert.notNull(entity, "A non-null entity is required for saving.");
-		this.spannerTemplate.upsert(entity);
-		return entity;
-	}
+  @Override
+  public <S extends T> S save(S entity) {
+    Assert.notNull(entity, "A non-null entity is required for saving.");
+    this.spannerTemplate.upsert(entity);
+    return entity;
+  }
 
-	@Override
-	public <S extends T> Iterable<S> saveAll(Iterable<S> entities) {
-		Assert.notNull(entities, "A non-null list of entities is required for saving.");
-		this.spannerTemplate.upsertAll(entities);
-		return entities;
-	}
+  @Override
+  public <S extends T> Iterable<S> saveAll(Iterable<S> entities) {
+    Assert.notNull(entities, "A non-null list of entities is required for saving.");
+    this.spannerTemplate.upsertAll(entities);
+    return entities;
+  }
 
-	@Override
-	public Optional<T> findById(I id) {
-		Assert.notNull(id, NON_NULL_ID_REQUIRED);
-		T result = this.spannerTemplate.read(this.entityType, toKey(id));
-		return Optional.<T>ofNullable(result);
-	}
+  @Override
+  public Optional<T> findById(I id) {
+    Assert.notNull(id, NON_NULL_ID_REQUIRED);
+    T result = this.spannerTemplate.read(this.entityType, toKey(id));
+    return Optional.<T>ofNullable(result);
+  }
 
-	@Override
-	public boolean existsById(I id) {
-		Assert.notNull(id, NON_NULL_ID_REQUIRED);
-		return this.spannerTemplate.existsById(this.entityType, toKey(id));
-	}
+  @Override
+  public boolean existsById(I id) {
+    Assert.notNull(id, NON_NULL_ID_REQUIRED);
+    return this.spannerTemplate.existsById(this.entityType, toKey(id));
+  }
 
-	@Override
-	public Iterable<T> findAll() {
-		return this.spannerTemplate.readAll(this.entityType);
-	}
+  @Override
+  public Iterable<T> findAll() {
+    return this.spannerTemplate.readAll(this.entityType);
+  }
 
-	@Override
-	public Iterable<T> findAllById(Iterable<I> ids) {
-		KeySet.Builder builder = KeySet.newBuilder();
-		for (Object id : ids) {
-			builder.addKey(toKey(id));
-		}
-		return this.spannerTemplate.read(this.entityType, builder.build());
-	}
+  @Override
+  public Iterable<T> findAllById(Iterable<I> ids) {
+    Assert.notNull(ids, "IDs must not be null");
 
-	@Override
-	public long count() {
-		return this.spannerTemplate.count(this.entityType);
-	}
+    KeySet.Builder builder = KeySet.newBuilder();
+    int keyCount = 0;
 
-	@Override
-	public void deleteById(Object id) {
-		Assert.notNull(id, NON_NULL_ID_REQUIRED);
-		this.spannerTemplate.delete(this.entityType, toKey(id));
-	}
+    for (Object id : ids) {
+      builder.addKey(toKey(id));
+      keyCount++;
+    }
 
-	@Override
-	public void delete(Object entity) {
-		Assert.notNull(entity, "A non-null entity is required.");
-		this.spannerTemplate.delete(entity);
-	}
+    if (keyCount == 0) {
+      return Collections.emptyList();
+    }
 
-	@Override
-	public void deleteAll(Iterable<? extends T> entities) {
-		Assert.notNull(entities, "A non-null list of entities is required.");
-		this.spannerTemplate.deleteAll(entities);
-	}
+    return this.spannerTemplate.read(this.entityType, builder.build());
+  }
 
-	@Override
-	public void deleteAll() {
-		this.spannerTemplate.delete(this.entityType, KeySet.all());
-	}
+  @Override
+  public long count() {
+    return this.spannerTemplate.count(this.entityType);
+  }
 
-	@Override
-	public Iterable<T> findAll(Sort sort) {
-		return this.spannerTemplate.queryAll(this.entityType,
-				new SpannerPageableQueryOptions().setSort(sort));
-	}
+  @Override
+  public void deleteById(Object id) {
+    Assert.notNull(id, NON_NULL_ID_REQUIRED);
+    this.spannerTemplate.delete(this.entityType, toKey(id));
+  }
 
-	@Override
-	public Page<T> findAll(Pageable pageable) {
-		return new PageImpl<>(this.spannerTemplate.queryAll(this.entityType,
-				new SpannerPageableQueryOptions().setLimit(pageable.getPageSize())
-						.setOffset(pageable.getOffset()).setSort(pageable.getSort())),
-				pageable, this.spannerTemplate.count(this.entityType));
-	}
+  @Override
+  public void delete(Object entity) {
+    Assert.notNull(entity, "A non-null entity is required.");
+    this.spannerTemplate.delete(entity);
+  }
 
-	@Override
-	public void deleteAllById(Iterable<? extends I> ids) {
-		KeySet.Builder builder = KeySet.newBuilder();
-		for (Object id : ids) {
-			builder.addKey(toKey(id));
-		}
-		this.spannerTemplate.delete(this.entityType, builder.build());
-	}
+  @Override
+  public void deleteAll(Iterable<? extends T> entities) {
+    Assert.notNull(entities, "A non-null list of entities is required.");
+    this.spannerTemplate.deleteAll(entities);
+  }
 
-	private Key toKey(Object id) {
-		return this.spannerTemplate.getSpannerEntityProcessor().convertToKey(id);
-	}
+  @Override
+  public void deleteAll() {
+    this.spannerTemplate.delete(this.entityType, KeySet.all());
+  }
+
+  @Override
+  public Iterable<T> findAll(Sort sort) {
+    return this.spannerTemplate.queryAll(
+        this.entityType, new SpannerPageableQueryOptions().setSort(sort));
+  }
+
+  @Override
+  public Page<T> findAll(Pageable pageable) {
+    return new PageImpl<>(
+        this.spannerTemplate.queryAll(
+            this.entityType,
+            new SpannerPageableQueryOptions()
+                .setLimit(pageable.getPageSize())
+                .setOffset(pageable.getOffset())
+                .setSort(pageable.getSort())),
+        pageable,
+        this.spannerTemplate.count(this.entityType));
+  }
+
+  @Override
+  public void deleteAllById(Iterable<? extends I> ids) {
+    Assert.notNull(ids, "IDs must not be null");
+    KeySet.Builder builder = KeySet.newBuilder();
+    for (Object id : ids) {
+      builder.addKey(toKey(id));
+    }
+    this.spannerTemplate.delete(this.entityType, builder.build());
+  }
+
+  private Key toKey(Object id) {
+    return this.spannerTemplate.getSpannerEntityProcessor().convertToKey(id);
+  }
 }

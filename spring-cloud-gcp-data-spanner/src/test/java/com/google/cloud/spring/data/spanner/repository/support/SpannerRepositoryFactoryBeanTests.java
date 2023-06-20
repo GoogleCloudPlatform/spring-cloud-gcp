@@ -16,48 +16,40 @@
 
 package com.google.cloud.spring.data.spanner.repository.support;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+/** Tests Spanner repository factory bean. */
+class SpannerRepositoryFactoryBeanTests {
 
-/**
- * Tests Spanner repository factory bean.
- *
- * @author Chengyuan Zhao
- */
-public class SpannerRepositoryFactoryBeanTests {
+  private SpannerRepositoryFactoryBean<SpannerRepository<Object, Key>, Object, Key>
+      spannerRepositoryFactoryBean;
 
-	private SpannerRepositoryFactoryBean<SpannerRepository<Object, Key>, Object, Key>
-			spannerRepositoryFactoryBean;
+  private SpannerMappingContext spannerMappingContext;
 
-	private SpannerMappingContext spannerMappingContext;
+  private SpannerTemplate spannerTemplate;
 
-	private SpannerTemplate spannerTemplate;
+  @BeforeEach
+  @SuppressWarnings("unchecked")
+  void setUp() {
+    this.spannerMappingContext = new SpannerMappingContext();
+    this.spannerTemplate = mock(SpannerTemplate.class);
+    this.spannerRepositoryFactoryBean = new SpannerRepositoryFactoryBean(SpannerRepository.class);
+    this.spannerRepositoryFactoryBean.setSpannerMappingContext(this.spannerMappingContext);
+    this.spannerRepositoryFactoryBean.setSpannerTemplate(this.spannerTemplate);
+  }
 
-	@Before
-	@SuppressWarnings("unchecked")
-	public void setUp() {
-		this.spannerMappingContext = new SpannerMappingContext();
-		this.spannerTemplate = mock(SpannerTemplate.class);
-		this.spannerRepositoryFactoryBean = new SpannerRepositoryFactoryBean(
-				SpannerRepository.class);
-		this.spannerRepositoryFactoryBean
-				.setSpannerMappingContext(this.spannerMappingContext);
-		this.spannerRepositoryFactoryBean.setSpannerTemplate(this.spannerTemplate);
-	}
-
-	@Test
-	public void createRepositoryFactoryTest() {
-		RepositoryFactorySupport factory = this.spannerRepositoryFactoryBean
-				.createRepositoryFactory();
-		assertThat(factory).isInstanceOf(SpannerRepositoryFactory.class);
-	}
+  @Test
+  void createRepositoryFactoryTest() {
+    RepositoryFactorySupport factory = this.spannerRepositoryFactoryBean.createRepositoryFactory();
+    assertThat(factory).isInstanceOf(SpannerRepositoryFactory.class);
+  }
 }

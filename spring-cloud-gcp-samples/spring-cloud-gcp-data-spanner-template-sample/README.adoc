@@ -1,11 +1,11 @@
-= Spring Cloud GCP Cloud Spanner Starter Example using "Template"
+= Spring Framework on Google Cloud Cloud Spanner Starter Example using "Template"
 
 This code sample demonstrates how to read and write POJOs from Google Cloud Spanner using the Spring
-Data Cloud Spanner module link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-spanner[Spring Cloud GCP Cloud Spanner Starter].
+Data Cloud Spanner module link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-spanner[Spring Framework on Google Cloud Cloud Spanner Starter].
 
 == Running the example
 
-=== Running on GCP
+=== Running on Google Cloud
 
 image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample/README.adoc]
 
@@ -25,11 +25,13 @@ After that, you would need to create an instance using this command:
 $ gcloud spanner instances create spring-demo --config=emulator-config --description="Test Instance" --nodes=1
 ----
 
-Note that you need to set the `SPANNER_EMULATOR_HOST` environment variable to use the emulator.
+Add the following property to `application.properties`:
 
 ----
-$ export SPANNER_EMULATOR_HOST=localhost:9010
+spring.cloud.gcp.spanner.emulator.enabled=true
 ----
+
+Note that the `SPANNER_EMULATOR_HOST` environment variable is NOT needed in this case as `GcpSpannerEmulatorAutoConfiguration` will define a default hostname and port (i.e, localhost:9010) for the emulator.
 
 === Running the application
 Run `$ mvn clean install` from the root directory of the project.

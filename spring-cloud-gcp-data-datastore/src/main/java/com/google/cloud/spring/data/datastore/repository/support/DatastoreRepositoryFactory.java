@@ -16,14 +16,12 @@
 
 package com.google.cloud.spring.data.datastore.repository.support;
 
-import java.util.Optional;
-
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntityInformation;
 import com.google.cloud.spring.data.datastore.repository.query.DatastoreQueryLookupStrategy;
-
+import java.util.Optional;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -47,107 +45,104 @@ import org.springframework.util.Assert;
 /**
  * Repository factory for Datastore.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DatastoreRepositoryFactory extends RepositoryFactorySupport
-		implements ApplicationContextAware {
+    implements ApplicationContextAware {
 
-	private final DatastoreMappingContext datastoreMappingContext;
+  private final DatastoreMappingContext datastoreMappingContext;
 
-	private final DatastoreOperations datastoreOperations;
+  private final DatastoreOperations datastoreOperations;
 
-	private ApplicationContext applicationContext;
+  private ApplicationContext applicationContext;
 
-	/**
-	 * Constructor.
-	 * @param datastoreMappingContext the mapping context used to get mapping metadata for
-	 * entity types.
-	 * @param datastoreOperations the Datastore operations object used by Datastore
-	 * repositories.
-	 */
-	DatastoreRepositoryFactory(DatastoreMappingContext datastoreMappingContext,
-			DatastoreOperations datastoreOperations) {
-		Assert.notNull(datastoreMappingContext,
-				"A non-null Datastore mapping context is required.");
-		Assert.notNull(datastoreOperations,
-				"A non-null Datastore template object is required.");
-		this.datastoreMappingContext = datastoreMappingContext;
-		this.datastoreOperations = datastoreOperations;
-	}
+  /**
+   * Constructor.
+   *
+   * @param datastoreMappingContext the mapping context used to get mapping metadata for entity
+   *     types.
+   * @param datastoreOperations the Datastore operations object used by Datastore repositories.
+   */
+  DatastoreRepositoryFactory(
+      DatastoreMappingContext datastoreMappingContext, DatastoreOperations datastoreOperations) {
+    Assert.notNull(datastoreMappingContext, "A non-null Datastore mapping context is required.");
+    Assert.notNull(datastoreOperations, "A non-null Datastore template object is required.");
+    this.datastoreMappingContext = datastoreMappingContext;
+    this.datastoreOperations = datastoreOperations;
+  }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T, I> EntityInformation<T, I> getEntityInformation(Class<T> domainClass) {
-		DatastorePersistentEntity entity = this.datastoreMappingContext
-				.getPersistentEntity(domainClass);
+  @Override
+  @SuppressWarnings("unchecked")
+  public <T, I> EntityInformation<T, I> getEntityInformation(Class<T> domainClass) {
+    DatastorePersistentEntity entity =
+        this.datastoreMappingContext.getPersistentEntity(domainClass);
 
-		if (entity == null) {
-			throw new MappingException(
-					"Could not lookup mapping metadata for domain class: "
-							+ domainClass.getName());
-		}
+    if (entity == null) {
+      throw new MappingException(
+          "Could not lookup mapping metadata for domain class: " + domainClass.getName());
+    }
 
-		return new DatastorePersistentEntityInformation<>(entity);
-	}
+    return new DatastorePersistentEntityInformation<>(entity);
+  }
 
-	@Override
-	protected Object getTargetRepository(RepositoryInformation metadata) {
-		return getTargetRepositoryViaReflection(metadata, this.datastoreOperations,
-				metadata.getDomainType());
-	}
+  @Override
+  protected Object getTargetRepository(RepositoryInformation metadata) {
+    return getTargetRepositoryViaReflection(
+        metadata, this.datastoreOperations, metadata.getDomainType());
+  }
 
-	@Override
-	protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
-		return SimpleDatastoreRepository.class;
-	}
+  @Override
+  protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
+    return SimpleDatastoreRepository.class;
+  }
 
-	@Override
-	protected Optional<QueryLookupStrategy> getQueryLookupStrategy(@Nullable Key key,
-			QueryMethodEvaluationContextProvider evaluationContextProvider) {
+  @Override
+  protected Optional<QueryLookupStrategy> getQueryLookupStrategy(
+      @Nullable Key key, QueryMethodEvaluationContextProvider evaluationContextProvider) {
 
-		return Optional.of(new DatastoreQueryLookupStrategy(this.datastoreMappingContext,
-				this.datastoreOperations,
-				delegateContextProvider(evaluationContextProvider)));
-	}
+    return Optional.of(
+        new DatastoreQueryLookupStrategy(
+            this.datastoreMappingContext,
+            this.datastoreOperations,
+            delegateContextProvider(evaluationContextProvider)));
+  }
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		this.applicationContext = applicationContext;
-	}
+  @Override
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
+  }
 
-	private QueryMethodEvaluationContextProvider delegateContextProvider(
-			QueryMethodEvaluationContextProvider evaluationContextProvider) {
+  private QueryMethodEvaluationContextProvider delegateContextProvider(
+      QueryMethodEvaluationContextProvider evaluationContextProvider) {
 
-		return new QueryMethodEvaluationContextProvider() {
-			@Override
-			public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
-					T parameters, Object[] parameterValues) {
-				StandardEvaluationContext evaluationContext = (StandardEvaluationContext)
-						evaluationContextProvider.getEvaluationContext(parameters, parameterValues);
-				evaluationContext.setRootObject(
-						DatastoreRepositoryFactory.this.applicationContext);
-				evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
-				evaluationContext.setBeanResolver(new BeanFactoryResolver(
-						DatastoreRepositoryFactory.this.applicationContext));
-				return evaluationContext;
-			}
+    return new QueryMethodEvaluationContextProvider() {
+      @Override
+      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
+          T parameters, Object[] parameterValues) {
+        StandardEvaluationContext evaluationContext =
+            (StandardEvaluationContext)
+                evaluationContextProvider.getEvaluationContext(parameters, parameterValues);
+        evaluationContext.setRootObject(DatastoreRepositoryFactory.this.applicationContext);
+        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
+        evaluationContext.setBeanResolver(
+            new BeanFactoryResolver(DatastoreRepositoryFactory.this.applicationContext));
+        return evaluationContext;
+      }
 
-			@Override
-			public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
-					T parameters, Object[] parameterValues, ExpressionDependencies expressionDependencies) {
-				StandardEvaluationContext evaluationContext =
-						(StandardEvaluationContext) evaluationContextProvider.getEvaluationContext(
-								parameters, parameterValues, expressionDependencies);
+      @Override
+      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
+          T parameters, Object[] parameterValues, ExpressionDependencies expressionDependencies) {
+        StandardEvaluationContext evaluationContext =
+            (StandardEvaluationContext)
+                evaluationContextProvider.getEvaluationContext(
+                    parameters, parameterValues, expressionDependencies);
 
-				evaluationContext.setRootObject(DatastoreRepositoryFactory.this.applicationContext);
-				evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
-				evaluationContext.setBeanResolver(
-						new BeanFactoryResolver(DatastoreRepositoryFactory.this.applicationContext));
-				return evaluationContext;
-			}
-		};
-	}
+        evaluationContext.setRootObject(DatastoreRepositoryFactory.this.applicationContext);
+        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
+        evaluationContext.setBeanResolver(
+            new BeanFactoryResolver(DatastoreRepositoryFactory.this.applicationContext));
+        return evaluationContext;
+      }
+    };
+  }
 }

@@ -16,145 +16,137 @@
 
 package com.google.cloud.spring.data.datastore.core.convert;
 
-import java.time.Duration;
-
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Blob;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.LatLng;
+import java.time.Duration;
 
-
-/**
- * A test entity object that has fields of many different types to test features.
- *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- */
+/** A test entity object that has fields of many different types to test features. */
 class TestDatastoreItem {
-	private Duration durationField;
+  private Duration durationField;
 
-	private String stringField;
+  private String stringField;
 
-	private Boolean boolField;
+  private Boolean boolField;
 
-	private Double doubleField;
+  private Double doubleField;
 
-	private Long longField;
+  private Long longField;
 
-	private LatLng latLngField;
+  private LatLng latLngField;
 
-	private Timestamp timestampField;
+  private Timestamp timestampField;
 
-	private Blob blobField;
+  private Blob blobField;
 
-	private int intField;
+  private int intField;
 
-	private Color enumField;
+  private Color enumField;
 
-	private byte[] byteArrayField;
+  private byte[] byteArrayField;
 
-	private Key keyField;
+  private Key keyField;
 
-	public Key getKeyField() {
-		return this.keyField;
-	}
+  public Key getKeyField() {
+    return this.keyField;
+  }
 
-	public void setKeyField(Key keyField) {
-		this.keyField = keyField;
-	}
+  public void setKeyField(Key keyField) {
+    this.keyField = keyField;
+  }
 
-	public String getStringField() {
-		return this.stringField;
-	}
+  public String getStringField() {
+    return this.stringField;
+  }
 
-	public void setStringField(String stringField) {
-		this.stringField = stringField;
-	}
+  public void setStringField(String stringField) {
+    this.stringField = stringField;
+  }
 
-	public Boolean getBoolField() {
-		return this.boolField;
-	}
+  public Boolean getBoolField() {
+    return this.boolField;
+  }
 
-	public void setBoolField(Boolean boolField) {
-		this.boolField = boolField;
-	}
+  public void setBoolField(Boolean boolField) {
+    this.boolField = boolField;
+  }
 
-	public Double getDoubleField() {
-		return this.doubleField;
-	}
+  public Double getDoubleField() {
+    return this.doubleField;
+  }
 
-	public void setDoubleField(Double doubleField) {
-		this.doubleField = doubleField;
-	}
+  public void setDoubleField(Double doubleField) {
+    this.doubleField = doubleField;
+  }
 
-	public Long getLongField() {
-		return this.longField;
-	}
+  public Long getLongField() {
+    return this.longField;
+  }
 
-	public void setLongField(Long longField) {
-		this.longField = longField;
-	}
+  public void setLongField(Long longField) {
+    this.longField = longField;
+  }
 
-	public LatLng getLatLngField() {
-		return this.latLngField;
-	}
+  public LatLng getLatLngField() {
+    return this.latLngField;
+  }
 
-	public void setLatLngField(LatLng latLngField) {
-		this.latLngField = latLngField;
-	}
+  public void setLatLngField(LatLng latLngField) {
+    this.latLngField = latLngField;
+  }
 
-	public Timestamp getTimestampField() {
-		return this.timestampField;
-	}
+  public Timestamp getTimestampField() {
+    return this.timestampField;
+  }
 
-	public void setTimestampField(Timestamp timestampField) {
-		this.timestampField = timestampField;
-	}
+  public void setTimestampField(Timestamp timestampField) {
+    this.timestampField = timestampField;
+  }
 
-	public Blob getBlobField() {
-		return this.blobField;
-	}
+  public Blob getBlobField() {
+    return this.blobField;
+  }
 
-	public void setBlobField(Blob blobField) {
-		this.blobField = blobField;
-	}
+  public void setBlobField(Blob blobField) {
+    this.blobField = blobField;
+  }
 
-	public Duration getDurationField() {
-		return this.durationField;
-	}
+  public Duration getDurationField() {
+    return this.durationField;
+  }
 
-	public void setDurationField(Duration durationField) {
-		this.durationField = durationField;
-	}
+  public void setDurationField(Duration durationField) {
+    this.durationField = durationField;
+  }
 
-	public int getIntField() {
-		return this.intField;
-	}
+  public int getIntField() {
+    return this.intField;
+  }
 
-	public void setIntField(int intField) {
-		this.intField = intField;
-	}
+  public void setIntField(int intField) {
+    this.intField = intField;
+  }
 
-	public Color getEnumField() {
-		return this.enumField;
-	}
+  public Color getEnumField() {
+    return this.enumField;
+  }
 
-	public void setEnumField(Color enumField) {
-		this.enumField = enumField;
-	}
+  public void setEnumField(Color enumField) {
+    this.enumField = enumField;
+  }
 
-	public byte[] getByteArrayField() {
-		return this.byteArrayField;
-	}
+  public byte[] getByteArrayField() {
+    return this.byteArrayField;
+  }
 
-	public void setByteArrayField(byte[] byteArrayField) {
-		this.byteArrayField = byteArrayField;
-	}
+  public void setByteArrayField(byte[] byteArrayField) {
+    this.byteArrayField = byteArrayField;
+  }
 
-	/**
-	 * An enum used to test conversion and storage.
-	 */
-	enum Color {
-		WHITE, BLACK
-	}
+  /** An enum used to test conversion and storage. */
+  enum Color {
+    WHITE,
+    BLACK
+  }
 }

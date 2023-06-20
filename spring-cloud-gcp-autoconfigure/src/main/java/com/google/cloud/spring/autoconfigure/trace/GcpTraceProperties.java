@@ -19,146 +19,131 @@ package com.google.cloud.spring.autoconfigure.trace;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.GcpScope;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-/**
- * Stackdriver Trace Properties.
- *
- * @author Ray Tsang
- * @author Mike Eltsufin
- * @author João André Martins
- * @author Tim Ysewyn
- */
+/** Stackdriver Trace Properties. */
 @ConfigurationProperties("spring.cloud.gcp.trace")
 public class GcpTraceProperties implements CredentialsSupplier {
 
-	/**
-	 * Overrides the GCP project ID specified in the Core module.
-	 */
-	private String projectId;
+  /** Overrides the GCP project ID specified in the Core module. */
+  private String projectId;
 
-	/**
-	 * Overrides the GCP OAuth2 credentials specified in the Core module.
-	 */
-	@NestedConfigurationProperty
-	private final Credentials credentials = new Credentials(GcpScope.TRACE_APPEND.getUrl());
+  /** Overrides the GCP OAuth2 credentials specified in the Core module. */
+  @NestedConfigurationProperty
+  private final Credentials credentials = new Credentials(GcpScope.TRACE_APPEND.getUrl());
 
-	/**
-	 * Number of threads to be used by the Trace executor.
-	 */
-	private int numExecutorThreads = 4;
+  /** Number of threads to be used by the Trace executor. */
+  private int numExecutorThreads = 4;
 
-	/**
-	 * HTTP/2 authority the channel claims to be connecting to.
-	 */
-	private String authority;
+  /** HTTP/2 authority the channel claims to be connecting to. */
+  private String authority;
 
-	/**
-	 * Compression to use for the call.
-	 */
-	private String compression;
+  /** Compression to use for the call. */
+  private String compression;
 
-	/**
-	 * Call deadline.
-	 */
-	private Long deadlineMs;
+  /** Call deadline. */
+  private Long deadlineMs;
 
-	/**
-	 * Maximum size for an inbound message.
-	 */
-	private Integer maxInboundSize;
+  /** Maximum size for an inbound message. */
+  private Integer maxInboundSize;
 
-	/**
-	 * Maximum size for an outbound message.
-	 */
-	private Integer maxOutboundSize;
+  /** Maximum size for an outbound message. */
+  private Integer maxOutboundSize;
 
-	/**
-	 * Waits for the channel to be ready in case of a transient failure. Defaults to failing fast
-	 * in that case.
-	 */
-	private Boolean waitForReady;
+  /**
+   * Waits for the channel to be ready in case of a transient failure. Defaults to failing fast in
+   * that case.
+   */
+  private Boolean waitForReady;
 
-	/**
-	 * Timeout in seconds before pending spans will be sent in batches to GCP Stackdriver Trace.
-	 */
-	private int messageTimeout = 1;
+  /** Timeout in seconds before pending spans will be sent in batches to GCP Stackdriver Trace. */
+  private int messageTimeout = 1;
 
-	public String getProjectId() {
-		return this.projectId;
-	}
+  /** Timeout in seconds for server response when sending traces. */
+  private Long serverResponseTimeoutMs;
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+  public String getProjectId() {
+    return this.projectId;
+  }
 
-	public Credentials getCredentials() {
-		return this.credentials;
-	}
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
+  }
 
-	public int getNumExecutorThreads() {
-		return this.numExecutorThreads;
-	}
+  public Credentials getCredentials() {
+    return this.credentials;
+  }
 
-	public void setNumExecutorThreads(int numExecutorThreads) {
-		this.numExecutorThreads = numExecutorThreads;
-	}
+  public int getNumExecutorThreads() {
+    return this.numExecutorThreads;
+  }
 
-	public String getAuthority() {
-		return this.authority;
-	}
+  public void setNumExecutorThreads(int numExecutorThreads) {
+    this.numExecutorThreads = numExecutorThreads;
+  }
 
-	public void setAuthority(String authority) {
-		this.authority = authority;
-	}
+  public String getAuthority() {
+    return this.authority;
+  }
 
-	public String getCompression() {
-		return this.compression;
-	}
+  public void setAuthority(String authority) {
+    this.authority = authority;
+  }
 
-	public void setCompression(String compression) {
-		this.compression = compression;
-	}
+  public String getCompression() {
+    return this.compression;
+  }
 
-	public Long getDeadlineMs() {
-		return this.deadlineMs;
-	}
+  public void setCompression(String compression) {
+    this.compression = compression;
+  }
 
-	public void setDeadlineMs(long deadlineMs) {
-		this.deadlineMs = deadlineMs;
-	}
+  public Long getDeadlineMs() {
+    return this.deadlineMs;
+  }
 
-	public Integer getMaxInboundSize() {
-		return this.maxInboundSize;
-	}
+  public void setDeadlineMs(long deadlineMs) {
+    this.deadlineMs = deadlineMs;
+  }
 
-	public void setMaxInboundSize(int maxInboundSize) {
-		this.maxInboundSize = maxInboundSize;
-	}
+  public Integer getMaxInboundSize() {
+    return this.maxInboundSize;
+  }
 
-	public Integer getMaxOutboundSize() {
-		return this.maxOutboundSize;
-	}
+  public void setMaxInboundSize(int maxInboundSize) {
+    this.maxInboundSize = maxInboundSize;
+  }
 
-	public void setMaxOutboundSize(int maxOutboundSize) {
-		this.maxOutboundSize = maxOutboundSize;
-	}
+  public Integer getMaxOutboundSize() {
+    return this.maxOutboundSize;
+  }
 
-	public Boolean isWaitForReady() {
-		return this.waitForReady;
-	}
+  public void setMaxOutboundSize(int maxOutboundSize) {
+    this.maxOutboundSize = maxOutboundSize;
+  }
 
-	public void setWaitForReady(boolean waitForReady) {
-		this.waitForReady = waitForReady;
-	}
+  public Boolean isWaitForReady() {
+    return this.waitForReady;
+  }
 
-	public int getMessageTimeout() {
-		return this.messageTimeout;
-	}
+  public void setWaitForReady(boolean waitForReady) {
+    this.waitForReady = waitForReady;
+  }
 
-	public void setMessageTimeout(int messageTimeout) {
-		this.messageTimeout = messageTimeout;
-	}
+  public int getMessageTimeout() {
+    return this.messageTimeout;
+  }
+
+  public void setMessageTimeout(int messageTimeout) {
+    this.messageTimeout = messageTimeout;
+  }
+
+  public Long getServerResponseTimeoutMs() {
+    return serverResponseTimeoutMs;
+  }
+
+  public void setServerResponseTimeoutMs(Long serverResponseTimeoutMs) {
+    this.serverResponseTimeoutMs = serverResponseTimeoutMs;
+  }
 }

@@ -10,6 +10,7 @@ com.google.cloud.spring.autoconfigure.spanner.health.SpannerHealthIndicatorAutoC
 com.google.cloud.spring.autoconfigure.spanner.SpannerTransactionManagerAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreAutoConfiguration,\
+com.google.cloud.spring.autoconfigure.firestore.FirestoreTransactionManagerAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreEmulatorAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.datastore.health.DatastoreHealthIndicatorAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.storage.GcpStorageAutoConfiguration,\
@@ -28,11 +29,16 @@ com.google.cloud.spring.autoconfigure.pubsub.health.PubSubSubscriptionHealthIndi
 com.google.cloud.spring.autoconfigure.pubsub.health.PubSubHealthIndicatorAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.metrics.GcpStackdriverMetricsAutoConfiguration,\
 com.google.cloud.spring.autoconfigure.kms.GcpKmsAutoConfiguration
-
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
 com.google.cloud.spring.autoconfigure.config.GcpConfigBootstrapConfiguration,\
 com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerBootstrapConfiguration
-
 org.springframework.boot.env.EnvironmentPostProcessor=\
 com.google.cloud.spring.autoconfigure.sql.CloudSqlEnvironmentPostProcessor,\
+com.google.cloud.spring.autoconfigure.sql.R2dbcCloudSqlEnvironmentPostProcessor,\
 com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerEnvironmentPostProcessor
+# ConfigData Location Resolvers
+org.springframework.boot.context.config.ConfigDataLocationResolver=\
+com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolver
+# ConfigData Loaders
+org.springframework.boot.context.config.ConfigDataLoader=\
+com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLoader

@@ -25,8 +25,6 @@ import java.lang.annotation.Target;
 /**
  * Annotates properties that are collections of child entities.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 @Documented
@@ -34,12 +32,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Interleaved {
 
-	/**
-	 * Controls whether the referenced entity should be loaded lazily. This defaults to
-	 * {@literal false}.
-	 *
-	 * @return whether the interleaved property is retrieved lazily.
-	 */
-	boolean lazy() default false;
-
+  /**
+   * Controls whether the referenced entity should be loaded lazily. This defaults to {@literal
+   * false}.
+   *
+   * @return whether the interleaved property is retrieved lazily.
+   */
+  boolean lazy() default false;
 }

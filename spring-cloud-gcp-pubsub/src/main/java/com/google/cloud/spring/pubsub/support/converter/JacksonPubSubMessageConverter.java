@@ -16,56 +16,49 @@
 
 package com.google.cloud.spring.pubsub.support.converter;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
-
+import java.io.IOException;
+import java.util.Map;
 import org.springframework.util.Assert;
 
-/**
- * A converter using Jackson JSON.
- *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
- */
+/** A converter using Jackson JSON. */
 public class JacksonPubSubMessageConverter implements PubSubMessageConverter {
 
-	private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
-	/**
-	 * Constructor.
-	 * @param objectMapper the object mapper used to create and read JSON.
-	 */
-	public JacksonPubSubMessageConverter(ObjectMapper objectMapper) {
-		Assert.notNull(objectMapper, "A valid ObjectMapper is required.");
-		this.objectMapper = objectMapper;
-	}
+  /**
+   * Constructor.
+   *
+   * @param objectMapper the object mapper used to create and read JSON.
+   */
+  public JacksonPubSubMessageConverter(ObjectMapper objectMapper) {
+    Assert.notNull(objectMapper, "A valid ObjectMapper is required.");
+    this.objectMapper = objectMapper;
+  }
 
-	@Override
-	public PubsubMessage toPubSubMessage(Object payload, Map<String, String> headers) {
-		try {
-			return byteStringToPubSubMessage(ByteString.copyFrom(
-					this.objectMapper.writeValueAsBytes(payload)), headers);
-		}
-		catch (JsonProcessingException ex) {
-			throw new PubSubMessageConversionException("JSON serialization of an object of type " +
-					payload.getClass().getName() + " failed.", ex);
-		}
-	}
+  @Override
+  public PubsubMessage toPubSubMessage(Object payload, Map<String, String> headers) {
+    try {
+      return byteStringToPubSubMessage(
+          ByteString.copyFrom(this.objectMapper.writeValueAsBytes(payload)), headers);
+    } catch (JsonProcessingException ex) {
+      throw new PubSubMessageConversionException(
+          "JSON serialization of an object of type " + payload.getClass().getName() + " failed.",
+          ex);
+    }
+  }
 
-	@Override
-	public <T> T fromPubSubMessage(PubsubMessage message, Class<T> payloadType) {
-		try {
-			return (T) this.objectMapper.readerFor(payloadType).readValue(message.getData().toByteArray());
-		}
-		catch (IOException ex) {
-			throw new PubSubMessageConversionException("JSON deserialization of an object of type " +
-					payloadType.getName() + " failed.", ex);
-		}
-	}
-
+  @Override
+  public <T> T fromPubSubMessage(PubsubMessage message, Class<T> payloadType) {
+    try {
+      return (T)
+          this.objectMapper.readerFor(payloadType).readValue(message.getData().toByteArray());
+    } catch (IOException ex) {
+      throw new PubSubMessageConversionException(
+          "JSON deserialization of an object of type " + payloadType.getName() + " failed.", ex);
+    }
+  }
 }

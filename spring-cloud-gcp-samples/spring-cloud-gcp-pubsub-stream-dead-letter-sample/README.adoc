@@ -1,4 +1,4 @@
-= Spring Cloud GCP Stream for Pub/Sub Dead Letter Topic Code Sample
+= Spring Framework on Google Cloud Stream for Pub/Sub Dead Letter Topic Code Sample
 
 This code sample demonstrates how to use the Spring Cloud Stream binder for Google Cloud Pub/Sub with Dead Letter Topics.
 
@@ -22,15 +22,17 @@ Alternatively, if you have the https://cloud.google.com/sdk/[Google Cloud SDK] i
 3. In the link:src/main/resources/application.properties[application.properties] file, a topic and a dead letter topic are already preconfigured for you.
 The topics will be created in your account if they do not already exist.
 
-4. Run `$ mvn clean install` from the root directory of the project.
+4. The Cloud Pub/Sub service account needs the publisher role to publish dead-lettered messages to the dead letter topic and the subscriber role to forward messages from the subscription to the dead letter topic. Please grant both the roles to the service account you are using by going to the subscription details page on Pantheon.
 
-5. Run `$ mvn clean spring-boot:run` in the root of the code sample
+5. Run `$ mvn clean install` from the root directory of the project.
+
+6. Run `$ mvn spring-boot:run` in the root of the code sample
 (spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-dead-letter-sample) to get the app running.
 
-6. Browse to `localhost:8080` or use the `Web Preview` button in Cloud Shell to preview the app on port 8080,
+7. Browse to `localhost:8080` or use the `Web Preview` button in Cloud Shell to preview the app on port 8080,
 and type in a message, a user name, and press the `Post it!` button.
 
-7. Verify in your app's logs that a similar message was posted:
+8. Verify in your app's logs that a similar message was posted:
 +
 ```
 Publishing message from batman

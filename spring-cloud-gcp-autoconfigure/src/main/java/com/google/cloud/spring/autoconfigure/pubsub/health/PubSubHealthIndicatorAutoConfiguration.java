@@ -16,11 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
-import java.util.Map;
-
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
-
+import java.util.Map;
 import org.springframework.boot.actuate.autoconfigure.health.CompositeHealthContributorConfiguration;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.autoconfigure.health.HealthContributorAutoConfiguration;
@@ -37,12 +35,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 
 /**
- * {@link HealthContributorAutoConfiguration Auto-configuration} for
- * {@link PubSubHealthIndicator}.
- *
- * @author Vinicius Carvalho
- * @author Elena Felder
- * @author Patrik Hörlin
+ * {@link HealthContributorAutoConfiguration Auto-configuration} for {@link PubSubHealthIndicator}.
  *
  * @since 1.2.2
  */
@@ -53,30 +46,29 @@ import org.springframework.util.Assert;
 @AutoConfigureBefore(HealthContributorAutoConfiguration.class)
 @AutoConfigureAfter(GcpPubSubAutoConfiguration.class)
 @EnableConfigurationProperties(PubSubHealthIndicatorProperties.class)
-public class PubSubHealthIndicatorAutoConfiguration extends
-		CompositeHealthContributorConfiguration<PubSubHealthIndicator, PubSubTemplate> {
+public class PubSubHealthIndicatorAutoConfiguration
+    extends CompositeHealthContributorConfiguration<PubSubHealthIndicator, PubSubTemplate> {
 
-	private PubSubHealthIndicatorProperties pubSubHealthProperties;
+  private PubSubHealthIndicatorProperties pubSubHealthProperties;
 
-	public PubSubHealthIndicatorAutoConfiguration(PubSubHealthIndicatorProperties pubSubHealthProperties) {
-		this.pubSubHealthProperties = pubSubHealthProperties;
-	}
+  public PubSubHealthIndicatorAutoConfiguration(
+      PubSubHealthIndicatorProperties pubSubHealthProperties) {
+    this.pubSubHealthProperties = pubSubHealthProperties;
+  }
 
-	@Bean
-	@ConditionalOnMissingBean(name = { "pubSubHealthIndicator", "pubSubHealthContributor"})
-	public HealthContributor pubSubHealthContributor(Map<String, PubSubTemplate> pubSubTemplates) {
-		Assert.notNull(pubSubTemplates, "pubSubTemplates must be provided");
-		return createContributor(pubSubTemplates);
-	}
+  @Bean
+  @ConditionalOnMissingBean(name = {"pubSubHealthIndicator", "pubSubHealthContributor"})
+  public HealthContributor pubSubHealthContributor(Map<String, PubSubTemplate> pubSubTemplates) {
+    Assert.notNull(pubSubTemplates, "pubSubTemplates must be provided");
+    return createContributor(pubSubTemplates);
+  }
 
-	@Override
-	protected PubSubHealthIndicator createIndicator(PubSubTemplate pubSubTemplate) {
-		PubSubHealthIndicator indicator = new PubSubHealthIndicator(
-				pubSubTemplate,
-				this.pubSubHealthProperties.getSubscription(),
-				this.pubSubHealthProperties.getTimeoutMillis(),
-				this.pubSubHealthProperties.isAcknowledgeMessages());
-		indicator.validateHealthCheck();
-		return indicator;
-	}
+  @Override
+  protected PubSubHealthIndicator createIndicator(PubSubTemplate pubSubTemplate) {
+    return new PubSubHealthIndicator(
+            pubSubTemplate,
+            this.pubSubHealthProperties.getSubscription(),
+            this.pubSubHealthProperties.getTimeoutMillis(),
+            this.pubSubHealthProperties.isAcknowledgeMessages());
+  }
 }

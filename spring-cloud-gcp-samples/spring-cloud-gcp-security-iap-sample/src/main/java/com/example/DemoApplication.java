@@ -22,13 +22,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Sample Spring Boot application.
  *
- * @author Elena Felder
  * @since 1.1
  */
 @SpringBootApplication
 public class DemoApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(DemoApplication.class, args);
+  }
 }

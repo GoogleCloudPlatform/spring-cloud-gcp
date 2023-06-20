@@ -17,29 +17,24 @@
 package com.google.cloud.spring.pubsub.core;
 
 import com.google.pubsub.v1.PubsubMessage;
-
 import org.springframework.lang.Nullable;
 
 /**
- * The Spring Google Cloud Pub/Sub specific {@link PubSubException}.
- * Handles failures while publishing events to Pub/Sub.
- *
- * @author SateeshKumar Kota
+ * The Spring Google Cloud Pub/Sub specific {@link PubSubException}. Handles failures while
+ * publishing events to Pub/Sub.
  *
  * @since 1.2
  */
 public class PubSubDeliveryException extends PubSubException {
 
-	@Nullable
-	private final PubsubMessage failedMessage;
+  @Nullable private final PubsubMessage failedMessage;
 
-	public PubSubDeliveryException(PubsubMessage pubsubMessage, String description, Throwable cause) {
-		super(description, cause);
-		this.failedMessage = pubsubMessage;
-	}
+  public PubSubDeliveryException(PubsubMessage pubsubMessage, String description, Throwable cause) {
+    super(description, cause);
+    this.failedMessage = pubsubMessage;
+  }
 
-	public PubsubMessage getFailedMessage() {
-		return this.failedMessage;
-	}
-
+  public PubsubMessage getFailedMessage() {
+    return this.failedMessage;
+  }
 }

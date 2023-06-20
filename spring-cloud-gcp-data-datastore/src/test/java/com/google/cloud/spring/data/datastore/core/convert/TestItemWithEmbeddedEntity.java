@@ -16,157 +16,174 @@
 
 package com.google.cloud.spring.data.datastore.core.convert;
 
+import com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItem.Color;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.cloud.spring.data.datastore.entities.CustomMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItem.Color;
-import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-import com.google.cloud.spring.data.datastore.entities.CustomMap;
-
-/**
- * A test entity focused on holding embedded entities.
- *
- * @author Dmitry Solomakha
- * @author Chengyuan Zhao
- */
+/** A test entity focused on holding embedded entities. */
 public class TestItemWithEmbeddedEntity {
-	private int intField;
+  private int intField;
 
-	private EmbeddedEntity embeddedEntityField;
+  private EmbeddedEntity embeddedEntityField;
 
-	private List<EmbeddedEntity> listOfEmbeddedEntities;
+  private List<EmbeddedEntity> listOfEmbeddedEntities;
 
-	private Map<String, String> embeddedMapSimpleValues;
+  private Map<String, String> embeddedMapSimpleValues;
 
-	private Map<String, String[]> embeddedMapListOfValues;
+  private Map<String, String[]> embeddedMapListOfValues;
 
-	private Map<String, EmbeddedEntity> embeddedEntityMapEmbeddedEntity;
+  private Map<String, EmbeddedEntity> embeddedEntityMapEmbeddedEntity;
 
-	private Map<String, List<EmbeddedEntity>> embeddedEntityMapListOfEmbeddedEntities;
+  private Map<String, List<EmbeddedEntity>> embeddedEntityMapListOfEmbeddedEntities;
 
-	private Map<String, Map<Long, Map<String, String>>> nestedEmbeddedMaps;
+  private Map<String, Map<Long, Map<String, String>>> nestedEmbeddedMaps;
 
-	private CustomMap customMap;
+  private CustomMap customMap;
 
-	private Map<TestDatastoreItem.Color, String> mapEnumKeys;
+  private Map<TestDatastoreItem.Color, String> mapEnumKeys;
 
-	TestItemWithEmbeddedEntity(int intField, EmbeddedEntity embeddedEntityField,
-			List<EmbeddedEntity> listOfEmbeddedEntities,
-			Map<String, String> embeddedMapSimpleValues,
-			Map<String, String[]> embeddedMapListOfValues,
-			Map<String, EmbeddedEntity> embeddedEntityMapEmbeddedEntity,
-			Map<String, List<EmbeddedEntity>> embeddedEntityMapListOfEmbeddedEntities,
-			Map<Color, String> mapEnumKeys, CustomMap customMap) {
-		this.intField = intField;
-		this.embeddedEntityField = embeddedEntityField;
-		this.listOfEmbeddedEntities = listOfEmbeddedEntities;
-		this.embeddedMapSimpleValues = embeddedMapSimpleValues;
-		this.embeddedMapListOfValues = embeddedMapListOfValues;
-		this.embeddedEntityMapEmbeddedEntity = embeddedEntityMapEmbeddedEntity;
-		this.embeddedEntityMapListOfEmbeddedEntities = embeddedEntityMapListOfEmbeddedEntities;
-		this.mapEnumKeys = mapEnumKeys;
-		this.customMap = customMap;
-	}
+  TestItemWithEmbeddedEntity(
+      int intField,
+      EmbeddedEntity embeddedEntityField,
+      List<EmbeddedEntity> listOfEmbeddedEntities,
+      Map<String, String> embeddedMapSimpleValues,
+      Map<String, String[]> embeddedMapListOfValues,
+      Map<String, EmbeddedEntity> embeddedEntityMapEmbeddedEntity,
+      Map<String, List<EmbeddedEntity>> embeddedEntityMapListOfEmbeddedEntities,
+      Map<Color, String> mapEnumKeys,
+      CustomMap customMap) {
+    this.intField = intField;
+    this.embeddedEntityField = embeddedEntityField;
+    this.listOfEmbeddedEntities = listOfEmbeddedEntities;
+    this.embeddedMapSimpleValues = embeddedMapSimpleValues;
+    this.embeddedMapListOfValues = embeddedMapListOfValues;
+    this.embeddedEntityMapEmbeddedEntity = embeddedEntityMapEmbeddedEntity;
+    this.embeddedEntityMapListOfEmbeddedEntities = embeddedEntityMapListOfEmbeddedEntities;
+    this.mapEnumKeys = mapEnumKeys;
+    this.customMap = customMap;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		TestItemWithEmbeddedEntity that = (TestItemWithEmbeddedEntity) o;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TestItemWithEmbeddedEntity that = (TestItemWithEmbeddedEntity) o;
 
-		boolean mapListValuesEquals = true;
-		boolean mapListEmbeddedEntitiesEquals = true;
+    boolean mapListValuesEquals = true;
+    boolean mapListEmbeddedEntitiesEquals = true;
 
-		for (String key : this.embeddedMapListOfValues.keySet()) {
-			mapListValuesEquals = mapListValuesEquals
-					&& Arrays.equals(this.embeddedMapListOfValues.get(key),
-							that.embeddedMapListOfValues.get(key));
-		}
+    for (String key : this.embeddedMapListOfValues.keySet()) {
+      mapListValuesEquals =
+          mapListValuesEquals
+              && Arrays.equals(
+                  this.embeddedMapListOfValues.get(key), that.embeddedMapListOfValues.get(key));
+    }
 
-		for (String key : this.embeddedEntityMapListOfEmbeddedEntities.keySet()) {
-			mapListEmbeddedEntitiesEquals = mapListEmbeddedEntitiesEquals && Objects
-					.equals(this.embeddedEntityMapListOfEmbeddedEntities.get(key),
-							that.embeddedEntityMapListOfEmbeddedEntities.get(key));
-		}
+    for (String key : this.embeddedEntityMapListOfEmbeddedEntities.keySet()) {
+      mapListEmbeddedEntitiesEquals =
+          mapListEmbeddedEntitiesEquals
+              && Objects.equals(
+                  this.embeddedEntityMapListOfEmbeddedEntities.get(key),
+                  that.embeddedEntityMapListOfEmbeddedEntities.get(key));
+    }
 
-		return this.intField == that.intField &&
-				Objects.equals(this.embeddedEntityField, that.embeddedEntityField) &&
-				Objects.equals(this.listOfEmbeddedEntities, that.listOfEmbeddedEntities)
-				&& this.embeddedMapSimpleValues.equals(that.embeddedMapSimpleValues)
-				&& this.embeddedEntityMapEmbeddedEntity.equals(that.embeddedEntityMapEmbeddedEntity)
-				&& Objects.equals(mapEnumKeys, that.mapEnumKeys)
-				&& this.customMap.equals(that.customMap);
-	}
+    return this.intField == that.intField
+        && Objects.equals(this.embeddedEntityField, that.embeddedEntityField)
+        && Objects.equals(this.listOfEmbeddedEntities, that.listOfEmbeddedEntities)
+        && this.embeddedMapSimpleValues.equals(that.embeddedMapSimpleValues)
+        && this.embeddedEntityMapEmbeddedEntity.equals(that.embeddedEntityMapEmbeddedEntity)
+        && Objects.equals(mapEnumKeys, that.mapEnumKeys)
+        && this.customMap.equals(that.customMap);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(intField, embeddedEntityField, listOfEmbeddedEntities,
-				embeddedMapSimpleValues, embeddedMapListOfValues, embeddedEntityMapEmbeddedEntity,
-				embeddedEntityMapListOfEmbeddedEntities, nestedEmbeddedMaps, customMap, mapEnumKeys);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        intField,
+        embeddedEntityField,
+        listOfEmbeddedEntities,
+        embeddedMapSimpleValues,
+        embeddedMapListOfValues,
+        embeddedEntityMapEmbeddedEntity,
+        embeddedEntityMapListOfEmbeddedEntities,
+        nestedEmbeddedMaps,
+        customMap,
+        mapEnumKeys);
+  }
 
-	@Override
-	public String toString() {
-		return "TestItemWithEmbeddedEntity{" +
-				"intField=" + intField +
-				", embeddedEntityField=" + embeddedEntityField +
-				", listOfEmbeddedEntities=" + listOfEmbeddedEntities +
-				", embeddedMapSimpleValues=" + embeddedMapSimpleValues +
-				", embeddedMapListOfValues=" + embeddedMapListOfValues +
-				", embeddedEntityMapEmbeddedEntity=" + embeddedEntityMapEmbeddedEntity +
-				", embeddedEntityMapListOfEmbeddedEntities=" + embeddedEntityMapListOfEmbeddedEntities +
-				", nestedEmbeddedMaps=" + nestedEmbeddedMaps +
-				", conf=" + customMap +
-				", mapEnumKeys=" + mapEnumKeys +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "TestItemWithEmbeddedEntity{"
+        + "intField="
+        + intField
+        + ", embeddedEntityField="
+        + embeddedEntityField
+        + ", listOfEmbeddedEntities="
+        + listOfEmbeddedEntities
+        + ", embeddedMapSimpleValues="
+        + embeddedMapSimpleValues
+        + ", embeddedMapListOfValues="
+        + embeddedMapListOfValues
+        + ", embeddedEntityMapEmbeddedEntity="
+        + embeddedEntityMapEmbeddedEntity
+        + ", embeddedEntityMapListOfEmbeddedEntities="
+        + embeddedEntityMapListOfEmbeddedEntities
+        + ", nestedEmbeddedMaps="
+        + nestedEmbeddedMaps
+        + ", conf="
+        + customMap
+        + ", mapEnumKeys="
+        + mapEnumKeys
+        + '}';
+  }
 
-	Map<String, Map<Long, Map<String, String>>> getNestedEmbeddedMaps() {
-		return this.nestedEmbeddedMaps;
-	}
+  Map<String, Map<Long, Map<String, String>>> getNestedEmbeddedMaps() {
+    return this.nestedEmbeddedMaps;
+  }
 
-	/**
-	 * set the nested embedded maps.
-	 * @param nestedEmbeddedMaps the maps to set.
-	 */
-	public void setNestedEmbeddedMaps(
-			Map<String, Map<Long, Map<String, String>>> nestedEmbeddedMaps) {
-		this.nestedEmbeddedMaps = nestedEmbeddedMaps;
-	}
+  /**
+   * set the nested embedded maps.
+   *
+   * @param nestedEmbeddedMaps the maps to set.
+   */
+  public void setNestedEmbeddedMaps(
+      Map<String, Map<Long, Map<String, String>>> nestedEmbeddedMaps) {
+    this.nestedEmbeddedMaps = nestedEmbeddedMaps;
+  }
 
-	/**
-	 * an embedded entity class.
-	 */
-	@Entity
-	public static class EmbeddedEntity {
-		String stringField;
+  /** an embedded entity class. */
+  @Entity
+  public static class EmbeddedEntity {
+    String stringField;
 
-		public EmbeddedEntity(String stringField) {
-			this.stringField = stringField;
-		}
+    public EmbeddedEntity(String stringField) {
+      this.stringField = stringField;
+    }
 
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			}
-			if (o == null || getClass() != o.getClass()) {
-				return false;
-			}
-			EmbeddedEntity that = (EmbeddedEntity) o;
-			return Objects.equals(this.stringField, that.stringField);
-		}
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+      EmbeddedEntity that = (EmbeddedEntity) o;
+      return Objects.equals(this.stringField, that.stringField);
+    }
 
-		@Override
-		public int hashCode() {
+    @Override
+    public int hashCode() {
 
-			return Objects.hash(this.stringField);
-		}
-	}
+      return Objects.hash(this.stringField);
+    }
+  }
 }

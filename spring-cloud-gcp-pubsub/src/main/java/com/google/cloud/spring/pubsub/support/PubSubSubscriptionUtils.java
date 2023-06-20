@@ -17,44 +17,44 @@
 package com.google.cloud.spring.pubsub.support;
 
 import com.google.pubsub.v1.ProjectSubscriptionName;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
  * Various utility methods for dealing with Pub/Sub subscriptions.
  *
- * @author Mike Eltsufin
  * @since 1.2
  */
 public final class PubSubSubscriptionUtils {
 
-	private PubSubSubscriptionUtils() {
-	}
+  private PubSubSubscriptionUtils() {}
 
-	/**
-	 * Create a {@link ProjectSubscriptionName} based on a subscription name within a project or the
-	 * fully-qualified subscription name. If the specified subscription is in the
-	 * {@code projects/<project_name>/subscriptions/<subscription_name>} format, then the {@code projectId} is
-	 * ignored}
-	 * @param subscription the subscription name in the project or the fully-qualified project name
-	 * @param projectId the project ID to use if the subscription is not a fully-qualified name
-	 * @return the Pub/Sub object representing the subscription name
-	 */
-	public static ProjectSubscriptionName toProjectSubscriptionName(String subscription, @Nullable String projectId) {
-		Assert.notNull(subscription, "The subscription can't be null.");
+  /**
+   * Create a {@link ProjectSubscriptionName} based on a subscription name within a project or the
+   * fully-qualified subscription name. If the specified subscription is in the {@code
+   * projects/[project_name]/subscriptions/[subscription_name]} format, then the {@code projectId}
+   * is ignored}
+   *
+   * @param subscription the subscription name in the project or the fully-qualified project name
+   * @param projectId the project ID to use if the subscription is not a fully-qualified name
+   * @return the Pub/Sub object representing the subscription name
+   */
+  public static ProjectSubscriptionName toProjectSubscriptionName(
+      String subscription, @Nullable String projectId) {
+    Assert.notNull(subscription, "The subscription can't be null.");
 
-		ProjectSubscriptionName projectSubscriptionName = null;
+    ProjectSubscriptionName projectSubscriptionName = null;
 
-		if (ProjectSubscriptionName.isParsableFrom(subscription)) {
-			// Fully-qualified subscription name in the "projects/<project_name>/subscriptions/<subscription_name>" format
-			projectSubscriptionName = ProjectSubscriptionName.parse(subscription);
-		}
-		else {
-			Assert.notNull(projectId, "The project ID can't be null when using canonical subscription name.");
-			projectSubscriptionName = ProjectSubscriptionName.of(projectId, subscription);
-		}
+    if (ProjectSubscriptionName.isParsableFrom(subscription)) {
+      // Fully-qualified subscription name in the
+      // "projects/[project_name]/subscriptions/[subscription_name]" format
+      projectSubscriptionName = ProjectSubscriptionName.parse(subscription);
+    } else {
+      Assert.notNull(
+          projectId, "The project ID can't be null when using canonical subscription name.");
+      projectSubscriptionName = ProjectSubscriptionName.of(projectId, subscription);
+    }
 
-		return projectSubscriptionName;
-	}
+    return projectSubscriptionName;
+  }
 }

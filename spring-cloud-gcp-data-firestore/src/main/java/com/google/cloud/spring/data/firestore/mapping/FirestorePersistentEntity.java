@@ -22,28 +22,25 @@ import org.springframework.data.mapping.model.MutablePersistentEntity;
  * Persistent entity for Google Cloud Firestore.
  *
  * @param <T> the type of the property described by this persistent property
- *
- * @author Dmitry Solomakha
- *
  * @since 1.2
  */
-public interface FirestorePersistentEntity<T> extends
-		MutablePersistentEntity<T, FirestorePersistentProperty> {
+public interface FirestorePersistentEntity<T>
+    extends MutablePersistentEntity<T, FirestorePersistentProperty> {
 
-	/**
-	 * Gets the name of the Firestore Collection.
-	 *
-	 * @return the name of the Firestore Collection that stores these entities.
-	 */
-	String collectionName();
+  /**
+   * Gets the name of the Firestore Collection.
+   *
+   * @return the name of the Firestore Collection that stores these entities.
+   */
+  String collectionName();
 
-	/**
-	 * Gets the ID property, and will throw {@link Exception} if the entity
-	 * does not have an ID property.
-	 *
-	 * @return the ID property.
-	 */
-	FirestorePersistentProperty getIdPropertyOrFail();
+  /**
+   * Gets the ID property, and will throw {@link Exception} if the entity does not have an ID
+   * property.
+   *
+   * @return the ID property.
+   */
+  FirestorePersistentProperty getIdPropertyOrFail();
 
-	FirestorePersistentProperty getUpdateTimeProperty();
+  FirestorePersistentProperty getUpdateTimeProperty();
 }

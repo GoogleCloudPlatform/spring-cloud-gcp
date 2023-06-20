@@ -18,6 +18,7 @@ package com.google.cloud.spring.stream.binder.pubsub;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
+import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubMessageSource;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
@@ -25,7 +26,6 @@ import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerPro
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
 import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
-
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
 import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
@@ -37,122 +37,142 @@ import org.springframework.integration.core.MessageProducer;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
-/**
- * Message channel binder for Pub/Sub.
- *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Artem Bilan
- * @author Daniel Zou
- * @author Emmanouil Gkatziouras
- */
+/** Message channel binder for Pub/Sub. */
 public class PubSubMessageChannelBinder
-		extends AbstractMessageChannelBinder<ExtendedConsumerProperties<PubSubConsumerProperties>,
-		ExtendedProducerProperties<PubSubProducerProperties>,
-		PubSubChannelProvisioner>
-	implements ExtendedPropertiesBinder<MessageChannel, PubSubConsumerProperties,
-		PubSubProducerProperties> {
+    extends AbstractMessageChannelBinder<
+        ExtendedConsumerProperties<PubSubConsumerProperties>,
+        ExtendedProducerProperties<PubSubProducerProperties>,
+        PubSubChannelProvisioner>
+    implements ExtendedPropertiesBinder<
+        MessageChannel, PubSubConsumerProperties, PubSubProducerProperties> {
 
-	private final PubSubTemplate pubSubTemplate;
+  private final PubSubTemplate pubSubTemplate;
 
-	private final PubSubExtendedBindingProperties pubSubExtendedBindingProperties;
+  private final PubSubExtendedBindingProperties pubSubExtendedBindingProperties;
 
-	private final PubSubChannelProvisioner pubSubChannelProvisioner;
+  private final PubSubChannelProvisioner pubSubChannelProvisioner;
 
-	private HealthTrackerRegistry healthTrackerRegistry;
+  private HealthTrackerRegistry healthTrackerRegistry;
 
-	public PubSubMessageChannelBinder(String[] headersToEmbed,
-			PubSubChannelProvisioner provisioningProvider, PubSubTemplate pubSubTemplate,
-			PubSubExtendedBindingProperties pubSubExtendedBindingProperties) {
+  public PubSubMessageChannelBinder(
+      String[] headersToEmbed,
+      PubSubChannelProvisioner provisioningProvider,
+      PubSubTemplate pubSubTemplate,
+      PubSubExtendedBindingProperties pubSubExtendedBindingProperties) {
 
-		super(headersToEmbed, provisioningProvider);
-		this.pubSubTemplate = pubSubTemplate;
-		this.pubSubExtendedBindingProperties = pubSubExtendedBindingProperties;
-		this.pubSubChannelProvisioner = provisioningProvider;
-	}
+    super(headersToEmbed, provisioningProvider);
+    this.pubSubTemplate = pubSubTemplate;
+    this.pubSubExtendedBindingProperties = pubSubExtendedBindingProperties;
+    this.pubSubChannelProvisioner = provisioningProvider;
+  }
 
-	public void setHealthTrackerRegistry(
-		HealthTrackerRegistry healthTrackerRegistry) {
-		this.healthTrackerRegistry = healthTrackerRegistry;
-	}
+  public void setHealthTrackerRegistry(HealthTrackerRegistry healthTrackerRegistry) {
+    this.healthTrackerRegistry = healthTrackerRegistry;
+  }
 
-	@Override
-	protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
-			ExtendedProducerProperties<PubSubProducerProperties> producerProperties,
-			MessageChannel errorChannel) {
+  @Override
+  protected MessageHandler createProducerMessageHandler(
+      ProducerDestination destination,
+      ExtendedProducerProperties<PubSubProducerProperties> producerProperties,
+      MessageChannel errorChannel) {
 
-		PubSubMessageHandler messageHandler = new PubSubMessageHandler(this.pubSubTemplate, destination.getName());
-		messageHandler.setBeanFactory(getBeanFactory());
-		messageHandler.setSync(producerProperties.getExtension().isSync());
-		return messageHandler;
-	}
+    PubSubMessageHandler messageHandler = new PubSubMessageHandler(this.pubSubTemplate, destination.getName());
 
-	@Override
-	protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
-			ExtendedConsumerProperties<PubSubConsumerProperties> properties) {
+    PubSubProducerProperties props = producerProperties.getExtension();
+    if (props != null && props.getAllowedHeaders() != null) {
+      PubSubHeaderMapper headerMapper = new PubSubHeaderMapper();
+      headerMapper.setOutboundHeaderPatterns(props.getAllowedHeaders());
+      messageHandler.setHeaderMapper(headerMapper);
+    }
 
-		PubSubInboundChannelAdapter adapter = new PubSubInboundChannelAdapter(this.pubSubTemplate,
-				destination.getName());
+    messageHandler.setBeanFactory(getBeanFactory());
+    messageHandler.setSync(producerProperties.getExtension().isSync());
+    return messageHandler;
+  }
 
+  @Override
+  protected MessageProducer createConsumerEndpoint(
+      ConsumerDestination destination,
+      String group,
+      ExtendedConsumerProperties<PubSubConsumerProperties> properties) {
 
-		if (healthTrackerRegistry != null) {
-			adapter.setHealthTrackerRegistry(healthTrackerRegistry);
-		}
+    PubSubInboundChannelAdapter adapter =
+        new PubSubInboundChannelAdapter(this.pubSubTemplate, destination.getName());
 
-		ErrorInfrastructure errorInfrastructure = registerErrorInfrastructure(destination, group, properties);
-		adapter.setErrorChannel(errorInfrastructure.getErrorChannel());
-		adapter.setAckMode(properties.getExtension().getAckMode());
-		adapter.setBeanFactory(getBeanFactory());
+    PubSubConsumerProperties props = properties.getExtension();
+    if (props != null && props.getAllowedHeaders() != null) {
+      PubSubHeaderMapper headerMapper = new PubSubHeaderMapper();
+      headerMapper.setInboundHeaderPatterns(props.getAllowedHeaders());
+      adapter.setHeaderMapper(headerMapper);
+    }
 
-		return adapter;
-	}
+    if (healthTrackerRegistry != null) {
+      adapter.setHealthTrackerRegistry(healthTrackerRegistry);
+    }
 
-	@Override
-	protected String errorsBaseName(
-			ConsumerDestination destination, String group, ExtendedConsumerProperties<PubSubConsumerProperties> properties) {
-		return destination.getName() + ".errors";
-	}
+    ErrorInfrastructure errorInfrastructure =
+        registerErrorInfrastructure(destination, group, properties);
+    adapter.setErrorChannel(errorInfrastructure.getErrorChannel());
+    adapter.setAckMode(properties.getExtension().getAckMode());
+    adapter.setBeanFactory(getBeanFactory());
 
-	@Override
-	public PubSubConsumerProperties getExtendedConsumerProperties(String channelName) {
-		return this.pubSubExtendedBindingProperties.getExtendedConsumerProperties(channelName);
-	}
+    return adapter;
+  }
 
-	@Override
-	public PubSubProducerProperties getExtendedProducerProperties(String channelName) {
-		return this.pubSubExtendedBindingProperties.getExtendedProducerProperties(channelName);
-	}
+  @Override
+  protected String errorsBaseName(
+      ConsumerDestination destination,
+      String group,
+      ExtendedConsumerProperties<PubSubConsumerProperties> properties) {
+    return destination.getName() + ".errors";
+  }
 
-	@Override
-	public String getDefaultsPrefix() {
-		return this.pubSubExtendedBindingProperties.getDefaultsPrefix();
-	}
+  @Override
+  public PubSubConsumerProperties getExtendedConsumerProperties(String channelName) {
+    return this.pubSubExtendedBindingProperties.getExtendedConsumerProperties(channelName);
+  }
 
-	@Override
-	public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
-		return this.pubSubExtendedBindingProperties.getExtendedPropertiesEntryClass();
-	}
+  @Override
+  public PubSubProducerProperties getExtendedProducerProperties(String channelName) {
+    return this.pubSubExtendedBindingProperties.getExtendedProducerProperties(channelName);
+  }
 
-	@Override
-	protected void afterUnbindConsumer(ConsumerDestination destination, String group,
-			ExtendedConsumerProperties<PubSubConsumerProperties> consumerProperties) {
-		super.afterUnbindConsumer(destination, group, consumerProperties);
-		this.pubSubChannelProvisioner.afterUnbindConsumer(destination);
-	}
+  @Override
+  public String getDefaultsPrefix() {
+    return this.pubSubExtendedBindingProperties.getDefaultsPrefix();
+  }
 
-	@Override
-	protected PolledConsumerResources createPolledConsumerResources(String name, String group, ConsumerDestination destination,
-			ExtendedConsumerProperties<PubSubConsumerProperties> consumerProperties) {
-		PubSubMessageSource source = createPubSubMessageSource(destination, consumerProperties);
-		return new PolledConsumerResources(source,
-				registerErrorInfrastructure(destination, group, consumerProperties, true));
-	}
+  @Override
+  public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
+    return this.pubSubExtendedBindingProperties.getExtendedPropertiesEntryClass();
+  }
 
-	protected PubSubMessageSource createPubSubMessageSource(ConsumerDestination destination,
-			ExtendedConsumerProperties<PubSubConsumerProperties> consumerProperties) {
-		PubSubMessageSource source = new PubSubMessageSource(this.pubSubTemplate, destination.getName());
-		source.setMaxFetchSize(consumerProperties.getExtension().getMaxFetchSize());
-		return source;
-	}
+  @Override
+  protected void afterUnbindConsumer(
+      ConsumerDestination destination,
+      String group,
+      ExtendedConsumerProperties<PubSubConsumerProperties> consumerProperties) {
+    super.afterUnbindConsumer(destination, group, consumerProperties);
+    this.pubSubChannelProvisioner.afterUnbindConsumer(destination);
+  }
 
+  @Override
+  protected PolledConsumerResources createPolledConsumerResources(
+      String name,
+      String group,
+      ConsumerDestination destination,
+      ExtendedConsumerProperties<PubSubConsumerProperties> consumerProperties) {
+    PubSubMessageSource source = createPubSubMessageSource(destination, consumerProperties);
+    return new PolledConsumerResources(
+        source, registerErrorInfrastructure(destination, group, consumerProperties, true));
+  }
+
+  protected PubSubMessageSource createPubSubMessageSource(
+      ConsumerDestination destination,
+      ExtendedConsumerProperties<PubSubConsumerProperties> consumerProperties) {
+    PubSubMessageSource source =
+        new PubSubMessageSource(this.pubSubTemplate, destination.getName());
+    source.setMaxFetchSize(consumerProperties.getExtension().getMaxFetchSize());
+    return source;
+  }
 }

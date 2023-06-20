@@ -18,53 +18,45 @@ package com.example;
 
 import java.time.LocalDateTime;
 import java.util.function.Supplier;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Sinks;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
-/**
- * An example source for the sample app.
- *
- * @author Travis Tomsu
- */
+/** An example source for the sample app. */
 @RestController
 public class SourceExample {
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private Sinks.Many<UserMessage> postOffice;
+  @Autowired private Sinks.Many<UserMessage> postOffice;
 
-	@PostMapping("/newMessage")
-	public UserMessage sendMessage(
-			@RequestParam("messageBody") String messageBody,
-			@RequestParam("username") String username) {
-		UserMessage userMessage = new UserMessage(messageBody, username, LocalDateTime.now());
-		log.info("Publishing message from {}", username);
-		this.postOffice.tryEmitNext(userMessage);
-		return userMessage;
-	}
+  @PostMapping("/newMessage")
+  public UserMessage sendMessage(
+      @RequestParam("messageBody") String messageBody, @RequestParam("username") String username) {
+    UserMessage userMessage = new UserMessage(messageBody, username, LocalDateTime.now());
+    log.info("Publishing message from {}", username);
+    this.postOffice.tryEmitNext(userMessage);
+    return userMessage;
+  }
 
-	@Configuration
-	public static class SourceConfig {
+  @Configuration
+  public static class SourceConfig {
 
-		@Bean
-		public Sinks.Many<UserMessage> postOffice() {
-			return Sinks.many().unicast().onBackpressureBuffer();
-		}
+    @Bean
+    public Sinks.Many<UserMessage> postOffice() {
+      return Sinks.many().unicast().onBackpressureBuffer();
+    }
 
-		@Bean
-		Supplier<Flux<UserMessage>> generateUserMessages(Sinks.Many<UserMessage> postOffice) {
-			return postOffice::asFlux;
-		}
-	}
+    @Bean
+    Supplier<Flux<UserMessage>> generateUserMessages(Sinks.Many<UserMessage> postOffice) {
+      return postOffice::asFlux;
+    }
+  }
 }

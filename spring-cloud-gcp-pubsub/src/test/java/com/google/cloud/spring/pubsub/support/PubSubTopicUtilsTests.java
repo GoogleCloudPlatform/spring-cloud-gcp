@@ -16,123 +16,113 @@
 
 package com.google.cloud.spring.pubsub.support;
 
-import com.google.pubsub.v1.ProjectTopicName;
-import com.google.pubsub.v1.TopicName;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/**
- * Tests for {@link PubSubTopicUtils}.
- *
- * @author Mike Eltsufin
- */
-public class PubSubTopicUtilsTests {
+import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.TopicName;
+import org.junit.jupiter.api.Test;
 
-	@Test
-	public void testToProjectTopicName_canonical() {
-		String project = "projectA";
-		String topic = "topicA";
-		String fqn = "projects/" + project + "/topics/" + topic;
+/** Tests for {@link PubSubTopicUtils}. */
+class PubSubTopicUtilsTests {
 
-		ProjectTopicName parsedProjectTopicName = PubSubTopicUtils.toProjectTopicName(topic, project);
+  @Test
+  void testToProjectTopicName_canonical() {
+    String project = "projectA";
+    String topic = "topicA";
+    String fqn = "projects/" + project + "/topics/" + topic;
 
-		assertThat(parsedProjectTopicName)
-				.isEqualTo(ProjectTopicName.of(project, topic))
-				.hasToString(fqn);
-	}
+    ProjectTopicName parsedProjectTopicName = PubSubTopicUtils.toProjectTopicName(topic, project);
 
-	@Test
-	public void testToProjectTopicName_no_topic() {
-		assertThatThrownBy(() -> PubSubTopicUtils.toProjectTopicName(null, "topicA"))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("The topic can't be null.");
-	}
+    assertThat(parsedProjectTopicName)
+        .isEqualTo(ProjectTopicName.of(project, topic))
+        .hasToString(fqn);
+  }
 
-	@Test
-	public void testToProjectTopicName_canonical_no_project() {
-		assertThatThrownBy(() -> PubSubTopicUtils.toProjectTopicName("topicA", null))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("The project ID can't be null when using canonical topic name.");
-	}
+  @Test
+  void testToProjectTopicName_no_topic() {
+    assertThatThrownBy(() -> PubSubTopicUtils.toProjectTopicName(null, "topicA"))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("The topic can't be null.");
+  }
 
-	@Test
-	public void testToProjectTopicName_fqn() {
-		String project = "projectA";
-		String topic = "topicA";
-		String fqn = "projects/" + project + "/topics/" + topic;
+  @Test
+  void testToProjectTopicName_canonical_no_project() {
+    assertThatThrownBy(() -> PubSubTopicUtils.toProjectTopicName("topicA", null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("The project ID can't be null when using canonical topic name.");
+  }
 
-		ProjectTopicName parsedProjectTopicName = PubSubTopicUtils.toProjectTopicName(fqn, project);
+  @Test
+  void testToProjectTopicName_fqn() {
+    String project = "projectA";
+    String topic = "topicA";
+    String fqn = "projects/" + project + "/topics/" + topic;
 
-		assertThat(parsedProjectTopicName)
-				.isEqualTo(ProjectTopicName.of(project, topic))
-				.hasToString(fqn);
-	}
+    ProjectTopicName parsedProjectTopicName = PubSubTopicUtils.toProjectTopicName(fqn, project);
 
-	@Test
-	public void testToProjectTopicName_fqn_no_project() {
-		String project = "projectA";
-		String topic = "topicA";
-		String fqn = "projects/" + project + "/topics/" + topic;
+    assertThat(parsedProjectTopicName)
+        .isEqualTo(ProjectTopicName.of(project, topic))
+        .hasToString(fqn);
+  }
 
-		ProjectTopicName parsedProjectTopicName = PubSubTopicUtils.toProjectTopicName(fqn, null);
+  @Test
+  void testToProjectTopicName_fqn_no_project() {
+    String project = "projectA";
+    String topic = "topicA";
+    String fqn = "projects/" + project + "/topics/" + topic;
 
-		assertThat(parsedProjectTopicName)
-				.isEqualTo(ProjectTopicName.of(project, topic))
-				.hasToString(fqn);
-	}
+    ProjectTopicName parsedProjectTopicName = PubSubTopicUtils.toProjectTopicName(fqn, null);
 
-	@Test
-	public void testToTopicName_canonical() {
-		String project = "projectA";
-		String topic = "topicA";
-		String fqn = "projects/" + project + "/topics/" + topic;
+    assertThat(parsedProjectTopicName)
+        .isEqualTo(ProjectTopicName.of(project, topic))
+        .hasToString(fqn);
+  }
 
-		TopicName parsedTopicName = PubSubTopicUtils.toTopicName(topic, project);
+  @Test
+  void testToTopicName_canonical() {
+    String project = "projectA";
+    String topic = "topicA";
+    String fqn = "projects/" + project + "/topics/" + topic;
 
-		assertThat(parsedTopicName)
-				.isEqualTo(TopicName.of(project, topic))
-				.hasToString(fqn);
-	}
+    TopicName parsedTopicName = PubSubTopicUtils.toTopicName(topic, project);
 
-	@Test
-	public void testToTopicName_no_topic() {
-		assertThatThrownBy(() -> PubSubTopicUtils.toTopicName(null, "topicA"))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("The topic can't be null.");
-	}
+    assertThat(parsedTopicName).isEqualTo(TopicName.of(project, topic)).hasToString(fqn);
+  }
 
-	@Test
-	public void testToTopicName_canonical_no_project() {
-		assertThatThrownBy(() -> PubSubTopicUtils.toTopicName("topicA", null))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("The project ID can't be null when using canonical topic name.");
-	}
+  @Test
+  void testToTopicName_no_topic() {
+    assertThatThrownBy(() -> PubSubTopicUtils.toTopicName(null, "topicA"))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("The topic can't be null.");
+  }
 
-	@Test
-	public void testToTopicName_fqn() {
-		String project = "projectA";
-		String topic = "topicA";
-		String fqn = "projects/" + project + "/topics/" + topic;
+  @Test
+  void testToTopicName_canonical_no_project() {
+    assertThatThrownBy(() -> PubSubTopicUtils.toTopicName("topicA", null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("The project ID can't be null when using canonical topic name.");
+  }
 
-		TopicName parsedTopicName = PubSubTopicUtils.toTopicName(fqn, project);
+  @Test
+  void testToTopicName_fqn() {
+    String project = "projectA";
+    String topic = "topicA";
+    String fqn = "projects/" + project + "/topics/" + topic;
 
-		assertThat(parsedTopicName)
-				.isEqualTo(TopicName.of(project, topic))
-				.hasToString(fqn);
-	}
+    TopicName parsedTopicName = PubSubTopicUtils.toTopicName(fqn, project);
 
-	@Test
-	public void testToTopicName_fqn_no_project() {
-		String project = "projectA";
-		String topic = "topicA";
-		String fqn = "projects/" + project + "/topics/" + topic;
+    assertThat(parsedTopicName).isEqualTo(TopicName.of(project, topic)).hasToString(fqn);
+  }
 
-		TopicName parsedTopicName = PubSubTopicUtils.toTopicName(fqn, null);
+  @Test
+  void testToTopicName_fqn_no_project() {
+    String project = "projectA";
+    String topic = "topicA";
+    String fqn = "projects/" + project + "/topics/" + topic;
 
-		assertThat(parsedTopicName)
-				.isEqualTo(TopicName.of(project, topic))
-				.hasToString(fqn);
-	}
+    TopicName parsedTopicName = PubSubTopicUtils.toTopicName(fqn, null);
+
+    assertThat(parsedTopicName).isEqualTo(TopicName.of(project, topic)).hasToString(fqn);
+  }
 }

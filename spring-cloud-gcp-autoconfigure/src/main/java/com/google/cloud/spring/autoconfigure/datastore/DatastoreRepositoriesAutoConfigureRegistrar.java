@@ -16,41 +16,35 @@
 
 package com.google.cloud.spring.autoconfigure.datastore;
 
-import java.lang.annotation.Annotation;
-
 import com.google.cloud.spring.data.datastore.repository.config.DatastoreRepositoryConfigurationExtension;
 import com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreRepositories;
-
+import java.lang.annotation.Annotation;
 import org.springframework.boot.autoconfigure.data.AbstractRepositoryConfigurationSourceSupport;
 import org.springframework.data.repository.config.RepositoryConfigurationExtension;
 
 /**
  * Used to auto-configure Spring Data Cloud Datastore Repositories.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class DatastoreRepositoriesAutoConfigureRegistrar
-		extends AbstractRepositoryConfigurationSourceSupport {
+    extends AbstractRepositoryConfigurationSourceSupport {
 
-	@Override
-	protected Class<? extends Annotation> getAnnotation() {
-		return EnableDatastoreRepositories.class;
-	}
+  @Override
+  protected Class<? extends Annotation> getAnnotation() {
+    return EnableDatastoreRepositories.class;
+  }
 
-	@Override
-	protected Class<?> getConfiguration() {
-		return EnableDatastoreRepositoriesConfiguration.class;
-	}
+  @Override
+  protected Class<?> getConfiguration() {
+    return EnableDatastoreRepositoriesConfiguration.class;
+  }
 
-	@Override
-	protected RepositoryConfigurationExtension getRepositoryConfigurationExtension() {
-		return new DatastoreRepositoryConfigurationExtension();
-	}
+  @Override
+  protected RepositoryConfigurationExtension getRepositoryConfigurationExtension() {
+    return new DatastoreRepositoryConfigurationExtension();
+  }
 
-	@EnableDatastoreRepositories
-	private static class EnableDatastoreRepositoriesConfiguration {
-
-	}
+  @EnableDatastoreRepositories
+  private static class EnableDatastoreRepositoriesConfiguration {}
 }

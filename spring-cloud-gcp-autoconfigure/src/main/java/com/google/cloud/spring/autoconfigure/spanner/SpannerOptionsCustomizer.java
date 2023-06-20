@@ -20,5 +20,5 @@ import com.google.cloud.spanner.SpannerOptions;
 
 @FunctionalInterface
 public interface SpannerOptionsCustomizer {
-	void apply(SpannerOptions.Builder builder);
+  void apply(SpannerOptions.Builder builder);
 }

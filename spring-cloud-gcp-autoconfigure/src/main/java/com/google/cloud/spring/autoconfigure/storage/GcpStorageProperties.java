@@ -20,36 +20,29 @@ import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.GcpScope;
 import com.google.cloud.spring.storage.GoogleStorageProtocolResolverSettings;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-/**
- * Settings for Storage.
- *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- */
+/** Settings for Storage. */
 @ConfigurationProperties("spring.cloud.gcp.storage")
-public class GcpStorageProperties extends GoogleStorageProtocolResolverSettings implements
-		CredentialsSupplier {
+public class GcpStorageProperties extends GoogleStorageProtocolResolverSettings
+    implements CredentialsSupplier {
 
-	/** Overrides the GCP OAuth2 credentials specified in the Core module. */
-	@NestedConfigurationProperty
-	private final Credentials credentials = new Credentials(GcpScope.STORAGE_READ_WRITE.getUrl());
+  /** Overrides the GCP OAuth2 credentials specified in the Core module. */
+  @NestedConfigurationProperty
+  private final Credentials credentials = new Credentials(GcpScope.STORAGE_READ_WRITE.getUrl());
 
-	public Credentials getCredentials() {
-		return this.credentials;
-	}
+  public Credentials getCredentials() {
+    return this.credentials;
+  }
 
-	private String projectId;
+  private String projectId;
 
-	public String getProjectId() {
-		return projectId;
-	}
+  public String getProjectId() {
+    return projectId;
+  }
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
+  }
 }

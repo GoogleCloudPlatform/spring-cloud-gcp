@@ -16,15 +16,13 @@
 
 package com.google.cloud.spring.autoconfigure.spanner;
 
-import java.io.IOException;
-import java.util.Optional;
-
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-
+import java.io.IOException;
+import java.util.Optional;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -36,52 +34,54 @@ import org.springframework.util.Assert;
 /**
  * Provides auto-configuration to use the Spanner emulator if enabled.
  *
- * @author Eddú Meléndez
- * @author Eddy Kioi
  * @since 1.2.3
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureBefore({ GcpSpannerAutoConfiguration.class, GcpContextAutoConfiguration.class })
+@AutoConfigureBefore({GcpSpannerAutoConfiguration.class, GcpContextAutoConfiguration.class})
 @EnableConfigurationProperties(GcpSpannerProperties.class)
-@ConditionalOnProperty(prefix = "spring.cloud.gcp.spanner.emulator", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(
+    prefix = "spring.cloud.gcp.spanner.emulator",
+    name = "enabled",
+    havingValue = "true")
 public class GcpSpannerEmulatorAutoConfiguration {
 
-	private final GcpSpannerProperties properties;
+  private final GcpSpannerProperties properties;
 
-	private final String projectId;
+  private final String projectId;
 
-	private final CredentialsProvider credentialsProvider;
+  private final CredentialsProvider credentialsProvider;
 
-	public GcpSpannerEmulatorAutoConfiguration(GcpSpannerProperties properties,
-			GcpProjectIdProvider projectIdProvider) {
+  public GcpSpannerEmulatorAutoConfiguration(
+      GcpSpannerProperties properties, GcpProjectIdProvider projectIdProvider) {
 
-		this.projectId = (properties.getProjectId() != null)
-				? properties.getProjectId()
-				: projectIdProvider.getProjectId();
+    this.projectId =
+        (properties.getProjectId() != null)
+            ? properties.getProjectId()
+            : projectIdProvider.getProjectId();
 
-		this.properties = properties;
+    this.properties = properties;
 
-		this.credentialsProvider = NoCredentials::getInstance;
-	}
+    this.credentialsProvider = NoCredentials::getInstance;
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	public CredentialsProvider credentialsProvider() {
-		return this.credentialsProvider;
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  public CredentialsProvider credentialsProvider() {
+    return this.credentialsProvider;
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	public SpannerOptions spannerOptions(Optional<SpannerOptionsCustomizer> customizer)
-			throws IOException {
-		Assert.notNull(this.properties.getEmulatorHost(),
-				"`spring.cloud.gcp.spanner.emulator-host` must be set.");
-		SpannerOptions.Builder builder = SpannerOptions.newBuilder();
-		builder
-				.setProjectId(this.projectId)
-				.setCredentials(this.credentialsProvider.getCredentials())
-				.setEmulatorHost(this.properties.getEmulatorHost());
-		customizer.ifPresent(c -> c.apply(builder));
-		return builder.build();
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  public SpannerOptions spannerOptions(Optional<SpannerOptionsCustomizer> customizer)
+      throws IOException {
+    Assert.notNull(
+        this.properties.getEmulatorHost(), "`spring.cloud.gcp.spanner.emulator-host` must be set.");
+    SpannerOptions.Builder builder = SpannerOptions.newBuilder();
+    builder
+        .setProjectId(this.projectId)
+        .setCredentials(this.credentialsProvider.getCredentials())
+        .setEmulatorHost(this.properties.getEmulatorHost());
+    customizer.ifPresent(c -> c.apply(builder));
+    return builder.build();
+  }
 }

@@ -16,35 +16,34 @@
 
 package com.google.cloud.spring.autoconfigure.storage;
 
-import com.google.cloud.storage.Storage;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
+import com.google.cloud.storage.Storage;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-
 /**
  * Verifies that GCP Storage may be disabled via the property:
  * "spring.cloud.gcp.storage.enabled=false".
- *
- * @author Daniel Zou
  */
-public class GcpStorageDisableTests {
-	private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
+class GcpStorageDisableTests {
+  private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
 
-	ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(GcpStorageAutoConfiguration.class))
-			.withPropertyValues("spring.cloud.gcp.storage.project-id=" + PROJECT_NAME)
-			.withPropertyValues("spring.cloud.gcp.storage.enabled=false");
+  ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(AutoConfigurations.of(GcpStorageAutoConfiguration.class))
+          .withPropertyValues("spring.cloud.gcp.storage.project-id=" + PROJECT_NAME)
+          .withPropertyValues("spring.cloud.gcp.storage.enabled=false");
 
-	@Test
-	public void testStorageBeanIsNotProvided() {
-		this.contextRunner.run(context -> {
-			Throwable thrown = catchThrowable(() -> context.getBean(Storage.class));
-			assertThat(thrown).isInstanceOf(NoSuchBeanDefinitionException.class);
-		});
-	}
+  @Test
+  void testStorageBeanIsNotProvided() {
+    this.contextRunner.run(
+        context -> {
+          Throwable thrown = catchThrowable(() -> context.getBean(Storage.class));
+          assertThat(thrown).isInstanceOf(NoSuchBeanDefinitionException.class);
+        });
+  }
 }

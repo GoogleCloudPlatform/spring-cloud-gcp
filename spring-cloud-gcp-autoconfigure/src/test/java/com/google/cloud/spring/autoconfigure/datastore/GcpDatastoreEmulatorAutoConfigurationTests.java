@@ -16,54 +16,51 @@
 
 package com.google.cloud.spring.autoconfigure.datastore;
 
-import java.nio.file.Paths;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.testing.LocalDatastoreHelper;
-import org.junit.Test;
-
+import java.nio.file.Paths;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 /**
  * Tests for Datastore Emulator auto-config.
  *
- * @author Lucas Soares
- *
  * @since 1.2
  */
-public class GcpDatastoreEmulatorAutoConfigurationTests {
-	@Test
-	public void testDatastoreOptionsCorrectlySet() {
-		new ApplicationContextRunner()
-				.withConfiguration(AutoConfigurations.of(
-						GcpDatastoreEmulatorAutoConfiguration.class))
-				.withPropertyValues(
-						"spring.cloud.gcp.datastore.emulator.port=8182",
-						"spring.cloud.gcp.datastore.emulator.enabled=true",
-						"spring.cloud.gcp.datastore.emulator.consistency=0.8",
-						"spring.cloud.gcp.datastore.emulator.dataDir=/usr/local/datastore",
-						"spring.cloud.gcp.datastore.emulator.storeOnDisk=false")
-				.run(context -> {
-					LocalDatastoreHelper helper = context.getBean(LocalDatastoreHelper.class);
-					DatastoreOptions datastoreOptions = helper.getOptions();
-					assertThat(datastoreOptions.getHost()).isEqualTo("localhost:8182");
-					assertThat(helper.getConsistency()).isEqualTo(0.8D);
-					assertThat(helper.getGcdPath()).isEqualTo(Paths.get("/usr/local/datastore"));
-					assertThat(helper.isStoreOnDisk()).isFalse();
-				});
-	}
+class GcpDatastoreEmulatorAutoConfigurationTests {
+  @Test
+  void testDatastoreOptionsCorrectlySet() {
+    new ApplicationContextRunner()
+        .withConfiguration(AutoConfigurations.of(GcpDatastoreEmulatorAutoConfiguration.class))
+        .withPropertyValues(
+            "spring.cloud.gcp.datastore.emulator.port=8182",
+            "spring.cloud.gcp.datastore.emulator.enabled=true",
+            "spring.cloud.gcp.datastore.emulator.consistency=0.8",
+            "spring.cloud.gcp.datastore.emulator.dataDir=/usr/local/datastore",
+            "spring.cloud.gcp.datastore.emulator.storeOnDisk=false")
+        .run(
+            context -> {
+              LocalDatastoreHelper helper = context.getBean(LocalDatastoreHelper.class);
+              DatastoreOptions datastoreOptions = helper.getOptions();
+              assertThat(datastoreOptions.getHost()).isEqualTo("localhost:8182");
+              assertThat(helper.getConsistency()).isEqualTo(0.8D);
+              assertThat(helper.getGcdPath()).isEqualTo(Paths.get("/usr/local/datastore"));
+              assertThat(helper.isStoreOnDisk()).isFalse();
+            });
+  }
 
-	@Test
-	public void testDisabledAutoEmulator() {
-		new ApplicationContextRunner()
-				.withConfiguration(AutoConfigurations.of(
-						GcpDatastoreEmulatorAutoConfiguration.class))
-				.run(context -> assertThatExceptionOfType(NoSuchBeanDefinitionException.class)
-						.isThrownBy(() -> context.getBean(LocalDatastoreHelper.class)));
-	}
+  @Test
+  void testDisabledAutoEmulator() {
+    new ApplicationContextRunner()
+        .withConfiguration(AutoConfigurations.of(GcpDatastoreEmulatorAutoConfiguration.class))
+        .run(
+            context ->
+                assertThatExceptionOfType(NoSuchBeanDefinitionException.class)
+                    .isThrownBy(() -> context.getBean(LocalDatastoreHelper.class)));
+  }
 }

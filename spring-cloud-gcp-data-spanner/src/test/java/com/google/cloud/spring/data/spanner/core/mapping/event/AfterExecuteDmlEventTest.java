@@ -16,44 +16,39 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping.event;
 
-import com.google.cloud.spanner.Statement;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Tests for DML after-execution event.
- *
- * @author Chengyuan Zhao
- */
-public class AfterExecuteDmlEventTest {
+import com.google.cloud.spanner.Statement;
+import org.junit.jupiter.api.Test;
 
-	@Test
-	public void equalsHashcodeTest() {
-		AfterExecuteDmlEvent afterExecuteDmlEventa1 = new AfterExecuteDmlEvent(Statement.of("a"), 1L);
-		AfterExecuteDmlEvent afterExecuteDmlEventa1x = new AfterExecuteDmlEvent(Statement.of("a"), 1L);
+/** Tests for DML after-execution event. */
+class AfterExecuteDmlEventTest {
 
-		AfterExecuteDmlEvent afterExecuteDmlEventa2 = new AfterExecuteDmlEvent(Statement.of("a"), 2L);
+  @Test
+  void equalsHashcodeTest() {
+    AfterExecuteDmlEvent afterExecuteDmlEventa1 = new AfterExecuteDmlEvent(Statement.of("a"), 1L);
+    AfterExecuteDmlEvent afterExecuteDmlEventa1x = new AfterExecuteDmlEvent(Statement.of("a"), 1L);
 
-		AfterExecuteDmlEvent afterExecuteDmlEventb1 = new AfterExecuteDmlEvent(Statement.of("b"), 1L);
-		AfterExecuteDmlEvent afterExecuteDmlEventb2 = new AfterExecuteDmlEvent(Statement.of("b"), 2L);
+    AfterExecuteDmlEvent afterExecuteDmlEventa2 = new AfterExecuteDmlEvent(Statement.of("a"), 2L);
 
-		assertThat(afterExecuteDmlEventa1)
-				.isNotNull()
-				.isEqualTo(afterExecuteDmlEventa1)
-				.isEqualTo(afterExecuteDmlEventa1x)
-				.isNotEqualTo(afterExecuteDmlEventa2)
-				.isNotEqualTo(afterExecuteDmlEventb2)
-				.isNotEqualTo(new Object())
-				.hasSameHashCodeAs(afterExecuteDmlEventa1)
-				.hasSameHashCodeAs(afterExecuteDmlEventa1x);
+    AfterExecuteDmlEvent afterExecuteDmlEventb1 = new AfterExecuteDmlEvent(Statement.of("b"), 1L);
+    AfterExecuteDmlEvent afterExecuteDmlEventb2 = new AfterExecuteDmlEvent(Statement.of("b"), 2L);
 
-		assertThat(afterExecuteDmlEventa1.hashCode())
-				.isNotEqualTo(afterExecuteDmlEventa2.hashCode())
-				.isNotEqualTo(afterExecuteDmlEventb2.hashCode());
+    assertThat(afterExecuteDmlEventa1)
+        .isNotNull()
+        .isEqualTo(afterExecuteDmlEventa1)
+        .isEqualTo(afterExecuteDmlEventa1x)
+        .isNotEqualTo(afterExecuteDmlEventa2)
+        .isNotEqualTo(afterExecuteDmlEventb2)
+        .isNotEqualTo(new Object())
+        .hasSameHashCodeAs(afterExecuteDmlEventa1)
+        .hasSameHashCodeAs(afterExecuteDmlEventa1x);
 
-		assertThat(afterExecuteDmlEventb1).isNotEqualTo(afterExecuteDmlEventb2);
-		assertThat(afterExecuteDmlEventb1.hashCode()).isNotEqualTo(afterExecuteDmlEventb2.hashCode());
-	}
+    assertThat(afterExecuteDmlEventa1.hashCode())
+        .isNotEqualTo(afterExecuteDmlEventa2.hashCode())
+        .isNotEqualTo(afterExecuteDmlEventb2.hashCode());
 
+    assertThat(afterExecuteDmlEventb1).isNotEqualTo(afterExecuteDmlEventb2);
+    assertThat(afterExecuteDmlEventb1.hashCode()).isNotEqualTo(afterExecuteDmlEventb2.hashCode());
+  }
 }

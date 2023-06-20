@@ -16,11 +16,9 @@
 
 package com.google.cloud.spring.bigquery.integration.outbound;
 
-import java.io.File;
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import static com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.Field;
@@ -34,12 +32,16 @@ import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableResult;
 import com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration;
 import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import java.io.File;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
@@ -48,157 +50,149 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.concurrent.ListenableFuture;
 
-import static com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
-
-
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.bigquery", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = BigQueryTestConfiguration.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-public class BigQueryFileMessageHandlerIntegrationTests {
+class BigQueryFileMessageHandlerIntegrationTests {
 
-	private static final String TABLE_NAME = "test_table";
+  private static final String TABLE_NAME = "test_table";
 
-	@Autowired
-	private ThreadPoolTaskScheduler taskScheduler;
+  @Autowired private ThreadPoolTaskScheduler taskScheduler;
 
-	@Autowired
-	private BigQuery bigquery;
+  @Autowired private BigQuery bigquery;
 
-	@Autowired
-	private BigQueryFileMessageHandler messageHandler;
+  @Autowired private BigQueryFileMessageHandler messageHandler;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"BigQuery integration tests are disabled. "
-						+ "Please use '-Dit.bigquery=true' to enable them.",
-				System.getProperty("it.bigquery"), is("true"));
-	}
+  @BeforeEach
+  @AfterEach
+  void setup() {
+    // Clear the previous dataset before beginning the test.
+    this.bigquery.delete(TableId.of(DATASET_NAME, TABLE_NAME));
+  }
 
-	@Before
-	@After
-	public void setup() {
-		// Clear the previous dataset before beginning the test.
-		this.bigquery.delete(TableId.of(DATASET_NAME, TABLE_NAME));
-	}
+  @Test
+  void testLoadFileWithSchema() throws InterruptedException, ExecutionException {
+    Schema schema =
+        Schema.of(
+            Field.newBuilder("CountyId", StandardSQLTypeName.STRING).setMode(Mode.NULLABLE).build(),
+            Field.newBuilder("State", StandardSQLTypeName.STRING).setMode(Mode.NULLABLE).build(),
+            Field.newBuilder("County", StandardSQLTypeName.STRING).setMode(Mode.NULLABLE).build());
 
-	@Test
-	public void testLoadFileWithSchema() throws InterruptedException, ExecutionException {
-		Schema schema = Schema.of(
-				Field.newBuilder("CountyId", StandardSQLTypeName.STRING).setMode(Mode.NULLABLE).build(),
-				Field.newBuilder("State", StandardSQLTypeName.STRING).setMode(Mode.NULLABLE).build(),
-				Field.newBuilder("County", StandardSQLTypeName.STRING).setMode(Mode.NULLABLE).build()
-		);
+    HashMap<String, Object> messageHeaders = new HashMap<>();
+    messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, TABLE_NAME);
+    messageHeaders.put(BigQuerySpringMessageHeaders.FORMAT_OPTIONS, FormatOptions.csv());
+    messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_SCHEMA, schema);
 
-		HashMap<String, Object> messageHeaders = new HashMap<>();
-		messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, TABLE_NAME);
-		messageHeaders.put(BigQuerySpringMessageHeaders.FORMAT_OPTIONS, FormatOptions.csv());
-		messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_SCHEMA, schema);
+    Message<File> message =
+        MessageBuilder.createMessage(
+            new File("src/test/resources/data.csv"), new MessageHeaders(messageHeaders));
 
-		Message<File> message = MessageBuilder.createMessage(
-				new File("src/test/resources/data.csv"),
-				new MessageHeaders(messageHeaders));
+    ListenableFuture<Job> jobFuture =
+        (ListenableFuture<Job>) this.messageHandler.handleRequestMessage(message);
 
-		ListenableFuture<Job> jobFuture =
-				(ListenableFuture<Job>) this.messageHandler.handleRequestMessage(message);
+    // Assert that a BigQuery polling task is scheduled successfully.
+    await()
+        .atMost(Duration.ofSeconds(5))
+        .untilAsserted(
+            () ->
+                assertThat(this.taskScheduler.getScheduledThreadPoolExecutor().getQueue())
+                    .hasSize(1));
+    jobFuture.get();
 
-		// Assert that a BigQuery polling task is scheduled successfully.
-		await().atMost(Duration.ofSeconds(5))
-				.untilAsserted(
-						() -> assertThat(
-								this.taskScheduler.getScheduledThreadPoolExecutor().getQueue()).hasSize(1));
-		jobFuture.get();
+    QueryJobConfiguration queryJobConfiguration =
+        QueryJobConfiguration.newBuilder("SELECT * FROM test_dataset.test_table").build();
+    TableResult result = this.bigquery.query(queryJobConfiguration);
 
-		QueryJobConfiguration queryJobConfiguration = QueryJobConfiguration
-				.newBuilder("SELECT * FROM test_dataset.test_table").build();
-		TableResult result = this.bigquery.query(queryJobConfiguration);
+    assertThat(result.getTotalRows()).isEqualTo(1);
+    assertThat(result.getValues().iterator().next().get("State").getStringValue())
+        .isEqualTo("Alabama");
+    assertThat(result.getSchema()).isEqualTo(schema);
 
-		assertThat(result.getTotalRows()).isEqualTo(1);
-		assertThat(
-				result.getValues().iterator().next().get("State").getStringValue()).isEqualTo("Alabama");
-		assertThat(result.getSchema()).isEqualTo(schema);
+    // This asserts that the BigQuery job polling task is no longer in the scheduler.
+    assertThat(this.taskScheduler.getScheduledThreadPoolExecutor().getQueue()).isEmpty();
+  }
 
-		// This asserts that the BigQuery job polling task is no longer in the scheduler.
-		assertThat(this.taskScheduler.getScheduledThreadPoolExecutor().getQueue()).isEmpty();
-	}
+  @Test
+  void testLoadFile() throws InterruptedException, ExecutionException {
+    HashMap<String, Object> messageHeaders = new HashMap<>();
+    this.messageHandler.setTableName(TABLE_NAME);
+    this.messageHandler.setFormatOptions(FormatOptions.csv());
 
-	@Test
-	public void testLoadFile() throws InterruptedException, ExecutionException {
-		HashMap<String, Object> messageHeaders = new HashMap<>();
-		this.messageHandler.setTableName(TABLE_NAME);
-		this.messageHandler.setFormatOptions(FormatOptions.csv());
+    Message<File> message =
+        MessageBuilder.createMessage(
+            new File("src/test/resources/data.csv"), new MessageHeaders(messageHeaders));
 
-		Message<File> message = MessageBuilder.createMessage(
-				new File("src/test/resources/data.csv"),
-				new MessageHeaders(messageHeaders));
+    ListenableFuture<Job> jobFuture =
+        (ListenableFuture<Job>) this.messageHandler.handleRequestMessage(message);
 
-		ListenableFuture<Job> jobFuture =
-				(ListenableFuture<Job>) this.messageHandler.handleRequestMessage(message);
+    // Assert that a BigQuery polling task is scheduled successfully.
+    await()
+        .atMost(Duration.ofSeconds(5))
+        .untilAsserted(
+            () ->
+                assertThat(this.taskScheduler.getScheduledThreadPoolExecutor().getQueue())
+                    .hasSize(1));
+    jobFuture.get();
 
-		// Assert that a BigQuery polling task is scheduled successfully.
-		await().atMost(Duration.ofSeconds(5))
-				.untilAsserted(
-						() -> assertThat(
-								this.taskScheduler.getScheduledThreadPoolExecutor().getQueue()).hasSize(1));
-		jobFuture.get();
+    QueryJobConfiguration queryJobConfiguration =
+        QueryJobConfiguration.newBuilder("SELECT * FROM test_dataset.test_table").build();
+    TableResult result = this.bigquery.query(queryJobConfiguration);
 
-		QueryJobConfiguration queryJobConfiguration = QueryJobConfiguration
-				.newBuilder("SELECT * FROM test_dataset.test_table").build();
-		TableResult result = this.bigquery.query(queryJobConfiguration);
+    assertThat(result.getTotalRows()).isEqualTo(1);
+    assertThat(result.getValues().iterator().next().get("State").getStringValue())
+        .isEqualTo("Alabama");
 
-		assertThat(result.getTotalRows()).isEqualTo(1);
-		assertThat(
-				result.getValues().iterator().next().get("State").getStringValue()).isEqualTo("Alabama");
+    // This asserts that the BigQuery job polling task is no longer in the scheduler.
+    assertThat(this.taskScheduler.getScheduledThreadPoolExecutor().getQueue()).isEmpty();
+  }
 
-		// This asserts that the BigQuery job polling task is no longer in the scheduler.
-		assertThat(this.taskScheduler.getScheduledThreadPoolExecutor().getQueue()).isEmpty();
-	}
+  @Test
+  void testLoadFile_sync() throws InterruptedException {
+    this.messageHandler.setSync(true);
 
-	@Test
-	public void testLoadFile_sync() throws InterruptedException {
-		this.messageHandler.setSync(true);
+    HashMap<String, Object> messageHeaders = new HashMap<>();
+    messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, TABLE_NAME);
+    messageHeaders.put(BigQuerySpringMessageHeaders.FORMAT_OPTIONS, FormatOptions.csv());
 
-		HashMap<String, Object> messageHeaders = new HashMap<>();
-		messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, TABLE_NAME);
-		messageHeaders.put(BigQuerySpringMessageHeaders.FORMAT_OPTIONS, FormatOptions.csv());
+    Message<File> message =
+        MessageBuilder.createMessage(
+            new File("src/test/resources/data.csv"), new MessageHeaders(messageHeaders));
 
-		Message<File> message = MessageBuilder.createMessage(
-				new File("src/test/resources/data.csv"),
-				new MessageHeaders(messageHeaders));
+    Job job = (Job) this.messageHandler.handleRequestMessage(message);
+    assertThat(job).isNotNull();
 
-		Job job = (Job) this.messageHandler.handleRequestMessage(message);
-		assertThat(job).isNotNull();
+    QueryJobConfiguration queryJobConfiguration =
+        QueryJobConfiguration.newBuilder("SELECT * FROM test_dataset.test_table").build();
+    TableResult result = this.bigquery.query(queryJobConfiguration);
+    assertThat(result.getTotalRows()).isEqualTo(1);
+  }
 
-		QueryJobConfiguration queryJobConfiguration = QueryJobConfiguration
-				.newBuilder("SELECT * FROM test_dataset.test_table").build();
-		TableResult result = this.bigquery.query(queryJobConfiguration);
-		assertThat(result.getTotalRows()).isEqualTo(1);
-	}
+  @Test
+  void testLoadFile_cancel() {
+    HashMap<String, Object> messageHeaders = new HashMap<>();
+    messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, TABLE_NAME);
+    messageHeaders.put(BigQuerySpringMessageHeaders.FORMAT_OPTIONS, FormatOptions.csv());
 
-	@Test
-	public void testLoadFile_cancel() {
-		HashMap<String, Object> messageHeaders = new HashMap<>();
-		messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, TABLE_NAME);
-		messageHeaders.put(BigQuerySpringMessageHeaders.FORMAT_OPTIONS, FormatOptions.csv());
+    Message<File> message =
+        MessageBuilder.createMessage(
+            new File("src/test/resources/data.csv"), new MessageHeaders(messageHeaders));
 
-		Message<File> message = MessageBuilder.createMessage(
-				new File("src/test/resources/data.csv"),
-				new MessageHeaders(messageHeaders));
+    ListenableFuture<?> jobFuture =
+        (ListenableFuture<?>) this.messageHandler.handleRequestMessage(message);
+    assertThat(jobFuture).isNotNull();
+    jobFuture.cancel(true);
 
-		ListenableFuture<?> jobFuture = (ListenableFuture<?>) this.messageHandler.handleRequestMessage(message);
-		assertThat(jobFuture).isNotNull();
-		jobFuture.cancel(true);
-
-		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			// This asserts that the BigQuery job polling task is no longer in the scheduler after cancel.
-			assertThat(this.taskScheduler.getScheduledThreadPoolExecutor().getQueue()).isEmpty();
-		});
-	}
+    await()
+        .atMost(10, TimeUnit.SECONDS)
+        .untilAsserted(
+            () -> {
+              // This asserts that the BigQuery job polling task is no longer in the scheduler after
+              // cancel.
+              assertThat(this.taskScheduler.getScheduledThreadPoolExecutor().getQueue()).isEmpty();
+            });
+  }
 }

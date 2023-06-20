@@ -16,55 +16,53 @@
 
 package com.google.cloud.spring.vision;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import com.google.cloud.storage.Blob;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-public class DocumentOcrResultSetTests {
+import com.google.cloud.storage.Blob;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-	@Test
-	public void testValidateBlobNames() {
-		Blob blob = Mockito.mock(Blob.class);
-		when(blob.getName()).thenReturn("output.json");
+class DocumentOcrResultSetTests {
 
-		List<Blob> blobList = Collections.singletonList(blob);
-		assertThatThrownBy(() -> new DocumentOcrResultSet(blobList))
-				.hasMessageContaining("Cannot create a DocumentOcrResultSet with blob: ")
-				.isInstanceOf(IllegalArgumentException.class);
-	}
+  @Test
+  void testValidateBlobNames() {
+    Blob blob = Mockito.mock(Blob.class);
+    when(blob.getName()).thenReturn("output.json");
 
-	@Test
-	public void testBlobRangeChecks() {
-		Blob blob1 = Mockito.mock(Blob.class);
-		when(blob1.getName()).thenReturn("blob-output-1-to-3.json");
+    List<Blob> blobList = Collections.singletonList(blob);
+    assertThatThrownBy(() -> new DocumentOcrResultSet(blobList))
+        .hasMessageContaining("Cannot create a DocumentOcrResultSet with blob: ")
+        .isInstanceOf(IllegalArgumentException.class);
+  }
 
-		Blob blob2 = Mockito.mock(Blob.class);
-		when(blob2.getName()).thenReturn("blob-output-4-to-6.json");
+  @Test
+  void testBlobRangeChecks() {
+    Blob blob1 = Mockito.mock(Blob.class);
+    when(blob1.getName()).thenReturn("blob-output-1-to-3.json");
 
-		ArrayList<Blob> blobs = new ArrayList<>();
-		blobs.add(blob1);
-		blobs.add(blob2);
+    Blob blob2 = Mockito.mock(Blob.class);
+    when(blob2.getName()).thenReturn("blob-output-4-to-6.json");
 
-		DocumentOcrResultSet documentOcrResultSet = new DocumentOcrResultSet(blobs);
+    ArrayList<Blob> blobs = new ArrayList<>();
+    blobs.add(blob1);
+    blobs.add(blob2);
 
-		assertThat(documentOcrResultSet.getMinPage()).isEqualTo(1);
-		assertThat(documentOcrResultSet.getMaxPage()).isEqualTo(6);
+    DocumentOcrResultSet documentOcrResultSet = new DocumentOcrResultSet(blobs);
 
-		assertThatThrownBy(() -> documentOcrResultSet.getPage(0))
-				.hasMessageContaining("Page number out of bounds")
-				.isInstanceOf(IndexOutOfBoundsException.class);
+    assertThat(documentOcrResultSet.getMinPage()).isEqualTo(1);
+    assertThat(documentOcrResultSet.getMaxPage()).isEqualTo(6);
 
-		assertThatThrownBy(() -> documentOcrResultSet.getPage(8))
-				.hasMessageContaining("Page number out of bounds")
-				.isInstanceOf(IndexOutOfBoundsException.class);
-	}
+    assertThatThrownBy(() -> documentOcrResultSet.getPage(0))
+        .hasMessageContaining("Page number out of bounds")
+        .isInstanceOf(IndexOutOfBoundsException.class);
 
+    assertThatThrownBy(() -> documentOcrResultSet.getPage(8))
+        .hasMessageContaining("Page number out of bounds")
+        .isInstanceOf(IndexOutOfBoundsException.class);
+  }
 }

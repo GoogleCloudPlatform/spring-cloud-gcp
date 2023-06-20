@@ -2,8 +2,13 @@ name: Integration Tests
 
 on:
   push:
-    branches-ignore:
-      - 'dependabot/**'
+    branches:
+      - 'main'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - 'spring-cloud-generator/**'
+      - 'spring-cloud-previews/**'
   workflow_dispatch:
   schedule:
     - cron: '05 8 * * *' # 08:00 UTC every day
@@ -11,7 +16,10 @@ on:
 
 jobs:
   integrationTests:
-    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp'
+    if: |
+      github.actor != 'dependabot[bot]' && ((
+        github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
+      ) || (github.event_name != 'pull_request'))
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -25,7 +33,7 @@ jobs:
           - kms
           - logging
           - metrics
-          - native
+          - multisample
           - kotlin
           - pubsub
           - pubsub-bus
@@ -49,7 +57,7 @@ jobs:
           java-version: 11
       - name: Setup GraalVM
         uses: DeLaGuardo/setup-graalvm@4.0
-        if: matrix.it == 'native'
+        if: matrix.it == 'native' # note that this is no longer in the matrix
         with:
           graalvm: '21.2.0'
           java: 'java11'
@@ -63,7 +71,7 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-unified-${{ steps.date.outputs.date }}
       - name: Setup gcloud
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v0
         with:
           version: latest
           project_id: spring-cloud-gcp-ci

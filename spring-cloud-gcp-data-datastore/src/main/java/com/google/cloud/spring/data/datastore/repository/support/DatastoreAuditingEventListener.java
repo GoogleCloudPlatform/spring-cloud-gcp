@@ -17,31 +17,29 @@
 package com.google.cloud.spring.data.datastore.repository.support;
 
 import com.google.cloud.spring.data.datastore.core.mapping.event.BeforeSaveEvent;
-
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.auditing.AuditingHandler;
 
 /**
  * Auditing event listener that listens for {@code BeforeSaveEvent}.
  *
- * @author Chengyuan Zhao
  * @since 1.2
  */
 public class DatastoreAuditingEventListener implements ApplicationListener<BeforeSaveEvent> {
 
-	private final AuditingHandler handler;
+  private final AuditingHandler handler;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param datastoreAuditingHandler the auditing handler to set auditing properties.
-	 */
-	public DatastoreAuditingEventListener(AuditingHandler datastoreAuditingHandler) {
-		this.handler = datastoreAuditingHandler;
-	}
+  /**
+   * Constructor.
+   *
+   * @param datastoreAuditingHandler the auditing handler to set auditing properties.
+   */
+  public DatastoreAuditingEventListener(AuditingHandler datastoreAuditingHandler) {
+    this.handler = datastoreAuditingHandler;
+  }
 
-	@Override
-	public void onApplicationEvent(BeforeSaveEvent event) {
-		event.getTargetEntities().forEach(this.handler::markModified);
-	}
+  @Override
+  public void onApplicationEvent(BeforeSaveEvent event) {
+    event.getTargetEntities().forEach(this.handler::markModified);
+  }
 }

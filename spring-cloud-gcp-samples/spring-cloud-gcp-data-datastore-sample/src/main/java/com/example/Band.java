@@ -19,36 +19,30 @@ package com.example;
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField;
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-
 import org.springframework.data.annotation.Id;
 
-/**
- * A musical group that {@link Singer}s can claim to be a part of.
- *
- * @author Chengyuan Zhao
- */
+/** A musical group that {@link Singer}s can claim to be a part of. */
 @Entity
 @DiscriminatorField(field = "band_type")
 @DiscriminatorValue("generic_band")
 public class Band {
 
-	@Id
-	protected String name;
+  @Id protected String name;
 
-	public Band(String name) {
-		this.name = name;
-	}
+  public Band(String name) {
+    this.name = name;
+  }
 
-	public String getName() {
-		return this.name;
-	}
+  public String getName() {
+    return this.name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
+  @Override
+  public String toString() {
+    return this.name;
+  }
 }

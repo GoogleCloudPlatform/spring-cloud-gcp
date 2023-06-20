@@ -3,11 +3,11 @@
 
 The https://cloud.google.com/vision/[Google Cloud Vision API] allows users to leverage machine learning algorithms for processing images and documents including: image classification, face detection, text extraction, optical character recognition, and others.
 
-Spring Cloud GCP provides:
+Spring Framework on Google Cloud provides:
 
 * A convenience starter which automatically configures authentication settings and client objects needed to begin using the https://cloud.google.com/vision/[Google Cloud Vision API].
 * `CloudVisionTemplate` which simplifies interactions with the Cloud Vision API.
-** Allows you to easily send images to the API as Spring Resources.
+** Allows you to easily send images, PDF, TIFF and GIF documents to the API as Spring Resources.
 ** Offers convenience methods for common operations, such as classifying content of an image.
 * `DocumentOcrTemplate` which offers convenient methods for running https://cloud.google.com/vision/docs/pdf[optical character recognition (OCR)] on PDF and TIFF documents.
 
@@ -15,7 +15,7 @@ Spring Cloud GCP provides:
 
 To begin using this library, add the `spring-cloud-gcp-starter-vision` artifact to your project.
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
@@ -36,7 +36,7 @@ dependencies {
 
 === Configuration
 
-The following options may be configured with Spring Cloud GCP Vision libraries.
+The following options may be configured with Spring Framework on Google Cloud Vision libraries.
 
 |===========================================================================
 | Name | Description | Required | Default value
@@ -50,7 +50,7 @@ The following options may be configured with Spring Cloud GCP Vision libraries.
 If you are interested in applying optical character recognition (OCR) on documents for your project, you'll need to add both `spring-cloud-gcp-starter-vision` and `spring-cloud-gcp-starter-storage` to your dependencies.
 The storage starter is necessary because the Cloud Vision API will process your documents and write OCR output files all within your Google Cloud Storage buckets.
 
-Maven coordinates using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
@@ -117,6 +117,62 @@ public void processImage() {
   AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(
       imageResource, Type.LABEL_DETECTION);
   System.out.println("Image Classification results: " + response.getLabelAnnotationsList());
+}
+----
+
+=== File Analysis
+
+The `CloudVisionTemplate` allows you to easily analyze PDF, TIFF and GIF documents; it provides the following method for interfacing with Cloud Vision:
+
+`public AnnotateFileResponse analyzeFile(Resource fileResource, String mimeType, Feature.Type... featureTypes)`
+
+**Parameters:**
+
+- `Resource fileResource` refers to the Spring Resource of the PDF, TIFF or GIF object you wish to analyze.
+Documents with more than 5 pages are not supported.
+
+- `String mimeType` is the mime type of the fileResource.
+Currently, only `application/pdf`, `image/tiff` and `image/gif` are supported.
+
+- `Feature.Type... featureTypes` refers to a var-arg array of Cloud Vision Features to extract from the document.
+A feature refers to a kind of image analysis one wishes to perform on a document, such as label detection, OCR recognition, facial detection, etc.
+One may specify multiple features to analyze within one request.
+A full list of Cloud Vision Features is provided in the https://cloud.google.com/vision/docs/features[Cloud Vision Feature docs].
+
+**Returns:**
+
+- https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#google.cloud.vision.v1.AnnotateFileResponse[`AnnotateFileResponse`] contains the results of all the feature analyses that were specified in the request.
+For each page of the analysed document the response will contain an `AnnotateImageResponse` object which you can retrieve using `annotateFileResponse.getResponsesList()`.
+For each feature type that you provide in the request, `AnnotateImageResponse` provides a getter method to get the result of that feature analysis.
+For example, if you analysed an PDF using the `DOCUMENT_TEXT_DETECTION` feature, you would retrieve the results from the response using `annotateImageResponse.getFullTextAnnotation().getText()`.
++
+`AnnotateFileResponse` is provided by the Google Cloud Vision libraries; please consult the https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#google.cloud.vision.v1.AnnotateFileResponse[RPC reference] or https://googleapis.dev/java/google-cloud-vision/latest/index.html?com/google/cloud/vision/v1/AnnotateFileResponse.html[Javadoc] for more details.
+Additionally, you may consult the https://cloud.google.com/vision/docs/[Cloud Vision docs] to familiarize yourself with the concepts and features of the API.
+
+==== Running Text Detection Example
+
+https://cloud.google.com/vision/docs/file-small-batch[Detect text in files] refers to extracting text from small document such as PDF or TIFF.
+Below is a code sample of how this is done using the Cloud Vision Spring Template.
+
+[source,java]
+----
+@Autowired
+private ResourceLoader resourceLoader;
+
+@Autowired
+private CloudVisionTemplate cloudVisionTemplate;
+
+public void processPdf() {
+  Resource imageResource = this.resourceLoader.getResource("my_file.pdf");
+  AnnotateFileResponse response =
+    this.cloudVisionTemplate.analyzeFile(
+        imageResource, "application/pdf", Type.DOCUMENT_TEXT_DETECTION);
+
+  response
+    .getResponsesList()
+    .forEach(
+        annotateImageResponse ->
+            System.out.println(annotateImageResponse.getFullTextAnnotation().getText()));
 }
 ----
 
@@ -207,7 +263,7 @@ public void parseSingleOutputFile() {
 
 === Sample
 
-Samples are provided to show example usages of Spring Cloud GCP with Google Cloud Vision.
+Samples are provided to show example usages of Spring Framework on Google Cloud with Google Cloud Vision.
 
 * The https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-vision-api-sample[Image Labeling Sample] shows you how to use image labelling in your Spring application.
 The application generates labels describing the content inside the images you specify in the application.

@@ -17,69 +17,63 @@
 package com.google.cloud.spring.autoconfigure.sql;
 
 import com.google.cloud.spring.core.Credentials;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * Google Cloud SQL properties.
- *
- * @author João André Martins
- * @author Øystein Urdahl Hardeng
- */
+/** Google Cloud SQL properties. */
 @ConfigurationProperties("spring.cloud.gcp.sql")
 public class GcpCloudSqlProperties {
-	/** Name of the database in the Cloud SQL instance. */
-	private String databaseName;
+  /** Name of the database in the Cloud SQL instance. */
+  private String databaseName;
 
-	/** Cloud SQL instance connection name. [GCP_PROJECT_ID]:[INSTANCE_REGION]:[INSTANCE_NAME]. */
-	private String instanceConnectionName;
+  /** Cloud SQL instance connection name. [GCP_PROJECT_ID]:[INSTANCE_REGION]:[INSTANCE_NAME]. */
+  private String instanceConnectionName;
 
-	/** A comma delimited list of preferred IP types for connecting to the Cloud SQL instance. */
-	private String ipTypes;
+  /** A comma delimited list of preferred IP types for connecting to the Cloud SQL instance. */
+  private String ipTypes;
 
-	/** Overrides the GCP OAuth2 credentials specified in the Core module. */
-	private Credentials credentials = new Credentials();
+  /** Overrides the GCP OAuth2 credentials specified in the Core module. */
+  private Credentials credentials = new Credentials();
 
-	/** Specifies whether to enable IAM database authentication (PostgreSQL only). */
-	private boolean enableIamAuth;
+  /** Specifies whether to enable IAM database authentication (PostgreSQL only). */
+  private boolean enableIamAuth;
 
-	public String getDatabaseName() {
-		return this.databaseName;
-	}
+  public String getDatabaseName() {
+    return this.databaseName;
+  }
 
-	public void setDatabaseName(String databaseName) {
-		this.databaseName = databaseName;
-	}
+  public void setDatabaseName(String databaseName) {
+    this.databaseName = databaseName;
+  }
 
-	public String getInstanceConnectionName() {
-		return this.instanceConnectionName;
-	}
+  public String getInstanceConnectionName() {
+    return this.instanceConnectionName;
+  }
 
-	public void setInstanceConnectionName(String instanceConnectionName) {
-		this.instanceConnectionName = instanceConnectionName;
-	}
+  public void setInstanceConnectionName(String instanceConnectionName) {
+    this.instanceConnectionName = instanceConnectionName;
+  }
 
-	public String getIpTypes() {
-		return this.ipTypes;
-	}
+  public String getIpTypes() {
+    return this.ipTypes;
+  }
 
-	public void setIpTypes(String ipTypes) {
-		this.ipTypes = ipTypes;
-	}
+  public void setIpTypes(String ipTypes) {
+    this.ipTypes = ipTypes;
+  }
 
-	public Credentials getCredentials() {
-		return this.credentials;
-	}
+  public Credentials getCredentials() {
+    return this.credentials;
+  }
 
-	public void setCredentials(Credentials credentials) {
-		this.credentials = credentials;
-	}
+  public void setCredentials(Credentials credentials) {
+    this.credentials = credentials;
+  }
 
-	public boolean isEnableIamAuth() {
-		return enableIamAuth;
-	}
+  public boolean isEnableIamAuth() {
+    return enableIamAuth;
+  }
 
-	public void setEnableIamAuth(boolean enableIamAuth) {
-		this.enableIamAuth = enableIamAuth;
-	}
+  public void setEnableIamAuth(boolean enableIamAuth) {
+    this.enableIamAuth = enableIamAuth;
+  }
 }

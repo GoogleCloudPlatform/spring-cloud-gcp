@@ -16,23 +16,8 @@
 
 package com.google.cloud.spring.data.datastore.core;
 
-import com.google.cloud.datastore.Datastore;
-import com.google.cloud.datastore.DatastoreException;
-import com.google.cloud.datastore.Transaction;
-import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager.Tx;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionSystemException;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.transaction.support.DefaultTransactionStatus;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -40,123 +25,127 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Tests for the Datastore transactional annotation manager.
- *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
- */
-public class DatastoreTransactionManagerTests {
+import com.google.cloud.datastore.Datastore;
+import com.google.cloud.datastore.DatastoreException;
+import com.google.cloud.datastore.Transaction;
+import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager.Tx;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionSystemException;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.DefaultTransactionStatus;
 
-	@Mock
-	Datastore datastore;
+/** Tests for the Datastore transactional annotation manager. */
+class DatastoreTransactionManagerTests {
 
-	@Mock
-	Transaction transaction;
+  @Mock Datastore datastore;
 
-	/**
-	 * Used to check exception types and messages.
-	 */
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+  @Mock Transaction transaction;
 
-	private Tx tx;
+  private Tx tx;
 
-	private DatastoreTransactionManager manager;
+  private DatastoreTransactionManager manager;
 
-	private DefaultTransactionStatus status = mock(DefaultTransactionStatus.class);
+  private DefaultTransactionStatus status = mock(DefaultTransactionStatus.class);
 
-	@Before
-	public void initMocks() {
-		MockitoAnnotations.initMocks(this);
+  @BeforeEach
+  void initMocks() {
+    MockitoAnnotations.initMocks(this);
 
-		this.manager = new DatastoreTransactionManager(() -> datastore);
-		this.tx = (Tx) manager.doGetTransaction();
+    this.manager = new DatastoreTransactionManager(() -> datastore);
+    this.tx = (Tx) manager.doGetTransaction();
 
-		when(this.datastore.newTransaction()).thenReturn(this.transaction);
-		when(this.status.getTransaction()).thenReturn(this.tx);
+    when(this.datastore.newTransaction()).thenReturn(this.transaction);
+    when(this.status.getTransaction()).thenReturn(this.tx);
+  }
 
-	}
+  @Test
+  void testDoGetTransactionActive() {
+    this.manager.doBegin(this.tx, TransactionDefinition.withDefaults());
+    when(this.transaction.isActive()).thenReturn(true);
+    this.tx.setTransaction(this.transaction);
+    assertThat(this.manager.doGetTransaction()).isSameAs(this.tx);
+  }
 
-	@Test
-	public void testDoGetTransactionActive() {
-		this.manager.doBegin(this.tx, TransactionDefinition.withDefaults());
-		when(this.transaction.isActive()).thenReturn(true);
-		this.tx.setTransaction(this.transaction);
-		assertThat(this.manager.doGetTransaction()).isSameAs(this.tx);
-	}
+  @Test
+  void testDoGetTransactionNotActive() {
+    this.manager.doBegin(this.tx, TransactionDefinition.withDefaults());
+    when(this.transaction.isActive()).thenReturn(false);
+    this.tx.setTransaction(this.transaction);
+    assertThat(this.manager.doGetTransaction()).isNotSameAs(this.tx);
+  }
 
-	@Test
-	public void testDoGetTransactionNotActive() {
-		this.manager.doBegin(this.tx, TransactionDefinition.withDefaults());
-		when(this.transaction.isActive()).thenReturn(false);
-		this.tx.setTransaction(this.transaction);
-		assertThat(this.manager.doGetTransaction()).isNotSameAs(this.tx);
-	}
+  @Test
+  void testDoGetTransactionNoTransaction() {
+    assertThat(this.manager.doGetTransaction()).isNotSameAs(this.tx);
+  }
 
-	@Test
-	public void testDoGetTransactionNoTransaction() {
-		assertThat(this.manager.doGetTransaction()).isNotSameAs(this.tx);
-	}
+  @Test
+  void testDoBegin() {
+    TransactionDefinition definition = new DefaultTransactionDefinition();
+    this.manager.doBegin(this.tx, definition);
+    verify(this.datastore, times(1)).newTransaction();
+  }
 
-	@Test
-	public void testDoBegin() {
-		TransactionDefinition definition = new DefaultTransactionDefinition();
-		this.manager.doBegin(this.tx, definition);
-		verify(this.datastore, times(1)).newTransaction();
-	}
+  @Test
+  void testDoCommit() {
+    when(this.transaction.isActive()).thenReturn(true);
+    this.tx.setTransaction(this.transaction);
+    this.manager.doCommit(this.status);
+    verify(this.transaction, times(1)).commit();
+  }
 
-	@Test
-	public void testDoCommit() {
-		when(this.transaction.isActive()).thenReturn(true);
-		this.tx.setTransaction(this.transaction);
-		this.manager.doCommit(this.status);
-		verify(this.transaction, times(1)).commit();
-	}
+  @Test
+  void testDoCommitFailure() {
 
-	@Test
-	public void testDoCommitFailure() {
-		this.expectedException.expect(TransactionSystemException.class);
-		this.expectedException.expectMessage("Cloud Datastore transaction failed to commit.; " +
-				"nested exception is com.google.cloud.datastore.DatastoreException: ");
-		when(this.transaction.isActive()).thenReturn(true);
-		this.tx.setTransaction(this.transaction);
-		when(this.transaction.commit()).thenThrow(new DatastoreException(0, "", ""));
-		this.manager.doCommit(this.status);
-	}
+    when(this.transaction.isActive()).thenReturn(true);
+    when(this.transaction.commit()).thenThrow(new DatastoreException(0, "", ""));
+    this.tx.setTransaction(this.transaction);
 
-	@Test
-	public void testDoCommitNotActive() {
-		when(this.transaction.isActive()).thenReturn(false);
-		this.tx.setTransaction(this.transaction);
-		this.manager.doCommit(this.status);
-		verify(this.transaction, never()).commit();
-	}
+    assertThatThrownBy(() -> this.manager.doCommit(this.status))
+            .isInstanceOf(TransactionSystemException.class)
+            .hasMessage("Cloud Datastore transaction failed to commit.; "
+                    + "nested exception is com.google.cloud.datastore.DatastoreException: ");
+  }
 
-	@Test
-	public void testDoRollback() {
-		when(this.transaction.isActive()).thenReturn(true);
-		this.tx.setTransaction(this.transaction);
-		this.manager.doRollback(this.status);
-		verify(this.transaction, times(1)).rollback();
-	}
+  @Test
+  void testDoCommitNotActive() {
+    when(this.transaction.isActive()).thenReturn(false);
+    this.tx.setTransaction(this.transaction);
+    this.manager.doCommit(this.status);
+    verify(this.transaction, never()).commit();
+  }
 
-	@Test
-	public void testDoRollbackFailure() {
-		this.expectedException.expect(TransactionSystemException.class);
-		this.expectedException.expectMessage("Cloud Datastore transaction failed to rollback.; " +
-				"nested exception is com.google.cloud.datastore.DatastoreException: ");
-		when(this.transaction.isActive()).thenReturn(true);
-		this.tx.setTransaction(this.transaction);
-		doThrow(new DatastoreException(0, "", "")).when(this.transaction).rollback();
-		this.manager.doRollback(this.status);
-	}
+  @Test
+  void testDoRollback() {
+    when(this.transaction.isActive()).thenReturn(true);
+    this.tx.setTransaction(this.transaction);
+    this.manager.doRollback(this.status);
+    verify(this.transaction, times(1)).rollback();
+  }
 
-	@Test
-	public void testDoRollbackNotActive() {
-		when(this.transaction.isActive()).thenReturn(false);
-		this.tx.setTransaction(this.transaction);
-		this.manager.doRollback(this.status);
-		verify(this.transaction, never()).rollback();
-	}
+  @Test
+  void testDoRollbackFailure() {
+
+    when(this.transaction.isActive()).thenReturn(true);
+    doThrow(new DatastoreException(0, "", "")).when(this.transaction).rollback();
+    this.tx.setTransaction(this.transaction);
+
+    assertThatThrownBy(() -> this.manager.doRollback(this.status))
+            .isInstanceOf(TransactionSystemException.class)
+            .hasMessage("Cloud Datastore transaction failed to rollback.; "
+                    + "nested exception is com.google.cloud.datastore.DatastoreException: ");
+  }
+
+  @Test
+  void testDoRollbackNotActive() {
+    when(this.transaction.isActive()).thenReturn(false);
+    this.tx.setTransaction(this.transaction);
+    this.manager.doRollback(this.status);
+    verify(this.transaction, never()).rollback();
+  }
 }

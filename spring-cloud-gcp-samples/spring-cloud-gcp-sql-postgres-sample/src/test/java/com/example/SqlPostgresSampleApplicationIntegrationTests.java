@@ -16,13 +16,13 @@
 
 package com.example;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
-
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -31,56 +31,44 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
+/** Simple integration test to verify the SQL sample application with Postgres. */
+// Please use "-Dit.cloudsql=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(
+    webEnvironment = WebEnvironment.RANDOM_PORT,
+    classes = {SqlApplication.class},
+    properties = {
+      "spring.cloud.gcp.sql.database-name=code_samples_test_db",
+      "spring.cloud.gcp.sql.instance-connection-name=spring-cloud-gcp-ci:us-central1:testpostgres",
+      "spring.datasource.username=postgres",
+      "spring.datasource.password=test",
+      "spring.datasource.continue-on-error=true",
+      "spring.sql.init.mode=always"
+    })
+class SqlPostgresSampleApplicationIntegrationTests {
 
-/**
- * Simple integration test to verify the SQL sample application with Postgres.
- *
- * @author Daniel Zou
- */
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { SqlApplication.class }, properties = {
-		"spring.cloud.gcp.sql.database-name=code_samples_test_db",
-		"spring.cloud.gcp.sql.instance-connection-name=spring-cloud-gcp-ci:us-central1:testpostgres",
-		"spring.datasource.username=postgres",
-		"spring.datasource.password=test",
-		"spring.datasource.continue-on-error=true",
-		"spring.datasource.initialization-mode=always"
-})
-public class SqlPostgresSampleApplicationIntegrationTests {
+  @Autowired private TestRestTemplate testRestTemplate;
 
-	@Autowired
-	private TestRestTemplate testRestTemplate;
+  @Autowired private JdbcTemplate jdbcTemplate;
 
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
+  @AfterEach
+  void clearTable() {
+    this.jdbcTemplate.execute("DROP TABLE IF EXISTS users");
+  }
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"SQL sample integration tests are disabled. Please use '-Dit.cloudsql=true' "
-						+ "to enable them. ",
-				System.getProperty("it.cloudsql"), is("true"));
-	}
+  @Test
+  void testSqlRowsAccess() {
+    ResponseEntity<List<String>> result =
+        this.testRestTemplate.exchange(
+            "/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
 
-	@After
-	public void clearTable() {
-		this.jdbcTemplate.execute("DROP TABLE IF EXISTS users");
-	}
-
-	@Test
-	public void testSqlRowsAccess() {
-		ResponseEntity<List<String>> result = this.testRestTemplate.exchange(
-				"/getTuples", HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {
-				});
-
-		assertThat(result.getBody()).containsExactlyInAnyOrder(
-				"[luisao@example.com, Anderson, Silva]",
-				"[jonas@example.com, Jonas, Goncalves]",
-				"[fejsa@example.com, Ljubomir, Fejsa]");
-	}
+    assertThat(result.getBody())
+        .containsExactlyInAnyOrder(
+            "[luisao@example.com, Anderson, Silva]",
+            "[jonas@example.com, Jonas, Goncalves]",
+            "[fejsa@example.com, Ljubomir, Fejsa]");
+  }
 }

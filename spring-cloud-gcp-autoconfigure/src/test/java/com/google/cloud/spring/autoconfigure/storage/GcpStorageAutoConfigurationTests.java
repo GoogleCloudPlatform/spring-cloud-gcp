@@ -16,7 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.storage;
 
-import java.io.IOException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
@@ -25,8 +27,8 @@ import com.google.cloud.spring.storage.GoogleStorageResource;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Storage;
-import org.junit.Test;
-
+import java.io.IOException;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -34,85 +36,77 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+/** Config for Storage auto config tests. */
+class GcpStorageAutoConfigurationTests {
 
-/**
- * Config for Storage auto config tests.
- *
- * @author Artem Bilan
- * @author Elena Felder
- */
-public class GcpStorageAutoConfigurationTests {
+  private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
 
-	private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
+  private ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(AutoConfigurations.of(GcpStorageAutoConfiguration.class))
+          .withPropertyValues("spring.cloud.gcp.storage.project-id=" + PROJECT_NAME)
+          .withUserConfiguration(TestConfiguration.class);
 
-	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(GcpStorageAutoConfiguration.class))
-			.withPropertyValues("spring.cloud.gcp.storage.project-id=" + PROJECT_NAME)
-			.withUserConfiguration(TestConfiguration.class);
+  @Test
+  void testValidObject() throws Exception {
+    this.contextRunner.run(
+        context -> {
+          Resource resource = context.getBean("mockResource", Resource.class);
+          assertThat(resource.contentLength()).isEqualTo(4096);
+        });
+  }
 
-	@Test
-	public void testValidObject() throws Exception {
-		this.contextRunner.run(context -> {
-			Resource resource = context.getBean("mockResource", Resource.class);
-			assertThat(resource.contentLength()).isEqualTo(4096);
-		});
-	}
+  @Test
+  void testAutoCreateFilesTrueByDefault() throws IOException {
+    this.contextRunner.run(
+        context -> {
+          Resource resource = context.getBean("mockResource", Resource.class);
+          assertThat(((GoogleStorageResource) resource).isAutoCreateFiles()).isTrue();
+        });
+  }
 
-	@Test
-	public void testAutoCreateFilesTrueByDefault() throws IOException {
-		this.contextRunner
-			.run(context -> {
-				Resource resource = context.getBean("mockResource", Resource.class);
-				assertThat(((GoogleStorageResource) resource).isAutoCreateFiles()).isTrue();
-			});
-	}
+  @Test
+  void testAutoCreateFilesRespectsProperty() throws IOException {
 
-	@Test
-	public void testAutoCreateFilesRespectsProperty() throws IOException {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.storage.auto-create-files=false")
+        .run(
+            context -> {
+              Resource resource = context.getBean("mockResource", Resource.class);
+              assertThat(((GoogleStorageResource) resource).isAutoCreateFiles()).isFalse();
+            });
+  }
 
-		this.contextRunner
-			.withPropertyValues("spring.cloud.gcp.storage.auto-create-files=false")
-			.run(context -> {
-				Resource resource = context.getBean("mockResource", Resource.class);
-				assertThat(((GoogleStorageResource) resource).isAutoCreateFiles()).isFalse();
-			});
+  @Configuration
+  static class TestConfiguration {
 
-	}
+    @Value("gs://test-spring/images/spring.png")
+    private Resource remoteResource;
 
-	@Configuration
-	static class TestConfiguration {
+    @Bean(name = "mockResource")
+    public Resource getResource() throws IOException {
+      return this.remoteResource;
+    }
 
-		@Value("gs://test-spring/images/spring.png")
-		private Resource remoteResource;
+    @Bean
+    public static Storage mockStorage() throws Exception {
+      Storage storage = mock(Storage.class);
+      BlobId validBlob = BlobId.of("test-spring", "images/spring.png");
+      Blob mockedBlob = mock(Blob.class);
+      when(mockedBlob.exists()).thenReturn(true);
+      when(mockedBlob.getSize()).thenReturn(4096L);
+      when(storage.get(validBlob)).thenReturn(mockedBlob);
+      return storage;
+    }
 
-		@Bean(name = "mockResource")
-		public Resource getResource() throws IOException {
-			return this.remoteResource;
-		}
+    @Bean
+    public static CredentialsProvider googleCredentials() {
+      return () -> mock(Credentials.class);
+    }
 
-		@Bean
-		public static Storage mockStorage() throws Exception {
-			Storage storage = mock(Storage.class);
-			BlobId validBlob = BlobId.of("test-spring", "images/spring.png");
-			Blob mockedBlob = mock(Blob.class);
-			when(mockedBlob.exists()).thenReturn(true);
-			when(mockedBlob.getSize()).thenReturn(4096L);
-			when(storage.get(validBlob)).thenReturn(mockedBlob);
-			return storage;
-		}
-
-		@Bean
-		public static CredentialsProvider googleCredentials() {
-			return () -> mock(Credentials.class);
-		}
-
-		@Bean
-		public static GcpProjectIdProvider gcpProjectIdProvider() {
-			return () -> "default-project";
-		}
-	}
-
+    @Bean
+    public static GcpProjectIdProvider gcpProjectIdProvider() {
+      return () -> "default-project";
+    }
+  }
 }

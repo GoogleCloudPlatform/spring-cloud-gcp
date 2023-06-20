@@ -16,10 +16,8 @@
 
 package com.google.cloud.spring.bigquery.core;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
+import static com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.Field;
@@ -31,131 +29,156 @@ import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableResult;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.concurrent.ListenableFuture;
-
-import static com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration.DATASET_NAME;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Integration tests for BigQuery.
  *
- * @author Daniel Zou
  * @since 1.2
  */
-@RunWith(SpringRunner.class)
+// Please create a table "test_dataset" in BigQuery to run the tests successfully
+@EnabledIfSystemProperty(named = "it.bigquery", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = BigQueryTestConfiguration.class)
-public class BigQueryTemplateIntegrationTests {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class BigQueryTemplateIntegrationTests {
 
-	private static final String SELECT_FORMAT = "SELECT * FROM %s";
+  private static final String SELECT_FORMAT = "SELECT * FROM %s";
 
-	@Autowired
-	BigQuery bigQuery;
+  @Autowired BigQuery bigQuery;
 
-	@Autowired
-	BigQueryTemplate bigQueryTemplate;
+  @Autowired BigQueryTemplate bigQueryTemplate;
 
-	@Value("data.csv")
-	Resource dataFile;
+  @Value("data.csv")
+  Resource dataFile;
 
-	private String tableName;
+  @Value("data.json")
+  Resource jsonDataFile;
 
-	private String selectQuery;
+  private String tableName;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"BigQuery integration tests are disabled. "
-						+ "Please use '-Dit.bigquery=true' to enable them.",
-				System.getProperty("it.bigquery"), is("true"));
-	}
+  private String selectQuery;
 
-	@Before
-	public void generateRandomTableName() {
-		String uuid = UUID.randomUUID().toString().replace("-", "");
-		this.tableName = "template_test_table_" + uuid;
-		this.selectQuery = String.format(SELECT_FORMAT, DATASET_NAME + "." + tableName);
-	}
+  private String selectQueryDesc;
 
-	@After
-	public void cleanupTestEnvironment() {
-		// Delete table after test.
-		this.bigQuery.delete(TableId.of(DATASET_NAME, tableName));
-	}
+  @BeforeEach
+  void generateRandomTableName() {
+    String uuid = UUID.randomUUID().toString().replace("-", "");
+    this.tableName = "template_test_table_" + uuid;
+    this.selectQuery = String.format(SELECT_FORMAT, DATASET_NAME + "." + tableName);
+    this.selectQueryDesc =
+        String.format(
+            SELECT_FORMAT, DATASET_NAME + "." + tableName + " order by SerialNumber desc");
+  }
 
-	@Test
-	public void testLoadFileWithSchema() throws Exception {
-		Schema schema = Schema.of(
-				Field.of("CountyId", StandardSQLTypeName.INT64),
-				Field.of("State", StandardSQLTypeName.STRING),
-				Field.of("County", StandardSQLTypeName.STRING)
-		);
+  @AfterEach
+  void cleanupTestEnvironment() {
+    // Delete table after test.
+    this.bigQuery.delete(TableId.of(DATASET_NAME, tableName));
+  }
 
-		ListenableFuture<Job> bigQueryJobFuture =
-				bigQueryTemplate.writeDataToTable(
-						tableName, dataFile.getInputStream(), FormatOptions.csv(), schema);
+  @Test
+  void testLoadFileWithSchema() throws Exception {
+    Schema schema =
+        Schema.of(
+            Field.of("CountyId", StandardSQLTypeName.INT64),
+            Field.of("State", StandardSQLTypeName.STRING),
+            Field.of("County", StandardSQLTypeName.STRING));
 
-		Job job = bigQueryJobFuture.get();
-		assertThat(job.getStatus().getState()).isEqualTo(JobStatus.State.DONE);
+    ListenableFuture<Job> bigQueryJobFuture =
+        bigQueryTemplate.writeDataToTable(
+            tableName, dataFile.getInputStream(), FormatOptions.csv(), schema);
 
-		QueryJobConfiguration queryJobConfiguration =
-				QueryJobConfiguration.newBuilder(this.selectQuery).build();
-		TableResult result = this.bigQuery.query(queryJobConfiguration);
+    Job job = bigQueryJobFuture.get();
+    assertThat(job.getStatus().getState()).isEqualTo(JobStatus.State.DONE);
 
-		assertThat(result.getTotalRows()).isEqualTo(1);
-		assertThat(
-				result.getValues().iterator().next().get("State").getStringValue()).isEqualTo("Alabama");
-	}
+    QueryJobConfiguration queryJobConfiguration =
+        QueryJobConfiguration.newBuilder(this.selectQuery).build();
+    TableResult result = this.bigQuery.query(queryJobConfiguration);
 
-	@Test
-	public void testLoadFile() throws IOException, ExecutionException, InterruptedException {
-		ListenableFuture<Job> bigQueryJobFuture =
-				bigQueryTemplate.writeDataToTable(
-						this.tableName, dataFile.getInputStream(), FormatOptions.csv());
+    assertThat(result.getTotalRows()).isEqualTo(1);
+    assertThat(result.getValues().iterator().next().get("State").getStringValue())
+        .isEqualTo("Alabama");
+  }
 
-		Job job = bigQueryJobFuture.get();
-		assertThat(job.getStatus().getState()).isEqualTo(JobStatus.State.DONE);
+  @Test
+  void testJsonFileLoadWithSchema() throws Exception {
+    Schema schema =
+        Schema.of(
+            Field.of("CompanyName", StandardSQLTypeName.STRING),
+            Field.of("Description", StandardSQLTypeName.STRING),
+            Field.of("SerialNumber", StandardSQLTypeName.NUMERIC),
+            Field.of("Leave", StandardSQLTypeName.NUMERIC),
+            Field.of("EmpName", StandardSQLTypeName.STRING));
 
-		QueryJobConfiguration queryJobConfiguration =
-				QueryJobConfiguration.newBuilder(this.selectQuery).build();
-		TableResult result = this.bigQuery.query(queryJobConfiguration);
+    ListenableFuture<WriteApiResponse> writeApiFuture =
+        bigQueryTemplate.writeJsonStream(tableName, jsonDataFile.getInputStream(), schema);
 
-		assertThat(result.getTotalRows()).isEqualTo(1);
-		assertThat(
-				result.getValues().iterator().next().get("State").getStringValue()).isEqualTo("Alabama");
-	}
+    WriteApiResponse writeApiResponse =
+        writeApiFuture.get(); // wait for the response to be available
+    assertThat(writeApiResponse.isSuccessful()).isTrue();
 
-	@Test
-	public void testLoadBytes() throws ExecutionException, InterruptedException {
-		byte[] byteArray =
-				"CountyId,State,County\n1001,Alabama,Autauga County\n".getBytes();
-		ByteArrayInputStream byteStream = new ByteArrayInputStream(byteArray);
+    QueryJobConfiguration queryJobConfiguration =
+        QueryJobConfiguration.newBuilder(this.selectQueryDesc).build();
+    TableResult result = this.bigQuery.query(queryJobConfiguration);
 
-		ListenableFuture<Job> bigQueryJobFuture =
-				bigQueryTemplate.writeDataToTable(
-						this.tableName, byteStream, FormatOptions.csv());
+    assertThat(result.getTotalRows()).isEqualTo(1089);
+    assertThat(result.getValues().iterator().next().get("SerialNumber").getLongValue())
+        .isEqualTo(9789386445658L);
+  }
 
-		Job job = bigQueryJobFuture.get();
-		assertThat(job.getStatus().getState()).isEqualTo(JobStatus.State.DONE);
+  @Test
+  void testLoadFile() throws IOException, ExecutionException, InterruptedException {
+    ListenableFuture<Job> bigQueryJobFuture =
+        bigQueryTemplate.writeDataToTable(
+            this.tableName, dataFile.getInputStream(), FormatOptions.csv());
 
-		QueryJobConfiguration queryJobConfiguration =
-				QueryJobConfiguration.newBuilder(this.selectQuery).build();
-		TableResult result = this.bigQuery.query(queryJobConfiguration);
+    Job job = bigQueryJobFuture.get();
+    assertThat(job.getStatus().getState()).isEqualTo(JobStatus.State.DONE);
 
-		assertThat(result.getTotalRows()).isEqualTo(1);
-		assertThat(
-				result.getValues().iterator().next().get("State").getStringValue()).isEqualTo("Alabama");
-	}
+    QueryJobConfiguration queryJobConfiguration =
+        QueryJobConfiguration.newBuilder(this.selectQuery).build();
+    TableResult result = this.bigQuery.query(queryJobConfiguration);
+
+    assertThat(result.getTotalRows()).isEqualTo(1);
+    assertThat(result.getValues().iterator().next().get("State").getStringValue())
+        .isEqualTo("Alabama");
+  }
+
+  @Test
+  void testLoadBytes() throws ExecutionException, InterruptedException {
+    byte[] byteArray = "CountyId,State,County\n1001,Alabama,Autauga County\n".getBytes();
+    ByteArrayInputStream byteStream = new ByteArrayInputStream(byteArray);
+
+    ListenableFuture<Job> bigQueryJobFuture =
+        bigQueryTemplate.writeDataToTable(this.tableName, byteStream, FormatOptions.csv());
+
+    Job job = bigQueryJobFuture.get();
+    assertThat(job.getStatus().getState()).isEqualTo(JobStatus.State.DONE);
+
+    QueryJobConfiguration queryJobConfiguration =
+        QueryJobConfiguration.newBuilder(this.selectQuery).build();
+    TableResult result = this.bigQuery.query(queryJobConfiguration);
+
+    assertThat(result.getTotalRows()).isEqualTo(1);
+    assertThat(result.getValues().iterator().next().get("State").getStringValue())
+        .isEqualTo("Alabama");
+  }
 }

@@ -16,17 +16,16 @@
 
 package com.google.cloud.spring.autoconfigure.sql;
 
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.cloud.spring.core.GcpScope;
+import com.google.cloud.sql.CredentialFactory;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.Collections;
-
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.cloud.spring.core.GcpScope;
-import com.google.cloud.sql.CredentialFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -35,58 +34,49 @@ import org.apache.commons.logging.LogFactory;
  *
  * <p>Since the sockets factory creates an instance of this class by reflection and without any
  * arguments, the credential location must be in a place that this class knows without any context.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
  */
 public class SqlCredentialFactory implements CredentialFactory {
 
-	/**
-	 * the system property name for the location of the credentials.
-	 */
-	public static final String CREDENTIAL_LOCATION_PROPERTY_NAME =
-			"GOOGLE_CLOUD_SQL_CREDS_LOCATION";
+  /** the system property name for the location of the credentials. */
+  public static final String CREDENTIAL_LOCATION_PROPERTY_NAME = "GOOGLE_CLOUD_SQL_CREDS_LOCATION";
 
-	/**
-	 * the system property name for the key name.
-	 */
-	public static final String CREDENTIAL_ENCODED_KEY_PROPERTY_NAME =
-			"GOOGLE_CLOUD_SQL_ENCODED_KEY";
+  /** the system property name for the key name. */
+  public static final String CREDENTIAL_ENCODED_KEY_PROPERTY_NAME = "GOOGLE_CLOUD_SQL_ENCODED_KEY";
 
-	private static final Log LOGGER = LogFactory.getLog(SqlCredentialFactory.class);
+  private static final Log LOGGER = LogFactory.getLog(SqlCredentialFactory.class);
 
-	@Override
-	public Credential create() {
-		String credentialResourceLocation = System.getProperty(CREDENTIAL_LOCATION_PROPERTY_NAME);
-		String encodedCredential = System.getProperty(CREDENTIAL_ENCODED_KEY_PROPERTY_NAME);
+  @Override
+  public Credential create() {
+    String credentialResourceLocation = System.getProperty(CREDENTIAL_LOCATION_PROPERTY_NAME);
+    String encodedCredential = System.getProperty(CREDENTIAL_ENCODED_KEY_PROPERTY_NAME);
 
-		if (credentialResourceLocation == null && encodedCredential == null) {
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug(CREDENTIAL_LOCATION_PROPERTY_NAME + " and "
-						+ CREDENTIAL_ENCODED_KEY_PROPERTY_NAME + " properties do not exist. "
-						+ "Socket factory will use application default credentials.");
-			}
-			return null;
-		}
+    if (credentialResourceLocation == null && encodedCredential == null) {
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            CREDENTIAL_LOCATION_PROPERTY_NAME
+                + " and "
+                + CREDENTIAL_ENCODED_KEY_PROPERTY_NAME
+                + " properties do not exist. "
+                + "Socket factory will use application default credentials.");
+      }
+      return null;
+    }
 
-		InputStream credentialsInputStream;
+    InputStream credentialsInputStream;
 
-		try {
-			if (encodedCredential != null) {
-				credentialsInputStream = new ByteArrayInputStream(
-						Base64.getDecoder().decode(encodedCredential.getBytes()));
-			}
-			else {
-				credentialsInputStream = new FileInputStream(credentialResourceLocation);
-			}
+    try {
+      if (encodedCredential != null) {
+        credentialsInputStream =
+            new ByteArrayInputStream(Base64.getDecoder().decode(encodedCredential.getBytes()));
+      } else {
+        credentialsInputStream = new FileInputStream(credentialResourceLocation);
+      }
 
-			return GoogleCredential.fromStream(credentialsInputStream)
-					.createScoped(Collections.singleton(GcpScope.SQLADMIN.getUrl()));
-		}
-		catch (IOException ioe) {
-			LOGGER.warn("There was an error loading Cloud SQL credential.", ioe);
-			return null;
-		}
-
-	}
+      return GoogleCredential.fromStream(credentialsInputStream)
+          .createScoped(Collections.singleton(GcpScope.SQLADMIN.getUrl()));
+    } catch (IOException ioe) {
+      LOGGER.warn("There was an error loading Cloud SQL credential.", ioe);
+      return null;
+    }
+  }
 }

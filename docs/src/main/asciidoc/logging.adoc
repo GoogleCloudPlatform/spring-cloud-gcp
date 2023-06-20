@@ -1,7 +1,7 @@
 [#cloud-logging]
 == Cloud Logging
 
-Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Cloud GCP BOM>>:
+Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
 [source,xml]
 ----
@@ -20,14 +20,14 @@ dependencies {
 }
 ----
 
-https://cloud.google.com/logging/[Cloud Logging] is the managed logging service provided by Google Cloud Platform.
+https://cloud.google.com/logging/[Cloud Logging] is the managed logging service provided by Google Cloud.
 
 This module provides support for associating a web request trace ID with the corresponding log entries.
 It does so by retrieving the `X-B3-TraceId` value from the https://logback.qos.ch/manual/mdc.html[Mapped Diagnostic Context (MDC)], which is set by Spring Cloud Sleuth.
 If Spring Cloud Sleuth isn't used, the configured `TraceIdExtractor` extracts the desired header value and sets it as the log entry's trace ID.
 This allows grouping of log messages by request, for example, in the https://console.cloud.google.com/logs/viewer[Google Cloud Console Logs viewer].
 
-NOTE: Due to the way logging is set up, the GCP project ID and credentials defined in `application.properties` are ignored.
+NOTE: Due to the way logging is set up, the Google Cloud project ID and credentials defined in `application.properties` are ignored.
 Instead, you should set the `GOOGLE_CLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS` environment variables to the project ID and credentials private key location, respectively.
 You can do this easily if you're using the https://cloud.google.com/sdk[Google Cloud SDK], using the `gcloud config set project [YOUR_PROJECT_ID]` and `gcloud auth application-default login` commands, respectively.
 
@@ -35,11 +35,11 @@ You can do this easily if you're using the https://cloud.google.com/sdk[Google C
 
 For use in Web MVC-based applications, `TraceIdLoggingWebMvcInterceptor` is provided that extracts the request trace ID from an HTTP request using a `TraceIdExtractor` and stores it in a thread-local, which can then be used in a logging appender to add the trace ID metadata to log messages.
 
-WARNING: If Spring Cloud GCP Trace is enabled, the logging module disables itself and delegates log correlation to Spring Cloud Sleuth.
+WARNING: If Spring Framework on Google Cloud Trace is enabled, the logging module disables itself and delegates log correlation to Spring Cloud Sleuth.
 
 `LoggingWebMvcConfigurer` configuration class is also provided to help register the `TraceIdLoggingWebMvcInterceptor` in Spring MVC applications.
 
-Applications hosted on the Google Cloud Platform include trace IDs under the `x-cloud-trace-context` header, which will be included in log entries.
+Applications hosted on the Google Cloud include trace IDs under the `x-cloud-trace-context` header, which will be included in log entries.
 However, if Sleuth is used the trace ID will be picked up from the MDC.
 
 === Logback Support
@@ -65,7 +65,7 @@ Your configuration may then look like this:
 ----
 
 If you want to have more control over the log output, you can further configure the appender.
-The following properties are available:
+The following properties are available (see link:https://github.com/googleapis/java-logging-logback[java-logging-logback project] for the full list):
 
 [options="header",]
 |=======================================================================
@@ -74,6 +74,8 @@ The following properties are available:
 This can also be set via the `STACKDRIVER_LOG_NAME` environmental variable.
 | `flushLevel` | `WARN` | If a log entry with this level is encountered, trigger a flush of locally buffered log to Cloud Logging.
 This can also be set via the `STACKDRIVER_LOG_FLUSH_LEVEL` environmental variable.
+| `enhancer` |  | Fully qualified class name for customizing a logging entry; must implement `com.google.cloud.logging.LoggingEnhancer`.
+| `loggingEventEnhancer` |  | Fully qualified class name for customizing a logging entry given an link:https://logback.qos.ch/apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html[`ILoggingEvent`]; must implement `com.google.cloud.logging.logback.LoggingEventEnhancer`.
 |=======================================================================
 
 ==== Asynchronous Logging
@@ -132,8 +134,8 @@ a| This is used to generate fully qualified Cloud Trace ID format: `projects/[PR
 This format is required to correlate trace between Cloud Trace and Cloud Logging.
 
 If `projectId` is not set and cannot be determined, then it'll log `traceId` without the fully qualified format.
-| `traceIdMDCField` | `traceId` | The MDC field name for retrieving a trace id
-| `spanIdMDCField` | `spanId` | the MDC field name for retrieving a span id
+| `traceIdMdcField` | `traceId` | The MDC field name for retrieving a trace id
+| `spanIdMdcField` | `spanId` | the MDC field name for retrieving a span id
 | `includeTraceId` | `true` | Should the trace id be included
 | `includeSpanId` | `true` | Should the span id be included
 | `includeLevel` | `true` | Should the severity be included
@@ -170,8 +172,8 @@ This is an example of such an Logback configuration:
       <layout class="com.google.cloud.spring.logging.StackdriverJsonLayout">
         <projectId>${projectId}</projectId>
 
-        <!--<traceIdMDCField>traceId</traceIdMDCField>-->
-        <!--<spanIdMDCField>spanId</spanIdMDCField>-->
+        <!--<traceIdMdcField>traceId</traceIdMdcField>-->
+        <!--<spanIdMdcField>spanId</spanIdMdcField>-->
         <!--<includeTraceId>true</includeTraceId>-->
         <!--<includeSpanId>true</includeSpanId>-->
         <!--<includeLevel>true</includeLevel>-->

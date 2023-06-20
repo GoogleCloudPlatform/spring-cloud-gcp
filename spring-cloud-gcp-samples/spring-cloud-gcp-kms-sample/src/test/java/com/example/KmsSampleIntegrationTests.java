@@ -16,69 +16,62 @@
 
 package com.example;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assume.assumeThat;
-
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.kms", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
-		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		classes = KmsApplication.class)
-public class KmsSampleIntegrationTests {
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = KmsApplication.class)
+class KmsSampleIntegrationTests {
 
-	@Autowired
-	private TestRestTemplate testRestTemplate;
+  @Autowired private TestRestTemplate testRestTemplate;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat("KMS integration tests are disabled. "
-						+ "Please use '-Dit.kms=true' to enable them.",
-				System.getProperty("it.kms"), is("true"));
-	}
+  @Test
+  void testApplicationStartup() {
+    ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
+    assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+  }
 
-	@Test
-	public void testApplicationStartup() {
-		ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
-		assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-	}
+  @Test
+  void testEncrypt() {
+    MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
+    params.add("keyId", "spring-cloud-gcp-ci/us-east1/integration-test-key-ring/test-key");
+    params.add("text", "12345");
 
-	@Test
-	public void testEncrypt() {
-		MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-		params.add("keyId", "spring-cloud-gcp-ci/us-east1/integration-test-key-ring/test-key");
-		params.add("text", "12345");
+    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
 
-		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
+    ResponseEntity<String> response =
+        this.testRestTemplate.postForEntity("/encrypt", request, String.class);
+    System.out.println(response.getBody());
+    assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+  }
 
-		ResponseEntity<String> response = this.testRestTemplate.postForEntity("/encrypt", request, String.class);
-		System.out.println(response.getBody());
-		assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-	}
+  @Test
+  void testDecrypt() {
+    MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
+    params.add("keyId", "spring-cloud-gcp-ci/us-east1/integration-test-key-ring/test-key");
+    params.add(
+        "encryptedText",
+        "CiQA9oGpAZWS7YfHvtvl3gD42KD3cpaPtVb/OvaQvx/T5wikp2sSLgDPaDHEgKQWhD5HPNKqYiFGDP5SofmM0Nec5q/AyyYgRUBimEmG8i6vrpiEf9o=");
 
-	@Test
-	public void testDecrypt() {
-		MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-		params.add("keyId", "spring-cloud-gcp-ci/us-east1/integration-test-key-ring/test-key");
-		params.add("encryptedText", "CiQA9oGpAZWS7YfHvtvl3gD42KD3cpaPtVb/OvaQvx/T5wikp2sSLgDPaDHEgKQWhD5HPNKqYiFGDP5SofmM0Nec5q/AyyYgRUBimEmG8i6vrpiEf9o=");
+    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
 
-		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
-
-		ResponseEntity<String> response = this.testRestTemplate.postForEntity("/decrypt", request, String.class);
-		assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-	}
-
+    ResponseEntity<String> response =
+        this.testRestTemplate.postForEntity("/decrypt", request, String.class);
+    assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+  }
 }

@@ -20,27 +20,21 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.stream.binder.AbstractExtendedBindingProperties;
 import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 
-/**
- * Extended binding properties for Pub/Sub.
- *
- * @author João André Martins
- * @author Artem Bilan
- * @author Daniel Zou
- */
+/** Extended binding properties for Pub/Sub. */
 @ConfigurationProperties("spring.cloud.stream.gcp.pubsub")
-public class PubSubExtendedBindingProperties extends
-		AbstractExtendedBindingProperties<PubSubConsumerProperties, PubSubProducerProperties, PubSubBindingProperties> {
+public class PubSubExtendedBindingProperties
+    extends AbstractExtendedBindingProperties<
+        PubSubConsumerProperties, PubSubProducerProperties, PubSubBindingProperties> {
 
-	private static final String DEFAULTS_PREFIX = "spring.cloud.stream.gcp.pubsub.default";
+  private static final String DEFAULTS_PREFIX = "spring.cloud.stream.gcp.pubsub.default";
 
-	@Override
-	public String getDefaultsPrefix() {
-		return DEFAULTS_PREFIX;
-	}
+  @Override
+  public String getDefaultsPrefix() {
+    return DEFAULTS_PREFIX;
+  }
 
-	@Override
-	public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
-		return PubSubBindingProperties.class;
-	}
-
+  @Override
+  public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
+    return PubSubBindingProperties.class;
+  }
 }

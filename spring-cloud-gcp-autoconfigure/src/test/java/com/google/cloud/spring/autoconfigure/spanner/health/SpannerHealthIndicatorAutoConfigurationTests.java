@@ -16,76 +16,90 @@
 
 package com.google.cloud.spring.autoconfigure.spanner.health;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.spanner.GcpSpannerAutoConfiguration;
-import org.junit.Test;
-
+import com.google.gson.Gson;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
 /**
  * Tests for Spanner health check auto-config.
  *
- * @author ikeyat
- *
  * @since 2.0.6
  */
-public class SpannerHealthIndicatorAutoConfigurationTests {
+class SpannerHealthIndicatorAutoConfigurationTests {
 
-	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(GcpSpannerAutoConfiguration.class,
-					GcpContextAutoConfiguration.class,
-					SpannerHealthIndicatorAutoConfiguration.class))
-			.withUserConfiguration(TestConfiguration.class)
-			.withPropertyValues("spring.cloud.gcp.spanner.project-id=test-project",
-					"spring.cloud.gcp.spanner.instance-id=testInstance",
-					"spring.cloud.gcp.spanner.database=testDatabase");
+  private ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(
+              AutoConfigurations.of(
+                  GcpSpannerAutoConfiguration.class,
+                  GcpContextAutoConfiguration.class,
+                  SpannerHealthIndicatorAutoConfiguration.class))
+          .withUserConfiguration(TestConfiguration.class)
+          .withPropertyValues(
+              "spring.cloud.gcp.spanner.project-id=test-project",
+              "spring.cloud.gcp.spanner.instance-id=testInstance",
+              "spring.cloud.gcp.spanner.database=testDatabase");
 
-	@Test
-	public void testSpannerHealthIndicatorCreated() {
-		final String DEFAULT_QUERY = "SELECT 1";
-		this.contextRunner.run(context -> {
-			SpannerHealthIndicator indicator = context.getBean(SpannerHealthIndicator.class);
-			assertThat(indicator).isNotNull();
-			assertThat(indicator).hasFieldOrPropertyWithValue("validationStatement", Statement.of(DEFAULT_QUERY));
-		});
-	}
+  @Test
+  void testSpannerHealthIndicatorCreated() {
+    final String defaultQuery = "SELECT 1";
+    this.contextRunner.run(
+        context -> {
+          SpannerHealthIndicator indicator = context.getBean(SpannerHealthIndicator.class);
+          assertThat(indicator).isNotNull();
+          assertThat(indicator)
+              .hasFieldOrPropertyWithValue("validationStatement", Statement.of(defaultQuery));
+        });
+  }
 
-	@Test
-	public void testSpannerHealthIndicatorCreatedWithQuery() {
-		final String CUSTOM_QUERY = "SELECT 2";
-		this.contextRunner.withPropertyValues("spring.cloud.gcp.spanner.health.query=" + CUSTOM_QUERY)
-				.run(context -> {
-					SpannerHealthIndicator indicator = context.getBean(SpannerHealthIndicator.class);
-					assertThat(indicator).isNotNull();
-					assertThat(indicator).hasFieldOrPropertyWithValue("validationStatement", Statement.of(CUSTOM_QUERY));
-				});
-	}
+  @Test
+  void testSpannerHealthIndicatorCreatedWithQuery() {
+    final String customQuery = "SELECT 2";
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.spanner.health.query=" + customQuery)
+        .run(
+            context -> {
+              SpannerHealthIndicator indicator = context.getBean(SpannerHealthIndicator.class);
+              assertThat(indicator).isNotNull();
+              assertThat(indicator)
+                  .hasFieldOrPropertyWithValue("validationStatement", Statement.of(customQuery));
+            });
+  }
 
-	@Test(expected = NoSuchBeanDefinitionException.class)
-	public void testSpannerHealthIndicatorNotCreated() {
-		this.contextRunner.withPropertyValues("management.health.spanner.enabled=false")
-				.run(context -> context.getBean(SpannerHealthIndicator.class));
-	}
+  @Test
+  void testSpannerHealthIndicatorNotCreated() {
 
-	/**
-	 * Spring Boot config for tests.
-	 */
-	@Configuration
-	static class TestConfiguration {
+    ApplicationContextRunner contextRunnerNew = this.contextRunner.withPropertyValues("management.health.spanner.enabled=false");
+    assertThatThrownBy(() -> contextRunnerNew
+        .run(context -> context.getBean(SpannerHealthIndicator.class)))
+        .isInstanceOf(NoSuchBeanDefinitionException.class);
+  }
 
-		@Bean
-		public CredentialsProvider credentialsProvider() {
-			return () -> mock(Credentials.class);
-		}
-	}
+  /** Spring Boot config for tests. */
+  @Configuration
+  static class TestConfiguration {
+
+    @Bean
+    public CredentialsProvider credentialsProvider() {
+      return () -> mock(Credentials.class);
+    }
+
+    @Bean
+    public Gson gson() {
+      return new Gson();
+    }
+  }
 }

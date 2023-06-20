@@ -16,199 +16,197 @@
 
 package com.google.cloud.spring.data.firestore.entities;
 
-import java.util.List;
-import java.util.Objects;
-
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.PropertyName;
 import com.google.cloud.spring.data.firestore.Document;
 import com.google.cloud.spring.data.firestore.mapping.UpdateTime;
+import java.util.List;
+import java.util.Objects;
 
-/**
- * Sample entity for integration tests.
- *
- * @author Daniel Zou
- * @author Dmitry Solomakha
- */
-//tag::class_definition[]
-//tag::embedded_class_collections[]
+/** Sample entity for integration tests. */
+// tag::class_definition[]
+// tag::embedded_class_collections[]
 @Document(collectionName = "usersCollection")
 public class User {
-	/**
-	 * Used to test @PropertyName annotation on a field.
-	 */
-	@PropertyName("drink")
-	public String favoriteDrink;
+  /** Used to test @PropertyName annotation on a field. */
+  @PropertyName("drink")
+  public String favoriteDrink;
 
-	@DocumentId
-	private String name;
+  @DocumentId private String name;
 
-	private Integer age;
+  private Integer age;
 
-	//end::class_definition[]
-	private List<String> pets;
+  // end::class_definition[]
+  private List<String> pets;
 
-	private List<Address> addresses;
+  private List<Address> addresses;
 
-	private Address homeAddress;
+  private Address homeAddress;
 
-	//end::embedded_class_collections[]
+  // end::embedded_class_collections[]
 
-	@UpdateTime(version = true)
-	private Timestamp updateTime;
+  @UpdateTime(version = true)
+  private Timestamp updateTime;
 
-	public User(String name, Integer age) {
-		this.name = name;
-		this.age = age;
-	}
+  public User(String name, Integer age) {
+    this.name = name;
+    this.age = age;
+  }
 
-	public User(String name, Integer age, List<String> pets) {
-		this.name = name;
-		this.age = age;
-		this.pets = pets;
-	}
+  public User(String name, Integer age, List<String> pets) {
+    this.name = name;
+    this.age = age;
+    this.pets = pets;
+  }
 
-	public User(String name, Integer age, List<String> pets, List<Address> addresses, Address homeAddress) {
-		this.name = name;
-		this.age = age;
-		this.pets = pets;
-		this.addresses = addresses;
-		this.homeAddress = homeAddress;
-	}
+  public User(
+      String name, Integer age, List<String> pets, List<Address> addresses, Address homeAddress) {
+    this.name = name;
+    this.age = age;
+    this.pets = pets;
+    this.addresses = addresses;
+    this.homeAddress = homeAddress;
+  }
 
-	//tag::class_definition[]
-	public User() {
-	}
+  // tag::class_definition[]
+  public User() {}
 
-	public String getName() {
-		return this.name;
-	}
+  public String getName() {
+    return this.name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public Integer getAge() {
-		return this.age;
-	}
+  public Integer getAge() {
+    return this.age;
+  }
 
-	public void setAge(Integer age) {
-		this.age = age;
-	}
-	//end::class_definition[]
+  public void setAge(Integer age) {
+    this.age = age;
+  }
+  // end::class_definition[]
 
-	//tag::embedded_class_collections[]
-	public List<String> getPets() {
-		return this.pets;
-	}
+  // tag::embedded_class_collections[]
+  public List<String> getPets() {
+    return this.pets;
+  }
 
-	public void setPets(List<String> pets) {
-		this.pets = pets;
-	}
+  public void setPets(List<String> pets) {
+    this.pets = pets;
+  }
 
-	public List<Address> getAddresses() {
-		return this.addresses;
-	}
+  public List<Address> getAddresses() {
+    return this.addresses;
+  }
 
-	public void setAddresses(List<Address> addresses) {
-		this.addresses = addresses;
-	}
+  public void setAddresses(List<Address> addresses) {
+    this.addresses = addresses;
+  }
 
-	public Timestamp getUpdateTime() {
-		return updateTime;
-	}
+  public Timestamp getUpdateTime() {
+    return updateTime;
+  }
 
-	public void setUpdateTime(Timestamp updateTime) {
-		this.updateTime = updateTime;
-	}
+  public void setUpdateTime(Timestamp updateTime) {
+    this.updateTime = updateTime;
+  }
 
-	@PropertyName("address")
-	public Address getHomeAddress() {
-		return this.homeAddress;
-	}
+  @PropertyName("address")
+  public Address getHomeAddress() {
+    return this.homeAddress;
+  }
 
-	@PropertyName("address")
-	public void setHomeAddress(Address homeAddress) {
-		this.homeAddress = homeAddress;
-	}
-	//end::embedded_class_collections[]
-	@Override
-	public String toString() {
-		return "User{" +
-				"name='" + name + '\'' +
-				", age=" + age +
-				", pets=" + pets +
-				", addresses=" + addresses +
-				", homeAddress=" + homeAddress +
-				", updateTime=" + updateTime +
-				'}';
-	}
+  @PropertyName("address")
+  public void setHomeAddress(Address homeAddress) {
+    this.homeAddress = homeAddress;
+  }
+  // end::embedded_class_collections[]
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		User user = (User) o;
-		return Objects.equals(getName(), user.getName()) &&
-				Objects.equals(getAge(), user.getAge()) &&
-				Objects.equals(getPets(), user.getPets()) &&
-				Objects.equals(getAddresses(), user.getAddresses()) &&
-				Objects.equals(getHomeAddress(), user.getHomeAddress()) &&
-				Objects.equals(getUpdateTime(), user.getUpdateTime());
-	}
+  @Override
+  public String toString() {
+    return "User{"
+        + "name='"
+        + name
+        + '\''
+        + ", age="
+        + age
+        + ", pets="
+        + pets
+        + ", addresses="
+        + addresses
+        + ", homeAddress="
+        + homeAddress
+        + ", updateTime="
+        + updateTime
+        + '}';
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getName(), getAge(), getPets(), getAddresses(), getHomeAddress());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    User user = (User) o;
+    return Objects.equals(getName(), user.getName())
+        && Objects.equals(getAge(), user.getAge())
+        && Objects.equals(getPets(), user.getPets())
+        && Objects.equals(getAddresses(), user.getAddresses())
+        && Objects.equals(getHomeAddress(), user.getHomeAddress())
+        && Objects.equals(getUpdateTime(), user.getUpdateTime());
+  }
 
-	//tag::embedded_class_collections[]
+  @Override
+  public int hashCode() {
+    return Objects.hash(getName(), getAge(), getPets(), getAddresses(), getHomeAddress());
+  }
 
-	public static class Address {
-		String streetAddress;
-		String country;
+  // tag::embedded_class_collections[]
+  public static class Address {
+    String streetAddress;
+    String country;
 
-		public Address() {
-		}
-		//end::embedded_class_collections[]
-		public Address(String streetAddress, String country) {
-			this.streetAddress = streetAddress;
-			this.country = country;
-		}
+    public Address() {}
+    // end::embedded_class_collections[]
 
-		public String getStreetAddress() {
-			return this.streetAddress;
-		}
+    public Address(String streetAddress, String country) {
+      this.streetAddress = streetAddress;
+      this.country = country;
+    }
 
-		public String getCountry() {
-			return this.country;
-		}
+    public String getStreetAddress() {
+      return this.streetAddress;
+    }
 
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			}
-			if (o == null || getClass() != o.getClass()) {
-				return false;
-			}
-			Address address = (Address) o;
-			return Objects.equals(getStreetAddress(), address.getStreetAddress()) &&
-					Objects.equals(getCountry(), address.getCountry());
-		}
+    public String getCountry() {
+      return this.country;
+    }
 
-		@Override
-		public int hashCode() {
-			return Objects.hash(getStreetAddress(), getCountry());
-		}
-		//tag::embedded_class_collections[]
-	}
-	//tag::class_definition[]
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+      Address address = (Address) o;
+      return Objects.equals(getStreetAddress(), address.getStreetAddress())
+          && Objects.equals(getCountry(), address.getCountry());
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(getStreetAddress(), getCountry());
+    }
+    // tag::embedded_class_collections[]
+  }
+  // tag::class_definition[]
 }
-//end::embedded_class_collections[]
-//end::class_definition[]
+// end::embedded_class_collections[]
+// end::class_definition[]

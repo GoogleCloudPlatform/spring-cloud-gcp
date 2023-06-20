@@ -19,28 +19,28 @@ package com.google.cloud.spring.pubsub.support;
 import org.springframework.util.concurrent.ListenableFuture;
 
 /**
- * An extension of {@link BasicAcknowledgeablePubsubMessage} that exposes ack ID and subscription name of the message.
- * It also allows modification of the ack deadline and acknowledgement of multiple messages at once using
- * {@link com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations#ack(java.util.Collection)}.
- *
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Doug Hoard
+ * An extension of {@link BasicAcknowledgeablePubsubMessage} that exposes ack ID and subscription
+ * name of the message. It also allows modification of the ack deadline and acknowledgement of
+ * multiple messages at once using {@link
+ * com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations#ack(java.util.Collection)}.
  */
 public interface AcknowledgeablePubsubMessage extends BasicAcknowledgeablePubsubMessage {
 
-	/**
-	 * Accessor for the ack ID of the Pub/Sub message.
-	 * @return ack ID
-	 */
-	String getAckId();
+  /**
+   * Accessor for the ack ID of the Pub/Sub message.
+   *
+   * @return ack ID
+   */
+  String getAckId();
 
-	/**
-	 * Modify the ack deadline of the message. Once the ack deadline expires, the message is automatically nacked.
-	 * @param ackDeadlineSeconds the new ack deadline in seconds. A deadline of 0 effectively nacks the message.
-	 * @return {@code ListenableFuture<Void>}
-	 * @since 1.1
-	 */
-	ListenableFuture<Void> modifyAckDeadline(int ackDeadlineSeconds);
-
+  /**
+   * Modify the ack deadline of the message. Once the ack deadline expires, the message is
+   * automatically nacked.
+   *
+   * @param ackDeadlineSeconds the new ack deadline in seconds. A deadline of 0 effectively nacks
+   *     the message.
+   * @return {@code ListenableFuture<Void>}
+   * @since 1.1
+   */
+  ListenableFuture<Void> modifyAckDeadline(int ackDeadlineSeconds);
 }

@@ -16,94 +16,82 @@
 
 package com.google.cloud.spring.data.datastore.repository.support;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import com.google.cloud.spring.data.datastore.core.mapping.Field;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mapping.MappingException;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.RepositoryInformation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+/** Tests for the Datastore Repository factory. */
+class DatastoreRepositoryFactoryTests {
 
-/**
- * Tests for the Datastore Repository factory.
- *
- * @author Chengyuan Zhao
- */
-public class DatastoreRepositoryFactoryTests {
+  private DatastoreRepositoryFactory datastoreRepositoryFactory;
 
-	/**
-	 * used to check exception messages and types.
-	 */
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+  private DatastoreTemplate datastoreTemplate;
 
-	private DatastoreRepositoryFactory datastoreRepositoryFactory;
+  @BeforeEach
+  void setUp() {
+    DatastoreMappingContext datastoreMappingContext = new DatastoreMappingContext();
+    this.datastoreTemplate = mock(DatastoreTemplate.class);
+    this.datastoreRepositoryFactory =
+        new DatastoreRepositoryFactory(datastoreMappingContext, this.datastoreTemplate);
+  }
 
-	private DatastoreTemplate datastoreTemplate;
+  @Test
+  void getEntityInformationTest() {
+    EntityInformation<TestEntity, String> entityInformation =
+        this.datastoreRepositoryFactory.getEntityInformation(TestEntity.class);
+    assertThat(entityInformation.getJavaType()).isEqualTo(TestEntity.class);
+    assertThat(entityInformation.getIdType()).isEqualTo(String.class);
 
-	@Before
-	public void setUp() {
-		DatastoreMappingContext datastoreMappingContext = new DatastoreMappingContext();
-		this.datastoreTemplate = mock(DatastoreTemplate.class);
-		this.datastoreRepositoryFactory = new DatastoreRepositoryFactory(
-				datastoreMappingContext, this.datastoreTemplate);
-	}
+    TestEntity t = new TestEntity();
+    t.id = "a";
+    assertThat(entityInformation.getId(t)).isEqualTo("a");
+  }
 
-	@Test
-	public void getEntityInformationTest() {
-		EntityInformation<TestEntity, String> entityInformation = this.datastoreRepositoryFactory
-				.getEntityInformation(TestEntity.class);
-		assertThat(entityInformation.getJavaType()).isEqualTo(TestEntity.class);
-		assertThat(entityInformation.getIdType()).isEqualTo(String.class);
+  @Test
+  void getEntityInformationNotAvailableTest() {
 
-		TestEntity t = new TestEntity();
-		t.id = "a";
-		assertThat(entityInformation.getId(t)).isEqualTo("a");
-	}
+    DatastoreRepositoryFactory factory =
+        new DatastoreRepositoryFactory(mock(DatastoreMappingContext.class), this.datastoreTemplate);
 
-	@Test
-	public void getEntityInformationNotAvailableTest() {
-		this.expectedException.expect(MappingException.class);
-		this.expectedException.expectMessage("Could not lookup mapping metadata for domain class: " +
-				"com.google.cloud.spring.data.datastore.repository.support." +
-				"DatastoreRepositoryFactoryTests$TestEntity");
-		DatastoreRepositoryFactory factory = new DatastoreRepositoryFactory(
-				mock(DatastoreMappingContext.class), this.datastoreTemplate);
-		factory.getEntityInformation(TestEntity.class);
-	}
+    assertThatThrownBy(() -> factory.getEntityInformation(TestEntity.class))
+            .isInstanceOf(MappingException.class)
+            .hasMessage("Could not lookup mapping metadata for domain class: com.google.cloud.spring.data.datastore.repository.support."
+                    + "DatastoreRepositoryFactoryTests$TestEntity");
+  }
 
-	@Test
-	public void getTargetRepositoryTest() {
-		RepositoryInformation repoInfo = mock(RepositoryInformation.class);
-		Mockito.<Class<?>>when(repoInfo.getRepositoryBaseClass())
-				.thenReturn(SimpleDatastoreRepository.class);
-		Mockito.<Class<?>>when(repoInfo.getDomainType()).thenReturn(TestEntity.class);
-		Object repo = this.datastoreRepositoryFactory.getTargetRepository(repoInfo);
-		assertThat(repo.getClass()).isEqualTo(SimpleDatastoreRepository.class);
-	}
+  @Test
+  void getTargetRepositoryTest() {
+    RepositoryInformation repoInfo = mock(RepositoryInformation.class);
+    Mockito.<Class<?>>when(repoInfo.getRepositoryBaseClass())
+        .thenReturn(SimpleDatastoreRepository.class);
+    Mockito.<Class<?>>when(repoInfo.getDomainType()).thenReturn(TestEntity.class);
+    Object repo = this.datastoreRepositoryFactory.getTargetRepository(repoInfo);
+    assertThat(repo.getClass()).isEqualTo(SimpleDatastoreRepository.class);
+  }
 
-	@Test
-	public void getRepositoryBaseClassTest() {
-		Class baseClass = this.datastoreRepositoryFactory.getRepositoryBaseClass(null);
-		assertThat(baseClass).isEqualTo(SimpleDatastoreRepository.class);
-	}
+  @Test
+  void getRepositoryBaseClassTest() {
+    Class baseClass = this.datastoreRepositoryFactory.getRepositoryBaseClass(null);
+    assertThat(baseClass).isEqualTo(SimpleDatastoreRepository.class);
+  }
 
-	@Entity(name = "custom_test_kind")
-	private static class TestEntity {
-		@Id
-		String id;
+  @Entity(name = "custom_test_kind")
+  private static class TestEntity {
+    @Id String id;
 
-		@Field(name = "custom_col")
-		String something;
-	}
+    @Field(name = "custom_col")
+    String something;
+  }
 }

@@ -16,91 +16,99 @@
 
 package com.google.cloud.spring.autoconfigure.logging;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration;
 import com.google.cloud.spring.logging.TraceIdLoggingWebMvcInterceptor;
-import org.junit.Test;
-import zipkin2.reporter.Reporter;
-
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ReactiveWebApplicationContextRunner;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import zipkin2.reporter.Reporter;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+/** Tests for auto-config. */
+class StackdriverLoggingAutoConfigurationTests {
 
-/**
- * Tests for auto-config.
- *
- * @author Mike Eltsufin
- * @author João André Martins
- * @author Chengyuan Zhao
- */
-public class StackdriverLoggingAutoConfigurationTests {
+  private WebApplicationContextRunner contextRunner =
+      new WebApplicationContextRunner()
+          .withUserConfiguration(TestConfiguration.class)
+          .withConfiguration(
+              AutoConfigurations.of(
+                  StackdriverLoggingAutoConfiguration.class, GcpContextAutoConfiguration.class));
 
-	private WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
-			.withUserConfiguration(TestConfiguration.class)
-			.withConfiguration(
-					AutoConfigurations.of(
-							StackdriverLoggingAutoConfiguration.class,
-							GcpContextAutoConfiguration.class));
+  @Test
+  void testDisabledConfiguration() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.logging.enabled=false")
+        .run(
+            context ->
+                assertThat(context.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class))
+                    .isEmpty());
+  }
 
-	@Test
-	public void testDisabledConfiguration() {
-		this.contextRunner.withPropertyValues("spring.cloud.gcp.logging.enabled=false")
-				.run(context -> assertThat(context.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class)).isEmpty());
-	}
+  @Test
+  void testNonWebAppConfiguration() {
+    new ApplicationContextRunner()
+        .withConfiguration(
+            AutoConfigurations.of(
+                StackdriverLoggingAutoConfiguration.class, GcpContextAutoConfiguration.class))
+        .withUserConfiguration(TestConfiguration.class)
+        .run(
+            context ->
+                assertThat(context.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class))
+                    .isEmpty());
+  }
 
-	@Test
-	public void testNonWebAppConfiguration() {
-		new ApplicationContextRunner().withConfiguration(
-				AutoConfigurations.of(
-						StackdriverLoggingAutoConfiguration.class,
-						GcpContextAutoConfiguration.class))
-				.withUserConfiguration(TestConfiguration.class)
-				.run(context -> assertThat(context.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class)).isEmpty());
-	}
+  @Test
+  void testNonServletConfiguration() {
+    new ReactiveWebApplicationContextRunner()
+        .withConfiguration(
+            AutoConfigurations.of(
+                StackdriverLoggingAutoConfiguration.class, GcpContextAutoConfiguration.class))
+        .withUserConfiguration(TestConfiguration.class)
+        .run(
+            context ->
+                assertThat(context.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class))
+                    .isEmpty());
+  }
 
-	@Test
-	public void testNonServletConfiguration() {
-		new ReactiveWebApplicationContextRunner().withConfiguration(
-				AutoConfigurations.of(
-						StackdriverLoggingAutoConfiguration.class,
-						GcpContextAutoConfiguration.class))
-				.withUserConfiguration(TestConfiguration.class)
-				.run(context -> assertThat(context.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class)).isEmpty());
-	}
+  @Test
+  void testRegularConfiguration() {
+    this.contextRunner.run(
+        context ->
+            assertThat(context.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class)).hasSize(1));
+  }
 
-	@Test
-	public void testRegularConfiguration() {
-		this.contextRunner.run(context -> assertThat(context.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class))
-				.hasSize(1));
-	}
+  @Test
+  void testWithSleuth() {
+    this.contextRunner
+        .withConfiguration(
+            AutoConfigurations.of(
+                StackdriverTraceAutoConfiguration.class, BraveAutoConfiguration.class))
+        .withPropertyValues("spring.cloud.gcp.project-id=pop-1")
+        .run(
+            context ->
+                assertThat(context.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class))
+                    .isEmpty());
+  }
 
-	@Test
-	public void testWithSleuth() {
-		this.contextRunner
-				.withConfiguration(AutoConfigurations.of(StackdriverTraceAutoConfiguration.class,
-						BraveAutoConfiguration.class))
-				.withPropertyValues("spring.cloud.gcp.project-id=pop-1")
-				.run(context -> assertThat(context.getBeansOfType(TraceIdLoggingWebMvcInterceptor.class)).isEmpty());
-	}
+  private static class TestConfiguration {
 
-	private static class TestConfiguration {
+    @Bean
+    public CredentialsProvider googleCredentials() {
+      return () -> mock(Credentials.class);
+    }
 
-		@Bean
-		public CredentialsProvider googleCredentials() {
-			return () -> mock(Credentials.class);
-		}
-
-		@Bean
-		public Reporter stackdriverReporter() {
-			return r -> { };
-		}
-	}
+    @Bean
+    public Reporter stackdriverReporter() {
+      return r -> {};
+    }
+  }
 }

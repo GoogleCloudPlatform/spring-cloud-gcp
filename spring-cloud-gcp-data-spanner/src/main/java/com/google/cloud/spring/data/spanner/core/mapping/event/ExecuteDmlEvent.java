@@ -17,46 +17,43 @@
 package com.google.cloud.spring.data.spanner.core.mapping.event;
 
 import com.google.cloud.spanner.Statement;
-
 import org.springframework.context.ApplicationEvent;
 
-/**
- * An event holding a DML statement.
- *
- * @author Chengyuan Zhao
- */
+/** An event holding a DML statement. */
 public class ExecuteDmlEvent extends ApplicationEvent {
 
-	/**
-	 * Constructor.
-	 * @param statement the DML statement which is (never {@code null})
-	 */
-	public ExecuteDmlEvent(Statement statement) {
-		super(statement);
-	}
+  /**
+   * Constructor.
+   *
+   * @param statement the DML statement which is (never {@code null})
+   */
+  public ExecuteDmlEvent(Statement statement) {
+    super(statement);
+  }
 
-	/**
-	 * Get the DML statement.
-	 * @return the DML statement.
-	 */
-	public Statement getStatement() {
-		return (Statement) getSource();
-	}
+  /**
+   * Get the DML statement.
+   *
+   * @return the DML statement.
+   */
+  public Statement getStatement() {
+    return (Statement) getSource();
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		ExecuteDmlEvent that = (ExecuteDmlEvent) o;
-		return getStatement().equals(that.getStatement());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ExecuteDmlEvent that = (ExecuteDmlEvent) o;
+    return getStatement().equals(that.getStatement());
+  }
 
-	@Override
-	public int hashCode() {
-		return getStatement().hashCode();
-	}
+  @Override
+  public int hashCode() {
+    return getStatement().hashCode();
+  }
 }

@@ -16,62 +16,52 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
-
-import com.google.cloud.spring.pubsub.core.PubSubTemplate;
-import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
-import com.google.cloud.spring.pubsub.support.PublisherFactory;
-import com.google.cloud.spring.pubsub.support.SubscriberFactory;
-import org.junit.Test;
-
-import org.springframework.beans.factory.BeanFactory;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public final class TracePubSubBeanPostProcessorTest {
+import com.google.cloud.spring.pubsub.core.PubSubTemplate;
+import com.google.cloud.spring.pubsub.support.SubscriberFactory;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.BeanFactory;
 
-	BeanFactory mockBeanFactory = mock(BeanFactory.class);
+final class TracePubSubBeanPostProcessorTest {
 
-	PubSubTracing mockPubSubTracing = mock(PubSubTracing.class);
+  BeanFactory mockBeanFactory = mock(BeanFactory.class);
 
-	TracePubSubBeanPostProcessor tracePubSubBeanPostProcessor = new TracePubSubBeanPostProcessor(mockBeanFactory);
+  PubSubTracing mockPubSubTracing = mock(PubSubTracing.class);
 
-	@Test
-	public void test_postProcessBeforeInitialization_PublisherFactory() {
-		PublisherFactory mockPublisherFactory = mock(PublisherFactory.class);
+  TracePubSubBeanPostProcessor tracePubSubBeanPostProcessor =
+      new TracePubSubBeanPostProcessor(mockBeanFactory);
 
-		Object result = tracePubSubBeanPostProcessor.postProcessBeforeInitialization(mockPublisherFactory, "publisherFactory");
+  @Test
+  void test_postProcessBeforeInitialization_SubscriberFactory() {
+    SubscriberFactory mockSubscriberFactory = mock(SubscriberFactory.class);
 
-		assertThat(result).isInstanceOf(CachingPublisherFactory.class);
-		assertThat(((CachingPublisherFactory) result).getDelegate()).isInstanceOf(TracingPublisherFactory.class);
-	}
+    Object result =
+        tracePubSubBeanPostProcessor.postProcessBeforeInitialization(
+            mockSubscriberFactory, "subscriberFactory");
 
-	@Test
-	public void test_postProcessBeforeInitialization_SubscriberFactory() {
-		SubscriberFactory mockSubscriberFactory = mock(SubscriberFactory.class);
+    assertThat(result).isInstanceOf(TracingSubscriberFactory.class);
+  }
 
-		Object result = tracePubSubBeanPostProcessor.postProcessBeforeInitialization(mockSubscriberFactory, "subscriberFactory");
+  @Test
+  void test_postProcessBeforeInitialization_Other() {
+    PubSubTemplate mockOther = mock(PubSubTemplate.class);
 
-		assertThat(result).isInstanceOf(TracingSubscriberFactory.class);
-	}
+    Object result =
+        tracePubSubBeanPostProcessor.postProcessBeforeInitialization(mockOther, "other");
 
-	@Test
-	public void test_postProcessBeforeInitialization_Other() {
-		PubSubTemplate mockOther = mock(PubSubTemplate.class);
+    assertThat(result).isEqualTo(mockOther);
+  }
 
-		Object result = tracePubSubBeanPostProcessor.postProcessBeforeInitialization(mockOther, "other");
-
-		assertThat(result).isEqualTo(mockOther);
-	}
-
-	@Test
-	public void test_pubsubTracingCaching() {
-		when(mockBeanFactory.getBean(PubSubTracing.class)).thenReturn(mockPubSubTracing);
-		tracePubSubBeanPostProcessor.pubSubTracing();
-		tracePubSubBeanPostProcessor.pubSubTracing();
-		verify(mockBeanFactory, times(1)).getBean(PubSubTracing.class);
-	}
+  @Test
+  void test_pubsubTracingCaching() {
+    when(mockBeanFactory.getBean(PubSubTracing.class)).thenReturn(mockPubSubTracing);
+    tracePubSubBeanPostProcessor.pubSubTracing();
+    tracePubSubBeanPostProcessor.pubSubTracing();
+    verify(mockBeanFactory, times(1)).getBean(PubSubTracing.class);
+  }
 }

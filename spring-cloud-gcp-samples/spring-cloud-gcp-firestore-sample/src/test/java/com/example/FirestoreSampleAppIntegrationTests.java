@@ -19,74 +19,64 @@ package com.example;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.output.TeeOutputStream;
 import org.awaitility.Awaitility;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Tests for the Firestore sample application.
  *
- * @author Dmitry Solomakha
- *
  * @since 1.2
  */
-
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.firestore", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext
-public class FirestoreSampleAppIntegrationTests {
-	private static final int TIMEOUT = 10;
-	private static PrintStream systemOut;
+class FirestoreSampleAppIntegrationTests {
+  private static final int TIMEOUT = 10;
+  private static PrintStream systemOut;
 
-	private static ByteArrayOutputStream baos;
+  private static ByteArrayOutputStream baos;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"Firestore-sample tests are disabled. Please use '-Dit.firestore=true' "
-						+ "to enable them. ",
-				System.getProperty("it.firestore"), is("true"));
+  @BeforeAll
+  static void prepare() {
+    systemOut = System.out;
+    baos = new ByteArrayOutputStream();
+    TeeOutputStream out = new TeeOutputStream(systemOut, baos);
+    System.setOut(new PrintStream(out));
+  }
 
-		systemOut = System.out;
-		baos = new ByteArrayOutputStream();
-		TeeOutputStream out = new TeeOutputStream(systemOut, baos);
-		System.setOut(new PrintStream(out));
-	}
+  @AfterAll
+  static void bringBack() {
+    System.setOut(systemOut);
+  }
 
-	@AfterClass
-	public static void bringBack() {
-		System.setOut(systemOut);
-	}
+  @Test
+  void testSample() {
+    String expectedString =
+        "read: {name=Ada, phones=[123, 456]}\n"
+            + "read: User{name='Joe', phones=[Phone{number=12345, type=CELL}, Phone{number=54321,"
+            + " type=WORK}]}";
 
-	@Test
-	public void testSample() {
-		String expectedString =
-				"read: {name=Ada, phones=[123, 456]}\n" +
-				"read: User{name='Joe', phones=[Phone{number=12345, type=CELL}, Phone{number=54321, type=WORK}]}";
+    Awaitility.await()
+        .atMost(TIMEOUT, TimeUnit.SECONDS)
+        .until(() -> baos.toString().contains(expectedString));
 
-		Awaitility.await()
-				.atMost(TIMEOUT, TimeUnit.SECONDS)
-				.until(() -> baos.toString().contains(expectedString));
-
-		//the following two lines appear in a non-deterministic order, so checking them independently
-		Awaitility.await()
-				.atMost(TIMEOUT, TimeUnit.SECONDS)
-				.until(() -> baos.toString().contains("removing: ada"));
-		Awaitility.await()
-				.atMost(TIMEOUT, TimeUnit.SECONDS)
-				.until(() -> baos.toString().contains("removing: joe"));
-	}
+    // the following two lines appear in a non-deterministic order, so checking them independently
+    Awaitility.await()
+        .atMost(TIMEOUT, TimeUnit.SECONDS)
+        .until(() -> baos.toString().contains("removing: ada"));
+    Awaitility.await()
+        .atMost(TIMEOUT, TimeUnit.SECONDS)
+        .until(() -> baos.toString().contains("removing: joe"));
+  }
 }

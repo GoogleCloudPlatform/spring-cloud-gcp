@@ -1,6 +1,6 @@
-= Spring Cloud GCP Pub/Sub Code Sample
+= Spring Framework on Google Cloud Pub/Sub Code Sample
 
-This is an example application that demonstrates how to use the Spring Cloud GCP Pub/Sub abstraction to do things like:
+This is an example application that demonstrates how to use the Spring Framework on Google Cloud Pub/Sub abstraction to do things like:
 
 * Create a topic
 * Create a subscription for a topic
@@ -16,7 +16,7 @@ The sample uses the `PubSubAdmin` class to perform administrative tasks like cre
 
 image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample/README.adoc]
 
-To run this code sample, you must have a Google Cloud Platform project with billing and the Google
+To run this code sample, you must have a Google Cloud project with billing and the Google
 Cloud Pub/Sub API enabled.
 
 Install and initialize the https://cloud.google.com/sdk/[Google Cloud SDK].

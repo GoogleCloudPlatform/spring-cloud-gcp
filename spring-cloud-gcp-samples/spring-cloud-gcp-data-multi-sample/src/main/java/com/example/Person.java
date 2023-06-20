@@ -17,25 +17,21 @@
 package com.example;
 
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-
 import org.springframework.data.annotation.Id;
 
 /**
- * A test class for Spring Data Datastore. Used to test that it works with Spring Data
- * Cloud Spanner in a single application.
- *
- * @author Chengyuan Zhao
+ * A test class for Spring Data Datastore. Used to test that it works with Spring Data Cloud Spanner
+ * in a single application.
  */
 @Entity
 public class Person {
 
-	@Id
-	Long id;
+  @Id Long id;
 
-	String name;
+  String name;
 
-	public Person(Long id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+  public Person(Long id, String name) {
+    this.id = id;
+    this.name = name;
+  }
 }

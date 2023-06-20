@@ -16,12 +16,10 @@
 
 package com.google.cloud.spring.data.firestore.repository.support;
 
-import java.lang.reflect.Method;
-
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.repository.query.FirestoreQueryMethod;
 import com.google.cloud.spring.data.firestore.repository.query.PartTreeFirestoreQuery;
-
+import java.lang.reflect.Method;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -29,36 +27,37 @@ import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.RepositoryQuery;
 
 /**
- * The class that decides what type of Query Method to use. For Firestore it is always
- * just PartTree.
- *
- * @author Chengyuan Zhao
+ * The class that decides what type of Query Method to use. For Firestore it is always just
+ * PartTree.
  *
  * @since 1.2
  */
 public class FirestoreQueryLookupStrategy implements QueryLookupStrategy {
 
-	private final FirestoreTemplate firestoreTemplate;
+  private final FirestoreTemplate firestoreTemplate;
 
-	/**
-	 * Constructor.
-	 * @param firestoreTemplate the template that will be used to execute queries.
-	 */
-	public FirestoreQueryLookupStrategy(FirestoreTemplate firestoreTemplate) {
-		this.firestoreTemplate = firestoreTemplate;
-	}
+  /**
+   * Constructor.
+   *
+   * @param firestoreTemplate the template that will be used to execute queries.
+   */
+  public FirestoreQueryLookupStrategy(FirestoreTemplate firestoreTemplate) {
+    this.firestoreTemplate = firestoreTemplate;
+  }
 
-	@Override
-	public RepositoryQuery resolveQuery(Method method, RepositoryMetadata repositoryMetadata,
-			ProjectionFactory projectionFactory, NamedQueries namedQueries) {
-		// In this method we usually decide if the query method is a PartTree or an annotated
-		// @Query method.
-		// There is no choice in Firestore. We only have PartTree.
-		return new PartTreeFirestoreQuery(
-				new FirestoreQueryMethod(method, repositoryMetadata, projectionFactory),
-				this.firestoreTemplate,
-				this.firestoreTemplate.getMappingContext(),
-				this.firestoreTemplate.getClassMapper()
-		);
-	}
+  @Override
+  public RepositoryQuery resolveQuery(
+      Method method,
+      RepositoryMetadata repositoryMetadata,
+      ProjectionFactory projectionFactory,
+      NamedQueries namedQueries) {
+    // In this method we usually decide if the query method is a PartTree or an annotated
+    // @Query method.
+    // There is no choice in Firestore. We only have PartTree.
+    return new PartTreeFirestoreQuery(
+        new FirestoreQueryMethod(method, repositoryMetadata, projectionFactory),
+        this.firestoreTemplate,
+        this.firestoreTemplate.getMappingContext(),
+        this.firestoreTemplate.getClassMapper());
+  }
 }

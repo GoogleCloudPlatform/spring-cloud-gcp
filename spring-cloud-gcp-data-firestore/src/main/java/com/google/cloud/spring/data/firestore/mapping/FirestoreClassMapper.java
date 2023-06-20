@@ -23,40 +23,37 @@ import com.google.firestore.v1.Value;
 /**
  * An interface used for object mapping for Cloud Firestore.
  *
- * @author Dmitry Solomakha
- * @author Mike Eltsufin
  * @since 1.2.2
  */
 public interface FirestoreClassMapper {
-	/**
-	 * Converts an entity to a Firestore type.
-	 *
-	 * @param <T> the type of the object to convert
-	 * @param sourceValue the object to convert
-	 * @return value that can be used to bind to a Firestore query
-	 */
-	<T> Value toFirestoreValue(T sourceValue);
+  /**
+   * Converts an entity to a Firestore type.
+   *
+   * @param <T> the type of the object to convert
+   * @param sourceValue the object to convert
+   * @return value that can be used to bind to a Firestore query
+   */
+  <T> Value toFirestoreValue(T sourceValue);
 
-	/**
-	 * Converts an entity to a Firestore document.
-	 *
-	 * @param <T> the type of the object to convert
-	 * @param entity the object to convert
-	 * @param documentResourceName the fully-qualified identifier of the document
-	 * @return a {@link Document} that can be stored in Firestore
-	 */
-	<T> Document entityToDocument(T entity, String documentResourceName);
+  /**
+   * Converts an entity to a Firestore document.
+   *
+   * @param <T> the type of the object to convert
+   * @param entity the object to convert
+   * @param documentResourceName the fully-qualified identifier of the document
+   * @return a {@link Document} that can be stored in Firestore
+   */
+  <T> Document entityToDocument(T entity, String documentResourceName);
 
-	/**
-	 * Converts a Firestore document to an entity.
-	 *
-	 * @param <T> the type of the target object
-	 * @param document the {@link Document} to convert
-	 * @param clazz the type of the target entity
-	 * @return the entity that the Firestore document was converted to
-	 */
-	<T> T documentToEntity(Document document, Class<T> clazz);
+  /**
+   * Converts a Firestore document to an entity.
+   *
+   * @param <T> the type of the target object
+   * @param document the {@link Document} to convert
+   * @param clazz the type of the target entity
+   * @return the entity that the Firestore document was converted to
+   */
+  <T> T documentToEntity(Document document, Class<T> clazz);
 
-	<T> T setUpdateTime(T entity, Timestamp updateTime);
-
+  <T> T setUpdateTime(T entity, Timestamp updateTime);
 }

@@ -16,75 +16,75 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import brave.Span;
 import brave.propagation.B3SingleFormat;
 import brave.propagation.CurrentTraceContext.Scope;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+class PubSubTracingTest extends PubSubTestBase {
+  @Test
+  void nextSpan_prefers_b3_header() {
+    consumerMessage.putAttributes("b3", B3SingleFormat.writeB3SingleFormat(incoming));
 
-public class PubSubTracingTest extends PubSubTestBase {
-	@Test
-	public void nextSpan_prefers_b3_header() {
-		consumerMessage.putAttributes("b3", B3SingleFormat.writeB3SingleFormat(incoming));
+    Span child;
+    try (Scope ws = tracing.currentTraceContext().newScope(parent)) {
+      child = pubSubTracing.nextSpan(consumerMessage);
+    }
+    child.finish();
 
-		Span child;
-		try (Scope ws = tracing.currentTraceContext().newScope(parent)) {
-			child = pubSubTracing.nextSpan(consumerMessage);
-		}
-		child.finish();
+    assertThat(spans.get(0).id()).isEqualTo(child.context().spanIdString());
+    assertChildOf(spans.get(0), incoming);
+  }
 
-		assertThat(spans.get(0).id()).isEqualTo(child.context().spanIdString());
-		assertChildOf(spans.get(0), incoming);
-	}
+  @Test
+  void nextSpan_uses_current_context() {
+    Span child;
+    try (Scope ws = tracing.currentTraceContext().newScope(parent)) {
+      child = pubSubTracing.nextSpan(consumerMessage);
+    }
+    child.finish();
 
-	@Test
-	public void nextSpan_uses_current_context() {
-		Span child;
-		try (Scope ws = tracing.currentTraceContext().newScope(parent)) {
-			child = pubSubTracing.nextSpan(consumerMessage);
-		}
-		child.finish();
+    assertThat(spans.get(0).id()).isEqualTo(child.context().spanIdString());
+    assertChildOf(spans.get(0), parent);
+  }
 
-		assertThat(spans.get(0).id()).isEqualTo(child.context().spanIdString());
-		assertChildOf(spans.get(0), parent);
-	}
+  @Test
+  void nextSpan_should_create_span_if_no_headers() {
+    assertThat(pubSubTracing.nextSpan(consumerMessage)).isNotNull();
+  }
 
-	@Test
-	public void nextSpan_should_create_span_if_no_headers() {
-		assertThat(pubSubTracing.nextSpan(consumerMessage)).isNotNull();
-	}
+  @Test
+  void nextSpan_should_create_span_with_baggage() {
+    addB3MultiHeaders(parent, consumerMessage);
+    consumerMessage.putAttributes(BAGGAGE_FIELD_KEY, "user1");
 
-	@Test
-	public void nextSpan_should_create_span_with_baggage() {
-		addB3MultiHeaders(parent, consumerMessage);
-		consumerMessage.putAttributes(BAGGAGE_FIELD_KEY, "user1");
+    Span span = pubSubTracing.nextSpan(consumerMessage);
+    assertThat(BAGGAGE_FIELD.getValue(span.context())).contains("user1");
+  }
 
-		Span span = pubSubTracing.nextSpan(consumerMessage);
-		assertThat(BAGGAGE_FIELD.getValue(span.context())).contains("user1");
-	}
+  @Test
+  void nextSpan_should_clear_propagation_headers() {
+    addB3MultiHeaders(parent, consumerMessage);
 
-	@Test
-	public void nextSpan_should_clear_propagation_headers() {
-		addB3MultiHeaders(parent, consumerMessage);
+    pubSubTracing.nextSpan(consumerMessage);
+    assertThat(consumerMessage.getAttributesMap()).isEmpty();
+  }
 
-		pubSubTracing.nextSpan(consumerMessage);
-		assertThat(consumerMessage.getAttributesMap()).isEmpty();
-	}
+  @Test
+  void nextSpan_should_retain_baggage_headers() {
+    consumerMessage.putAttributes(BAGGAGE_FIELD_KEY, "some-baggage");
 
-	@Test
-	public void nextSpan_should_retain_baggage_headers() {
-		consumerMessage.putAttributes(BAGGAGE_FIELD_KEY, "some-baggage");
+    pubSubTracing.nextSpan(consumerMessage);
+    assertThat(consumerMessage.getAttributesOrDefault(BAGGAGE_FIELD_KEY, null)).isNotNull();
+  }
 
-		pubSubTracing.nextSpan(consumerMessage);
-		assertThat(consumerMessage.getAttributesOrDefault(BAGGAGE_FIELD_KEY, null)).isNotNull();
-	}
+  @Test
+  void nextSpan_should_not_clear_other_headers() {
+    consumerMessage.putAttributes("foo", "bar");
 
-	@Test
-	public void nextSpan_should_not_clear_other_headers() {
-		consumerMessage.putAttributes("foo", "bar");
-
-		pubSubTracing.nextSpan(consumerMessage);
-		assertThat(consumerMessage.getAttributesOrDefault("foo", null)).isNotNull();
-	}
+    pubSubTracing.nextSpan(consumerMessage);
+    assertThat(consumerMessage.getAttributesOrDefault("foo", null)).isNotNull();
+  }
 }

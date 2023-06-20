@@ -17,7 +17,6 @@
 package com.google.cloud.spring.data.spanner.core.convert;
 
 import java.util.Collection;
-
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -28,50 +27,47 @@ import org.springframework.util.Assert;
 /**
  * A custom type converter.
  *
- * @author Chengyuan Zhao
- * @author Balint Pato
- *
  * @since 1.1
  */
 public abstract class SpannerCustomConverter {
 
-	private final ConfigurableConversionService conversionService;
+  private final ConfigurableConversionService conversionService;
 
-	/**
-	 * Constructor.
-	 * @param customConversions must not be null.
-	 * @param conversionService if null, then {@link DefaultConversionService} is used.
-	 */
-	SpannerCustomConverter(CustomConversions customConversions,
-																GenericConversionService conversionService) {
-		Assert.notNull(customConversions, "Valid custom conversions are required!");
-		this.conversionService = (conversionService != null) ? conversionService : new DefaultConversionService();
+  /**
+   * Constructor.
+   *
+   * @param customConversions must not be null.
+   * @param conversionService if null, then {@link DefaultConversionService} is used.
+   */
+  SpannerCustomConverter(
+      CustomConversions customConversions, GenericConversionService conversionService) {
+    Assert.notNull(customConversions, "Valid custom conversions are required!");
+    this.conversionService =
+        (conversionService != null) ? conversionService : new DefaultConversionService();
 
-		customConversions.registerConvertersIn(this.conversionService);
-	}
+    customConversions.registerConvertersIn(this.conversionService);
+  }
 
-	public boolean canConvert(Class<?> sourceType, Class<?> targetType) {
-		Class boxedTargetType = ConversionUtils.boxIfNeeded(targetType);
-		Class boxedSourceType = ConversionUtils.boxIfNeeded(sourceType);
-		return boxedSourceType.equals(boxedTargetType)
-				|| this.conversionService.canConvert(boxedSourceType, boxedTargetType);
-	}
+  public boolean canConvert(Class<?> sourceType, Class<?> targetType) {
+    Class boxedTargetType = ConversionUtils.boxIfNeeded(targetType);
+    Class boxedSourceType = ConversionUtils.boxIfNeeded(sourceType);
+    return boxedSourceType.equals(boxedTargetType)
+        || this.conversionService.canConvert(boxedSourceType, boxedTargetType);
+  }
 
-	@SuppressWarnings("unchecked")
-	public <T> T convert(Object sourceValue, Class<T> targetType) {
-		Class<T> boxedTargetType = ConversionUtils.boxIfNeeded(targetType);
-		if (sourceValue == null) {
-			return this.conversionService.convert(null, boxedTargetType);
-		}
-		Class<?> boxedSourceType = ConversionUtils.boxIfNeeded(sourceValue.getClass());
-		return boxedTargetType.isAssignableFrom(boxedSourceType)
-						? (T) sourceValue
-						: this.conversionService.convert(sourceValue, boxedTargetType);
-	}
+  @SuppressWarnings("unchecked")
+  public <T> T convert(Object sourceValue, Class<T> targetType) {
+    Class<T> boxedTargetType = ConversionUtils.boxIfNeeded(targetType);
+    if (sourceValue == null) {
+      return this.conversionService.convert(null, boxedTargetType);
+    }
+    Class<?> boxedSourceType = ConversionUtils.boxIfNeeded(sourceValue.getClass());
+    return boxedTargetType.isAssignableFrom(boxedSourceType)
+        ? (T) sourceValue
+        : this.conversionService.convert(sourceValue, boxedTargetType);
+  }
 
-	static CustomConversions getCustomConversions(
-					Collection<Converter> converters) {
-		return new CustomConversions(CustomConversions.StoreConversions.NONE, converters);
-	}
-
+  static CustomConversions getCustomConversions(Collection<Converter> converters) {
+    return new CustomConversions(CustomConversions.StoreConversions.NONE, converters);
+  }
 }

@@ -16,26 +16,22 @@
 
 package com.example;
 
-import java.util.List;
-
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.data.spanner.repository.query.Query;
-
+import java.util.List;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-/**
- * A sample repository.
- *
- * @author Ray Tsang
- * @author Chengyuan Zhao
- */
+/** A sample repository. */
 @RepositoryRestResource(collectionResourceRel = "traders_repository", path = "traders")
 public interface TraderRepository extends SpannerRepository<Trader, String> {
-	@Query("SELECT count(1) from traders_repository where JSON_VALUE(work_address, '$.active') = @active")
-	long getCountActive(@Param("active") String active);
+  @Query(
+      "SELECT count(1) from traders_repository where JSON_VALUE(work_address, '$.active') ="
+          + " @active")
+  long getCountActive(@Param("active") String active);
 
-
-	@Query("SELECT work_address from traders_repository where JSON_VALUE(work_address, '$.active') = @active")
-	List<Address> getTraderWorkAddressByActive(@Param("active") String active);
+  @Query(
+      "SELECT work_address from traders_repository where JSON_VALUE(work_address, '$.active') ="
+          + " @active")
+  List<Address> getTraderWorkAddressByActive(@Param("active") String active);
 }

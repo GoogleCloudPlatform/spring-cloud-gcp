@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.stream.binder.pubsub.config;
 
-import java.util.Collections;
-
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
@@ -26,7 +24,7 @@ import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
 import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
-
+import java.util.Collections;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -40,13 +38,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
 
-/**
- * Pub/Sub binder configuration.
- *
- * @author João André Martins
- * @author Daniel Zou
- * @author Mike Eltsufin
- */
+/** Pub/Sub binder configuration. */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnMissingBean(Binder.class)
 @ConditionalOnBean({PubSubAdmin.class, PubSubTemplate.class})
@@ -54,36 +46,37 @@ import org.springframework.lang.Nullable;
 @EnableConfigurationProperties(PubSubExtendedBindingProperties.class)
 public class PubSubBinderConfiguration {
 
-	@Bean
-	public PubSubChannelProvisioner pubSubChannelProvisioner(PubSubAdmin pubSubAdmin) {
-		return new PubSubChannelProvisioner(pubSubAdmin);
-	}
+  @Bean
+  public PubSubChannelProvisioner pubSubChannelProvisioner(PubSubAdmin pubSubAdmin) {
+    return new PubSubChannelProvisioner(pubSubAdmin);
+  }
 
-	@Bean
-	public PubSubMessageChannelBinder pubSubBinder(
-			PubSubChannelProvisioner pubSubChannelProvisioner,
-			PubSubTemplate pubSubTemplate,
-			PubSubExtendedBindingProperties pubSubExtendedBindingProperties,
-			@Nullable ProducerMessageHandlerCustomizer<PubSubMessageHandler> producerCustomizer,
-			@Nullable ConsumerEndpointCustomizer<PubSubInboundChannelAdapter> consumerCustomizer,
-			@Nullable HealthTrackerRegistry healthTrackerRegistry
-	) {
-		PubSubMessageChannelBinder binder = new PubSubMessageChannelBinder(null, pubSubChannelProvisioner, pubSubTemplate,
-				pubSubExtendedBindingProperties);
-		binder.setProducerMessageHandlerCustomizer(producerCustomizer);
-		binder.setConsumerEndpointCustomizer(consumerCustomizer);
+  @Bean
+  public PubSubMessageChannelBinder pubSubBinder(
+      PubSubChannelProvisioner pubSubChannelProvisioner,
+      PubSubTemplate pubSubTemplate,
+      PubSubExtendedBindingProperties pubSubExtendedBindingProperties,
+      @Nullable ProducerMessageHandlerCustomizer<PubSubMessageHandler> producerCustomizer,
+      @Nullable ConsumerEndpointCustomizer<PubSubInboundChannelAdapter> consumerCustomizer,
+      @Nullable HealthTrackerRegistry healthTrackerRegistry) {
+    PubSubMessageChannelBinder binder =
+        new PubSubMessageChannelBinder(
+            null, pubSubChannelProvisioner, pubSubTemplate, pubSubExtendedBindingProperties);
+    binder.setProducerMessageHandlerCustomizer(producerCustomizer);
+    binder.setConsumerEndpointCustomizer(consumerCustomizer);
 
-		if (healthTrackerRegistry != null) {
-			binder.setHealthTrackerRegistry(healthTrackerRegistry);
-		}
+    if (healthTrackerRegistry != null) {
+      binder.setHealthTrackerRegistry(healthTrackerRegistry);
+    }
 
-		return binder;
-	}
+    return binder;
+  }
 
-	@Bean
-	public MappingsProvider pubSubExtendedPropertiesDefaultMappingsProvider() {
-		return () -> Collections.singletonMap(
-				ConfigurationPropertyName.of("spring.cloud.stream.gcp.pubsub.bindings"),
-				ConfigurationPropertyName.of("spring.cloud.stream.gcp.pubsub.default"));
-	}
+  @Bean
+  public MappingsProvider pubSubExtendedPropertiesDefaultMappingsProvider() {
+    return () ->
+        Collections.singletonMap(
+            ConfigurationPropertyName.of("spring.cloud.stream.gcp.pubsub.bindings"),
+            ConfigurationPropertyName.of("spring.cloud.stream.gcp.pubsub.default"));
+  }
 }

@@ -21,38 +21,33 @@ import java.time.LocalDateTime;
 /**
  * A user message for the sample app.
  *
- * @author Elena Felder
- *
  * @since 1.2
  */
 public class UserMessage {
 
-	private String body;
+  private String body;
 
-	private String username;
+  private String username;
 
-	private LocalDateTime createdAt;
+  private LocalDateTime createdAt;
 
-	public UserMessage() {
-	}
+  public UserMessage() {}
 
-	public UserMessage(String body, String username, LocalDateTime createdAt) {
-		this.body = body;
-		this.username = username;
-		this.createdAt = createdAt;
-	}
+  public UserMessage(String body, String username, LocalDateTime createdAt) {
+    this.body = body;
+    this.username = username;
+    this.createdAt = createdAt;
+  }
 
-	public String getBody() {
-		return this.body;
-	}
+  public String getBody() {
+    return this.body;
+  }
 
+  public String getUsername() {
+    return this.username;
+  }
 
-	public String getUsername() {
-		return this.username;
-	}
-
-	public LocalDateTime getCreatedAt() {
-		return this.createdAt;
-	}
-
+  public LocalDateTime getCreatedAt() {
+    return this.createdAt;
+  }
 }

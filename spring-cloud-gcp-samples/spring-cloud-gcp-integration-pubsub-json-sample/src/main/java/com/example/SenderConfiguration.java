@@ -20,7 +20,6 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.MessagingGateway;
@@ -29,47 +28,42 @@ import org.springframework.integration.channel.DirectChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
-/**
- * Configuration for sending custom JSON payloads to a Pub/Sub topic.
- *
- * @author Daniel Zou
- */
+/** Configuration for sending custom JSON payloads to a Pub/Sub topic. */
 @Configuration
 public class SenderConfiguration {
 
-	private static final Log LOGGER = LogFactory.getLog(SenderConfiguration.class);
+  private static final Log LOGGER = LogFactory.getLog(SenderConfiguration.class);
 
-	private static final String TOPIC_NAME = "json-payload-sample-topic";
+  private static final String TOPIC_NAME = "json-payload-sample-topic";
 
-	@Bean
-	public DirectChannel pubSubOutputChannel() {
-		return new DirectChannel();
-	}
+  @Bean
+  public DirectChannel pubSubOutputChannel() {
+    return new DirectChannel();
+  }
 
-	@Bean
-	@ServiceActivator(inputChannel = "pubSubOutputChannel")
-	public MessageHandler messageSender(PubSubTemplate pubSubTemplate) {
-		PubSubMessageHandler adapter = new PubSubMessageHandler(pubSubTemplate, TOPIC_NAME);
-		adapter.setPublishCallback(new ListenableFutureCallback<String>() {
-			@Override
-			public void onFailure(Throwable ex) {
-				LOGGER.info("There was an error sending the message.");
-			}
+  @Bean
+  @ServiceActivator(inputChannel = "pubSubOutputChannel")
+  public MessageHandler messageSender(PubSubTemplate pubSubTemplate) {
+    PubSubMessageHandler adapter = new PubSubMessageHandler(pubSubTemplate, TOPIC_NAME);
+    adapter.setPublishCallback(
+        new ListenableFutureCallback<String>() {
+          @Override
+          public void onFailure(Throwable ex) {
+            LOGGER.info("There was an error sending the message.");
+          }
 
-			@Override
-			public void onSuccess(String result) {
-				LOGGER.info("Message was sent successfully.");
-			}
-		});
+          @Override
+          public void onSuccess(String result) {
+            LOGGER.info("Message was sent successfully.");
+          }
+        });
 
-		return adapter;
-	}
+    return adapter;
+  }
 
-	/**
-	 * an interface that allows sending a person to Pub/Sub.
-	 */
-	@MessagingGateway(defaultRequestChannel = "pubSubOutputChannel")
-	public interface PubSubPersonGateway {
-		void sendPersonToPubSub(Person person);
-	}
+  /** an interface that allows sending a person to Pub/Sub. */
+  @MessagingGateway(defaultRequestChannel = "pubSubOutputChannel")
+  public interface PubSubPersonGateway {
+    void sendPersonToPubSub(Person person);
+  }
 }

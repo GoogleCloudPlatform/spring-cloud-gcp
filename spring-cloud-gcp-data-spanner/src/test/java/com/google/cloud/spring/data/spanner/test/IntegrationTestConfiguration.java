@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.data.spanner.test;
 
-import java.io.IOException;
-
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -39,146 +37,154 @@ import com.google.cloud.spring.data.spanner.core.it.SpannerTemplateIntegrationTe
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerRepositories;
 import com.google.cloud.spring.data.spanner.repository.it.SpannerRepositoryIntegrationTests.TradeRepositoryTransactionalService;
-
+import com.google.gson.Gson;
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-/**
- * Configuration for integration tets for Spanner.
- *
- * @author Balint Pato
- * @author Chengyuan Zhao
- */
-
+/** Configuration for integration tets for Spanner. */
 @Configuration
 @EnableTransactionManagement
 @PropertySource("application-test.properties")
 @EnableSpannerRepositories
 public class IntegrationTestConfiguration {
 
-	@Value("${test.integration.spanner.db}")
-	private String databaseName;
+  @Value("${test.integration.spanner.db}")
+  private String databaseName;
 
-	@Value("${test.integration.spanner.instance}")
-	private String instanceId;
+  @Value("${test.integration.spanner.instance}")
+  private String instanceId;
 
-	private static final String TABLE_SUFFIX = String.valueOf(System.currentTimeMillis());
+  private static final String TABLE_SUFFIX = String.valueOf(System.currentTimeMillis());
 
-	@Bean
-	public String getDatabaseName() {
-		return this.databaseName;
-	}
+  @Bean
+  public String getDatabaseName() {
+    return this.databaseName;
+  }
 
-	@Bean
-	public String getInstanceId() {
-		return this.instanceId;
-	}
+  @Bean
+  public String getInstanceId() {
+    return this.instanceId;
+  }
 
-	@Bean
-	public String getProjectId() {
-		return new DefaultGcpProjectIdProvider().getProjectId();
-	}
+  @Bean
+  public String getProjectId() {
+    return new DefaultGcpProjectIdProvider().getProjectId();
+  }
 
-	@Bean
-	public com.google.auth.Credentials getCredentials() {
+  @Bean
+  public com.google.auth.Credentials getCredentials() {
 
-		try {
-			return new DefaultCredentialsProvider(Credentials::new).getCredentials();
-		}
-		catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+    try {
+      return new DefaultCredentialsProvider(Credentials::new).getCredentials();
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
 
-	@Bean
-	public TemplateTransactionalService templateTransactionalService() {
-		return new TemplateTransactionalService();
-	}
+  @Bean
+  public TemplateTransactionalService templateTransactionalService() {
+    return new TemplateTransactionalService();
+  }
 
-	@Bean
-	public TradeRepositoryTransactionalService tradeRepositoryTransactionalService() {
-		return new TradeRepositoryTransactionalService();
-	}
+  @Bean
+  public TradeRepositoryTransactionalService tradeRepositoryTransactionalService() {
+    return new TradeRepositoryTransactionalService();
+  }
 
-	@Bean
-	public SpannerOptions spannerOptions() {
-		return SpannerOptions.newBuilder().setProjectId(getProjectId())
-				.setSessionPoolOption(SessionPoolOptions.newBuilder().setMaxSessions(10).build())
-				.setCredentials(getCredentials()).build();
-	}
+  @Bean
+  public SpannerOptions spannerOptions() {
+    return SpannerOptions.newBuilder()
+        .setProjectId(getProjectId())
+        .setSessionPoolOption(SessionPoolOptions.newBuilder().setMaxSessions(10).build())
+        .setCredentials(getCredentials())
+        .build();
+  }
 
-	@Bean
-	public DatabaseId databaseId() {
-		return DatabaseId.of(getProjectId(), this.instanceId, this.databaseName);
-	}
+  @Bean
+  public DatabaseId databaseId() {
+    return DatabaseId.of(getProjectId(), this.instanceId, this.databaseName);
+  }
 
-	@Bean
-	public Spanner spanner(SpannerOptions spannerOptions) {
-		return spannerOptions.getService();
-	}
+  @Bean
+  public Spanner spanner(SpannerOptions spannerOptions) {
+    return spannerOptions.getService();
+  }
 
-	@Bean
-	public DatabaseClient spannerDatabaseClient(Spanner spanner, DatabaseId databaseId) {
-		return spanner.getDatabaseClient(databaseId);
-	}
+  @Bean
+  public DatabaseClient spannerDatabaseClient(Spanner spanner, DatabaseId databaseId) {
+    return spanner.getDatabaseClient(databaseId);
+  }
 
-	@Bean
-	public SpannerMappingContext spannerMappingContext() {
-		return new SpannerMappingContext();
-	}
+  @Bean
+  public Gson gson() {
+    return new Gson();
+  }
 
-	@Bean
-	public SpannerTemplate spannerTemplate(DatabaseClient databaseClient,
-			SpannerMappingContext mappingContext, SpannerEntityProcessor spannerEntityProcessor,
-			SpannerMutationFactory spannerMutationFactory,
-			SpannerSchemaUtils spannerSchemaUtils) {
-		return new SpannerTemplate(() -> databaseClient, mappingContext, spannerEntityProcessor,
-				spannerMutationFactory, spannerSchemaUtils);
-	}
+  @Bean
+  public SpannerMappingContext spannerMappingContext(Gson gson) {
+    return new SpannerMappingContext(gson);
+  }
 
-	@Bean
-	public SpannerEntityProcessor spannerConverter(SpannerMappingContext mappingContext) {
-		return new ConverterAwareMappingSpannerEntityProcessor(mappingContext);
-	}
+  @Bean
+  public SpannerTemplate spannerTemplate(
+      DatabaseClient databaseClient,
+      SpannerMappingContext mappingContext,
+      SpannerEntityProcessor spannerEntityProcessor,
+      SpannerMutationFactory spannerMutationFactory,
+      SpannerSchemaUtils spannerSchemaUtils) {
+    return new SpannerTemplate(
+        () -> databaseClient,
+        mappingContext,
+        spannerEntityProcessor,
+        spannerMutationFactory,
+        spannerSchemaUtils);
+  }
 
-	@Bean
-	public SpannerTransactionManager spannerTransactionManager(
-			DatabaseClient databaseClient) {
-		return new SpannerTransactionManager(() -> databaseClient);
-	}
+  @Bean
+  public SpannerEntityProcessor spannerConverter(SpannerMappingContext mappingContext) {
+    return new ConverterAwareMappingSpannerEntityProcessor(mappingContext);
+  }
 
-	@Bean
-	public SpannerMutationFactory spannerMutationFactory(
-			SpannerEntityProcessor spannerEntityProcessor,
-			SpannerMappingContext spannerMappingContext,
-			SpannerSchemaUtils spannerSchemaUtils) {
-		return new SpannerMutationFactoryImpl(spannerEntityProcessor,
-				spannerMappingContext, spannerSchemaUtils);
-	}
+  @Bean
+  public SpannerTransactionManager spannerTransactionManager(DatabaseClient databaseClient) {
+    return new SpannerTransactionManager(() -> databaseClient);
+  }
 
-	@Bean
-	public DatabaseAdminClient databaseAdminClient(Spanner spanner) {
-		return spanner.getDatabaseAdminClient();
-	}
+  @Bean
+  public SpannerMutationFactory spannerMutationFactory(
+      SpannerEntityProcessor spannerEntityProcessor,
+      SpannerMappingContext spannerMappingContext,
+      SpannerSchemaUtils spannerSchemaUtils) {
+    return new SpannerMutationFactoryImpl(
+        spannerEntityProcessor, spannerMappingContext, spannerSchemaUtils);
+  }
 
-	@Bean
-	public SpannerSchemaUtils spannerSchemaUtils(
-			SpannerMappingContext spannerMappingContext,
-			SpannerEntityProcessor spannerEntityProcessor) {
-		return new SpannerSchemaUtils(spannerMappingContext, spannerEntityProcessor, true);
-	}
+  @Bean
+  public DatabaseAdminClient databaseAdminClient(Spanner spanner) {
+    return spanner.getDatabaseAdminClient();
+  }
 
-	@Bean
-	public SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate(
-			DatabaseAdminClient databaseAdminClient, DatabaseClient databaseClient, DatabaseId databaseId) {
-		return new SpannerDatabaseAdminTemplate(databaseAdminClient, () -> databaseClient, () -> databaseId);
-	}
+  @Bean
+  public SpannerSchemaUtils spannerSchemaUtils(
+      SpannerMappingContext spannerMappingContext, SpannerEntityProcessor spannerEntityProcessor) {
+    return new SpannerSchemaUtils(spannerMappingContext, spannerEntityProcessor, true);
+  }
 
-	@Bean
-	String tableNameSuffix() {
-		return TABLE_SUFFIX;
-	}
+  @Bean
+  public SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate(
+      DatabaseAdminClient databaseAdminClient,
+      DatabaseClient databaseClient,
+      DatabaseId databaseId) {
+    return new SpannerDatabaseAdminTemplate(
+        databaseAdminClient, () -> databaseClient, () -> databaseId);
+  }
+
+  @Bean
+  String tableNameSuffix() {
+    return TABLE_SUFFIX;
+  }
 }

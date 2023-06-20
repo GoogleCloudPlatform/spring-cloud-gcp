@@ -19,16 +19,5 @@ package com.google.cloud.spring.pubsub.core;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherOperations;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
 
-/**
- * An abstraction for Google Cloud Pub/Sub for publish and subscribe / pull methods.
- *
- * @author Vinicius Carvalho
- * @author João André Martins
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- * @author Doug Hoard
- */
-public interface PubSubOperations extends PubSubPublisherOperations, PubSubSubscriberOperations {
-
-}
-
+/** An abstraction for Google Cloud Pub/Sub for publish and subscribe / pull methods. */
+public interface PubSubOperations extends PubSubPublisherOperations, PubSubSubscriberOperations {}

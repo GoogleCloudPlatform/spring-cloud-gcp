@@ -16,10 +16,8 @@
 
 package com.example;
 
-import java.util.Base64;
-
 import com.google.cloud.spring.kms.KmsTemplate;
-
+import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
@@ -31,44 +29,36 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class KmsWebController {
 
-	@Autowired
-	private Environment environment;
+  @Autowired private Environment environment;
 
-	@Autowired
-	private KmsTemplate kmsTemplate;
+  @Autowired private KmsTemplate kmsTemplate;
 
-	@PostMapping("/encrypt")
-	public ModelAndView encryt(
-			@RequestParam String keyId,
-			@RequestParam String text,
-			ModelMap map) {
+  @PostMapping("/encrypt")
+  public ModelAndView encryt(@RequestParam String keyId, @RequestParam String text, ModelMap map) {
 
-		byte[] encryptedBytes = kmsTemplate.encryptText(keyId, text);
-		String encryptedText = encodeBase64(encryptedBytes);
-		map.put("message", "Text encrypted: " + encryptedText);
-		return new ModelAndView("index.html", map);
-	}
+    byte[] encryptedBytes = kmsTemplate.encryptText(keyId, text);
+    String encryptedText = encodeBase64(encryptedBytes);
+    map.put("message", "Text encrypted: " + encryptedText);
+    return new ModelAndView("index.html", map);
+  }
 
-	@PostMapping("/decrypt")
-	public ModelAndView decrypt(
-			@RequestParam String keyId,
-			@RequestParam String encryptedText,
-			ModelMap map) {
+  @PostMapping("/decrypt")
+  public ModelAndView decrypt(
+      @RequestParam String keyId, @RequestParam String encryptedText, ModelMap map) {
 
-		byte[] encryptedBytes = decodeBase64(encryptedText);
-		String encrypted = kmsTemplate.decryptText(keyId, encryptedBytes);
-		map.put("message", "Text decrypted " + encrypted);
-		return new ModelAndView("index.html", map);
-	}
+    byte[] encryptedBytes = decodeBase64(encryptedText);
+    String encrypted = kmsTemplate.decryptText(keyId, encryptedBytes);
+    map.put("message", "Text decrypted " + encrypted);
+    return new ModelAndView("index.html", map);
+  }
 
-	private String encodeBase64(byte[] bytes) {
-		byte[] encoded = Base64.getEncoder().encode(bytes);
-		return new String(encoded);
-	}
+  private String encodeBase64(byte[] bytes) {
+    byte[] encoded = Base64.getEncoder().encode(bytes);
+    return new String(encoded);
+  }
 
-	private byte[] decodeBase64(String encryptedText) {
-		byte[] bytes = encryptedText.getBytes();
-		return Base64.getDecoder().decode(bytes);
-	}
-
+  private byte[] decodeBase64(String encryptedText) {
+    byte[] bytes = encryptedText.getBytes();
+    return Base64.getDecoder().decode(bytes);
+  }
 }

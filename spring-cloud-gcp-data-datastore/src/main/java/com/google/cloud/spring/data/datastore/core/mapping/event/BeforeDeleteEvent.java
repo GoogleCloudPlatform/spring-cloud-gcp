@@ -18,25 +18,22 @@ package com.google.cloud.spring.data.datastore.core.mapping.event;
 
 import com.google.cloud.datastore.Key;
 
-/**
- * An event published just before Spring Data Cloud Datastore performs a delete operation.
- *
- * @author Chengyuan Zhao
- */
+/** An event published just before Spring Data Cloud Datastore performs a delete operation. */
 public class BeforeDeleteEvent extends DeleteEvent {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param keysToDelete The keys that are deleted in this operation (never {@code null}).
-	 * @param targetEntityClass The target entity type deleted. This may be {@code null}
-	 *     depending on the specific delete operation.
-	 * @param targetIds The target entity ID values deleted. This may be {@code null}
-	 *     depending on the specific delete operation.
-	 * @param targetEntities The target entity objects deleted. This may be {@code null}
-	 *     depending on the specific
-	 */
-	public BeforeDeleteEvent(Key[] keysToDelete, Class targetEntityClass, Iterable targetIds, Iterable targetEntities) {
-		super(keysToDelete, targetEntityClass, targetIds, targetEntities);
-	}
+  /**
+   * Constructor.
+   *
+   * @param keysToDelete The keys that are deleted in this operation (never {@code null}).
+   * @param targetEntityClass The target entity type deleted. This may be {@code null} depending on
+   *     the specific delete operation.
+   * @param targetIds The target entity ID values deleted. This may be {@code null} depending on the
+   *     specific delete operation.
+   * @param targetEntities The target entity objects deleted. This may be {@code null} depending on
+   *     the specific
+   */
+  public BeforeDeleteEvent(
+      Key[] keysToDelete, Class targetEntityClass, Iterable targetIds, Iterable targetEntities) {
+    super(keysToDelete, targetEntityClass, targetIds, targetEntities);
+  }
 }

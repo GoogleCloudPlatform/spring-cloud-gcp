@@ -21,35 +21,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
-/**
- * Web app for sample app.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- */
+/** Web app for sample app. */
 @RestController
 public class WebController {
 
-	private final SenderApplication.PubSubOutboundGateway messagingGateway;
+  private final SenderApplication.PubSubOutboundGateway messagingGateway;
 
-	public WebController(SenderApplication.PubSubOutboundGateway messagingGateway) {
-		this.messagingGateway = messagingGateway;
-	}
+  public WebController(SenderApplication.PubSubOutboundGateway messagingGateway) {
+    this.messagingGateway = messagingGateway;
+  }
 
-	/**
-	 * Posts a message to a Google Cloud Pub/Sub topic, through Spring's messaging gateway, and
-	 * redirects the user to the home page.
-	 *
-	 * @param message the message that will be posted to the Pub/Sub topic, with a
-	 *                parenthesized position suffix
-	 * @param numTimes how many copies of the message to send
-	 * @return the redirected view for the request
-	 */
-	@PostMapping("/postMessage")
-	public RedirectView postMessage(@RequestParam("message") String message, @RequestParam("times") int numTimes) {
-		for (int i = 0; i < numTimes; i++) {
-			this.messagingGateway.sendToPubSub(message + "(" + i + ")");
-		}
-		return new RedirectView("/");
-	}
+  /**
+   * Posts a message to a Google Cloud Pub/Sub topic, through Spring's messaging gateway, and
+   * redirects the user to the home page.
+   *
+   * @param message the message that will be posted to the Pub/Sub topic, with a parenthesized
+   *     position suffix
+   * @param numTimes how many copies of the message to send
+   * @return the redirected view for the request
+   */
+  @PostMapping("/postMessage")
+  public RedirectView postMessage(
+      @RequestParam("message") String message, @RequestParam("times") int numTimes) {
+    for (int i = 0; i < numTimes; i++) {
+      this.messagingGateway.sendToPubSub(message + "(" + i + ")");
+    }
+    return new RedirectView("/");
+  }
 }

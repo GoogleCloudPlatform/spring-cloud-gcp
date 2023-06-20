@@ -16,68 +16,70 @@
 
 package com.google.cloud.spring.storage.integration;
 
-import java.util.Date;
-
 import com.google.cloud.storage.BlobInfo;
-
+import java.util.Date;
 import org.springframework.integration.file.remote.AbstractFileInfo;
 import org.springframework.util.Assert;
 
-/**
- * An object that holds metadata information for a Cloud Storage file.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- */
+/** An object that holds metadata information for a Cloud Storage file. */
 public class GcsFileInfo extends AbstractFileInfo<BlobInfo> {
 
-	private BlobInfo gcsFile;
+  private BlobInfo gcsFile;
 
-	public GcsFileInfo(BlobInfo gcsFile) {
-		Assert.notNull(gcsFile, "The GCS blob can't be null.");
-		this.gcsFile = gcsFile;
-	}
+  public GcsFileInfo(BlobInfo gcsFile) {
+    Assert.notNull(gcsFile, "The GCS blob can't be null.");
+    this.gcsFile = gcsFile;
+  }
 
-	@Override
-	public boolean isDirectory() {
-		return this.gcsFile.isDirectory();
-	}
+  @Override
+  public boolean isDirectory() {
+    return this.gcsFile.isDirectory();
+  }
 
-	@Override
-	public boolean isLink() {
-		return false;
-	}
+  @Override
+  public boolean isLink() {
+    return false;
+  }
 
-	@Override
-	public long getSize() {
-		return this.gcsFile.getSize();
-	}
+  @Override
+  public long getSize() {
+    return this.gcsFile.getSize();
+  }
 
-	@Override
-	public long getModified() {
-		return this.gcsFile.getUpdateTime();
-	}
+  @Override
+  public long getModified() {
+    return this.gcsFile.getUpdateTime();
+  }
 
-	@Override
-	public String getFilename() {
-		return this.gcsFile.getName();
-	}
+  @Override
+  public String getFilename() {
+    return this.gcsFile.getName();
+  }
 
-	@Override
-	public String getPermissions() {
-		throw new UnsupportedOperationException("Use [BlobInfo.getAcl()] to obtain permissions.");
-	}
+  @Override
+  public String getPermissions() {
+    throw new UnsupportedOperationException("Use [BlobInfo.getAcl()] to obtain permissions.");
+  }
 
-	@Override
-	public BlobInfo getFileInfo() {
-		return this.gcsFile;
-	}
+  @Override
+  public BlobInfo getFileInfo() {
+    return this.gcsFile;
+  }
 
-	@Override
-	public String toString() {
-		return "FileInfo [isDirectory=" + isDirectory() + ", isLink=" + isLink()
-				+ ", Size=" + getSize() + ", ModifiedTime="
-				+ new Date(getModified()) + ", Filename=" + getFilename()
-				+ ", RemoteDirectory=" + getRemoteDirectory() + "]";
-	}
+  @Override
+  public String toString() {
+    return "FileInfo [isDirectory="
+        + isDirectory()
+        + ", isLink="
+        + isLink()
+        + ", Size="
+        + getSize()
+        + ", ModifiedTime="
+        + new Date(getModified())
+        + ", Filename="
+        + getFilename()
+        + ", RemoteDirectory="
+        + getRemoteDirectory()
+        + "]";
+  }
 }

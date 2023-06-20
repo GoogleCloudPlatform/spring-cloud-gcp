@@ -16,24 +16,24 @@
 
 package com.google.cloud.spring.logging;
 
-import java.util.Map;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import java.util.Map;
 
 /**
  * This interface allows users to write additional JSON record the JSON log layout.
  *
- * <p>Implementing classes can be used as {@code <loggingEventEnhancer>} elements in the logback definition
- * for {@link StackdriverJsonLayout}.
+ * <p>Implementing classes can be used as {@code <loggingEventEnhancer>} elements in the logback
+ * definition for {@link StackdriverJsonLayout}.
  */
 public interface JsonLoggingEventEnhancer {
 
-	/**
-	 * Add additional JSON data to the JSON log entry, based on the {@link ILoggingEvent}.
-	 * Users should put additional records to {@code jsonMap} to extend the JSON object that will be logged.
-	 *
-	 * @param jsonMap represents the JSON object that is produced by the Stackdriver JSON logging layout
-	 * @param event the Logback logging event
-	 */
-	void enhanceJsonLogEntry(Map<String, Object> jsonMap, ILoggingEvent event);
+  /**
+   * Add additional JSON data to the JSON log entry, based on the {@link ILoggingEvent}. Users
+   * should put additional records to {@code jsonMap} to extend the JSON object that will be logged.
+   *
+   * @param jsonMap represents the JSON object that is produced by the Stackdriver JSON logging
+   *     layout
+   * @param event the Logback logging event
+   */
+  void enhanceJsonLogEntry(Map<String, Object> jsonMap, ILoggingEvent event);
 }

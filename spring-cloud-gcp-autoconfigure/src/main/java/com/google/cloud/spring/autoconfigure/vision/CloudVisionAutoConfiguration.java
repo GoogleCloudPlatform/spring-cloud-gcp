@@ -16,9 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.vision;
 
-import java.io.IOException;
-import java.util.concurrent.Executor;
-
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
@@ -27,7 +24,8 @@ import com.google.cloud.spring.vision.DocumentOcrTemplate;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageAnnotatorSettings;
-
+import java.io.IOException;
+import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -40,7 +38,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 /**
  * Provides Spring Beans for using Cloud Vision API.
  *
- * @author Daniel Zou
  * @since 1.1
  */
 @Configuration(proxyBeanMethods = false)
@@ -49,87 +46,84 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @ConditionalOnProperty(value = "spring.cloud.gcp.vision.enabled", matchIfMissing = true)
 public class CloudVisionAutoConfiguration {
 
-	private final CloudVisionProperties cloudVisionProperties;
+  private final CloudVisionProperties cloudVisionProperties;
 
-	private final CredentialsProvider credentialsProvider;
+  private final CredentialsProvider credentialsProvider;
 
-	public CloudVisionAutoConfiguration(
-			CloudVisionProperties properties, CredentialsProvider credentialsProvider)
-			throws IOException {
+  public CloudVisionAutoConfiguration(
+      CloudVisionProperties properties, CredentialsProvider credentialsProvider)
+      throws IOException {
 
-		this.cloudVisionProperties = properties;
+    this.cloudVisionProperties = properties;
 
-		if (properties.getCredentials().hasKey()) {
-			this.credentialsProvider = new DefaultCredentialsProvider(properties);
-		}
-		else {
-			this.credentialsProvider = credentialsProvider;
-		}
-	}
+    if (properties.getCredentials().hasKey()) {
+      this.credentialsProvider = new DefaultCredentialsProvider(properties);
+    } else {
+      this.credentialsProvider = credentialsProvider;
+    }
+  }
 
-	/**
-	 * Configure the Cloud Vision API client {@link ImageAnnotatorClient}. The
-	 * spring-cloud-gcp-starter autowires a {@link CredentialsProvider} object that provides
-	 * the GCP credentials, required to authenticate and authorize Vision API calls.
-	 * <p>Cloud Vision API client implements {@link AutoCloseable}, which is automatically
-	 * honored by Spring bean lifecycle.
-	 * <p>Most of the Google Cloud API clients are thread-safe heavy objects. I.e., it's better
-	 * to produce a singleton and re-using the client object for multiple requests.
-	 * @return a Cloud Vision API client
-	 * @throws IOException if an exception occurs creating the ImageAnnotatorClient
-	 */
-	@Bean
-	@ConditionalOnMissingBean
-	public ImageAnnotatorClient imageAnnotatorClient() throws IOException {
-		ImageAnnotatorSettings clientSettings = ImageAnnotatorSettings.newBuilder()
-				.setCredentialsProvider(this.credentialsProvider)
-				.setHeaderProvider(new UserAgentHeaderProvider(CloudVisionAutoConfiguration.class))
-				.build();
+  /**
+   * Configure the Cloud Vision API client {@link ImageAnnotatorClient}. The
+   * spring-cloud-gcp-starter autowires a {@link CredentialsProvider} object that provides the GCP
+   * credentials, required to authenticate and authorize Vision API calls.
+   *
+   * <p>Cloud Vision API client implements {@link AutoCloseable}, which is automatically honored by
+   * Spring bean lifecycle.
+   *
+   * <p>Most of the Google Cloud API clients are thread-safe heavy objects. I.e., it's better to
+   * produce a singleton and re-using the client object for multiple requests.
+   *
+   * @return a Cloud Vision API client
+   * @throws IOException if an exception occurs creating the ImageAnnotatorClient
+   */
+  @Bean
+  @ConditionalOnMissingBean
+  public ImageAnnotatorClient imageAnnotatorClient() throws IOException {
+    ImageAnnotatorSettings clientSettings =
+        ImageAnnotatorSettings.newBuilder()
+            .setCredentialsProvider(this.credentialsProvider)
+            .setHeaderProvider(new UserAgentHeaderProvider(CloudVisionAutoConfiguration.class))
+            .build();
 
-		return ImageAnnotatorClient.create(clientSettings);
-	}
+    return ImageAnnotatorClient.create(clientSettings);
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	public CloudVisionTemplate cloudVisionTemplate(ImageAnnotatorClient imageAnnotatorClient) {
-		return new CloudVisionTemplate(imageAnnotatorClient);
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  public CloudVisionTemplate cloudVisionTemplate(ImageAnnotatorClient imageAnnotatorClient) {
+    return new CloudVisionTemplate(imageAnnotatorClient);
+  }
 
+  @Bean
+  @ConditionalOnMissingBean(name = "cloudVisionExecutor")
+  public Executor cloudVisionExecutor() {
+    ThreadPoolTaskExecutor ackExecutor = new ThreadPoolTaskExecutor();
+    ackExecutor.setMaxPoolSize(this.cloudVisionProperties.getExecutorThreadsCount());
+    ackExecutor.setThreadNamePrefix("gcp-cloud-vision-ocr-executor");
+    ackExecutor.setDaemon(true);
+    return ackExecutor;
+  }
 
-	@Bean
-	@ConditionalOnMissingBean(name = "cloudVisionExecutor")
-	public Executor cloudVisionExecutor() {
-		ThreadPoolTaskExecutor ackExecutor = new ThreadPoolTaskExecutor();
-		ackExecutor.setMaxPoolSize(this.cloudVisionProperties.getExecutorThreadsCount());
-		ackExecutor.setThreadNamePrefix("gcp-cloud-vision-ocr-executor");
-		ackExecutor.setDaemon(true);
-		return ackExecutor;
-	}
+  /** Configures the {@link DocumentOcrTemplate} class. */
+  @ConditionalOnClass(Storage.class)
+  @ConditionalOnMissingBean(DocumentOcrTemplate.class)
+  static class VisionOcrConfiguration {
+    private final CloudVisionProperties properties;
 
-	/**
-	 * Configures the {@link DocumentOcrTemplate} class.
-	 */
-	@ConditionalOnClass(Storage.class)
-	@ConditionalOnMissingBean(DocumentOcrTemplate.class)
-	static class VisionOcrConfiguration {
-		private final CloudVisionProperties properties;
+    VisionOcrConfiguration(CloudVisionProperties properties) {
+      this.properties = properties;
+    }
 
-		VisionOcrConfiguration(CloudVisionProperties properties) {
-			this.properties = properties;
-		}
+    @Bean
+    @ConditionalOnMissingBean
+    public DocumentOcrTemplate documentOcrTemplate(
+        ImageAnnotatorClient imageAnnotatorClient,
+        Storage storage,
+        @Qualifier("cloudVisionExecutor") Executor executor) {
 
-		@Bean
-		@ConditionalOnMissingBean
-		public DocumentOcrTemplate documentOcrTemplate(
-				ImageAnnotatorClient imageAnnotatorClient,
-				Storage storage,
-				@Qualifier("cloudVisionExecutor") Executor executor) {
-
-			return new DocumentOcrTemplate(
-					imageAnnotatorClient,
-					storage,
-					executor,
-					this.properties.getJsonOutputBatchSize());
-		}
-	}
+      return new DocumentOcrTemplate(
+          imageAnnotatorClient, storage, executor, this.properties.getJsonOutputBatchSize());
+    }
+  }
 }

@@ -1,13 +1,13 @@
-= Spring Cloud GCP Cloud Spanner Starter Example using Spring Data repositories
+= Spring Framework on Google Cloud Spanner Starter Example using Spring Data repositories
 
 Refer this Spring Data Documentation for concepts overview: https://docs.spring.io/spring-data/data-commons/docs/2.5.x/reference/html/#repositories.core-concepts[click here]
 
-This code sample demonstrates how to read and write POJOs from Google Cloud Spanner using the Spring Data Cloud Spanner module link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-spanner[Spring Cloud GCP Cloud Spanner Starter].
+This code sample demonstrates how to read and write POJOs from Google Cloud Spanner using the Spring Data Cloud Spanner module link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-spanner[Spring Framework on Google Cloud Cloud Spanner Starter].
 
 
 == Running the example
 
-=== Running on GCP
+=== Running on Google Cloud
 
 image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample/README.adoc]
 
@@ -29,11 +29,13 @@ After that, you would need to create an instance using this command:
 $ gcloud spanner instances create spring-demo --config=emulator-config --description="Test Instance" --nodes=1
 ----
 
-Note that you need to set the `SPANNER_EMULATOR_HOST` environment variable to use the emulator.
+Add the following property to `application.properties`:
 
 ----
-$ export SPANNER_EMULATOR_HOST=localhost:9010
+spring.cloud.gcp.spanner.emulator.enabled=true
 ----
+
+Note that the `SPANNER_EMULATOR_HOST` environment variable is NOT needed in this case as `GcpSpannerEmulatorAutoConfiguration` will define a default hostname and port (i.e, localhost:9010) for the emulator.
 
 === Running the application
 
@@ -55,3 +57,5 @@ This is achieved using https://projects.spring.io/spring-data-rest/:[Spring Data
 
 You can also write trades using
 `curl -XPOST -H"Content-Type: application/json" -d@test.json http://localhost:8080/trades/` where the file `test.json` holds the JSON representation of a `Trade` object.
+
+You can override the default Gson instance for JSON conversions with a custom Gson bean as shown in SampleConfigurations.

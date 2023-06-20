@@ -24,85 +24,85 @@ import brave.propagation.Propagation.RemoteSetter;
 import com.google.pubsub.v1.PubsubMessage;
 
 /**
- * Adds support for injecting and extracting context headers in {@link PubsubMessage.Builder},
- * for the consumer side (receiving).
+ * Adds support for injecting and extracting context headers in {@link PubsubMessage.Builder}, for
+ * the consumer side (receiving).
  */
 final class PubSubConsumerRequest extends ConsumerRequest {
-	static final RemoteGetter<PubSubConsumerRequest> GETTER =
-			new RemoteGetter<PubSubConsumerRequest>() {
-				@Override
-				public Kind spanKind() {
-					return Kind.CONSUMER;
-				}
+  static final RemoteGetter<PubSubConsumerRequest> GETTER =
+      new RemoteGetter<PubSubConsumerRequest>() {
+        @Override
+        public Kind spanKind() {
+          return Kind.CONSUMER;
+        }
 
-				@Override
-				public String get(PubSubConsumerRequest request, String name) {
-					return request.delegate.getAttributesOrDefault(name, null);
-				}
+        @Override
+        public String get(PubSubConsumerRequest request, String name) {
+          return request.delegate.getAttributesOrDefault(name, null);
+        }
 
-				@Override
-				public String toString() {
-					return "PubsubMessage.Builder::getAttribute";
-				}
-			};
+        @Override
+        public String toString() {
+          return "PubsubMessage.Builder::getAttribute";
+        }
+      };
 
-	static final RemoteSetter<PubSubConsumerRequest> SETTER =
-			new RemoteSetter<PubSubConsumerRequest>() {
-				@Override
-				public Kind spanKind() {
-					return Kind.CONSUMER;
-				}
+  static final RemoteSetter<PubSubConsumerRequest> SETTER =
+      new RemoteSetter<PubSubConsumerRequest>() {
+        @Override
+        public Kind spanKind() {
+          return Kind.CONSUMER;
+        }
 
-				@Override
-				public void put(PubSubConsumerRequest request, String name, String value) {
-					request.delegate.putAttributes(name, value);
-				}
+        @Override
+        public void put(PubSubConsumerRequest request, String name, String value) {
+          request.delegate.putAttributes(name, value);
+        }
 
-				@Override
-				public String toString() {
-					return "PubsubMessage.Builder::putAttributes";
-				}
-			};
+        @Override
+        public String toString() {
+          return "PubsubMessage.Builder::putAttributes";
+        }
+      };
 
-	final PubsubMessage.Builder delegate;
+  final PubsubMessage.Builder delegate;
 
-	final String subscription;
+  final String subscription;
 
-	PubSubConsumerRequest(PubsubMessage.Builder delegate, @Nullable String subscription) {
-		if (delegate == null) {
-			throw new NullPointerException("PubsubMessage.Builder delegate == null");
-		}
-		this.delegate = delegate;
-		this.subscription = subscription;
-	}
+  PubSubConsumerRequest(PubsubMessage.Builder delegate, @Nullable String subscription) {
+    if (delegate == null) {
+      throw new NullPointerException("PubsubMessage.Builder delegate == null");
+    }
+    this.delegate = delegate;
+    this.subscription = subscription;
+  }
 
-	@Override
-	public Kind spanKind() {
-		return Kind.CONSUMER;
-	}
+  @Override
+  public Kind spanKind() {
+    return Kind.CONSUMER;
+  }
 
-	@Override
-	public Object unwrap() {
-		return delegate;
-	}
+  @Override
+  public Object unwrap() {
+    return delegate;
+  }
 
-	@Override
-	public String operation() {
-		return "receive";
-	}
+  @Override
+  public String operation() {
+    return "receive";
+  }
 
-	@Override
-	public String channelKind() {
-		return "subscription";
-	}
+  @Override
+  public String channelKind() {
+    return "subscription";
+  }
 
-	@Override
-	public String channelName() {
-		return subscription;
-	}
+  @Override
+  public String channelName() {
+    return subscription;
+  }
 
-	@Override
-	public String messageId() {
-		return delegate.getMessageId();
-	}
+  @Override
+  public String messageId() {
+    return delegate.getMessageId();
+  }
 }

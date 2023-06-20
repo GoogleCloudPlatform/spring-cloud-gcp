@@ -23,56 +23,50 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.spanner.v1.TypeCode;
 
-/**
- * A child interleaved table of {@link SubTrade} and a grand-child of {@link Trade}.
- *
- * @author Chengyuan Zhao
- * @author Roman Solodovnichenko
- */
+/** A child interleaved table of {@link SubTrade} and a grand-child of {@link Trade}. */
 @Table(name = "#{'sub_trade_component'.concat(tableNameSuffix)}")
 public class SubTradeComponent {
 
-	@PrimaryKey
-	@Embedded
-	SubTradeIdentifier subTradeIdentifier;
+  @PrimaryKey @Embedded SubTradeIdentifier subTradeIdentifier;
 
-	@PrimaryKey(keyOrder = 2)
-	String componentIdPartA;
+  @PrimaryKey(keyOrder = 2)
+  String componentIdPartA;
 
-	@PrimaryKey(keyOrder = 3)
-	String componentIdPartB;
+  @PrimaryKey(keyOrder = 3)
+  String componentIdPartB;
 
-	@Column(spannerType = TypeCode.STRING)
-	boolean booleanValue;
+  @Column(spannerType = TypeCode.STRING)
+  boolean booleanValue;
 
-	@Column(spannerCommitTimestamp = true)
-	Timestamp commitTimestamp;
+  @Column(spannerCommitTimestamp = true)
+  Timestamp commitTimestamp;
 
-	@Column
-	boolean disabled;
+  @Column boolean disabled;
 
-	public SubTradeComponent() {
+  public SubTradeComponent() {}
 
-	}
+  public SubTradeComponent(
+      String id,
+      String traderId,
+      String subTradeId,
+      String componentIdPartA,
+      String componentIdPartB) {
+    TradeIdentifier tradeIdentifier = new TradeIdentifier();
+    tradeIdentifier.identifier = id;
+    tradeIdentifier.trader_id = traderId;
+    SubTradeIdentifier subTradeIdentifier = new SubTradeIdentifier();
+    subTradeIdentifier.sub_trade_id = subTradeId;
+    subTradeIdentifier.tradeIdentifier = tradeIdentifier;
+    this.subTradeIdentifier = subTradeIdentifier;
+    this.componentIdPartA = componentIdPartA;
+    this.componentIdPartB = componentIdPartB;
+  }
 
-	public SubTradeComponent(String id, String traderId, String subTradeId,
-			String componentIdPartA, String componentIdPartB) {
-		TradeIdentifier tradeIdentifier = new TradeIdentifier();
-		tradeIdentifier.identifier = id;
-		tradeIdentifier.trader_id = traderId;
-		SubTradeIdentifier subTradeIdentifier = new SubTradeIdentifier();
-		subTradeIdentifier.sub_trade_id = subTradeId;
-		subTradeIdentifier.tradeIdentifier = tradeIdentifier;
-		this.subTradeIdentifier = subTradeIdentifier;
-		this.componentIdPartA = componentIdPartA;
-		this.componentIdPartB = componentIdPartB;
-	}
+  public Timestamp getCommitTimestamp() {
+    return this.commitTimestamp;
+  }
 
-	public Timestamp getCommitTimestamp() {
-		return this.commitTimestamp;
-	}
-
-	public void setCommitTimestamp(Timestamp commitTimestamp) {
-		this.commitTimestamp = commitTimestamp;
-	}
+  public void setCommitTimestamp(Timestamp commitTimestamp) {
+    this.commitTimestamp = commitTimestamp;
+  }
 }

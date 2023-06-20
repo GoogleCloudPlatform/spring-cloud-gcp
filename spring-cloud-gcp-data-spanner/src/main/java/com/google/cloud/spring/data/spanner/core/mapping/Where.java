@@ -16,29 +16,28 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 /**
- * Where clause to add to the element Entity or target entity of a collection.
- * The clause is written in SQL. A common use case here is for soft-deletes.
- * It can be used on class level or on interleaved list as well.
- * It overwrites the class-level `@Where` annotation when used on an interleaved list property of the same type.
- *
- * @author Roman Solodovnichenko
+ * Where clause to add to the element Entity or target entity of a collection. The clause is written
+ * in SQL. A common use case here is for soft-deletes. It can be used on class level or on
+ * interleaved list as well. It overwrites the class-level `@Where` annotation when used on an
+ * interleaved list property of the same type.
  *
  * @since 1.2.2
  */
 @Target({TYPE, FIELD})
 @Retention(RUNTIME)
 public @interface Where {
-	/**
-	 * The where-clause predicate.
-	 * @return SQL where cause
-	 */
-	String value();
+  /**
+   * The where-clause predicate.
+   *
+   * @return SQL where cause
+   */
+  String value();
 }

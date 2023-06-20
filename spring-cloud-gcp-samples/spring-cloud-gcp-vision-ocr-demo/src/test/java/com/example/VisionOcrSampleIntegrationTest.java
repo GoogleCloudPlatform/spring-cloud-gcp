@@ -16,44 +16,34 @@
 
 package com.example;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
-
-@RunWith(SpringRunner.class)
+//Please use "-Dit.vision=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.vision", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
-		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		classes = Application.class,
-		properties = "application.ocr-bucket=vision-integration-test-bucket")
-public class VisionOcrSampleIntegrationTest {
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = Application.class,
+    properties = "application.ocr-bucket=vision-integration-test-bucket")
+class VisionOcrSampleIntegrationTest {
 
-	@Autowired
-	private TestRestTemplate testRestTemplate;
+  @Autowired private TestRestTemplate testRestTemplate;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"Vision Sample integration tests are disabled. Please use '-Dit.vision=true' "
-						+ "to enable them.",
-				System.getProperty("it.vision"), is("true"));
-	}
+  @Test
+  void testApplicationStartup() {
+    ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
+    assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
 
-	@Test
-	public void testApplicationStartup() {
-		ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
-		assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-
-		response = this.testRestTemplate.getForEntity("/status", String.class);
-		assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-	}
+    response = this.testRestTemplate.getForEntity("/status", String.class);
+    assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+  }
 }

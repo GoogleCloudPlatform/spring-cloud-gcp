@@ -5,7 +5,6 @@ if [[ -z "${CREDENTIALS}" ]]; then
   CREDENTIALS=${KOKORO_KEYSTORE_DIR}/73713_docuploader_service_account
 fi
 
-# Set the version of python to 3.6
 pyenv global 3.7.2
 
 # Get into the spring-cloud-gcp repo directory
@@ -20,6 +19,7 @@ PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceSt
 
 # Install docuploader package
 python3 -m pip install --upgrade six
+python3 -m pip install --upgrade protobuf
 python3 -m pip install gcp-docuploader
 
 # Build the javadocs

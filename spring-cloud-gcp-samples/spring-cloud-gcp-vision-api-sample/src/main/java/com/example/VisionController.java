@@ -16,14 +16,12 @@
 
 package com.example;
 
-import java.util.List;
-
 import com.google.cloud.spring.vision.CloudVisionTemplate;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.EntityAnnotation;
 import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.ui.ModelMap;
@@ -35,52 +33,60 @@ import org.springframework.web.servlet.ModelAndView;
  * Code sample that shows how Spring Cloud GCP can be leveraged to use Google Cloud Client
  * Libraries.
  *
- * <p>This uses the Cloud Vision API with the {@link ImageAnnotatorClient}, which is
- * configured and provided by the spring-cloud-gcp-starter-vision module.
- *
- * @author João André Martins
- * @author Daniel Zou
+ * <p>This uses the Cloud Vision API with the {@link ImageAnnotatorClient}, which is configured and
+ * provided by the spring-cloud-gcp-starter-vision module.
  */
 @RestController
 public class VisionController {
 
-	@Autowired
-	private ResourceLoader resourceLoader;
+  @Autowired private ResourceLoader resourceLoader;
 
-	@Autowired
-	private CloudVisionTemplate cloudVisionTemplate;
+  @Autowired private CloudVisionTemplate cloudVisionTemplate;
 
-	/**
-	 * This method downloads an image from a URL and sends its contents to the Vision API for label detection.
-	 *
-	 * @param imageUrl the URL of the image
-	 * @param map the model map to use
-	 * @return a string with the list of labels and percentage of certainty
-	 * @throws com.google.cloud.spring.vision.CloudVisionException if the Vision API call
-	 *    produces an error
-	 */
-	@GetMapping("/extractLabels")
-	public ModelAndView extractLabels(String imageUrl, ModelMap map) {
-		AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(
-				this.resourceLoader.getResource(imageUrl), Type.LABEL_DETECTION);
+  /**
+   * This method downloads an image from a URL and sends its contents to the Vision API for label
+   * detection.
+   *
+   * @param imageUrl the URL of the image
+   * @param map the model map to use
+   * @return a string with the list of labels and percentage of certainty
+   * @throws com.google.cloud.spring.vision.CloudVisionException if the Vision API call produces an
+   *     error
+   */
+  @GetMapping("/extractLabels")
+  public ModelAndView extractLabels(String imageUrl, ModelMap map) {
+    AnnotateImageResponse response =
+        this.cloudVisionTemplate.analyzeImage(
+            this.resourceLoader.getResource(imageUrl), Type.LABEL_DETECTION);
 
-		// This gets the annotations of the image from the response object.
-		List<EntityAnnotation> annotations = response.getLabelAnnotationsList();
+    // This gets the annotations of the image from the response object.
+    List<EntityAnnotation> annotations = response.getLabelAnnotationsList();
 
-		map.addAttribute("annotations", annotations);
-		map.addAttribute("imageUrl", imageUrl);
+    map.addAttribute("annotations", annotations);
+    map.addAttribute("imageUrl", imageUrl);
 
-		return new ModelAndView("result", map);
-	}
+    return new ModelAndView("result", map);
+  }
 
-	@GetMapping("/extractText")
-	public ModelAndView extractText(String imageUrl, ModelMap map) {
-		String text = this.cloudVisionTemplate.extractTextFromImage(
-				this.resourceLoader.getResource(imageUrl));
+  @GetMapping("/extractText")
+  public ModelAndView extractText(String imageUrl, ModelMap map) {
+    String text =
+        this.cloudVisionTemplate.extractTextFromImage(this.resourceLoader.getResource(imageUrl));
 
-		map.addAttribute("text", text);
-		map.addAttribute("imageUrl", imageUrl);
+    map.addAttribute("text", text);
+    map.addAttribute("imageUrl", imageUrl);
 
-		return new ModelAndView("result", map);
-	}
+    return new ModelAndView("result", map);
+  }
+
+  @GetMapping("/extractTextFromPdf")
+  public ModelAndView extractTextFromPdf(String pdfUrl, ModelMap map) {
+    List<String> texts =
+        this.cloudVisionTemplate.extractTextFromPdf(this.resourceLoader.getResource(pdfUrl));
+
+    map.addAttribute("texts", texts);
+    map.addAttribute("pdfUrl", pdfUrl);
+
+    return new ModelAndView("result_pdf", map);
+  }
 }

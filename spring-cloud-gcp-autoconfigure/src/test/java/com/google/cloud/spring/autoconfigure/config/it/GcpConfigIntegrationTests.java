@@ -16,56 +16,46 @@
 
 package com.google.cloud.spring.autoconfigure.config.it;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.cloud.spring.autoconfigure.config.GcpConfigBootstrapConfiguration;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
+/** Integration tests for config auto-configuration. */
+@EnabledIfSystemProperty(named = "it.config", matches = "true")
+class GcpConfigIntegrationTests {
 
-/**
- * Integration tests for config auto-configuration.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- */
-public class GcpConfigIntegrationTests {
+  private ConfigurableApplicationContext context;
 
-	private ConfigurableApplicationContext context;
+  @AfterEach
+  void close() {
+    if (this.context != null) {
+      this.context.close();
+    }
+  }
 
-	@BeforeClass
-	public static void enableTests() {
-		assumeThat(System.getProperty("it.config")).isEqualTo("true");
-	}
+  @Test
+  void testConfiguration() {
+    this.context =
+        new SpringApplicationBuilder()
+            .sources(GcpContextAutoConfiguration.class, GcpConfigBootstrapConfiguration.class)
+            .web(WebApplicationType.NONE)
+            .properties(
+                "spring.cloud.gcp.config.enabled=true",
+                "spring.application.name=myapp",
+                "spring.profiles.active=dontexist,prod",
+                "spring.cloud.bootstrap.enabled=true",
+                "spring.cloud.gcp.sql.enabled=false")
+            .run();
 
-	@After
-	public void close() {
-		if (this.context != null) {
-			this.context.close();
-		}
-	}
-
-	@Test
-	public void testConfiguration() {
-		this.context = new SpringApplicationBuilder()
-				.sources(GcpContextAutoConfiguration.class, GcpConfigBootstrapConfiguration.class)
-				.web(WebApplicationType.NONE)
-				.properties("spring.cloud.gcp.config.enabled=true",
-						"spring.application.name=myapp",
-						"spring.profiles.active=dontexist,prod",
-						"spring.cloud.bootstrap.enabled=true",
-						"spring.cloud.gcp.sql.enabled=false")
-				.run();
-
-		assertThat(this.context.getEnvironment().getProperty("myapp.queue-size"))
-				.isEqualTo("200");
-		assertThat(this.context.getEnvironment().getProperty("myapp.feature-x-enabled"))
-				.isEqualTo("true");
-	}
+    assertThat(this.context.getEnvironment().getProperty("myapp.queue-size")).isEqualTo("200");
+    assertThat(this.context.getEnvironment().getProperty("myapp.feature-x-enabled"))
+        .isEqualTo("true");
+  }
 }

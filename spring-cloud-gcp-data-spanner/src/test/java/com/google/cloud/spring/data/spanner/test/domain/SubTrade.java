@@ -16,106 +16,101 @@
 
 package com.google.cloud.spring.data.spanner.test.domain;
 
-import java.util.List;
-import java.util.Objects;
-
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.Embedded;
 import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.core.mapping.Where;
+import java.util.List;
+import java.util.Objects;
 
-/**
- * An interleaved child of {@link Trade}.
- *
- * @author Chengyuan Zhao
- * @author Roman Solodovnichenko
- */
+/** An interleaved child of {@link Trade}. */
 @Table(name = "#{'sub_trades_'.concat(tableNameSuffix)}")
 @Where("disabled = false")
 public class SubTrade {
 
-	@Embedded
-	@PrimaryKey
-	TradeIdentifier tradeIdentifier;
+  @Embedded @PrimaryKey TradeIdentifier tradeIdentifier;
 
-	@PrimaryKey(keyOrder = 2)
-	String subTradeId;
+  @PrimaryKey(keyOrder = 2)
+  String subTradeId;
 
-	@Interleaved
-	@Where("disabled = false")
-	List<SubTradeComponent> subTradeComponentList;
+  @Interleaved
+  @Where("disabled = false")
+  List<SubTradeComponent> subTradeComponentList;
 
-	@Column
-	boolean disabled;
+  @Column boolean disabled;
 
-	public SubTrade() {
+  public SubTrade() {}
 
-	}
+  public SubTrade(String id, String traderId, String subTradeId) {
+    TradeIdentifier tradeIdentifier = new TradeIdentifier();
+    tradeIdentifier.identifier = id;
+    tradeIdentifier.trader_id = traderId;
+    this.subTradeId = subTradeId;
+    this.tradeIdentifier = tradeIdentifier;
+  }
 
-	public SubTrade(String id, String traderId, String subTradeId) {
-		TradeIdentifier tradeIdentifier = new TradeIdentifier();
-		tradeIdentifier.identifier = id;
-		tradeIdentifier.trader_id = traderId;
-		this.subTradeId = subTradeId;
-		this.tradeIdentifier = tradeIdentifier;
-	}
+  public boolean isDisabled() {
+    return disabled;
+  }
 
-	public boolean isDisabled() {
-		return disabled;
-	}
+  public void setDisabled(boolean disabled) {
+    this.disabled = disabled;
+  }
 
-	public void setDisabled(boolean disabled) {
-		this.disabled = disabled;
-	}
+  public String getSubTradeId() {
+    return this.subTradeId;
+  }
 
-	public String getSubTradeId() {
-		return this.subTradeId;
-	}
+  public void setSubTradeId(String subTradeId) {
+    this.subTradeId = subTradeId;
+  }
 
-	public void setSubTradeId(String subTradeId) {
-		this.subTradeId = subTradeId;
-	}
+  public List<SubTradeComponent> getSubTradeComponentList() {
+    return this.subTradeComponentList;
+  }
 
-	public List<SubTradeComponent> getSubTradeComponentList() {
-		return this.subTradeComponentList;
-	}
+  public void setSubTradeComponentList(List<SubTradeComponent> subTradeComponentList) {
+    this.subTradeComponentList = subTradeComponentList;
+  }
 
-	public void setSubTradeComponentList(List<SubTradeComponent> subTradeComponentList) {
-		this.subTradeComponentList = subTradeComponentList;
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SubTrade subTrade = (SubTrade) o;
+    return Objects.equals(this.tradeIdentifier, subTrade.tradeIdentifier)
+        && Objects.equals(this.disabled, subTrade.disabled)
+        && Objects.equals(getSubTradeId(), subTrade.getSubTradeId())
+        && (Objects.equals(getSubTradeComponentList(), subTrade.getSubTradeComponentList())
+            || (getSubTradeComponentList() == null
+                && subTrade.getSubTradeComponentList().size() == 0)
+            || (subTrade.getSubTradeComponentList() == null
+                && getSubTradeComponentList().size() == 0));
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		SubTrade subTrade = (SubTrade) o;
-		return Objects.equals(this.tradeIdentifier, subTrade.tradeIdentifier) &&
-				Objects.equals(this.disabled, subTrade.disabled) &&
-				Objects.equals(getSubTradeId(), subTrade.getSubTradeId()) &&
-				(Objects.equals(getSubTradeComponentList(), subTrade.getSubTradeComponentList()) ||
-						(getSubTradeComponentList() == null && subTrade.getSubTradeComponentList().size() == 0) ||
-						(subTrade.getSubTradeComponentList() == null && getSubTradeComponentList().size() == 0)
-				);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.tradeIdentifier, getSubTradeId(), getSubTradeComponentList());
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.tradeIdentifier, getSubTradeId(), getSubTradeComponentList());
-	}
-
-	@Override
-	public String toString() {
-		return "SubTrade{" +
-				"tradeIdentifier=" + this.tradeIdentifier +
-				", subTradeId='" + this.subTradeId + '\'' +
-				", subTradeComponentList=" + this.subTradeComponentList +
-				", disabled=" + this.disabled +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "SubTrade{"
+        + "tradeIdentifier="
+        + this.tradeIdentifier
+        + ", subTradeId='"
+        + this.subTradeId
+        + '\''
+        + ", subTradeComponentList="
+        + this.subTradeComponentList
+        + ", disabled="
+        + this.disabled
+        + '}';
+  }
 }

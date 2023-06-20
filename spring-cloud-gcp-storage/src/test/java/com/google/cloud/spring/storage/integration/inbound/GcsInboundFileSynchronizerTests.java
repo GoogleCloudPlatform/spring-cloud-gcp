@@ -16,6 +16,14 @@
 
 package com.google.cloud.spring.storage.integration.inbound;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.willAnswer;
+import static org.mockito.Mockito.mock;
+
+import com.google.cloud.PageImpl;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Storage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,17 +31,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import com.google.cloud.PageImpl;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Storage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -42,107 +45,99 @@ import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.file.filters.AcceptOnceFileListFilter;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.willAnswer;
-import static org.mockito.Mockito.mock;
-
-/**
- * Tests for inbound file synchronizer.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- */
-@RunWith(SpringJUnit4ClassRunner.class)
+/** Tests for inbound file synchronizer. */
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration
-public class GcsInboundFileSynchronizerTests {
+class GcsInboundFileSynchronizerTests {
 
-	@Autowired
-	private Storage gcs;
+  @Autowired private Storage gcs;
 
-	private static final Log LOGGER = LogFactory.getLog(GcsInboundFileSynchronizerTests.class);
+  private static final Log LOGGER = LogFactory.getLog(GcsInboundFileSynchronizerTests.class);
 
-	@After
-	@Before
-	public void cleanUp() throws IOException {
-		Path testDirectory = Paths.get("test");
+  @AfterEach
+  @BeforeEach
+  void cleanUp() throws IOException {
+    Path testDirectory = Paths.get("test");
 
-		if (Files.exists(testDirectory)) {
-			if (Files.isDirectory(testDirectory)) {
-				try (Stream<Path> files = Files.list(testDirectory)) {
-					files.forEach(path -> {
-						try {
-							Files.delete(path);
-						}
-						catch (IOException ioe) {
-							LOGGER.info("Error deleting test file.", ioe);
-						}
-					});
-				}
-			}
+    if (Files.exists(testDirectory)) {
+      if (Files.isDirectory(testDirectory)) {
+        try (Stream<Path> files = Files.list(testDirectory)) {
+          files.forEach(
+              path -> {
+                try {
+                  Files.delete(path);
+                } catch (IOException ioe) {
+                  LOGGER.info("Error deleting test file.", ioe);
+                }
+              });
+        }
+      }
 
-			Files.delete(testDirectory);
-		}
-	}
+      Files.delete(testDirectory);
+    }
+  }
 
-	@Test
-	public void testCopyFiles() throws Exception {
-		File localDirectory = new File("test");
-		GcsInboundFileSynchronizer synchronizer = new GcsInboundFileSynchronizer(this.gcs);
-		synchronizer.setRemoteDirectory("test-bucket");
-		synchronizer.setBeanFactory(mock(BeanFactory.class));
+  @Test
+  void testCopyFiles() throws Exception {
+    File localDirectory = new File("test");
+    GcsInboundFileSynchronizer synchronizer = new GcsInboundFileSynchronizer(this.gcs);
+    synchronizer.setRemoteDirectory("test-bucket");
+    synchronizer.setBeanFactory(mock(BeanFactory.class));
 
-		GcsInboundFileSynchronizingMessageSource adapter = new GcsInboundFileSynchronizingMessageSource(synchronizer);
-		adapter.setAutoCreateLocalDirectory(true);
-		adapter.setLocalDirectory(localDirectory);
-		adapter.setBeanFactory(mock(BeanFactory.class));
+    GcsInboundFileSynchronizingMessageSource adapter =
+        new GcsInboundFileSynchronizingMessageSource(synchronizer);
+    adapter.setAutoCreateLocalDirectory(true);
+    adapter.setLocalDirectory(localDirectory);
+    adapter.setBeanFactory(mock(BeanFactory.class));
 
-		adapter.setLocalFilter(new AcceptOnceFileListFilter<>());
+    adapter.setLocalFilter(new AcceptOnceFileListFilter<>());
 
-		adapter.afterPropertiesSet();
+    adapter.afterPropertiesSet();
 
-		Message<File> message = adapter.receive();
-		assertThat(message.getPayload()).hasName("legend of heroes");
-		assertThat(Files.readAllBytes(message.getPayload().toPath())).isEqualTo("estelle".getBytes());
+    Message<File> message = adapter.receive();
+    assertThat(message.getPayload()).hasName("legend of heroes");
+    assertThat(Files.readAllBytes(message.getPayload().toPath())).isEqualTo("estelle".getBytes());
 
-		message = adapter.receive();
-		assertThat(message.getPayload()).hasName("trails in the sky");
-		assertThat(Files.readAllBytes(message.getPayload().toPath())).isEqualTo("joshua".getBytes());
+    message = adapter.receive();
+    assertThat(message.getPayload()).hasName("trails in the sky");
+    assertThat(Files.readAllBytes(message.getPayload().toPath())).isEqualTo("joshua".getBytes());
 
-		message = adapter.receive();
-		assertThat(message).isNull();
-	}
+    message = adapter.receive();
+    assertThat(message).isNull();
+  }
 
-	/**
-	 * Spring config for the tests.
-	 */
-	@Configuration
-	@EnableIntegration
-	public static class Config {
+  /** Spring config for the tests. */
+  @Configuration
+  @EnableIntegration
+  public static class Config {
 
-		@Bean
-		public Storage gcs() {
-			Storage gcsMock = mock(Storage.class);
+    @Bean
+    public Storage gcs() {
+      Storage gcsMock = mock(Storage.class);
 
-			Blob blob1 = mock(Blob.class);
-			Blob blob2 = mock(Blob.class);
+      Blob blob1 = mock(Blob.class);
+      Blob blob2 = mock(Blob.class);
 
-			willAnswer(invocation -> "legend of heroes").given(blob1).getName();
-			willAnswer(invocation -> "trails in the sky").given(blob2).getName();
+      willAnswer(invocation -> "legend of heroes").given(blob1).getName();
+      willAnswer(invocation -> "trails in the sky").given(blob2).getName();
 
-			willAnswer(invocation -> "estelle".getBytes()).given(gcsMock)
-					.readAllBytes(eq("test-bucket"), eq("legend of heroes"));
-			willAnswer(invocation -> "joshua".getBytes()).given(gcsMock)
-					.readAllBytes(eq("test-bucket"), eq("trails in the sky"));
+      willAnswer(invocation -> "estelle".getBytes())
+          .given(gcsMock)
+          .readAllBytes(eq("test-bucket"), eq("legend of heroes"));
+      willAnswer(invocation -> "joshua".getBytes())
+          .given(gcsMock)
+          .readAllBytes(eq("test-bucket"), eq("trails in the sky"));
 
-			willAnswer(invocation -> new PageImpl<>(null, null,
-					Stream.of(blob1, blob2)
-							.collect(Collectors.toList())))
-					.given(gcsMock).list("test-bucket");
+      willAnswer(
+              invocation ->
+                  new PageImpl<>(null, null, Stream.of(blob1, blob2).collect(Collectors.toList())))
+          .given(gcsMock)
+          .list("test-bucket");
 
-			return gcsMock;
-		}
-	}
+      return gcsMock;
+    }
+  }
 }

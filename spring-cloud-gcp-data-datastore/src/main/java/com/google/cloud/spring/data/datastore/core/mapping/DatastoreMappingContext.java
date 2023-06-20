@@ -16,14 +16,11 @@
 
 package com.google.cloud.spring.data.datastore.core.mapping;
 
-
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreNativeTypes;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import com.google.cloud.spring.data.datastore.core.convert.DatastoreNativeTypes;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.mapping.context.AbstractMappingContext;
@@ -36,106 +33,110 @@ import org.springframework.data.util.TypeInformation;
 import org.springframework.lang.NonNull;
 
 /**
- * A mapping context for Datastore that provides ways to create persistent entities and
- * properties.
- *
- * @author Chengyuan Zhao
+ * A mapping context for Datastore that provides ways to create persistent entities and properties.
  *
  * @since 1.1
  */
-public class DatastoreMappingContext extends
-		AbstractMappingContext<DatastorePersistentEntity<?>, DatastorePersistentProperty>
-		implements ApplicationContextAware {
+public class DatastoreMappingContext
+    extends AbstractMappingContext<DatastorePersistentEntity<?>, DatastorePersistentProperty>
+    implements ApplicationContextAware {
 
-	private static final FieldNamingStrategy DEFAULT_NAMING_STRATEGY = PropertyNameFieldNamingStrategy.INSTANCE;
+  private static final FieldNamingStrategy DEFAULT_NAMING_STRATEGY =
+      PropertyNameFieldNamingStrategy.INSTANCE;
 
-	private static final FieldNamingStrategy FIELD_NAMING_STRATEGY = DEFAULT_NAMING_STRATEGY;
+  private static final FieldNamingStrategy FIELD_NAMING_STRATEGY = DEFAULT_NAMING_STRATEGY;
 
-	private ApplicationContext applicationContext;
+  private ApplicationContext applicationContext;
 
-	// Maps a given class to the set of other classes with which it shares the same Datastore
-	// Kind and that are subclasses of the given class.
-	private static final Map<Class, Set<Class>> discriminationFamilies = new ConcurrentHashMap<>();
+  // Maps a given class to the set of other classes with which it shares the same Datastore
+  // Kind and that are subclasses of the given class.
+  private static final Map<Class, Set<Class>> discriminationFamilies = new ConcurrentHashMap<>();
 
-	public DatastoreMappingContext() {
-		this.setSimpleTypeHolder(DatastoreNativeTypes.HOLDER);
-	}
+  public DatastoreMappingContext() {
+    this.setSimpleTypeHolder(DatastoreNativeTypes.HOLDER);
+  }
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-	}
+  @Override
+  public void setApplicationContext(ApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
+  }
 
-	/**
-	 * Registers in the DatastoreMappingContext that two classes are discriminated from the
-	 * same Datastore Kind.
-	 * @param parentClass the superclass.
-	 * @param subClass the subclass.
-	 */
-	public static void addDiscriminationClassConnection(Class parentClass, Class subClass) {
-		Set<Class> setParent = discriminationFamilies.computeIfAbsent(parentClass, unused -> new HashSet<>());
-		Set<Class> setSubClass = discriminationFamilies.computeIfAbsent(subClass, unused -> new HashSet<>());
-		setParent.add(subClass);
+  /**
+   * Registers in the DatastoreMappingContext that two classes are discriminated from the same
+   * Datastore Kind.
+   *
+   * @param parentClass the superclass.
+   * @param subClass the subclass.
+   */
+  public static void addDiscriminationClassConnection(Class parentClass, Class subClass) {
+    Set<Class> setParent =
+        discriminationFamilies.computeIfAbsent(parentClass, unused -> new HashSet<>());
+    Set<Class> setSubClass =
+        discriminationFamilies.computeIfAbsent(subClass, unused -> new HashSet<>());
+    setParent.add(subClass);
 
-		setSubClass.forEach(x -> {
-			if (!discriminationFamilies.get(parentClass).contains(x)) {
-				addDiscriminationClassConnection(parentClass, x);
-			}
-		});
-		Class grandParent = parentClass.getSuperclass();
-		if (grandParent != null) {
-			addDiscriminationClassConnection(grandParent, subClass);
-		}
-	}
+    setSubClass.forEach(
+        x -> {
+          if (!discriminationFamilies.get(parentClass).contains(x)) {
+            addDiscriminationClassConnection(parentClass, x);
+          }
+        });
+    Class grandParent = parentClass.getSuperclass();
+    if (grandParent != null) {
+      addDiscriminationClassConnection(grandParent, subClass);
+    }
+  }
 
-	/**
-	 * Get the set of other classes that share the same underlying Datastore Kind and that are
-	 * subclasses of the given class.
-	 * @param aClass the class to look up.
-	 * @return a {@code Set} of other classes that share the same Kind that are subclasses.
-	 * Will be {@code null} if this class is not discriminated from a set of other classes.
-	 */
-	public static Set<Class> getDiscriminationFamily(Class aClass) {
-		return discriminationFamilies.get(aClass);
-	}
+  /**
+   * Get the set of other classes that share the same underlying Datastore Kind and that are
+   * subclasses of the given class.
+   *
+   * @param clazz the class to look up.
+   * @return a {@code Set} of other classes that share the same Kind that are subclasses. Will be
+   *     {@code null} if this class is not discriminated from a set of other classes.
+   */
+  public static Set<Class> getDiscriminationFamily(Class clazz) {
+    return discriminationFamilies.get(clazz);
+  }
 
-	protected <T> DatastorePersistentEntityImpl<T> constructPersistentEntity(
-			TypeInformation<T> typeInformation) {
-		return new DatastorePersistentEntityImpl<>(typeInformation, this);
-	}
+  protected <T> DatastorePersistentEntityImpl<T> constructPersistentEntity(
+      TypeInformation<T> typeInformation) {
+    return new DatastorePersistentEntityImpl<>(typeInformation, this);
+  }
 
-	@Override
-	protected <T> DatastorePersistentEntity<?> createPersistentEntity(
-			TypeInformation<T> typeInformation) {
-		DatastorePersistentEntityImpl<T> persistentEntity = constructPersistentEntity(
-				typeInformation);
-		if (this.applicationContext != null) {
-			persistentEntity.setApplicationContext(this.applicationContext);
-		}
-		return persistentEntity;
-	}
+  @Override
+  protected <T> DatastorePersistentEntity<?> createPersistentEntity(
+      TypeInformation<T> typeInformation) {
+    DatastorePersistentEntityImpl<T> persistentEntity = constructPersistentEntity(typeInformation);
+    if (this.applicationContext != null) {
+      persistentEntity.setApplicationContext(this.applicationContext);
+    }
+    return persistentEntity;
+  }
 
-	@Override
-	protected DatastorePersistentProperty createPersistentProperty(Property property,
-			DatastorePersistentEntity<?> owner, SimpleTypeHolder simpleTypeHolder) {
-		return new DatastorePersistentPropertyImpl(property, owner, simpleTypeHolder, FIELD_NAMING_STRATEGY);
-	}
+  @Override
+  protected DatastorePersistentProperty createPersistentProperty(
+      Property property, DatastorePersistentEntity<?> owner, SimpleTypeHolder simpleTypeHolder) {
+    return new DatastorePersistentPropertyImpl(
+        property, owner, simpleTypeHolder, FIELD_NAMING_STRATEGY);
+  }
 
-	/**
-	 * A non-null version of the {@link MappingContext#getPersistentEntity(Class)}.
-	 * @param entityClass the entity type.
-	 * @throws DatastoreDataException if unable to retrieve a DatastorePersistentEntity for the provided type.
-	 * @return the {@link DatastorePersistentEntity} for the provided type.
-	 */
-	@NonNull
-	public DatastorePersistentEntity<?> getDatastorePersistentEntity(Class<?> entityClass) {
-		DatastorePersistentEntity<?> persistentEntity = this.getPersistentEntity(entityClass);
-		if (persistentEntity != null) {
-			return persistentEntity;
-		}
-		else {
-			throw new DatastoreDataException("Unable to find a DatastorePersistentEntity for: " + entityClass);
-		}
-	}
-
+  /**
+   * A non-null version of the {@link MappingContext#getPersistentEntity(Class)}.
+   *
+   * @param entityClass the entity type.
+   * @return the {@link DatastorePersistentEntity} for the provided type.
+   * @throws DatastoreDataException if unable to retrieve a DatastorePersistentEntity for the
+   *     provided type.
+   */
+  @NonNull
+  public DatastorePersistentEntity<?> getDatastorePersistentEntity(Class<?> entityClass) {
+    DatastorePersistentEntity<?> persistentEntity = this.getPersistentEntity(entityClass);
+    if (persistentEntity != null) {
+      return persistentEntity;
+    } else {
+      throw new DatastoreDataException(
+          "Unable to find a DatastorePersistentEntity for: " + entityClass);
+    }
+  }
 }

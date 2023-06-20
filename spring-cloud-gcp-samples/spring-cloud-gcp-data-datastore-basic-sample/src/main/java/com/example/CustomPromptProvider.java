@@ -18,20 +18,16 @@ package com.example;
 
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
-
 import org.springframework.shell.jline.PromptProvider;
 import org.springframework.stereotype.Component;
 
-/**
- * A prompt provider for the sample application web app.
- *
- * @author Dmitry Solomakha
- */
+/** A prompt provider for the sample application web app. */
 @Component
 public class CustomPromptProvider implements PromptProvider {
-	@Override
-	public AttributedString getPrompt() {
-		return new AttributedString("enter a command or type 'help' for info :> ",
-				AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW));
-	}
+  @Override
+  public AttributedString getPrompt() {
+    return new AttributedString(
+        "enter a command or type 'help' for info :> ",
+        AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW));
+  }
 }

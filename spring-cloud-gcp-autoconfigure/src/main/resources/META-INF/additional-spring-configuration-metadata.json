@@ -79,9 +79,21 @@
       "defaultValue": false
     },
     {
+      "name": "spring.cloud.gcp.sql.jdbc.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables auto-configuration for JDBC support in Google Cloud SQL.",
+      "defaultValue": true
+    },
+    {
       "name": "spring.cloud.gcp.sql.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud SQL support components.",
+      "defaultValue": true
+    },
+    {
+      "name": "spring.cloud.gcp.sql.r2dbc.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables auto-configuration for R2DBC support in Google Cloud SQL.",
       "defaultValue": true
     },
     {

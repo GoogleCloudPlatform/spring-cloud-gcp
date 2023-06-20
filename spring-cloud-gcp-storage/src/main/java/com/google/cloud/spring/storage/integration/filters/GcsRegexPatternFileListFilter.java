@@ -16,35 +16,28 @@
 
 package com.google.cloud.spring.storage.integration.filters;
 
-import java.util.regex.Pattern;
-
 import com.google.cloud.storage.BlobInfo;
-
+import java.util.regex.Pattern;
 import org.springframework.integration.file.filters.AbstractRegexPatternFileListFilter;
 
-/**
- * A pattern file lister for Google Cloud Storage.
- *
- * @author João André Martins
- * @author Chengyuan Zhao
- */
+/** A pattern file lister for Google Cloud Storage. */
 public class GcsRegexPatternFileListFilter extends AbstractRegexPatternFileListFilter<BlobInfo> {
 
-	public GcsRegexPatternFileListFilter(String pattern) {
-		super(pattern);
-	}
+  public GcsRegexPatternFileListFilter(String pattern) {
+    super(pattern);
+  }
 
-	public GcsRegexPatternFileListFilter(Pattern pattern) {
-		super(pattern);
-	}
+  public GcsRegexPatternFileListFilter(Pattern pattern) {
+    super(pattern);
+  }
 
-	@Override
-	protected String getFilename(BlobInfo blobInfo) {
-		return (blobInfo != null) ? blobInfo.getName() : null;
-	}
+  @Override
+  protected String getFilename(BlobInfo blobInfo) {
+    return (blobInfo != null) ? blobInfo.getName() : null;
+  }
 
-	@Override
-	protected boolean isDirectory(BlobInfo blobInfo) {
-		return blobInfo.isDirectory();
-	}
+  @Override
+  protected boolean isDirectory(BlobInfo blobInfo) {
+    return blobInfo.isDirectory();
+  }
 }

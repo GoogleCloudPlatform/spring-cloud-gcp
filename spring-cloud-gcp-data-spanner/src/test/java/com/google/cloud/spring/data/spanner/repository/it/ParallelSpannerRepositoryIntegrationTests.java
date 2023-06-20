@@ -16,71 +16,76 @@
 
 package com.google.cloud.spring.data.spanner.repository.it;
 
-import java.util.List;
-import java.util.function.IntConsumer;
-import java.util.stream.IntStream;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spring.data.spanner.test.AbstractSpannerIntegrationTest;
 import com.google.cloud.spring.data.spanner.test.domain.Trade;
 import com.google.cloud.spring.data.spanner.test.domain.TradeRepository;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import java.util.List;
+import java.util.function.IntConsumer;
+import java.util.stream.IntStream;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/** Tests multiple threads using a single repository instance. */
+@EnabledIfSystemProperty(named = "it.spanner", matches = "true")
+@ExtendWith(SpringExtension.class)
+class ParallelSpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
 
-/**
- * Tests multiple threads using a single repository instance.
- *
- * @author Chengyuan Zhao
- */
-@RunWith(SpringRunner.class)
-public class ParallelSpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
+  private static final int PARALLEL_OPERATIONS = 2;
 
-	private final static int PARALLEL_OPERATIONS = 2;
+  @Autowired TradeRepository tradeRepository;
 
-	@Autowired
-	TradeRepository tradeRepository;
+  @BeforeEach
+  @AfterEach
+  void cleanUpData() {
+    this.spannerOperations.delete(Trade.class, KeySet.all());
+  }
 
-	@Before
-	@After
-	public void cleanUpData() {
-		this.spannerOperations.delete(Trade.class, KeySet.all());
-	}
+  @Test
+  void testParallelOperations() {
 
-	@Test
-	public void testParallelOperations() {
+    this.tradeRepository.performReadWriteTransaction(
+        repo -> {
+          executeInParallel(
+              unused -> {
+                repo.save(Trade.makeTrade());
 
-		this.tradeRepository.performReadWriteTransaction(repo -> {
+                // all of the threads are using the same transaction at the same time, so they all
+                // still
+                // see empty table
+                assertThat(repo.count()).isZero();
+              });
+          assertThat(repo.count()).isZero();
+          return 0;
+        });
 
-			executeInParallel(unused -> {
-				repo.save(Trade.aTrade());
+    executeInParallel(
+        unused ->
+            assertThat(this.tradeRepository.countByAction("BUY")).isEqualTo(PARALLEL_OPERATIONS));
 
-				// all of the threads are using the same transaction at the same time, so they all still
-				// see empty table
-				assertThat(repo.count()).isZero();
-			});
-			assertThat(repo.count()).isZero();
-			return 0;
-		});
+    executeInParallel(
+        index ->
+            this.tradeRepository.updateActionTradeById(
+                ((List<Trade>) this.tradeRepository.findAll()).get(index).getId(), "SELL"));
 
-		executeInParallel(unused -> assertThat(this.tradeRepository.countByAction("BUY")).isEqualTo(PARALLEL_OPERATIONS));
+    executeInParallel(
+        unused ->
+            assertThat(this.tradeRepository.countByAction("SELL")).isEqualTo(PARALLEL_OPERATIONS));
 
-		executeInParallel(index -> this.tradeRepository.updateActionTradeById(
-				((List<Trade>) this.tradeRepository.findAll()).get(index).getId(),
-				"SELL"));
+    executeInParallel(
+        unused ->
+            assertThat(this.tradeRepository.countByActionQuery("SELL"))
+                .isEqualTo(PARALLEL_OPERATIONS));
+  }
 
-		executeInParallel(unused -> assertThat(this.tradeRepository.countByAction("SELL")).isEqualTo(PARALLEL_OPERATIONS));
-
-		executeInParallel(unused -> assertThat(this.tradeRepository.countByActionQuery("SELL")).isEqualTo(PARALLEL_OPERATIONS));
-	}
-
-	private void executeInParallel(IntConsumer function) {
-		IntStream.range(0, PARALLEL_OPERATIONS).parallel().forEach(function);
-	}
+  private void executeInParallel(IntConsumer function) {
+    IntStream.range(0, PARALLEL_OPERATIONS).parallel().forEach(function);
+  }
 }

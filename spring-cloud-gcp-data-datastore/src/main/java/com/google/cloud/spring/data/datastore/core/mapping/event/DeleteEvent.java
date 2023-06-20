@@ -16,95 +16,97 @@
 
 package com.google.cloud.spring.data.datastore.core.mapping.event;
 
+import com.google.cloud.datastore.Key;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
-
-import com.google.cloud.datastore.Key;
-
 import org.springframework.context.ApplicationEvent;
 
-/**
- * An event published when Spring Data Cloud Datastore performs a delete operation.
- *
- * @author Chengyuan Zhao
- */
+/** An event published when Spring Data Cloud Datastore performs a delete operation. */
 public class DeleteEvent extends ApplicationEvent {
 
-	private final Optional<Class> targetEntityClass;
+  private final Optional<Class> targetEntityClass;
 
-	private final Optional<Iterable> targetIds;
+  private final Optional<Iterable> targetIds;
 
-	private final Optional<Iterable> targetEntities;
+  private final Optional<Iterable> targetEntities;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param keysToDelete The keys that are deleted in this operation (never {@code null}).
-	 * @param targetEntityClass The target entity type deleted. This may be {@code null}
-	 *     depending on the specific delete operation.
-	 * @param targetIds The target entity ID values deleted. This may be {@code null}
-	 *     depending on the specific delete operation.
-	 * @param targetEntities The target entity objects deleted. This may be {@code null}
-	 *     depending on the specific delete operation.
-	 */
-	public DeleteEvent(Key[] keysToDelete, Class targetEntityClass, Iterable targetIds, Iterable targetEntities) {
-		super(keysToDelete);
-		this.targetEntityClass = Optional.ofNullable(targetEntityClass);
-		this.targetIds = Optional.ofNullable(targetIds);
-		this.targetEntities = Optional.ofNullable(targetEntities);
-	}
+  /**
+   * Constructor.
+   *
+   * @param keysToDelete The keys that are deleted in this operation (never {@code null}).
+   * @param targetEntityClass The target entity type deleted. This may be {@code null} depending on
+   *     the specific delete operation.
+   * @param targetIds The target entity ID values deleted. This may be {@code null} depending on the
+   *     specific delete operation.
+   * @param targetEntities The target entity objects deleted. This may be {@code null} depending on
+   *     the specific delete operation.
+   */
+  public DeleteEvent(
+      Key[] keysToDelete, Class targetEntityClass, Iterable targetIds, Iterable targetEntities) {
+    super(keysToDelete);
+    this.targetEntityClass = Optional.ofNullable(targetEntityClass);
+    this.targetIds = Optional.ofNullable(targetIds);
+    this.targetEntities = Optional.ofNullable(targetEntities);
+  }
 
-	/**
-	 * Get the keys that were deleted in this operation.
-	 * @return the array of keys.
-	 */
-	public Key[] getKeys() {
-		return (Key[]) getSource();
-	}
+  /**
+   * Get the keys that were deleted in this operation.
+   *
+   * @return the array of keys.
+   */
+  public Key[] getKeys() {
+    return (Key[]) getSource();
+  }
 
-	/**
-	 * Get the target entity type deleted.
-	 * @return This may be empty depending on the specific delete operation.
-	 */
-	public Optional<Class> getOptionalTargetEntityClass() {
-		return this.targetEntityClass;
-	}
+  /**
+   * Get the target entity type deleted.
+   *
+   * @return This may be empty depending on the specific delete operation.
+   */
+  public Optional<Class> getOptionalTargetEntityClass() {
+    return this.targetEntityClass;
+  }
 
-	/**
-	 * Get the target entity ID values deleted.
-	 * @return This may be empty depending on the specific delete operation.
-	 */
-	public Optional<Iterable> getOptionalTargetIds() {
-		return this.targetIds;
-	}
+  /**
+   * Get the target entity ID values deleted.
+   *
+   * @return This may be empty depending on the specific delete operation.
+   */
+  public Optional<Iterable> getOptionalTargetIds() {
+    return this.targetIds;
+  }
 
-	/**
-	 * Get thetarget entity objects deleted.
-	 * @return This may be empty depending on the specific delete operation.
-	 */
-	public Optional<Iterable> getOptionalTargetEntities() {
-		return this.targetEntities;
-	}
+  /**
+   * Get thetarget entity objects deleted.
+   *
+   * @return This may be empty depending on the specific delete operation.
+   */
+  public Optional<Iterable> getOptionalTargetEntities() {
+    return this.targetEntities;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		DeleteEvent that = (DeleteEvent) o;
-		return Arrays.equals(getKeys(), that.getKeys())
-				&& Objects.equals(getOptionalTargetEntities(), that.getOptionalTargetEntities())
-				&& Objects.equals(getOptionalTargetIds(), that.getOptionalTargetIds())
-				&& Objects.equals(getOptionalTargetEntityClass(), that.getOptionalTargetEntityClass());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    DeleteEvent that = (DeleteEvent) o;
+    return Arrays.equals(getKeys(), that.getKeys())
+        && Objects.equals(getOptionalTargetEntities(), that.getOptionalTargetEntities())
+        && Objects.equals(getOptionalTargetIds(), that.getOptionalTargetIds())
+        && Objects.equals(getOptionalTargetEntityClass(), that.getOptionalTargetEntityClass());
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(Arrays.hashCode(getKeys()), getOptionalTargetEntities(), getOptionalTargetIds(),
-				getOptionalTargetEntityClass());
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        Arrays.hashCode(getKeys()),
+        getOptionalTargetEntities(),
+        getOptionalTargetIds(),
+        getOptionalTargetEntityClass());
+  }
 }

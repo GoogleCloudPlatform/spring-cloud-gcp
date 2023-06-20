@@ -18,60 +18,55 @@ package com.example;
 
 import java.time.LocalDateTime;
 
-/**
- * A user message for the sample app.
- *
- * @author João André Martins
- */
+/** A user message for the sample app. */
 public class UserMessage {
 
-	private String body;
+  private String body;
 
-	private String username;
+  private String username;
 
-	private LocalDateTime createdAt;
+  private LocalDateTime createdAt;
 
-	private boolean throwError;
+  private boolean throwError;
 
-	public UserMessage() {
-	}
+  public UserMessage() {}
 
-	public UserMessage(String body, String username, LocalDateTime createdAt, boolean throwError) {
-		this.body = body;
-		this.username = username;
-		this.createdAt = createdAt;
-		this.throwError = throwError;
-	}
+  public UserMessage(String body, String username, LocalDateTime createdAt, boolean throwError) {
+    this.body = body;
+    this.username = username;
+    this.createdAt = createdAt;
+    this.throwError = throwError;
+  }
 
-	public String getBody() {
-		return this.body;
-	}
+  public String getBody() {
+    return this.body;
+  }
 
-	public void setBody(String body) {
-		this.body = body;
-	}
+  public void setBody(String body) {
+    this.body = body;
+  }
 
-	public String getUsername() {
-		return this.username;
-	}
+  public String getUsername() {
+    return this.username;
+  }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-	public LocalDateTime getCreatedAt() {
-		return this.createdAt;
-	}
+  public LocalDateTime getCreatedAt() {
+    return this.createdAt;
+  }
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
 
-	public boolean isThrowError() {
-		return throwError;
-	}
+  public boolean isThrowError() {
+    return throwError;
+  }
 
-	public void setThrowError(boolean throwError) {
-		this.throwError = throwError;
-	}
+  public void setThrowError(boolean throwError) {
+    this.throwError = throwError;
+  }
 }

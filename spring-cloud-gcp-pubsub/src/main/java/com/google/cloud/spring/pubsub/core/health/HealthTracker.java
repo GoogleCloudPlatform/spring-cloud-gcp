@@ -19,48 +19,45 @@ package com.google.cloud.spring.pubsub.core.health;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 
 /**
- * Health tracker for a Pub/Sub subscription. The tracker will monitor messages being processed and the subscription's message backlog.
- * If backlog message size exceeds the message backlog threshold, the tracker will return the number of messages over the threshold.
- *
- * @author Emmanouil Gkatziouras
+ * Health tracker for a Pub/Sub subscription. The tracker will monitor messages being processed and
+ * the subscription's message backlog. If backlog message size exceeds the message backlog
+ * threshold, the tracker will return the number of messages over the threshold.
  *
  * @since 2.0.6
  */
 public interface HealthTracker {
 
-	/**
-	 * Template for undelivered messages filter.
-	 */
-	String UNDELIVERED_FILTER_TEMPLATE =
-		"metric.type=\"pubsub.googleapis.com/subscription/num_undelivered_messages\" resource.type=\"pubsub_subscription\" " +
-			"resource.label.subscription_id=\"%s\"";
+  /** Template for undelivered messages filter. */
+  String UNDELIVERED_FILTER_TEMPLATE =
+      "metric.type=\"pubsub.googleapis.com/subscription/num_undelivered_messages\""
+          + " resource.type=\"pubsub_subscription\" resource.label.subscription_id=\"%s\"";
 
-	/**
-	 * Record that a message has been processed.
-	 */
-	void processedMessage();
+  /** Record that a message has been processed. */
+  void processedMessage();
 
-	/**
-	 * Accessor for the Subscription being monitored by the tracker.
-	 * @return the project subscription name
-	 */
-	ProjectSubscriptionName subscription();
+  /**
+   * Accessor for the Subscription being monitored by the tracker.
+   *
+   * @return the project subscription name
+   */
+  ProjectSubscriptionName subscription();
 
-	/**
-	 * If messages have been processed recently returns zero.
-	 * If no message have been recently processed the tracker will retrieve the number of messages in the subscription backlog.
-	 * If the backlogs exceeds the threshold the messages over the threshold shall be returned.
-	 * @return the messages over the threshold
-	 */
-	long messagesOverThreshold();
+  /**
+   * If messages have been processed recently returns zero. If no message have been recently
+   * processed the tracker will retrieve the number of messages in the subscription backlog. If the
+   * backlogs exceeds the threshold the messages over the threshold shall be returned.
+   *
+   * @return the messages over the threshold
+   */
+  long messagesOverThreshold();
 
-	/**
-	 * Creates a GCP Monitoring filter to query the message backlog of a Pub/Sub subscription.
-	 * @param subscriptionId the subscription id to add to the filter.
-	 * @return Monitoring Pub/Sub Subscription filter for undelivered messages.
-	 */
-	default String undeliveredFilter(String subscriptionId) {
-		return String.format(UNDELIVERED_FILTER_TEMPLATE, subscriptionId);
-	}
-
+  /**
+   * Creates a GCP Monitoring filter to query the message backlog of a Pub/Sub subscription.
+   *
+   * @param subscriptionId the subscription id to add to the filter.
+   * @return Monitoring Pub/Sub Subscription filter for undelivered messages.
+   */
+  default String undeliveredFilter(String subscriptionId) {
+    return String.format(UNDELIVERED_FILTER_TEMPLATE, subscriptionId);
+  }
 }

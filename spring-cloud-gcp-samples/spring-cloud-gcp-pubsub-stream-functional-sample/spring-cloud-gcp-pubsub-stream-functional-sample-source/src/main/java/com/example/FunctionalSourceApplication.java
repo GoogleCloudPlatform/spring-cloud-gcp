@@ -17,35 +17,33 @@
 package com.example;
 
 import com.example.model.UserMessage;
-import reactor.core.publisher.Sinks;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import reactor.core.publisher.Sinks;
 
 /**
  * Spring Boot application for running the Spring Cloud Stream source.
  *
- * <p>This class bootstraps the Spring Boot application and creates the {@link Sinks.Many}
- * bean that is used for communication between {@link FrontendController} and {@link Source}.
- *
- * @author Elena Felder
+ * <p>This class bootstraps the Spring Boot application and creates the {@link Sinks.Many} bean that
+ * is used for communication between {@link FrontendController} and {@link Source}.
  *
  * @since 1.2
  */
 @SpringBootApplication
 public class FunctionalSourceApplication {
 
-	/**
-	 * Allows {@link Source} to subscribe to {@link UserMessage} instances from front-end.
-	 * @return {@link Sinks.Many} used for passing {@link UserMessage} objects.
-	 */
-	@Bean
-	public Sinks.Many<UserMessage> postOffice() {
-		return Sinks.many().unicast().onBackpressureBuffer();
-	}
+  /**
+   * Allows {@link Source} to subscribe to {@link UserMessage} instances from front-end.
+   *
+   * @return {@link Sinks.Many} used for passing {@link UserMessage} objects.
+   */
+  @Bean
+  public Sinks.Many<UserMessage> postOffice() {
+    return Sinks.many().unicast().onBackpressureBuffer();
+  }
 
-	public static void main(String[] args) {
-		SpringApplication.run(FunctionalSourceApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(FunctionalSourceApplication.class, args);
+  }
 }

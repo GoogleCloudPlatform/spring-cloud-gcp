@@ -17,7 +17,6 @@
 package com.example;
 
 import java.time.LocalDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.messaging.Source;
@@ -27,10 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * A sample source application that constructs a {@link UserMessage} object based on a
- * HTTP request, and sends it to a PubSub topic.
- *
- * @author Elena Felder
+ * A sample source application that constructs a {@link UserMessage} object based on a HTTP request,
+ * and sends it to a PubSub topic.
  *
  * @since 1.2
  */
@@ -38,16 +35,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SourceExample {
 
-	@Autowired
-	private Source source;
+  @Autowired private Source source;
 
-	@PostMapping("/newMessage")
-	public UserMessage sendMessage(@RequestParam("messageBody") String messageBody,
-			@RequestParam("username") String username) {
+  @PostMapping("/newMessage")
+  public UserMessage sendMessage(
+      @RequestParam("messageBody") String messageBody, @RequestParam("username") String username) {
 
-		UserMessage userMessage = new UserMessage(messageBody, username, LocalDateTime.now());
-		this.source.output().send(new GenericMessage<>(userMessage));
-		return userMessage;
-	}
-
+    UserMessage userMessage = new UserMessage(messageBody, username, LocalDateTime.now());
+    this.source.output().send(new GenericMessage<>(userMessage));
+    return userMessage;
+  }
 }

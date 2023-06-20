@@ -16,25 +16,22 @@
 
 package com.example;
 
-import java.nio.charset.Charset;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.google.cloud.spring.pubsub.reactive.PubSubReactiveFactory;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
+import java.nio.charset.Charset;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import reactor.core.publisher.Flux;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import reactor.core.publisher.Flux;
 
 /**
- * Sample controller demonstrating an HTTP endpoint acquiring data from a reactive GCP Pub/Sub stream.
- *
- * @author Elena Felder
+ * Sample controller demonstrating an HTTP endpoint acquiring data from a reactive GCP Pub/Sub
+ * stream.
  *
  * @since 1.2
  */
@@ -42,33 +39,33 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ResponseBody
 public class ReactiveController {
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	/**
-	 * Max number of messages returned from one call. Requests above this limit will be truncated to this limit.
-	 */
-	public static final int MAX_RESPONSE_ITEMS = 100;
+  /**
+   * Max number of messages returned from one call. Requests above this limit will be truncated to
+   * this limit.
+   */
+  public static final int MAX_RESPONSE_ITEMS = 100;
 
-	@Autowired
-	PubSubReactiveFactory reactiveFactory;
+  @Autowired
+  PubSubReactiveFactory reactiveFactory;
 
-	@GetMapping(value = "/getMessages", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<String> getMessages() {
+  @GetMapping(value = "/getMessages", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+  public Flux<String> getMessages() {
 
-		Flux<AcknowledgeablePubsubMessage> flux
-				= this.reactiveFactory.poll("exampleSubscription", 1000);
+    Flux<AcknowledgeablePubsubMessage> flux =
+        this.reactiveFactory.poll("exampleSubscription", 1000);
 
-		AtomicInteger count = new AtomicInteger(0);
+    AtomicInteger count = new AtomicInteger(0);
 
-		return flux
-				.limitRate(10)
-				.limitRequest(MAX_RESPONSE_ITEMS)
-				.map(message -> {
-					message.ack();
-					log.info("Received message number: " + count.getAndIncrement());
-					return new String(message.getPubsubMessage().getData().toByteArray(),
-						Charset.defaultCharset());
-					});
-	}
-
+    return flux.limitRate(10)
+        .take(MAX_RESPONSE_ITEMS, true)
+        .map(
+            message -> {
+              message.ack();
+              log.info("Received message number: " + count.getAndIncrement());
+              return new String(
+                  message.getPubsubMessage().getData().toByteArray(), Charset.defaultCharset());
+            });
+  }
 }

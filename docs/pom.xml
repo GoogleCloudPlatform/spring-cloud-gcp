@@ -5,15 +5,15 @@
 	<parent>
 		<groupId>org.springframework.cloud</groupId>
 		<artifactId>spring-cloud-build</artifactId>
-		<version>3.0.4</version>
+		<version>3.1.7</version>
 		<relativePath/>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>Spring Cloud GCP Documentation</name>
+	<name>Spring Framework on Google Cloud Documentation</name>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-docs</artifactId>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.5.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 
 	<properties>
@@ -21,44 +21,16 @@
 		<main.basedir>${basedir}/..</main.basedir>
 		<configprops.inclusionPattern>spring.cloud.gcp.*</configprops.inclusionPattern>
 		<upload-docs-zip.phase>none</upload-docs-zip.phase>
+
+		<!--maven-resources-plugin:3.2.0:copy-resources fails: https://issues.apache.org/jira/browse/MSHARED-966-->
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+		<!-- override version inherited from spring-cloud-build parent to one that is available on Maven Central -->
+		<spring-asciidoctor-backends.version>0.0.4</spring-asciidoctor-backends.version>
+		<spring-asciidoctor-extensions-block.version>0.6.1</spring-asciidoctor-extensions-block.version>
+		<spring-asciidoctor-extensions-boot.version>0.6.1</spring-asciidoctor-extensions-boot.version>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-releases</id>
-			<name>Spring Releases</name>
-			<url>https://repo.spring.io/release</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-releases</id>
-			<name>Spring Releases</name>
-			<url>https://repo.spring.io/release</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+
 
 	<profiles>
 		<profile>
@@ -72,10 +44,20 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
+						<!-- Override to skip unpack-docs-resources execution
+						 in favor of using spring-asciidoctor-backend,
+						 as spring-doc-resources artifact is no longer available-->
+						<executions>
+							<execution>
+								<id>unpack-docs-resources</id>
+								<phase>none</phase>
+							</execution>
+						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-resources-plugin</artifactId>
+						<version>${maven-resources-plugin.version}</version>
 					</plugin>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
@@ -84,6 +66,27 @@
 					<plugin>
 						<groupId>org.asciidoctor</groupId>
 						<artifactId>asciidoctor-maven-plugin</artifactId>
+						<!-- Override inherited config to use spring-asciidoctor-backend
+						https://github.com/spring-io/spring-asciidoctor-backends -->
+						<dependencies>
+							<dependency>
+								<groupId>io.spring.asciidoctor.backends</groupId>
+								<artifactId>spring-asciidoctor-backends</artifactId>
+								<version>${spring-asciidoctor-backends.version}</version>
+							</dependency>
+						</dependencies>
+						<executions>
+							<execution>
+								<id>generate-html-documentation</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>process-asciidoc</goal>
+								</goals>
+								<configuration>
+									<backend>spring-html</backend>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>

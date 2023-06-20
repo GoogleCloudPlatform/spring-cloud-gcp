@@ -18,7 +18,6 @@ package com.google.cloud.spring.data.spanner.repository.support;
 
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -27,55 +26,51 @@ import org.springframework.data.repository.core.support.RepositoryFactoryBeanSup
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
 /**
- * Spanner Repository Factory Bean used to create factories that ultimately create repository implementations.
+ * Spanner Repository Factory Bean used to create factories that ultimately create repository
+ * implementations.
  *
  * @param <S> the entity type of the repository
  * @param <I> the id type of the entity
  * @param <T> the repository type
- * @author Ray Tsang
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
-public class SpannerRepositoryFactoryBean<T extends Repository<S, I>, S, I> extends
-		RepositoryFactoryBeanSupport<T, S, I> implements
-		ApplicationContextAware {
+public class SpannerRepositoryFactoryBean<T extends Repository<S, I>, S, I>
+    extends RepositoryFactoryBeanSupport<T, S, I> implements ApplicationContextAware {
 
-	private SpannerMappingContext spannerMappingContext;
+  private SpannerMappingContext spannerMappingContext;
 
-	private SpannerTemplate spannerTemplate;
+  private SpannerTemplate spannerTemplate;
 
-	private ApplicationContext applicationContext;
+  private ApplicationContext applicationContext;
 
-	/**
-	 * Creates a new {@link SpannerRepositoryFactoryBean} for the given repository interface.
-	 *
-	 * @param repositoryInterface must not be {@literal null}.
-	 */
-	SpannerRepositoryFactoryBean(Class<T> repositoryInterface) {
-		super(repositoryInterface);
-	}
+  /**
+   * Creates a new {@link SpannerRepositoryFactoryBean} for the given repository interface.
+   *
+   * @param repositoryInterface must not be {@literal null}.
+   */
+  SpannerRepositoryFactoryBean(Class<T> repositoryInterface) {
+    super(repositoryInterface);
+  }
 
-	public void setSpannerTemplate(SpannerTemplate spannerTemplate) {
-		this.spannerTemplate = spannerTemplate;
-	}
+  public void setSpannerTemplate(SpannerTemplate spannerTemplate) {
+    this.spannerTemplate = spannerTemplate;
+  }
 
-	public void setSpannerMappingContext(SpannerMappingContext mappingContext) {
-		super.setMappingContext(mappingContext);
-		this.spannerMappingContext = mappingContext;
-	}
+  public void setSpannerMappingContext(SpannerMappingContext mappingContext) {
+    super.setMappingContext(mappingContext);
+    this.spannerMappingContext = mappingContext;
+  }
 
-	@Override
-	protected RepositoryFactorySupport createRepositoryFactory() {
-		SpannerRepositoryFactory spannerRepositoryFactory = new SpannerRepositoryFactory(
-				this.spannerMappingContext,
-				this.spannerTemplate);
-		spannerRepositoryFactory.setApplicationContext(this.applicationContext);
-		return spannerRepositoryFactory;
-	}
+  @Override
+  protected RepositoryFactorySupport createRepositoryFactory() {
+    SpannerRepositoryFactory spannerRepositoryFactory =
+        new SpannerRepositoryFactory(this.spannerMappingContext, this.spannerTemplate);
+    spannerRepositoryFactory.setApplicationContext(this.applicationContext);
+    return spannerRepositoryFactory;
+  }
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
+  @Override
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
+  }
 }

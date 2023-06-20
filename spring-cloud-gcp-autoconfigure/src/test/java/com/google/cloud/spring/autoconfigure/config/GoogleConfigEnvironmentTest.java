@@ -16,34 +16,28 @@
 
 package com.google.cloud.spring.autoconfigure.config;
 
-import java.util.Base64;
-
-import com.google.cloud.spring.autoconfigure.config.GoogleConfigEnvironment.Variable;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-/**
- * Tests for the environment config.
- *
- * @author Dmitry Solomakha
- * @author Eddy Kioi
- */
-public class GoogleConfigEnvironmentTest {
-	@Test
-	public void testSetVariabeValue() {
-		GoogleConfigEnvironment.Variable var = new Variable();
-		String value = "v a l u e";
-		String encodedString = Base64.getEncoder().encodeToString(value.getBytes());
-		var.setValue(encodedString);
-		assertThat(var.getValue()).isEqualTo(value);
-	}
+import com.google.cloud.spring.autoconfigure.config.GoogleConfigEnvironment.Variable;
+import java.util.Base64;
+import org.junit.jupiter.api.Test;
 
-	@Test
-	public void testSetNullValue() {
-		GoogleConfigEnvironment googleConfigEnvironment = mock(GoogleConfigEnvironment.class);
-		googleConfigEnvironment.setVariables(null);
-		assertThat(googleConfigEnvironment.getVariables()).isEmpty();
-	}
+/** Tests for the environment config. */
+class GoogleConfigEnvironmentTest {
+  @Test
+  void testSetVariabeValue() {
+    GoogleConfigEnvironment.Variable var = new Variable();
+    String value = "v a l u e";
+    String encodedString = Base64.getEncoder().encodeToString(value.getBytes());
+    var.setValue(encodedString);
+    assertThat(var.getValue()).isEqualTo(value);
+  }
+
+  @Test
+  void testSetNullValue() {
+    GoogleConfigEnvironment googleConfigEnvironment = mock(GoogleConfigEnvironment.class);
+    googleConfigEnvironment.setVariables(null);
+    assertThat(googleConfigEnvironment.getVariables()).isEmpty();
+  }
 }

@@ -16,17 +16,13 @@
 
 package com.google.cloud.spring.data.spanner.core.admin;
 
+import com.google.cloud.spanner.DatabaseId;
 import java.util.function.Supplier;
 
-import com.google.cloud.spanner.DatabaseId;
-
 /**
- * A provider of {@code DatabaseId} that is used to determine the target Cloud Spanner
- * databases on which to act.
- *
- * @author Chengyuan Zhao
+ * A provider of {@code DatabaseId} that is used to determine the target Cloud Spanner databases on
+ * which to act.
  *
  * @since 1.2
  */
-public interface DatabaseIdProvider extends Supplier<DatabaseId> {
-}
+public interface DatabaseIdProvider extends Supplier<DatabaseId> {}

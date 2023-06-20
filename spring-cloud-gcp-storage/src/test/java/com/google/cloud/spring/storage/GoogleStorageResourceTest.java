@@ -16,61 +16,60 @@
 
 package com.google.cloud.spring.storage;
 
-import java.io.IOException;
-
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GoogleStorageResourceTest {
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
+import java.io.IOException;
+import org.junit.jupiter.api.Test;
 
-	@Test
-	public void testConstructorValidation() {
-		assertThatExceptionOfType(IllegalArgumentException.class)
-				.isThrownBy(() -> new GoogleStorageResource(null, "gs://foo", false))
-				.withMessageContaining("Storage object can not be null");
+class GoogleStorageResourceTest {
 
-		Storage mockStorage = mock(Storage.class);
-		assertThatExceptionOfType(IllegalArgumentException.class)
-				.isThrownBy(() -> new GoogleStorageResource(mockStorage, (String) null, false));
-		assertThatExceptionOfType(IllegalArgumentException.class)
-				.isThrownBy(() -> new GoogleStorageResource(mockStorage, "", false));
-		assertThatExceptionOfType(IllegalArgumentException.class)
-				.isThrownBy(() -> new GoogleStorageResource(mockStorage, "foo", false));
+  @Test
+  void testConstructorValidation() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new GoogleStorageResource(null, "gs://foo", false))
+        .withMessageContaining("Storage object can not be null");
 
-		assertThat(new GoogleStorageResource(mockStorage, "gs://foo", true)).isNotNull();
-		assertThat(new GoogleStorageResource(mockStorage, "gs://foo/bar", true)).isNotNull();
-	}
+    Storage mockStorage = mock(Storage.class);
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new GoogleStorageResource(mockStorage, (String) null, false));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new GoogleStorageResource(mockStorage, "", false));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new GoogleStorageResource(mockStorage, "foo", false));
 
-	@Test
-	public void getURL_Bucket() throws IOException {
-		Storage mockStorage = mock(Storage.class);
-		Bucket mockBucket = mock(Bucket.class);
+    assertThat(new GoogleStorageResource(mockStorage, "gs://foo", true)).isNotNull();
+    assertThat(new GoogleStorageResource(mockStorage, "gs://foo/bar", true)).isNotNull();
+  }
 
-		when(mockStorage.get("my-bucket")).thenReturn(mockBucket);
-		when(mockBucket.getSelfLink()).thenReturn("https://www.googleapis.com/storage/v1/b/my-bucket");
+  @Test
+  void getUrlBucket() throws IOException {
+    Storage mockStorage = mock(Storage.class);
+    Bucket mockBucket = mock(Bucket.class);
 
-		GoogleStorageResource gsr = new GoogleStorageResource(mockStorage, "gs://my-bucket");
-		assertThat(gsr.getURL()).isNotNull();
-	}
+    when(mockStorage.get("my-bucket")).thenReturn(mockBucket);
+    when(mockBucket.getSelfLink()).thenReturn("https://www.googleapis.com/storage/v1/b/my-bucket");
 
-	@Test
-	public void getURL_Object() throws IOException {
-		Storage mockStorage = mock(Storage.class);
-		Blob mockBlob = mock(Blob.class);
+    GoogleStorageResource gsr = new GoogleStorageResource(mockStorage, "gs://my-bucket");
+    assertThat(gsr.getURL()).isNotNull();
+  }
 
-		when(mockStorage.get(BlobId.of("my-bucket", "my-object"))).thenReturn(mockBlob);
-		when(mockBlob.getSelfLink()).thenReturn("https://www.googleapis.com/storage/v1/b/my-bucket/o/my-object");
+  @Test
+  void getUrlObject() throws IOException {
+    Storage mockStorage = mock(Storage.class);
+    Blob mockBlob = mock(Blob.class);
 
-		GoogleStorageResource gsr = new GoogleStorageResource(mockStorage, "gs://my-bucket/my-object");
-		assertThat(gsr.getURL()).isNotNull();
+    when(mockStorage.get(BlobId.of("my-bucket", "my-object"))).thenReturn(mockBlob);
+    when(mockBlob.getSelfLink())
+        .thenReturn("https://www.googleapis.com/storage/v1/b/my-bucket/o/my-object");
 
-	}
+    GoogleStorageResource gsr = new GoogleStorageResource(mockStorage, "gs://my-bucket/my-object");
+    assertThat(gsr.getURL()).isNotNull();
+  }
 }

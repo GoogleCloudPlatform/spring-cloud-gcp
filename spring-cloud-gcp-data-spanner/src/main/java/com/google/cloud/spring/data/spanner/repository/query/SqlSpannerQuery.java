@@ -16,6 +16,16 @@
 
 package com.google.cloud.spring.data.spanner.repository.query;
 
+import com.google.cloud.spanner.Statement;
+import com.google.cloud.spanner.Struct;
+import com.google.cloud.spanner.Struct.Builder;
+import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.convert.StructAccessor;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntityImpl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,18 +39,6 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
-
-import com.google.cloud.spanner.Statement;
-import com.google.cloud.spanner.Struct;
-import com.google.cloud.spanner.Struct.Builder;
-import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
-import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
-import com.google.cloud.spring.data.spanner.core.convert.StructAccessor;
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntityImpl;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
@@ -62,253 +60,259 @@ import org.springframework.util.StringUtils;
  * A Query Method for Spanner using SQL strings.
  *
  * @param <T> the return type of the Query Method
- * @author Balint Pato
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 
-	// A character that isn't used in SQL
-	private static final String ENTITY_CLASS_NAME_BOOKEND = ":";
-	private static final Pattern ENTITY_CLASS_NAME_PATTERN = Pattern.compile(
-			"\\" + ENTITY_CLASS_NAME_BOOKEND + "\\S+\\" + ENTITY_CLASS_NAME_BOOKEND);
+  // A character that isn't used in SQL
+  private static final String ENTITY_CLASS_NAME_BOOKEND = ":";
+  private static final Pattern ENTITY_CLASS_NAME_PATTERN =
+      Pattern.compile("\\" + ENTITY_CLASS_NAME_BOOKEND + "\\S+\\" + ENTITY_CLASS_NAME_BOOKEND);
 
-	private final String sql;
+  private final String sql;
 
-	private final boolean isDml;
+  private final boolean isDml;
 
-	private final Function<Object, Struct> paramStructConvertFunc = param -> {
-		Builder builder = Struct.newBuilder();
-		this.spannerTemplate.getSpannerEntityProcessor().write(param, builder::set);
-		return builder.build();
-	};
+  private final Function<Object, Struct> paramStructConvertFunc =
+      param -> {
+        Builder builder = Struct.newBuilder();
+        this.spannerTemplate.getSpannerEntityProcessor().write(param, builder::set);
+        return builder.build();
+      };
 
-	private QueryMethodEvaluationContextProvider evaluationContextProvider;
+  private QueryMethodEvaluationContextProvider evaluationContextProvider;
 
-	private SpelExpressionParser expressionParser;
+  private SpelExpressionParser expressionParser;
 
-	SqlSpannerQuery(Class<T> type, SpannerQueryMethod queryMethod,
-			SpannerTemplate spannerTemplate, String sql,
-			QueryMethodEvaluationContextProvider evaluationContextProvider,
-			SpelExpressionParser expressionParser,
-			SpannerMappingContext spannerMappingContext, boolean isDml) {
-		super(type, queryMethod, spannerTemplate, spannerMappingContext);
-		this.evaluationContextProvider = evaluationContextProvider;
-		this.expressionParser = expressionParser;
-		this.sql = StringUtils.trimTrailingCharacter(sql.trim(), ';');
-		this.isDml = isDml;
-	}
+  SqlSpannerQuery(
+      Class<T> type,
+      SpannerQueryMethod queryMethod,
+      SpannerTemplate spannerTemplate,
+      String sql,
+      QueryMethodEvaluationContextProvider evaluationContextProvider,
+      SpelExpressionParser expressionParser,
+      SpannerMappingContext spannerMappingContext,
+      boolean isDml) {
+    super(type, queryMethod, spannerTemplate, spannerMappingContext);
+    this.evaluationContextProvider = evaluationContextProvider;
+    this.expressionParser = expressionParser;
+    this.sql = StringUtils.trimTrailingCharacter(sql.trim(), ';');
+    this.isDml = isDml;
+  }
 
-	private boolean isPageableOrSort(Class<?> type) {
-		return Pageable.class.isAssignableFrom(type) || Sort.class.isAssignableFrom(type);
-	}
+  private boolean isPageableOrSort(Class<?> type) {
+    return Pageable.class.isAssignableFrom(type) || Sort.class.isAssignableFrom(type);
+  }
 
-	private List<String> getParamTags() {
-		List<String> tags = new ArrayList<>();
-		Set<String> seen = new HashSet<>();
-		Parameters<?, ?> parameters = getQueryMethod().getParameters();
-		for (int i = 0; i < parameters.getNumberOfParameters(); i++) {
-			Parameter param = parameters.getParameter(i);
-			if (isPageableOrSort(param.getType())) {
-				continue;
-			}
-			Optional<String> paramName = param.getName();
-			if (!paramName.isPresent()) {
-				throw new SpannerDataException(
-						"Query method has a parameter without a valid name: "
-								+ getQueryMethod().getName());
-			}
-			String name = paramName.get();
-			if (seen.contains(name)) {
-				throw new SpannerDataException(
-						"More than one param has the same name: " + name);
-			}
-			seen.add(name);
-			tags.add(name);
-		}
-		return tags;
-	}
+  private List<String> getParamTags() {
+    List<String> tags = new ArrayList<>();
+    Set<String> seen = new HashSet<>();
+    Parameters<?, ?> parameters = getQueryMethod().getParameters();
+    for (int i = 0; i < parameters.getNumberOfParameters(); i++) {
+      Parameter param = parameters.getParameter(i);
+      if (isPageableOrSort(param.getType())) {
+        continue;
+      }
+      Optional<String> paramName = param.getName();
+      if (!paramName.isPresent()) {
+        throw new SpannerDataException(
+            "Query method has a parameter without a valid name: " + getQueryMethod().getName());
+      }
+      String name = paramName.get();
+      if (seen.contains(name)) {
+        throw new SpannerDataException("More than one param has the same name: " + name);
+      }
+      seen.add(name);
+      tags.add(name);
+    }
+    return tags;
+  }
 
-	private static String resolveEntityClassNames(String sql, SpannerMappingContext spannerMappingContext) {
-		Matcher matcher = ENTITY_CLASS_NAME_PATTERN.matcher(sql);
-		String result = sql;
-		while (matcher.find()) {
-			String matched = matcher.group();
-			String className = matched.substring(1, matched.length() - 1);
-			try {
-				Class<?> entityClass = Class.forName(className);
-				SpannerPersistentEntity<?> spannerPersistentEntity = spannerMappingContext
-						.getPersistentEntity(entityClass);
-				if (spannerPersistentEntity == null) {
-					throw new SpannerDataException(
-							"The class used in the SQL statement is not a Cloud Spanner persistent entity: "
-									+ className);
-				}
-				result = result.replace(matched, spannerPersistentEntity.tableName());
-			}
-			catch (ClassNotFoundException ex) {
-				throw new SpannerDataException(
-						"The class name does not refer to an available entity type: "
-								+ className);
-			}
-		}
-		return result;
-	}
+  private static String resolveEntityClassNames(
+      String sql, SpannerMappingContext spannerMappingContext) {
+    Matcher matcher = ENTITY_CLASS_NAME_PATTERN.matcher(sql);
+    String result = sql;
+    while (matcher.find()) {
+      String matched = matcher.group();
+      String className = matched.substring(1, matched.length() - 1);
+      try {
+        Class<?> entityClass = Class.forName(className);
+        SpannerPersistentEntity<?> spannerPersistentEntity =
+            spannerMappingContext.getPersistentEntity(entityClass);
+        if (spannerPersistentEntity == null) {
+          throw new SpannerDataException(
+              "The class used in the SQL statement is not a Cloud Spanner persistent entity: "
+                  + className);
+        }
+        result = result.replace(matched, spannerPersistentEntity.tableName());
+      } catch (ClassNotFoundException ex) {
+        throw new SpannerDataException(
+            "The class name does not refer to an available entity type: " + className);
+      }
+    }
+    return result;
+  }
 
-	private void resolveSpELTags(QueryTagValue queryTagValue) {
-		Expression[] expressions = detectExpressions(queryTagValue.sql);
-		StringBuilder sb = new StringBuilder();
-		Map<Object, String> valueToTag = new HashMap<>();
-		int tagNum = 0;
-		EvaluationContext evaluationContext = this.evaluationContextProvider
-				.getEvaluationContext(this.queryMethod.getParameters(),
-						queryTagValue.rawParams);
-		for (Expression expression : expressions) {
-			if (expression instanceof LiteralExpression) {
-				sb.append(expression.getValue(String.class));
-			}
-			else if (expression instanceof SpelExpression) {
-				Object value = expression.getValue(evaluationContext);
-				if (valueToTag.containsKey(value)) {
-					sb.append("@").append(valueToTag.get(value));
-				}
-				else {
-					String newTag;
-					do {
-						tagNum++;
-						newTag = "SpELtag" + tagNum;
-					}
-					while (queryTagValue.initialTags.contains(newTag));
-					valueToTag.put(value, newTag);
-					queryTagValue.params.add(value);
-					queryTagValue.tags.add(newTag);
-					sb.append("@").append(newTag);
-				}
-			}
-			else {
-				throw new SpannerDataException(
-						"Unexpected expression type. SQL queries are expected to be "
-								+ "concatenation of Literal and SpEL expressions.");
-			}
-		}
-		queryTagValue.sql = sb.toString();
-	}
+  private void resolveSpelTags(QueryTagValue queryTagValue) {
+    Expression[] expressions = detectExpressions(queryTagValue.sql);
+    StringBuilder sb = new StringBuilder();
+    Map<Object, String> valueToTag = new HashMap<>();
+    int tagNum = 0;
+    EvaluationContext evaluationContext =
+        this.evaluationContextProvider.getEvaluationContext(
+            this.queryMethod.getParameters(), queryTagValue.rawParams);
+    for (Expression expression : expressions) {
+      if (expression instanceof LiteralExpression) {
+        sb.append(expression.getValue(String.class));
+      } else if (expression instanceof SpelExpression) {
+        Object value = expression.getValue(evaluationContext);
+        if (valueToTag.containsKey(value)) {
+          sb.append("@").append(valueToTag.get(value));
+        } else {
+          String newTag;
+          do {
+            tagNum++;
+            newTag = "SpELtag" + tagNum;
+          } while (queryTagValue.initialTags.contains(newTag));
+          valueToTag.put(value, newTag);
+          queryTagValue.params.add(value);
+          queryTagValue.tags.add(newTag);
+          sb.append("@").append(newTag);
+        }
+      } else {
+        throw new SpannerDataException(
+            "Unexpected expression type. SQL queries are expected to be "
+                + "concatenation of Literal and SpEL expressions.");
+      }
+    }
+    queryTagValue.sql = sb.toString();
+  }
 
-	@Override
-	public List executeRawResult(Object[] parameters) {
+  @Override
+  public List executeRawResult(Object[] parameters) {
 
-		ParameterAccessor paramAccessor = new ParametersParameterAccessor(getQueryMethod().getParameters(), parameters);
-		Object[] params = StreamSupport.stream(paramAccessor.spliterator(), false).toArray();
+    ParameterAccessor paramAccessor =
+        new ParametersParameterAccessor(getQueryMethod().getParameters(), parameters);
+    Object[] params = StreamSupport.stream(paramAccessor.spliterator(), false).toArray();
 
-		QueryTagValue queryTagValue = new QueryTagValue(getParamTags(), parameters,
-						params, resolveEntityClassNames(this.sql, this.spannerMappingContext));
+    QueryTagValue queryTagValue =
+        new QueryTagValue(
+            getParamTags(),
+            parameters,
+            params,
+            resolveEntityClassNames(this.sql, this.spannerMappingContext));
 
-		resolveSpELTags(queryTagValue);
+    resolveSpelTags(queryTagValue);
 
-		return this.isDml
-				? Collections.singletonList(
-						this.spannerTemplate.executeDmlStatement(buildStatementFromQueryAndTags(queryTagValue)))
-				: executeReadSql(paramAccessor.getPageable(), paramAccessor.getSort(), queryTagValue);
-	}
+    return this.isDml
+        ? Collections.singletonList(
+            this.spannerTemplate.executeDmlStatement(buildStatementFromQueryAndTags(queryTagValue)))
+        : executeReadSql(paramAccessor.getPageable(), paramAccessor.getSort(), queryTagValue);
+  }
 
-	private List executeReadSql(Pageable pageable, Sort sort, QueryTagValue queryTagValue) {
-		SpannerPageableQueryOptions spannerQueryOptions = new SpannerPageableQueryOptions()
-				.setAllowPartialRead(true);
+  private List executeReadSql(Pageable pageable, Sort sort, QueryTagValue queryTagValue) {
+    SpannerPageableQueryOptions spannerQueryOptions =
+        new SpannerPageableQueryOptions().setAllowPartialRead(true);
 
-		if (sort != null && sort.isSorted()) {
-			spannerQueryOptions.setSort(sort);
-		}
+    if (sort != null && sort.isSorted()) {
+      spannerQueryOptions.setSort(sort);
+    }
 
-		if (pageable != null && pageable.isPaged()) {
-			spannerQueryOptions.setOffset(pageable.getOffset()).setLimit(pageable.getPageSize());
-		}
+    if (pageable != null && pageable.isPaged()) {
+      spannerQueryOptions.setOffset(pageable.getOffset()).setLimit(pageable.getPageSize());
+    }
 
-		final Class<?> returnedType = getReturnedType();
-		final SpannerPersistentEntity<?> entity = returnedType == null ? null : this.spannerMappingContext.getPersistentEntity(returnedType);
+    final Class<?> returnedType = getReturnedType();
+    final SpannerPersistentEntity<?> entity =
+        returnedType == null ? null : this.spannerMappingContext.getPersistentEntity(returnedType);
 
-		queryTagValue.sql = SpannerStatementQueryExecutor
-				.applySortingPagingQueryOptions(this.entityType, spannerQueryOptions,
-						queryTagValue.sql, this.spannerMappingContext, entity != null && entity.hasEagerlyLoadedProperties());
+    queryTagValue.sql =
+        SpannerStatementQueryExecutor.applySortingPagingQueryOptions(
+            this.entityType,
+            spannerQueryOptions,
+            queryTagValue.sql,
+            this.spannerMappingContext,
+            entity != null && entity.hasEagerlyLoadedProperties());
 
-		Statement statement = buildStatementFromQueryAndTags(queryTagValue);
+    Statement statement = buildStatementFromQueryAndTags(queryTagValue);
 
-		if (getReturnedSimpleConvertableItemType() != null) {
-			return this.spannerTemplate.query(
-					struct -> new StructAccessor(struct).getSingleValue(0), statement,
-					spannerQueryOptions);
-		}
-		// check if returnedType is a field annotated as json
-		boolean isJsonField = isJsonFieldType(returnedType);
-		if (isJsonField) {
-			return this.spannerTemplate.query(
-					struct -> new StructAccessor(struct).getSingleJsonValue(0, returnedType), statement,
-					spannerQueryOptions);
-		}
+    if (getReturnedSimpleConvertableItemType() != null) {
+      return this.spannerTemplate.query(
+          struct -> new StructAccessor(struct).getSingleValue(0), statement, spannerQueryOptions);
+    }
+    // check if returnedType is a field annotated as json or is inner-type of a field annotated as json
+    if (isJsonFieldType(returnedType)) {
+      return this.spannerTemplate.query(
+          struct -> new StructAccessor(struct,
+              this.spannerMappingContext.getGson()).getJsonValue(0, returnedType),
+          statement,
+          spannerQueryOptions);
+    }
 
-		return this.spannerTemplate.query(this.entityType,
-				statement,
-				spannerQueryOptions);
-	}
+    return this.spannerTemplate.query(this.entityType, statement, spannerQueryOptions);
+  }
 
-	private boolean isJsonFieldType(Class<?> returnedType) {
-		SpannerPersistentEntityImpl<?> persistentEntity = (SpannerPersistentEntityImpl<?>) this.spannerMappingContext
-				.getPersistentEntity(this.entityType);
-		if (persistentEntity == null) {
-			return false;
-		}
-		return persistentEntity.isJsonProperty(returnedType);
-	}
+  private boolean isJsonFieldType(Class<?> returnedType) {
+    SpannerPersistentEntityImpl<?> persistentEntity =
+        (SpannerPersistentEntityImpl<?>)
+            this.spannerMappingContext.getPersistentEntity(this.entityType);
+    if (persistentEntity == null) {
+      return false;
+    }
+    return persistentEntity.isJsonProperty(returnedType);
+  }
 
-	private Statement buildStatementFromQueryAndTags(QueryTagValue queryTagValue) {
-		Map<String, java.lang.reflect.Parameter> paramMetadataMap = new HashMap<>();
-		for (java.lang.reflect.Parameter param : getQueryMethod().getMethod().getParameters()) {
-			Param annotation = param.getAnnotation(Param.class);
-			paramMetadataMap.put(annotation == null ? param.getName() : annotation.value(), param);
-		}
-		return SpannerStatementQueryExecutor.buildStatementFromSqlWithArgs(
-				queryTagValue.sql, queryTagValue.tags,
-				this.paramStructConvertFunc, this.spannerTemplate.getSpannerEntityProcessor().getWriteConverter(),
-				queryTagValue.params.toArray(), paramMetadataMap);
-	}
+  private Statement buildStatementFromQueryAndTags(QueryTagValue queryTagValue) {
+    Map<String, java.lang.reflect.Parameter> paramMetadataMap = new HashMap<>();
+    for (java.lang.reflect.Parameter param : getQueryMethod().getQueryMethod().getParameters()) {
+      Param annotation = param.getAnnotation(Param.class);
+      paramMetadataMap.put(annotation == null ? param.getName() : annotation.value(), param);
+    }
+    return SpannerStatementQueryExecutor.buildStatementFromSqlWithArgs(
+        queryTagValue.sql,
+        queryTagValue.tags,
+        this.paramStructConvertFunc,
+        this.spannerTemplate.getSpannerEntityProcessor().getWriteConverter(),
+        queryTagValue.params.toArray(),
+        paramMetadataMap);
+  }
 
-	private Expression[] detectExpressions(String sql) {
-		Expression expression = this.expressionParser.parseExpression(sql,
-				ParserContext.TEMPLATE_EXPRESSION);
-		if (expression instanceof LiteralExpression) {
-			return new Expression[] { expression };
-		}
-		else if (expression instanceof CompositeStringExpression) {
-			return ((CompositeStringExpression) expression).getExpressions();
-		}
-		else {
-			throw new SpannerDataException("Unexpected expression type. "
-					+ "Query can either contain no SpEL expressions or have SpEL expressions in the SQL.");
-		}
-	}
+  private Expression[] detectExpressions(String sql) {
+    Expression expression =
+        this.expressionParser.parseExpression(sql, ParserContext.TEMPLATE_EXPRESSION);
+    if (expression instanceof LiteralExpression) {
+      return new Expression[] {expression};
+    } else if (expression instanceof CompositeStringExpression) {
+      return ((CompositeStringExpression) expression).getExpressions();
+    } else {
+      throw new SpannerDataException(
+          "Unexpected expression type. Query can either contain no SpEL expressions or have SpEL"
+              + " expressions in the SQL.");
+    }
+  }
 
-	// Convenience class to hold a grouping of SQL, tags, and parameter values.
-	private static class QueryTagValue {
+  // Convenience class to hold a grouping of SQL, tags, and parameter values.
+  private static class QueryTagValue {
 
-		List<String> tags;
+    List<String> tags;
 
-		final Set<String> initialTags;
+    final Set<String> initialTags;
 
-		List<Object> params;
+    List<Object> params;
 
-		final Object[] intialParams;
+    final Object[] intialParams;
 
-		final Object[] rawParams;
+    final Object[] rawParams;
 
-		String sql;
+    String sql;
 
-		QueryTagValue(List<String> tags, Object[] rawParams, Object[] params, String sql) {
-			this.tags = tags;
-			this.intialParams = params;
-			this.sql = sql;
-			this.initialTags = new HashSet<>(tags);
-			this.params = new ArrayList<>(Arrays.asList(params));
-			this.rawParams = rawParams;
-		}
-	}
+    QueryTagValue(List<String> tags, Object[] rawParams, Object[] params, String sql) {
+      this.tags = tags;
+      this.intialParams = params;
+      this.sql = sql;
+      this.initialTags = new HashSet<>(tags);
+      this.params = new ArrayList<>(Arrays.asList(params));
+      this.rawParams = rawParams;
+    }
+  }
 }

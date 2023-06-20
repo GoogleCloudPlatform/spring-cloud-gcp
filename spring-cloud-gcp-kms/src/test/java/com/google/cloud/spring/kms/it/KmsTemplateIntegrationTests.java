@@ -16,65 +16,54 @@
 
 package com.google.cloud.spring.kms.it;
 
-import java.nio.charset.StandardCharsets;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.cloud.spring.kms.KmsTemplate;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
+/** Integration tests for {@link KmsTemplate}. */
+//Please create two keys on cloud-console, both having key-ring as "integration-test-key-ring" and region "us-east1", first named as "test-key" and second as "other-key"
+@EnabledIfSystemProperty(named = "it.kms", matches = "true")
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {KmsTestConfiguration.class})
+class KmsTemplateIntegrationTests {
 
-/**
- * Integration tests for {@link KmsTemplate}.
- *
- * @author Emmanouil Gkatziouras
- */
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { KmsTestConfiguration.class })
-public class KmsTemplateIntegrationTests {
+  @Autowired KmsTemplate kmsTemplate;
 
-	@Autowired
-	KmsTemplate kmsTemplate;
+  @Test
+  void testEncryptDecryptText() {
+    String kmsStr = "us-east1/integration-test-key-ring/test-key";
+    byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
+    String decryptedText = kmsTemplate.decryptText(kmsStr, encryptedBytes);
+    assertThat(decryptedText).isEqualTo("1234");
+  }
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(System.getProperty("it.kms"))
-				.as("KMS integration tests are disabled. "
-						+ "Please use '-Dit.kms=true' to enable them.")
-				.isEqualTo("true");
-	}
+  @Test
+  void testEncryptDecryptBytes() {
+    String kmsStr = "us-east1/integration-test-key-ring/test-key";
+    String originalText = "1234";
+    byte[] bytesToEncrypt = originalText.getBytes(StandardCharsets.UTF_8);
+    byte[] encryptedBytes = kmsTemplate.encryptBytes(kmsStr, bytesToEncrypt);
+    byte[] decryptedBytes = kmsTemplate.decryptBytes(kmsStr, encryptedBytes);
+    String resultText = new String(decryptedBytes, StandardCharsets.UTF_8);
+    assertThat(resultText).isEqualTo(originalText);
+  }
 
-	@Test
-	public void testEncryptDecryptText() {
-		String kmsStr = "us-east1/integration-test-key-ring/test-key";
-		byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
-		String decryptedText = kmsTemplate.decryptText(kmsStr, encryptedBytes);
-		assertThat(decryptedText).isEqualTo("1234");
-	}
+  @Test
+  void testEncryptDecryptMissMatch() {
+    String kmsStr = "us-east1/integration-test-key-ring/test-key";
+    byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
 
-	@Test
-	public void testEncryptDecryptBytes() {
-		String kmsStr = "us-east1/integration-test-key-ring/test-key";
-		String originalText = "1234";
-		byte[] bytesToEncrypt = originalText.getBytes(StandardCharsets.UTF_8);
-		byte[] encryptedBytes = kmsTemplate.encryptBytes(kmsStr, bytesToEncrypt);
-		byte[] decryptedBytes = kmsTemplate.decryptBytes(kmsStr, encryptedBytes);
-		String resultText = new String(decryptedBytes, StandardCharsets.UTF_8);
-		assertThat(resultText).isEqualTo(originalText);
-	}
+    String kmsStr2 = "us-east1/integration-test-key-ring/other-key";
 
-	@Test(expected = com.google.api.gax.rpc.InvalidArgumentException.class)
-	public void testEncryptDecryptMissMatch() {
-		String kmsStr = "us-east1/integration-test-key-ring/test-key";
-		byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
-
-		String kmsStr2 = "us-east1/integration-test-key-ring/other-key";
-		kmsTemplate.decryptText(kmsStr2, encryptedBytes);
-	}
+    assertThatThrownBy(() -> kmsTemplate.decryptText(kmsStr2, encryptedBytes))
+            .isInstanceOf(com.google.api.gax.rpc.InvalidArgumentException.class);
+  }
 }

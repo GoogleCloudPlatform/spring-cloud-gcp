@@ -16,96 +16,94 @@
 
 package com.google.cloud.spring.data.spanner.core;
 
-import java.util.Set;
-
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Options;
 import com.google.cloud.spanner.Options.ReadOption;
 import com.google.cloud.spanner.TimestampBound;
-
+import java.util.Set;
 import org.springframework.util.Assert;
 
 /**
  * Encapsulates Cloud Spanner read options.
  *
- * @author Chengyuan Zhao
- * @author Mike Eltsufin
- *
  * @since 1.1
  */
 public class SpannerReadOptions extends AbstractSpannerRequestOptions<ReadOption> {
 
-	private String index;
+  private String index;
 
-	/**
-	 * Constructor to create an instance. Use the extension-style add/set functions to add
-	 * options and settings.
-	 */
-	public SpannerReadOptions() {
-		this.requestOptionType = ReadOption.class;
-	}
+  /**
+   * Constructor to create an instance. Use the extension-style add/set functions to add options and
+   * settings.
+   */
+  public SpannerReadOptions() {
+    this.requestOptionType = ReadOption.class;
+  }
 
-	public SpannerReadOptions addReadOption(ReadOption readOption) {
-		Assert.notNull(readOption, "Valid read option is required!");
-		this.requestOptions.add(readOption);
-		return this;
-	}
+  public SpannerReadOptions addReadOption(ReadOption readOption) {
+    Assert.notNull(readOption, "Valid read option is required!");
+    this.requestOptions.add(readOption);
+    return this;
+  }
 
-	public String getIndex() {
-		return this.index;
-	}
+  public String getIndex() {
+    return this.index;
+  }
 
-	public SpannerReadOptions setIndex(String index) {
-		this.index = index;
-		return this;
-	}
+  public SpannerReadOptions setIndex(String index) {
+    this.index = index;
+    return this;
+  }
 
-	@Override
-	public SpannerReadOptions setIncludeProperties(Set<String> includeProperties) {
-		super.setIncludeProperties(includeProperties);
-		return this;
-	}
+  @Override
+  public SpannerReadOptions setIncludeProperties(Set<String> includeProperties) {
+    super.setIncludeProperties(includeProperties);
+    return this;
+  }
 
-	@Override
-	public SpannerReadOptions setTimestampBound(TimestampBound timestampBound) {
-		super.setTimestampBound(timestampBound);
-		return this;
-	}
+  @Override
+  public SpannerReadOptions setTimestampBound(TimestampBound timestampBound) {
+    super.setTimestampBound(timestampBound);
+    return this;
+  }
 
-	@Override
-	public SpannerReadOptions setTimestamp(Timestamp timestamp) {
-		super.setTimestamp(timestamp);
-		return this;
-	}
+  @Override
+  public SpannerReadOptions setTimestamp(Timestamp timestamp) {
+    super.setTimestamp(timestamp);
+    return this;
+  }
 
-	@Override
-	public SpannerReadOptions setAllowPartialRead(boolean allowPartialRead) {
-		super.setAllowPartialRead(allowPartialRead);
-		return this;
-	}
+  @Override
+  public SpannerReadOptions setAllowPartialRead(boolean allowPartialRead) {
+    super.setAllowPartialRead(allowPartialRead);
+    return this;
+  }
 
+  /**
+   * In many cases a {@link SpannerReadOptions} class instance could be compatible with {@link
+   * SpannerQueryOptions}. The method executes such conversion or throws an exception if it's
+   * impossible.
+   *
+   * @return query-parameters
+   * @throws IllegalArgumentException when {@link SpannerQueryOptions} can't be converted to {@link
+   *     SpannerQueryOptions}.
+   */
+  public SpannerQueryOptions toQueryOptions() {
+    SpannerQueryOptions query = new SpannerQueryOptions();
+    query.setAllowPartialRead(this.isAllowPartialRead());
+    query.setIncludeProperties(this.getIncludeProperties());
+    query.setTimestampBound(this.getTimestampBound());
 
-	/**
-	 * In many cases a {@link SpannerReadOptions} class instance could be compatible with {@link SpannerQueryOptions}.
-	 * The method executes such conversion or throws an exception if it's impossible.
-	 * @return query-parameters
-	 * @throws IllegalArgumentException when {@link SpannerQueryOptions} can't be converted to {@link SpannerQueryOptions}.
-	 */
-	public SpannerQueryOptions toQueryOptions() {
-		SpannerQueryOptions query = new SpannerQueryOptions();
-		query.setAllowPartialRead(this.isAllowPartialRead());
-		query.setIncludeProperties(this.getIncludeProperties());
-		query.setTimestampBound(this.getTimestampBound());
-
-		for (ReadOption ro : this.getOptions()) {
-			if (ro instanceof Options.ReadAndQueryOption) {
-				query.addQueryOption((Options.ReadAndQueryOption) ro);
-			}
-			else {
-				throw new IllegalArgumentException(String.format("Can't convert %s to SpannerQueryOptions ", this));
-			}
-		}
-		return query;
-	}
-
+    for (ReadOption ro : this.getOptions()) {
+      if (ro instanceof Options.ReadAndQueryOption) {
+        query.addQueryOption((Options.ReadAndQueryOption) ro);
+      } else if (ro instanceof Options.ReadQueryUpdateTransactionOption) {
+        query.addQueryOption((Options.ReadQueryUpdateTransactionOption) ro);
+      } else {
+        throw new IllegalArgumentException(
+            String.format("Can't convert %s to SpannerQueryOptions ", this));
+      }
+    }
+    return query;
+  }
 }

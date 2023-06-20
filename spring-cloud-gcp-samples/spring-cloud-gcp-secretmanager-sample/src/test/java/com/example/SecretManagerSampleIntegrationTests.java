@@ -16,84 +16,80 @@
 
 package com.example;
 
-import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Application secret named "application-secret" must exist and have a value of "Hello world.".
  */
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.secretmanager", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
-		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		classes = SecretManagerApplication.class)
-public class SecretManagerSampleIntegrationTests {
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = SecretManagerApplication.class)
+class SecretManagerSampleIntegrationTests {
 
-	private static final String SECRET_TO_DELETE = "secret-manager-sample-delete-secret";
+  private static final String SECRET_TO_DELETE = "secret-manager-sample-delete-secret";
 
-	@Autowired
-	private SecretManagerTemplate secretManagerTemplate;
+  @Autowired
+  private SecretManagerTemplate secretManagerTemplate;
 
-	@Autowired
-	private TestRestTemplate testRestTemplate;
+  @Autowired
+  private TestRestTemplate testRestTemplate;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"Secret Manager integration tests are disabled. "
-						+ "Please use '-Dit.secretmanager=true' to enable them.",
-				System.getProperty("it.secretmanager"), is("true"));
-	}
+  @Test
+  void testApplicationStartup() {
+    ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
+    assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+    assertThat(response.getBody()).contains(
+        "<b>Application secret from @Value:</b> <i>Hello world.</i>");
+    assertThat(response.getBody()).contains(
+        "<b>Application secret from @ConfigurationProperties:</b> <i>Hello world.</i>");
+  }
 
-	@Test
-	public void testApplicationStartup() {
-		ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
-		assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-		assertThat(response.getBody()).contains("<b>application-secret:</b> <i>Hello world.</i>");
-	}
+  @Test
+  void testCreateReadSecret() {
+    MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
+    params.add("secretId", "secret-manager-sample-secret");
+    params.add("projectId", "");
+    params.add("secretPayload", "12345");
+    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
 
-	@Test
-	public void testCreateReadSecret() {
-		MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-		params.add("secretId", "secret-manager-sample-secret");
-		params.add("projectId", "");
-		params.add("secretPayload", "12345");
-		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
+    ResponseEntity<String> response =
+        this.testRestTemplate.postForEntity("/createSecret", request, String.class);
+    assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
 
-		ResponseEntity<String> response = this.testRestTemplate.postForEntity("/createSecret", request, String.class);
-		assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+    response =
+        this.testRestTemplate.getForEntity(
+            "/getSecret?secretId=secret-manager-sample-secret", String.class);
+    assertThat(response.getBody())
+        .contains("Secret ID: secret-manager-sample-secret | Value: 12345");
+  }
 
-		response = this.testRestTemplate.getForEntity(
-				"/getSecret?secretId=secret-manager-sample-secret", String.class);
-		assertThat(response.getBody()).contains(
-				"Secret ID: secret-manager-sample-secret | Value: 12345");
-	}
+  @Test
+  void testDeleteSecret() {
+    secretManagerTemplate.createSecret(SECRET_TO_DELETE, "test");
 
-	@Test
-	public void testDeleteSecret() {
-		secretManagerTemplate.createSecret(SECRET_TO_DELETE, "test");
+    MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
+    params.add("secretId", SECRET_TO_DELETE);
+    params.add("projectId", "");
+    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
 
-		MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-		params.add("secretId", SECRET_TO_DELETE);
-		params.add("projectId", "");
-		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
-
-		ResponseEntity<String> response = this.testRestTemplate.postForEntity("/deleteSecret", request, String.class);
-		assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-	}
+    ResponseEntity<String> response =
+        this.testRestTemplate.postForEntity("/deleteSecret", request, String.class);
+    assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+  }
 }

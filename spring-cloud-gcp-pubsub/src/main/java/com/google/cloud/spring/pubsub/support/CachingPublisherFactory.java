@@ -16,10 +16,9 @@
 
 package com.google.cloud.spring.pubsub.support;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.google.cloud.pubsub.v1.Publisher;
-import com.google.cloud.pubsub.v1.PublisherInterface;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.PreDestroy;
 
 /**
  * The caching implementation of the {@link PublisherFactory}.
@@ -27,31 +26,40 @@ import com.google.cloud.pubsub.v1.PublisherInterface;
  * <p>Creates {@link Publisher}s for topics once using delegate, caches and reuses them.
  */
 public class CachingPublisherFactory implements PublisherFactory {
-	/**
-	 * {@link Publisher} cache, enforces only one {@link Publisher} per Pub/Sub topic exists.
-	 */
-	private final ConcurrentHashMap<String, PublisherInterface> publishers = new ConcurrentHashMap<>();
+  /** {@link Publisher} cache, enforces only one {@link Publisher} per Pub/Sub topic exists. */
+  private final ConcurrentHashMap<String, Publisher> publishers =
+      new ConcurrentHashMap<>();
 
-	private PublisherFactory delegate;
+  private final PublisherFactory delegate;
 
-	/**
-	 * Constructs a caching {@link PublisherFactory} using the delegate.
-	 * @param delegate a {@link PublisherFactory} that needs to be cachecd.
-	 */
-	public CachingPublisherFactory(PublisherFactory delegate) {
-		this.delegate = delegate;
-	}
+  /**
+   * Constructs a caching {@link PublisherFactory} using the delegate.
+   *
+   * @param delegate a {@link PublisherFactory} that needs to be cached.
+   */
+  public CachingPublisherFactory(PublisherFactory delegate) {
+    this.delegate = delegate;
+  }
 
-	@Override
-	public PublisherInterface createPublisher(String topic) {
-		return this.publishers.computeIfAbsent(topic, delegate::createPublisher);
-	}
+  @Override
+  public Publisher createPublisher(String topic) {
+    return this.publishers.computeIfAbsent(topic, delegate::createPublisher);
+  }
 
-	/**
-	 * Returns the delegate.
-	 * @return the delgate.
-	 */
-	public PublisherFactory getDelegate() {
-		return delegate;
-	}
+  /**
+   * Returns the delegate.
+   *
+   * @return the delegate.
+   */
+  public PublisherFactory getDelegate() {
+    return delegate;
+  }
+
+  /**
+   * Shutdown all cached {@link Publisher} gracefully.
+   */
+  @PreDestroy
+  public void shutdown() {
+    publishers.forEachValue(1L, Publisher::shutdown);
+  }
 }

@@ -20,47 +20,46 @@ import com.google.cloud.resourcemanager.Project;
 import com.google.cloud.resourcemanager.ResourceManager;
 import com.google.cloud.resourcemanager.ResourceManagerOptions;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-
 import org.springframework.util.Assert;
 
 /**
- * {@link org.springframework.security.oauth2.jwt.Jwt} token validator for GCP App Engine (both Flexible and Standard)
- * audience strings.
- *
- * @author Elena Felder
+ * {@link org.springframework.security.oauth2.jwt.Jwt} token validator for GCP App Engine (both
+ * Flexible and Standard) audience strings.
  *
  * @since 1.1
  */
 public class AppEngineAudienceProvider implements AudienceProvider {
 
-	private static final String AUDIENCE_FORMAT = "/projects/%s/apps/%s";
+  private static final String AUDIENCE_FORMAT = "/projects/%s/apps/%s";
 
-	private final GcpProjectIdProvider projectIdProvider;
+  private final GcpProjectIdProvider projectIdProvider;
 
-	private ResourceManager resourceManager = ResourceManagerOptions.getDefaultInstance().getService();
+  private ResourceManager resourceManager =
+      ResourceManagerOptions.getDefaultInstance().getService();
 
-	public AppEngineAudienceProvider(GcpProjectIdProvider projectIdProvider) {
-		Assert.notNull(projectIdProvider, "GcpProjectIdProvider cannot be null.");
+  public AppEngineAudienceProvider(GcpProjectIdProvider projectIdProvider) {
+    Assert.notNull(projectIdProvider, "GcpProjectIdProvider cannot be null.");
 
-		this.projectIdProvider = projectIdProvider;
-	}
+    this.projectIdProvider = projectIdProvider;
+  }
 
-	@Override
-	public String getAudience() {
-		Project project = this.resourceManager.get(this.projectIdProvider.getProjectId());
-		Assert.notNull(project,
-				"Project expected not to be null. Is Cloud Resource Manager API enabled? (https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com)");
-		Assert.notNull(project.getProjectNumber(), "Project Number expected not to be null.");
+  @Override
+  public String getAudience() {
+    Project project = this.resourceManager.get(this.projectIdProvider.getProjectId());
+    Assert.notNull(
+        project,
+        "Project expected not to be null. Is Cloud Resource Manager API enabled?"
+            + " (https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com)");
+    Assert.notNull(project.getProjectNumber(), "Project Number expected not to be null.");
 
-		String projectId = this.projectIdProvider.getProjectId();
-		Assert.notNull(projectId, "Project Id expected not to be null.");
+    String projectId = this.projectIdProvider.getProjectId();
+    Assert.notNull(projectId, "Project Id expected not to be null.");
 
-		return String.format(AUDIENCE_FORMAT, project.getProjectNumber(), projectId);
-	}
+    return String.format(AUDIENCE_FORMAT, project.getProjectNumber(), projectId);
+  }
 
-	public void setResourceManager(ResourceManager resourceManager) {
-		Assert.notNull(resourceManager, "ResourceManager cannot be null.");
-		this.resourceManager = resourceManager;
-	}
-
+  public void setResourceManager(ResourceManager resourceManager) {
+    Assert.notNull(resourceManager, "ResourceManager cannot be null.");
+    this.resourceManager = resourceManager;
+  }
 }

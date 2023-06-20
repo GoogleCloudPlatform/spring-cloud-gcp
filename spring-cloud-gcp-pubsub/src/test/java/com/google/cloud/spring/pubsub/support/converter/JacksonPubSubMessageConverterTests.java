@@ -16,150 +16,142 @@
 
 package com.google.cloud.spring.pubsub.support.converter;
 
-import java.util.Collections;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import com.google.pubsub.v1.PubsubMessage;
+import java.util.Collections;
 import org.json.JSONException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for the Jackson message converter.
  *
- * @author Dmitry Solomakha
- * @author Doug Hoard
- * @author Chengyuan Zhao
- *
- * @since  1.1
+ * @since 1.1
  */
+class JacksonPubSubMessageConverterTests {
 
-public class JacksonPubSubMessageConverterTests {
+  private JacksonPubSubMessageConverter converter =
+      new JacksonPubSubMessageConverter(new ObjectMapper());
 
-	private JacksonPubSubMessageConverter converter = new JacksonPubSubMessageConverter(new ObjectMapper());
+  @Test
+  void testString() throws JSONException {
+    String str = "test 123";
 
-	@Test
-	public void testString() throws JSONException {
-		String str = "test 123";
+    PubsubMessage pubsubMessage = this.converter.toPubSubMessage(str, null);
 
-		PubsubMessage pubsubMessage = this.converter.toPubSubMessage(str, null);
+    JSONAssert.assertEquals("\"test 123\"", pubsubMessage.getData().toStringUtf8(), true);
 
-		JSONAssert.assertEquals(
-				"\"test 123\"",
-				pubsubMessage.getData().toStringUtf8(),
-				true);
+    Object o = this.converter.fromPubSubMessage(pubsubMessage, String.class);
 
-		Object o = this.converter.fromPubSubMessage(pubsubMessage, String.class);
+    assertThat(o).as("verify that deserialized object is equal to the original one").isEqualTo(str);
+  }
 
-		assertThat(o).as("verify that deserialized object is equal to the original one").isEqualTo(str);
-	}
+  @Test
+  void testPojo() throws JSONException {
+    Contact contact = new Contact("Thomas", "Edison", 8817);
 
-	@Test
-	public void testPojo() throws JSONException {
-		Contact contact = new Contact("Thomas", "Edison", 8817);
+    PubsubMessage pubsubMessage = this.converter.toPubSubMessage(contact, null);
 
-		PubsubMessage pubsubMessage = this.converter.toPubSubMessage(contact, null);
+    JSONAssert.assertEquals(
+        "{\"firstName\":\"Thomas\",\"lastName\":\"Edison\",\"zip\":8817}",
+        pubsubMessage.getData().toStringUtf8(),
+        true);
 
-		JSONAssert.assertEquals(
-				"{\"firstName\":\"Thomas\",\"lastName\":\"Edison\",\"zip\":8817}",
-				pubsubMessage.getData().toStringUtf8(),
-				true);
+    Object o = this.converter.fromPubSubMessage(pubsubMessage, Contact.class);
 
-		Object o = this.converter.fromPubSubMessage(pubsubMessage, Contact.class);
+    assertThat(o)
+        .as("verify that deserialized object is equal to the original one")
+        .isEqualTo(contact);
+  }
 
-		assertThat(o).as("verify that deserialized object is equal to the original one").isEqualTo(contact);
-	}
+  @Test
+  void testToPubSubMessageWithNullPayload() throws JSONException {
+    PubsubMessage pubsubMessage = this.converter.toPubSubMessage(null, null);
+    assertThat(pubsubMessage).isNotNull();
+    assertThat(pubsubMessage.getAttributesCount()).isZero();
+  }
 
-	@Test
-	public void testToPubSubMessageWithNullPayload() throws JSONException {
-		PubsubMessage pubsubMessage = this.converter.toPubSubMessage(null, null);
-		assertThat(pubsubMessage).isNotNull();
-		assertThat(pubsubMessage.getAttributesCount()).isZero();
-	}
+  @Test
+  void testToPubSubMessageWithOrderingKeyHeader() throws JSONException {
+    PubsubMessage pubsubMessage =
+        this.converter.toPubSubMessage(
+            null, Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1"));
+    assertThat(pubsubMessage).isNotNull();
+    assertThat(pubsubMessage.getOrderingKey()).isEqualTo("key1");
+    assertThat(pubsubMessage.getAttributesCount()).isZero();
+  }
 
-	@Test
-	public void testToPubSubMessageWithOrderingKeyHeader() throws JSONException {
-		PubsubMessage pubsubMessage = this.converter.toPubSubMessage(null,
-				Collections.singletonMap(GcpPubSubHeaders.ORDERING_KEY, "key1"));
-		assertThat(pubsubMessage).isNotNull();
-		assertThat(pubsubMessage.getOrderingKey()).isEqualTo("key1");
-		assertThat(pubsubMessage.getAttributesCount()).isZero();
-	}
+  @Test
+  void testToPubSubMessageWitHeader() throws JSONException {
+    PubsubMessage pubsubMessage =
+        this.converter.toPubSubMessage(null, Collections.singletonMap("custom-header", "val1"));
+    assertThat(pubsubMessage).isNotNull();
+    assertThat(pubsubMessage.getOrderingKey()).isEmpty();
+    assertThat(pubsubMessage.getAttributesCount()).isOne();
+    assertThat(pubsubMessage.getAttributesMap()).containsEntry("custom-header", "val1");
+  }
 
-	@Test
-	public void testToPubSubMessageWitHeader() throws JSONException {
-		PubsubMessage pubsubMessage = this.converter.toPubSubMessage(null,
-				Collections.singletonMap("custom-header", "val1"));
-		assertThat(pubsubMessage).isNotNull();
-		assertThat(pubsubMessage.getOrderingKey()).isEmpty();
-		assertThat(pubsubMessage.getAttributesCount()).isOne();
-		assertThat(pubsubMessage.getAttributesMap()).containsEntry("custom-header", "val1");
-	}
+  /** A test class containing data to test conversions. */
+  static class Contact {
+    String firstName;
 
-	/**
-	 * A test class containing data to test conversions.
-	 */
-	static class Contact {
-		String firstName;
+    String lastName;
 
-		String lastName;
+    int zip;
 
-		int zip;
+    public String getFirstName() {
+      return this.firstName;
+    }
 
-		public String getFirstName() {
-			return this.firstName;
-		}
+    public void setFirstName(String firstName) {
+      this.firstName = firstName;
+    }
 
-		public void setFirstName(String firstName) {
-			this.firstName = firstName;
-		}
+    public String getLastName() {
+      return this.lastName;
+    }
 
-		public String getLastName() {
-			return this.lastName;
-		}
+    public void setLastName(String lastName) {
+      this.lastName = lastName;
+    }
 
-		public void setLastName(String lastName) {
-			this.lastName = lastName;
-		}
+    public int getZip() {
+      return this.zip;
+    }
 
-		public int getZip() {
-			return this.zip;
-		}
+    public void setZip(int zip) {
+      this.zip = zip;
+    }
 
-		public void setZip(int zip) {
-			this.zip = zip;
-		}
+    Contact() {}
 
-		Contact() {
-		}
+    Contact(String firstName, String lastName, int zip) {
+      this.firstName = firstName;
+      this.lastName = lastName;
+      this.zip = zip;
+    }
 
-		Contact(String firstName, String lastName, int zip) {
-			this.firstName = firstName;
-			this.lastName = lastName;
-			this.zip = zip;
-		}
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
 
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			}
-			if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+      Contact contact = (Contact) o;
+      return this.zip == contact.zip
+          && java.util.Objects.equals(this.firstName, contact.firstName)
+          && java.util.Objects.equals(this.lastName, contact.lastName);
+    }
 
-				return false;
-			}
-			Contact contact = (Contact) o;
-			return this.zip == contact.zip &&
-					java.util.Objects.equals(this.firstName, contact.firstName) &&
-					java.util.Objects.equals(this.lastName, contact.lastName);
-		}
-
-		@Override
-		public int hashCode() {
-			return java.util.Objects.hash(this.firstName, this.lastName, this.zip);
-		}
-	}
+    @Override
+    public int hashCode() {
+      return java.util.Objects.hash(this.firstName, this.lastName, this.zip);
+    }
+  }
 }

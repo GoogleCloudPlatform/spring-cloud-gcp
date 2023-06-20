@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - 2.x
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
@@ -11,7 +12,6 @@ on:
 
 jobs:
   sonar:
-    if: github.repository == 'GoogleCloudPlatform/spring-cloud-gcp' # Only run on upstream branch
     name: Build with Sonar
     runs-on: ubuntu-20.04
     steps:

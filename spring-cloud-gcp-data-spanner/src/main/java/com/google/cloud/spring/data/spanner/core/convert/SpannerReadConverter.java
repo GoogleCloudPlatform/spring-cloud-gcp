@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.data.convert.CustomConversions;
@@ -29,32 +28,29 @@ import org.springframework.data.convert.CustomConversions;
 /**
  * A custom converter used for reading from Spanner data types.
  *
- * @author Balint Pato
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public class SpannerReadConverter extends SpannerCustomConverter {
 
-	public SpannerReadConverter() {
-		this((Collection<Converter>) null);
-	}
+  public SpannerReadConverter() {
+    this((Collection<Converter>) null);
+  }
 
-	public SpannerReadConverter(Collection<Converter> readConverters) {
-		this(getCustomConversions(
-				Stream.<Converter>concat(
-						Optional.ofNullable(readConverters).orElse(Collections.emptyList()).stream(),
-						SpannerConverters.DEFAULT_SPANNER_READ_CONVERTERS.stream())
-						.collect(Collectors.toList())));
+  public SpannerReadConverter(Collection<Converter> readConverters) {
+    this(
+        getCustomConversions(
+            Stream.<Converter>concat(
+                    Optional.ofNullable(readConverters).orElse(Collections.emptyList()).stream(),
+                    SpannerConverters.DEFAULT_SPANNER_READ_CONVERTERS.stream())
+                .collect(Collectors.toList())));
+  }
 
-	}
+  public SpannerReadConverter(CustomConversions customConversions) {
+    this(customConversions, null);
+  }
 
-	public SpannerReadConverter(CustomConversions customConversions) {
-		this(customConversions, null);
-	}
-
-	public SpannerReadConverter(CustomConversions customConversions, GenericConversionService conversionService) {
-		super(customConversions, conversionService);
-	}
-
+  public SpannerReadConverter(
+      CustomConversions customConversions, GenericConversionService conversionService) {
+    super(customConversions, conversionService);
+  }
 }

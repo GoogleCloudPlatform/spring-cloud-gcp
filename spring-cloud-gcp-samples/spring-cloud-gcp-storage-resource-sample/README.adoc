@@ -1,7 +1,7 @@
-= Spring Cloud GCP Storage Starter Example
+= Spring Framework on Google Cloud Storage Starter Example
 
 This code sample demonstrates how to read and write files with the Spring Resource abstraction for
-Google Cloud Storage using the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-storage[Spring Cloud GCP Storage Starter].
+Google Cloud Storage using the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-storage[Spring Framework on Google Cloud Storage Starter].
 
 This content is also available in the https://codelabs.developers.google.com/codelabs/spring-cloud-gcp-gcs/index.html[Reading and Writing Files with Spring Resource Abstraction] codelab.
 

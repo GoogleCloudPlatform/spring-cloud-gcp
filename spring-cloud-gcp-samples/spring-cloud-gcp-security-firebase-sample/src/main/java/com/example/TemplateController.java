@@ -16,13 +16,11 @@
 
 package com.example;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,34 +28,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Controller to output the firebase javascript file. Used in order to allow injection of environment variables into
- * client side javascript
+ * Controller to output the firebase javascript file. Used in order to allow injection of
+ * environment variables into client side javascript
  *
- * @author Vinicius Carvalho
  * @since 1.2.2
  */
 @Controller
 @RequestMapping("/templates")
 public class TemplateController {
 
-	private final Configuration configuration;
-	private final GcpProjectIdProvider gcpProjectIdProvider;
-	private final FirebaseConfig firebaseConfig;
+  private final Configuration configuration;
+  private final GcpProjectIdProvider gcpProjectIdProvider;
+  private final FirebaseConfig firebaseConfig;
 
-	public TemplateController(Configuration configuration, GcpProjectIdProvider gcpProjectIdProvider, FirebaseConfig firebaseConfig) {
-		this.configuration = configuration;
-		this.gcpProjectIdProvider = gcpProjectIdProvider;
-		this.firebaseConfig = firebaseConfig;
-	}
+  public TemplateController(
+      Configuration configuration,
+      GcpProjectIdProvider gcpProjectIdProvider,
+      FirebaseConfig firebaseConfig) {
+    this.configuration = configuration;
+    this.gcpProjectIdProvider = gcpProjectIdProvider;
+    this.firebaseConfig = firebaseConfig;
+  }
 
-	@GetMapping(value = "/js/app", produces = "application/javascript")
-	public @ResponseBody String appJs() throws Exception {
-		Map<String, Object> model = new HashMap<>();
-		model.put("projectId", this.gcpProjectIdProvider.getProjectId());
-		model.put("firebaseConfig", firebaseConfig);
-		Template template = configuration.getTemplate("app.ftl");
-		String js = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
-		return js;
-	}
-
+  @GetMapping(value = "/js/app", produces = "application/javascript")
+  public @ResponseBody String appJs() throws Exception {
+    Map<String, Object> model = new HashMap<>();
+    model.put("projectId", this.gcpProjectIdProvider.getProjectId());
+    model.put("firebaseConfig", firebaseConfig);
+    Template template = configuration.getTemplate("app.ftl");
+    String js = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+    return js;
+  }
 }

@@ -40,7 +40,7 @@
             $("#logoutBtn").click(function () {
                 firebase.auth().signOut().then(function () {
                     firebaseUser = null;
-                    $("#loginBtn").css("visibiliy", "visible");
+                    $("#loginBtn").css("visibility", "visible");
                     $("#logoutBtn").css("visibility", "hidden");
                 });
             });

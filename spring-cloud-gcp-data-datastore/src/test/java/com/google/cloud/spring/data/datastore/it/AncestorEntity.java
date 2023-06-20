@@ -16,81 +16,70 @@
 
 package com.google.cloud.spring.data.datastore.it;
 
+import com.google.cloud.datastore.Key;
+import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-
-import com.google.cloud.datastore.Key;
-import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
-
 import org.springframework.data.annotation.Id;
 
-/**
- * An ancestor entity for integration tests.
- *
- * @author Dmitry Solomakha
- */
+/** An ancestor entity for integration tests. */
 public class AncestorEntity {
-	@Id
-	Long id;
+  @Id Long id;
 
-	String name;
+  String name;
 
-	@Descendants
-	List<DescendantEntry> descendants;
+  @Descendants List<DescendantEntry> descendants;
 
-	AncestorEntity(String name, List<DescendantEntry> descendants) {
-		this.name = name;
-		this.descendants = descendants;
-	}
+  AncestorEntity(String name, List<DescendantEntry> descendants) {
+    this.name = name;
+    this.descendants = descendants;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		AncestorEntity that = (AncestorEntity) o;
-		return Objects.equals(this.name, that.name) &&
-				new HashSet<>(this.descendants).equals(new HashSet<>(that.descendants));
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    AncestorEntity that = (AncestorEntity) o;
+    return Objects.equals(this.name, that.name)
+        && new HashSet<>(this.descendants).equals(new HashSet<>(that.descendants));
+  }
 
-	@Override
-	public int hashCode() {
+  @Override
+  public int hashCode() {
 
-		return Objects.hash(this.name, this.descendants);
-	}
+    return Objects.hash(this.name, this.descendants);
+  }
 
-	/**
-	 * A descendant entity.
-	 */
-	public static class DescendantEntry {
-		@Id
-		Key id;
+  /** A descendant entity. */
+  public static class DescendantEntry {
+    @Id Key id;
 
-		String name;
+    String name;
 
-		DescendantEntry(String name) {
-			this.name = name;
-		}
+    DescendantEntry(String name) {
+      this.name = name;
+    }
 
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			}
-			if (o == null || getClass() != o.getClass()) {
-				return false;
-			}
-			DescendantEntry that = (DescendantEntry) o;
-			return Objects.equals(this.name, that.name);
-		}
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+      DescendantEntry that = (DescendantEntry) o;
+      return Objects.equals(this.name, that.name);
+    }
 
-		@Override
-		public int hashCode() {
-			return Objects.hash(this.name);
-		}
-	}
+    @Override
+    public int hashCode() {
+      return Objects.hash(this.name);
+    }
+  }
 }

@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.data.datastore.it.subclasses.references;
 
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
@@ -26,89 +26,72 @@ import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import com.google.cloud.spring.data.datastore.it.AbstractDatastoreIntegrationTests;
 import com.google.cloud.spring.data.datastore.it.DatastoreIntegrationTestConfiguration;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import java.util.Arrays;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @Repository
-interface SubclassesReferencesEntityARepository extends DatastoreRepository<EntityA, Key> {
-}
+interface SubclassesReferencesEntityArepository extends DatastoreRepository<EntityA, Key> {}
 
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { DatastoreIntegrationTestConfiguration.class })
+@EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
 public class SubclassesReferencesIntegrationTests extends AbstractDatastoreIntegrationTests {
 
-	@Autowired
-	SubclassesReferencesEntityARepository entityARepository;
+  @Autowired
+  SubclassesReferencesEntityArepository entityArepository;
 
-	@Autowired
-	private DatastoreTemplate datastoreTemplate;
+  @Autowired private DatastoreTemplate datastoreTemplate;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"Datastore integration tests are disabled. Please use '-Dit.datastore=true' "
-						+ "to enable them. ",
-				System.getProperty("it.datastore"), is("true"));
-	}
+  @AfterEach
+  void deleteAll() {
+    datastoreTemplate.deleteAll(EntityA.class);
+    datastoreTemplate.deleteAll(EntityB.class);
+    datastoreTemplate.deleteAll(EntityC.class);
+  }
 
-	@After
-	public void deleteAll() {
-		datastoreTemplate.deleteAll(EntityA.class);
-		datastoreTemplate.deleteAll(EntityB.class);
-		datastoreTemplate.deleteAll(EntityC.class);
-	}
-
-	@Test
-	public void testEntityCContainsReferenceToEntityB() {
-		EntityB entityB_1 = new EntityB();
-		EntityC entityC_1 = new EntityC(entityB_1);
-		entityARepository.saveAll(Arrays.asList(entityB_1, entityC_1));
-		EntityC fetchedC = (EntityC) entityARepository.findById(entityC_1.getId()).get();
-		assertThat(fetchedC.getEntityB()).isNotNull();
-	}
-
+  @Test
+  void testEntityCcontainsReferenceToEntityB() {
+    EntityB entityB1 = new EntityB();
+    EntityC entityC1 = new EntityC(entityB1);
+    entityArepository.saveAll(Arrays.asList(entityB1, entityC1));
+    EntityC fetchedC = (EntityC) entityArepository.findById(entityC1.getId()).get();
+    assertThat(fetchedC.getEntityB()).isNotNull();
+  }
 }
 
 @Entity(name = "A")
 @DiscriminatorField(field = "type")
 abstract class EntityA {
-	@Id
-	private Key id;
+  @Id private Key id;
 
-	public Key getId() {
-		return id;
-	}
+  public Key getId() {
+    return id;
+  }
 }
 
 @Entity(name = "A")
 @DiscriminatorValue("B")
-class EntityB extends EntityA {
-}
+class EntityB extends EntityA {}
 
 @Entity(name = "A")
 @DiscriminatorValue("C")
 class EntityC extends EntityA {
-	@Reference
-	private EntityB entityB;
+  @Reference private EntityB entityB;
 
-	EntityC(EntityB entityB) {
-		this.entityB = entityB;
-	}
+  EntityC(EntityB entityB) {
+    this.entityB = entityB;
+  }
 
-	public EntityB getEntityB() {
-		return entityB;
-	}
+  public EntityB getEntityB() {
+    return entityB;
+  }
 }

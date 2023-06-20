@@ -1,0 +1,47 @@
+{
+  "packageRules": [{
+    "packageNames": [
+      "com.coveo:fmt-maven-plugin",
+      "com.google.googlejavaformat:google-java-format"
+    ],
+    "enabled": false
+  },
+    {
+      "major": {
+        "enabled": false
+      }
+    },
+    {
+      "matchPackageNames": ["org.springframework.boot:spring-boot-dependencies"],
+      "allowedVersions": "<3.0.0"
+    },
+    {
+      "matchPackageNames": ["org.springframework.boot:spring-boot-starter-parent"],
+      "allowedVersions": "<3.0.0"
+    },
+    {
+      "matchPackageNames": ["org.springframework.cloud:spring-cloud-dependencies"],
+      "allowedVersions": "<2022.0.0"
+    },
+    {
+      "matchPackageNames": ["org.springframework.cloud:spring-cloud-config"],
+      "allowedVersions": "<4.0.0"
+    },
+    {
+      "matchPackageNames": ["org.springframework.cloud:spring-cloud-function"],
+      "allowedVersions": "<4.0.0"
+    },
+    {
+      "matchPackageNames": ["org.springframework.cloud:spring-cloud-dependencies-parent"],
+      "allowedVersions": "<4.0.0"
+    },
+    {
+      "matchPackageNames": ["org.springframework.shell:spring-shell-starter"],
+      "allowedVersions": "<3.0.0"
+    }
+  ],
+  "labels": [
+    "3.x-dependencies"
+  ]
+}
+

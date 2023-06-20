@@ -17,17 +17,12 @@
 package com.example;
 
 import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
+import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
-import org.springframework.stereotype.Repository;
-
-/**
- * Demonstrates Spring Data Repository support in Firestore.
- *
- * @author Daniel Zou
- */
+/** Demonstrates Spring Data Repository support in Firestore. */
 @Repository
 public interface UserRepository extends FirestoreReactiveRepository<User> {
 
-	Flux<User> findByAge(int age);
+  Flux<User> findByAge(int age);
 }

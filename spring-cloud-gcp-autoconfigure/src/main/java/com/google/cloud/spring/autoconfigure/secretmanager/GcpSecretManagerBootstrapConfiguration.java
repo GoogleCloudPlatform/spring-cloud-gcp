@@ -16,8 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
-import java.io.IOException;
-
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
@@ -27,7 +25,7 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerPropertySourceLocator;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
-
+import java.io.IOException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -37,57 +35,66 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
- * Bootstrap Autoconfiguration for GCP Secret Manager which enables loading secrets as
- * properties into the application {@link org.springframework.core.env.Environment}.
+ * Bootstrap Autoconfiguration for GCP Secret Manager which enables loading secrets as properties
+ * into the application {@link org.springframework.core.env.Environment}.
  *
- * @author Daniel Zou
- * @author Eddú Meléndez
  * @since 1.2.2
+ * @deprecated since external resources should be using Spring Boot's Config Data API, more info in
+ *     <a href="https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4">here</a>.
  */
+@Deprecated
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(GcpSecretManagerProperties.class)
 @ConditionalOnClass({SecretManagerServiceClient.class, SecretManagerTemplate.class})
 @ConditionalOnProperty(value = "spring.cloud.gcp.secretmanager.enabled", matchIfMissing = true)
 public class GcpSecretManagerBootstrapConfiguration {
 
-	private final GcpProjectIdProvider gcpProjectIdProvider;
+  private final GcpProjectIdProvider gcpProjectIdProvider;
+  private final GcpSecretManagerProperties properties;
 
-	public GcpSecretManagerBootstrapConfiguration(
-			GcpSecretManagerProperties properties,
-			ConfigurableEnvironment configurableEnvironment) {
+  public GcpSecretManagerBootstrapConfiguration(
+      GcpSecretManagerProperties properties, ConfigurableEnvironment configurableEnvironment) {
 
-		this.gcpProjectIdProvider = properties.getProjectId() != null
-				? properties::getProjectId
-				: new DefaultGcpProjectIdProvider();
-	}
+    this.properties = properties;
+    this.gcpProjectIdProvider =
+        properties.getProjectId() != null
+            ? properties::getProjectId
+            : new DefaultGcpProjectIdProvider();
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	public CredentialsProvider googleCredentials(GcpSecretManagerProperties secretManagerProperties) throws IOException {
-		return new DefaultCredentialsProvider(secretManagerProperties);
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  public CredentialsProvider googleCredentials(GcpSecretManagerProperties secretManagerProperties)
+      throws IOException {
+    return new DefaultCredentialsProvider(secretManagerProperties);
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	public SecretManagerServiceClient secretManagerClient(CredentialsProvider googleCredentials) throws IOException {
-		SecretManagerServiceSettings settings = SecretManagerServiceSettings.newBuilder()
-				.setCredentialsProvider(googleCredentials)
-				.setHeaderProvider(new UserAgentHeaderProvider(GcpSecretManagerBootstrapConfiguration.class))
-				.build();
+  @Bean
+  @ConditionalOnMissingBean
+  public SecretManagerServiceClient secretManagerClient(CredentialsProvider googleCredentials)
+      throws IOException {
+    SecretManagerServiceSettings settings =
+        SecretManagerServiceSettings.newBuilder()
+            .setCredentialsProvider(googleCredentials)
+            .setHeaderProvider(
+                new UserAgentHeaderProvider(GcpSecretManagerBootstrapConfiguration.class))
+            .build();
 
-		return SecretManagerServiceClient.create(settings);
-	}
+    return SecretManagerServiceClient.create(settings);
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
-		return new SecretManagerTemplate(client, this.gcpProjectIdProvider);
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
+    return new SecretManagerTemplate(client, this.gcpProjectIdProvider)
+        .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
+  }
 
-	@Bean
-	@ConditionalOnMissingBean
-	public SecretManagerPropertySourceLocator secretManagerPropertySourceLocator(
-			SecretManagerTemplate secretManagerTemplate) {
-		return new SecretManagerPropertySourceLocator(secretManagerTemplate, this.gcpProjectIdProvider);
-	}
+  @Bean
+  @ConditionalOnMissingBean
+  @ConditionalOnProperty(value = "spring.cloud.gcp.secretmanager.legacy", matchIfMissing = true)
+  public SecretManagerPropertySourceLocator secretManagerPropertySourceLocator(
+      SecretManagerTemplate secretManagerTemplate) {
+    return new SecretManagerPropertySourceLocator(secretManagerTemplate, this.gcpProjectIdProvider);
+  }
 }

@@ -16,10 +16,8 @@
 
 package com.google.cloud.spring.data.spanner.repository.config;
 
-import java.lang.annotation.Annotation;
-
 import com.google.cloud.spring.data.spanner.repository.support.SpannerAuditingEventListener;
-
+import java.lang.annotation.Annotation;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -28,42 +26,45 @@ import org.springframework.data.auditing.config.AuditingBeanDefinitionRegistrarS
 import org.springframework.data.auditing.config.AuditingConfiguration;
 
 /**
- * Registers the annotations and classes for providing auditing support in Spring Data
- * Cloud Spanner.
+ * Registers the annotations and classes for providing auditing support in Spring Data Cloud
+ * Spanner.
  *
- * @author Chengyuan Zhao
  * @since 1.2
  */
 public class SpannerAuditingRegistrar extends AuditingBeanDefinitionRegistrarSupport {
 
-	private static final String AUDITING_HANDLER_BEAN_NAME = "spannerAuditingHandler";
+  private static final String AUDITING_HANDLER_BEAN_NAME = "spannerAuditingHandler";
 
-	private static final String MAPPING_CONTEXT_BEAN_NAME = "spannerMappingContext";
+  private static final String MAPPING_CONTEXT_BEAN_NAME = "spannerMappingContext";
 
-	@Override
-	protected Class<? extends Annotation> getAnnotation() {
-		return EnableSpannerAuditing.class;
-	}
+  @Override
+  protected Class<? extends Annotation> getAnnotation() {
+    return EnableSpannerAuditing.class;
+  }
 
-	@Override
-	protected void registerAuditListenerBeanDefinition(BeanDefinition auditingHandlerDefinition,
-			BeanDefinitionRegistry registry) {
-		Class<?> listenerClass = SpannerAuditingEventListener.class;
-		BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(listenerClass)
-				.addConstructorArgReference(AUDITING_HANDLER_BEAN_NAME);
+  @Override
+  protected void registerAuditListenerBeanDefinition(
+      BeanDefinition auditingHandlerDefinition, BeanDefinitionRegistry registry) {
+    Class<?> listenerClass = SpannerAuditingEventListener.class;
+    BeanDefinitionBuilder builder =
+        BeanDefinitionBuilder.rootBeanDefinition(listenerClass)
+            .addConstructorArgReference(AUDITING_HANDLER_BEAN_NAME);
 
-		registerInfrastructureBeanWithId(builder.getRawBeanDefinition(), listenerClass.getName(), registry);
-	}
+    registerInfrastructureBeanWithId(
+        builder.getRawBeanDefinition(), listenerClass.getName(), registry);
+  }
 
-	@Override
-	protected BeanDefinitionBuilder getAuditHandlerBeanDefinitionBuilder(AuditingConfiguration configuration) {
-		BeanDefinitionBuilder builder = configureDefaultAuditHandlerAttributes(configuration,
-				BeanDefinitionBuilder.rootBeanDefinition(AuditingHandler.class));
-		return builder.addConstructorArgReference(MAPPING_CONTEXT_BEAN_NAME);
-	}
+  @Override
+  protected BeanDefinitionBuilder getAuditHandlerBeanDefinitionBuilder(
+      AuditingConfiguration configuration) {
+    BeanDefinitionBuilder builder =
+        configureDefaultAuditHandlerAttributes(
+            configuration, BeanDefinitionBuilder.rootBeanDefinition(AuditingHandler.class));
+    return builder.addConstructorArgReference(MAPPING_CONTEXT_BEAN_NAME);
+  }
 
-	@Override
-	protected String getAuditingHandlerBeanName() {
-		return AUDITING_HANDLER_BEAN_NAME;
-	}
+  @Override
+  protected String getAuditingHandlerBeanName() {
+    return AUDITING_HANDLER_BEAN_NAME;
+  }
 }

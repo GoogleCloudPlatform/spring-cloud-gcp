@@ -16,64 +16,58 @@
 
 package com.google.cloud.spring.data.spanner.test.domain;
 
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import java.util.Objects;
 
-import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
-
-/**
- * An embedded grouping of columns.
- *
- * @author Chengyuan Zhao
- */
+/** An embedded grouping of columns. */
 public class TradeDetail {
 
-	@PrimaryKey
-	String id;
+  @PrimaryKey String id;
 
-	Double price;
+  Double price;
 
-	Double shares;
+  Double shares;
 
-	public String getId() {
-		return this.id;
-	}
+  public String getId() {
+    return this.id;
+  }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+  public void setId(String id) {
+    this.id = id;
+  }
 
-	public Double getPrice() {
-		return this.price;
-	}
+  public Double getPrice() {
+    return this.price;
+  }
 
-	public void setPrice(Double price) {
-		this.price = price;
-	}
+  public void setPrice(Double price) {
+    this.price = price;
+  }
 
-	public Double getShares() {
-		return this.shares;
-	}
+  public Double getShares() {
+    return this.shares;
+  }
 
-	public void setShares(Double shares) {
-		this.shares = shares;
-	}
+  public void setShares(Double shares) {
+    this.shares = shares;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		TradeDetail that = (TradeDetail) o;
-		return Objects.equals(getId(), that.getId()) &&
-				Objects.equals(getPrice(), that.getPrice()) &&
-				Objects.equals(getShares(), that.getShares());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TradeDetail that = (TradeDetail) o;
+    return Objects.equals(getId(), that.getId())
+        && Objects.equals(getPrice(), that.getPrice())
+        && Objects.equals(getShares(), that.getShares());
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getId(), getPrice(), getShares());
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getPrice(), getShares());
+  }
 }

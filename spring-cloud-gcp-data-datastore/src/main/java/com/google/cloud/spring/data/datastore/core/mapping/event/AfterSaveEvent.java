@@ -16,55 +16,51 @@
 
 package com.google.cloud.spring.data.datastore.core.mapping.event;
 
+import com.google.cloud.datastore.Entity;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.cloud.datastore.Entity;
-
-/**
- * An event published immediately after a save operation to Cloud Datastore.
- *
- * @author Chengyuan Zhao
- */
+/** An event published immediately after a save operation to Cloud Datastore. */
 public class AfterSaveEvent extends SaveEvent {
 
-	private final List<Entity> datastoreEntities;
+  private final List<Entity> datastoreEntities;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param datastoreEntities The Cloud Datastore entities that are being saved. These
-	 *     include any referenced or descendant entities of the original entities being saved.
-	 * @param javaEntities The original Java entities being saved. Each entity may result in
-	 */
-	public AfterSaveEvent(List<Entity> datastoreEntities, List javaEntities) {
-		super(javaEntities);
-		this.datastoreEntities = datastoreEntities;
-	}
+  /**
+   * Constructor.
+   *
+   * @param datastoreEntities The Cloud Datastore entities that are being saved. These include any
+   *     referenced or descendant entities of the original entities being saved.
+   * @param javaEntities The original Java entities being saved. Each entity may result in
+   */
+  public AfterSaveEvent(List<Entity> datastoreEntities, List javaEntities) {
+    super(javaEntities);
+    this.datastoreEntities = datastoreEntities;
+  }
 
-	/**
-	 * Get the Cloud Datastore entities that were saved.
-	 * @return The entities that were saved in Cloud Datastore.
-	 */
-	public List<Entity> getDatastoreEntities() {
-		return this.datastoreEntities;
-	}
+  /**
+   * Get the Cloud Datastore entities that were saved.
+   *
+   * @return The entities that were saved in Cloud Datastore.
+   */
+  public List<Entity> getDatastoreEntities() {
+    return this.datastoreEntities;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		AfterSaveEvent that = (AfterSaveEvent) o;
-		return getDatastoreEntities().containsAll(that.getDatastoreEntities())
-				&& Objects.equals(getTargetEntities(), that.getTargetEntities());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    AfterSaveEvent that = (AfterSaveEvent) o;
+    return getDatastoreEntities().containsAll(that.getDatastoreEntities())
+        && Objects.equals(getTargetEntities(), that.getTargetEntities());
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getDatastoreEntities(), getTargetEntities());
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(getDatastoreEntities(), getTargetEntities());
+  }
 }

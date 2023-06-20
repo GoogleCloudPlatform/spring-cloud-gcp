@@ -18,18 +18,14 @@ package com.google.cloud.spring.pubsub.core;
 
 import org.springframework.core.NestedRuntimeException;
 
-/**
- * The Spring Google Cloud Pub/Sub specific {@link NestedRuntimeException}.
- *
- * @author João André Martins
- */
+/** The Spring Google Cloud Pub/Sub specific {@link NestedRuntimeException}. */
 public class PubSubException extends NestedRuntimeException {
 
-	public PubSubException(String msg) {
-		super(msg);
-	}
+  public PubSubException(String msg) {
+    super(msg);
+  }
 
-	public PubSubException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+  public PubSubException(String msg, Throwable cause) {
+    super(msg, cause);
+  }
 }

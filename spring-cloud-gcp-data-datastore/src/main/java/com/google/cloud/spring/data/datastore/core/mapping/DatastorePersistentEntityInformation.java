@@ -23,33 +23,33 @@ import org.springframework.data.repository.core.support.AbstractEntityInformatio
  *
  * @param <T> the type of the persistent entity
  * @param <I> the ID type of the persistent entity
- * @author Chengyuan Zhao
  * @since 1.1
  */
-public class DatastorePersistentEntityInformation<T, I>
-		extends AbstractEntityInformation<T, I> {
+public class DatastorePersistentEntityInformation<T, I> extends AbstractEntityInformation<T, I> {
 
-	private final DatastorePersistentEntity<T> persistentEntity;
+  private final DatastorePersistentEntity<T> persistentEntity;
 
-	/**
-	 * Creates a new {@link DatastorePersistentEntityInformation} for the given
-	 * {@link DatastorePersistentEntity}.
-	 *
-	 * @param entity must not be {@literal null}.
-	 */
-	public DatastorePersistentEntityInformation(DatastorePersistentEntity<T> entity) {
-		super(entity.getType());
-		this.persistentEntity = entity;
-	}
+  /**
+   * Creates a new {@link DatastorePersistentEntityInformation} for the given {@link
+   * DatastorePersistentEntity}.
+   *
+   * @param entity must not be {@literal null}.
+   */
+  public DatastorePersistentEntityInformation(DatastorePersistentEntity<T> entity) {
+    super(entity.getType());
+    this.persistentEntity = entity;
+  }
 
-	@Override
-	public I getId(T entity) {
-		return (I) this.persistentEntity.getPropertyAccessor(entity)
-				.getProperty(this.persistentEntity.getIdProperty());
-	}
+  @Override
+  public I getId(T entity) {
+    return (I)
+        this.persistentEntity
+            .getPropertyAccessor(entity)
+            .getProperty(this.persistentEntity.getIdProperty());
+  }
 
-	@Override
-	public Class<I> getIdType() {
-		return (Class<I>) this.persistentEntity.getIdPropertyOrFail().getType();
-	}
+  @Override
+  public Class<I> getIdType() {
+    return (Class<I>) this.persistentEntity.getIdPropertyOrFail().getType();
+  }
 }

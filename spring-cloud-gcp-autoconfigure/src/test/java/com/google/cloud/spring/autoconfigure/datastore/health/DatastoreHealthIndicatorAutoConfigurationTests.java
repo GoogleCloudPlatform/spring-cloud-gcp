@@ -16,55 +16,52 @@
 
 package com.google.cloud.spring.autoconfigure.datastore.health;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreAutoConfiguration;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
 /**
  * Tests for Datastore health check auto-config.
  *
- * @author Raghavan N S
- * @author Srinivasa Meenavalli
- * @author Mike Eltsufin
- * @author Chengyuan Zhao
- *
  * @since 1.2
  */
-public class DatastoreHealthIndicatorAutoConfigurationTests {
+class DatastoreHealthIndicatorAutoConfigurationTests {
 
-	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(GcpDatastoreAutoConfiguration.class,
-					GcpContextAutoConfiguration.class,
-					DatastoreHealthIndicatorAutoConfiguration.class))
-			.withUserConfiguration(TestConfiguration.class)
-			.withPropertyValues("spring.cloud.gcp.datastore.project-id=test-project",
-					"spring.cloud.gcp.datastore.namespace-id=testNamespace",
-					"management.health.datastore.enabled=true");
+  private ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(
+              AutoConfigurations.of(
+                  GcpDatastoreAutoConfiguration.class,
+                  GcpContextAutoConfiguration.class,
+                  DatastoreHealthIndicatorAutoConfiguration.class))
+          .withUserConfiguration(TestConfiguration.class)
+          .withPropertyValues(
+              "spring.cloud.gcp.datastore.project-id=test-project",
+              "spring.cloud.gcp.datastore.namespace-id=testNamespace",
+              "management.health.datastore.enabled=true");
 
-	@Test
-	public void testDatastoreHealthIndicatorCreated() {
-		this.contextRunner.run(context -> assertThat(context.getBean(DatastoreHealthIndicator.class)).isNotNull());
-	}
+  @Test
+  void testDatastoreHealthIndicatorCreated() {
+    this.contextRunner.run(
+        context -> assertThat(context.getBean(DatastoreHealthIndicator.class)).isNotNull());
+  }
 
-	/**
-	 * Spring Boot config for tests.
-	 */
-	@Configuration
-	static class TestConfiguration {
+  /** Spring Boot config for tests. */
+  @Configuration
+  static class TestConfiguration {
 
-		@Bean
-		public CredentialsProvider credentialsProvider() {
-			return () -> mock(Credentials.class);
-		}
-	}
+    @Bean
+    public CredentialsProvider credentialsProvider() {
+      return () -> mock(Credentials.class);
+    }
+  }
 }

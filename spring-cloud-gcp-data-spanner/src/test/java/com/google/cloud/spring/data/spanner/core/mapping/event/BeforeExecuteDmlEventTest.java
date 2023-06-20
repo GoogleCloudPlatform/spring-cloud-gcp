@@ -16,34 +16,30 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping.event;
 
-import com.google.cloud.spanner.Statement;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Tests for DML before-execution event.
- *
- * @author Chengyuan Zhao
- */
-public class BeforeExecuteDmlEventTest {
+import com.google.cloud.spanner.Statement;
+import org.junit.jupiter.api.Test;
 
-	@Test
-	public void equalsHashcodeTest() {
-		BeforeExecuteDmlEvent beforeExecuteDmlEvent = new BeforeExecuteDmlEvent(Statement.of("a"));
-		BeforeExecuteDmlEvent beforeExecuteDmlEvent1 = new BeforeExecuteDmlEvent(Statement.of("a"));
+/** Tests for DML before-execution event. */
+class BeforeExecuteDmlEventTest {
 
-		BeforeExecuteDmlEvent beforeExecuteDmlEvent2 = new BeforeExecuteDmlEvent(Statement.of("b"));
+  @Test
+  void equalsHashcodeTest() {
+    BeforeExecuteDmlEvent beforeExecuteDmlEvent = new BeforeExecuteDmlEvent(Statement.of("a"));
+    BeforeExecuteDmlEvent beforeExecuteDmlEvent1 = new BeforeExecuteDmlEvent(Statement.of("a"));
 
-		assertThat(beforeExecuteDmlEvent)
-				.isNotNull()
-				.isEqualTo(beforeExecuteDmlEvent)
-				.isEqualTo(beforeExecuteDmlEvent1)
-				.isNotEqualTo(new Object())
-				.hasSameHashCodeAs(beforeExecuteDmlEvent)
-				.hasSameHashCodeAs(beforeExecuteDmlEvent1);
+    BeforeExecuteDmlEvent beforeExecuteDmlEvent2 = new BeforeExecuteDmlEvent(Statement.of("b"));
 
-		assertThat(beforeExecuteDmlEvent2).isNotEqualTo(beforeExecuteDmlEvent);
-		assertThat(beforeExecuteDmlEvent2.hashCode()).isNotEqualTo(beforeExecuteDmlEvent.hashCode());
-	}
+    assertThat(beforeExecuteDmlEvent)
+        .isNotNull()
+        .isEqualTo(beforeExecuteDmlEvent)
+        .isEqualTo(beforeExecuteDmlEvent1)
+        .isNotEqualTo(new Object())
+        .hasSameHashCodeAs(beforeExecuteDmlEvent)
+        .hasSameHashCodeAs(beforeExecuteDmlEvent1);
+
+    assertThat(beforeExecuteDmlEvent2).isNotEqualTo(beforeExecuteDmlEvent);
+    assertThat(beforeExecuteDmlEvent2.hashCode()).isNotEqualTo(beforeExecuteDmlEvent.hashCode());
+  }
 }

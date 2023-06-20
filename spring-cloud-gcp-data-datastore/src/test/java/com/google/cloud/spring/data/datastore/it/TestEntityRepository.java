@@ -16,20 +16,17 @@
 
 package com.google.cloud.spring.data.datastore.it;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import javax.annotation.Nonnull;
-
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.it.TestEntity.Shape;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.Query;
-
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -38,117 +35,118 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-/**
- * A repository for testing Query Methods that uses many advanced features.
- *
- * @author Chengyuan Zhao
- * @author Dmitry Solomakha
- */
+/** A repository for testing Query Methods that uses many advanced features. */
 @Nonnull
-public interface TestEntityRepository extends DatastoreRepository<TestEntity, Long> {
+interface TestEntityRepository extends DatastoreRepository<TestEntity, Long> {
 
-	@Query("select * from  test_entities_ci where size = @size ")
-	LinkedList<TestEntity> findEntitiesWithCustomQuery(@Param("size") long size);
+  @Query("select * from  test_entities_ci where size = @size ")
+  LinkedList<TestEntity> findEntitiesWithCustomQuery(@Param("size") long size);
 
-	@Query("select * from  test_entities_ci where size = @size and __key__ = @id")
-	LinkedList<TestEntity> findEntitiesWithCustomQueryWithId(@Param("size") long size, @Param("id") Key id);
+  @Query("select * from  test_entities_ci where size = @size and __key__ = @id")
+  LinkedList<TestEntity> findEntitiesWithCustomQueryWithId(
+      @Param("size") long size, @Param("id") Key id);
 
-	@Query("select * from  test_entities_ci where color = @color")
-	Slice<TestEntity> findEntitiesWithCustomQuerySlice(@Param("color") String color, Pageable pageable);
+  @Query("select * from  test_entities_ci where color = @color")
+  Slice<TestEntity> findEntitiesWithCustomQuerySlice(
+      @Param("color") String color, Pageable pageable);
 
-	@Query("select * from  test_entities_ci where color = @color")
-	Page<TestEntity> findEntitiesWithCustomQueryPage(@Param("color") String color, Pageable pageable);
+  @Query("select * from  test_entities_ci where color = @color")
+  Page<TestEntity> findEntitiesWithCustomQueryPage(@Param("color") String color, Pageable pageable);
 
-	@Query("select * from  test_entities_ci")
-	List<TestEntity> findEntitiesWithCustomQuerySort(Sort sort);
+  @Query("select * from  test_entities_ci")
+  List<TestEntity> findEntitiesWithCustomQuerySort(Sort sort);
 
-	@Query(value = "select size from  test_entities_ci where size <= @size", count = true)
-	int countEntitiesWithCustomQuery(@Param("size") long size);
+  @Query(value = "select size from  test_entities_ci where size <= @size", count = true)
+  int countEntitiesWithCustomQuery(@Param("size") long size);
 
-	int countBySize(long size);
+  int countBySize(long size);
 
-	@Nullable
-	List<TestEntity> getByColorAndIdGreaterThanEqualOrderById(String color, Long id);
+  @Nullable
+  List<TestEntity> getByColorAndIdGreaterThanEqualOrderById(String color, Long id);
 
-	int deleteBySize(long size);
+  int deleteBySize(long size);
 
-	void deleteBySizeEquals(long size);
+  void deleteBySizeEquals(long size);
 
-	List<TestEntity> removeByColor(String color);
+  List<TestEntity> removeByColor(String color);
 
-	List<TestEntity> findByShape(Shape shape);
+  List<TestEntity> findByShape(Shape shape);
 
-	List<TestEntity> findByEmbeddedEntityStringField(String val);
+  List<TestEntity> findByEmbeddedEntityStringField(String val);
 
-	@Query("select * from test_entities_ci where shape = @enum_val")
-	List<TestEntity> findByEnumQueryParam(@Param("enum_val") Shape shape);
+  @Query("select * from test_entities_ci where shape = @enum_val")
+  List<TestEntity> findByEnumQueryParam(@Param("enum_val") Shape shape);
 
-	@Query(value = "select __key__ from |com.google.cloud.spring.data.datastore.it.TestEntity| "
-			+ "where size = :#{#size}", exists = true)
-	boolean existsByEntitiesWithCustomQuery(@Param("size") long size);
+  @Query(
+      value =
+          "select __key__ from |com.google.cloud.spring.data.datastore.it.TestEntity| "
+              + "where size = :#{#size}",
+      exists = true)
+  boolean existsByEntitiesWithCustomQuery(@Param("size") long size);
 
-	@Query("select size from  test_entities_ci where size <= @size ")
-	TestEntity[] findEntitiesWithCustomProjectionQuery(@Param("size") long size);
+  @Query("select size from  test_entities_ci where size <= @size ")
+  TestEntity[] findEntitiesWithCustomProjectionQuery(@Param("size") long size);
 
-	@Query("select __key__ from test_entities_ci")
-	Set<Key> getKeys();
+  @Query("select __key__ from test_entities_ci")
+  Set<Key> getKeys();
 
-	@Query("select color from test_entities_ci")
-	Page<String> getColorsPage(Pageable p);
+  @Query("select color from test_entities_ci")
+  Page<String> getColorsPage(Pageable p);
 
-	@Query("select __key__ from test_entities_ci limit 1")
-	Key getKey();
+  @Query("select __key__ from test_entities_ci limit 1")
+  Key getKey();
 
-	// Also involves conversion from long id to String
-	@Query("select size from  test_entities_ci where size <= @size ")
-	long[] getSizes(@Param("size") long size);
+  // Also involves conversion from long id to String
+  @Query("select size from  test_entities_ci where size <= @size ")
+  long[] getSizes(@Param("size") long size);
 
-	// Also involves conversion from long id to String
-	@Query("select size from  test_entities_ci where size <= @size and size >= @size")
-	long getOneSize(@Param("size") long size);
+  // Also involves conversion from long id to String
+  @Query("select size from  test_entities_ci where size <= @size and size >= @size")
+  long getOneSize(@Param("size") long size);
 
-	@Query("select * from  test_entities_ci where size= @size")
-	TestEntity getOneTestEntity(@Param("size") long size);
+  @Query("select * from  test_entities_ci where size= @size")
+  TestEntity getOneTestEntity(@Param("size") long size);
 
-	long countBySizeAndColor(long size, String color);
+  long countBySizeAndColor(long size, String color);
 
-	LinkedList<TestEntity> findTop3BySizeAndColor(long size, String color);
+  LinkedList<TestEntity> findTop3BySizeAndColor(long size, String color);
 
-	@Query("select * from  test_entities_ci where size = @size")
-	TestEntityProjection getBySize(@Param("size") long size);
+  @Query("select * from  test_entities_ci where size = @size")
+  TestEntityProjection getBySize(@Param("size") long size);
 
-	TestEntityProjection findBySize(long size);
+  TestEntityProjection findBySize(long size);
 
-	@Query("select * from test_entities_ci where size = @size")
-	Slice<TestEntityProjection> getBySizeSlice(@Param("size") long size, Pageable pageable);
+  @Query("select * from test_entities_ci where size = @size")
+  Slice<TestEntityProjection> getBySizeSlice(@Param("size") long size, Pageable pageable);
 
-	@Query("select * from test_entities_ci where size = @size")
-	Page<TestEntityProjection> getBySizePage(@Param("size") long size, Pageable pageable);
+  @Query("select * from test_entities_ci where size = @size")
+  Page<TestEntityProjection> getBySizePage(@Param("size") long size, Pageable pageable);
 
-	@Query("select color from test_entities_ci where size = @size")
-	Slice<String> getSliceStringBySize(@Param("size") long size, Pageable pageable);
+  @Query("select color from test_entities_ci where size = @size")
+  Slice<String> getSliceStringBySize(@Param("size") long size, Pageable pageable);
 
-	Slice<TestEntityProjection> findBySize(long size, Pageable pageable);
+  Slice<TestEntityProjection> findBySize(long size, Pageable pageable);
 
-	Page<TestEntity> findByShape(Shape shape, Pageable pageable);
+  Page<TestEntity> findByShape(Shape shape, Pageable pageable);
 
-	Slice<TestEntity> findByColor(String color, Pageable pageable);
+  Slice<TestEntity> findByColor(String color, Pageable pageable);
 
-	Optional<TestEntity> findFirstByColor(String color);
+  Optional<TestEntity> findFirstByColor(String color);
 
-	Stream<TestEntity> findPartTreeStreamByColor(String color);
+  Stream<TestEntity> findPartTreeStreamByColor(String color);
 
-	@Query("select * from  test_entities_ci where color = @color")
-	Stream<TestEntity> findGqlStreamByColor(@Param("color") String color);
+  @Query("select * from  test_entities_ci where color = @color")
+  Stream<TestEntity> findGqlStreamByColor(@Param("color") String color);
 
-	@Query("select * from  test_entities_ci where datetime >= @startTime AND datetime <= @endTime")
-	List<TestEntity> getAllBetweenDates(@Param("startTime") Timestamp startTime, @Param("endTime") Timestamp endTime);
+  @Query("select * from  test_entities_ci where datetime >= @startTime AND datetime <= @endTime")
+  List<TestEntity> getAllBetweenDates(
+      @Param("startTime") Timestamp startTime, @Param("endTime") Timestamp endTime);
 
-	List<TestEntity> findByDatetimeGreaterThan(Timestamp oldestTime);
+  List<TestEntity> findByDatetimeGreaterThan(Timestamp oldestTime);
 
-	@Nullable
-	TestEntity getByColor(String color);
+  @Nullable
+  TestEntity getByColor(String color);
 
-	@NonNull
-	TestEntity findByColor(String color);
+  @NonNull
+  TestEntity findByColor(String color);
 }

@@ -16,20 +16,14 @@
 
 package com.example;
 
-import java.util.List;
-
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.Query;
-
+import java.util.List;
 import org.springframework.data.repository.query.Param;
 
-/**
- * Sample repository for testing.
- *
- * @author Chengyuan Zhao
- */
+/** Sample repository for testing. */
 public interface PersonRepository extends DatastoreRepository<Person, Long> {
 
-	@Query("select * from |com.example.Person| where id = @id")
-	List<Person> findSingersById(@Param("id") Long id);
+  @Query("select * from |com.example.Person| where id = @id")
+  List<Person> findSingersById(@Param("id") Long id);
 }

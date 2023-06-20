@@ -18,18 +18,14 @@ package com.google.cloud.spring.kms;
 
 import org.springframework.core.NestedRuntimeException;
 
-/**
- * The Spring Google Cloud KMS specific {@link NestedRuntimeException}.
- *
- * @author Emmanouil Gkatziouras
- */
+/** The Spring Google Cloud KMS specific {@link NestedRuntimeException}. */
 public class KmsException extends NestedRuntimeException {
 
-	public KmsException(String msg) {
-		super(msg);
-	}
+  public KmsException(String msg) {
+    super(msg);
+  }
 
-	public KmsException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+  public KmsException(String msg, Throwable cause) {
+    super(msg, cause);
+  }
 }

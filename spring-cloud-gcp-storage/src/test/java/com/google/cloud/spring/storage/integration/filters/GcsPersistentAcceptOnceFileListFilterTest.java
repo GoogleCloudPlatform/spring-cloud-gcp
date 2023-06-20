@@ -16,35 +16,33 @@
 
 package com.google.cloud.spring.storage.integration.filters;
 
-import com.google.cloud.storage.BlobInfo;
-import org.junit.Test;
-
-import org.springframework.integration.metadata.ConcurrentMetadataStore;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Tests for GcsPersistentAcceptOnceFileListFilter.
- *
- * @author Lukas Gemela
- */
-public class GcsPersistentAcceptOnceFileListFilterTest {
+import com.google.cloud.storage.BlobInfo;
+import org.junit.jupiter.api.Test;
+import org.springframework.integration.metadata.ConcurrentMetadataStore;
 
-	@Test
-	public void modified_blobInfoIsNull_shouldReturnMinusOne() {
-		assertThat(new GcsPersistentAcceptOnceFileListFilter(mock(ConcurrentMetadataStore.class), "").modified(null))
-				.isEqualTo(-1);
-	}
+/** Tests for GcsPersistentAcceptOnceFileListFilter. */
+class GcsPersistentAcceptOnceFileListFilterTest {
 
-	@Test
-	public void modified_updateTimeIsNull_shouldReturnMinusOne() {
-		BlobInfo blobInfo = mock(BlobInfo.class);
-		when(blobInfo.getUpdateTime()).thenReturn(null);
+  @Test
+  void modified_blobInfoIsNull_shouldReturnMinusOne() {
+    assertThat(
+            new GcsPersistentAcceptOnceFileListFilter(mock(ConcurrentMetadataStore.class), "")
+                .modified(null))
+        .isEqualTo(-1);
+  }
 
-		assertThat(
-				new GcsPersistentAcceptOnceFileListFilter(mock(ConcurrentMetadataStore.class), "").modified(blobInfo))
-						.isEqualTo(-1);
-	}
+  @Test
+  void modified_updateTimeIsNull_shouldReturnMinusOne() {
+    BlobInfo blobInfo = mock(BlobInfo.class);
+    when(blobInfo.getUpdateTime()).thenReturn(null);
+
+    assertThat(
+            new GcsPersistentAcceptOnceFileListFilter(mock(ConcurrentMetadataStore.class), "")
+                .modified(blobInfo))
+        .isEqualTo(-1);
+  }
 }

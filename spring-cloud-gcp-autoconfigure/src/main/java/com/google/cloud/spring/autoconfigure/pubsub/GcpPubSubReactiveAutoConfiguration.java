@@ -16,14 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub;
 
-import java.util.Optional;
-
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.spring.pubsub.reactive.PubSubReactiveFactory;
-import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
-
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -31,12 +26,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * Reactive Pub/Sub support autoconfiguration.
- *
- * @author Elena Felder
- * @author Maurice Zeijen
  *
  * @since 1.2
  */
@@ -44,18 +39,17 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(GcpPubSubAutoConfiguration.class)
 @ConditionalOnClass({Flux.class, PubSubSubscriberTemplate.class})
 @ConditionalOnProperty(
-		value = {"spring.cloud.gcp.pubsub.reactive.enabled", "spring.cloud.gcp.pubsub.enabled"},
-		matchIfMissing = true)
+    value = {"spring.cloud.gcp.pubsub.reactive.enabled", "spring.cloud.gcp.pubsub.enabled"},
+    matchIfMissing = true)
 public class GcpPubSubReactiveAutoConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean
-	public PubSubReactiveFactory pubSubReactiveFactory(
-			PubSubSubscriberTemplate subscriberTemplate,
-			@Qualifier("pubSubReactiveScheduler") Optional<Scheduler> userProvidedScheduler) {
+  @Bean
+  @ConditionalOnMissingBean
+  public PubSubReactiveFactory pubSubReactiveFactory(
+      PubSubSubscriberTemplate subscriberTemplate,
+      @Qualifier("pubSubReactiveScheduler") Optional<Scheduler> userProvidedScheduler) {
 
-		Scheduler scheduler = userProvidedScheduler.orElseGet(Schedulers::parallel);
-		return new PubSubReactiveFactory(subscriberTemplate, scheduler);
-	}
-
+    Scheduler scheduler = userProvidedScheduler.orElseGet(Schedulers::parallel);
+    return new PubSubReactiveFactory(subscriberTemplate, scheduler);
+  }
 }

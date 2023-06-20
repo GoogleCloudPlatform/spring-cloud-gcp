@@ -16,80 +16,63 @@
 
 package com.example;
 
-import java.util.List;
-import java.util.UUID;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import java.util.List;
+import java.util.UUID;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Integration test for the sender sample app.
  *
- * @author Dmitry Solomakha
- *
  * @since 1.1
  */
-
-@RunWith(SpringRunner.class)
+@EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
-public class SenderIntegrationTest {
+class SenderIntegrationTest {
 
-	@Autowired
-	private TestRestTemplate restTemplate;
+  @Autowired private TestRestTemplate restTemplate;
 
-	@Autowired
-	private PubSubTemplate pubSubTemplate;
+  @Autowired private PubSubTemplate pubSubTemplate;
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub-integration=true' "
-						+ "to enable them. ",
-				System.getProperty("it.pubsub-integration"), is("true"));
-	}
+  @Test
+  void testSample() throws Exception {
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    String message = "test message " + UUID.randomUUID();
 
-	@Test
-	public void testSample() throws Exception {
-		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		String message = "test message " + UUID.randomUUID();
+    map.add("message", message);
+    map.add("times", 1);
 
-		map.add("message", message);
-		map.add("times", 1);
+    this.restTemplate.postForObject("/postMessage", map, String.class);
 
-		this.restTemplate.postForObject("/postMessage", map, String.class);
+    List<AcknowledgeablePubsubMessage> messages;
 
-		List<AcknowledgeablePubsubMessage> messages;
+    boolean messageReceived = false;
+    for (int i = 0; i < 100; i++) {
+      messages = this.pubSubTemplate.pull("exampleSubscription", 10, true);
+      messages.forEach(BasicAcknowledgeablePubsubMessage::ack);
 
-		boolean messageReceived = false;
-		for (int i = 0; i < 100; i++) {
-			messages = this.pubSubTemplate.pull("exampleSubscription", 10, true);
-			messages.forEach(BasicAcknowledgeablePubsubMessage::ack);
-
-			if (messages.stream()
-					.anyMatch(m -> m.getPubsubMessage().getData().toStringUtf8().startsWith(message))) {
-				messageReceived = true;
-				break;
-			}
-			Thread.sleep(100);
-		}
-		assertThat(messageReceived).isTrue();
-
-	}
+      if (messages.stream()
+          .anyMatch(m -> m.getPubsubMessage().getData().toStringUtf8().startsWith(message))) {
+        messageReceived = true;
+        break;
+      }
+      Thread.sleep(100);
+    }
+    assertThat(messageReceived).isTrue();
+  }
 }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+  <head>
+    <title>Google Cloud Vision Results</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+
+  <style>
+    .extracted_text {
+      width: 30em;
+      min-height: 10em;
+      font-family: "Lucida Console", Monaco, monospace;
+      background-color: #f2f2f2;
+    }
+
+    .embed_pdf {
+      width: 30em;
+      height: 30em;
+    }
+  </style>
+
+  <body>
+    <h1>PDF Analysis Results</h1>
+
+    <div th:if="${texts}">
+      <h3>We think the text inside the pdf is...</h3>
+      <div th:each="text: ${texts}">
+        <h2>Page: [[${textStat.index} + 1]]</h2>
+        <div class="extracted_text">[[${text}]]</div>
+      </div>
+    </div>
+
+    <div>
+      <embed th:src="${pdfUrl}" class="embed_pdf" />
+    </div>
+  </body>
+</html>

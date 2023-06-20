@@ -16,59 +16,51 @@
 
 package com.google.cloud.spring.data.datastore.it;
 
-import java.util.Objects;
-
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import com.google.cloud.spring.data.datastore.core.mapping.LazyReference;
-
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 
 @Entity
 public class LazyEntity {
-	@Id
-	Long id;
+  @Id Long id;
 
-	@LazyReference
-	LazyEntity lazyChild;
+  @LazyReference LazyEntity lazyChild;
 
-	public LazyEntity() {
-	}
+  public LazyEntity() {}
 
-	public LazyEntity(LazyEntity child) {
-		this.lazyChild = child;
-	}
+  public LazyEntity(LazyEntity child) {
+    this.lazyChild = child;
+  }
 
-	Long getId() {
-		return this.id;
-	}
+  Long getId() {
+    return this.id;
+  }
 
-	LazyEntity getLazyChild() {
-		return this.lazyChild;
-	}
+  LazyEntity getLazyChild() {
+    return this.lazyChild;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		LazyEntity that = (LazyEntity) o;
-		return Objects.equals(getId(), that.getId()) &&
-				Objects.equals(getLazyChild(), that.getLazyChild());
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    LazyEntity that = (LazyEntity) o;
+    return Objects.equals(getId(), that.getId())
+        && Objects.equals(getLazyChild(), that.getLazyChild());
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getId(), getLazyChild());
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getLazyChild());
+  }
 
-	@Override
-	public String toString() {
-		return "LazyEntity{" +
-				"id=" + this.id +
-				", lazyChild=" + this.lazyChild +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "LazyEntity{" + "id=" + this.id + ", lazyChild=" + this.lazyChild + '}';
+  }
 }

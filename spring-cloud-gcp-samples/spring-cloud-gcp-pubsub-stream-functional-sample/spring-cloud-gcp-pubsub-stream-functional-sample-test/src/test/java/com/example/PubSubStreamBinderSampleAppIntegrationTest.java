@@ -16,17 +16,18 @@
 
 package com.example;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.net.URI;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
 import org.awaitility.Awaitility;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -34,80 +35,67 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assume.assumeThat;
+/** Integration test for the Pub/Sub functional stream binder sample app. */
+// Please use "-Dit.pubsub=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
+@ExtendWith(OutputCaptureExtension.class)
+class PubSubStreamBinderSampleAppIntegrationTest {
 
-/**
- * Integration test for the Pub/Sub functional stream binder sample app.
- *
- * @author Elena Felder
- */
-public class PubSubStreamBinderSampleAppIntegrationTest {
+  @Test
+  void testSample(CapturedOutput capturedOutput) throws Exception {
 
-	/** Captures output to check that Sink application processed the message. */
-	@Rule
-	public OutputCaptureRule output = new OutputCaptureRule();
+    // Run Source app
+    SpringApplicationBuilder sourceBuilder =
+        new SpringApplicationBuilder(FunctionalSourceApplication.class)
+            .resourceLoader(
+                new PropertyRemovingResourceLoader(
+                    "spring-cloud-gcp-pubsub-stream-functional-sample-source"));
+    sourceBuilder.run();
 
-	@BeforeClass
-	public static void prepare() {
-		assumeThat(
-				"PUB/SUB-sample integration tests are disabled. Please use '-Dit.pubsub=true' "
-						+ "to enable them. ",
-				System.getProperty("it.pubsub"), is("true"));
-	}
+    // Run Sink app
+    SpringApplicationBuilder sinkBuilder =
+        new SpringApplicationBuilder(FunctionalSinkApplication.class)
+            .resourceLoader(
+                new PropertyRemovingResourceLoader(
+                    "spring-cloud-gcp-pubsub-stream-functional-sample-sink"));
+    sinkBuilder.run();
 
-	@Test
-	public void testSample() throws Exception {
+    // Post message to Source over HTTP.
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    String message = "test message " + UUID.randomUUID();
+    map.add("messageBody", message);
+    map.add("username", "integration-test-user");
 
-		// Run Source app
-		SpringApplicationBuilder sourceBuilder = new SpringApplicationBuilder(FunctionalSourceApplication.class)
-				.resourceLoader(new PropertyRemovingResourceLoader("spring-cloud-gcp-pubsub-stream-functional-sample-source"));
-		sourceBuilder.run();
+    RestTemplate restTemplate = new RestTemplate();
 
+    URI redirect = restTemplate.postForLocation("http://localhost:8080/postMessage", map);
+    assertThat(redirect).hasToString("http://localhost:8080/index.html");
 
-		//Run Sink app
-		SpringApplicationBuilder sinkBuilder = new SpringApplicationBuilder(FunctionalSinkApplication.class)
-			.resourceLoader(new PropertyRemovingResourceLoader("spring-cloud-gcp-pubsub-stream-functional-sample-sink"));
-		sinkBuilder.run();
+    Awaitility.await()
+        .atMost(10, TimeUnit.SECONDS)
+        .until(
+            () ->
+                capturedOutput
+                    .getOut()
+                    .contains("New message received from integration-test-user: " + message));
+  }
 
+  /** Resolves the correct /application.properties file for the specific application. */
+  static class PropertyRemovingResourceLoader extends DefaultResourceLoader {
+    private String moduleName;
 
-		// Post message to Source over HTTP.
-		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		String message = "test message " + UUID.randomUUID();
-		map.add("messageBody", message);
-		map.add("username", "integration-test-user");
+    PropertyRemovingResourceLoader(String moduleName) {
+      this.moduleName = moduleName;
+    }
 
-		RestTemplate restTemplate = new RestTemplate();
+    @Override
+    public Resource getResource(String location) {
+      if (location.contains("classpath:/application.properties")) {
+        return new FileSystemResource(
+            String.format("../%s/src/main/resources/application.properties", this.moduleName));
+      }
 
-		URI redirect = restTemplate.postForLocation("http://localhost:8080/postMessage", map);
-		assertThat(redirect).hasToString("http://localhost:8080/index.html");
-
-		Awaitility.await().atMost(10, TimeUnit.SECONDS)
-				.until(() -> this.output.getOut()
-						.contains("New message received from integration-test-user: " + message));
-
-	}
-
-	/**
-	 * Resolves the correct /application.properties file for the specific application.
-	 */
-	static class PropertyRemovingResourceLoader extends DefaultResourceLoader {
-		private String moduleName;
-
-		PropertyRemovingResourceLoader(String moduleName) {
-			this.moduleName = moduleName;
-		}
-
-		@Override
-		public Resource getResource(String location) {
-			if (location.contains("classpath:/application.properties")) {
-				return new FileSystemResource(
-						String.format("../%s/src/main/resources/application.properties", this.moduleName));
-			}
-
-			return super.getResource(location);
-		}
-	}
-
+      return super.getResource(location);
+    }
+  }
 }

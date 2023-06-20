@@ -16,54 +16,59 @@
 
 package com.google.cloud.spring.data.datastore.core.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Test;
-
 import static com.google.cloud.spring.data.datastore.core.util.SliceUtil.sliceAndExecute;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Dmitry Solomakha
- */
-public class SliceUtilTest {
-	@Test
-	public void sliceAndExecuteTest() {
-		Integer[] elements = getIntegers(7);
-		List<Integer[]> slices = new ArrayList<>();
-		sliceAndExecute(elements, 3, slice -> {
-			slices.add(slice);
-		});
-		assertThat(slices).containsExactly(new Integer[] { 0, 1, 2 }, new Integer[] { 3, 4, 5 }, new Integer[] { 6 });
-	}
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 
-	@Test
-	public void sliceAndExecuteEvenTest() {
-		Integer[] elements = getIntegers(6);
-		List<Integer[]> slices = new ArrayList<>();
-		sliceAndExecute(elements, 3, slice -> {
-			slices.add(slice);
-		});
-		assertThat(slices).containsExactly(new Integer[] { 0, 1, 2 }, new Integer[] { 3, 4, 5 });
-	}
+class SliceUtilTest {
+  @Test
+  void sliceAndExecuteTest() {
+    Integer[] elements = getIntegers(7);
+    List<Integer[]> slices = new ArrayList<>();
+    sliceAndExecute(
+        elements,
+        3,
+        slice -> {
+          slices.add(slice);
+        });
+    assertThat(slices)
+        .containsExactly(new Integer[] {0, 1, 2}, new Integer[] {3, 4, 5}, new Integer[] {6});
+  }
 
-	@Test
-	public void sliceAndExecuteEmptyTest() {
-		Integer[] elements = getIntegers(0);
-		List<Integer[]> slices = new ArrayList<>();
-		sliceAndExecute(elements, 3, slice -> {
-			slices.add(slice);
-		});
-		assertThat(slices).isEmpty();
-	}
+  @Test
+  void sliceAndExecuteEvenTest() {
+    Integer[] elements = getIntegers(6);
+    List<Integer[]> slices = new ArrayList<>();
+    sliceAndExecute(
+        elements,
+        3,
+        slice -> {
+          slices.add(slice);
+        });
+    assertThat(slices).containsExactly(new Integer[] {0, 1, 2}, new Integer[] {3, 4, 5});
+  }
 
-	private Integer[] getIntegers(Integer inputSize) {
-		Integer[] elements = new Integer[inputSize];
-		for (int i = 0; i < inputSize; i++) {
-			elements[i] = i;
-		}
-		return elements;
-	}
+  @Test
+  void sliceAndExecuteEmptyTest() {
+    Integer[] elements = getIntegers(0);
+    List<Integer[]> slices = new ArrayList<>();
+    sliceAndExecute(
+        elements,
+        3,
+        slice -> {
+          slices.add(slice);
+        });
+    assertThat(slices).isEmpty();
+  }
 
+  private Integer[] getIntegers(Integer inputSize) {
+    Integer[] elements = new Integer[inputSize];
+    for (int i = 0; i < inputSize; i++) {
+      elements[i] = i;
+    }
+    return elements;
+  }
 }

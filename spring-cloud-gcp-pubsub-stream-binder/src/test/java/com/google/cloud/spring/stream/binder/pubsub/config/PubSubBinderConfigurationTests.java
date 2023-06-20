@@ -16,6 +16,9 @@
 
 package com.google.cloud.spring.stream.binder.pubsub.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
@@ -26,149 +29,156 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
 import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
-/**
- * Tests for PubSubBinderConfiguration and its interaction with other autoconfiguration classes.
- */
+/** Tests for PubSubBinderConfiguration and its interaction with other autoconfiguration classes. */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class PubSubBinderConfigurationTests {
+class PubSubBinderConfigurationTests {
 
-	@Test
-	public void testEverythingEnabled_implicit() {
-		ApplicationContextRunner baseContext = new ApplicationContextRunner()
-				// no property values specified
-				.withConfiguration(AutoConfigurations.of(
-						GcpContextAutoConfiguration.class,
-						GcpPubSubAutoConfiguration.class,
-						PubSubBinderConfiguration.class))
-				.withUserConfiguration(TestConfiguration.class);
-		baseContext.run(ctx -> assertThat(ctx).hasSingleBean(PubSubChannelProvisioner.class));
-	}
+  @Test
+  void testEverythingEnabled_implicit() {
+    ApplicationContextRunner baseContext =
+        new ApplicationContextRunner()
+            // no property values specified
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpContextAutoConfiguration.class,
+                    GcpPubSubAutoConfiguration.class,
+                    PubSubBinderConfiguration.class))
+            .withUserConfiguration(TestConfiguration.class);
+    baseContext.run(ctx -> assertThat(ctx).hasSingleBean(PubSubChannelProvisioner.class));
+  }
 
-	@Test
-	public void testEverythingEnabled_explicit() {
-		ApplicationContextRunner baseContext = new ApplicationContextRunner()
-				.withPropertyValues(
-						// including 'core' for completeness, but it's not super relevant to the test.
-						"spring.cloud.gcp.core.enabled=true",
-						"spring.cloud.gcp.pubsub.enabled=true",
-						"spring.cloud.gcp.pubsub.binder.enabled=true")
-				.withConfiguration(AutoConfigurations.of(
-						GcpContextAutoConfiguration.class,
-						GcpPubSubAutoConfiguration.class,
-						PubSubBinderConfiguration.class))
-				.withUserConfiguration(TestConfiguration.class);
-		baseContext.run(ctx -> assertThat(ctx).hasSingleBean(PubSubChannelProvisioner.class));
-	}
+  @Test
+  void testEverythingEnabled_explicit() {
+    ApplicationContextRunner baseContext =
+        new ApplicationContextRunner()
+            .withPropertyValues(
+                // including 'core' for completeness, but it's not super relevant to the test.
+                "spring.cloud.gcp.core.enabled=true",
+                "spring.cloud.gcp.pubsub.enabled=true",
+                "spring.cloud.gcp.pubsub.binder.enabled=true")
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpContextAutoConfiguration.class,
+                    GcpPubSubAutoConfiguration.class,
+                    PubSubBinderConfiguration.class))
+            .withUserConfiguration(TestConfiguration.class);
+    baseContext.run(ctx -> assertThat(ctx).hasSingleBean(PubSubChannelProvisioner.class));
+  }
 
-	@Test
-	public void testBinderDisabled() {
-		ApplicationContextRunner baseContext = new ApplicationContextRunner()
-				.withPropertyValues(
-						"spring.cloud.gcp.pubsub.enabled=true",
-						"spring.cloud.gcp.pubsub.binder.enabled=false")
-				.withConfiguration(AutoConfigurations.of(
-						GcpContextAutoConfiguration.class,
-						GcpPubSubAutoConfiguration.class,
-						PubSubBinderConfiguration.class))
-				.withUserConfiguration(TestConfiguration.class);
-		baseContext.run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubChannelProvisioner.class));
-	}
+  @Test
+  void testBinderDisabled() {
+    ApplicationContextRunner baseContext =
+        new ApplicationContextRunner()
+            .withPropertyValues(
+                "spring.cloud.gcp.pubsub.enabled=true",
+                "spring.cloud.gcp.pubsub.binder.enabled=false")
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpContextAutoConfiguration.class,
+                    GcpPubSubAutoConfiguration.class,
+                    PubSubBinderConfiguration.class))
+            .withUserConfiguration(TestConfiguration.class);
+    baseContext.run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubChannelProvisioner.class));
+  }
 
-	@Test
-	public void testPubSubDisabled_noReplacements() {
-		ApplicationContextRunner baseContext = new ApplicationContextRunner()
-				.withPropertyValues(
-						"spring.cloud.gcp.pubsub.enabled=false",
-						"spring.cloud.gcp.pubsub.binder.enabled=true")
-				.withConfiguration(AutoConfigurations.of(
-						GcpContextAutoConfiguration.class,
-						GcpPubSubAutoConfiguration.class,
-						PubSubBinderConfiguration.class))
-				.withUserConfiguration(TestConfiguration.class);
-		baseContext.run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubChannelProvisioner.class));
-	}
-	@Test
-	public void testPubSubDisabled_withReplacements() {
-		ApplicationContextRunner baseContext = new ApplicationContextRunner()
-				.withPropertyValues(
-						"spring.cloud.gcp.pubsub.enabled=false",
-						"spring.cloud.gcp.pubsub.binder.enabled=true")
-				.withBean(PubSubAdmin.class, () -> mock(PubSubAdmin.class))
-				.withBean(PubSubTemplate.class, () -> mock(PubSubTemplate.class))
-				.withConfiguration(AutoConfigurations.of(
-						GcpContextAutoConfiguration.class,
-						GcpPubSubAutoConfiguration.class,
-						PubSubBinderConfiguration.class))
-				.withUserConfiguration(TestConfiguration.class);
-		baseContext.run(ctx -> assertThat(ctx).hasSingleBean(PubSubChannelProvisioner.class));
-	}
+  @Test
+  void testPubSubDisabled_noReplacements() {
+    ApplicationContextRunner baseContext =
+        new ApplicationContextRunner()
+            .withPropertyValues(
+                "spring.cloud.gcp.pubsub.enabled=false",
+                "spring.cloud.gcp.pubsub.binder.enabled=true")
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpContextAutoConfiguration.class,
+                    GcpPubSubAutoConfiguration.class,
+                    PubSubBinderConfiguration.class))
+            .withUserConfiguration(TestConfiguration.class);
+    baseContext.run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubChannelProvisioner.class));
+  }
 
-	@Test
-	public void testBothDisabled() {
-		ApplicationContextRunner baseContext = new ApplicationContextRunner()
-				.withPropertyValues(
-						"spring.cloud.gcp.pubsub.enabled=false",
-						"spring.cloud.gcp.pubsub.binder.enabled=false")
-				.withConfiguration(AutoConfigurations.of(
-						GcpContextAutoConfiguration.class,
-						GcpPubSubAutoConfiguration.class,
-						PubSubBinderConfiguration.class))
-				.withUserConfiguration(TestConfiguration.class);
-		baseContext.run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubChannelProvisioner.class));
-	}
+  @Test
+  void testPubSubDisabled_withReplacements() {
+    ApplicationContextRunner baseContext =
+        new ApplicationContextRunner()
+            .withPropertyValues(
+                "spring.cloud.gcp.pubsub.enabled=false",
+                "spring.cloud.gcp.pubsub.binder.enabled=true")
+            .withBean(PubSubAdmin.class, () -> mock(PubSubAdmin.class))
+            .withBean(PubSubTemplate.class, () -> mock(PubSubTemplate.class))
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpContextAutoConfiguration.class,
+                    GcpPubSubAutoConfiguration.class,
+                    PubSubBinderConfiguration.class))
+            .withUserConfiguration(TestConfiguration.class);
+    baseContext.run(ctx -> assertThat(ctx).hasSingleBean(PubSubChannelProvisioner.class));
+  }
 
-	@Test
-	public void test_healthRegistryEnabled() {
-		ApplicationContextRunner baseContext = new ApplicationContextRunner()
-				.withPropertyValues(
-						// including 'core' for completeness, but it's not super relevant to the test.
-						"spring.cloud.gcp.core.enabled=true",
-						"spring.cloud.gcp.pubsub.enabled=true",
-						"spring.cloud.gcp.pubsub.binder.enabled=true")
-				.withConfiguration(AutoConfigurations.of(
-						GcpContextAutoConfiguration.class,
-						GcpPubSubAutoConfiguration.class,
-						PubSubBinderConfiguration.class))
-				.withUserConfiguration(TestConfigurationWithRegistry.class);
-		baseContext.run(ctx -> {
-			HealthTrackerRegistry healthTrackerRegistry = ctx.getBean(HealthTrackerRegistry.class);
-			PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
-			assertThat(healthTrackerRegistry).isEqualTo(ReflectionTestUtils.getField(binder, "healthTrackerRegistry"));
-		});
-	}
+  @Test
+  void testBothDisabled() {
+    ApplicationContextRunner baseContext =
+        new ApplicationContextRunner()
+            .withPropertyValues(
+                "spring.cloud.gcp.pubsub.enabled=false",
+                "spring.cloud.gcp.pubsub.binder.enabled=false")
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpContextAutoConfiguration.class,
+                    GcpPubSubAutoConfiguration.class,
+                    PubSubBinderConfiguration.class))
+            .withUserConfiguration(TestConfiguration.class);
+    baseContext.run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubChannelProvisioner.class));
+  }
 
-	private static class TestConfiguration {
-		@Bean
-		public CredentialsProvider googleCredentials() {
-			return () -> mock(Credentials.class);
-		}
+  @Test
+  void test_healthRegistryEnabled() {
+    ApplicationContextRunner baseContext =
+        new ApplicationContextRunner()
+            .withPropertyValues(
+                // including 'core' for completeness, but it's not super relevant to the test.
+                "spring.cloud.gcp.core.enabled=true",
+                "spring.cloud.gcp.pubsub.enabled=true",
+                "spring.cloud.gcp.pubsub.binder.enabled=true")
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpContextAutoConfiguration.class,
+                    GcpPubSubAutoConfiguration.class,
+                    PubSubBinderConfiguration.class))
+            .withUserConfiguration(TestConfigurationWithRegistry.class);
+    baseContext.run(
+        ctx -> {
+          HealthTrackerRegistry healthTrackerRegistry = ctx.getBean(HealthTrackerRegistry.class);
+          PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
+          assertThat(healthTrackerRegistry)
+              .isEqualTo(ReflectionTestUtils.getField(binder, "healthTrackerRegistry"));
+        });
+  }
 
+  private static class TestConfiguration {
+    @Bean
+    public CredentialsProvider googleCredentials() {
+      return () -> mock(Credentials.class);
+    }
 
-		@Bean
-		public GcpProjectIdProvider gcpProjectIdProvider() {
-			return () -> "test-project";
-		}
-	}
+    @Bean
+    public GcpProjectIdProvider gcpProjectIdProvider() {
+      return () -> "test-project";
+    }
+  }
 
-	private static class TestConfigurationWithRegistry extends TestConfiguration {
+  private static class TestConfigurationWithRegistry extends TestConfiguration {
 
-		@Bean
-		public HealthTrackerRegistry healthTrackerRegistry() {
-			return mock(HealthTrackerRegistry.class);
-		}
-
-	}
-
-
+    @Bean
+    public HealthTrackerRegistry healthTrackerRegistry() {
+      return mock(HealthTrackerRegistry.class);
+    }
+  }
 }

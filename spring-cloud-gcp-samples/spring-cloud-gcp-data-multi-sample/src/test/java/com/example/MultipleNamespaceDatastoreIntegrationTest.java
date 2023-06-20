@@ -16,90 +16,77 @@
 
 package com.example;
 
-import java.util.concurrent.TimeUnit;
-
 import com.google.cloud.spring.autoconfigure.datastore.DatastoreNamespaceProvider;
+import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
-
-/**
- * Integration test for multiple-namespace support.
- *
- * @author Chengyuan Zhao
- */
-@RunWith(SpringRunner.class)
+/** Integration test for multiple-namespace support. */
+// Please use "-Dit.datastore=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+@ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
 @EnableAutoConfiguration
-public class MultipleNamespaceDatastoreIntegrationTest {
+class MultipleNamespaceDatastoreIntegrationTest {
 
-	@Autowired
-	PersonRepository datastorePersonRepository;
+  @Autowired PersonRepository datastorePersonRepository;
 
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat("Datastore integration tests are disabled. "
-				+ "Please use '-Dit.datastore=true' to enable them.",
-				System.getProperty("it.datastore"), is("true"));
-	}
+  @Test
+  void testMultipleNamespaces() {
 
-	@Test
-	public void testMultipleNamespaces() {
+    this.datastorePersonRepository.deleteAll();
+    Config.flipNamespace();
+    this.datastorePersonRepository.deleteAll();
 
-		this.datastorePersonRepository.deleteAll();
-		Config.flipNamespace();
-		this.datastorePersonRepository.deleteAll();
+    Awaitility.await()
+        .atMost(15, TimeUnit.SECONDS)
+        .until(() -> this.datastorePersonRepository.count() == 0);
+    Config.flipNamespace();
+    Awaitility.await()
+        .atMost(15, TimeUnit.SECONDS)
+        .until(() -> this.datastorePersonRepository.count() == 0);
 
-		Awaitility.await().atMost(15, TimeUnit.SECONDS)
-				.until(() -> this.datastorePersonRepository.count() == 0);
-		Config.flipNamespace();
-		Awaitility.await().atMost(15, TimeUnit.SECONDS)
-				.until(() -> this.datastorePersonRepository.count() == 0);
+    this.datastorePersonRepository.save(new Person(1L, "a"));
+    Config.flipNamespace();
+    this.datastorePersonRepository.save(new Person(2L, "a"));
+    Config.flipNamespace();
+    this.datastorePersonRepository.save(new Person(3L, "a"));
 
-		this.datastorePersonRepository.save(new Person(1L, "a"));
-		Config.flipNamespace();
-		this.datastorePersonRepository.save(new Person(2L, "a"));
-		Config.flipNamespace();
-		this.datastorePersonRepository.save(new Person(3L, "a"));
+    Awaitility.await()
+        .atMost(15, TimeUnit.SECONDS)
+        .until(() -> this.datastorePersonRepository.count() == 2);
+    Config.flipNamespace();
+    Awaitility.await()
+        .atMost(15, TimeUnit.SECONDS)
+        .until(() -> this.datastorePersonRepository.count() == 1);
+  }
 
-		Awaitility.await().atMost(15, TimeUnit.SECONDS)
-				.until(() -> this.datastorePersonRepository.count() == 2);
-		Config.flipNamespace();
-		Awaitility.await().atMost(15, TimeUnit.SECONDS)
-				.until(() -> this.datastorePersonRepository.count() == 1);
-	}
+  /**
+   * Configuring custom multiple namespaces.
+   *
+   * @author Chengyuan Zhao
+   */
+  @Configuration
+  static class Config {
 
-	/**
-	 * Configuring custom multiple namespaces.
-	 *
-	 * @author Chengyuan Zhao
-	 */
-	@Configuration
-	static class Config {
+    static boolean namespaceFlipper;
 
-		static boolean namespaceFlipper;
+    /** Flips the namespace that all Datastore repositories and templates use. */
+    static void flipNamespace() {
+      namespaceFlipper = !namespaceFlipper;
+    }
 
-		/**
-		 * Flips the namespace that all Datastore repositories and templates use.
-		 */
-		static void flipNamespace() {
-			namespaceFlipper = !namespaceFlipper;
-		}
-
-		@Bean
-		public DatastoreNamespaceProvider namespaceProvider() {
-			return () -> namespaceFlipper ? "n1" : "n2";
-		}
-	}
+    @Bean
+    public DatastoreNamespaceProvider namespaceProvider() {
+      return () -> namespaceFlipper ? "n1" : "n2";
+    }
+  }
 }

@@ -16,66 +16,63 @@
 
 package com.google.cloud.spring.autoconfigure.security;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.security.firebase.FirebaseJwtTokenDecoder;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-
-
 /**
- * @author Vinicius Carvalho
  * @since 1.2.2
  */
-public class FirebaseAuthenticationAutoConfigurationTests {
+class FirebaseAuthenticationAutoConfigurationTests {
 
-	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(
-					AutoConfigurations.of(FirebaseAuthenticationAutoConfiguration.class, TestConfig.class));
+  private ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(
+              AutoConfigurations.of(
+                  FirebaseAuthenticationAutoConfiguration.class, TestConfig.class));
 
-	@Test
-	public void testAutoConfigurationLoaded() throws Exception {
-		this.contextRunner
-				.withPropertyValues("spring.cloud.gcp.security.firebase.enabled=true")
-				.run(context -> {
-					FirebaseJwtTokenDecoder decoder = context.getBean(FirebaseJwtTokenDecoder.class);
-					assertThat(decoder).isNotNull();
-				});
-	}
+  @Test
+  void testAutoConfigurationLoaded() throws Exception {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.security.firebase.enabled=true")
+        .run(
+            context -> {
+              FirebaseJwtTokenDecoder decoder = context.getBean(FirebaseJwtTokenDecoder.class);
+              assertThat(decoder).isNotNull();
+            });
+  }
 
-	@Test
-	public void testAutoConfigurationNotLoaded() throws Exception {
-		this.contextRunner
-				.withPropertyValues("spring.cloud.gcp.security.firebase.enabled=false")
-				.run(context -> {
-					assertThatExceptionOfType(NoSuchBeanDefinitionException.class)
-							.isThrownBy(() -> context.getBean(FirebaseJwtTokenDecoder.class));
-				});
-	}
+  @Test
+  void testAutoConfigurationNotLoaded() throws Exception {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.security.firebase.enabled=false")
+        .run(
+            context -> {
+              assertThatExceptionOfType(NoSuchBeanDefinitionException.class)
+                  .isThrownBy(() -> context.getBean(FirebaseJwtTokenDecoder.class));
+            });
+  }
 
+  static class TestConfig {
 
+    @Bean
+    public GcpProjectIdProvider projectIdProvider() {
+      return () -> "spring-firebase-test-project";
+    }
 
-	static class TestConfig {
-
-		@Bean
-		public GcpProjectIdProvider projectIdProvider() {
-			return () -> "spring-firebase-test-project";
-		}
-
-		@Bean
-		public CredentialsProvider googleCredentials() {
-			return () -> mock(Credentials.class);
-		}
-
-	}
-
+    @Bean
+    public CredentialsProvider googleCredentials() {
+      return () -> mock(Credentials.class);
+    }
+  }
 }

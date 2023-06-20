@@ -16,89 +16,85 @@
 
 package com.google.cloud.spring.nativex.firestore;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.google.cloud.spring.data.firestore.Document;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.ServiceLoader;
-
-import com.google.cloud.spring.data.firestore.Document;
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.data.repository.Repository;
 import org.springframework.nativex.type.ComponentProcessor;
 import org.springframework.nativex.type.NativeConfiguration;
 import org.springframework.nativex.type.NativeContext;
 import org.springframework.nativex.type.TypeSystem;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+class NativeSupportTest {
 
-public class NativeSupportTest {
+  private NativeContext nativeContext;
+  private TypeSystem typeSystem;
 
-	private NativeContext nativeContext;
-	private TypeSystem typeSystem;
+  private final FirestoreDocumentComponentProcessor documentsComponentProcessor =
+      new FirestoreDocumentComponentProcessor();
+  private final FirestoreRepositoryComponentProcessor repositoryComponentProcessor =
+      new FirestoreRepositoryComponentProcessor();
 
-	private final FirestoreDocumentComponentProcessor documentsComponentProcessor =
-			new FirestoreDocumentComponentProcessor();
-	private final FirestoreRepositoryComponentProcessor repositoryComponentProcessor =
-			new FirestoreRepositoryComponentProcessor();
+  @BeforeEach
+  void setup() {
+    nativeContext = mock(NativeContext.class);
+    typeSystem =
+        new TypeSystem(
+            Arrays.asList(
+                new File("./target/classes").toString(),
+                new File("./target/test-classes").toString()));
 
-	@Before
-	public void setup() {
-		nativeContext = mock(NativeContext.class);
-		typeSystem = new TypeSystem(
-				Arrays.asList(
-						new File("./target/classes").toString(),
-						new File("./target/test-classes").toString()));
+    when(nativeContext.getTypeSystem()).thenReturn(typeSystem);
+  }
 
-		when(nativeContext.getTypeSystem()).thenReturn(typeSystem);
-	}
+  @Test
+  void shouldConfigureComponentProcessorJavaSpi() {
+    assertThat(ServiceLoader.load(ComponentProcessor.class))
+        .anyMatch(FirestoreDocumentComponentProcessor.class::isInstance)
+        .anyMatch(FirestoreRepositoryComponentProcessor.class::isInstance);
+  }
 
-	@Test
-	public void shouldConfigureComponentProcessorJavaSpi() {
-		assertThat(ServiceLoader.load(ComponentProcessor.class))
-				.anyMatch(FirestoreDocumentComponentProcessor.class::isInstance)
-				.anyMatch(FirestoreRepositoryComponentProcessor.class::isInstance);
-	}
+  @Test
+  void shouldConfigureNativeConfigurationJavaSpi() {
+    assertThat(ServiceLoader.load(NativeConfiguration.class))
+        .anyMatch(FirestoreNativeConfig.class::isInstance);
+  }
 
-	@Test
-	public void shouldConfigureNativeConfigurationJavaSpi() {
-		assertThat(ServiceLoader.load(NativeConfiguration.class))
-				.anyMatch(FirestoreNativeConfig.class::isInstance);
-	}
+  @Test
+  void shouldHandleComponentIndexedFirestoreDocuments() {
+    assertThat(
+            documentsComponentProcessor.handle(
+                nativeContext,
+                typeSystem.resolve(TestDocument.class).getDottedName(),
+                Collections.singletonList(typeSystem.resolve(Document.class).getDottedName())))
+        .isTrue();
+  }
 
-	@Test
-	public void shouldHandleComponentIndexedFirestoreDocuments() {
-		assertThat(
-				documentsComponentProcessor.handle(
-						nativeContext,
-						typeSystem.resolve(TestDocument.class).getDottedName(),
-						Collections.singletonList(typeSystem.resolve(Document.class).getDottedName())
-				)
-		).isTrue();
-	}
+  @Test
+  void shouldHandleNoneIndexedFirestoreDocuments() {
+    assertThat(
+            documentsComponentProcessor.handle(
+                nativeContext,
+                typeSystem.resolve(TestDocument.class).getDottedName(),
+                Collections.emptyList()))
+        .isTrue();
+  }
 
-	@Test
-	public void shouldHandleNoneIndexedFirestoreDocuments() {
-		assertThat(
-				documentsComponentProcessor.handle(
-						nativeContext,
-						typeSystem.resolve(TestDocument.class).getDottedName(),
-						Collections.emptyList()
-				)
-		).isTrue();
-	}
-
-	@Test
-	public void shouldHandleFirestoreRepositories() {
-		assertThat(
-				repositoryComponentProcessor.handle(
-						nativeContext,
-						typeSystem.resolve(TestDocumentRepository.class).getDottedName(),
-						Collections.singletonList(typeSystem.resolve(Repository.class).getDottedName())
-				)
-		).isTrue();
-	}
+  @Test
+  void shouldHandleFirestoreRepositories() {
+    assertThat(
+            repositoryComponentProcessor.handle(
+                nativeContext,
+                typeSystem.resolve(TestDocumentRepository.class).getDottedName(),
+                Collections.singletonList(typeSystem.resolve(Repository.class).getDottedName())))
+        .isTrue();
+  }
 }

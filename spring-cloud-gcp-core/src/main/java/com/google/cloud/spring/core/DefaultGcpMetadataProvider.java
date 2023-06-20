@@ -21,14 +21,12 @@ import com.google.cloud.MetadataConfig;
 /**
  * A wrapper around the static MetadataConfig.
  *
- * @author Elena Felder
- *
  * @since 1.1
  */
 public class DefaultGcpMetadataProvider implements MetadataProvider {
 
-	@Override
-	public String getAttribute(String attributeName) {
-		return MetadataConfig.getAttribute(attributeName);
-	}
+  @Override
+  public String getAttribute(String attributeName) {
+    return MetadataConfig.getAttribute(attributeName);
+  }
 }

@@ -16,72 +16,70 @@
 
 package com.google.cloud.spring.pubsub.support;
 
-import com.google.pubsub.v1.ProjectSubscriptionName;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/**
- * Tests for {@link PubSubSubscriptionUtils}.
- *
- * @author Mike Eltsufin
- */
-public class PubSubSubscriptionUtilsTests {
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import org.junit.jupiter.api.Test;
 
-	@Test
-	public void testToProjectSubscriptionName_canonical() {
-		String project = "projectA";
-		String subscription = "subscriptionA";
-		String fqn = "projects/" + project + "/subscriptions/" + subscription;
+/** Tests for {@link PubSubSubscriptionUtils}. */
+class PubSubSubscriptionUtilsTests {
 
-		ProjectSubscriptionName parsedProjectSubscriptionName = PubSubSubscriptionUtils
-				.toProjectSubscriptionName(subscription, project);
+  @Test
+  void testToProjectSubscriptionName_canonical() {
+    String project = "projectA";
+    String subscription = "subscriptionA";
+    String fqn = "projects/" + project + "/subscriptions/" + subscription;
 
-		assertThat(parsedProjectSubscriptionName)
-				.isEqualTo(ProjectSubscriptionName.of(project, subscription))
-				.hasToString(fqn);
-	}
+    ProjectSubscriptionName parsedProjectSubscriptionName =
+        PubSubSubscriptionUtils.toProjectSubscriptionName(subscription, project);
 
-	@Test
-	public void testToProjectSubscriptionName_no_subscription() {
-		assertThatThrownBy(() -> PubSubSubscriptionUtils.toProjectSubscriptionName(null, "subscriptionA"))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("The subscription can't be null.");
-	}
+    assertThat(parsedProjectSubscriptionName)
+        .isEqualTo(ProjectSubscriptionName.of(project, subscription))
+        .hasToString(fqn);
+  }
 
-	@Test
-	public void testToProjectSubscriptionName_canonical_no_project() {
-		assertThatThrownBy(() -> PubSubSubscriptionUtils.toProjectSubscriptionName("subscriptionA", null))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("The project ID can't be null when using canonical subscription name.");
-	}
+  @Test
+  void testToProjectSubscriptionName_no_subscription() {
+    assertThatThrownBy(
+            () -> PubSubSubscriptionUtils.toProjectSubscriptionName(null, "subscriptionA"))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("The subscription can't be null.");
+  }
 
-	@Test
-	public void testToProjectSubscriptionName_fqn() {
-		String project = "projectA";
-		String subscription = "subscriptionA";
-		String fqn = "projects/" + project + "/subscriptions/" + subscription;
+  @Test
+  void testToProjectSubscriptionName_canonical_no_project() {
+    assertThatThrownBy(
+            () -> PubSubSubscriptionUtils.toProjectSubscriptionName("subscriptionA", null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("The project ID can't be null when using canonical subscription name.");
+  }
 
-		ProjectSubscriptionName parsedProjectSubscriptionName = PubSubSubscriptionUtils.toProjectSubscriptionName(fqn,
-				project);
+  @Test
+  void testToProjectSubscriptionName_fqn() {
+    String project = "projectA";
+    String subscription = "subscriptionA";
+    String fqn = "projects/" + project + "/subscriptions/" + subscription;
 
-		assertThat(parsedProjectSubscriptionName)
-				.isEqualTo(ProjectSubscriptionName.of(project, subscription))
-				.hasToString(fqn);
-	}
+    ProjectSubscriptionName parsedProjectSubscriptionName =
+        PubSubSubscriptionUtils.toProjectSubscriptionName(fqn, project);
 
-	@Test
-	public void testToProjectSubscriptionName_fqn_no_project() {
-		String project = "projectA";
-		String subscription = "subscriptionA";
-		String fqn = "projects/" + project + "/subscriptions/" + subscription;
+    assertThat(parsedProjectSubscriptionName)
+        .isEqualTo(ProjectSubscriptionName.of(project, subscription))
+        .hasToString(fqn);
+  }
 
-		ProjectSubscriptionName parsedProjectSubscriptionName = PubSubSubscriptionUtils.toProjectSubscriptionName(fqn,
-				null);
+  @Test
+  void testToProjectSubscriptionName_fqn_no_project() {
+    String project = "projectA";
+    String subscription = "subscriptionA";
+    String fqn = "projects/" + project + "/subscriptions/" + subscription;
 
-		assertThat(parsedProjectSubscriptionName)
-				.isEqualTo(ProjectSubscriptionName.of(project, subscription))
-				.hasToString(fqn);
-	}
+    ProjectSubscriptionName parsedProjectSubscriptionName =
+        PubSubSubscriptionUtils.toProjectSubscriptionName(fqn, null);
+
+    assertThat(parsedProjectSubscriptionName)
+        .isEqualTo(ProjectSubscriptionName.of(project, subscription))
+        .hasToString(fqn);
+  }
 }

@@ -16,58 +16,41 @@
 
 package com.example;
 
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.system.OutputCaptureRule;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * This test verifies that the jpa-sample works.
  *
- * Run with: mvn -Dit.cloudsql test
+ * <p>Run with: mvn -Dit.cloudsql test
  *
- * The test will inherit the properties set in resources/application.properties.
- *
- * @author Mike Eltsufin
- * @author Dmitry Solomakha
- * @author Daniel Zou
+ * <p>The test will inherit the properties set in resources/application.properties.
  */
-@RunWith(SpringRunner.class)
+// Please use "-Dit.cloudsql=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
+@ExtendWith(SpringExtension.class)
+@ExtendWith(OutputCaptureExtension.class)
 @SpringBootTest(classes = {DemoApplication.class})
-public class CloudSqlJpaSampleApplicationIntegrationTests {
-	@BeforeClass
-	public static void checkToRun() {
-		assumeThat(
-				"JPA-sample integration tests are disabled. Please use '-Dit.cloudsql=true' "
-						+ "to enable them. ",
-				System.getProperty("it.cloudsql"), is("true"));
-	}
+class CloudSqlJpaSampleApplicationIntegrationTests {
 
-	@Autowired
-	private CommandLineRunner commandLineRunner;
+  @Autowired private CommandLineRunner commandLineRunner;
 
-	/**
-	 * Used to check exception messages and types.
-	 */
-	@Rule
-	public OutputCaptureRule outputCapture = new OutputCaptureRule();
+  /** Used to check exception messages and types. */
+  @Test
+  void basicTest(CapturedOutput capturedOutput) throws Exception {
+    // we need to run the command line runner again to capture output
+    this.commandLineRunner.run();
 
-	@Test
-	public void basicTest() throws Exception {
-		// we need to run the command line runner again to capture output
-		this.commandLineRunner.run();
-
-		assertThat(this.outputCapture.toString()).contains("Number of houses is 4");
-		assertThat(this.outputCapture.toString()).contains("636 Avenue of the Americas, NYC");
-	}
+    assertThat(capturedOutput.toString()).contains("Number of houses is 4");
+    assertThat(capturedOutput.toString()).contains("636 Avenue of the Americas, NYC");
+  }
 }

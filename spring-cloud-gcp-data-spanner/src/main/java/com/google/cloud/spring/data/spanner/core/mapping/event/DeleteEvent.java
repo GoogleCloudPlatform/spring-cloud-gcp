@@ -16,52 +16,50 @@
 
 package com.google.cloud.spring.data.spanner.core.mapping.event;
 
-import java.util.List;
-
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Mutation;
+import java.util.List;
 
-/**
- * An event signaling a Cloud Spanner delete operation.
- *
- * @author Chengyuan Zhao
- */
+/** An event signaling a Cloud Spanner delete operation. */
 public class DeleteEvent extends MutationEvent {
 
-	private final KeySet targetKeys;
+  private final KeySet targetKeys;
 
-	private final Class targetType;
+  private final Class targetType;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param source the mutations for the event initially occurred. (never {@code null})
-	 * @param targetEntities the target entities that need to be deleted.This may be
-	 *     {@code null} depending on the type of delete request.
-	 * @param targetKeys the target keys that need to be deleted. This may be {@code null}
-	 *     depending on the type of delete request.
-	 * @param targetType the target entity type that needs to be deleted. This may be
-	 *     {@code null} depending on the type of delete request.
-	 */
-	public DeleteEvent(List<Mutation> source, Iterable targetEntities, KeySet targetKeys, Class targetType) {
-		super(source, targetEntities);
-		this.targetKeys = targetKeys;
-		this.targetType = targetType;
-	}
+  /**
+   * Constructor.
+   *
+   * @param source the mutations for the event initially occurred. (never {@code null})
+   * @param targetEntities the target entities that need to be deleted.This may be {@code null}
+   *     depending on the type of delete request.
+   * @param targetKeys the target keys that need to be deleted. This may be {@code null} depending
+   *     on the type of delete request.
+   * @param targetType the target entity type that needs to be deleted. This may be {@code null}
+   *     depending on the type of delete request.
+   */
+  public DeleteEvent(
+      List<Mutation> source, Iterable targetEntities, KeySet targetKeys, Class targetType) {
+    super(source, targetEntities);
+    this.targetKeys = targetKeys;
+    this.targetType = targetType;
+  }
 
-	/**
-	 * Get the list of keys that needed to be deleted.
-	 * @return This may be {@code null} depending on the type of delete request.
-	 */
-	public KeySet getTargetKeys() {
-		return this.targetKeys;
-	}
+  /**
+   * Get the list of keys that needed to be deleted.
+   *
+   * @return This may be {@code null} depending on the type of delete request.
+   */
+  public KeySet getTargetKeys() {
+    return this.targetKeys;
+  }
 
-	/**
-	 * Get the type of entity that needed to be deleted.
-	 * @return This may be {@code null} depending on the type of delete request.
-	 */
-	public Class getTargetType() {
-		return this.targetType;
-	}
+  /**
+   * Get the type of entity that needed to be deleted.
+   *
+   * @return This may be {@code null} depending on the type of delete request.
+   */
+  public Class getTargetType() {
+    return this.targetType;
+  }
 }

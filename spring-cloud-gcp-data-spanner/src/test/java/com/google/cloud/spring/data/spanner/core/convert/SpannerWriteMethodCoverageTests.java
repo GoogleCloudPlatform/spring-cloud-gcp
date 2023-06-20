@@ -16,59 +16,55 @@
 
 package com.google.cloud.spring.data.spanner.core.convert;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
 import com.google.cloud.spanner.ValueBinder;
-import org.junit.Test;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/** Tests to check for new mapping methods that appear in the Spanner client lib. */
+class SpannerWriteMethodCoverageTests {
 
-/**
- * Tests to check for new mapping methods that appear in the Spanner client lib.
- *
- * @author Chengyuan Zhao
- */
-public class SpannerWriteMethodCoverageTests {
+  // Checks that the converter is aware of all Cloud Spanner mutation binder types
+  @Test
+  void allKnownMappingTypesTest() throws NoSuchFieldException {
+    for (Method method : ValueBinder.class.getMethods()) {
 
-	// Checks that the converter is aware of all Cloud Spanner mutation binder types
-	@Test
-	public void allKnownMappingTypesTest() throws NoSuchFieldException {
-		for (Method method : ValueBinder.class.getMethods()) {
+      String methodName = method.getName();
 
-			String methodName = method.getName();
+      // ignoring non-public and non "to" named binder methods
+      if (!Modifier.isPublic(method.getModifiers())
+          || !methodName.startsWith("to")
+          || method.getParameterCount() != 1) {
+        continue;
+      }
 
-			// ignoring non-public and non "to" named binder methods
-			if (!Modifier.isPublic(method.getModifiers()) || !methodName.startsWith("to")
-					|| method.getParameterCount() != 1) {
-				continue;
-			}
-
-			Class<?> paramType = ConversionUtils.boxIfNeeded(method.getParameterTypes()[0]);
-			if (paramType.equals(Struct.class) || paramType.equals(Value.class)) {
-				/*
-				 * 1. there is a method for binding a Struct value, but because Struct
-				 * values cannot be written to table columns we will ignore it. 2. there
-				 * is a method for binding a Value value. However, the purpose of the
-				 * converters is to wrap java types into the Value for the user.
-				 * Furthermore, the Cloud Spanner client lib does not give a way to read a
-				 * Value back from a Struct, so we will ignore this method.
-				 */
-				continue;
-			}
-			else if (ConversionUtils.isIterableNonByteArrayType(paramType)) {
-				Class<?> innerParamType = (Class) ((ParameterizedType) method
-						.getGenericParameterTypes()[0]).getActualTypeArguments()[0];
-				assertThat(ConverterAwareMappingSpannerEntityWriter.iterablePropertyTypeToMethodMap)
-						.containsKey(innerParamType);
-			}
-			else {
-				assertThat(ConverterAwareMappingSpannerEntityWriter.singleItemTypeValueBinderMethodMap)
-						.containsKey(paramType);
-			}
-		}
-	}
+      Class<?> paramType = ConversionUtils.boxIfNeeded(method.getParameterTypes()[0]);
+      if (paramType.equals(Struct.class) || paramType.equals(Value.class)) {
+        /*
+         * 1. there is a method for binding a Struct value, but because Struct
+         * values cannot be written to table columns we will ignore it. 2. there
+         * is a method for binding a Value value. However, the purpose of the
+         * converters is to wrap java types into the Value for the user.
+         * Furthermore, the Cloud Spanner client lib does not give a way to read a
+         * Value back from a Struct, so we will ignore this method.
+         */
+        continue;
+      } else if (ConversionUtils.isIterableNonByteArrayType(paramType)) {
+        Class<?> innerParamType =
+            (Class)
+                ((ParameterizedType) method.getGenericParameterTypes()[0])
+                    .getActualTypeArguments()[0];
+        assertThat(ConverterAwareMappingSpannerEntityWriter.iterablePropertyTypeToMethodMap)
+            .containsKey(innerParamType);
+      } else {
+        assertThat(ConverterAwareMappingSpannerEntityWriter.singleItemTypeValueBinderMethodMap)
+            .containsKey(paramType);
+      }
+    }
+  }
 }

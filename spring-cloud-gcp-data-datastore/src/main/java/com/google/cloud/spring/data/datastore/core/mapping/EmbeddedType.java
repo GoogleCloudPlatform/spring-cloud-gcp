@@ -21,50 +21,50 @@ import org.springframework.data.util.TypeInformation;
 /**
  * The various types of properties with respect to their storage as embedded entities.
  *
- * @author Chengyuan Zhao
- *
  * @since 1.1
  */
 public enum EmbeddedType {
 
-	/**
-	 * These are properties that stored as singualr or arrays of Cloud Datastore native
-	 * field types. This excludes the embedded entity field type.
-	 */
-	NOT_EMBEDDED,
+  /**
+   * These are properties that stored as singular or arrays of Cloud Datastore native field types.
+   * This excludes the embedded entity field type.
+   */
+  NOT_EMBEDDED,
 
-	/**
-	 * These are properties that are POJOs or collections of POJOs stored as a singular
-	 * embedded entity or arrays of embedded entities in the field.
-	 */
-	EMBEDDED_ENTITY,
+  /**
+   * These are properties that are POJOs or collections of POJOs stored as a singular embedded
+   * entity or arrays of embedded entities in the field.
+   */
+  EMBEDDED_ENTITY,
 
-	/**
-	 * These are {@code Map}s that are stored as a single embedded entity in the field.
-	 */
-	EMBEDDED_MAP;
+  /** These are {@code Map}s that are stored as a single embedded entity in the field. */
+  EMBEDDED_MAP;
 
-	/**
-	 * Get the {@link EmbeddedType} of a given {@link TypeInformation}.
-	 * @param typeInformation the given type metadata to check for embedded type.
-	 * @return the embedded type.
-	 */
-	public static EmbeddedType of(TypeInformation typeInformation) {
-		EmbeddedType embeddedType;
-		if (typeInformation.isMap()) {
-			embeddedType = EmbeddedType.EMBEDDED_MAP;
-		}
-		else if ((typeInformation.isCollectionLike()
-				&& typeInformation.getComponentType().getType().isAnnotationPresent(
-						com.google.cloud.spring.data.datastore.core.mapping.Entity.class))
-				|| typeInformation.getType().isAnnotationPresent(
-						com.google.cloud.spring.data.datastore.core.mapping.Entity.class)) {
-			embeddedType = EmbeddedType.EMBEDDED_ENTITY;
-		}
-		else {
-			embeddedType = EmbeddedType.NOT_EMBEDDED;
-		}
-		return embeddedType;
-	}
+  /**
+   * Get the {@link EmbeddedType} of a given {@link TypeInformation}.
+   *
+   * @param typeInformation the given type metadata to check for embedded type.
+   * @return the embedded type.
+   */
+  public static EmbeddedType of(TypeInformation<?> typeInformation) {
+    EmbeddedType embeddedType;
+    if (typeInformation.isMap()) {
+      embeddedType = EmbeddedType.EMBEDDED_MAP;
+    } else if ((typeInformation.isCollectionLike() && isEntity(typeInformation.getComponentType()))
+        || isEntity(typeInformation)) {
+      embeddedType = EmbeddedType.EMBEDDED_ENTITY;
+    } else {
+      embeddedType = EmbeddedType.NOT_EMBEDDED;
+    }
+    return embeddedType;
+  }
 
+  private static boolean isEntity(TypeInformation<?> componentType) {
+    if (componentType == null) {
+      return false;
+    }
+
+    Class<?> type = componentType.getType();
+    return type.isAnnotationPresent(Entity.class);
+  }
 }

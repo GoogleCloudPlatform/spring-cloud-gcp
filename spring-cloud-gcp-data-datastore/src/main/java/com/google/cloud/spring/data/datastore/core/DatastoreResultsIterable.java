@@ -16,48 +16,44 @@
 
 package com.google.cloud.spring.data.datastore.core;
 
+import com.google.cloud.datastore.Cursor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.cloud.datastore.Cursor;
-
-/**
- * @author Dmitry Solomakha
- */
 public class DatastoreResultsIterable<T> implements Iterable<T> {
-	private final Iterator<T> iterator;
-	private final Cursor cursor;
-	private Iterable<T> iterable;
+  private final Iterator<T> iterator;
+  private final Cursor cursor;
+  private Iterable<T> iterable;
 
-	public DatastoreResultsIterable(Iterable<T> iterable, Cursor cursor) {
-		this(iterable.iterator(), cursor);
-		this.iterable = iterable;
-	}
+  public DatastoreResultsIterable(Iterable<T> iterable, Cursor cursor) {
+    this(iterable.iterator(), cursor);
+    this.iterable = iterable;
+  }
 
-	public DatastoreResultsIterable(Iterator<T> iterator, Cursor cursor) {
-		this.iterator = iterator;
-		this.cursor = cursor;
-	}
+  public DatastoreResultsIterable(Iterator<T> iterator, Cursor cursor) {
+    this.iterator = iterator;
+    this.cursor = cursor;
+  }
 
-	@Override
-	public Iterator<T> iterator() {
-		return this.iterator;
-	}
+  @Override
+  public Iterator<T> iterator() {
+    return this.iterator;
+  }
 
-	public Cursor getCursor() {
-		return this.cursor;
-	}
+  public Cursor getCursor() {
+    return this.cursor;
+  }
 
-	public Iterable<T> getIterable() {
-		return this.iterable;
-	}
+  public Iterable<T> getIterable() {
+    return this.iterable;
+  }
 
-	public List<T> toList() {
-		List<T> results = new ArrayList<>();
-		while (iterator().hasNext()) {
-			results.add(iterator().next());
-		}
-		return results;
-	}
+  public List<T> toList() {
+    List<T> results = new ArrayList<>();
+    while (iterator().hasNext()) {
+      results.add(iterator().next());
+    }
+    return results;
+  }
 }

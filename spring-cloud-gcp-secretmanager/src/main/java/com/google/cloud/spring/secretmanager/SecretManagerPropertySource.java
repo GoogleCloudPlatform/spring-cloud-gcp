@@ -18,48 +18,46 @@ package com.google.cloud.spring.secretmanager;
 
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-
 import org.springframework.core.env.EnumerablePropertySource;
 
 /**
- * A property source for Secret Manager which accesses the Secret Manager APIs when {@link #getProperty} is called.
+ * A property source for Secret Manager which accesses the Secret Manager APIs when {@link
+ * #getProperty} is called.
  *
- * @author Daniel Zou
- * @author Eddú Meléndez
  * @since 1.2.2
  */
 public class SecretManagerPropertySource extends EnumerablePropertySource<SecretManagerTemplate> {
 
-	private final GcpProjectIdProvider projectIdProvider;
+  private final GcpProjectIdProvider projectIdProvider;
 
-	public SecretManagerPropertySource(
-			String propertySourceName,
-			SecretManagerTemplate secretManagerTemplate,
-			GcpProjectIdProvider projectIdProvider) {
-		super(propertySourceName, secretManagerTemplate);
+  public SecretManagerPropertySource(
+      String propertySourceName,
+      SecretManagerTemplate secretManagerTemplate,
+      GcpProjectIdProvider projectIdProvider) {
+    super(propertySourceName, secretManagerTemplate);
+    this.projectIdProvider = projectIdProvider;
+  }
 
-		this.projectIdProvider = projectIdProvider;
-	}
+  @Override
+  public Object getProperty(String name) {
+    SecretVersionName secretIdentifier =
+        SecretManagerPropertyUtils.getSecretVersionName(name, this.projectIdProvider);
 
-	@Override
-	public Object getProperty(String name) {
-		SecretVersionName secretIdentifier =
-				SecretManagerPropertyUtils.getSecretVersionName(name, this.projectIdProvider);
+    if (secretIdentifier != null) {
+      return getSource().getSecretByteString(secretIdentifier);
+    } else {
+      return null;
+    }
+  }
 
-		if (secretIdentifier != null) {
-			return getSource().getSecretByteString(secretIdentifier);
-		}
-		else {
-			return null;
-		}
-	}
-
-	/**
-	 * The {@link SecretManagerPropertySource} is not enumerable, so this always returns an empty array.
-	 * @return the empty array.
-	 */
-	@Override
-	public String[] getPropertyNames() {
-		return new String[0];
-	}
+  /**
+   * The {@link SecretManagerPropertySource} is not enumerable, so this always returns an empty
+   * array.
+   *
+   * @return the empty array.
+   */
+  @Override
+  public String[] getPropertyNames() {
+    return new String[0];
+  }
 }
