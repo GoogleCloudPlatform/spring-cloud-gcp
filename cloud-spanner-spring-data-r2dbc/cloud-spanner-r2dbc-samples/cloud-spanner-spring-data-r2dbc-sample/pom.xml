@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.7.12</version>
+    <relativePath/>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>cloud-spanner-spring-data-r2dbc-sample</artifactId>
+  <groupId>com.google.cloud</groupId>
+  <version>1.2.3-SNAPSHOT</version><!-- {x-version-update:cloud-spanner-r2dbc:current} -->
+
+  <properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>cloud-spanner-r2dbc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- Until Spring Boot picks up Spring Data R2DBC 1.4.1, drivers
+           compatible with SPI 0.9 have a runtime method mismatch with
+           getColumnMetadatas() signature.
+           The next two dependency overrides fix that.
+       -->
+      <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-r2dbc</artifactId>
+        <version>1.5.13</version>
+      </dependency>
+      <dependency>
+        <groupId>io.r2dbc</groupId>
+        <artifactId>r2dbc-spi</artifactId>
+        <version>0.9.0.RELEASE</version>
+      </dependency>
+    </dependencies>
+
+  </dependencyManagement>
+  <dependencies>
+
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>cloud-spanner-spring-data-r2dbc</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <!-- This sample inherits from Spring Boot Starter, and not from the project pom,
+           so configuration separating unit from integration tests needs to be duplicated.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/*IntegrationTest*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+
+        <configuration>
+          <includes>
+            <include>**/*IntegrationTest*</include>
+          </includes>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>integration-tests</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.13</version>
+        <configuration>
+          <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>

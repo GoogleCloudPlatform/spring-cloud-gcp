@@ -1,0 +1,155 @@
+<html>
+<head>
+  <title>Spring Data R2DBC for Cloud Spanner demo</title>
+  <script>
+
+    function appendOutput(extraText, books) {
+      const el = document.getElementById('result');
+      el.value += extraText;
+      const replacer = (key,value) => {
+          return value ? value : undefined;
+      }
+      if (books) {
+        for (let book of books) {
+          el.value += JSON.stringify(book, replacer, 2) + "\n";
+        }
+      }
+      el.value +=  "\n\n";
+    }
+
+    function listBooks() {
+
+      fetch('/list', {
+        method: 'GET',
+      }).then(response => response.json())
+      .then(books => books.length > 0 ? appendOutput("Book list:\n", books) : appendOutput("No books found."));
+
+      return false;
+    }
+
+    function addBook() {
+      const book = {};
+      book.title = document.getElementById('newBookTitle').value;
+
+      if (!book.title) {
+        appendOutput("Please provide non-empty title");
+        return false;
+      }
+
+      const reviewer = document.getElementById('reviewer').value;
+      const review = document.getElementById('review').value;
+      if (reviewer || review) {
+        book.review = { reviewerId: reviewer, reviewerContent: review };
+      }
+
+      const rating = document.getElementById('rating').value;
+      const series = document.getElementById('series').value;
+      if (rating || series) {
+        book.extraDetails = { rating: rating, series: series};
+      }
+
+      const categoriesString = document.getElementById('categories').value;
+      console.log("categories = " + categoriesString);
+      if (categoriesString) {
+        book.categories = categoriesString.split(",");
+      }
+
+      fetch('/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify(book)
+      }).then(response => {
+         if (response.ok) {
+           appendOutput("Added book.");
+         } else {
+           appendOutput("Failed to add book.");
+         }
+       });
+
+      return false;
+    }
+
+    function findBookById() {
+      const id = document.getElementById('bookId').value;
+      if (!id) {
+        appendOutput("Please provide non-empty id");
+        return false;
+      }
+
+      fetch('/search/' + id, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json'},
+      }).then(response => response.text())
+      .then(text => text.length ? appendOutput("Found book:", [JSON.parse(text)]) : appendOutput("Book not found"));
+
+
+      return false;
+    }
+
+  </script>
+
+  <style>
+    div.buttonLink, div.section {
+      margin-bottom: 1em;
+    }
+    div.buttonLink {
+      border: 1px solid grey;
+      background-color: lightgrey;
+      display: block;
+    }
+    h3 {
+      font-style: italic;
+    }
+  </style>
+</head>
+
+
+<body>
+
+<div id="actions" style="padding-bottom: 3em;">
+
+  <div class="buttonLink">
+    <a href="/" onClick="return listBooks();">List Books</a>
+  </div>
+
+  <hr/>
+
+  <h3>Required Field</h3>
+  <div class="section">
+    New Book Title: <input id="newBookTitle" name="newBookTitle"/>
+  </div>
+
+  <h3>Extra details (Map entity field turning into JSON Spanner column)</h3>
+  <div class="section">
+    Rating: <input id="rating" name="rating"/> Is series: <input id="series" name="series"/>
+  </div>
+
+  <h3>Review (custom Review object entity field turning into JSON Spanner column)</h3>
+  <div class="section">
+    Reviewer: <input id="reviewer" name="rating"/> Review: <input id="review" name="series"/>
+  </div>
+
+  <h3>Comma-separated categories (List entity field turning into ARRAY<STRING> Spanner column)</h3>
+  <div class="section">
+    Categories: <input id="categories" name="categories"/>
+  </div>
+
+  <a class="buttonLink" href="/" onClick="return addBook();">Add Book</a>
+
+  <hr/>
+
+  <div class="buttonLink">
+    Search for: <input id="bookId" name="bookId"/> <a class="buttonLink" href="/" onClick="return findBookById();">Find
+    Books</a>
+  </div>
+</div>
+
+<label for="result" style="display:block">Command Output</label>
+<textarea id="result" disabled="true" style="background-color: #DDEEFF; width: 80em; height: 30em;">
+
+
+</textarea>
+
+
+</body>
+</html>

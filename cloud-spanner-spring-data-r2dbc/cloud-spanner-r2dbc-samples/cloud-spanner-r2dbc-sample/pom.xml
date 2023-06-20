@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>cloud-spanner-r2dbc-sample</artifactId>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>cloud-spanner-r2dbc-samples</artifactId>
+    <version>1.2.3-SNAPSHOT</version><!-- {x-version-update:cloud-spanner-r2dbc:current} -->
+  </parent>
+
+  <name>Google Cloud Spanner R2DBC Sample via direct SPI</name>
+
+  <properties>
+    <apache-commons-io.version>2.13.0</apache-commons-io.version>
+    <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>cloud-spanner-r2dbc</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${apache-commons-lang.version}</version>
+    </dependency>
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${apache-commons-io.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <mainClass>com.example.SampleApplication</mainClass>
+          <cleanupDaemonThreads>false</cleanupDaemonThreads>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
