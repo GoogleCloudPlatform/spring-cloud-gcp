@@ -37,10 +37,7 @@ jobs:
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v1
         with:
-          version: latest
-          # use another project to avoid conflict
           project_id: spring-cloud-gcp-ci-native
-          export_default_credentials: true
       - name: Install pubsub-emulator
         if: ${{ matrix.it == 'pubsub-emulator' }}
         run: |
@@ -75,7 +72,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          continue-after-seconds: 1200 # 30 min
+          continue-after-seconds: 3600 # 60 min
           same-branch-only: false
       - uses: graalvm/setup-graalvm@v1
         with:
@@ -84,21 +81,6 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-      - name: Print versions
-        run: |
-          echo "GRAALVM_HOME: $GRAALVM_HOME"
-          echo "JAVA_HOME: $JAVA_HOME"
-          java --version
-          gu --version
-          native-image --version
-      - name: Check active profiles
-        run: |
-          ../mvnw \
-            --batch-mode \
-            --activate-profiles native-sample-config,nativeTest \
-            --define notAllModules=true \
-            help:active-profiles
-        working-directory: ./spring-cloud-gcp-samples
       - name: Native Tests
         id: intTest1
         continue-on-error: true
