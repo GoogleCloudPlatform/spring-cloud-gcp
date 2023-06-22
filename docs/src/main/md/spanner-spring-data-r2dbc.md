@@ -6,7 +6,7 @@ The goal of the Spring Data project is to create easy and consistent ways of usi
 
 ## Setup
 
-To begin using Spring Data R2DBC with Cloud Spanner, add the following dependencies to your project:
+Maven coordinates, using [Spring Framework on Google Cloud BOM](getting-started.xml#bill-of-materials):
 
 ```xml
 <dependencies>
@@ -23,8 +23,7 @@ To begin using Spring Data R2DBC with Cloud Spanner, add the following dependenc
     -->
     <dependency>
         <groupId>com.google.cloud</groupId>
-        <artifactId>cloud-spanner-spring-data-r2dbc</artifactId>
-        <version>${cloud-spanner-r2dbc-version}</version>
+        <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
     </dependency>
 </dependencies>
 ```
@@ -44,4 +43,4 @@ See the [Spring Data R2DBC documentation](https://docs.spring.io/spring-data/r2d
 
 ## Sample Application
 
-We provide a [sample application](https://github.com/GoogleCloudPlatform/cloud-spanner-r2dbc/tree/main/cloud-spanner-r2dbc-samples/cloud-spanner-spring-data-r2dbc-sample) which demonstrates using the Spring Data R2DBC framework with Cloud Spanner in [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html).
+We provide a [sample application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-spanner-r2dbc-samples) which demonstrates using the Spring Data R2DBC framework with Cloud Spanner in [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html).
