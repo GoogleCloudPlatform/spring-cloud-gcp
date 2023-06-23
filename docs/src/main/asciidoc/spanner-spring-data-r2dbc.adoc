@@ -1,0 +1,50 @@
+:spring-data-commons-ref: https://docs.spring.io/spring-data/data-commons/docs/current/reference/html
+
+[#spring-data-cloud-spanner-r2dbc]
+== Cloud Spanner Spring Data R2DBC
+
+The Spring Data R2DBC Dialect for Cloud Spanner enables the usage of https://github.com/spring-projects/spring-data-r2dbc[Spring Data R2DBC] with Cloud Spanner.
+
+The goal of the Spring Data project is to create easy and consistent ways of using data access technologies from Spring Framework applications.
+
+=== Setup
+
+Maven coordinates, using link:getting-started.xml#bill-of-materials[Spring Framework on Google Cloud BOM]:
+
+[source,xml]
+----
+<dependencies>
+    <!-- The starter dependency for the Spring Data R2DBC framework. -->
+    <dependency>
+        <groupId>org.springframework.boot.experimental</groupId>
+        <artifactId>spring-boot-starter-data-r2dbc</artifactId>
+        <version>${r2dbc-version}</version>
+    </dependency>
+
+    <!--
+        Dialect for Spring Data R2DBC Spanner; This includes the
+        Cloud Spanner R2DBC driver as a transitive dependency.
+    -->
+    <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
+    </dependency>
+</dependencies>
+----
+
+=== Overview
+
+Spring Data R2DBC allows you to use the convenient features of Spring Data in a reactive application.
+These features include:
+
+* Spring configuration support using Java based `@Configuration` classes.
+* Annotation based mapping metadata.
+* Automatic implementation of Repository interfaces.
+* Support for Reactive Transactions.
+* Schema and data initialization utilities.
+
+See the https://docs.spring.io/spring-data/r2dbc/docs/1.0.x/reference/html/#reference[Spring Data R2DBC documentation] for more information on how to use Spring Data R2DBC.
+
+=== Sample Application
+
+We provide a https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-spanner-r2dbc-samples[sample application] which demonstrates using the Spring Data R2DBC framework with Cloud Spanner in https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html[Spring WebFlux].
