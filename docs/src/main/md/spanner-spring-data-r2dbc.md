@@ -12,7 +12,7 @@ Maven coordinates, using [Spring Framework on Google Cloud BOM](getting-started.
 <dependencies>
     <!-- The starter dependency for the Spring Data R2DBC framework. -->
     <dependency>
-        <groupId>org.springframework.boot.experimental</groupId>
+        <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-data-r2dbc</artifactId>
         <version>${r2dbc-version}</version>
     </dependency>
