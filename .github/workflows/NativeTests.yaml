@@ -81,7 +81,7 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-      - name: Native Tests
+      - name: Native Tests in Samples
         id: intTest1
         continue-on-error: true
         run: |
