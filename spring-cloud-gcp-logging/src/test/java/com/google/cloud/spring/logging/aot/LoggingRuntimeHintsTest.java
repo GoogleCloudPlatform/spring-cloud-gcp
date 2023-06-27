@@ -31,7 +31,6 @@ class LoggingRuntimeHintsTest {
   void shouldRegisterHints() {
     RuntimeHints hints = new RuntimeHints();
     new LoggingRuntimeHints().registerHints(hints, getClass().getClassLoader());
-    assertThat(reflection().onType(LoggingAppender.class)).isNotNull();
 
     assertThat(hints)
         .matches(reflection().onType(LoggingAppender.class))
