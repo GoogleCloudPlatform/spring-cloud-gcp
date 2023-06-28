@@ -52,6 +52,26 @@ public class EnvironmentsSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listEnvironmentsRetry;
+  /**
+   * Allow override of retry settings at method-level for executeAirflowCommand. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry executeAirflowCommandRetry;
+  /**
+   * Allow override of retry settings at method-level for stopAirflowCommand. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry stopAirflowCommandRetry;
+  /**
+   * Allow override of retry settings at method-level for pollAirflowCommand. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry pollAirflowCommandRetry;
+  /**
+   * Allow override of retry settings at method-level for fetchDatabaseProperties. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchDatabasePropertiesRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -104,5 +124,37 @@ public class EnvironmentsSpringProperties implements CredentialsSupplier {
 
   public void setListEnvironmentsRetry(Retry listEnvironmentsRetry) {
     this.listEnvironmentsRetry = listEnvironmentsRetry;
+  }
+
+  public Retry getExecuteAirflowCommandRetry() {
+    return this.executeAirflowCommandRetry;
+  }
+
+  public void setExecuteAirflowCommandRetry(Retry executeAirflowCommandRetry) {
+    this.executeAirflowCommandRetry = executeAirflowCommandRetry;
+  }
+
+  public Retry getStopAirflowCommandRetry() {
+    return this.stopAirflowCommandRetry;
+  }
+
+  public void setStopAirflowCommandRetry(Retry stopAirflowCommandRetry) {
+    this.stopAirflowCommandRetry = stopAirflowCommandRetry;
+  }
+
+  public Retry getPollAirflowCommandRetry() {
+    return this.pollAirflowCommandRetry;
+  }
+
+  public void setPollAirflowCommandRetry(Retry pollAirflowCommandRetry) {
+    this.pollAirflowCommandRetry = pollAirflowCommandRetry;
+  }
+
+  public Retry getFetchDatabasePropertiesRetry() {
+    return this.fetchDatabasePropertiesRetry;
+  }
+
+  public void setFetchDatabasePropertiesRetry(Retry fetchDatabasePropertiesRetry) {
+    this.fetchDatabasePropertiesRetry = fetchDatabasePropertiesRetry;
   }
 }
