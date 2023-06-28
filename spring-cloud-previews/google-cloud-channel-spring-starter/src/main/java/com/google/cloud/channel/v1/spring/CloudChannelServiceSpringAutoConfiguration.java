@@ -344,6 +344,19 @@ public class CloudChannelServiceSpringAutoConfiguration {
           .deleteChannelPartnerRepricingConfigSettings()
           .setRetrySettings(deleteChannelPartnerRepricingConfigRetrySettings);
 
+      RetrySettings listSkuGroupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listSkuGroupsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listSkuGroupsSettings().setRetrySettings(listSkuGroupsRetrySettings);
+
+      RetrySettings listSkuGroupBillableSkusRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listSkuGroupBillableSkusSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listSkuGroupBillableSkusSettings()
+          .setRetrySettings(listSkuGroupBillableSkusRetrySettings);
+
       RetrySettings lookupOfferRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.lookupOfferSettings().getRetrySettings(), serviceRetry);
@@ -754,6 +767,30 @@ public class CloudChannelServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for deleteChannelPartnerRepricingConfig from properties.");
+      }
+    }
+    Retry listSkuGroupsRetry = clientProperties.getListSkuGroupsRetry();
+    if (listSkuGroupsRetry != null) {
+      RetrySettings listSkuGroupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listSkuGroupsSettings().getRetrySettings(), listSkuGroupsRetry);
+      clientSettingsBuilder.listSkuGroupsSettings().setRetrySettings(listSkuGroupsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listSkuGroups from properties.");
+      }
+    }
+    Retry listSkuGroupBillableSkusRetry = clientProperties.getListSkuGroupBillableSkusRetry();
+    if (listSkuGroupBillableSkusRetry != null) {
+      RetrySettings listSkuGroupBillableSkusRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listSkuGroupBillableSkusSettings().getRetrySettings(),
+              listSkuGroupBillableSkusRetry);
+      clientSettingsBuilder
+          .listSkuGroupBillableSkusSettings()
+          .setRetrySettings(listSkuGroupBillableSkusRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listSkuGroupBillableSkus from properties.");
       }
     }
     Retry lookupOfferRetry = clientProperties.getLookupOfferRetry();

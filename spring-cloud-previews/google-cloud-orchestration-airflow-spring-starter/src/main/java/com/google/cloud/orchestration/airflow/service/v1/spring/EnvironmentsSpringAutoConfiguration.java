@@ -171,6 +171,36 @@ public class EnvironmentsSpringAutoConfiguration {
           .listEnvironmentsSettings()
           .setRetrySettings(listEnvironmentsRetrySettings);
 
+      RetrySettings executeAirflowCommandRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.executeAirflowCommandSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .executeAirflowCommandSettings()
+          .setRetrySettings(executeAirflowCommandRetrySettings);
+
+      RetrySettings stopAirflowCommandRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.stopAirflowCommandSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .stopAirflowCommandSettings()
+          .setRetrySettings(stopAirflowCommandRetrySettings);
+
+      RetrySettings pollAirflowCommandRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.pollAirflowCommandSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .pollAirflowCommandSettings()
+          .setRetrySettings(pollAirflowCommandRetrySettings);
+
+      RetrySettings fetchDatabasePropertiesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchDatabasePropertiesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .fetchDatabasePropertiesSettings()
+          .setRetrySettings(fetchDatabasePropertiesRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -198,6 +228,62 @@ public class EnvironmentsSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listEnvironments from properties.");
+      }
+    }
+    Retry executeAirflowCommandRetry = clientProperties.getExecuteAirflowCommandRetry();
+    if (executeAirflowCommandRetry != null) {
+      RetrySettings executeAirflowCommandRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.executeAirflowCommandSettings().getRetrySettings(),
+              executeAirflowCommandRetry);
+      clientSettingsBuilder
+          .executeAirflowCommandSettings()
+          .setRetrySettings(executeAirflowCommandRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for executeAirflowCommand from properties.");
+      }
+    }
+    Retry stopAirflowCommandRetry = clientProperties.getStopAirflowCommandRetry();
+    if (stopAirflowCommandRetry != null) {
+      RetrySettings stopAirflowCommandRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.stopAirflowCommandSettings().getRetrySettings(),
+              stopAirflowCommandRetry);
+      clientSettingsBuilder
+          .stopAirflowCommandSettings()
+          .setRetrySettings(stopAirflowCommandRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for stopAirflowCommand from properties.");
+      }
+    }
+    Retry pollAirflowCommandRetry = clientProperties.getPollAirflowCommandRetry();
+    if (pollAirflowCommandRetry != null) {
+      RetrySettings pollAirflowCommandRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.pollAirflowCommandSettings().getRetrySettings(),
+              pollAirflowCommandRetry);
+      clientSettingsBuilder
+          .pollAirflowCommandSettings()
+          .setRetrySettings(pollAirflowCommandRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for pollAirflowCommand from properties.");
+      }
+    }
+    Retry fetchDatabasePropertiesRetry = clientProperties.getFetchDatabasePropertiesRetry();
+    if (fetchDatabasePropertiesRetry != null) {
+      RetrySettings fetchDatabasePropertiesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchDatabasePropertiesSettings().getRetrySettings(),
+              fetchDatabasePropertiesRetry);
+      clientSettingsBuilder
+          .fetchDatabasePropertiesSettings()
+          .setRetrySettings(fetchDatabasePropertiesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for fetchDatabaseProperties from properties.");
       }
     }
     return clientSettingsBuilder.build();

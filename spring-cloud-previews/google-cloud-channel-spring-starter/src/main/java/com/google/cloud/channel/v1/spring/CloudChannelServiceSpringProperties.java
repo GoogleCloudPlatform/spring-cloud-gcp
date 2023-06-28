@@ -168,6 +168,16 @@ public class CloudChannelServiceSpringProperties implements CredentialsSupplier 
    */
   @NestedConfigurationProperty private Retry deleteChannelPartnerRepricingConfigRetry;
   /**
+   * Allow override of retry settings at method-level for listSkuGroups. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listSkuGroupsRetry;
+  /**
+   * Allow override of retry settings at method-level for listSkuGroupBillableSkus. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listSkuGroupBillableSkusRetry;
+  /**
    * Allow override of retry settings at method-level for lookupOffer. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -458,6 +468,22 @@ public class CloudChannelServiceSpringProperties implements CredentialsSupplier 
   public void setDeleteChannelPartnerRepricingConfigRetry(
       Retry deleteChannelPartnerRepricingConfigRetry) {
     this.deleteChannelPartnerRepricingConfigRetry = deleteChannelPartnerRepricingConfigRetry;
+  }
+
+  public Retry getListSkuGroupsRetry() {
+    return this.listSkuGroupsRetry;
+  }
+
+  public void setListSkuGroupsRetry(Retry listSkuGroupsRetry) {
+    this.listSkuGroupsRetry = listSkuGroupsRetry;
+  }
+
+  public Retry getListSkuGroupBillableSkusRetry() {
+    return this.listSkuGroupBillableSkusRetry;
+  }
+
+  public void setListSkuGroupBillableSkusRetry(Retry listSkuGroupBillableSkusRetry) {
+    this.listSkuGroupBillableSkusRetry = listSkuGroupBillableSkusRetry;
   }
 
   public Retry getLookupOfferRetry() {
