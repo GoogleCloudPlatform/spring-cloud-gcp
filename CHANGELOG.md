@@ -14,6 +14,17 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.5.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.5.3...v3.5.4) (2023-06-28)
+
+
+### Dependencies
+
+* bump error_prone_core from 2.19.1 to 2.20.0 ([#1970](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1970)) ([0f3cc54](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0f3cc54b7d1aa87aa9b5bd118a6d47ab031ae330))
+* bump libraries-bom from 26.17.0 to 26.18.0 ([#1986](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1986)) ([cec1a15](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cec1a15171e3c812abb0829beac9372906d68836))
+* bump spring-boot-dependencies from 2.7.12 to 2.7.13 ([#1973](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1973)) ([e71ee92](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e71ee92fd5b2a5e04fe7457e374dd7f365c6dc73))
+* bump spring-boot-starter-parent from 2.7.12 to 2.7.13 ([#1974](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1974)) ([152fe0b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/152fe0b244f436894ed6f7323ee422a88e31fcdb))
+* bump spring-shell-starter from 2.1.10 to 2.1.11 ([#1984](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1984)) ([0ecd59a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0ecd59a652476ce08ee1192bca9238b4d43514e2))
+
 ## [3.5.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.5.2...v3.5.3) (2023-06-15)
 
 
