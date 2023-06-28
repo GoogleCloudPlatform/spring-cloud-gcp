@@ -90,6 +90,7 @@
 			<id>native-sample-config</id>
 			<modules>
 				<module>spring-cloud-gcp-logging-sample</module>
+				<module>spring-cloud-gcp-trace-sample</module>
 			</modules>
 			<build>
 				<plugins>
@@ -132,6 +133,7 @@
 							</includes>
 							<systemPropertyVariables>
 								<it.logging>true</it.logging>
+								<it.trace>true</it.trace>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
