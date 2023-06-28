@@ -14,6 +14,24 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.5.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.5.0...v4.5.1) (2023-06-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.18.0 (main) ([#1985](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1985)) ([3445ce7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3445ce7d8e73708e99450646c843cc60e2e2f3f4))
+* Wiring `bigQueryThreadPoolTaskScheduler ` with `writeJsonStream` ([#1855](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1855)) ([6467a08](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6467a089e235efbebfbe5f38c83f1d18bebb9b78)), closes [#1599](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1599)
+
+
+### Dependencies
+
+* bump gapic-generator-java-bom.version from 2.21.0 to 2.22.0 ([#1978](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1978)) ([0cb44fe](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0cb44fe2e9027b4575f49aaef21aca0b2d9990d3))
+* bump native-maven-plugin from 0.9.22 to 0.9.23 ([#1968](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1968)) ([d60fa50](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d60fa509788ea03c2fda7716719670027cc33d6e))
+* bump spring-boot-dependencies.version from 3.0.6 to 3.1.0 ([#1876](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1876)) ([39b6f1e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/39b6f1e72cd34fa8126fce54a48a02fc189d24bf))
+* bump spring-boot-dependencies.version from 3.0.6 to 3.1.1 ([#1977](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1977)) ([c2622f4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c2622f485b38a6319685a6666796664d5a758f04))
+* bump spring-boot-starter-parent from 3.0.6 to 3.1.1 ([#1976](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1976)) ([0600e68](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0600e68ece0ad78f31cc375965b04501a5d7a1dc))
+* bump truth from 1.1.4 to 1.1.5 ([#1967](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1967)) ([fb20cd4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fb20cd483fc6c1ca271b9f9f6d2fb4c55f151108))
+
 ## [4.5.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.4.0...v4.5.0) (2023-06-15)
 
 
