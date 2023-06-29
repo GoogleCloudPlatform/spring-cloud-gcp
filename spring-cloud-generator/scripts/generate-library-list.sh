@@ -1,6 +1,9 @@
 #!/bin/bash
 
-WORKING_DIR=`pwd` # spring-cloud-generator
+# If not set, assume working directory is spring-cloud-generator
+if [[ -z "$SPRING_GENERATOR_DIR" ]]; then
+  SPRING_GENERATOR_DIR=`pwd`
+fi
 
 while getopts c: flag
 do
@@ -10,9 +13,6 @@ do
 done
 echo "Monorepo tag: $commitish";
 
-# install jq for json parsing if not already installed
-sudo apt-get -y install jq
-
 # download the monorepo, need to loop through metadata there
 git clone https://github.com/googleapis/google-cloud-java.git
 
@@ -20,10 +20,10 @@ git clone https://github.com/googleapis/google-cloud-java.git
 cd ./google-cloud-java
 git checkout $commitish
 
-cd ${WORKING_DIR}
+cd ${SPRING_GENERATOR_DIR}
 # start file, always override is present
-filename=${WORKING_DIR}/scripts/resources/library_list.txt
-echo "# api_shortname, googleapis-folder, distribution_name:version, googleapis_committish, monorepo_folder" > $filename
+filename=${SPRING_GENERATOR_DIR}/scripts/resources/library_list.txt
+echo "# api_shortname, googleapis-folder, distribution_name:version, googleapis_committish, monorepo_folder" > "$filename"
 
 # loop through folders
 count=0
@@ -52,7 +52,7 @@ for d in ./google-cloud-java/*java-*/; do
     continue
   fi
   # checks if library is in the manual modules exclusion list
-  if [[ $(cat ${WORKING_DIR}/scripts/resources/manual_modules_exclusion_list.txt | tail -n+2 | grep $artifact_id | wc -l) -ne 0 ]] ; then
+  if [[ $(cat ${SPRING_GENERATOR_DIR}/scripts/resources/manual_modules_exclusion_list.txt | tail -n+2 | grep $artifact_id | wc -l) -ne 0 ]] ; then
     echo "$artifact_id is already present in manual modules."
     continue
   fi
