@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.trace;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.aot.hint.predicate.RuntimeHintsPredicates.reflection;
+package com.google.cloud.spring.autoconfigure.trace.aot;
 
 import io.micrometer.observation.aop.ObservedAspect;
-import org.junit.jupiter.api.Test;
+import java.lang.reflect.Method;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.springframework.aot.hint.ExecutableMode;
 import org.springframework.aot.hint.RuntimeHints;
+import org.springframework.aot.hint.RuntimeHintsRegistrar;
+import org.springframework.util.ReflectionUtils;
 
-class TraceRuntimeHintsTest {
-	@Test
-	void registerObserveMethod() {
+public class TraceRuntimeHints implements RuntimeHintsRegistrar {
 
-		RuntimeHints hints = new RuntimeHints();
-
-		TraceRuntimeHints registrar = new TraceRuntimeHints();
-		registrar.registerHints(hints, null);
-		assertThat(hints).matches(reflection().onMethod(ObservedAspect.class, "observeMethod"));
-	}
+  @Override
+  public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+    Method method = ReflectionUtils.findMethod(ObservedAspect.class,
+        "observeMethod", ProceedingJoinPoint.class);
+    hints.reflection().registerMethod(method, ExecutableMode.INVOKE);
+  }
 }

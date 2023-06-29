@@ -26,11 +26,9 @@ public class SampleRuntimeHints implements RuntimeHintsRegistrar {
 
   @Override
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-
     hints.reflection().registerTypes(
         Arrays.asList(TypeReference.of(Application.class)),
         hint -> hint.withMembers(
             MemberCategory.INVOKE_PUBLIC_METHODS));
-
   }
 }

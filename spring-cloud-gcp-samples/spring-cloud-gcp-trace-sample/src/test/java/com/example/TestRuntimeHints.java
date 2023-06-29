@@ -28,7 +28,6 @@ public class TestRuntimeHints implements RuntimeHintsRegistrar {
 
   @Override
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-
     hints
         .reflection()
         .registerTypes(
