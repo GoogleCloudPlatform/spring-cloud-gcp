@@ -352,6 +352,9 @@
 	<profiles>
 	<profile>
 		<id>spring-native</id>
+		<modules>
+			<module>spring-cloud-gcp-vision</module>
+		</modules>
 
 		<dependencies>
 			<dependency>
@@ -376,6 +379,7 @@
 						</includes>
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<systemPropertyVariables>
+							<it.vision>true</it.vision>
 						<!--integration tests are not invoked unless the relevant system property is set to true here. -->
 						</systemPropertyVariables>
 					</configuration>
@@ -407,6 +411,7 @@
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>${spring-boot-dependencies.version}</version>
 					<executions>
 						<execution>
 							<id>process-test-aot</id>
