@@ -17,7 +17,6 @@
 
   <properties>
     <sonar.skip>true</sonar.skip>
-    <cloud-spanner-r2dbc.version>1.2.2</cloud-spanner-r2dbc.version>
   </properties>
 
   <dependencyManagement>
@@ -46,7 +45,6 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -68,7 +66,6 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>cloud-spanner-r2dbc</artifactId>
-      <version>${cloud-spanner-r2dbc.version}</version>
     </dependency>
   </dependencies>
 
