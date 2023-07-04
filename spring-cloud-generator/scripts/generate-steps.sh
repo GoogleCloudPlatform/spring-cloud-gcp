@@ -50,17 +50,30 @@ function install_spring_generator(){
 function setup_googleapis(){
   git clone https://github.com/googleapis/googleapis.git
   cd googleapis
-  # Add local_repository rule with name "spring_cloud_generator"
-  buildozer 'new local_repository spring_cloud_generator before gapic_generator_java' WORKSPACE:__pkg__
-  # Point path to local repo
-  buildozer 'set path "../../spring-cloud-generator"' WORKSPACE:spring_cloud_generator
-  # Delete existing maven_install rules
-  buildozer 'delete' WORKSPACE:%maven_install
-  # Add custom maven_install rules
-  perl -pi -e "s{(^_gapic_generator_java_version[^\n]*)}{\$1\n$(cat ../scripts/resources/googleapis_modification_string.txt)}" WORKSPACE
+  modify_workspace_file WORKSPACE "../../spring-cloud-generator" "../scripts/resources/googleapis_modification_string.txt"
   # In repository_rules.bzl, add switch for new spring rule
   JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"\@spring_cloud_generator\/\/:java_gapic_spring.bzl\\\",\n    )"
   perl -0777 -pi -e "s/(rules\[\"java_gapic_library\"\] \= _switch\((.*?)\))/\$1\n$JAVA_SPRING_SWITCH/s" repository_rules.bzl
+}
+
+# Parameterized function that handles modifications to the bazel WORKSPACE file,
+# Used by both generate.sh and generate-showcase.sh
+#
+# $1 - path to WORKSPACE file
+# $2 - path (e.g. relative from WORKSPACE file) to generator, for use in local_repository rule
+# $3 - path (e.g. relative from WORKSPACE file) to googleapis_modification_string.txt
+function modify_workspace_file(){
+  path_to_workspace=$1
+  path_to_generator=$2
+  path_to_modification_string=$3
+  # add local_repository rule with name "spring_cloud_generator"
+  buildozer 'new local_repository spring_cloud_generator before gapic_generator_java' ${path_to_workspace}:__pkg__
+  # point path to local repo
+  buildozer "set path ${path_to_generator}" ${path_to_workspace}:spring_cloud_generator
+  # delete existing maven_install rules
+  buildozer 'delete' ${path_to_workspace}:%maven_install
+  # add custom maven_install rules
+  perl -pi -e "s{(^_gapic_generator_java_version[^\n]*)}{\$1\n$(cat ${path_to_modification_string})}" ${path_to_workspace}
 }
 
 # For individual library, checkout versioned protos folder and set up bazel rules
@@ -68,29 +81,39 @@ function setup_googleapis(){
 # $1 - googleapis commitish
 # $2 - googleapis folder (e.g. google/cloud/accessapproval/v1)
 function prepare_bazel_build(){
-  GOOGLEAPIS_COMMITISH=$1
-  GOOGLEAPIS_FOLDER=$2
+  googleapis_commitish=$1
+  googleapis_folder=$2
 
   # If googleapis folder does not exist, exit
-  if [ ! -d "$(pwd)/${GOOGLEAPIS_FOLDER}" ]
+  if [ ! -d "$(pwd)/${googleapis_folder}" ]
   then
-    echo "Directory $(pwd)/${GOOGLEAPIS_FOLDER} does not exist."
+    echo "Directory $(pwd)/${googleapis_folder} does not exist."
     exit
   fi
 
-  git checkout ${GOOGLEAPIS_COMMITISH} -- ${GOOGLEAPIS_FOLDER}
+  git checkout ${googleapis_commitish} -- ${googleapis_folder}
 
   # Modify BUILD.bazel file for library
   # Additional rule to load
   SPRING_RULE_NAME="    \\\"java_gapic_spring_library\\\","
-  perl -0777 -pi -e "s/(load\((.*?)\"java_gapic_library\",)/\$1\n${SPRING_RULE_NAME}/s" ${GOOGLEAPIS_FOLDER}/BUILD.bazel
+  perl -0777 -pi -e "s/(load\((.*?)\"java_gapic_library\",)/\$1\n${SPRING_RULE_NAME}/s" ${googleapis_folder}/BUILD.bazel
+
+  modify_build_file ${googleapis_folder}/BUILD.bazel
+}
+
+# Parameterized function that handles modifications to the BUILD.bazel file,
+# Used by both generate.sh and generate-showcase.sh
+#
+# $1 - path to BUILD.bazel
+function modify_build_file(){
+  path_to_build_file=$1
 
   # Add java_gapic_spring_library rule, with attrs copied from corresponding java_gapic_library rule
-  GAPIC_RULE_NAME="$(buildozer 'print name' ${GOOGLEAPIS_FOLDER}/BUILD.bazel:%java_gapic_library)"
+  GAPIC_RULE_NAME="$(buildozer 'print name' ${path_to_build_file}:%java_gapic_library)"
   SPRING_RULE_NAME="${GAPIC_RULE_NAME}_spring"
-  GAPIC_RULE_FULL="$(buildozer 'print rule' ${GOOGLEAPIS_FOLDER}/BUILD.bazel:%java_gapic_library)"
+  GAPIC_RULE_FULL="$(buildozer 'print rule' ${path_to_build_file}:%java_gapic_library)"
 
-  buildozer "new java_gapic_spring_library $SPRING_RULE_NAME" ${GOOGLEAPIS_FOLDER}/BUILD.bazel:__pkg__
+  buildozer "new java_gapic_spring_library $SPRING_RULE_NAME" ${path_to_build_file}:__pkg__
 
   # Copy attributes from java_gapic_library rule
   attrs_array=("srcs" "grpc_service_config" "gapic_yaml" "service_yaml" "transport")
@@ -98,10 +121,10 @@ function prepare_bazel_build(){
     do
       echo "$attribute"
       if [[ $GAPIC_RULE_FULL = *"$attribute"* ]] ; then
-              buildozer "copy $attribute $GAPIC_RULE_NAME" ${GOOGLEAPIS_FOLDER}/BUILD.bazel:$SPRING_RULE_NAME
+              buildozer "copy $attribute $GAPIC_RULE_NAME" ${path_to_build_file}:$SPRING_RULE_NAME
           else
               echo "attribute $attribute not found in java_gapic_library rule, skipping"
-          fi
+      fi
     done
 }
 
@@ -116,7 +139,7 @@ function bazel_build_all(){
 #
 # $1 - path-to-pom-file (e.g. path/to/pom.xml)
 # $2 - starter-artifact-id (e.g. google-cloud-accessapproval-spring-starter)
-function add_module_to_pom () {
+function add_module_to_aggregator_pom () {
   xmllint --debug --nsclean --xpath  "//*[local-name()='module']/text()" $1 \
     | sort | uniq | grep -q $2 || module_list_is_empty=1
   found_library_in_pom=$?
@@ -176,13 +199,46 @@ function postprocess_library() {
   unzip -o "$rule_prefix"_java_gapic_spring-spring.srcjar -d "$starter_artifactid"/
   rm -rf "$rule_prefix"_java_gapic_spring-spring.srcjar
 
-  # modifications to pom.xml
-  sed -i 's/{{client-library-group-id}}/'"$client_lib_groupid"'/' "$starter_artifactid"/pom.xml
-  sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' "$starter_artifactid"/pom.xml
-  sed -i 's/{{parent-version}}/'"$parent_version"'/' "$starter_artifactid"/pom.xml
-
-  add_module_to_pom pom.xml $starter_artifactid
+  modify_starter_pom "$starter_artifactid"/pom.xml $client_lib_groupid $client_lib_artifactid $parent_version
+  add_module_to_aggregator_pom pom.xml $starter_artifactid
   add_line_to_readme $monorepo_folder $monorepo_commitish $starter_artifactid
+}
+
+# Parameterized function that handles copying generated code out from srcjar,
+# Used by both generate.sh and generate-showcase.sh
+#
+# $1 - path to srcjar
+# $2 - name of srcjar
+# $3 - path to directory containing all generated modules
+# $4 - name of generated module
+function copy_and_unzip() {
+  path_to_srcjar=$1
+  srcjar_name=$2
+  path_to_destination=$3
+  module_name=$4
+
+  cp ${path_to_srcjar} ${path_to_destination}
+  cd ${path_to_destination}
+  unzip -o ${srcjar_name} -d ${module_name}/
+  rm -rf ${srcjar_name}
+}
+
+# Parameterized function that handles post-processing of generated starter pom.xml,
+# Used by both generate.sh and generate-showcase.sh
+#
+# $1 - path to pom.xml
+# $2 - client_lib_groupid
+# $3 - client_lib_artifactid
+# $4 - parent_version
+function modify_starter_pom() {
+  path_to_pom=$1
+  client_lib_groupid=$2
+  client_lib_artifactid=$3
+  parent_version=$4
+  # modifications to pom.xml
+  sed -i 's/{{client-library-group-id}}/'"$client_lib_groupid"'/' ${path_to_pom}
+  sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' ${path_to_pom}
+  sed -i 's/{{parent-version}}/'"$parent_version"'/' ${path_to_pom}
 }
 
 
@@ -191,5 +247,5 @@ function postprocess_library() {
 # $1 - location to run formatter from (e.g. spring-cloud-previews)
 function run_formatter(){
   cd $1
-  ./../mvnw com.coveo:fmt-maven-plugin:format -Dfmt.skip=false
+  mvn com.coveo:fmt-maven-plugin:format -Dfmt.skip=false
 }

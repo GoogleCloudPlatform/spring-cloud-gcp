@@ -10,6 +10,9 @@ do
     esac
 done
 
+# for reusing bazel setup modifications and post-processing steps
+source ./scripts/generate-steps.sh
+
 # If not set, assume working directory is spring-cloud-generator
 if [[ -z "$SPRING_GENERATOR_DIR" ]]; then
   SPRING_GENERATOR_DIR=`pwd`
@@ -41,7 +44,6 @@ function verify(){
 
 # $1 - target directory for generated starter
 function generate_showcase_spring_starter(){
-  # do something
   SHOWCASE_STARTER_DIR=$1
 
   # Compute the parent project version.
@@ -65,49 +67,21 @@ function generate_showcase_spring_starter(){
   cd sdk-platform-java && mvn clean install -B -ntp -DskipTests -Dclirr.skip -Dcheckstyle.skip
   cd showcase && mvn clean install
 
-  # Modify sdk-platform-java/WORKSPACE adapted from setup-googleapi-rules.sh
-  # Add local_repository() rule for spring_cloud_generator package
-  # Replace local snapshot maven_install() for gapic_generator_java with spring_cloud_generator
-  buildozer 'new local_repository spring_cloud_generator before com_google_api_gax_java' ../WORKSPACE:__pkg__
-  buildozer 'set path ".."' ../WORKSPACE:spring_cloud_generator
-  buildozer 'delete' ../WORKSPACE:%maven_install
-  perl -pi -e "s{(^_gapic_generator_java_version[^\n]*)}{\$1\n$(cat ../../scripts/resources/googleapis_modification_string.txt)}" ../WORKSPACE
-
-  # Modify sdk-platform-java/showcase/BUILD.bazel - adapted from setup-build-rule.sh
+  # Modify sdk-platform-java/WORKSPACE
+  modify_workspace_file "../WORKSPACE" ".." "../../scripts/resources/googleapis_modification_string.txt"
+  # Modify sdk-platform-java/showcase/BUILD.bazel
   # Add load("@spring_cloud_generator//:java_gapic_spring.bzl", "java_gapic_spring_library")
-  # Add java_gapic_spring_library rule, with attrs copied from corresponding java_gapic_library rule
   buildozer 'new_load @spring_cloud_generator//:java_gapic_spring.bzl java_gapic_spring_library' BUILD.bazel:__pkg__
-  GAPIC_RULE_NAME="$(buildozer 'print name' BUILD.bazel:%java_gapic_library)"
-  SPRING_RULE_NAME="${GAPIC_RULE_NAME}_spring"
-  GAPIC_RULE_FULL="$(buildozer 'print rule' BUILD.bazel:%java_gapic_library)"
-
-  buildozer "new java_gapic_spring_library $SPRING_RULE_NAME" BUILD.bazel:__pkg__
-  attrs_array=("srcs" "grpc_service_config" "gapic_yaml" "service_yaml" "transport")
-  for attribute in "${attrs_array[@]}"
-    do
-      echo "$attribute"
-      if [[ $GAPIC_RULE_FULL = *"$attribute"* ]] ; then
-              buildozer "copy $attribute $GAPIC_RULE_NAME" BUILD.bazel:$SPRING_RULE_NAME
-          else
-              echo "attribute $attribute not found in java_gapic_library rule, skipping"
-      fi
-    done
+  # Add java_gapic_spring_library rule, with attrs copied from corresponding java_gapic_library rule
+  modify_build_file "BUILD.bazel"
 
   # Invoke bazel target for generating showcase-spring-starter
   bazelisk build --tool_java_language_version=17 --tool_java_runtime_version=remotejdk_17 //showcase:showcase_java_gapic_spring
 
   # Post-process generated modules
   # Unzip _java_gapic_spring-spring.srcjar and copy spring code to outside
-  mkdir -p ${SPRING_GENERATOR_DIR}/showcase
-  cp ../bazel-bin/showcase/showcase_java_gapic_spring-spring.srcjar ${SPRING_GENERATOR_DIR}/showcase
-  cd ${SPRING_GENERATOR_DIR}/showcase
-  unzip -o showcase_java_gapic_spring-spring.srcjar -d ${SHOWCASE_STARTER_DIR}/
-  rm -rf showcase_java_gapic_spring-spring.srcjar
-
-  # Post-processing for placeholder fields in pom.xml
-  sed -i 's/{{client-library-group-id}}/com.google.cloud/' ${SHOWCASE_STARTER_DIR}/pom.xml
-  sed -i 's/{{client-library-artifact-id}}/gapic-showcase/' ${SHOWCASE_STARTER_DIR}/pom.xml
-  sed -i 's/{{parent-version}}/'"$PROJECT_VERSION"'/' ${SHOWCASE_STARTER_DIR}/pom.xml
+  copy_and_unzip "../bazel-bin/showcase/showcase_java_gapic_spring-spring.srcjar" "showcase_java_gapic_spring-spring.srcjar" "${SPRING_GENERATOR_DIR}/showcase" ${SHOWCASE_STARTER_DIR}
+  modify_starter_pom ${SHOWCASE_STARTER_DIR}/pom.xml "com.google.cloud" "gapic-showcase" $PROJECT_VERSION
   # Add version for showcase
   sed -i '/^ *<artifactId>gapic-showcase<\/artifactId>*/a \ \ \ \ \ \ <version>0.0.1-SNAPSHOT</version>' ${SHOWCASE_STARTER_DIR}/pom.xml
   # Update relative path to parent pom (different repo structure)
@@ -115,8 +89,7 @@ function generate_showcase_spring_starter(){
   sed -i 's/^ *<relativePath>.*/'"$RELATIVE_PATH"'/g' ${SHOWCASE_STARTER_DIR}/pom.xml
 
   # Run google-java-format on generated code
-  cd ${SHOWCASE_STARTER_DIR}
-  ./../../../mvnw com.coveo:fmt-maven-plugin:format -Dfmt.skip=false
+  run_formatter ${SHOWCASE_STARTER_DIR}
 
   # Remove downloaded repos
   rm -rf ${SPRING_GENERATOR_DIR}/sdk-platform-java
