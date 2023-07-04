@@ -1,4 +1,4 @@
-name: Showcase Tests for Spring Auto-Configurations
+name: Generator - Showcase Tests
 
 on:
   push:
