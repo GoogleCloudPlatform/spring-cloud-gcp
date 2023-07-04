@@ -10,21 +10,30 @@
 # - checks the contents of every stater and confirms they have some basic
 # required files such as pom.xml, [Client]AutoConfiguration.java, etc
 #
-WORKING_DIR=`pwd`
-set -xe # TODO remove x
+set -e
 
 function fail() {
   echo "sanity check failed:"
   echo "  $1"
   exit 1
 }
-library_list_path=$WORKING_DIR/resources/library_list.txt
+
+if [[ -z "$SPRING_GENERATOR_DIR" ]]; then
+  echo "No SPRING_GENERATOR_DIR override provided, assuming working directory"
+  SPRING_GENERATOR_DIR=`pwd`
+fi
+
+if [[ -z "$LIBRARY_LIST_PATH" ]]; then
+  echo "No LIBRARY_LIST_PATH override provided, checking under default path"
+  LIBRARY_LIST_PATH=${SPRING_GENERATOR_DIR}/scripts/resources/library_list.txt
+fi
+
 # checks that library list was generated and not empty
-if [[ $(cat $library_list_path | wc -l) -lt 2 ]]; then fail "library list is empty"; fi
+if [[ $(cat $LIBRARY_LIST_PATH | wc -l) -lt 2 ]]; then fail "library list is empty"; fi
 
 # checks that the contents of each entry in the library list is a string with
 # length >= 1
-libraries=$(cat $library_list_path | tail -n+2)
+libraries=$(cat $LIBRARY_LIST_PATH | tail -n+2)
 while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
 
   non_empty_check_items=(
@@ -37,14 +46,14 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
   for column in "${non_empty_check_items[@]}"; do
     if [[ -z $column ]]; then
       echo "$library_name, $googleapis_location, $coordinates_version, $googleapis_commitish, $monorepo_folder"
-      fail "the library list entry '$library_name' has an empty required cell - see $library_list_path"
+      fail "the library list entry '$library_name' has an empty required cell - see $LIBRARY_LIST_PATH"
     fi
   done
-done <<< $libraries
+done <<< "$libraries"
 
-starters=$(find ../../spring-cloud-previews -maxdepth 1 -name "google-*" -type d -printf "%p\n")
+starters=$(find ${SPRING_GENERATOR_DIR}/../spring-cloud-previews -maxdepth 1 -name "google-*" -type d -printf "%p\n")
 # confirms library_list and generated folders have the same length
-lib_list_n_entries=$(cat $library_list_path | tail -n+2 | wc -l)
+lib_list_n_entries=$(cat $LIBRARY_LIST_PATH | tail -n+2 | wc -l)
 gen_folders_n_entries=$(printf "$starters" | cut -d' ' -f1- | wc -l)
 if [[ $lib_list_n_entries -ne $gen_folders_n_entries ]]; then
   fail "entries in library list and generated folders differ"

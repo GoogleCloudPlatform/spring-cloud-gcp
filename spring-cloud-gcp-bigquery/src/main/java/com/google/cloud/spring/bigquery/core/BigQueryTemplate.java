@@ -44,7 +44,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 import org.json.JSONArray;
@@ -247,39 +249,34 @@ public class BigQueryTemplate implements BigQueryOperations {
   public CompletableFuture<WriteApiResponse> writeJsonStream(
       String tableName, InputStream jsonInputStream) {
 
-    CompletableFuture<WriteApiResponse> writeApiFutureResponse =
-        new CompletableFuture<>();
-
-    Thread asyncTask =
-        new Thread(
-            () -> {
-              try {
-                WriteApiResponse apiResponse = getWriteApiResponse(tableName, jsonInputStream);
-                writeApiFutureResponse.complete(apiResponse);
-              } catch (DescriptorValidationException | IOException e) {
-                writeApiFutureResponse.completeExceptionally(e);
-                logger.warn(String.format("Error: %s %n", e.getMessage()), e);
-              } catch (Exception e) {
-                writeApiFutureResponse.completeExceptionally(e);
-                // Restore interrupted state in case of an InterruptedException
-                Thread.currentThread().interrupt();
-              }
-            });
-    asyncTask
-        .start(); // run the thread async so that we can return the writeApiFutureResponse. This
-    // thread can be run in the ExecutorService when it has been wired-in
-
+    CompletableFuture<WriteApiResponse> writeApiFutureResponse = new CompletableFuture<>();
+    Runnable asyncTask =
+        () -> {
+          try {
+            WriteApiResponse apiResponse = getWriteApiResponse(tableName, jsonInputStream);
+            writeApiFutureResponse.complete(apiResponse);
+          } catch (Exception e) {
+            writeApiFutureResponse.completeExceptionally(e);
+            // Restore interrupted state in case of an InterruptedException
+            Thread.currentThread().interrupt();
+            logger.warn("Unable to get write API response.", e);
+          }
+        };
+    ScheduledFuture<?> asyncTaskScheduledFuture =
+        taskScheduler.schedule(asyncTask, Instant.now()); // Run this task
     // register success and failure callback
     writeApiFutureResponse.whenComplete(
         (writeApiResponse, exception) -> {
           if (exception != null) {
-            asyncTask.interrupt(); // interrupt the thread as the developer might have cancelled the
-            // Future.
-            // This can be replaced with interrupting the ExecutorService when it has been wired-in
-            logger.info("asyncTask interrupted");
-            return;
+            logger.error("asyncTask interrupted", exception);
+            if (exception instanceof CancellationException) { // user have cancelled it
+              asyncTaskScheduledFuture.cancel(true);
+            }
+          } else if (writeApiResponse != null && !writeApiResponse.isSuccessful()) {
+            logger.warn("Write operation failed");
+          } else {
+            logger.info("Data successfully written");
           }
-          logger.info("Data successfully written");
         });
 
     return writeApiFutureResponse;
