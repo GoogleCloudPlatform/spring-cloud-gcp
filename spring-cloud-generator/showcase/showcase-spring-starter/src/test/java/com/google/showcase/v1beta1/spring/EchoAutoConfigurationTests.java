@@ -192,7 +192,8 @@ class EchoAutoConfigurationTests {
     when(mockTransportChannelProvider.getTransportName()).thenReturn("grpc");
     when(mockTransportChannelProvider.getTransportChannel()).thenReturn(mockTransportChannel);
     when(mockTransportChannel.getEmptyCallContext()).thenReturn(mockApiCallContext);
-    // Mock no-ops for ApiCallContext since this test only intends to verify override of TransportChannelProvider bean
+    // Mock no-ops for ApiCallContext since this test only intends to verify override of
+    // TransportChannelProvider bean
     when(mockApiCallContext.withCredentials(any())).thenReturn(mockApiCallContext);
     when(mockApiCallContext.withTransportChannel(any())).thenReturn(mockApiCallContext);
     when(mockApiCallContext.withStreamWaitTimeout(any())).thenReturn(mockApiCallContext);
