@@ -34,6 +34,7 @@
 		<guava.version>31.1-jre</guava.version>
 		<r2dbc-mysql-driver.version>0.9.3</r2dbc-mysql-driver.version>
 		<r2dbc-postgres-driver.version>0.8.13.RELEASE</r2dbc-postgres-driver.version>
+		<cloud-spanner-r2dbc.version>1.2.2</cloud-spanner-r2dbc.version>
 	</properties>
 
 	<dependencyManagement>
@@ -136,6 +137,11 @@
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-kms</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>cloud-spanner-r2dbc</artifactId>
+				<version>${cloud-spanner-r2dbc.version}</version>
 			</dependency>
 
 			<!--Starters-->
