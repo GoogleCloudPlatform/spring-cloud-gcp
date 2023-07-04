@@ -18,7 +18,7 @@ Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framew
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-data-r2dbc</artifactId>
-        <version>${r2dbc-version}</version>
+        <version>${spring-boot-dependencies.version}</version>
     </dependency>
 
     <!--
@@ -32,6 +32,15 @@ Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framew
 </dependencies>
 ----
 
+Gradle coordinates:
+
+[source,subs="normal"]
+----
+dependencies {
+    implementation("com.google.cloud:spring-cloud-spanner-spring-data-r2dbc")
+    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc:${spring-boot-dependencies.version}")
+}
+----
 === Overview
 
 Spring Data R2DBC allows you to use the convenient features of Spring Data in a reactive application.
@@ -47,4 +56,4 @@ See the https://docs.spring.io/spring-data/r2dbc/docs/1.0.x/reference/html/#refe
 
 === Sample Application
 
-We provide a https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-spanner-r2dbc-samples[sample application] which demonstrates using the Spring Data R2DBC framework with Cloud Spanner in https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html[Spring WebFlux].
+We provide a https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-spanner-r2dbc-samples[sample application] which demonstrates using the Spring Data R2DBC framework with Cloud Spanner in https://docs.spring.io/spring-framework/reference/web/webflux.html[Spring WebFlux].
