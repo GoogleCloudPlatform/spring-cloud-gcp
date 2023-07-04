@@ -52,9 +52,6 @@ function generate_showcase_spring_starter(){
   cd ${SPRING_GENERATOR_DIR}
   GAPIC_GENERATOR_JAVA_VERSION=$(./../mvnw help:evaluate -Dexpression=gapic-generator-java-bom.version -q -DforceStdout)
 
-  # Install local snapshot jar for spring generator
-  cd ${SPRING_GENERATOR_DIR} && mvn install
-
   # Clone sdk-platform-java (with showcase library)
   git clone https://github.com/googleapis/sdk-platform-java.git
   git checkout "v${GAPIC_GENERATOR_JAVA_VERSION}"

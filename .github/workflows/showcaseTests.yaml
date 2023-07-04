@@ -23,8 +23,9 @@ jobs:
           go install github.com/bazelbuild/buildtools/buildozer@latest
           export PATH=$PATH:$(go env GOPATH)/bin
           buildozer --version
-      - name: Mvn install
-        id: mvn-install
+      - name: Install spring-cloud-gcp
+        # Installs spring-cloud-gcp from root,
+        # including spring-cloud-generator module
         run: |
           ./mvnw \
             --batch-mode \
