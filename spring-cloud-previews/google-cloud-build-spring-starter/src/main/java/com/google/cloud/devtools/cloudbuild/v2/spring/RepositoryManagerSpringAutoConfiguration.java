@@ -204,11 +204,6 @@ public class RepositoryManagerSpringAutoConfiguration {
           .fetchLinkableRepositoriesSettings()
           .setRetrySettings(fetchLinkableRepositoriesRetrySettings);
 
-      RetrySettings fetchGitRefsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.fetchGitRefsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.fetchGitRefsSettings().setRetrySettings(fetchGitRefsRetrySettings);
-
       RetrySettings setIamPolicyRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), serviceRetry);
@@ -314,16 +309,6 @@ public class RepositoryManagerSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for fetchLinkableRepositories from properties.");
-      }
-    }
-    Retry fetchGitRefsRetry = clientProperties.getFetchGitRefsRetry();
-    if (fetchGitRefsRetry != null) {
-      RetrySettings fetchGitRefsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.fetchGitRefsSettings().getRetrySettings(), fetchGitRefsRetry);
-      clientSettingsBuilder.fetchGitRefsSettings().setRetrySettings(fetchGitRefsRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for fetchGitRefs from properties.");
       }
     }
     Retry setIamPolicyRetry = clientProperties.getSetIamPolicyRetry();
