@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.integration.annotation.InboundChannelAdapter;
 import org.springframework.integration.annotation.Poller;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -43,7 +42,6 @@ import org.springframework.messaging.MessageHandler;
 
 /** Storage Spring Integration sample app. */
 @SpringBootApplication
-@ImportRuntimeHints(MyRuntimeHints.class)
 public class GcsSpringIntegrationApplication {
 
   @Value("${gcs-read-bucket}")
