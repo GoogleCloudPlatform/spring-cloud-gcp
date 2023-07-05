@@ -8,8 +8,8 @@
     <artifactId>spring-cloud-gcp</artifactId>
     <groupId>com.google.cloud</groupId>
     <version>3.5.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
-    <relativePath>../pom.xml</relativePath>
   </parent>
+  <groupId>com.google.cloud</groupId>
 
   <name>Spring Framework on Google Cloud Module - Cloud Spanner R2DBC Spring Data Dialect</name>
   <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
@@ -18,6 +18,7 @@
     <spring-data-r2dbc.version>1.5.13</spring-data-r2dbc.version>
     <spring-test.version>5.3.28</spring-test.version>
     <cloud-spanner-r2dbc.version>1.2.2</cloud-spanner-r2dbc.version>
+    <main.basedir>${basedir}/../..</main.basedir>
   </properties>
 
   <dependencies>
