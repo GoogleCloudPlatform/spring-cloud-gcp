@@ -13,6 +13,11 @@ do
 done
 echo "Monorepo tag: $commitish";
 
+if [[ -z "$commitish" ]]; then
+  echo "Missing google-cloud-java commitish to checkout"
+  exit 1
+fi
+
 # download the monorepo, need to loop through metadata there
 git clone https://github.com/googleapis/google-cloud-java.git
 
