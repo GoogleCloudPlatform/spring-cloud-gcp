@@ -33,7 +33,7 @@ function compute_monorepo_version() {
 #
 # $1 - Monorepo version tag (or committish)
 function generate_libraries_list(){
-  bash scripts/generate-library-list.sh $1
+  bash scripts/generate-library-list.sh -c $1
 }
 
 # When bazel prepare, build, or post-processing step fails, stores the captured stdout and stderr to a file
