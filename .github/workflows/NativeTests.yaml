@@ -38,11 +38,6 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: spring-cloud-gcp-ci-native
-      - name: Install pubsub-emulator
-        if: ${{ matrix.it == 'pubsub-emulator' }}
-        run: |
-          gcloud components install pubsub-emulator beta && \
-            gcloud components update
       - name: Maven go offline
         id: mvn-offline
         if: steps.mvn-cache.outputs.cache-hit != 'true'
