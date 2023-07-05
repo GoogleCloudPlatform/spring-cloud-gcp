@@ -22,6 +22,7 @@ import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Options.QueryOption;
 import com.google.cloud.spanner.Options.ReadOption;
+import com.google.cloud.spanner.Options.UpdateOption;
 import com.google.cloud.spanner.ReadContext;
 import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.ResultSet;
@@ -154,6 +155,21 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
               throw new SpannerDataException("Cannot execute partitioned DML in a transaction.");
             },
             () -> this.databaseClientProvider.get().executePartitionedUpdate(statement));
+    maybeEmitEvent(new AfterExecuteDmlEvent(statement, rowsAffected));
+    return rowsAffected;
+  }
+
+  @Override
+  public long executePartitionedDmlStatement(Statement statement, UpdateOption... options) {
+    Assert.notNull(statement, "A non-null statement is required.");
+    Assert.notNull(options, "A non-null UpdateOption is required.");
+    maybeEmitEvent(new BeforeExecuteDmlEvent(statement));
+    long rowsAffected =
+        doWithOrWithoutTransactionContext(
+            x -> {
+              throw new SpannerDataException("Cannot execute partitioned DML in a transaction.");
+            },
+            () -> this.databaseClientProvider.get().executePartitionedUpdate(statement, options));
     maybeEmitEvent(new AfterExecuteDmlEvent(statement, rowsAffected));
     return rowsAffected;
   }
