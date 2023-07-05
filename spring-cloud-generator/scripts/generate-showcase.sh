@@ -52,9 +52,9 @@ function generate_showcase_spring_starter(){
 
   # Compute the parent project version.
   cd ${SPRING_ROOT_DIR}
-  PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+  PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
   cd ${SPRING_GENERATOR_DIR}
-  GAPIC_GENERATOR_JAVA_VERSION=$(./../mvnw help:evaluate -Dexpression=gapic-generator-java-bom.version -q -DforceStdout)
+  GAPIC_GENERATOR_JAVA_VERSION=$(mvn help:evaluate -Dexpression=gapic-generator-java-bom.version -q -DforceStdout)
 
   # Clone sdk-platform-java (with showcase library)
   git clone https://github.com/googleapis/sdk-platform-java.git
@@ -63,6 +63,7 @@ function generate_showcase_spring_starter(){
   # Install showcase client libraries locally
   cd sdk-platform-java && mvn clean install -B -ntp -DskipTests -Dclirr.skip -Dcheckstyle.skip
   cd showcase && mvn clean install
+  GAPIC_SHOWCASE_CLIENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
   # Alternative: if showcase client library is available on Maven Central,
   # Instead of downloading sdk-platform-java/showcase (for client library, and generation setup),
@@ -83,7 +84,7 @@ function generate_showcase_spring_starter(){
 
   # Additional pom.xml modifications for showcase starter
   # Add explicit gapic-showcase version
-  sed -i '/^ *<artifactId>gapic-showcase<\/artifactId>*/a \ \ \ \ \ \ <version>0.0.1-SNAPSHOT</version>' ${SHOWCASE_STARTER_DIR}/pom.xml
+  sed -i '/^ *<artifactId>gapic-showcase<\/artifactId>*/a \ \ \ \ \ \ <version>'"$GAPIC_SHOWCASE_CLIENT_VERSION"'</version>' ${SHOWCASE_STARTER_DIR}/pom.xml
   # Update relative path to parent pom (different repo structure from starters)
   RELATIVE_PATH="\ \ \ \ <relativePath>..\/..\/..\/spring-cloud-gcp-starters\/pom.xml<\/relativePath>"
   sed -i 's/^ *<relativePath>.*/'"$RELATIVE_PATH"'/g' ${SHOWCASE_STARTER_DIR}/pom.xml
