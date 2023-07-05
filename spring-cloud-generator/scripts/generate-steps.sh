@@ -1,9 +1,13 @@
 #!/bin/bash
 
+# This script contains helper functions for the generation process (generate.sh),
+# including setup and post-processing steps
+# Some helpers are also used by the generation process for showcase testing (showcase.sh)
+
 # Cleans the spring-cloud-previews folder and replaces its contents with an
 # empty setup (i.e. empty readme, no libraries, pom without modules)
+# Assumes current working directory is spring-cloud-generator
 function reset_previews_folder() {
-  cd ${SPRING_GENERATOR_DIR}
   rm -rdf ../spring-cloud-previews
   cp -r spring-cloud-previews-template ../
   mv ../spring-cloud-previews-template ../spring-cloud-previews
@@ -25,32 +29,28 @@ function compute_monorepo_version() {
 # Generate list of in-scope libraries to use (as static data source to generate modules from)
 # Uses heuristic approach to parse googleapis commitish and other metadata from google-cloud-java
 # See generate-library-list.sh and https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1390 for details
+# Assumes current working directory is spring-cloud-generator
 #
 # $1 - Monorepo version tag (or committish)
 function generate_libraries_list(){
-  cd ${SPRING_GENERATOR_DIR}
   bash scripts/generate-library-list.sh $1
 }
 
 # When bazel prepare, build, or post-processing step fails, stores the captured stdout and stderr to a file
 # with the name of the failed step (and client library name, if applicable)
 #
-# $1 - failed step identifier (e.g. bazel_build_all, bazel_prepare_accessapproval)
+# $1 - parent directory under which to create failed-library-generations directory
+# $2 - failed step identifier (e.g. bazel_build_all, bazel_prepare_accessapproval)
 function save_error_info () {
-  mkdir -p ${SPRING_GENERATOR_DIR}/failed-library-generations
-  cp tmp-output ${SPRING_GENERATOR_DIR}/failed-library-generations/$1
-}
-
-# Install local snapshot jar for spring generator
-function install_spring_generator(){
-  cd ${SPRING_GENERATOR_DIR} && mvn clean install
+  mkdir -p $1/failed-library-generations
+  cp tmp-output $1/failed-library-generations/$2
 }
 
 # Clone googleapis repository, and makes bazel workspace modifications required for generation
 function setup_googleapis(){
   git clone https://github.com/googleapis/googleapis.git
   cd googleapis
-  modify_workspace_file WORKSPACE "../../spring-cloud-generator" "../scripts/resources/googleapis_modification_string.txt"
+  modify_workspace_file "WORKSPACE" "../../spring-cloud-generator" "../scripts/resources/googleapis_modification_string.txt"
   # In repository_rules.bzl, add switch for new spring rule
   JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"\@spring_cloud_generator\/\/:java_gapic_spring.bzl\\\",\n    )"
   perl -0777 -pi -e "s/(rules\[\"java_gapic_library\"\] \= _switch\((.*?)\))/\$1\n$JAVA_SPRING_SWITCH/s" repository_rules.bzl
@@ -169,6 +169,7 @@ function add_line_to_readme() {
 #    Substitutes values into generated starter pom.xml
 #    Add module to aggregator pom (add_module_to_pom)
 #    Add row to README table (add_line_to_readme)
+# Assumes current working directory is spring-cloud-generator
 #
 # $1 - client library artifact id (e.g. google-cloud-accessapproval)
 # $2 - client library group id (e.g. com.google.cloud)
@@ -187,8 +188,6 @@ function postprocess_library() {
   monorepo_commitish=$7
   starter_artifactid="$client_lib_artifactid-spring-starter"
 
-  cd ${SPRING_GENERATOR_DIR}
-
   # sometimes the rule name doesnt have the same prefix as $client_lib_name
   # we use this perl command capture the correct prefix
   rule_prefix=$(cat googleapis/$googleapis_folder/BUILD.bazel | grep _java_gapic_spring | perl -lane 'print m/"(.*)_java_gapic_spring/')
@@ -204,7 +203,8 @@ function postprocess_library() {
   add_line_to_readme $monorepo_folder $monorepo_commitish $starter_artifactid
 }
 
-# Parameterized function that handles copying generated code out from srcjar,
+# Parameterized function that unzips _java_gapic_spring-spring.srcjar
+# and copies generated spring code to a module outside
 # Used by both generate.sh and generate-showcase.sh
 #
 # $1 - path to srcjar

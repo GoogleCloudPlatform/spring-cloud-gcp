@@ -10,7 +10,7 @@ do
     esac
 done
 
-# for reusing bazel setup modifications and post-processing steps
+# For reusing bazel setup modifications and post-processing steps
 source ./scripts/generate-steps.sh
 
 # If not set, assume working directory is spring-cloud-generator
@@ -21,6 +21,8 @@ SPRING_ROOT_DIR=${SPRING_GENERATOR_DIR}/..
 SHOWCASE_STARTER_OLD_DIR=${SPRING_GENERATOR_DIR}/showcase/showcase-spring-starter
 SHOWCASE_STARTER_NEW_DIR=${SPRING_GENERATOR_DIR}/showcase/showcase-spring-starter-generated
 
+# Verifies newly generated showcase-spring-starter against goldens
+#
 # $1 - directory containing existing showcase-spring-starter (golden)
 # $2 - directory containing newly generated showcase-spring-starter
 function verify(){
@@ -42,6 +44,8 @@ function verify(){
   fi
 }
 
+# Setup, generation, and post-processing steps for showcase-spring-starter
+#
 # $1 - target directory for generated starter
 function generate_showcase_spring_starter(){
   SHOWCASE_STARTER_DIR=$1
@@ -56,32 +60,31 @@ function generate_showcase_spring_starter(){
   git clone https://github.com/googleapis/sdk-platform-java.git
   git checkout "v${GAPIC_GENERATOR_JAVA_VERSION}"
 
-  # Alternative considered: if showcase client library is available on Maven Central,
-  # Instead of downloading sdk-platform-java/showcase (for client library, and generation setup),
-  # Can instead download googleapis (for generation setup) and gapic-showcase (for protos)
-
   # Install showcase client libraries locally
   cd sdk-platform-java && mvn clean install -B -ntp -DskipTests -Dclirr.skip -Dcheckstyle.skip
   cd showcase && mvn clean install
 
+  # Alternative: if showcase client library is available on Maven Central,
+  # Instead of downloading sdk-platform-java/showcase (for client library, and generation setup),
+  # Can instead download googleapis (for generation setup) and gapic-showcase (for protos)
+
   # Modify sdk-platform-java/WORKSPACE
   modify_workspace_file "../WORKSPACE" ".." "../../scripts/resources/googleapis_modification_string.txt"
   # Modify sdk-platform-java/showcase/BUILD.bazel
-  # Add load("@spring_cloud_generator//:java_gapic_spring.bzl", "java_gapic_spring_library")
   buildozer 'new_load @spring_cloud_generator//:java_gapic_spring.bzl java_gapic_spring_library' BUILD.bazel:__pkg__
-  # Add java_gapic_spring_library rule, with attrs copied from corresponding java_gapic_library rule
   modify_build_file "BUILD.bazel"
 
   # Invoke bazel target for generating showcase-spring-starter
   bazelisk build --tool_java_language_version=17 --tool_java_runtime_version=remotejdk_17 //showcase:showcase_java_gapic_spring
 
   # Post-process generated modules
-  # Unzip _java_gapic_spring-spring.srcjar and copy spring code to outside
   copy_and_unzip "../bazel-bin/showcase/showcase_java_gapic_spring-spring.srcjar" "showcase_java_gapic_spring-spring.srcjar" "${SPRING_GENERATOR_DIR}/showcase" ${SHOWCASE_STARTER_DIR}
   modify_starter_pom ${SHOWCASE_STARTER_DIR}/pom.xml "com.google.cloud" "gapic-showcase" $PROJECT_VERSION
-  # Add version for showcase
+
+  # Additional pom.xml modifications for showcase starter
+  # Add explicit gapic-showcase version
   sed -i '/^ *<artifactId>gapic-showcase<\/artifactId>*/a \ \ \ \ \ \ <version>0.0.1-SNAPSHOT</version>' ${SHOWCASE_STARTER_DIR}/pom.xml
-  # Update relative path to parent pom (different repo structure)
+  # Update relative path to parent pom (different repo structure from starters)
   RELATIVE_PATH="\ \ \ \ <relativePath>..\/..\/..\/spring-cloud-gcp-starters\/pom.xml<\/relativePath>"
   sed -i 's/^ *<relativePath>.*/'"$RELATIVE_PATH"'/g' ${SHOWCASE_STARTER_DIR}/pom.xml
 
