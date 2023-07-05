@@ -100,7 +100,7 @@ jobs:
         working-directory: ./spring-cloud-gcp-samples
       - name: Aggregate Report
         run: |
-          ./mvnw \
+          ../mvnw \
             --batch-mode \
             --define aggregate=true \
             --activate-profiles native-sample-config \
