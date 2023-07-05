@@ -8,7 +8,6 @@
     <artifactId>spring-cloud-gcp-samples</artifactId>
     <groupId>com.google.cloud</groupId>
     <version>3.5.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
-    <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -45,6 +44,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>

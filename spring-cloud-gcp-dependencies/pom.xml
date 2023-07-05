@@ -138,11 +138,6 @@
 				<artifactId>spring-cloud-gcp-kms</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>com.google.cloud</groupId>
-				<artifactId>cloud-spanner-r2dbc</artifactId>
-				<version>${cloud-spanner-r2dbc.version}</version>
-			</dependency>
 
 			<!--Starters-->
 			<dependency>
@@ -255,11 +250,6 @@
 				<artifactId>spring-cloud-gcp-starter-kms</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>com.google.cloud</groupId>
-				<artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
-				<version>${project.version}</version>
-			</dependency>
 
 			<!-- spring-cloud-gcp-starter-sql -->
 			<dependency>
@@ -306,6 +296,12 @@
 				<groupId>io.r2dbc</groupId>
 				<artifactId>r2dbc-postgresql</artifactId>
 				<version>${r2dbc-postgres-driver.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>cloud-spanner-r2dbc</artifactId>
+				<version>${cloud-spanner-r2dbc.version}</version>
 			</dependency>
 
 			<!--Google Cloud Libraries BOM -->
