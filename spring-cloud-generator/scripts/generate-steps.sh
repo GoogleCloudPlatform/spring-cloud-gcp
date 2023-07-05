@@ -2,7 +2,7 @@
 
 # This script contains helper functions for the generation process (generate.sh),
 # including setup and post-processing steps
-# Some helpers are also used by the generation process for showcase testing (showcase.sh)
+# Some helpers are also used by the generation process for showcase testing (generate-showcase.sh)
 
 # Cleans the spring-cloud-previews folder and replaces its contents with an
 # empty setup (i.e. empty readme, no libraries, pom without modules)
