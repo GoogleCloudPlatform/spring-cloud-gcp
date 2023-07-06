@@ -11,7 +11,7 @@
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-dependencies</artifactId>
-	<version>3.5.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>3.5.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 
 	<name>Spring Framework on Google Cloud Dependencies</name>
 	<description>Spring Framework on Google Cloud Dependencies</description>
@@ -29,7 +29,7 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.17.0</gcp-libraries-bom.version>
+		<gcp-libraries-bom.version>26.18.0</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.12.0</cloud-sql-socket-factory.version>
 		<guava.version>31.1-jre</guava.version>
 		<r2dbc-mysql-driver.version>0.9.3</r2dbc-mysql-driver.version>
