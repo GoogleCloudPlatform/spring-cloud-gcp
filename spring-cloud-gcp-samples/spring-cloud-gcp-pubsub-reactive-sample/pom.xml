@@ -75,16 +75,6 @@
 	<build>
 		<plugins>
 			<plugin>
-			<groupId>org.graalvm.buildtools</groupId>
-			<artifactId>native-maven-plugin</artifactId>
-			<configuration>
-				<buildArgs>
-					<arg>-H:+RunReachabilityHandlersConcurrently</arg>
-				</buildArgs>
-			</configuration>
-		</plugin>
-
-			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
 					<skip>true</skip>
