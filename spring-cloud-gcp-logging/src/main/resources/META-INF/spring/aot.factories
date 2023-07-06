@@ -1,0 +1,2 @@
+org.springframework.aot.hint.RuntimeHintsRegistrar=\
+	com.google.cloud.spring.logging.aot.LoggingRuntimeHints
