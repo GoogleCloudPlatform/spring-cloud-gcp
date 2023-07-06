@@ -22,6 +22,7 @@ Requirements (to run commands below):
 * [buildozer](https://github.com/bazelbuild/buildtools/tree/master/buildozer)
 * [jq](https://jqlang.github.io/jq/download/)
 * [xmllint](https://gnome.pages.gitlab.gnome.org/libxml2/xmllint.html)
+* For MacOS, set up [gnu-sed](https://formulae.brew.sh/formula/gnu-sed) to use as `sed`
 
 To execute the generation process locally, run (from the `spring-cloud-generator` directory):
 ```
@@ -38,6 +39,7 @@ Requirements (to run commands below):
 * Java 17
 * [bazelisk](https://github.com/bazelbuild/bazelisk)
 * [buildozer](https://github.com/bazelbuild/buildtools/tree/master/buildozer)
+* For MacOS, set up [gnu-sed](https://formulae.brew.sh/formula/gnu-sed) to use as `sed`
 
 To execute showcase golden tests locally, run (from the `spring-cloud-generator` directory):
 ```
