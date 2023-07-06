@@ -33,7 +33,8 @@ function compute_monorepo_version() {
 #
 # $1 - Monorepo version tag (or committish)
 function generate_libraries_list(){
-  bash scripts/generate-library-list.sh -c $1
+  monorepo_commitish=$1
+  bash scripts/generate-library-list.sh -c $monorepo_commitish
 }
 
 # When bazel prepare, build, or post-processing step fails, stores the captured stdout and stderr to a file
@@ -42,8 +43,10 @@ function generate_libraries_list(){
 # $1 - parent directory under which to create failed-library-generations directory
 # $2 - failed step identifier (e.g. bazel_build_all, bazel_prepare_accessapproval)
 function save_error_info () {
-  mkdir -p $1/failed-library-generations
-  cp tmp-output $1/failed-library-generations/$2
+  parent_directory=$1
+  step_identifier=$2
+  mkdir -p ${parent_directory}/failed-library-generations
+  cp tmp-output ${parent_directory}/failed-library-generations/${step_identifier}
 }
 
 # Clone googleapis repository, and makes bazel workspace modifications required for generation
@@ -139,15 +142,17 @@ function bazel_build_all(){
 #
 # $1 - path-to-pom-file (e.g. path/to/pom.xml)
 # $2 - starter-artifact-id (e.g. google-cloud-accessapproval-spring-starter)
-function add_module_to_aggregator_pom () {
-  xmllint --debug --nsclean --xpath  "//*[local-name()='module']/text()" $1 \
-    | sort | uniq | grep -q $2 || module_list_is_empty=1
+function add_module_to_aggregator_pom() {
+  path_to_pom=$1
+  starter_artifactid=$2
+  xmllint --debug --nsclean --xpath  "//*[local-name()='module']/text()" ${path_to_pom} \
+    | sort | uniq | grep -q ${starter_artifactid} || module_list_is_empty=1
   found_library_in_pom=$?
   if [[ found_library_in_pom -eq 0 ]] && [[ $module_list_is_empty -ne 1 ]]; then
-    echo "module $2 already found in $1 modules"
+    echo "module ${starter_artifactid} already found in ${path_to_pom} modules"
   else
-    echo "adding module $2 to pom"
-    sed -i "/^[[:space:]]*<modules>/a\ \ \ \ <module>"$2"</module>" $1
+    echo "adding module ${starter_artifactid} to pom"
+    sed -i "/^[[:space:]]*<modules>/a\ \ \ \ <module>"${starter_artifactid}"</module>" ${path_to_pom}
   fi
 }
 
@@ -158,10 +163,13 @@ function add_module_to_aggregator_pom () {
 # $2 - monorepo-commitish (e.g. v1.13.0)
 # $3 - starter-artifact-id (e.g. google-cloud-accessapproval-spring-starter)
 function add_line_to_readme() {
-    # check for existence and write line to spring-cloud-previews/README.md
-    # format |client library name|starter maven artifact|
-    echo -e "|[$1](https://github.com/googleapis/google-cloud-java/blob/$2/$1/README.md)|com.google.cloud:$3|" >> README.md
-    {(grep -vw "|.*:.*|" README.md);(grep "|.*:.*|" README.md| sort | uniq)} > tmpfile && mv tmpfile README.md
+  monorepo_folder=$1
+  monorepo_commitish=$2
+  starter_artifactid=$3
+  # check for existence and write line to spring-cloud-previews/README.md
+  # format |client library name|starter maven artifact|
+  echo -e "|[${monorepo_folder}](https://github.com/googleapis/google-cloud-java/blob/${monorepo_commitish}/${monorepo_folder}/README.md)|com.google.cloud:${starter_artifactid}|" >> README.md
+  {(grep -vw "|.*:.*|" README.md);(grep "|.*:.*|" README.md| sort | uniq)} > tmpfile && mv tmpfile README.md
 }
 
 # Perform post-processing steps for one library's generated starter module:
@@ -186,7 +194,7 @@ function postprocess_library() {
   monorepo_folder=$5
   googleapis_commitish=$6
   monorepo_commitish=$7
-  starter_artifactid="$client_lib_artifactid-spring-starter"
+  starter_artifactid="${client_lib_artifactid}-spring-starter"
 
   # sometimes the rule name doesnt have the same prefix as $client_lib_name
   # we use this perl command capture the correct prefix
@@ -241,11 +249,11 @@ function modify_starter_pom() {
   sed -i 's/{{parent-version}}/'"$parent_version"'/' ${path_to_pom}
 }
 
-
 # Run auto-formatter on generated code
 #
 # $1 - location to run formatter from (e.g. spring-cloud-previews)
 function run_formatter(){
-  cd $1
+  from_directory=$1
+  cd $from_directory
   mvn com.coveo:fmt-maven-plugin:format -Dfmt.skip=false
 }
