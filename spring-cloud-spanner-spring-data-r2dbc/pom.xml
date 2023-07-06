@@ -5,31 +5,14 @@
   <parent>
     <artifactId>spring-cloud-gcp</artifactId>
     <groupId>com.google.cloud</groupId>
-    <version>3.5.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+    <version>3.5.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <name>Spring Framework on Google Cloud Module - Cloud Spanner R2DBC Spring Data Dialect</name>
   <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
 
-  <dependencyManagement>
-    <dependencies>
-           <dependency>
-        <groupId>com.google.cloud</groupId>
-        <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <properties>
-    <spring-data-r2dbc.version>1.5.13</spring-data-r2dbc.version>
-    <spring-test.version>5.3.28</spring-test.version>
-  </properties>
-
-  <dependencies>
+   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>cloud-spanner-r2dbc</artifactId>
@@ -38,14 +21,6 @@
     <dependency>
       <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-r2dbc</artifactId>
-      <version>${spring-data-r2dbc.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <version>${spring-test.version}</version>
-      <scope>test</scope>
     </dependency>
 
     <dependency>

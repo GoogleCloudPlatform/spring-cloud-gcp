@@ -13,23 +13,10 @@ Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framew
 
 [source,xml]
 ----
-<dependencies>
-    <!-- The starter dependency for the Spring Data R2DBC framework. -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-r2dbc</artifactId>
-        <version>${spring-boot-dependencies.version}</version>
-    </dependency>
-
-    <!--
-        Dialect for Spring Data R2DBC Spanner; This includes the
-        Cloud Spanner R2DBC driver as a transitive dependency.
-    -->
     <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
     </dependency>
-</dependencies>
 ----
 
 Gradle coordinates:
@@ -38,7 +25,6 @@ Gradle coordinates:
 ----
 dependencies {
     implementation("com.google.cloud:spring-cloud-spanner-spring-data-r2dbc")
-    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc:${spring-boot-dependencies.version}")
 }
 ----
 === Overview
@@ -52,7 +38,7 @@ These features include:
 * Support for Reactive Transactions.
 * Schema and data initialization utilities.
 
-See the https://docs.spring.io/spring-data/r2dbc/docs/1.0.x/reference/html/#reference[Spring Data R2DBC documentation] for more information on how to use Spring Data R2DBC.
+See the https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/[Spring Data R2DBC documentation] for more information on how to use Spring Data R2DBC.
 
 === Sample Application
 
