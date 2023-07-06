@@ -137,9 +137,9 @@
 								<it.logging>true</it.logging>
 								<it.storage>true</it.storage>
 
-								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
-								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
-								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
+								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample-native</gcs-resource-test-bucket>
+								<gcs-read-bucket>gcp-storage-bucket-sample-input-native</gcs-read-bucket>
+								<gcs-write-bucket>gcp-storage-bucket-sample-output-native</gcs-write-bucket>
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
 							</systemPropertyVariables>
 						</configuration>
