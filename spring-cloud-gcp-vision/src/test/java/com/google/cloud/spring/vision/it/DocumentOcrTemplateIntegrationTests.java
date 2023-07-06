@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -42,6 +43,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class DocumentOcrTemplateIntegrationTests {
 
   @Autowired private DocumentOcrTemplate documentOcrTemplate;
+  @Value("${vision-integration-test-bucket}")
+  private String testBucketName;
 
   @Test
   void testDocumentOcrTemplate()
@@ -49,9 +52,9 @@ class DocumentOcrTemplateIntegrationTests {
           TimeoutException {
 
     GoogleStorageLocation document =
-        GoogleStorageLocation.forFile("vision-integration-test-bucket", "test.pdf");
+        GoogleStorageLocation.forFile(testBucketName, "test.pdf");
     GoogleStorageLocation outputLocationPrefix =
-        GoogleStorageLocation.forFile("vision-integration-test-bucket", "it_output/test-");
+        GoogleStorageLocation.forFile(testBucketName, "it_output/test-");
 
     CompletableFuture<DocumentOcrResultSet> result =
         this.documentOcrTemplate.runOcrForDocument(document, outputLocationPrefix);
@@ -82,7 +85,7 @@ class DocumentOcrTemplateIntegrationTests {
   @Test
   void testParseOcrResultSet() throws InvalidProtocolBufferException {
     GoogleStorageLocation ocrOutputPrefix =
-        GoogleStorageLocation.forFolder("vision-integration-test-bucket", "json_output_set/");
+        GoogleStorageLocation.forFolder(testBucketName, "json_output_set/");
 
     DocumentOcrResultSet result = this.documentOcrTemplate.readOcrOutputFileSet(ocrOutputPrefix);
 
@@ -94,7 +97,7 @@ class DocumentOcrTemplateIntegrationTests {
   void testParseOcrFile() throws InvalidProtocolBufferException {
     GoogleStorageLocation ocrOutputFile =
         GoogleStorageLocation.forFile(
-            "vision-integration-test-bucket", "json_output_set/test_output-2-to-2.json");
+            testBucketName, "json_output_set/test_output-2-to-2.json");
 
     DocumentOcrResultSet pages = this.documentOcrTemplate.readOcrOutputFile(ocrOutputFile);
 
