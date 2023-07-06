@@ -10,23 +10,29 @@ Maven coordinates, using [Spring Framework on Google Cloud BOM](getting-started.
 
 ```xml
 <dependencies>
-    <!-- The starter dependency for the Spring Data R2DBC framework. -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-r2dbc</artifactId>
-        <version>${r2dbc-version}</version>
-    </dependency>
+  <!-- The starter dependency for the Spring Data R2DBC framework. -->
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-r2dbc</artifactId>
+  </dependency>
 
-    <!--
-        Dialect for Spring Data R2DBC Spanner; This includes the
-        Cloud Spanner R2DBC driver as a transitive dependency.
-    -->
-    <dependency>
-        <groupId>com.google.cloud</groupId>
-        <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
-    </dependency>
+  <!--
+      Dialect for Spring Data R2DBC Spanner; This includes the
+      Cloud Spanner R2DBC driver as a transitive dependency.
+  -->
+  <dependency>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
+  </dependency>
 </dependencies>
 ```
+Gradle coordinates:
+
+    dependencies {
+        implementation("com.google.cloud:spring-cloud-spanner-spring-data-r2dbc")
+        implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+    }
+
 
 ## Overview
 
@@ -43,4 +49,4 @@ See the [Spring Data R2DBC documentation](https://docs.spring.io/spring-data/r2d
 
 ## Sample Application
 
-We provide a [sample application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-spanner-r2dbc-samples) which demonstrates using the Spring Data R2DBC framework with Cloud Spanner in [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html).
+We provide a [sample application](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-spanner-r2dbc-samples) which demonstrates using the Spring Data R2DBC framework with Cloud Spanner in [Spring WebFlux](https://docs.spring.io/spring-framework/reference/web/webflux.html).

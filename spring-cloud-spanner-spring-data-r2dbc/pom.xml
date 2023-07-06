@@ -12,27 +12,18 @@
   <name>Spring Framework on Google Cloud Module - Cloud Spanner R2DBC Spring Data Dialect</name>
   <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
 
-  <dependencyManagement>
-    <dependencies>
-           <dependency>
-        <groupId>com.google.cloud</groupId>
-        <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <properties>
     <spring-data-r2dbc.version>1.5.13</spring-data-r2dbc.version>
     <spring-test.version>5.3.28</spring-test.version>
+    <cloud-spanner-r2dbc.version>1.2.2</cloud-spanner-r2dbc.version>
+
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>cloud-spanner-r2dbc</artifactId>
+      <version>${cloud-spanner-r2dbc.version}</version>
     </dependency>
 
     <dependency>

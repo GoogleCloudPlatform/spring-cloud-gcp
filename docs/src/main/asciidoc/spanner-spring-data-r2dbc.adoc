@@ -18,7 +18,6 @@ Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framew
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-data-r2dbc</artifactId>
-        <version>${spring-boot-dependencies.version}</version>
     </dependency>
 
     <!--
@@ -38,7 +37,7 @@ Gradle coordinates:
 ----
 dependencies {
     implementation("com.google.cloud:spring-cloud-spanner-spring-data-r2dbc")
-    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc:${spring-boot-dependencies.version}")
+    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 }
 ----
 === Overview
