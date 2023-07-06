@@ -35,6 +35,7 @@ jobs:
             --define maven.javadoc.skip=true \
             install
       - name: Verify generation of showcase-spring-starter
+        # Runs showcase-spring-starter golden tests
         working-directory: spring-cloud-generator
         id: verify-showcase-spring-starter
         run: |
@@ -44,6 +45,7 @@ jobs:
           buildozer --version
           bash scripts/generate-showcase.sh
       - name: Unit tests for showcase-spring-starter
+        # Runs showcase-spring-starter unit tests
         working-directory: spring-cloud-generator
         run: |
           cd showcase/showcase-spring-starter && mvn verify
