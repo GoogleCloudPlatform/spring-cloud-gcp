@@ -13,22 +13,10 @@ Maven coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framew
 
 [source,xml]
 ----
-<dependencies>
-    <!-- The starter dependency for the Spring Data R2DBC framework. -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-r2dbc</artifactId>
-    </dependency>
-
-    <!--
-        Dialect for Spring Data R2DBC Spanner; This includes the
-        Cloud Spanner R2DBC driver as a transitive dependency.
-    -->
     <dependency>
         <groupId>com.google.cloud</groupId>
-        <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
+        <artifactId>spring-cloud-gcp-starter-spanner-r2dbc</artifactId>
     </dependency>
-</dependencies>
 ----
 
 Gradle coordinates:
@@ -36,8 +24,7 @@ Gradle coordinates:
 [source,subs="normal"]
 ----
 dependencies {
-    implementation("com.google.cloud:spring-cloud-spanner-spring-data-r2dbc")
-    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-spanner-r2dbc")
 }
 ----
 === Overview
