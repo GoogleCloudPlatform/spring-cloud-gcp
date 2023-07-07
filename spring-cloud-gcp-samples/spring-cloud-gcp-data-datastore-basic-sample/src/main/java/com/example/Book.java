@@ -17,6 +17,7 @@
 package com.example;
 
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.common.base.Objects;
 import org.springframework.data.annotation.Id;
 
 /** This class represents a single book stored in Datastore. */
@@ -38,6 +39,23 @@ public class Book {
 
   public long getId() {
     return this.id;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Book book)) {
+      return false;
+    }
+    return year == book.year && Objects.equal(title, book.title)
+        && Objects.equal(author, book.author);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(title, author, year);
   }
 
   @Override

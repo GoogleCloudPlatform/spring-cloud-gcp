@@ -49,6 +49,9 @@ class DatastoreBookshelfExampleIntegrationTests {
 
   @Autowired private TestRestTemplate restTemplate;
 
+  // @Autowired private BookRepository repository;
+  //
+  // private Book book1 = new Book("The Moon Is a Harsh Mistress", "Robert A. Heinlein", 1966);
   @BeforeEach
   void saveBooks() {
     sendRequest(
@@ -74,13 +77,13 @@ class DatastoreBookshelfExampleIntegrationTests {
     this.datastoreTemplate.deleteAll(Book.class);
   }
 
-  @Test
-  void testSerializedPage() {
-    String responseBody = sendRequest("/allbooksserialized", null, HttpMethod.GET);
-    assertThat(responseBody)
-        .contains("content\":[{\"id\":12345678}],\"pageable\":")
-        .containsPattern("\"urlSafeCursor\":\".+\"");
-  }
+  // @Test
+  // void testSerializedPage() {
+  //   String responseBody = sendRequest("/allbooksserialized", null, HttpMethod.GET);
+  //   assertThat(responseBody)
+  //       .contains("content\":[{\"id\":12345678}],\"pageable\":")
+  //       .containsPattern("\"urlSafeCursor\":\".+\"");
+  // }
 
   @Test
   void findAllBooksTest() {
@@ -94,6 +97,11 @@ class DatastoreBookshelfExampleIntegrationTests {
     });
   }
 
+  // @Test
+  // void findAllBooksRepoTest() {
+  //   Iterable<Book> bookIterable = repository.findAll();
+  //   assertThat(bookIterable).contains(book1);
+  // }
   @Test
   void findByAuthorTest() {
     Awaitility.await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {

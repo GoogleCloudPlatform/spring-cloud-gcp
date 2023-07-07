@@ -33,6 +33,16 @@
 		</repository>
 	</distributionManagement>
 
+	<repositories>
+		<repository>
+			<id>spring-snapshot</id>
+			<name>Spring Snapshot</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 	<properties>
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
@@ -90,11 +100,24 @@
 			</dependency>
 
 			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-framework-bom</artifactId>
+				<version>6.0.10-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
 				<version>${spring-boot-dependencies.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-framework-bom</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<dependency>
@@ -376,7 +399,7 @@
 						</includes>
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<systemPropertyVariables>
-						<!--integration tests are not invoked unless the relevant system property is set to true here. -->
+							<it.datastore>true</it.datastore>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>
