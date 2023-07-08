@@ -247,6 +247,23 @@ class StackdriverJsonLayoutLoggerTests {
   }
 
   @Test
+  void testTimestampNanos() {
+    LOGGER.warn("test1");
+    LOGGER.warn("test2");
+
+    List<String> jsonLogRecords = Arrays.asList(new String(logOutput.toByteArray()).split("\n"));
+
+    List<Double> logTimestampNanos =
+        jsonLogRecords.stream()
+            .map(record -> GSON.fromJson(record, Map.class))
+            .map(data -> (Double) data.get(StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE))
+            .collect(Collectors.toList());
+
+    assertThat(logTimestampNanos).hasSize(2);
+    assertThat(logTimestampNanos).anySatisfy(nanos -> assertThat(nanos % 1000000).isPositive());
+  }
+
+  @Test
   void testJsonLayoutEnhancer_missing() {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     assertThat(
