@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # To VERIFY: ./scripts/generate-showcase.sh
 # To UPDATE: /scripts/generate-showcase.sh -u
