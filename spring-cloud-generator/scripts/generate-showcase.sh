@@ -56,12 +56,17 @@ function generate_showcase_spring_starter(){
   cd ${SPRING_GENERATOR_DIR}
   GAPIC_GENERATOR_JAVA_VERSION=$(mvn help:evaluate -Dexpression=gapic-generator-java-bom.version -q -DforceStdout)
 
+  if [[ -z "$GAPIC_GENERATOR_JAVA_VERSION" ]]; then
+    echo "Missing sdk-platform-java commitish to checkout"
+    exit 1
+  fi
+
   # Clone sdk-platform-java (with showcase library)
   git clone https://github.com/googleapis/sdk-platform-java.git
-  git checkout "v${GAPIC_GENERATOR_JAVA_VERSION}"
+  cd sdk-platform-java && git checkout "v${GAPIC_GENERATOR_JAVA_VERSION}"
 
   # Install showcase client libraries locally
-  cd sdk-platform-java && mvn clean install -B -ntp -DskipTests -Dclirr.skip -Dcheckstyle.skip
+  mvn clean install -B -ntp -DskipTests -Dclirr.skip -Dcheckstyle.skip
   cd showcase && mvn clean install
   GAPIC_SHOWCASE_CLIENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
