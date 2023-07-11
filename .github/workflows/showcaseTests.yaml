@@ -8,7 +8,8 @@ on:
     paths:
       - 'spring-cloud-generator/**'
   workflow_dispatch:
-
+env:
+  SHOWCASE_VERSION: 0.28.2
 jobs:
   showcaseSetup:
     runs-on: ubuntu-20.04
@@ -60,7 +61,7 @@ jobs:
   showcaseIntegrationTests:
     needs: showcaseSetup
     runs-on: ubuntu-20.04
-    step:
+    steps:
     - name: Install and run showcase server
       working-directory: spring-cloud-generator
       run: |
