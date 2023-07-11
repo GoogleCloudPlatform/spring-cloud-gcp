@@ -9,7 +9,7 @@
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
 
 	<scm>
 		<url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp</url>

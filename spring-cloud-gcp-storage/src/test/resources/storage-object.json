@@ -1,0 +1,24 @@
+{
+  "kind": "storage#object",
+  "id": "bucket/path/to/object",
+  "selfLink": "https://www.googleapis.com/storage/v1/b/bucket/o/path%2Fto%2Fobject",
+  "name": "object",
+  "bucket": "bucket",
+  "generation": "1234567890",
+  "metageneration": "1",
+  "contentType": "text/plain",
+  "timeCreated": "2022-05-12T17:12:35.000Z",
+  "updated": "2022-05-12T17:12:35.000Z",
+  "storageClass": "STANDARD",
+  "size": "1024",
+  "md5Hash": "HashValue",
+  "contentEncoding": "gzip",
+  "contentDisposition": "attachment; filename=\"object.txt\"",
+  "crc32c": "CRC32CValue",
+  "etag": "ETagValue",
+  "componentCount": 1,
+  "metadata": {
+    "key1": "value1",
+    "key2": "value2"
+  }
+}
