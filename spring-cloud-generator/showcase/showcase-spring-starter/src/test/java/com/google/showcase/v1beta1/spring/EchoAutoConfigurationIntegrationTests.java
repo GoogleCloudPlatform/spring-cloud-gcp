@@ -18,8 +18,7 @@ package com.google.showcase.v1beta1.spring;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.gax.grpc.testing.LocalChannelProvider;
+import com.google.api.gax.httpjson.testing.MockHttpService;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.showcase.v1beta1.EchoClient;
@@ -27,7 +26,7 @@ import com.google.showcase.v1beta1.EchoRequest;
 import com.google.showcase.v1beta1.EchoResponse;
 import com.google.showcase.v1beta1.EchoSettings;
 import com.google.showcase.v1beta1.Severity;
-import java.security.GeneralSecurityException;
+import com.google.showcase.v1beta1.stub.HttpJsonEchoStub;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -38,9 +37,8 @@ import org.springframework.context.annotation.Configuration;
 /** Tests for Echo autoconfiguration. */
 @EnabledIfSystemProperty(named = "it.showcase", matches = "true")
 class EchoAutoConfigurationIntegrationTests {
-
-  private static TransportChannelProvider echoGrpcTestTransportProvider;
-  private static TransportChannelProvider echoRestTestTransportProvider;
+  private static MockHttpService mockHttpService =
+      new MockHttpService(HttpJsonEchoStub.getMethodDescriptors(), "localhost:7469");
 
   private ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
@@ -49,30 +47,22 @@ class EchoAutoConfigurationIntegrationTests {
                   GcpContextAutoConfiguration.class, EchoSpringAutoConfiguration.class));
 
   @Test
-  void testEchoClientGrpc() {
+  void testEchoClientRest() {
     System.out.println("Running integration test");
     this.contextRunner
-        .withUserConfiguration(LocalGrpcTransportConfig.class)
+        // https://github.com/googleapis/gapic-showcase#step-2-make-a-request
+        .withUserConfiguration(LocalHttpJsonTransportConfig.class)
+        .withPropertyValues("com.google.showcase.v1beta1.echo.use-rest=true")
         .run(
             ctx -> {
-              TransportChannelProvider transportChannelProvider =
-                  ctx.getBean(TransportChannelProvider.class);
-              System.out.println(transportChannelProvider);
-
-              EchoSettings echoSettings = ctx.getBean(EchoSettings.class);
-              TransportChannelProvider transportChannelProviderFromSettings =
-                  echoSettings.getTransportChannelProvider();
-              System.out.println(transportChannelProviderFromSettings);
-
               EchoClient client = ctx.getBean(EchoClient.class);
-              System.out.println(client.getSettings().getTransportChannelProvider());
-              // https://github.com/googleapis/gapic-showcase#step-2-make-a-request
 
               EchoResponse expectedResponse =
                   EchoResponse.newBuilder()
                       .setContent("content951530617")
                       .setSeverity(Severity.forNumber(0))
                       .build();
+              mockHttpService.addResponse(expectedResponse);
 
               EchoRequest request =
                   EchoRequest.newBuilder()
@@ -87,20 +77,12 @@ class EchoAutoConfigurationIntegrationTests {
   }
 
   @Configuration
-  static class LocalGrpcTransportConfig {
-    @Bean
-    TransportChannelProvider defaultEchoTransportChannelProvider() {
-      return LocalChannelProvider.create("localhost:7469");
-    }
-  }
-
-  @Configuration
   static class LocalHttpJsonTransportConfig {
     @Bean
-    TransportChannelProvider defaultEchoTransportChannelProvider() throws GeneralSecurityException {
+    TransportChannelProvider defaultEchoTransportChannelProvider() {
       TransportChannelProvider transportChannelProvider =
           EchoSettings.defaultHttpJsonTransportProviderBuilder()
-              .setHttpTransport(new NetHttpTransport.Builder().doNotValidateCertificate().build())
+              .setHttpTransport(mockHttpService)
               .setEndpoint("http://localhost:7469")
               .build();
       return transportChannelProvider;
