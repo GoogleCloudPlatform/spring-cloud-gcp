@@ -39,6 +39,7 @@ jobs:
     needs: showcaseSetup
     runs-on: ubuntu-20.04
     steps:
+      - uses: actions/checkout@v2
       - name: Verify generation of showcase-spring-starter
         # Runs showcase-spring-starter golden tests
         working-directory: spring-cloud-generator
@@ -53,6 +54,7 @@ jobs:
     needs: showcaseSetup
     runs-on: ubuntu-20.04
     steps:
+      - uses: actions/checkout@v2
       - name: Unit tests for showcase-spring-starter
         # Runs showcase-spring-starter unit tests
         working-directory: spring-cloud-generator
@@ -62,17 +64,18 @@ jobs:
     needs: showcaseSetup
     runs-on: ubuntu-20.04
     steps:
-    - name: Install and run showcase server
-      working-directory: spring-cloud-generator
-      run: |
-        go install github.com/googleapis/gapic-showcase/cmd/gapic-showcase@v${SHOWCASE_VERSION}
-        export PATH=$PATH:$(go env GOPATH)/bin
-        gapic-showcase --help
-        gapic-showcase run &
-    - name: Integration tests for showcase-spring-starter
-      # Runs showcase-spring-starter integration tests
-      working-directory: spring-cloud-generator
-      run: |
-        cd showcase/showcase-spring-starter && mvn verify -Dit.showcase=true
+      - uses: actions/checkout@v2
+      - name: Install and run showcase server
+        working-directory: spring-cloud-generator
+        run: |
+          go install github.com/googleapis/gapic-showcase/cmd/gapic-showcase@v${SHOWCASE_VERSION}
+          export PATH=$PATH:$(go env GOPATH)/bin
+          gapic-showcase --help
+          gapic-showcase run &
+      - name: Integration tests for showcase-spring-starter
+        # Runs showcase-spring-starter integration tests
+        working-directory: spring-cloud-generator
+        run: |
+          cd showcase/showcase-spring-starter && mvn verify -Dit.showcase=true
 
     
