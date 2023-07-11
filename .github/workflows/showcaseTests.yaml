@@ -10,30 +10,32 @@ on:
   workflow_dispatch:
 
 jobs:
-  showcaseTests:
+  showcaseSetup:
+    - uses: actions/checkout@v2
+    - name: Setup Java 17
+      uses: actions/setup-java@v1
+      with:
+        java-version: 17
+    - name: Install buildozer
+      run: |
+        go install github.com/bazelbuild/buildtools/buildozer@latest
+        export PATH=$PATH:$(go env GOPATH)/bin
+        buildozer --version
+    - name: Install spring-cloud-gcp
+      # Installs spring-cloud-gcp from root,
+      # including spring-cloud-generator module
+      run: |
+        ./mvnw \
+          --batch-mode \
+          --show-version \
+          --threads 1.5C \
+          --define maven.test.skip=true \
+          --define maven.javadoc.skip=true \
+          install
+  showcaseGoldenTests:
+    needs: showcaseSetup
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Java 17
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-      - name: Install buildozer
-        run: |
-          go install github.com/bazelbuild/buildtools/buildozer@latest
-          export PATH=$PATH:$(go env GOPATH)/bin
-          buildozer --version
-      - name: Install spring-cloud-gcp
-        # Installs spring-cloud-gcp from root,
-        # including spring-cloud-generator module
-        run: |
-          ./mvnw \
-            --batch-mode \
-            --show-version \
-            --threads 1.5C \
-            --define maven.test.skip=true \
-            --define maven.javadoc.skip=true \
-            install
       - name: Verify generation of showcase-spring-starter
         # Runs showcase-spring-starter golden tests
         working-directory: spring-cloud-generator
@@ -44,8 +46,30 @@ jobs:
           export PATH=$PATH:$(go env GOPATH)/bin
           buildozer --version
           bash scripts/generate-showcase.sh
+  showcaseUnitTests:
+    needs: showcaseSetup
+    runs-on: ubuntu-20.04
+    steps:
       - name: Unit tests for showcase-spring-starter
         # Runs showcase-spring-starter unit tests
         working-directory: spring-cloud-generator
         run: |
           cd showcase/showcase-spring-starter && mvn verify
+  showcaseIntegrationTests:
+    needs: showcaseSetup
+    runs-on: ubuntu-20.04
+    step:
+    - name: Install and run showcase server
+      working-directory: spring-cloud-generator
+      run: |
+        go install github.com/googleapis/gapic-showcase/cmd/gapic-showcase@v${SHOWCASE_VERSION}
+        export PATH=$PATH:$(go env GOPATH)/bin
+        gapic-showcase --help
+        gapic-showcase run &
+    - name: Integration tests for showcase-spring-starter
+      # Runs showcase-spring-starter integration tests
+      working-directory: spring-cloud-generator
+      run: |
+        cd showcase/showcase-spring-starter && mvn verify -Dit.showcase=true
+
+    
