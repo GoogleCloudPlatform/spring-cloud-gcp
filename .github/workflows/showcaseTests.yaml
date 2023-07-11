@@ -11,27 +11,29 @@ on:
 
 jobs:
   showcaseSetup:
-    - uses: actions/checkout@v2
-    - name: Setup Java 17
-      uses: actions/setup-java@v1
-      with:
-        java-version: 17
-    - name: Install buildozer
-      run: |
-        go install github.com/bazelbuild/buildtools/buildozer@latest
-        export PATH=$PATH:$(go env GOPATH)/bin
-        buildozer --version
-    - name: Install spring-cloud-gcp
-      # Installs spring-cloud-gcp from root,
-      # including spring-cloud-generator module
-      run: |
-        ./mvnw \
-          --batch-mode \
-          --show-version \
-          --threads 1.5C \
-          --define maven.test.skip=true \
-          --define maven.javadoc.skip=true \
-          install
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Java 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Install buildozer
+        run: |
+          go install github.com/bazelbuild/buildtools/buildozer@latest
+          export PATH=$PATH:$(go env GOPATH)/bin
+          buildozer --version
+      - name: Install spring-cloud-gcp
+        # Installs spring-cloud-gcp from root,
+        # including spring-cloud-generator module
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --show-version \
+            --threads 1.5C \
+            --define maven.test.skip=true \
+            --define maven.javadoc.skip=true \
+            install
   showcaseGoldenTests:
     needs: showcaseSetup
     runs-on: ubuntu-20.04
