@@ -10,9 +10,41 @@ first build `spring-cloud-gcp` from root:
 mvn clean install -DskipTests
 ```
 
+### Unit and Golden Testing for the Generator
+
+To execute unit and golden tests for the generator, run (from the `spring-cloud-generator` directory):
+```
+# All tests
+mvn test
+
+# Single test
+mvn test -Dtest=SpringAutoConfigClassComposerTest
+
+# Update golden files
+mvn test -DupdateUnitGoldens
+```
+
 ### Generation of Spring Boot Starters
 
+#### Running Github Actions Workflow:
 Corresponding workflow file: [generateAutoConfigs.yml](/.github/workflows/generateAutoConfigs.yml)
+
+Using github actions, the following command can run the end-to-end generation workflow in `generateAutoConfigs.yml`
+against a development branch (e.g. `<my-branch>`):
+
+```
+gh workflow run generateAutoConfigs.yml --ref <my-branch> \
+-f branch_name=<my-branch> -f forked_repo=none
+```
+* The equivalent of this command can also be triggered through the github UI.
+  * `--ref <my-branch>` specifies that the workflow run should be triggered from `<my-branch>` 
+  (e.g. to test changes under development in workflow file and script).
+  * `-f branch_name=<my-branch>` specifies that `<my-branch>` should be the branch to parse libraries-bom version from, 
+  and push generated code changes to.
+* Upon successful completion, corresponding changes to generated code (if any)
+  will be pushed to `<my-branch>` in a commit authored by `cloud-java-bot`.
+
+#### Running Script (locally): 
 
 Script: [generate.sh](scripts/generate.sh)
 

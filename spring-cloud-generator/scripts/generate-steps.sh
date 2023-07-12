@@ -152,7 +152,7 @@ function add_module_to_aggregator_pom() {
     echo "module ${starter_artifactid} already found in ${path_to_pom} modules"
   else
     echo "adding module ${starter_artifactid} to pom"
-    sed -i "/^[[:space:]]*<modules>/a\ \ \ \ <module>"${starter_artifactid}"</module>" ${path_to_pom}
+    sed -i'' "/^[[:space:]]*<modules>/a\ \ \ \ <module>"${starter_artifactid}"</module>" ${path_to_pom}
   fi
 }
 
@@ -244,9 +244,9 @@ function modify_starter_pom() {
   client_lib_artifactid=$3
   parent_version=$4
   # modifications to pom.xml
-  sed -i 's/{{client-library-group-id}}/'"$client_lib_groupid"'/' ${path_to_pom}
-  sed -i 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' ${path_to_pom}
-  sed -i 's/{{parent-version}}/'"$parent_version"'/' ${path_to_pom}
+  sed -i'' 's/{{client-library-group-id}}/'"$client_lib_groupid"'/' ${path_to_pom}
+  sed -i'' 's/{{client-library-artifact-id}}/'"$client_lib_artifactid"'/' ${path_to_pom}
+  sed -i'' 's/{{parent-version}}/'"$parent_version"'/' ${path_to_pom}
 }
 
 # Run auto-formatter on generated code

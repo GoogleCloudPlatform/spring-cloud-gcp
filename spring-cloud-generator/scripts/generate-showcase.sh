@@ -89,10 +89,10 @@ function generate_showcase_spring_starter(){
 
   # Additional pom.xml modifications for showcase starter
   # Add explicit gapic-showcase version
-  sed -i '/^ *<artifactId>gapic-showcase<\/artifactId>*/a \ \ \ \ \ \ <version>'"$GAPIC_SHOWCASE_CLIENT_VERSION"'</version>' ${SHOWCASE_STARTER_DIR}/pom.xml
+  sed -i'' '/^ *<artifactId>gapic-showcase<\/artifactId>*/a \ \ \ \ \ \ <version>'"$GAPIC_SHOWCASE_CLIENT_VERSION"'</version>' ${SHOWCASE_STARTER_DIR}/pom.xml
   # Update relative path to parent pom (different repo structure from starters)
   RELATIVE_PATH="\ \ \ \ <relativePath>..\/..\/..\/spring-cloud-gcp-starters\/pom.xml<\/relativePath>"
-  sed -i 's/^ *<relativePath>.*/'"$RELATIVE_PATH"'/g' ${SHOWCASE_STARTER_DIR}/pom.xml
+  sed -i'' 's/^ *<relativePath>.*/'"$RELATIVE_PATH"'/g' ${SHOWCASE_STARTER_DIR}/pom.xml
 
   # Run google-java-format on generated code
   run_formatter ${SHOWCASE_STARTER_DIR}
