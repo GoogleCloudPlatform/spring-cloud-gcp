@@ -44,7 +44,7 @@ class DocumentOcrTemplateIntegrationTests {
 
   @Autowired private DocumentOcrTemplate documentOcrTemplate;
 
-  private static String BUCKET_NAME = "vision-integration-test-bucket";
+  private static final String BUCKET_NAME = "vision-integration-test-bucket";
 
   @Test
   void testDocumentOcrTemplate()
