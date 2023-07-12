@@ -34,7 +34,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -45,18 +44,17 @@ class DocumentOcrTemplateIntegrationTests {
 
   @Autowired private DocumentOcrTemplate documentOcrTemplate;
 
-  @Value("${vision-integration-test-bucket}")
-  private String testBucketName;
+  private static String BUCKET_NAME = "vision-integration-test-bucket";
 
   @Test
   void testDocumentOcrTemplate()
       throws ExecutionException, InterruptedException, InvalidProtocolBufferException,
           TimeoutException {
 
-    GoogleStorageLocation document = GoogleStorageLocation.forFile(testBucketName, "test.pdf");
+    GoogleStorageLocation document = GoogleStorageLocation.forFile(BUCKET_NAME, "test.pdf");
     GoogleStorageLocation outputLocationPrefix =
         GoogleStorageLocation.forFile(
-            testBucketName, String.format("it_output/test-%s-", UUID.randomUUID()));
+            BUCKET_NAME, String.format("it_output/test-%s-", UUID.randomUUID()));
 
     CompletableFuture<DocumentOcrResultSet> result =
         this.documentOcrTemplate.runOcrForDocument(document, outputLocationPrefix);
@@ -87,7 +85,7 @@ class DocumentOcrTemplateIntegrationTests {
   @Test
   void testParseOcrResultSet() throws InvalidProtocolBufferException {
     GoogleStorageLocation ocrOutputPrefix =
-        GoogleStorageLocation.forFolder(testBucketName, "json_output_set/");
+        GoogleStorageLocation.forFolder(BUCKET_NAME, "json_output_set/");
 
     DocumentOcrResultSet result = this.documentOcrTemplate.readOcrOutputFileSet(ocrOutputPrefix);
 
@@ -98,7 +96,7 @@ class DocumentOcrTemplateIntegrationTests {
   @Test
   void testParseOcrFile() throws InvalidProtocolBufferException {
     GoogleStorageLocation ocrOutputFile =
-        GoogleStorageLocation.forFile(testBucketName, "json_output_set/test_output-2-to-2.json");
+        GoogleStorageLocation.forFile(BUCKET_NAME, "json_output_set/test_output-2-to-2.json");
 
     DocumentOcrResultSet pages = this.documentOcrTemplate.readOcrOutputFile(ocrOutputFile);
 

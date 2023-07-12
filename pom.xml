@@ -381,8 +381,6 @@
 						<systemPropertyVariables>
 							<!--integration tests are not invoked unless the relevant system property is set to true here. -->
 							<it.vision>true</it.vision>
-							<!--resources for integration tests-->
-							<vision-integration-test-bucket>vision-integration-test-bucket-native</vision-integration-test-bucket>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>
@@ -464,24 +462,6 @@
 				<module>spring-cloud-gcp-samples</module>
 			</modules>
 		</profile>
-    
-		<profile>
-			<id>spring-cloud-gcp-ci-it</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-failsafe-plugin</artifactId>
-						<configuration>
-							<systemPropertyVariables>
-								<vision-integration-test-bucket>vision-integration-test-bucket</vision-integration-test-bucket>
-							</systemPropertyVariables>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
 		<profile>
 			<!-- cloud RAD generation -->
 			<id>docFX</id>
