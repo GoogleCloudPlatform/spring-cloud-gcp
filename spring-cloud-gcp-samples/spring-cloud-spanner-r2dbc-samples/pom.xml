@@ -14,9 +14,6 @@
   <artifactId>spring-cloud-spanner-r2dbc-samples</artifactId>
   <name>Spring Framework on Google Cloud Code Sample - Spanner-r2dbc</name>
 
-  <properties>
-    <sonar.skip>true</sonar.skip>
-  </properties>
 
   <dependencyManagement>
     <dependencies>
