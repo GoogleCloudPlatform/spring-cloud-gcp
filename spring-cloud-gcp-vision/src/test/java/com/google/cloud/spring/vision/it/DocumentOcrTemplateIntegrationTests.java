@@ -25,6 +25,7 @@ import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -43,6 +44,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class DocumentOcrTemplateIntegrationTests {
 
   @Autowired private DocumentOcrTemplate documentOcrTemplate;
+
   @Value("${vision-integration-test-bucket}")
   private String testBucketName;
 
@@ -51,10 +53,10 @@ class DocumentOcrTemplateIntegrationTests {
       throws ExecutionException, InterruptedException, InvalidProtocolBufferException,
           TimeoutException {
 
-    GoogleStorageLocation document =
-        GoogleStorageLocation.forFile(testBucketName, "test.pdf");
+    GoogleStorageLocation document = GoogleStorageLocation.forFile(testBucketName, "test.pdf");
     GoogleStorageLocation outputLocationPrefix =
-        GoogleStorageLocation.forFile(testBucketName, "it_output/test-");
+        GoogleStorageLocation.forFile(
+            testBucketName, String.format("it_output/test-%s-", UUID.randomUUID()));
 
     CompletableFuture<DocumentOcrResultSet> result =
         this.documentOcrTemplate.runOcrForDocument(document, outputLocationPrefix);
@@ -96,8 +98,7 @@ class DocumentOcrTemplateIntegrationTests {
   @Test
   void testParseOcrFile() throws InvalidProtocolBufferException {
     GoogleStorageLocation ocrOutputFile =
-        GoogleStorageLocation.forFile(
-            testBucketName, "json_output_set/test_output-2-to-2.json");
+        GoogleStorageLocation.forFile(testBucketName, "json_output_set/test_output-2-to-2.json");
 
     DocumentOcrResultSet pages = this.documentOcrTemplate.readOcrOutputFile(ocrOutputFile);
 
