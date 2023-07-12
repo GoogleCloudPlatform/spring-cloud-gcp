@@ -19,6 +19,7 @@ fi
 SPRING_ROOT_DIR=${SPRING_GENERATOR_DIR}/..
 
 # Reset target folder for generated code
+cd ${SPRING_GENERATOR_DIR}
 echo "executing reset_previews_folder"
 reset_previews_folder
 
@@ -41,6 +42,7 @@ fi
 # If not provided, generate and set library list path variable
 if [[ -z "$LIBRARY_LIST_PATH" ]]; then
   echo "No LIBRARY_LIST_PATH override provided, generating for MONOREPO_TAG: ${MONOREPO_TAG}"
+  cd ${SPRING_GENERATOR_DIR}
   generate_libraries_list ${MONOREPO_TAG}
   LIBRARY_LIST_PATH=${SPRING_GENERATOR_DIR}/scripts/resources/library_list.txt
 fi
@@ -57,8 +59,6 @@ echo "Library list path: ${LIBRARY_LIST_PATH}"
 
 cd ${SPRING_GENERATOR_DIR}
 
-echo "executing install_spring_generator"
-install_spring_generator
 echo "executing setup_googleapis"
 setup_googleapis
 
@@ -68,7 +68,7 @@ LIBRARIES=$(cat ${SPRING_GENERATOR_DIR}/scripts/resources/library_list.txt | tai
 echo "looping over libraries to prepare bazel build"
 while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
   echo "preparing protos and bazel rules for $library_name"
-  prepare_bazel_build $googleapis_commitish $googleapis_location 2>&1 | tee tmp-output || save_error_info "bazel_prepare_$library_name"
+  prepare_bazel_build $googleapis_commitish $googleapis_location 2>&1 | tee tmp-output || save_error_info ${SPRING_GENERATOR_DIR} "bazel_prepare_$library_name"
 done <<< "${LIBRARIES}"
 
 # Invoke all bazel build targets
@@ -83,7 +83,7 @@ while IFS=, read -r library_name googleapis_location coordinates_version googlea
   echo "processing library $library_name"
   group_id=$(echo $coordinates_version | cut -f1 -d:)
   artifact_id=$(echo $coordinates_version | cut -f2 -d:)
-  postprocess_library $artifact_id $group_id $PROJECT_VERSION $googleapis_location $monorepo_folder $googleapis_commitish $MONOREPO_TAG 2>&1 | tee tmp-output || save_error_info "postprocess_$library_name"
+  postprocess_library $artifact_id $group_id $PROJECT_VERSION $googleapis_location $monorepo_folder $googleapis_commitish $MONOREPO_TAG 2>&1 | tee tmp-output || save_error_info ${SPRING_GENERATOR_DIR} "postprocess_$library_name"
 done <<< "${LIBRARIES}"
 
 # Clean up downloaded repo and output file

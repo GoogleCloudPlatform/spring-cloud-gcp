@@ -464,7 +464,7 @@
 				<module>spring-cloud-gcp-samples</module>
 			</modules>
 		</profile>
-
+    
 		<profile>
 			<id>spring-cloud-gcp-ci-it</id>
 			<build>
