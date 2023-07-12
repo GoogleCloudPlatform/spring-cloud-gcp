@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,8 +87,10 @@ public class CloudChannelServiceSpringAutoConfiguration {
   }
 
   /**
-   * Provides a default transport channel provider bean. The default is gRPC and will default to it
-   * unless the useRest option is supported and provided to use HTTP transport instead
+   * Provides a default transport channel provider bean, corresponding to the client library's
+   * default transport channel provider. If the library supports both GRPC and REST transport, and
+   * the useRest property is configured, the HTTP/JSON transport provider will be used instead of
+   * GRPC.
    *
    * @return a default transport channel provider.
    */
@@ -341,6 +343,19 @@ public class CloudChannelServiceSpringAutoConfiguration {
       clientSettingsBuilder
           .deleteChannelPartnerRepricingConfigSettings()
           .setRetrySettings(deleteChannelPartnerRepricingConfigRetrySettings);
+
+      RetrySettings listSkuGroupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listSkuGroupsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listSkuGroupsSettings().setRetrySettings(listSkuGroupsRetrySettings);
+
+      RetrySettings listSkuGroupBillableSkusRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listSkuGroupBillableSkusSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listSkuGroupBillableSkusSettings()
+          .setRetrySettings(listSkuGroupBillableSkusRetrySettings);
 
       RetrySettings lookupOfferRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -752,6 +767,30 @@ public class CloudChannelServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for deleteChannelPartnerRepricingConfig from properties.");
+      }
+    }
+    Retry listSkuGroupsRetry = clientProperties.getListSkuGroupsRetry();
+    if (listSkuGroupsRetry != null) {
+      RetrySettings listSkuGroupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listSkuGroupsSettings().getRetrySettings(), listSkuGroupsRetry);
+      clientSettingsBuilder.listSkuGroupsSettings().setRetrySettings(listSkuGroupsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listSkuGroups from properties.");
+      }
+    }
+    Retry listSkuGroupBillableSkusRetry = clientProperties.getListSkuGroupBillableSkusRetry();
+    if (listSkuGroupBillableSkusRetry != null) {
+      RetrySettings listSkuGroupBillableSkusRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listSkuGroupBillableSkusSettings().getRetrySettings(),
+              listSkuGroupBillableSkusRetry);
+      clientSettingsBuilder
+          .listSkuGroupBillableSkusSettings()
+          .setRetrySettings(listSkuGroupBillableSkusRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listSkuGroupBillableSkus from properties.");
       }
     }
     Retry lookupOfferRetry = clientProperties.getLookupOfferRetry();

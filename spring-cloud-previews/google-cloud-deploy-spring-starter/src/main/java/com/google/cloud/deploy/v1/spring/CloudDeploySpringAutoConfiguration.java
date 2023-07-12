@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,8 +86,10 @@ public class CloudDeploySpringAutoConfiguration {
   }
 
   /**
-   * Provides a default transport channel provider bean. The default is gRPC and will default to it
-   * unless the useRest option is supported and provided to use HTTP transport instead
+   * Provides a default transport channel provider bean, corresponding to the client library's
+   * default transport channel provider. If the library supports both GRPC and REST transport, and
+   * the useRest property is configured, the HTTP/JSON transport provider will be used instead of
+   * GRPC.
    *
    * @return a default transport channel provider.
    */
@@ -201,6 +203,16 @@ public class CloudDeploySpringAutoConfiguration {
               clientSettingsBuilder.approveRolloutSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.approveRolloutSettings().setRetrySettings(approveRolloutRetrySettings);
 
+      RetrySettings advanceRolloutRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.advanceRolloutSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.advanceRolloutSettings().setRetrySettings(advanceRolloutRetrySettings);
+
+      RetrySettings cancelRolloutRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.cancelRolloutSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.cancelRolloutSettings().setRetrySettings(cancelRolloutRetrySettings);
+
       RetrySettings listRolloutsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listRolloutsSettings().getRetrySettings(), serviceRetry);
@@ -210,6 +222,11 @@ public class CloudDeploySpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getRolloutSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getRolloutSettings().setRetrySettings(getRolloutRetrySettings);
+
+      RetrySettings ignoreJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.ignoreJobSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.ignoreJobSettings().setRetrySettings(ignoreJobRetrySettings);
 
       RetrySettings retryJobRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -225,6 +242,13 @@ public class CloudDeploySpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getJobRunSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getJobRunSettings().setRetrySettings(getJobRunRetrySettings);
+
+      RetrySettings terminateJobRunRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.terminateJobRunSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .terminateJobRunSettings()
+          .setRetrySettings(terminateJobRunRetrySettings);
 
       RetrySettings getConfigRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -352,6 +376,27 @@ public class CloudDeploySpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for approveRollout from properties.");
       }
     }
+    Retry advanceRolloutRetry = clientProperties.getAdvanceRolloutRetry();
+    if (advanceRolloutRetry != null) {
+      RetrySettings advanceRolloutRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.advanceRolloutSettings().getRetrySettings(),
+              advanceRolloutRetry);
+      clientSettingsBuilder.advanceRolloutSettings().setRetrySettings(advanceRolloutRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for advanceRollout from properties.");
+      }
+    }
+    Retry cancelRolloutRetry = clientProperties.getCancelRolloutRetry();
+    if (cancelRolloutRetry != null) {
+      RetrySettings cancelRolloutRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.cancelRolloutSettings().getRetrySettings(), cancelRolloutRetry);
+      clientSettingsBuilder.cancelRolloutSettings().setRetrySettings(cancelRolloutRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for cancelRollout from properties.");
+      }
+    }
     Retry listRolloutsRetry = clientProperties.getListRolloutsRetry();
     if (listRolloutsRetry != null) {
       RetrySettings listRolloutsRetrySettings =
@@ -370,6 +415,16 @@ public class CloudDeploySpringAutoConfiguration {
       clientSettingsBuilder.getRolloutSettings().setRetrySettings(getRolloutRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getRollout from properties.");
+      }
+    }
+    Retry ignoreJobRetry = clientProperties.getIgnoreJobRetry();
+    if (ignoreJobRetry != null) {
+      RetrySettings ignoreJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.ignoreJobSettings().getRetrySettings(), ignoreJobRetry);
+      clientSettingsBuilder.ignoreJobSettings().setRetrySettings(ignoreJobRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for ignoreJob from properties.");
       }
     }
     Retry retryJobRetry = clientProperties.getRetryJobRetry();
@@ -400,6 +455,19 @@ public class CloudDeploySpringAutoConfiguration {
       clientSettingsBuilder.getJobRunSettings().setRetrySettings(getJobRunRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getJobRun from properties.");
+      }
+    }
+    Retry terminateJobRunRetry = clientProperties.getTerminateJobRunRetry();
+    if (terminateJobRunRetry != null) {
+      RetrySettings terminateJobRunRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.terminateJobRunSettings().getRetrySettings(),
+              terminateJobRunRetry);
+      clientSettingsBuilder
+          .terminateJobRunSettings()
+          .setRetrySettings(terminateJobRunRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for terminateJobRun from properties.");
       }
     }
     Retry getConfigRetry = clientProperties.getGetConfigRetry();

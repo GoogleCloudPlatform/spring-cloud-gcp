@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-dependencies</artifactId>
-	<version>4.1.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.5.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud Dependencies</name>
 	<description>Spring Framework on Google Cloud Dependencies</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -34,8 +34,8 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.11.0</gcp-libraries-bom.version>
-		<cloud-sql-socket-factory.version>1.11.0</cloud-sql-socket-factory.version>
+		<gcp-libraries-bom.version>26.18.0</gcp-libraries-bom.version>
+		<cloud-sql-socket-factory.version>1.12.0</cloud-sql-socket-factory.version>
 		<guava.version>31.1-jre</guava.version>
 		<r2dbc-postgres-driver.version>1.0.1.RELEASE</r2dbc-postgres-driver.version>
 	</properties>
@@ -253,7 +253,7 @@
 
 			<dependency>
 				<groupId>com.google.cloud.sql</groupId>
-				<artifactId>mysql-socket-factory</artifactId>
+				<artifactId>mysql-socket-factory-connector-j-8</artifactId>
 				<version>${cloud-sql-socket-factory.version}</version>
 			</dependency>
 
@@ -304,7 +304,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>3.1.0</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -338,7 +338,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-enforcer-plugin</artifactId>
-						<version>3.2.1</version>
+						<version>3.3.0</version>
 						<dependencies>
 							<dependency>
 								<groupId>com.google.cloud.tools</groupId>

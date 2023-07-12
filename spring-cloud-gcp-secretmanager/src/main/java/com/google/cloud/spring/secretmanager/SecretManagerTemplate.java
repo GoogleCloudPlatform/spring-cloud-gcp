@@ -68,6 +68,10 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     return this;
   }
 
+  public String getProjectId() {
+    return projectIdProvider.getProjectId();
+  }
+
   @Override
   public void createSecret(String secretId, String payload) {
     createNewSecretVersion(

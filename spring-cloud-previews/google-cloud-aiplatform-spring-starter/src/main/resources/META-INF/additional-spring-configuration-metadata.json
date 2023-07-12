@@ -43,6 +43,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.aiplatform.v1.match-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/MatchService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.aiplatform.v1.metadata-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud aiplatform/MetadataService components.",
@@ -52,6 +58,12 @@
       "name": "com.google.cloud.aiplatform.v1.migration-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud aiplatform/MigrationService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.model-garden-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/ModelGardenService components.",
       "defaultValue": true
     },
     {

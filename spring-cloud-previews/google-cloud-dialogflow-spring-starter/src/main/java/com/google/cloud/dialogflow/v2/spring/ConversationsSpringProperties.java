@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,6 +74,11 @@ public class ConversationsSpringProperties implements CredentialsSupplier {
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry suggestConversationSummaryRetry;
+  /**
+   * Allow override of retry settings at method-level for generateStatelessSummary. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry generateStatelessSummaryRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -168,6 +173,14 @@ public class ConversationsSpringProperties implements CredentialsSupplier {
 
   public void setSuggestConversationSummaryRetry(Retry suggestConversationSummaryRetry) {
     this.suggestConversationSummaryRetry = suggestConversationSummaryRetry;
+  }
+
+  public Retry getGenerateStatelessSummaryRetry() {
+    return this.generateStatelessSummaryRetry;
+  }
+
+  public void setGenerateStatelessSummaryRetry(Retry generateStatelessSummaryRetry) {
+    this.generateStatelessSummaryRetry = generateStatelessSummaryRetry;
   }
 
   public Retry getListLocationsRetry() {

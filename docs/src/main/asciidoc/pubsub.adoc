@@ -69,7 +69,7 @@ However, if a per-subscription configuration is not set then the global or defau
 | `spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period` | The maximum period a message ack deadline will be extended, in seconds | No | 0
 | `spring.cloud.gcp.pubsub.subscriber.min-duration-per-ack-extension` | The lower bound for a single mod ack extension period, in seconds | No | 0
 | `spring.cloud.gcp.pubsub.subscriber.max-duration-per-ack-extension` | The upper bound for a single mod ack extension period, in seconds | No | 0
-| `spring.cloud.gcp.pubsub.subscriber.pull-endpoint` | The endpoint for synchronous pulling messages | No | pubsub.googleapis.com:443
+| `spring.cloud.gcp.pubsub.subscriber.pull-endpoint` | The endpoint for pulling messages | No | pubsub.googleapis.com:443
 | `spring.cloud.gcp.pubsub.[subscriber,publisher].executor-threads` | Number of threads used by `Subscriber` instances created by `SubscriberFactory` | No | 4
 | `spring.cloud.gcp.pubsub.[subscriber,publisher.batching].flow-control.max-outstanding-element-count`|
 Maximum number of outstanding elements to keep in memory before enforcing flow control. | No | unlimited
@@ -103,7 +103,7 @@ This is useful in conjunction with enabling message ordering because sending mes
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].max-ack-extension-period` | The maximum period a message ack deadline will be extended, in seconds. | No | 0
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].min-duration-per-ack-extension` | The lower bound for a single mod ack extension period, in seconds | No | 0
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].max-duration-per-ack-extension` | The upper bound for a single mod ack extension period, in seconds | No | 0
-| `spring.cloud.gcp.pubsub.subscription.[subscription-name].pull-endpoint` | The endpoint for synchronous pulling messages. | No | pubsub.googleapis.com:443
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].pull-endpoint` | The endpoint for pulling messages. | No | pubsub.googleapis.com:443
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].executor-threads` | Number of threads used by `Subscriber` instances created by `SubscriberFactory`. Note that configuring per-subscription `executor-threads` will result in the creation of thread pools for both global/default **and** per-subscription configurations.  | No | 4
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].flow-control.max-outstanding-element-count`|
 Maximum number of outstanding elements to keep in memory before enforcing flow control. | No | unlimited

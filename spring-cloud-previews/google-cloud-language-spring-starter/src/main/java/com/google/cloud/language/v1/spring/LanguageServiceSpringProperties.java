@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,11 @@ public class LanguageServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry classifyTextRetry;
+  /**
+   * Allow override of retry settings at method-level for moderateText. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry moderateTextRetry;
   /**
    * Allow override of retry settings at method-level for annotateText. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -150,6 +155,14 @@ public class LanguageServiceSpringProperties implements CredentialsSupplier {
 
   public void setClassifyTextRetry(Retry classifyTextRetry) {
     this.classifyTextRetry = classifyTextRetry;
+  }
+
+  public Retry getModerateTextRetry() {
+    return this.moderateTextRetry;
+  }
+
+  public void setModerateTextRetry(Retry moderateTextRetry) {
+    this.moderateTextRetry = moderateTextRetry;
   }
 
   public Retry getAnnotateTextRetry() {

@@ -10,6 +10,3 @@ com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocat
 # ConfigData Loaders
 org.springframework.boot.context.config.ConfigDataLoader=\
 com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLoader
-
-org.springframework.boot.autoconfigure.AutoConfigurationImportFilter=\
-com.google.cloud.spring.autoconfigure.trace.TraceAutoConfigurationFilter

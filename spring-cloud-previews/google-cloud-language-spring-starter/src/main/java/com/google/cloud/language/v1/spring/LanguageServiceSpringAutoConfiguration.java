@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,8 +86,10 @@ public class LanguageServiceSpringAutoConfiguration {
   }
 
   /**
-   * Provides a default transport channel provider bean. The default is gRPC and will default to it
-   * unless the useRest option is supported and provided to use HTTP transport instead
+   * Provides a default transport channel provider bean, corresponding to the client library's
+   * default transport channel provider. If the library supports both GRPC and REST transport, and
+   * the useRest property is configured, the HTTP/JSON transport provider will be used instead of
+   * GRPC.
    *
    * @return a default transport channel provider.
    */
@@ -189,6 +191,11 @@ public class LanguageServiceSpringAutoConfiguration {
               clientSettingsBuilder.classifyTextSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.classifyTextSettings().setRetrySettings(classifyTextRetrySettings);
 
+      RetrySettings moderateTextRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.moderateTextSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.moderateTextSettings().setRetrySettings(moderateTextRetrySettings);
+
       RetrySettings annotateTextRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.annotateTextSettings().getRetrySettings(), serviceRetry);
@@ -257,6 +264,16 @@ public class LanguageServiceSpringAutoConfiguration {
       clientSettingsBuilder.classifyTextSettings().setRetrySettings(classifyTextRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for classifyText from properties.");
+      }
+    }
+    Retry moderateTextRetry = clientProperties.getModerateTextRetry();
+    if (moderateTextRetry != null) {
+      RetrySettings moderateTextRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.moderateTextSettings().getRetrySettings(), moderateTextRetry);
+      clientSettingsBuilder.moderateTextSettings().setRetrySettings(moderateTextRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for moderateText from properties.");
       }
     }
     Retry annotateTextRetry = clientProperties.getAnnotateTextRetry();

@@ -60,6 +60,11 @@ class SecretManagerTemplateTests {
   }
 
   @Test
+  void testProjectId() {
+    assertThat(this.secretManagerTemplate.getProjectId()).isEqualTo("my-project");
+  }
+
+  @Test
   void testCreateSecretIfMissing() {
     // This means that no previous secrets exist.
     when(this.client.getSecret(any(SecretName.class))).thenThrow(NotFoundException.class);

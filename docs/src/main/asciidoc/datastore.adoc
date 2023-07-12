@@ -810,6 +810,7 @@ this.datastoreTemplate.save(t);
 ----
 
 The `save` method behaves as update-or-insert.
+In contrast, the `insert` method will fail if an entity already exists.
 
 ===== Partial Update
 
@@ -852,6 +853,13 @@ This feature requires a bean of `DatastoreTransactionManager`, which is provided
 `DatastoreTemplate` and `DatastoreRepository` support running methods with the `@Transactional` https://docs.spring.io/spring/docs/current/spring-framework-reference/data-access.html#transaction-declarative[annotation] as transactions.
 If a method annotated with `@Transactional` calls another method also annotated, then both methods will work within the same transaction.
 `performTransaction` cannot be used in `@Transactional` annotated methods because Cloud Datastore does not support transactions within transactions.
+
+Other Google Cloud database-related integrations like Spanner and Firestore can introduce `PlatformTransactionManager` beans, and can interfere with Datastore Transaction Manager. To disambiguate, explicitly specify the name of the transaction manager bean for such `@Transactional` methods. Example:
+
+[source,java]
+----
+@Transactional(transactionManager = "datastoreTransactionManager")
+----
 
 ==== Read-Write Support for Maps
 

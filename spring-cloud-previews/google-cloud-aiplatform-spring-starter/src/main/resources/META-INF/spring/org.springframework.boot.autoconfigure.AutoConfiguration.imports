@@ -5,8 +5,10 @@ com.google.cloud.aiplatform.v1.spring.FeaturestoreServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.IndexEndpointServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.IndexServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.JobServiceSpringAutoConfiguration
+com.google.cloud.aiplatform.v1.spring.MatchServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.MetadataServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.MigrationServiceSpringAutoConfiguration
+com.google.cloud.aiplatform.v1.spring.ModelGardenServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.ModelServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.PipelineServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.PredictionServiceSpringAutoConfiguration

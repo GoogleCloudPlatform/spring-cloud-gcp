@@ -21,7 +21,7 @@ jobs:
     steps:
     - name: Get current date
       id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d' --utc)"
+      run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
     - uses: actions/checkout@v2
     - run: |
         git config user.name github-actions

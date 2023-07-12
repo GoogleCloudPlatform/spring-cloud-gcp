@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,6 +102,11 @@ public class DataplexServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listJobsRetry;
+  /**
+   * Allow override of retry settings at method-level for runTask. If defined, this takes precedence
+   * over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry runTaskRetry;
   /**
    * Allow override of retry settings at method-level for getJob. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
@@ -269,6 +274,14 @@ public class DataplexServiceSpringProperties implements CredentialsSupplier {
 
   public void setListJobsRetry(Retry listJobsRetry) {
     this.listJobsRetry = listJobsRetry;
+  }
+
+  public Retry getRunTaskRetry() {
+    return this.runTaskRetry;
+  }
+
+  public void setRunTaskRetry(Retry runTaskRetry) {
+    this.runTaskRetry = runTaskRetry;
   }
 
   public Retry getGetJobRetry() {

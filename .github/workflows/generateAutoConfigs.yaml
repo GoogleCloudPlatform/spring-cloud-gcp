@@ -1,64 +1,71 @@
 name: Generate Spring Auto-Configurations
 on:
-  pull_request:
   workflow_dispatch:
+    inputs:
+      branch_name:
+        description: PR branch name
+        required: true
+        default: "renovate/main-gcp-libraries-bom.version"
+      forked_repo:
+        description: Fork name (enter none if repo branch)
+        required: true
+        default: "renovate-bot/GoogleCloudPlatform-_-spring-cloud-gcp"
+  pull_request:
+    types: [opened]
 jobs:
   generateLibraries:
-    # Run job if manually triggered, or on PR with matching branch condition
-    if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom') && github.event.action == 'opened') }}
+    # Run this if workflow is manually triggered
+    # On initial opening of renovate or dependabot PR with matching branch condition,
+    # log information required for manually triggering workflow and exit with error to block PR
+    if: ${{ (github.event_name == 'workflow_dispatch') || startsWith(github.head_ref, 'renovate/main-gcp-libraries-bom.version') || startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom') }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: Get branch name
-        id: get_branch_name
+      - name: Get PR info
+        id: get_pr_info
         continue-on-error: false
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo "Please trigger update workflow manually. The following information may be helpful: "
+          echo "PR head repo full name: $HEAD_REPO_NAME"
+          echo "PR base repo full name: $BASE_REPO_NAME"
+          echo "PR branch name: $PR_BRANCH_NAME"
+          echo "Actor from PR event: $GITHUB_ACTOR"
+          exit 1
+        env:
+          HEAD_REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO_NAME: ${{ github.event.pull_request.base.repo.full_name }}
+          PR_BRANCH_NAME: ${{ github.head_ref }}
+      - name: Get libraries bom version
+        id: get_libraries_bom_version
+        continue-on-error: false
+        # Fetch updated pom file with the new libraries-bom version.
+        # This step differs slightly depending on whether the workflow is triggered for a forked repo.
         run: |
           set -x
-          if ${{ github.event_name == 'pull_request' }}; then
-            echo "Branch name from PR event: $GITHUB_HEAD_REF"
-            echo "BRANCH_NAME=$GITHUB_HEAD_REF" >> $GITHUB_OUTPUT
-          else
-            echo "Branch name from manual trigger: $GITHUB_REF_NAME"
-            echo "BRANCH_NAME=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
+          sudo apt-get update
+          sudo apt-get install libxml2-utils
+          if [[ ${{ github.event.inputs.forked_repo }} != "none" ]]; then
+            git fetch https://github.com/${{ github.event.inputs.forked_repo }}.git ${{ github.event.inputs.branch_name }}
+            git checkout FETCH_HEAD -- spring-cloud-gcp-dependencies/pom.xml
+          else 
+            git fetch origin ${{ github.event.inputs.branch_name }}
+            git checkout origin/${{ github.event.inputs.branch_name }} -- spring-cloud-gcp-dependencies/pom.xml
           fi
-      - name: Fail if not dependabot branch
-        continue-on-error: false
-        if: ${{ !startsWith(steps.get_branch_name.outputs.BRANCH_NAME, 'dependabot/maven/com.google.cloud-libraries-bom') }}
-        run: |
-          echo "This workflow should only be triggered from a dependabot branch to update libraries-bom"
-          echo "Stopping workflow triggered from branch: ${{ steps.get_branch_name.outputs.BRANCH_NAME }}"
-          exit 1
+          echo "LIBRARIES_BOM_VERSION=$(xmllint --xpath "string(//*[local-name()='gcp-libraries-bom.version'])" spring-cloud-gcp-dependencies/pom.xml)" >> $GITHUB_OUTPUT
       - name: Setup Java 17
         uses: actions/setup-java@v1
         with:
           java-version: 17
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install Bazel
-        continue-on-error: false
+      - run: bazelisk version
+      - uses: actions/setup-go@v3
+      - name: Install buildozer
         run: |
-          set -x
-          sudo apt-get install apt-transport-https curl gnupg
-          curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
-          sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
-          sudo apt update && sudo apt install bazel
-      - uses: bazelbuild/setup-bazelisk@v2
-      - name: Clean previews folder
-        continue-on-error: false
-        working-directory: spring-cloud-generator
-        run: |
-          set -x
-          bash reset-previews-folder.sh
-      - name: Generate library list
-        continue-on-error: false
-        working-directory: spring-cloud-generator
-        run: |
-          set -x
-          set -e
-          sudo apt-get update
-          sudo apt-get install libxml2-utils
-          bash generate-library-list.sh
+          go install github.com/bazelbuild/buildtools/buildozer@latest
+          export PATH=$PATH:$(go env GOPATH)/bin
+          buildozer --version
       - name: Compile non-autogen libraries
         continue-on-error: false
         run: |
@@ -76,13 +83,23 @@ jobs:
         run: |
           set -x
           set -e
-          bash generate-all.sh
-      - name: Check for generation errors
+          export PATH=$PATH:$(go env GOPATH)/bin
+          buildozer --version
+          bash scripts/generate.sh
+        env:
+          LIBRARIES_BOM_VERSION: ${{ steps.get_libraries_bom_version.outputs.LIBRARIES_BOM_VERSION }}
+      - name: Sanity checks
         continue-on-error: false
         working-directory: spring-cloud-generator
         run: |
           set -x
-          if [[ $(ls *failed-library-generations | wc -l) -eq 0 ]]; then
+          bash scripts/sanity-checks.sh
+      - name: Check for generation errors
+        continue-on-error: false
+        working-directory: spring-cloud-generator
+        run: |
+          set -xe
+          if [[ ! -d failed-library-generations ]] || [[ $(ls *failed-library-generations | wc -l) -eq 0 ]]; then
             echo 'no errors at generation'
             exit 0
           fi
@@ -91,17 +108,6 @@ jobs:
             cat failed-library-generations/$failed_lib_name
           done
           exit 1
-      - name: Check for compilation errors
-        continue-on-error: false
-        working-directory: spring-cloud-previews
-        run: |
-          ../mvnw \
-            --batch-mode \
-            --show-version \
-            --threads 1.5C \
-            --define maven.test.skip=true \
-            --define maven.javadoc.skip=true \
-            install
       #Compares the current contents of spring-cloud-previews with the new generated libraries
       - name: Detect changes
         id: detect_changes
@@ -122,27 +128,33 @@ jobs:
         if: steps.detect_changes.outputs.CHANGED_FILES > 0
         run: |
           set -x
+          
           # stashes the changes from generated libs
           git stash push -- spring-cloud-previews/
-          git reset --hard
-          git remote update
-
-          # pops the changes in branch
-          git checkout $BRANCH_NAME
-          git stash pop
-          git add ./spring-cloud-previews
-
+          
           # configure author
           git config --global user.name "Cloud Java Bot"
           git config --global user.email "cloud-java-bot@google.com"
-
-          # commit
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          git commit -m "chore: update starter modules in spring-cloud-previews"
-          git push --set-upstream origin $BRANCH_NAME
+          
+          # push changes to branch
+          if [[ ${{ github.event.inputs.forked_repo }} != "none" ]]; then
+            git fetch https://github.com/${{ github.event.inputs.forked_repo }}.git ${{ github.event.inputs.branch_name }}
+            git checkout FETCH_HEAD
+            git stash pop
+            git add ./spring-cloud-previews
+            git commit -m "chore: update starter modules in spring-cloud-previews"
+            git push https://github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
+          else
+            git fetch origin ${{ github.event.inputs.branch_name }}
+            git checkout ${{ github.event.inputs.branch_name }}
+            git reset --hard
+            git stash pop
+            git add ./spring-cloud-previews
+            git commit -m "chore: update starter modules in spring-cloud-previews"
+            git push -u origin ${{ github.event.inputs.branch_name }}
+          fi
 
         env:
-          BRANCH_NAME: ${{ steps.get_branch_name.outputs.BRANCH_NAME }}
           GITHUB_ACTOR_EMAIL: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_EMAIL }}
           GITHUB_ACTOR_NAME: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_NAME }}
           GITHUB_TOKEN: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}

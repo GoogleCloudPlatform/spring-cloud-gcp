@@ -16,6 +16,9 @@
 
 package com.google.cloud.spring.data.datastore.core;
 
+import com.google.cloud.datastore.AggregationQuery;
+import com.google.cloud.datastore.AggregationResult;
+import com.google.cloud.datastore.AggregationResults;
 import com.google.cloud.datastore.BaseEntity;
 import com.google.cloud.datastore.BaseKey;
 import com.google.cloud.datastore.Cursor;
@@ -39,6 +42,7 @@ import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.datastore.StructuredQuery.Filter;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.cloud.datastore.Value;
+import com.google.cloud.datastore.aggregation.Aggregation;
 import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
 import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
@@ -55,6 +59,7 @@ import com.google.cloud.spring.data.datastore.core.util.KeyUtil;
 import com.google.cloud.spring.data.datastore.core.util.SliceUtil;
 import com.google.cloud.spring.data.datastore.core.util.ValueUtil;
 import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -67,6 +72,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -144,21 +150,44 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
   @Override
   public <T> T save(T instance, Key... ancestors) {
     List<T> instances = Collections.singletonList(instance);
-    saveEntities(instances, ancestors);
+    insertOrSaveEntities(instances, ancestors, getDatastoreReadWriter()::put);
     return instance;
   }
 
   @Override
   public <T> Iterable<T> saveAll(Iterable<T> entities, Key... ancestors) {
+    insertOrSaveEntities(entities, ancestors, getDatastoreReadWriter()::put);
+    return entities;
+  }
+
+  @Override
+  public <T> T insert(final T instance, final Key... ancestors) {
+    List<T> instances = Collections.singletonList(instance);
+    insertOrSaveEntities(instances, ancestors, getDatastoreReadWriter()::add);
+    return instance;
+  }
+
+  @Override
+  public <T> Iterable<T> insertAll(final Iterable<T> entities, final Key... ancestors) {
+    insertOrSaveEntities(entities, ancestors, getDatastoreReadWriter()::add);
+    return entities;
+  }
+
+  private <T> void insertOrSaveEntities(Iterable<T> iterable, Key[] ancestors, Consumer<FullEntity<?>[]> consumer) {
     List<T> instances;
-    if (entities instanceof List) {
-      instances = (List<T>) entities;
+    if (iterable instanceof List) {
+      instances = (List<T>) iterable;
     } else {
       instances = new ArrayList<>();
-      entities.forEach(instances::add);
+      iterable.forEach(instances::add);
     }
-    saveEntities(instances, ancestors);
-    return entities;
+
+    if (!instances.isEmpty()) {
+      maybeEmitEvent(new BeforeSaveEvent(instances));
+      List<Entity> entities = getEntitiesForSave(instances, new HashSet<>(), ancestors);
+      SliceUtil.sliceAndExecute(entities.toArray(new Entity[0]), this.maxWriteSize, consumer);
+      maybeEmitEvent(new AfterSaveEvent(entities, instances));
+    }
   }
 
   private <T> List<Entity> getEntitiesForSave(
@@ -172,16 +201,6 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
       }
     }
     return entitiesForSave;
-  }
-
-  private <T> void saveEntities(List<T> instances, Key[] ancestors) {
-    if (!instances.isEmpty()) {
-      maybeEmitEvent(new BeforeSaveEvent(instances));
-      List<Entity> entities = getEntitiesForSave(instances, new HashSet<>(), ancestors);
-      SliceUtil.sliceAndExecute(
-          entities.toArray(new Entity[0]), this.maxWriteSize, getDatastoreReadWriter()::put);
-      maybeEmitEvent(new AfterSaveEvent(entities, instances));
-    }
   }
 
   @Override
@@ -233,7 +252,19 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
   @Override
   public long count(Class<?> entityClass) {
-    return findAllKeys(entityClass).length;
+    KeyQuery baseQuery = Query.newKeyQueryBuilder()
+        .setKind(getPersistentEntity(entityClass).kindName())
+        .build();
+
+    AggregationQuery countAggregationQuery = Query.newAggregationQueryBuilder()
+        .over(baseQuery)
+        .addAggregation(Aggregation.count().as("total_count"))
+        .build();
+
+    AggregationResults aggregationResults = getDatastoreReadWriter().runAggregation(countAggregationQuery);
+    maybeEmitEvent(new AfterQueryEvent(aggregationResults, countAggregationQuery));
+    AggregationResult aggregationResult = Iterables.getOnlyElement(aggregationResults);
+    return aggregationResult.get("total_count");
   }
 
   @Override

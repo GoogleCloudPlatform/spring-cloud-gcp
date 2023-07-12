@@ -26,7 +26,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
 import org.springframework.context.annotation.Bean;
-import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * Auto-configuration for {@link DatastoreTransactionManager}.
@@ -59,7 +58,7 @@ public class DatastoreTransactionManagerAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(PlatformTransactionManager.class)
+    @ConditionalOnMissingBean
     public DatastoreTransactionManager datastoreTransactionManager() {
       DatastoreTransactionManager transactionManager =
           new DatastoreTransactionManager(this.datastore);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,16 @@ public class CloudFilestoreManagerSpringProperties implements CredentialsSupplie
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getInstanceRetry;
+  /**
+   * Allow override of retry settings at method-level for listSnapshots. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listSnapshotsRetry;
+  /**
+   * Allow override of retry settings at method-level for getSnapshot. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getSnapshotRetry;
   /**
    * Allow override of retry settings at method-level for listBackups. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -114,6 +124,22 @@ public class CloudFilestoreManagerSpringProperties implements CredentialsSupplie
 
   public void setGetInstanceRetry(Retry getInstanceRetry) {
     this.getInstanceRetry = getInstanceRetry;
+  }
+
+  public Retry getListSnapshotsRetry() {
+    return this.listSnapshotsRetry;
+  }
+
+  public void setListSnapshotsRetry(Retry listSnapshotsRetry) {
+    this.listSnapshotsRetry = listSnapshotsRetry;
+  }
+
+  public Retry getGetSnapshotRetry() {
+    return this.getSnapshotRetry;
+  }
+
+  public void setGetSnapshotRetry(Retry getSnapshotRetry) {
+    this.getSnapshotRetry = getSnapshotRetry;
   }
 
   public Retry getListBackupsRetry() {

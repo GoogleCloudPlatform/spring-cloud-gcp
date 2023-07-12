@@ -1,0 +1,13 @@
+_spring_cloud_generator_version = "4.5.2-SNAPSHOT" # {x-version-update:spring-cloud-gcp:current}
+
+maven_install(
+    artifacts = [
+        "com.google.cloud:spring-cloud-generator:" + _spring_cloud_generator_version,
+    ],
+    #Update this False for local development
+    fail_on_missing_checksum = False,
+    repositories = [
+        "m2Local",
+        "https://repo.maven.apache.org/maven2/",
+    ]
+)

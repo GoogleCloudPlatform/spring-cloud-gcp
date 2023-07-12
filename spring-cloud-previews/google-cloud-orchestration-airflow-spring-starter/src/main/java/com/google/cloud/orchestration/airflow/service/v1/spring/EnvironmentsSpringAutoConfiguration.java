@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,8 +86,10 @@ public class EnvironmentsSpringAutoConfiguration {
   }
 
   /**
-   * Provides a default transport channel provider bean. The default is gRPC and will default to it
-   * unless the useRest option is supported and provided to use HTTP transport instead
+   * Provides a default transport channel provider bean, corresponding to the client library's
+   * default transport channel provider. If the library supports both GRPC and REST transport, and
+   * the useRest property is configured, the HTTP/JSON transport provider will be used instead of
+   * GRPC.
    *
    * @return a default transport channel provider.
    */
@@ -169,6 +171,36 @@ public class EnvironmentsSpringAutoConfiguration {
           .listEnvironmentsSettings()
           .setRetrySettings(listEnvironmentsRetrySettings);
 
+      RetrySettings executeAirflowCommandRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.executeAirflowCommandSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .executeAirflowCommandSettings()
+          .setRetrySettings(executeAirflowCommandRetrySettings);
+
+      RetrySettings stopAirflowCommandRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.stopAirflowCommandSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .stopAirflowCommandSettings()
+          .setRetrySettings(stopAirflowCommandRetrySettings);
+
+      RetrySettings pollAirflowCommandRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.pollAirflowCommandSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .pollAirflowCommandSettings()
+          .setRetrySettings(pollAirflowCommandRetrySettings);
+
+      RetrySettings fetchDatabasePropertiesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchDatabasePropertiesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .fetchDatabasePropertiesSettings()
+          .setRetrySettings(fetchDatabasePropertiesRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -196,6 +228,62 @@ public class EnvironmentsSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listEnvironments from properties.");
+      }
+    }
+    Retry executeAirflowCommandRetry = clientProperties.getExecuteAirflowCommandRetry();
+    if (executeAirflowCommandRetry != null) {
+      RetrySettings executeAirflowCommandRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.executeAirflowCommandSettings().getRetrySettings(),
+              executeAirflowCommandRetry);
+      clientSettingsBuilder
+          .executeAirflowCommandSettings()
+          .setRetrySettings(executeAirflowCommandRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for executeAirflowCommand from properties.");
+      }
+    }
+    Retry stopAirflowCommandRetry = clientProperties.getStopAirflowCommandRetry();
+    if (stopAirflowCommandRetry != null) {
+      RetrySettings stopAirflowCommandRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.stopAirflowCommandSettings().getRetrySettings(),
+              stopAirflowCommandRetry);
+      clientSettingsBuilder
+          .stopAirflowCommandSettings()
+          .setRetrySettings(stopAirflowCommandRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for stopAirflowCommand from properties.");
+      }
+    }
+    Retry pollAirflowCommandRetry = clientProperties.getPollAirflowCommandRetry();
+    if (pollAirflowCommandRetry != null) {
+      RetrySettings pollAirflowCommandRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.pollAirflowCommandSettings().getRetrySettings(),
+              pollAirflowCommandRetry);
+      clientSettingsBuilder
+          .pollAirflowCommandSettings()
+          .setRetrySettings(pollAirflowCommandRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for pollAirflowCommand from properties.");
+      }
+    }
+    Retry fetchDatabasePropertiesRetry = clientProperties.getFetchDatabasePropertiesRetry();
+    if (fetchDatabasePropertiesRetry != null) {
+      RetrySettings fetchDatabasePropertiesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchDatabasePropertiesSettings().getRetrySettings(),
+              fetchDatabasePropertiesRetry);
+      clientSettingsBuilder
+          .fetchDatabasePropertiesSettings()
+          .setRetrySettings(fetchDatabasePropertiesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for fetchDatabaseProperties from properties.");
       }
     }
     return clientSettingsBuilder.build();

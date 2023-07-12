@@ -384,4 +384,49 @@ class LanguageAutoConfigurationTests {
                   .isEqualTo(customServiceMaxAttempts);
             });
   }
+
+  @Test
+  void testRetrySettingsFromProperties_methodLevel_totalTimeout() {
+    String customTimeoutString = "PT10S";
+    Duration customTimeoutDuration = Duration.ofSeconds(10);
+
+    this.contextRunner
+        .withPropertyValues(
+            // configure total timeout on method-level
+            "com.google.cloud.language.v1.language-service.analyze-sentiment-retry.total-timeout="
+                + customTimeoutString,
+            "com.google.cloud.language.v1.language-service.analyze-entities-retry.total-timeout="
+                + customTimeoutString,
+            "com.google.cloud.language.v1.language-service.analyze-entity-sentiment-retry.total-timeout="
+                + customTimeoutString,
+            "com.google.cloud.language.v1.language-service.analyze-syntax-retry.total-timeout="
+                + customTimeoutString,
+            "com.google.cloud.language.v1.language-service.classify-text-retry.total-timeout="
+                + customTimeoutString,
+            "com.google.cloud.language.v1.language-service.annotate-text-retry.total-timeout="
+                + customTimeoutString)
+        .run(
+            ctx -> {
+              LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
+              LanguageServiceSettings settings = client.getSettings();
+
+              // Method-level configurations
+              assertThat(settings.analyzeEntitiesSettings().getRetrySettings().getTotalTimeout())
+                  .isEqualTo(customTimeoutDuration);
+              assertThat(settings.analyzeEntitiesSettings().getRetrySettings().getTotalTimeout())
+                  .isEqualTo(customTimeoutDuration);
+              assertThat(
+                      settings
+                          .analyzeEntitySentimentSettings()
+                          .getRetrySettings()
+                          .getTotalTimeout())
+                  .isEqualTo(customTimeoutDuration);
+              assertThat(settings.analyzeSyntaxSettings().getRetrySettings().getTotalTimeout())
+                  .isEqualTo(customTimeoutDuration);
+              assertThat(settings.classifyTextSettings().getRetrySettings().getTotalTimeout())
+                  .isEqualTo(customTimeoutDuration);
+              assertThat(settings.annotateTextSettings().getRetrySettings().getTotalTimeout())
+                  .isEqualTo(customTimeoutDuration);
+            });
+  }
 }

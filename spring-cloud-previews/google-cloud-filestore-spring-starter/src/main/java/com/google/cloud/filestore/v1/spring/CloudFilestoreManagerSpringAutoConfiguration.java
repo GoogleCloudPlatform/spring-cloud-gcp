@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,8 +88,10 @@ public class CloudFilestoreManagerSpringAutoConfiguration {
   }
 
   /**
-   * Provides a default transport channel provider bean. The default is gRPC and will default to it
-   * unless the useRest option is supported and provided to use HTTP transport instead
+   * Provides a default transport channel provider bean, corresponding to the client library's
+   * default transport channel provider. If the library supports both GRPC and REST transport, and
+   * the useRest property is configured, the HTTP/JSON transport provider will be used instead of
+   * GRPC.
    *
    * @return a default transport channel provider.
    */
@@ -169,6 +171,16 @@ public class CloudFilestoreManagerSpringAutoConfiguration {
               clientSettingsBuilder.getInstanceSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getInstanceSettings().setRetrySettings(getInstanceRetrySettings);
 
+      RetrySettings listSnapshotsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listSnapshotsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listSnapshotsSettings().setRetrySettings(listSnapshotsRetrySettings);
+
+      RetrySettings getSnapshotRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getSnapshotSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getSnapshotSettings().setRetrySettings(getSnapshotRetrySettings);
+
       RetrySettings listBackupsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listBackupsSettings().getRetrySettings(), serviceRetry);
@@ -201,6 +213,26 @@ public class CloudFilestoreManagerSpringAutoConfiguration {
       clientSettingsBuilder.getInstanceSettings().setRetrySettings(getInstanceRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getInstance from properties.");
+      }
+    }
+    Retry listSnapshotsRetry = clientProperties.getListSnapshotsRetry();
+    if (listSnapshotsRetry != null) {
+      RetrySettings listSnapshotsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listSnapshotsSettings().getRetrySettings(), listSnapshotsRetry);
+      clientSettingsBuilder.listSnapshotsSettings().setRetrySettings(listSnapshotsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listSnapshots from properties.");
+      }
+    }
+    Retry getSnapshotRetry = clientProperties.getGetSnapshotRetry();
+    if (getSnapshotRetry != null) {
+      RetrySettings getSnapshotRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getSnapshotSettings().getRetrySettings(), getSnapshotRetry);
+      clientSettingsBuilder.getSnapshotSettings().setRetrySettings(getSnapshotRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getSnapshot from properties.");
       }
     }
     Retry listBackupsRetry = clientProperties.getListBackupsRetry();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,8 +86,10 @@ public class DataplexServiceSpringAutoConfiguration {
   }
 
   /**
-   * Provides a default transport channel provider bean. The default is gRPC and will default to it
-   * unless the useRest option is supported and provided to use HTTP transport instead
+   * Provides a default transport channel provider bean, corresponding to the client library's
+   * default transport channel provider. If the library supports both GRPC and REST transport, and
+   * the useRest property is configured, the HTTP/JSON transport provider will be used instead of
+   * GRPC.
    *
    * @return a default transport channel provider.
    */
@@ -222,6 +224,11 @@ public class DataplexServiceSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listJobsSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listJobsSettings().setRetrySettings(listJobsRetrySettings);
+
+      RetrySettings runTaskRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.runTaskSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.runTaskSettings().setRetrySettings(runTaskRetrySettings);
 
       RetrySettings getJobRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -392,6 +399,16 @@ public class DataplexServiceSpringAutoConfiguration {
       clientSettingsBuilder.listJobsSettings().setRetrySettings(listJobsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listJobs from properties.");
+      }
+    }
+    Retry runTaskRetry = clientProperties.getRunTaskRetry();
+    if (runTaskRetry != null) {
+      RetrySettings runTaskRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.runTaskSettings().getRetrySettings(), runTaskRetry);
+      clientSettingsBuilder.runTaskSettings().setRetrySettings(runTaskRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for runTask from properties.");
       }
     }
     Retry getJobRetry = clientProperties.getGetJobRetry();
