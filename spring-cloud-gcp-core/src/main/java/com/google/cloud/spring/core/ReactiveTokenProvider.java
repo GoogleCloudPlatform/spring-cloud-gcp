@@ -41,6 +41,10 @@ public interface ReactiveTokenProvider {
 
     static ReactiveTokenProvider create(Credentials credentials) {
         WebClient webClient = WebClient.builder().build();
+        return create(credentials, webClient);
+    }
+
+    static ReactiveTokenProvider create(Credentials credentials, WebClient webClient) {
         if (credentials instanceof UserCredentials) {
             return new UserCredentialsTokenProvider(webClient, (UserCredentials) credentials);
         } else if (credentials instanceof ServiceAccountCredentials) {

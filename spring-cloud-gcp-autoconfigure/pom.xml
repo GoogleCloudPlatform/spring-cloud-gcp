@@ -330,6 +330,13 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
+        <!-- WebFlux -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>commons-io</groupId>
