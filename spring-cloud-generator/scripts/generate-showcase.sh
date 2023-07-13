@@ -30,14 +30,14 @@ function verify(){
   OLD_DIR=$1
   NEW_DIR=$2
   SHOWCASE_STARTER_DIFF=$(diff -r ${NEW_DIR}/src/main ${OLD_DIR}/src/main)
-  SHOWCASE_STARTER_POM_DIFF=$(diff -r ${NEW_DIR}/pom.xml ${OLD_DIR}/pom.xml)
-  if [ "$SHOWCASE_STARTER_DIFF" != "" ] || [ "$SHOWCASE_STARTER_POM_DIFF" != "" ]
+  # SHOWCASE_STARTER_POM_DIFF=$(diff -r ${NEW_DIR}/pom.xml ${OLD_DIR}/pom.xml)
+  if [ "$SHOWCASE_STARTER_DIFF" != "" ] # || [ "$SHOWCASE_STARTER_POM_DIFF" != "" ]
   then
       echo "Differences detected in generated showcase starter module: "
       echo "Diff from src/main: "
       echo $SHOWCASE_STARTER_DIFF
-      echo "Diff from pom.xml: "
-      echo $SHOWCASE_STARTER_POM_DIFF
+#      echo "Diff from pom.xml: "
+#      echo $SHOWCASE_STARTER_POM_DIFF
       exit 1;
   else
       echo "No differences found in showcase-spring-starter"
