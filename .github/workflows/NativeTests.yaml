@@ -103,8 +103,34 @@ jobs:
           ../mvnw \
             --batch-mode \
             --define aggregate=true \
+            --activate-profiles native-sample-config \
           surefire-report:report-only
         working-directory: ./spring-cloud-gcp-samples
+      - name: Native Tests in Modules
+        id: intTest3
+        continue-on-error: true
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --activate-profiles spring-native,\!default \
+            --define maven.javadoc.skip=true \
+            test
+      - name: Retry on Failure
+        id: intTest4
+        if: steps.intTest3.outcome == 'failure'
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --activate-profiles spring-native,\!default \
+            --define maven.javadoc.skip=true \
+            test
+      - name: Aggregate Report
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --define aggregate=true \
+            --activate-profiles spring-native,\!default \
+          surefire-report:report-only
       - name: Archive logs
         if: always()
         continue-on-error: true

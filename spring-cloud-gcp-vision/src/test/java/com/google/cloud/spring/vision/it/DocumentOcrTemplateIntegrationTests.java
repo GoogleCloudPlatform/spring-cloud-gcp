@@ -21,14 +21,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.cloud.spring.storage.GoogleStorageLocation;
 import com.google.cloud.spring.vision.DocumentOcrResultSet;
 import com.google.cloud.spring.vision.DocumentOcrTemplate;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,17 +47,38 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = {VisionTestConfiguration.class})
 class DocumentOcrTemplateIntegrationTests {
 
+  private static final String BUCKET_NAME = "vision-integration-test-bucket";
+  private static GoogleStorageLocation outputLocationPrefix;
   @Autowired private DocumentOcrTemplate documentOcrTemplate;
+
+  @AfterAll
+  static void deleteStorageResources() {
+    Storage storage = StorageOptions.getDefaultInstance().getService();
+    Blob outputBlob1 =
+        storage.get(
+            BlobId.of(
+                outputLocationPrefix.getBucketName(),
+                outputLocationPrefix.getBlobName() + "output-1-to-2.json"));
+    Blob outputBlob2 =
+        storage.get(
+            BlobId.of(
+                outputLocationPrefix.getBucketName(),
+                outputLocationPrefix.getBlobName() + "output-3-to-4.json"));
+    storage.delete(outputBlob1.getBlobId());
+    storage.delete(outputBlob2.getBlobId());
+  }
 
   @Test
   void testDocumentOcrTemplate()
-      throws ExecutionException, InterruptedException, InvalidProtocolBufferException,
+      throws ExecutionException,
+          InterruptedException,
+          InvalidProtocolBufferException,
           TimeoutException {
 
-    GoogleStorageLocation document =
-        GoogleStorageLocation.forFile("vision-integration-test-bucket", "test.pdf");
-    GoogleStorageLocation outputLocationPrefix =
-        GoogleStorageLocation.forFile("vision-integration-test-bucket", "it_output/test-");
+    GoogleStorageLocation document = GoogleStorageLocation.forFile(BUCKET_NAME, "test.pdf");
+    outputLocationPrefix =
+        GoogleStorageLocation.forFile(
+            BUCKET_NAME, String.format("it_output/test-%s-", UUID.randomUUID()));
 
     CompletableFuture<DocumentOcrResultSet> result =
         this.documentOcrTemplate.runOcrForDocument(document, outputLocationPrefix);
@@ -82,7 +109,7 @@ class DocumentOcrTemplateIntegrationTests {
   @Test
   void testParseOcrResultSet() throws InvalidProtocolBufferException {
     GoogleStorageLocation ocrOutputPrefix =
-        GoogleStorageLocation.forFolder("vision-integration-test-bucket", "json_output_set/");
+        GoogleStorageLocation.forFolder(BUCKET_NAME, "json_output_set/");
 
     DocumentOcrResultSet result = this.documentOcrTemplate.readOcrOutputFileSet(ocrOutputPrefix);
 
@@ -93,8 +120,7 @@ class DocumentOcrTemplateIntegrationTests {
   @Test
   void testParseOcrFile() throws InvalidProtocolBufferException {
     GoogleStorageLocation ocrOutputFile =
-        GoogleStorageLocation.forFile(
-            "vision-integration-test-bucket", "json_output_set/test_output-2-to-2.json");
+        GoogleStorageLocation.forFile(BUCKET_NAME, "json_output_set/test_output-2-to-2.json");
 
     DocumentOcrResultSet pages = this.documentOcrTemplate.readOcrOutputFile(ocrOutputFile);
 
