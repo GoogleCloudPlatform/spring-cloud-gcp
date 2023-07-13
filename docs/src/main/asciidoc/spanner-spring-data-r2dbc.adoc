@@ -38,7 +38,7 @@ These features include:
 * Support for Reactive Transactions.
 * Schema and data initialization utilities.
 
-See the https://docs.spring.io/spring-data/r2dbc/docs/1.0.x/reference/html/#reference[Spring Data R2DBC documentation] for more information on how to use Spring Data R2DBC.
+See the https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/[Spring Data R2DBC documentation] for more information on how to use Spring Data R2DBC.
 
 === Sample Application
 
