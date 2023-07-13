@@ -37,13 +37,14 @@ jobs:
           install
       - name: Verify generation of showcase-spring-starter
         # Runs showcase-spring-starter golden tests
+        working-directory: spring-cloud-generator
         id: verify-showcase-spring-starter
         run: |
           set -x
           set -e
           export PATH=$PATH:$(go env GOPATH)/bin
           buildozer --version
-          cd spring-cloud-generator && bash scripts/generate-showcase.sh
+          bash scripts/generate-showcase.sh
       - name: Unit tests for showcase-spring-starter
         # Runs showcase-spring-starter unit tests
         run: |
@@ -56,7 +57,8 @@ jobs:
           gapic-showcase run &
       - name: Integration tests for showcase-spring-starter
         # Runs showcase-spring-starter integration tests
+        working-directory: spring-cloud-generator
         run: |
-          cd spring-cloud-generator/showcase/showcase-spring-starter && mvn verify -Dit.showcase=true
+          cd showcase/showcase-spring-starter && mvn verify -Dit.showcase=true
 
     
