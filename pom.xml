@@ -352,6 +352,9 @@
 	<profiles>
 	<profile>
 		<id>spring-native</id>
+		<modules>
+			<module>spring-cloud-gcp-vision</module>
+		</modules>
 
 		<dependencies>
 			<dependency>
@@ -376,7 +379,8 @@
 						</includes>
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<systemPropertyVariables>
-						<!--integration tests are not invoked unless the relevant system property is set to true here. -->
+							<!--integration tests are not invoked unless the relevant system property is set to true here. -->
+							<it.vision>true</it.vision>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>
@@ -407,6 +411,7 @@
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>${spring-boot-dependencies.version}</version>
 					<executions>
 						<execution>
 							<id>process-test-aot</id>
@@ -456,6 +461,56 @@
 				<module>docs</module>
 				<module>spring-cloud-gcp-samples</module>
 			</modules>
+		</profile>
+		<profile>
+			<!-- cloud RAD generation -->
+			<id>docFX</id>
+			<activation>
+				<property>
+					<!-- activate with -P docFX -->
+					<name>docFX</name>
+				</property>
+				<jdk>17</jdk>
+			</activation>
+			<properties>
+				<!-- default config values -->
+				<docletName>java-docfx-doclet-1.6.0</docletName>
+				<outputpath>${project.build.directory}/docfx-yml</outputpath>
+				<projectname>spring-framework-on-google-cloud</projectname>
+				<excludeclasses></excludeclasses>
+				<excludePackages></excludePackages>
+				<source>17</source>
+				<sourceFileExclude></sourceFileExclude>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${maven-javadoc-plugin.version}</version>
+						<configuration>
+							<doclet>com.microsoft.doclet.DocFxDoclet</doclet>
+							<useStandardDocletOptions>false</useStandardDocletOptions>
+							<!-- custom config with -Dproperty=value -->
+							<docletPath>${env.KOKORO_GFILE_DIR}/${docletName}.jar</docletPath>
+							<additionalOptions>
+								-outputpath ${outputpath}
+								-projectname ${projectname}
+								-excludeclasses ${excludeclasses}:
+								-excludepackages ${excludePackages}:
+								-disable-changelog true
+							</additionalOptions>
+							<doclint>none</doclint>
+							<show>protected</show>
+							<nohelp>true</nohelp>
+							<source>${source}</source>
+							<sourceFileExcludes>
+								<exclude>${sourceFileExclude}</exclude>
+							</sourceFileExcludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 
 		<!-- Code Coverage -->
