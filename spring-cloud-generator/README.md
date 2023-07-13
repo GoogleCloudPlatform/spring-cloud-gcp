@@ -27,9 +27,9 @@ mvn test -DupdateUnitGoldens
 ### Generation of Spring Boot Starters
 
 #### Running Github Actions Workflow:
-Corresponding workflow file: [generateAutoConfigs.yml](/.github/workflows/generateAutoConfigs.yml)
+Corresponding workflow file: [generateAutoConfigs.yaml](/.github/workflows/generateAutoConfigs.yaml)
 
-Using github actions, the following command can run the end-to-end generation workflow in `generateAutoConfigs.yml`
+Using github actions, the following command can run the end-to-end generation workflow in `generateAutoConfigs.yaml`
 against a development branch (e.g. `<my-branch>`):
 
 ```
@@ -63,7 +63,7 @@ bash scripts/generate.sh
 
 ### Showcase Testing for the Generator
 
-Corresponding workflow file: [showcaseTests.yml](/.github/workflows/showcaseTests.yml)
+Corresponding workflow file: [showcaseTests.yaml](/.github/workflows/showcaseTests.yaml)
 
 Script: [generate-showcase.sh](scripts/generate-showcase.sh)
 
@@ -79,7 +79,7 @@ bash scripts/generate-showcase.sh
 ```
 * This runs the generator for showcase clients and compares its output against the expected golden `showcase-spring-starter` module. 
 
-To update showcase golden tests locally, run ((from the `spring-cloud-generator` directory):
+To update showcase golden tests locally, run (from the `spring-cloud-generator` directory):
 ```
 bash scripts/generate-showcase.sh -u
 ```
