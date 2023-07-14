@@ -24,6 +24,7 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
@@ -36,7 +37,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * This verifies the sample application for using GCP Storage with Spring Resource abstractions.
@@ -58,6 +61,15 @@ class GcsSampleApplicationIntegrationTests {
   @Value("${gcs-resource-test-bucket}")
   private String bucketName;
 
+  @LocalServerPort private int port;
+
+  private String appUrl;
+
+  @BeforeEach
+  void initializeAppUrl() {
+    this.appUrl = "http://localhost:" + this.port;
+  }
+
   @BeforeEach
   @AfterEach
   void cleanupCloudStorage() {
@@ -69,24 +81,35 @@ class GcsSampleApplicationIntegrationTests {
 
   @Test
   void testGcsResourceIsLoaded() {
-    BlobId blobId = BlobId.of(this.bucketName, "my-file.txt");
+    String fileName = String.format("file-%s.txt", UUID.randomUUID());
+    BlobId blobId = BlobId.of(this.bucketName, fileName);
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
     this.storage.create(blobInfo, "Good Morning!".getBytes(StandardCharsets.UTF_8));
 
+    // Verify contents of uploaded file .
+    String getUrl =
+        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/")
+            .queryParam("filename", fileName)
+            .toUriString();
     Awaitility.await()
         .atMost(15, TimeUnit.SECONDS)
         .untilAsserted(
             () -> {
-              String result = this.testRestTemplate.getForObject("/", String.class);
+              String result = this.testRestTemplate.getForObject(getUrl, String.class);
               assertThat(result).isEqualTo("Good Morning!\n");
             });
 
-    this.testRestTemplate.postForObject("/", "Good Night!", String.class);
+    // Update contents of uploaded file and verify.
+    String postUrl =
+        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/")
+            .queryParam("filename", fileName)
+            .toUriString();
+    this.testRestTemplate.postForObject(postUrl, "Good Night!", String.class);
     Awaitility.await()
         .atMost(15, TimeUnit.SECONDS)
         .untilAsserted(
             () -> {
-              String result = this.testRestTemplate.getForObject("/", String.class);
+              String result = this.testRestTemplate.getForObject(getUrl, String.class);
               assertThat(result).isEqualTo("Good Night!\n");
             });
   }

@@ -16,9 +16,12 @@
 
 package com.example;
 
+import com.google.cloud.spring.storage.GoogleStorageResource;
+import com.google.cloud.storage.Storage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
@@ -26,6 +29,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -35,17 +39,45 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class WebController {
 
+  @Value("${gcs-resource-test-bucket}")
+  private String bucketName;
+
   @Value("gs://${gcs-resource-test-bucket}/my-file.txt")
   private Resource gcsFile;
 
-  @GetMapping("/")
-  public String readGcsFile() throws IOException {
+  private Storage storage;
+
+  private WebController(Storage storage) {
+    this.storage = storage;
+  }
+
+  @GetMapping(value = "/")
+  public String readGcsFile(@RequestParam("filename") Optional<String> fileName)
+      throws IOException {
+    if (fileName.isPresent()) {
+      GoogleStorageResource resource =
+          new GoogleStorageResource(
+              this.storage, String.format("gs://%s/%s", bucketName, fileName.get()));
+      return StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset()) + "\n";
+    }
     return StreamUtils.copyToString(this.gcsFile.getInputStream(), Charset.defaultCharset()) + "\n";
   }
 
-  @PostMapping("/")
-  public String writeGcs(@RequestBody String data) throws IOException {
-    try (OutputStream os = ((WritableResource) this.gcsFile).getOutputStream()) {
+  @PostMapping(value = "/")
+  public String writeGcs(
+      @RequestBody String data, @RequestParam("filename") Optional<String> fileName)
+      throws IOException {
+    if (fileName.isPresent()) {
+      GoogleStorageResource resource =
+          new GoogleStorageResource(
+              this.storage, String.format("gs://%s/%s", bucketName, fileName.get()));
+      return updateResource(resource, data);
+    }
+    return updateResource(this.gcsFile, data);
+  }
+
+  private String updateResource(Resource resource, String data) throws IOException {
+    try (OutputStream os = ((WritableResource) resource).getOutputStream()) {
       os.write(data.getBytes());
     }
     return "file was updated\n";

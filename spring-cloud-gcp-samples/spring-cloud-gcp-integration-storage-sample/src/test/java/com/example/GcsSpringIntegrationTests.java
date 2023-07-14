@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.awaitility.Awaitility;
@@ -57,8 +58,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(classes = {GcsSpringIntegrationApplication.class})
 class GcsSpringIntegrationTests {
 
-  private static final String TEST_FILE_NAME = "test_file";
-
   @Autowired private Storage storage;
 
   @Value("${gcs-read-bucket}")
@@ -83,7 +82,8 @@ class GcsSpringIntegrationTests {
 
   @Test
   void testFilePropagatedToLocalDirectory() {
-    BlobId blobId = BlobId.of(this.cloudInputBucket, TEST_FILE_NAME);
+    String testFileName = String.format("test_file_%s", UUID.randomUUID());
+    BlobId blobId = BlobId.of(this.cloudInputBucket, testFileName);
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
     this.storage.create(blobInfo, "Hello World!".getBytes(StandardCharsets.UTF_8));
 
@@ -91,7 +91,7 @@ class GcsSpringIntegrationTests {
         .atMost(15, TimeUnit.SECONDS)
         .untilAsserted(
             () -> {
-              Path outputFile = Paths.get(this.outputFolder + "/" + TEST_FILE_NAME);
+              Path outputFile = Paths.get(this.outputFolder + "/" + testFileName);
               assertThat(Files.exists(outputFile)).isTrue();
               assertThat(Files.isRegularFile(outputFile)).isTrue();
 
@@ -104,7 +104,7 @@ class GcsSpringIntegrationTests {
                   .iterateAll()
                   .forEach(b -> blobNamesInOutputBucket.add(b.getName()));
 
-              assertThat(blobNamesInOutputBucket).contains(TEST_FILE_NAME);
+              assertThat(blobNamesInOutputBucket).contains(testFileName);
             });
   }
 
