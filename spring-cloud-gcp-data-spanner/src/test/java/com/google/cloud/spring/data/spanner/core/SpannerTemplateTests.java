@@ -38,6 +38,8 @@ import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Options;
 import com.google.cloud.spanner.Options.ReadOption;
+import com.google.cloud.spanner.Options.ReadQueryUpdateTransactionOption;
+import com.google.cloud.spanner.Options.RpcPriority;
 import com.google.cloud.spanner.ReadContext;
 import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.ResultSet;
@@ -88,6 +90,8 @@ import org.springframework.data.domain.Sort;
 class SpannerTemplateTests {
 
   private static final Statement DML = Statement.of("update statement");
+
+  private static final ReadQueryUpdateTransactionOption OPTION = Options.priority(RpcPriority.HIGH);
 
   private DatabaseClient databaseClient;
 
@@ -194,6 +198,16 @@ class SpannerTemplateTests {
         new AfterExecuteDmlEvent(DML, 333L),
         () -> this.spannerTemplate.executePartitionedDmlStatement(DML),
         x -> x.verify(this.databaseClient, times(1)).executePartitionedUpdate(DML));
+  }
+
+  @Test
+  void executePartitionedDmlWithOptionsTest() {
+    when(this.databaseClient.executePartitionedUpdate(DML,OPTION)).thenReturn(333L);
+    verifyBeforeAndAfterEvents(
+        new BeforeExecuteDmlEvent(DML),
+        new AfterExecuteDmlEvent(DML, 333L),
+        () -> this.spannerTemplate.executePartitionedDmlStatement(DML, OPTION),
+        x -> x.verify(this.databaseClient, times(1)).executePartitionedUpdate(DML, OPTION));
   }
 
   @Test
