@@ -86,7 +86,7 @@ class GcsSampleApplicationIntegrationTests {
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
     this.storage.create(blobInfo, "Good Morning!".getBytes(StandardCharsets.UTF_8));
 
-    // Verify contents of uploaded file .
+    // Verify the contents of the uploaded file.
     String getUrl =
         UriComponentsBuilder.fromHttpUrl(this.appUrl + "/")
             .queryParam("filename", fileName)
@@ -99,7 +99,7 @@ class GcsSampleApplicationIntegrationTests {
               assertThat(result).isEqualTo("Good Morning!\n");
             });
 
-    // Update contents of uploaded file and verify.
+    // Update the contents of the uploaded file and verify.
     String postUrl =
         UriComponentsBuilder.fromHttpUrl(this.appUrl + "/")
             .queryParam("filename", fileName)
