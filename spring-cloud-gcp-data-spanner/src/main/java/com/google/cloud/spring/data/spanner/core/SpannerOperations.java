@@ -18,7 +18,6 @@ package com.google.cloud.spring.data.spanner.core;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
-import com.google.cloud.spanner.Options;
 import com.google.cloud.spanner.Options.UpdateOption;
 import com.google.cloud.spanner.ReadContext;
 import com.google.cloud.spanner.Statement;
@@ -58,6 +57,7 @@ public interface SpannerOperations {
    * @param options marks options applicable to update operation.
    * @return the lower-bound of number of rows affected.
    */
+
   long executePartitionedDmlStatement(Statement statement, UpdateOption... options);
 
   /**
