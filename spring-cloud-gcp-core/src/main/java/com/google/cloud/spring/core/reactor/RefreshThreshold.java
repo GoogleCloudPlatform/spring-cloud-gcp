@@ -20,21 +20,21 @@ import com.google.auth.oauth2.AccessToken;
 
 class RefreshThreshold {
 
-    static final int DEFAULT_MILLIS_BEFORE_EXPIRATION = 60 * 1000;
-    private final int millisBeforeExpiration;
+  static final int DEFAULT_MILLIS_BEFORE_EXPIRATION = 60 * 1000;
+  private final int millisBeforeExpiration;
 
-    public RefreshThreshold() {
-        this(DEFAULT_MILLIS_BEFORE_EXPIRATION);
-    }
+  public RefreshThreshold() {
+    this(DEFAULT_MILLIS_BEFORE_EXPIRATION);
+  }
 
-    public RefreshThreshold(int millisBeforeExpiration) {
-        this.millisBeforeExpiration = millisBeforeExpiration;
-    }
+  public RefreshThreshold(int millisBeforeExpiration) {
+    this.millisBeforeExpiration = millisBeforeExpiration;
+  }
 
-    boolean over(AccessToken accessToken) {
-        long currentMillis = System.currentTimeMillis();
-        long expirationMillis = accessToken.getExpirationTime().getTime();
-        return currentMillis > expirationMillis - millisBeforeExpiration;
-    }
+  boolean over(AccessToken accessToken) {
+    long currentMillis = System.currentTimeMillis();
+    long expirationMillis = accessToken.getExpirationTime().getTime();
+    return currentMillis > expirationMillis - millisBeforeExpiration;
+  }
 
 }

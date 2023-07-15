@@ -16,54 +16,54 @@
 
 package com.google.cloud.spring.core.reactor;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import com.google.auth.oauth2.AccessToken;
 import com.google.cloud.spring.core.ReactiveTokenProvider;
-
+import java.util.concurrent.atomic.AtomicReference;
 import reactor.core.publisher.Mono;
 
 public class CacheableTokenProvider implements ReactiveTokenProvider {
 
-    private ReactiveTokenProvider reactiveTokenProvider;
+  private ReactiveTokenProvider reactiveTokenProvider;
 
-    private AtomicReference<Mono<AccessToken>> atomicReference;
+  private AtomicReference<Mono<AccessToken>> atomicReference;
 
-    private final RefreshThreshold refreshThreshold;
+  private final RefreshThreshold refreshThreshold;
 
-    public CacheableTokenProvider(ReactiveTokenProvider reactiveTokenProvider) {
-        this(reactiveTokenProvider, new RefreshThreshold());
+  public CacheableTokenProvider(ReactiveTokenProvider reactiveTokenProvider) {
+    this(reactiveTokenProvider, new RefreshThreshold());
+  }
+
+  public CacheableTokenProvider(ReactiveTokenProvider reactiveTokenProvider,
+      RefreshThreshold refreshThreshold) {
+    this.reactiveTokenProvider = reactiveTokenProvider;
+    this.atomicReference = new AtomicReference<>(cachedRetrieval());
+    this.refreshThreshold = refreshThreshold;
+  }
+
+  @Override
+  public Mono<AccessToken> retrieve() {
+    Mono<AccessToken> currentInstance = atomicReference.get();
+    return currentInstance.flatMap(t -> createNewIfCloseToExpiration(currentInstance, t));
+  }
+
+  private Mono<AccessToken> createNewIfCloseToExpiration(Mono<AccessToken> currentInstance,
+      AccessToken t) {
+    boolean expiresSoon = refreshThreshold.over(t);
+    if (expiresSoon) {
+      return refreshOnExpiration(currentInstance);
+    } else {
+      return Mono.just(t);
     }
+  }
 
-    public CacheableTokenProvider(ReactiveTokenProvider reactiveTokenProvider, RefreshThreshold refreshThreshold) {
-        this.reactiveTokenProvider = reactiveTokenProvider;
-        this.atomicReference = new AtomicReference<>(cachedRetrieval());
-        this.refreshThreshold = refreshThreshold;
-    }
+  private Mono<AccessToken> refreshOnExpiration(Mono<AccessToken> expected) {
+    Mono<AccessToken> toExecute = cachedRetrieval();
+    atomicReference.compareAndSet(expected, toExecute);
+    return atomicReference.get();
+  }
 
-    @Override
-    public Mono<AccessToken> retrieve() {
-        Mono<AccessToken> currentInstance = atomicReference.get();
-        return currentInstance.flatMap(t -> createNewIfCloseToExpiration(currentInstance, t));
-    }
-
-    private Mono<AccessToken> createNewIfCloseToExpiration(Mono<AccessToken> currentInstance, AccessToken t) {
-        boolean expiresSoon = refreshThreshold.over(t);
-        if (expiresSoon) {
-            return refreshOnExpiration(currentInstance);
-        } else {
-            return Mono.just(t);
-        }
-    }
-
-    private Mono<AccessToken> refreshOnExpiration(Mono<AccessToken> expected) {
-        Mono<AccessToken> toExecute = cachedRetrieval();
-        atomicReference.compareAndSet(expected, toExecute);
-        return atomicReference.get();
-    }
-
-    Mono<AccessToken> cachedRetrieval() {
-        return reactiveTokenProvider.retrieve().cache();
-    }
+  Mono<AccessToken> cachedRetrieval() {
+    return reactiveTokenProvider.retrieve().cache();
+  }
 
 }

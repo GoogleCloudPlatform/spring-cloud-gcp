@@ -16,72 +16,74 @@
 
 package com.google.auth.oauth2;
 
+import static com.google.auth.oauth2.TokenProviderBase.addExpiration;
+import static com.google.auth.oauth2.TokenProviderBase.expectedToken;
+import static com.google.auth.oauth2.TokenProviderBase.successfulResponse;
+
+import com.google.cloud.spring.core.ReactiveTokenProvider;
 import java.io.IOException;
 import java.net.URISyntaxException;
-
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import com.google.cloud.spring.core.ReactiveTokenProvider;
-
-import static com.google.auth.oauth2.TokenProviderBase.addExpiration;
-import static com.google.auth.oauth2.TokenProviderBase.expectedToken;
-import static com.google.auth.oauth2.TokenProviderBase.successfulResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import reactor.test.StepVerifier;
 
 class ComputeEngineTokenProviderTests {
 
-    private static final Long SECONDS = 3600L;
-    private static final String ACCESS_TOKEN = "ya29.a0AfH6SMAa-dKy_...";
+  private static final Long SECONDS = 3600L;
+  private static final String ACCESS_TOKEN = "ya29.a0AfH6SMAa-dKy_...";
 
-    private static String COMPUTE_ENGINE_TOKEN = "{\"access_token\":\"" + ACCESS_TOKEN + "\",\"expires_in\":" + SECONDS + ",\"token_type\":\"Bearer\"}";
-    private static String COMPUTE_ENGINE_TOKEN_BAD_RESPONSE = "{\"token\":\"" + ACCESS_TOKEN + "\",\"in\":" + SECONDS + ",\"token_type\":\"Bearer\"}";
+  private static String COMPUTE_ENGINE_TOKEN =
+      "{\"access_token\":\"" + ACCESS_TOKEN + "\",\"expires_in\":" + SECONDS
+          + ",\"token_type\":\"Bearer\"}";
+  private static String COMPUTE_ENGINE_TOKEN_BAD_RESPONSE =
+      "{\"token\":\"" + ACCESS_TOKEN + "\",\"in\":" + SECONDS + ",\"token_type\":\"Bearer\"}";
 
-    private MockWebServer mockWebServer;
+  private MockWebServer mockWebServer;
 
-    private WebClient webClient;
+  private WebClient webClient;
 
-    private String tokenUri;
+  private String tokenUri;
 
-    @BeforeEach
-    void setUp() throws IOException, URISyntaxException {
-        mockWebServer = new MockWebServer();
-        mockWebServer.start();
+  @BeforeEach
+  void setUp() throws IOException, URISyntaxException {
+    mockWebServer = new MockWebServer();
+    mockWebServer.start();
 
-        webClient = WebClient.builder().build();
-        tokenUri = mockWebServer.url("/").toString();
-    }
+    webClient = WebClient.builder().build();
+    tokenUri = mockWebServer.url("/").toString();
+  }
 
-    @Test
-    void testRetrieve() {
-        mockWebServer.enqueue(successfulResponse(COMPUTE_ENGINE_TOKEN));
-        ComputeEngineCredentials computeEngineCredentials = ComputeEngineCredentials.create();
-        ReactiveTokenProvider tokenProvider = new ComputeEngineTokenProvider(webClient, computeEngineCredentials, tokenUri);
-        Long expirationWindowStart = addExpiration(System.currentTimeMillis());
-        StepVerifier.create(tokenProvider.retrieve())
-                    .expectNextMatches(at -> expectedToken(expirationWindowStart, at))
-                    .expectNext()
-                    .verifyComplete();
-    }
+  @Test
+  void testRetrieve() {
+    mockWebServer.enqueue(successfulResponse(COMPUTE_ENGINE_TOKEN));
+    ComputeEngineCredentials computeEngineCredentials = ComputeEngineCredentials.create();
+    ReactiveTokenProvider tokenProvider = new ComputeEngineTokenProvider(webClient,
+        computeEngineCredentials, tokenUri);
+    Long expirationWindowStart = addExpiration(System.currentTimeMillis());
+    StepVerifier.create(tokenProvider.retrieve())
+        .expectNextMatches(at -> expectedToken(expirationWindowStart, at))
+        .expectNext()
+        .verifyComplete();
+  }
 
 
+  @Test
+  void testRetrieveErrorParsingResponse() {
+    mockWebServer.enqueue(successfulResponse(COMPUTE_ENGINE_TOKEN_BAD_RESPONSE));
+    ComputeEngineCredentials computeEngineCredentials = ComputeEngineCredentials.create();
+    ReactiveTokenProvider tokenProvider = new ComputeEngineTokenProvider(webClient,
+        computeEngineCredentials, tokenUri);
+    StepVerifier.create(tokenProvider.retrieve())
+        .expectNext()
+        .verifyErrorMatches(TokenProviderBase::tokenParseError);
+  }
 
-    @Test
-    void testRetrieveErrorParsingResponse() {
-        mockWebServer.enqueue(successfulResponse(COMPUTE_ENGINE_TOKEN_BAD_RESPONSE));
-        ComputeEngineCredentials computeEngineCredentials = ComputeEngineCredentials.create();
-        ReactiveTokenProvider tokenProvider = new ComputeEngineTokenProvider(webClient, computeEngineCredentials, tokenUri);
-        StepVerifier.create(tokenProvider.retrieve())
-                    .expectNext()
-                    .verifyErrorMatches(TokenProviderBase::tokenParseError);
-    }
-
-    @AfterEach
-    void tearDown() throws IOException {
-        mockWebServer.shutdown();
-    }
+  @AfterEach
+  void tearDown() throws IOException {
+    mockWebServer.shutdown();
+  }
 
 }

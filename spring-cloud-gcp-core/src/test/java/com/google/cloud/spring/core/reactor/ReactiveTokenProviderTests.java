@@ -16,51 +16,54 @@
 
 package com.google.cloud.spring.core.reactor;
 
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.core.io.ClassPathResource;
-
-import com.google.auth.oauth2.ComputeEngineCredentials;
-import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.auth.oauth2.UserCredentials;
-import com.google.auth.oauth2.ComputeEngineTokenProvider;
-import com.google.auth.oauth2.ServiceAccountTokenProvider;
-import com.google.auth.oauth2.UserCredentialsTokenProvider;
-import com.google.cloud.spring.core.ReactiveTokenProvider;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import com.google.auth.oauth2.ComputeEngineCredentials;
+import com.google.auth.oauth2.ComputeEngineTokenProvider;
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.auth.oauth2.ServiceAccountTokenProvider;
+import com.google.auth.oauth2.UserCredentials;
+import com.google.auth.oauth2.UserCredentialsTokenProvider;
+import com.google.cloud.spring.core.ReactiveTokenProvider;
+import java.io.IOException;
+import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
+
+
 class ReactiveTokenProviderTests {
 
-    @Test
-    void testCreateCacheable() throws IOException {
-        ClassPathResource classPathResource = new ClassPathResource("fake-credential-key.json");
-        ServiceAccountCredentials serviceAccountCredentials = ServiceAccountCredentials.fromStream(classPathResource.getInputStream());
-        ReactiveTokenProvider reactiveTokenProvider = ReactiveTokenProvider.createCacheable(serviceAccountCredentials);
-        assertThat(reactiveTokenProvider).isInstanceOf(CacheableTokenProvider.class);
-    }
+  @Test
+  void testCreateCacheable() throws IOException {
+    ClassPathResource classPathResource = new ClassPathResource("fake-credential-key.json");
+    ServiceAccountCredentials serviceAccountCredentials = ServiceAccountCredentials.fromStream(
+        classPathResource.getInputStream());
+    ReactiveTokenProvider reactiveTokenProvider = ReactiveTokenProvider.createCacheable(
+        serviceAccountCredentials);
+    assertThat(reactiveTokenProvider).isInstanceOf(CacheableTokenProvider.class);
+  }
 
-    @Test
-    void testCreateUserCredentialsTokenProvider() {
-        UserCredentials userCredentials = mock(UserCredentials.class);
-        ReactiveTokenProvider reactiveTokenProvider = ReactiveTokenProvider.create(userCredentials);
-        assertThat(reactiveTokenProvider).isInstanceOf(UserCredentialsTokenProvider.class);
-    }
+  @Test
+  void testCreateUserCredentialsTokenProvider() {
+    UserCredentials userCredentials = mock(UserCredentials.class);
+    ReactiveTokenProvider reactiveTokenProvider = ReactiveTokenProvider.create(userCredentials);
+    assertThat(reactiveTokenProvider).isInstanceOf(UserCredentialsTokenProvider.class);
+  }
 
-    @Test
-    void testCreateServiceAccountTokenProvider() {
-        ServiceAccountCredentials serviceAccountCredentials = mock(ServiceAccountCredentials.class);
-        ReactiveTokenProvider reactiveTokenProvider = ReactiveTokenProvider.create(serviceAccountCredentials);
-        assertThat(reactiveTokenProvider).isInstanceOf(ServiceAccountTokenProvider.class);
-    }
+  @Test
+  void testCreateServiceAccountTokenProvider() {
+    ServiceAccountCredentials serviceAccountCredentials = mock(ServiceAccountCredentials.class);
+    ReactiveTokenProvider reactiveTokenProvider = ReactiveTokenProvider.create(
+        serviceAccountCredentials);
+    assertThat(reactiveTokenProvider).isInstanceOf(ServiceAccountTokenProvider.class);
+  }
 
-    @Test
-    void testCreateComputeEngineTokenProvider() {
-        ComputeEngineCredentials computeEngineCredentials = mock(ComputeEngineCredentials.class);
-        ReactiveTokenProvider reactiveTokenProvider = ReactiveTokenProvider.create(computeEngineCredentials);
-        assertThat(reactiveTokenProvider).isInstanceOf(ComputeEngineTokenProvider.class);
-    }
+  @Test
+  void testCreateComputeEngineTokenProvider() {
+    ComputeEngineCredentials computeEngineCredentials = mock(ComputeEngineCredentials.class);
+    ReactiveTokenProvider reactiveTokenProvider = ReactiveTokenProvider.create(
+        computeEngineCredentials);
+    assertThat(reactiveTokenProvider).isInstanceOf(ComputeEngineTokenProvider.class);
+  }
 
 }

@@ -16,56 +16,59 @@
 
 package com.google.auth.oauth2;
 
-import java.io.IOException;
-import java.util.Date;
-
-import org.springframework.web.reactive.function.client.WebClient;
-
-import com.google.api.client.util.GenericData;
-import com.google.cloud.spring.core.ReactiveTokenProvider;
-
 import static com.google.auth.oauth2.Constants.ACCESS_TOKEN;
 import static com.google.auth.oauth2.Constants.ERROR_PARSING_TOKEN_REFRESH_RESPONSE;
 import static com.google.auth.oauth2.Constants.EXPIRES_IN;
+
+import com.google.api.client.util.GenericData;
+import com.google.cloud.spring.core.ReactiveTokenProvider;
+import java.io.IOException;
+import java.util.Date;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 public class ComputeEngineTokenProvider implements ReactiveTokenProvider {
 
 
-    private final WebClient webClient;
-    private final ComputeEngineCredentials computeEngineCredentials;
+  private final WebClient webClient;
+  private final ComputeEngineCredentials computeEngineCredentials;
 
-    private final String tokenUrl;
+  private final String tokenUrl;
 
-    public ComputeEngineTokenProvider(WebClient webClient, ComputeEngineCredentials computeEngineCredentials) {
-        this.webClient = webClient;
-        this.computeEngineCredentials = computeEngineCredentials;
-        tokenUrl = computeEngineCredentials.createTokenUrlWithScopes();
-    }
+  public ComputeEngineTokenProvider(WebClient webClient,
+      ComputeEngineCredentials computeEngineCredentials) {
+    this.webClient = webClient;
+    this.computeEngineCredentials = computeEngineCredentials;
+    tokenUrl = computeEngineCredentials.createTokenUrlWithScopes();
+  }
 
-    public ComputeEngineTokenProvider(WebClient webClient, ComputeEngineCredentials computeEngineCredentials, String tokenUrl) {
-        this.webClient = webClient;
-        this.computeEngineCredentials = computeEngineCredentials;
-        this.tokenUrl = tokenUrl;
-    }
+  public ComputeEngineTokenProvider(WebClient webClient,
+      ComputeEngineCredentials computeEngineCredentials, String tokenUrl) {
+    this.webClient = webClient;
+    this.computeEngineCredentials = computeEngineCredentials;
+    this.tokenUrl = tokenUrl;
+  }
 
-    @Override
-    public Mono<AccessToken> retrieve() {
-        return webClient.get().uri(tokenUrl)
-                        .header("Metadata-Flavor", "Google")
-                        .retrieve()
-                        .bodyToMono(GenericData.class)
-                        .flatMap(gd -> {
-                            try {
-                                String tokenValue = OAuth2Utils.validateString(gd, ACCESS_TOKEN, ERROR_PARSING_TOKEN_REFRESH_RESPONSE);
-                                int expiresInSeconds = OAuth2Utils.validateInt32(gd, EXPIRES_IN, ERROR_PARSING_TOKEN_REFRESH_RESPONSE);
-                                long expiresAtMilliseconds = computeEngineCredentials.clock.currentTimeMillis() + (expiresInSeconds * 1000L);
-                                AccessToken accessToken = new AccessToken(tokenValue, new Date(expiresAtMilliseconds));
-                                return Mono.just(accessToken);
-                            } catch (IOException e) {
-                                return Mono.error(e);
-                            }
-                        });
-    }
+  @Override
+  public Mono<AccessToken> retrieve() {
+    return webClient.get().uri(tokenUrl)
+        .header("Metadata-Flavor", "Google")
+        .retrieve()
+        .bodyToMono(GenericData.class)
+        .flatMap(gd -> {
+          try {
+            String tokenValue = OAuth2Utils.validateString(gd, ACCESS_TOKEN,
+                ERROR_PARSING_TOKEN_REFRESH_RESPONSE);
+            int expiresInSeconds = OAuth2Utils.validateInt32(gd, EXPIRES_IN,
+                ERROR_PARSING_TOKEN_REFRESH_RESPONSE);
+            long expiresAtMilliseconds =
+                computeEngineCredentials.clock.currentTimeMillis() + (expiresInSeconds * 1000L);
+            AccessToken accessToken = new AccessToken(tokenValue, new Date(expiresAtMilliseconds));
+            return Mono.just(accessToken);
+          } catch (IOException e) {
+            return Mono.error(e);
+          }
+        });
+  }
 
 }

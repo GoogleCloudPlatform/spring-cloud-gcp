@@ -16,31 +16,29 @@
 
 package com.google.cloud.spring.core.reactor;
 
-import java.util.Date;
-
-import org.junit.jupiter.api.Test;
-
-import com.google.auth.oauth2.AccessToken;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.auth.oauth2.AccessToken;
+import java.util.Date;
+import org.junit.jupiter.api.Test;
+
 class RefreshThresholdTests {
 
-    @Test
-    void testCloseToExpirationTrue() {
-        long currentDate = System.currentTimeMillis();
-        RefreshThreshold refreshThreshold = new RefreshThreshold(10_000);
-        AccessToken accessToken = new AccessToken("token", new Date(currentDate+9_500));
-        assertTrue(refreshThreshold.over(accessToken));
-    }
+  @Test
+  void testCloseToExpirationTrue() {
+    long currentDate = System.currentTimeMillis();
+    RefreshThreshold refreshThreshold = new RefreshThreshold(10_000);
+    AccessToken accessToken = new AccessToken("token", new Date(currentDate + 9_500));
+    assertTrue(refreshThreshold.over(accessToken));
+  }
 
-    @Test
-    void testCloseToExpirationFalse() {
-        long currentDate = System.currentTimeMillis();
-        RefreshThreshold refreshThreshold = new RefreshThreshold(10_000);
-        AccessToken accessToken = new AccessToken("token", new Date(currentDate+20_000));
-        assertFalse(refreshThreshold.over(accessToken));
-    }
+  @Test
+  void testCloseToExpirationFalse() {
+    long currentDate = System.currentTimeMillis();
+    RefreshThreshold refreshThreshold = new RefreshThreshold(10_000);
+    AccessToken accessToken = new AccessToken("token", new Date(currentDate + 20_000));
+    assertFalse(refreshThreshold.over(accessToken));
+  }
 
 }

@@ -16,106 +16,100 @@
 
 package com.google.cloud.spring.storage;
 
+import static com.google.cloud.spring.storage.MockReplies.downloadObjectResponse;
+import static com.google.cloud.spring.storage.MockReplies.getObjectResponse;
+import static com.google.cloud.spring.storage.MockReplies.insertObjectRespose;
+
+import com.google.cloud.spring.core.ReactiveTokenProvider;
+import com.google.cloud.storage.BlobId;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.UUID;
-
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import com.google.cloud.spring.core.ReactiveTokenProvider;
-import com.google.cloud.storage.BlobId;
-
-import okhttp3.mockwebserver.MockWebServer;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import static com.google.cloud.spring.storage.MockReplies.*;
-
 class GoogleStorageTemplateTests {
 
-    private MockWebServer mockWebServer;
+  private MockWebServer mockWebServer;
 
-    private WebClient webClient;
+  private WebClient webClient;
 
-    private String baseUrl;
+  private String baseUrl;
 
-    private GoogleStorageTemplate googleStorageTemplate;
+  private GoogleStorageTemplate googleStorageTemplate;
 
-    @BeforeEach
-    void setUp() throws IOException, URISyntaxException {
-        mockWebServer = new MockWebServer();
-        mockWebServer.start();
+  @BeforeEach
+  void setUp() throws IOException, URISyntaxException {
+    mockWebServer = new MockWebServer();
+    mockWebServer.start();
 
-        webClient = WebClient.builder().build();
-        baseUrl = mockWebServer.url("/").toString();
+    webClient = WebClient.builder().build();
+    baseUrl = mockWebServer.url("/").toString();
 
-        String token = UUID.randomUUID().toString();
-        Date date = new Date();
+    String token = UUID.randomUUID().toString();
+    Date date = new Date();
 
-        ReactiveTokenProvider tokenProvider = TokenProviderUtil.mock(token, date);
-        this.googleStorageTemplate = new GoogleStorageTemplate(baseUrl, webClient, tokenProvider);
-    }
+    ReactiveTokenProvider tokenProvider = TokenProviderUtil.mock(token, date);
+    this.googleStorageTemplate = new GoogleStorageTemplate(baseUrl, webClient, tokenProvider);
+  }
 
-    @Test
-    void testGet() {
-        mockWebServer.enqueue(getObjectResponse());
+  @Test
+  void testGet() {
+    mockWebServer.enqueue(getObjectResponse());
 
-        BlobId blobId = BlobId.of("bucket", "object");
+    BlobId blobId = BlobId.of("bucket", "object");
 
-        StepVerifier.create(googleStorageTemplate.get(blobId))
-                    .expectNextMatches(so ->
-                                               so.getBucket().equals("bucket") &&
-                                               so.getName().equals("object") &&
-                                               so.getGeneration().equals(1234567890L) &&
-                                               so.getStorageClass().equals("STANDARD")
-                    ).verifyComplete();
-    }
+    StepVerifier.create(googleStorageTemplate.get(blobId))
+        .expectNextMatches(so ->
+            so.getBucket().equals("bucket")
+                && so.getName().equals("object")
+                && so.getGeneration().equals(1234567890L)
+                && so.getStorageClass().equals("STANDARD")
+        ).verifyComplete();
+  }
 
 
-    @Test
-    void testDownload() {
-        mockWebServer.enqueue(downloadObjectResponse());
+  @Test
+  void testDownload() {
+    mockWebServer.enqueue(downloadObjectResponse());
 
-        BlobId blobId = BlobId.of("bucket", "object");
+    BlobId blobId = BlobId.of("bucket", "object");
 
-        StepVerifier.create(googleStorageTemplate.download(blobId))
-                    .expectNext("{\n" +
-                                "  \"key\": \"value\",\n" +
-                                "  \"description\": \"This is mock data\"\n" +
-                                "}")
-                    .verifyComplete();
-    }
+    StepVerifier.create(googleStorageTemplate.download(blobId))
+        .expectNext("{\n"
+            + "  \"key\": \"value\",\n"
+            + "  \"description\": \"This is mock data\"\n"
+            + "}")
+        .verifyComplete();
+  }
 
-    @Test
-    void testInsert() {
-        mockWebServer.enqueue(insertObjectRespose());
-        BlobId blobId = BlobId.of("bucket", "object");
+  @Test
+  void testInsert() {
+    mockWebServer.enqueue(insertObjectRespose());
+    BlobId blobId = BlobId.of("bucket", "object");
 
-        ByteBuffer[] byteBuffers = new ByteBuffer[]{ByteBuffer.wrap("hello".getBytes())};
-        Flux<ByteBuffer> bufferFlux = Flux.fromArray(byteBuffers);
+    ByteBuffer[] byteBuffers = new ByteBuffer[]{ByteBuffer.wrap("hello".getBytes())};
+    Flux<ByteBuffer> bufferFlux = Flux.fromArray(byteBuffers);
 
-        StepVerifier.create(googleStorageTemplate.create(blobId, bufferFlux))
-                .expectNextMatches(
-                        so -> so.getBucket().equals("bucket") &&
-                                    so.getName().equals("object") &&
-                                    so.getGeneration().equals(1234567890L)
-                ).verifyComplete();
+    StepVerifier.create(googleStorageTemplate.create(blobId, bufferFlux))
+        .expectNextMatches(
+            so -> so.getBucket().equals("bucket")
+                && so.getName().equals("object")
+                && so.getGeneration().equals(1234567890L)
+        ).verifyComplete();
 
-    }
+  }
 
-    @Test
-    void testDelete() {
-
-    }
-
-    @AfterEach
-    void tearDown() throws IOException {
-        mockWebServer.shutdown();
-    }
+  @AfterEach
+  void tearDown() throws IOException {
+    mockWebServer.shutdown();
+  }
 
 }

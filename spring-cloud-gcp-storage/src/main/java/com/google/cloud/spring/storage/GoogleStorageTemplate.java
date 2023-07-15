@@ -17,150 +17,151 @@
 package com.google.cloud.spring.storage;
 
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.storage.model.Objects;
 import com.google.api.services.storage.model.StorageObject;
 import com.google.cloud.spring.core.ReactiveTokenProvider;
 import com.google.cloud.storage.BlobId;
-
+import java.io.IOException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class GoogleStorageTemplate {
 
-    private final String baseUrl;
+  private final String baseUrl;
 
-    private static final String DEFAULT_BASE_URL = "https://storage.googleapis.com/";
-    private static final String STORAGE_PATH = "/storage/v1";
+  private static final String DEFAULT_BASE_URL = "https://storage.googleapis.com/";
+  private static final String STORAGE_PATH = "/storage/v1";
 
-    private final WebClient webClient;
-    private final ReactiveTokenProvider reactiveTokenProvider;
+  private final WebClient webClient;
+  private final ReactiveTokenProvider reactiveTokenProvider;
 
-    public GoogleStorageTemplate(WebClient webClient, ReactiveTokenProvider reactiveTokenProvider) {
-        this(DEFAULT_BASE_URL, webClient, reactiveTokenProvider);
+  public GoogleStorageTemplate(WebClient webClient, ReactiveTokenProvider reactiveTokenProvider) {
+    this(DEFAULT_BASE_URL, webClient, reactiveTokenProvider);
+  }
+
+  public GoogleStorageTemplate(String baseUrl, WebClient webClient,
+      ReactiveTokenProvider reactiveTokenProvider) {
+    this.webClient = webClient;
+    this.reactiveTokenProvider = reactiveTokenProvider;
+    this.baseUrl = baseUrl;
+  }
+
+  public Mono<StorageObject> get(BlobId blobId) {
+    String url = baseUrl + STORAGE_PATH + getObjectPath(blobId.getBucket(), blobId.getName());
+    return reactiveTokenProvider.retrieve()
+        .flatMap(at -> webClient.get()
+            .uri(url)
+            .header("Authorization", "Bearer " + at.getTokenValue())
+            .retrieve()
+            .bodyToMono(String.class)
+            .flatMap(GoogleStorageTemplate::getStorageObject)
+        );
+  }
+
+  public Mono<String> download(BlobId blobId) {
+    String url =
+        baseUrl + STORAGE_PATH + getObjectPath(blobId.getBucket(), blobId.getName()) + "?alt=media";
+    return reactiveTokenProvider.retrieve()
+        .flatMap(at -> webClient.get()
+            .uri(url)
+            .header("Authorization", "Bearer " + at.getTokenValue())
+            .retrieve()
+            .bodyToMono(String.class)
+        );
+  }
+
+  public Mono<StorageObject> create(BlobId blobId, Flux<ByteBuffer> bytes) {
+    String urlStr = baseUrl + "/upload" + STORAGE_PATH + getBucketPath(blobId.getBucket()) + "/o";
+    URI uri = UriComponentsBuilder.fromHttpUrl(urlStr)
+        .queryParam("name", blobId.getName())
+        .queryParam("uploadType", "media")
+        .build().toUri();
+
+    return reactiveTokenProvider.retrieve()
+        .flatMap(at -> webClient.post()
+            .uri(uri)
+            .header("Authorization", "Bearer " + at.getTokenValue())
+            .body(BodyInserters.fromPublisher(bytes, ByteBuffer.class))
+            .retrieve().bodyToMono(String.class).flatMap(GoogleStorageTemplate::getStorageObject));
+
+
+  }
+
+  public Mono<Objects> list(String bucket, MultiValueMap<String, String> options) {
+    String urlStr = baseUrl + STORAGE_PATH + getBucketPath(bucket) + "/o";
+
+    URI uri = UriComponentsBuilder.fromHttpUrl(urlStr).queryParams(options).build().toUri();
+    return reactiveTokenProvider.retrieve()
+        .flatMap(at -> webClient.get()
+            .uri(uri)
+            .header("Authorization", "Bearer " + at.getTokenValue())
+            .exchangeToMono(clientResponse -> mapResponseBody(clientResponse))
+            .flatMap(GoogleStorageTemplate::getObjects)
+        );
+  }
+
+
+  public Mono<Void> delete(BlobId blobId) {
+    String url = baseUrl + STORAGE_PATH + getObjectPath(blobId.getBucket(), blobId.getName());
+    return reactiveTokenProvider.retrieve()
+        .flatMap(at -> webClient.delete()
+            .uri(url)
+            .header("Authorization", "Bearer " + at.getTokenValue())
+            .exchangeToMono(GoogleStorageTemplate::mapResponseBody)
+            .flatMap(a -> Mono.empty())
+        );
+  }
+
+  private static Mono<String> mapResponseBody(ClientResponse clientResponse) {
+    if (clientResponse.statusCode().isError()) {
+      return mapError(clientResponse);
+    } else {
+      return clientResponse.bodyToMono(String.class);
     }
+  }
 
-    public GoogleStorageTemplate(String baseUrl, WebClient webClient, ReactiveTokenProvider reactiveTokenProvider) {
-        this.webClient = webClient;
-        this.reactiveTokenProvider = reactiveTokenProvider;
-        this.baseUrl = baseUrl;
+  private static <T> Mono<T> mapError(ClientResponse clientResponse) {
+    return clientResponse.bodyToMono(String.class).map(StorageException::new).flatMap(Mono::error);
+  }
+
+
+  private static Mono<StorageObject> getStorageObject(String s) {
+    try {
+      StorageObject storageObject = GsonFactory.getDefaultInstance().createJsonParser(s)
+          .parse(StorageObject.class);
+      return Mono.just(storageObject);
+    } catch (IOException e) {
+      return Mono.error(e);
     }
+  }
 
-    public Mono<StorageObject> get(BlobId blobId) {
-        String url = baseUrl + STORAGE_PATH + getObjectPath(blobId.getBucket(), blobId.getName());
-        return reactiveTokenProvider.retrieve()
-                .flatMap(at -> webClient.get()
-                        .uri(url)
-                        .header("Authorization", "Bearer " + at.getTokenValue())
-                        .retrieve()
-                        .bodyToMono(String.class)
-                        .flatMap(GoogleStorageTemplate::getStorageObject)
-                );
+  private static Mono<Objects> getObjects(String s) {
+    try {
+      Objects storageObject = GsonFactory.getDefaultInstance().createJsonParser(s)
+          .parse(Objects.class);
+      return Mono.just(storageObject);
+    } catch (IOException e) {
+      return Mono.error(e);
     }
+  }
 
-    public Mono<String> download(BlobId blobId) {
-        String url = baseUrl + STORAGE_PATH + getObjectPath(blobId.getBucket(), blobId.getName()) + "?alt=media";
-        return reactiveTokenProvider.retrieve()
-                .flatMap(at -> webClient.get()
-                        .uri(url)
-                        .header("Authorization", "Bearer " + at.getTokenValue())
-                        .retrieve()
-                        .bodyToMono(String.class)
-                );
-    }
+  private String getBucketPath(String bucket) {
+    return "/b/" + bucket;
+  }
 
-    public Mono<StorageObject> create(BlobId blobId, Flux<ByteBuffer> bytes) {
-        String urlStr = baseUrl + "/upload" + STORAGE_PATH + getBucketPath(blobId.getBucket()) + "/o";
-        URI uri = UriComponentsBuilder.fromHttpUrl(urlStr)
-                .queryParam("name", blobId.getName())
-                .queryParam("uploadType", "media")
-                .build().toUri();
-
-        return reactiveTokenProvider.retrieve()
-                .flatMap(at -> webClient.post()
-                        .uri(uri)
-                        .header("Authorization", "Bearer " + at.getTokenValue())
-                        .body(BodyInserters.fromPublisher(bytes, ByteBuffer.class))
-                        .retrieve().bodyToMono(String.class).flatMap(GoogleStorageTemplate::getStorageObject));
-
-
-    }
-
-    public Mono<Objects> list(String bucket, MultiValueMap<String, String> options) {
-        String urlStr = baseUrl + STORAGE_PATH + getBucketPath(bucket) + "/o";
-
-        URI uri = UriComponentsBuilder.fromHttpUrl(urlStr).queryParams(options).build().toUri();
-        return reactiveTokenProvider.retrieve()
-                .flatMap(at -> webClient.get()
-                        .uri(uri)
-                        .header("Authorization", "Bearer " + at.getTokenValue())
-                        .exchangeToMono(clientResponse -> mapResponseBody(clientResponse))
-                        .flatMap(GoogleStorageTemplate::getObjects)
-                );
-    }
-
-
-    public Mono<Void> delete(BlobId blobId) {
-        String url = baseUrl + STORAGE_PATH + getObjectPath(blobId.getBucket(), blobId.getName());
-        return reactiveTokenProvider.retrieve()
-                .flatMap(at -> webClient.delete()
-                        .uri(url)
-                        .header("Authorization", "Bearer " + at.getTokenValue())
-                        .exchangeToMono(GoogleStorageTemplate::mapResponseBody)
-                        .flatMap(a -> Mono.empty())
-                );
-    }
-
-    private static Mono<String> mapResponseBody(ClientResponse clientResponse) {
-        if (clientResponse.statusCode().isError()) {
-            return mapError(clientResponse);
-        } else {
-            return clientResponse.bodyToMono(String.class);
-        }
-    }
-
-    private static <T> Mono<T> mapError(ClientResponse clientResponse) {
-        return clientResponse.bodyToMono(String.class).map(StorageException::new).flatMap(Mono::error);
-    }
-
-
-    private static Mono<StorageObject> getStorageObject(String s) {
-        try {
-            StorageObject storageObject = GsonFactory.getDefaultInstance().createJsonParser(s).parse(StorageObject.class);
-            return Mono.just(storageObject);
-        } catch (IOException e) {
-            return Mono.error(e);
-        }
-    }
-
-    private static Mono<Objects> getObjects(String s) {
-        try {
-            Objects storageObject = GsonFactory.getDefaultInstance().createJsonParser(s).parse(Objects.class);
-            return Mono.just(storageObject);
-        } catch (IOException e) {
-            return Mono.error(e);
-        }
-    }
-
-    private String getBucketPath(String bucket) {
-        return "/b/" + bucket;
-    }
-
-    private String getObjectPath(String bucket, String objectName) {
-        return getBucketPath(bucket) + "/o/" + URLEncoder.encode(objectName, StandardCharsets.UTF_8);
-    }
+  private String getObjectPath(String bucket, String objectName) {
+    return getBucketPath(bucket) + "/o/" + URLEncoder.encode(objectName, StandardCharsets.UTF_8);
+  }
 
 
 }

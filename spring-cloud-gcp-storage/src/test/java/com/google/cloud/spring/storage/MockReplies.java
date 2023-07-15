@@ -18,57 +18,53 @@ package com.google.cloud.spring.storage;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-
-import org.jetbrains.annotations.NotNull;
+import okhttp3.mockwebserver.MockResponse;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StreamUtils;
-
-import okhttp3.mockwebserver.MockResponse;
 
 public class MockReplies {
 
-    private MockReplies() {
-    }
+  private MockReplies() {
+  }
 
-    static MockResponse getObjectResponse() {
-        return successfulResponse(getObject());
-    }
+  static MockResponse getObjectResponse() {
+    return successfulResponse(getObject());
+  }
 
-    static String getObject() {
-        return getStringFromClassPath("storage-object.json");
-    }
+  static String getObject() {
+    return getStringFromClassPath("storage-object.json");
+  }
 
-    static MockResponse downloadObjectResponse() {
-        return successfulResponse(downloadObject());
-    }
+  static MockResponse downloadObjectResponse() {
+    return successfulResponse(downloadObject());
+  }
 
-    static MockResponse insertObjectRespose() {
-        return successfulResponse(insertObject());
-    }
+  static MockResponse insertObjectRespose() {
+    return successfulResponse(insertObject());
+  }
 
-    private static String insertObject() {
-        return getStringFromClassPath("insert-object.json");
-    }
+  private static String insertObject() {
+    return getStringFromClassPath("insert-object.json");
+  }
 
-    static String downloadObject() {
-        return getStringFromClassPath("download-object.json");
-    }
+  static String downloadObject() {
+    return getStringFromClassPath("download-object.json");
+  }
 
-    private static String getStringFromClassPath(String classPathFile) {
-        Resource resource = new ClassPathResource(classPathFile);
-        try {
-            return StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset());
-        } catch (IOException e) {
-            throw new IllegalStateException();
-        }
+  private static String getStringFromClassPath(String classPathFile) {
+    Resource resource = new ClassPathResource(classPathFile);
+    try {
+      return StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset());
+    } catch (IOException e) {
+      throw new IllegalStateException();
     }
+  }
 
-    static MockResponse successfulResponse(String response) {
-        return new MockResponse()
-                .setHeader("Content-Type", "application/json")
-                .setResponseCode(200)
-                .setBody(response);
-    }
+  static MockResponse successfulResponse(String response) {
+    return new MockResponse()
+        .setHeader("Content-Type", "application/json")
+        .setResponseCode(200)
+        .setBody(response);
+  }
 }

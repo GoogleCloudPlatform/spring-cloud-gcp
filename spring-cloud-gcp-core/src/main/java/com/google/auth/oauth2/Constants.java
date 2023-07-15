@@ -18,11 +18,11 @@ package com.google.auth.oauth2;
 
 public class Constants {
 
-    static final String ACCESS_TOKEN = "access_token";
-    static final String EXPIRES_IN = "expires_in";
-    static final String ERROR_PARSING_TOKEN_REFRESH_RESPONSE = "Error parsing token refresh response. ";
+  static final String ACCESS_TOKEN = "access_token";
+  static final String EXPIRES_IN = "expires_in";
+  static final String ERROR_PARSING_TOKEN_REFRESH_RESPONSE = "Error parsing token refresh response. ";
 
-    private Constants() {
-    }
+  private Constants() {
+  }
 
 }
