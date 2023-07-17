@@ -271,9 +271,10 @@ public class StackdriverJsonLayout extends JsonLayout {
       map.put(
           StackdriverTraceConstants.TIMESTAMP_SECONDS_ATTRIBUTE,
           TimeUnit.MILLISECONDS.toSeconds(event.getTimeStamp()));
+      int nanoseconds = event.getNanoseconds();
       map.put(
           StackdriverTraceConstants.TIMESTAMP_NANOS_ATTRIBUTE,
-          TimeUnit.MILLISECONDS.toNanos(event.getTimeStamp() % 1_000));
+          nanoseconds != -1 ? nanoseconds : TimeUnit.MILLISECONDS.toNanos(event.getTimeStamp() % 1_000));
     }
 
     add(

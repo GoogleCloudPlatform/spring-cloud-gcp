@@ -19,11 +19,13 @@ package com.google.cloud.spring.vision.it;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spring.vision.CloudVisionTemplate;
+import com.google.cloud.spring.vision.nativeimage.TestRuntimeHints;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,6 +34,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @EnabledIfSystemProperty(named = "it.vision", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {VisionTestConfiguration.class})
+@ImportRuntimeHints(TestRuntimeHints.class)
 class CloudVisionTemplateIntegrationTests {
 
   @Autowired private CloudVisionTemplate cloudVisionTemplate;

@@ -354,6 +354,7 @@
 		<id>spring-native</id>
 		<modules>
 			<module>spring-cloud-gcp-storage</module>
+			<module>spring-cloud-gcp-vision</module>
 		</modules>
 
 		<dependencies>
@@ -379,8 +380,9 @@
 						</includes>
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<systemPropertyVariables>
-							<it.storage>true</it.storage>
-						<!--integration tests are not invoked unless the relevant system property is set to true here. -->
+							<!--integration tests are not invoked unless the relevant system property is set to true here. -->
+              <it.storage>true</it.storage>
+							<it.vision>true</it.vision>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>
@@ -462,8 +464,6 @@
 				<module>spring-cloud-gcp-samples</module>
 			</modules>
 		</profile>
-
-
 		<profile>
 			<!-- cloud RAD generation -->
 			<id>docFX</id>
