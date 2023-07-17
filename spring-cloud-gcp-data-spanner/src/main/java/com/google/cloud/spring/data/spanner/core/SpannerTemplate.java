@@ -147,16 +147,7 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 
   @Override
   public long executePartitionedDmlStatement(Statement statement) {
-    Assert.notNull(statement, "A non-null statement is required.");
-    maybeEmitEvent(new BeforeExecuteDmlEvent(statement));
-    long rowsAffected =
-        doWithOrWithoutTransactionContext(
-            x -> {
-              throw new SpannerDataException("Cannot execute partitioned DML in a transaction.");
-            },
-            () -> this.databaseClientProvider.get().executePartitionedUpdate(statement));
-    maybeEmitEvent(new AfterExecuteDmlEvent(statement, rowsAffected));
-    return rowsAffected;
+    return executePartitionedDmlStatement(statement, new UpdateOption[] {});
   }
 
   @Override
