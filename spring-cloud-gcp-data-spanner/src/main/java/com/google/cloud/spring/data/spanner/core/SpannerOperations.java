@@ -50,6 +50,7 @@ public interface SpannerOperations {
    * @return the lower-bound of number of rows affected.
    */
   long executePartitionedDmlStatement(Statement statement);
+
   /**
    * Execute a DML statement in partitioned mode. This is not available inside of transactions.
    *
@@ -57,7 +58,6 @@ public interface SpannerOperations {
    * @param options marks options applicable to update operation.
    * @return the lower-bound of number of rows affected.
    */
-
   long executePartitionedDmlStatement(Statement statement, UpdateOption... options);
 
   /**

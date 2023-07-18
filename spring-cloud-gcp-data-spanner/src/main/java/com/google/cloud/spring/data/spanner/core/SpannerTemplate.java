@@ -284,7 +284,7 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
     String sql =
         "SELECT "
             + SpannerStatementQueryExecutor.getColumnsStringForSelect(
-            entity, this.mappingContext, true)
+                entity, this.mappingContext, true)
             + " FROM "
             + entity.tableName()
             + SpannerStatementQueryExecutor.buildWhere(entity);
@@ -486,8 +486,8 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
           try (ReadOnlyTransaction readOnlyTransaction =
               (options.getTimestampBound() != null)
                   ? this.databaseClientProvider
-                  .get()
-                  .readOnlyTransaction(options.getTimestampBound())
+                      .get()
+                      .readOnlyTransaction(options.getTimestampBound())
                   : this.databaseClientProvider.get().readOnlyTransaction()) {
             return operations.apply(
                 new ReadOnlyTransactionSpannerTemplate(
@@ -536,8 +536,8 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
     } else {
       resultSet =
           ((options.getTimestampBound() != null)
-              ? getReadContext(options.getTimestampBound())
-              : getReadContext())
+                  ? getReadContext(options.getTimestampBound())
+                  : getReadContext())
               .executeQuery(statement, options.getOptions());
     }
     return resultSet;

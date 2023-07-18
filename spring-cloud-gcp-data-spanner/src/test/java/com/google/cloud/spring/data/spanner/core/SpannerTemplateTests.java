@@ -219,7 +219,7 @@ class SpannerTemplateTests {
 
     ReadOnlyTransaction readOnlyTransaction = mock(ReadOnlyTransaction.class);
     when(this.databaseClient.readOnlyTransaction(
-        TimestampBound.ofReadTimestamp(Timestamp.ofTimeMicroseconds(333))))
+            TimestampBound.ofReadTimestamp(Timestamp.ofTimeMicroseconds(333))))
         .thenReturn(readOnlyTransaction);
 
     SpannerReadOptions testSpannerReadOptions =
@@ -232,9 +232,9 @@ class SpannerTemplateTests {
         };
 
     assertThatThrownBy(
-        () ->
-            this.spannerTemplate.performReadOnlyTransaction(
-                testSpannerOperations, testSpannerReadOptions))
+            () ->
+                this.spannerTemplate.performReadOnlyTransaction(
+                    testSpannerOperations, testSpannerReadOptions))
         .hasMessage("A read-only transaction template cannot execute partitioned DML.");
   }
 
@@ -260,7 +260,7 @@ class SpannerTemplateTests {
         };
 
     assertThatThrownBy(
-        () -> this.spannerTemplate.performReadWriteTransaction(testSpannerOperations))
+            () -> this.spannerTemplate.performReadWriteTransaction(testSpannerOperations))
         .hasMessage("A read-write transaction template cannot execute partitioned DML.");
   }
 
@@ -335,7 +335,7 @@ class SpannerTemplateTests {
 
     ReadOnlyTransaction readOnlyTransaction = mock(ReadOnlyTransaction.class);
     when(this.databaseClient.readOnlyTransaction(
-        TimestampBound.ofMinReadTimestamp(Timestamp.ofTimeMicroseconds(333))))
+            TimestampBound.ofMinReadTimestamp(Timestamp.ofTimeMicroseconds(333))))
         .thenReturn(readOnlyTransaction);
 
     String finalResult =
@@ -353,28 +353,25 @@ class SpannerTemplateTests {
     verify(readOnlyTransaction, times(2)).read(eq("custom_test_table"), any(), any());
   }
 
+
   @Test
   void readOnlyTransactionDmlTest() {
 
     ReadOnlyTransaction readOnlyTransaction = mock(ReadOnlyTransaction.class);
     when(this.databaseClient.readOnlyTransaction(
-        // exact staleness is expected.
-        TimestampBound.ofReadTimestamp(Timestamp.ofTimeMicroseconds(333))))
+            // exact staleness is expected.
+            TimestampBound.ofReadTimestamp(Timestamp.ofTimeMicroseconds(333))))
         .thenReturn(readOnlyTransaction);
 
-    SpannerReadOptions testSpannerReadOptions =
-        new SpannerReadOptions().setTimestamp(Timestamp.ofTimeMicroseconds(333));
-    Function<SpannerTemplate, Void> testSpannerOperations =
-        spannerOperations -> {
-          spannerOperations.executeDmlStatement(Statement.of("fail"));
-          return null;
-        };
+    SpannerReadOptions testSpannerReadOptions = new SpannerReadOptions().setTimestamp(Timestamp.ofTimeMicroseconds(333));
+    Function<SpannerTemplate, Void> testSpannerOperations = spannerOperations -> {
+      spannerOperations.executeDmlStatement(Statement.of("fail"));
+      return null;
+    };
 
-    assertThatThrownBy(
-        () ->
-            this.spannerTemplate.performReadOnlyTransaction(
-                testSpannerOperations, testSpannerReadOptions))
-        .hasMessage("A read-only transaction template cannot execute DML.");
+    assertThatThrownBy(() -> this.spannerTemplate.performReadOnlyTransaction(
+            testSpannerOperations, testSpannerReadOptions))
+            .hasMessage("A read-only transaction template cannot execute DML.");
   }
 
   @Test
@@ -382,22 +379,18 @@ class SpannerTemplateTests {
 
     ReadOnlyTransaction readOnlyTransaction = mock(ReadOnlyTransaction.class);
     when(this.databaseClient.readOnlyTransaction(
-        TimestampBound.ofReadTimestamp(Timestamp.ofTimeMicroseconds(333))))
+            TimestampBound.ofReadTimestamp(Timestamp.ofTimeMicroseconds(333))))
         .thenReturn(readOnlyTransaction);
 
-    SpannerReadOptions testSpannerReadOptions =
-        new SpannerReadOptions().setTimestamp(Timestamp.ofTimeMicroseconds(333));
-    Function<SpannerTemplate, Void> testSpannerOperations =
-        spannerOperations -> {
-          spannerOperations.executePartitionedDmlStatement(Statement.of("fail"));
-          return null;
-        };
+    SpannerReadOptions testSpannerReadOptions = new SpannerReadOptions().setTimestamp(Timestamp.ofTimeMicroseconds(333));
+    Function<SpannerTemplate, Void> testSpannerOperations = spannerOperations -> {
+      spannerOperations.executePartitionedDmlStatement(Statement.of("fail"));
+      return null;
+    };
 
-    assertThatThrownBy(
-        () ->
-            this.spannerTemplate.performReadOnlyTransaction(
-                testSpannerOperations, testSpannerReadOptions))
-        .hasMessage("A read-only transaction template cannot execute partitioned DML.");
+    assertThatThrownBy(() -> this.spannerTemplate.performReadOnlyTransaction(
+            testSpannerOperations, testSpannerReadOptions))
+            .hasMessage("A read-only transaction template cannot execute partitioned DML.");
   }
 
   @Test
@@ -414,75 +407,49 @@ class SpannerTemplateTests {
               TransactionCallable transactionCallable = invocation.getArgument(0);
               return transactionCallable.run(transactionContext);
             });
-    Function<SpannerTemplate, String> testSpannerOperations =
-        spannerTemplate -> {
-          spannerTemplate.executePartitionedDmlStatement(Statement.of("DML statement here"));
-          return "all done";
-        };
+    Function<SpannerTemplate, String> testSpannerOperations = spannerTemplate -> {
+      spannerTemplate.executePartitionedDmlStatement(Statement.of("DML statement here"));
+      return "all done";
+    };
 
-    assertThatThrownBy(
-        () -> this.spannerTemplate.performReadWriteTransaction(testSpannerOperations))
-        .hasMessage("A read-write transaction template cannot execute partitioned" + " DML.");
+    assertThatThrownBy(() -> this.spannerTemplate.performReadWriteTransaction(testSpannerOperations))
+            .hasMessage("A read-write transaction template cannot execute partitioned" + " DML.");
   }
 
   @Test
   void nullDatabaseClientTest() {
 
-    assertThatThrownBy(
-        () ->
-            new SpannerTemplate(
-                null,
-                this.mappingContext,
-                this.objectMapper,
-                this.mutationFactory,
-                this.schemaUtils))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("A valid database client for Spanner is required.");
+    assertThatThrownBy(() -> new SpannerTemplate(
+            null, this.mappingContext, this.objectMapper, this.mutationFactory, this.schemaUtils))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid database client for Spanner is required.");
   }
 
   @Test
   void nullMappingContextTest() {
 
-    assertThatThrownBy(
-        () ->
-            new SpannerTemplate(
-                () -> this.databaseClient,
-                null,
-                this.objectMapper,
-                this.mutationFactory,
-                this.schemaUtils))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("A valid mapping context for Spanner is required.");
+    assertThatThrownBy(() ->  new SpannerTemplate(
+            () -> this.databaseClient, null, this.objectMapper, this.mutationFactory, this.schemaUtils))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid mapping context for Spanner is required.");
   }
 
   @Test
   void nullObjectMapperTest() {
 
-    assertThatThrownBy(
-        () ->
-            new SpannerTemplate(
-                () -> this.databaseClient,
-                this.mappingContext,
-                null,
-                this.mutationFactory,
-                this.schemaUtils))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("A valid entity processor for Spanner is required.");
+    assertThatThrownBy(() ->  new SpannerTemplate(
+            () -> this.databaseClient, this.mappingContext, null, this.mutationFactory, this.schemaUtils))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid entity processor for Spanner is required.");
   }
 
   @Test
   void nullMutationFactoryTest() {
 
-    assertThatThrownBy(
-        () ->
-            new SpannerTemplate(
-                () -> this.databaseClient,
-                this.mappingContext,
-                this.objectMapper,
-                null,
-                this.schemaUtils))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("A valid Spanner mutation factory is required.");
+    assertThatThrownBy(() ->  new SpannerTemplate(
+            () -> this.databaseClient, this.mappingContext, this.objectMapper, null, this.schemaUtils))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid Spanner mutation factory is required.");
   }
 
   @Test
@@ -557,9 +524,9 @@ class SpannerTemplateTests {
     SpannerTemplate spyTemplate = spy(this.spannerTemplate);
     KeySet keys = KeySet.newBuilder().addKey(Key.of("key1")).addKey(Key.of("key2")).build();
     SpannerReadOptions options =
-        new SpannerReadOptions()
-            .addReadOption(mock(Options.ReadAndQueryOption.class))
-            .addReadOption(mock(Options.ReadQueryUpdateTransactionOption.class));
+            new SpannerReadOptions()
+                    .addReadOption(mock(Options.ReadAndQueryOption.class))
+                    .addReadOption(mock(Options.ReadQueryUpdateTransactionOption.class));
     spyTemplate.read(ParentEntity.class, keys, options);
     verify(spyTemplate).read(eq(ParentEntity.class), same(keys), eq(options));
     verify(this.databaseClient, times(1)).singleUse();
@@ -612,7 +579,7 @@ class SpannerTemplateTests {
     KeySet keySet = KeySet.singleKey(Key.of("key"));
     when(this.readContext.read(any(), any(), any(), any())).thenReturn(results);
     when(this.databaseClient.singleUse(
-        TimestampBound.ofMinReadTimestamp(Timestamp.ofTimeMicroseconds(333L))))
+            TimestampBound.ofMinReadTimestamp(Timestamp.ofTimeMicroseconds(333L))))
         .thenReturn(this.readContext);
 
     verifyAfterEvents(
@@ -881,7 +848,7 @@ class SpannerTemplateTests {
     Pageable pageable = mock(Pageable.class);
 
     when(this.databaseClient.singleUse(
-        TimestampBound.ofMinReadTimestamp(Timestamp.ofTimeMicroseconds(333L))))
+            TimestampBound.ofMinReadTimestamp(Timestamp.ofTimeMicroseconds(333L))))
         .thenReturn(this.readContext);
 
     long offset = 5L;
@@ -1001,16 +968,16 @@ class SpannerTemplateTests {
     InOrder inOrder = Mockito.inOrder(mockBeforePublisher, this.databaseClient, mockAfterPublisher);
 
     doAnswer(
-        invocationOnMock -> {
-          ApplicationEvent event = invocationOnMock.getArgument(0);
-          if (expectedBefore != null && event.getClass().equals(expectedBefore.getClass())) {
-            mockBeforePublisher.publishEvent(event);
-          } else if (expectedAfter != null
-              && event.getClass().equals(expectedAfter.getClass())) {
-            mockAfterPublisher.publishEvent(event);
-          }
-          return null;
-        })
+            invocationOnMock -> {
+              ApplicationEvent event = invocationOnMock.getArgument(0);
+              if (expectedBefore != null && event.getClass().equals(expectedBefore.getClass())) {
+                mockBeforePublisher.publishEvent(event);
+              } else if (expectedAfter != null
+                  && event.getClass().equals(expectedAfter.getClass())) {
+                mockAfterPublisher.publishEvent(event);
+              }
+              return null;
+            })
         .when(mockPublisher)
         .publishEvent(any());
 
@@ -1041,7 +1008,8 @@ class SpannerTemplateTests {
 
   @Table(name = "test_table_embedded_pk")
   private static class TestEntityEmbeddedPrimaryKey {
-    @Embedded @PrimaryKey EmbeddedPrimaryKey key;
+    @Embedded @PrimaryKey
+    EmbeddedPrimaryKey key;
   }
 
   private static class EmbeddedPrimaryKey {
