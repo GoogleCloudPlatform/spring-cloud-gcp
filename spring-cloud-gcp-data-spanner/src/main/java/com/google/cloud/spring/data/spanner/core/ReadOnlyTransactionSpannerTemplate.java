@@ -18,6 +18,7 @@ package com.google.cloud.spring.data.spanner.core;
 
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.Mutation;
+import com.google.cloud.spanner.Options.UpdateOption;
 import com.google.cloud.spanner.ReadContext;
 import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.Statement;
@@ -68,6 +69,12 @@ class ReadOnlyTransactionSpannerTemplate extends SpannerTemplate {
 
   @Override
   public long executePartitionedDmlStatement(Statement statement) {
+    throw new SpannerDataException(
+        "A read-only transaction template cannot execute partitioned DML.");
+  }
+
+  @Override
+  public long executePartitionedDmlStatement(Statement statement, UpdateOption... options) {
     throw new SpannerDataException(
         "A read-only transaction template cannot execute partitioned DML.");
   }
