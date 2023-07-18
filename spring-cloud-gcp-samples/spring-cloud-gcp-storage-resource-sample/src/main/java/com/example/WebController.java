@@ -52,12 +52,10 @@ public class WebController {
   }
 
   @GetMapping(value = "/")
-  public String readGcsFile(@RequestParam("filename") Optional<String> fileName)
+  public String readGcsFile(@RequestParam("filename") Optional<String> filename)
       throws IOException {
-    if (fileName.isPresent()) {
-      GoogleStorageResource resource =
-          new GoogleStorageResource(
-              this.storage, String.format("gs://%s/%s", bucketName, fileName.get()));
+    if (filename.isPresent()) {
+      GoogleStorageResource resource = fetchResource(filename);
       return StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset()) + "\n";
     }
     return StreamUtils.copyToString(this.gcsFile.getInputStream(), Charset.defaultCharset()) + "\n";
@@ -65,12 +63,10 @@ public class WebController {
 
   @PostMapping(value = "/")
   public String writeGcs(
-      @RequestBody String data, @RequestParam("filename") Optional<String> fileName)
+      @RequestBody String data, @RequestParam("filename") Optional<String> filename)
       throws IOException {
-    if (fileName.isPresent()) {
-      GoogleStorageResource resource =
-          new GoogleStorageResource(
-              this.storage, String.format("gs://%s/%s", bucketName, fileName.get()));
+    if (filename.isPresent()) {
+      GoogleStorageResource resource = fetchResource(filename);
       return updateResource(resource, data);
     }
     return updateResource(this.gcsFile, data);
@@ -81,5 +77,10 @@ public class WebController {
       os.write(data.getBytes());
     }
     return "file was updated\n";
+  }
+
+  private GoogleStorageResource fetchResource(Optional<String> filename) {
+    return new GoogleStorageResource(
+        this.storage, String.format("gs://%s/%s", this.bucketName, filename.get()));
   }
 }

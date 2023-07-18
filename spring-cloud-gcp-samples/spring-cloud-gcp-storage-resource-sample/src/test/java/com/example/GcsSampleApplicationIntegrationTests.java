@@ -18,7 +18,6 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
@@ -27,7 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.AfterClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -54,15 +53,12 @@ import org.springframework.web.util.UriComponentsBuilder;
     classes = {GcsApplication.class})
 class GcsSampleApplicationIntegrationTests {
 
+  private final String filename = String.format("file-%s.txt", UUID.randomUUID());
   @Autowired private Storage storage;
-
   @Autowired private TestRestTemplate testRestTemplate;
-
   @Value("${gcs-resource-test-bucket}")
   private String bucketName;
-
   @LocalServerPort private int port;
-
   private String appUrl;
 
   @BeforeEach
@@ -70,26 +66,25 @@ class GcsSampleApplicationIntegrationTests {
     this.appUrl = "http://localhost:" + this.port;
   }
 
-  @BeforeEach
-  @AfterEach
+  @AfterClass
   void cleanupCloudStorage() {
-    Page<Blob> blobs = this.storage.list(this.bucketName);
-    for (Blob blob : blobs.iterateAll()) {
+    BlobId blobId = BlobId.of(this.bucketName, filename);
+    Blob blob = storage.get(blobId);
+    if (blob != null) {
       blob.delete();
     }
   }
 
   @Test
   void testGcsResourceIsLoaded() {
-    String fileName = String.format("file-%s.txt", UUID.randomUUID());
-    BlobId blobId = BlobId.of(this.bucketName, fileName);
+    BlobId blobId = BlobId.of(this.bucketName, filename);
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
     this.storage.create(blobInfo, "Good Morning!".getBytes(StandardCharsets.UTF_8));
 
     // Verify the contents of the uploaded file.
     String getUrl =
         UriComponentsBuilder.fromHttpUrl(this.appUrl + "/")
-            .queryParam("filename", fileName)
+            .queryParam("filename", filename)
             .toUriString();
     Awaitility.await()
         .atMost(15, TimeUnit.SECONDS)
@@ -102,7 +97,7 @@ class GcsSampleApplicationIntegrationTests {
     // Update the contents of the uploaded file and verify.
     String postUrl =
         UriComponentsBuilder.fromHttpUrl(this.appUrl + "/")
-            .queryParam("filename", fileName)
+            .queryParam("filename", filename)
             .toUriString();
     this.testRestTemplate.postForObject(postUrl, "Good Night!", String.class);
     Awaitility.await()

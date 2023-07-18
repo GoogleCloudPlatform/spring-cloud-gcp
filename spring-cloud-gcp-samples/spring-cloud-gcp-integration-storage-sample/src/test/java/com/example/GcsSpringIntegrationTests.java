@@ -18,7 +18,6 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
@@ -32,16 +31,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -56,9 +55,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @PropertySource("classpath:application.properties")
 @SpringBootTest(classes = {GcsSpringIntegrationApplication.class})
+@Import(GcsSpringIntegrationTestConfiguration.class)
 class GcsSpringIntegrationTests {
 
+  private static final String TEST_FILE = String.format("test_file_%s", UUID.randomUUID());
   @Autowired private Storage storage;
+
+  @Autowired
+  @Qualifier("tempDir")
+  private String tempDir;
 
   @Value("${gcs-read-bucket}")
   private String cloudInputBucket;
@@ -69,11 +74,6 @@ class GcsSpringIntegrationTests {
   @Value("${gcs-local-directory}")
   private String outputFolder;
 
-  @BeforeEach
-  void setupTestEnvironment() {
-    cleanupCloudStorage();
-  }
-
   @AfterEach
   void teardownTestEnvironment() throws IOException {
     cleanupCloudStorage();
@@ -82,16 +82,14 @@ class GcsSpringIntegrationTests {
 
   @Test
   void testFilePropagatedToLocalDirectory() {
-    String testFileName = String.format("test_file_%s", UUID.randomUUID());
-    BlobId blobId = BlobId.of(this.cloudInputBucket, testFileName);
+    BlobId blobId = BlobId.of(this.cloudInputBucket, TEST_FILE);
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
     this.storage.create(blobInfo, "Hello World!".getBytes(StandardCharsets.UTF_8));
-
     Awaitility.await()
         .atMost(15, TimeUnit.SECONDS)
         .untilAsserted(
             () -> {
-              Path outputFile = Paths.get(this.outputFolder + "/" + testFileName);
+              Path outputFile = Paths.get(tempDir + "/" + TEST_FILE);
               assertThat(Files.exists(outputFile)).isTrue();
               assertThat(Files.isRegularFile(outputFile)).isTrue();
 
@@ -104,23 +102,28 @@ class GcsSpringIntegrationTests {
                   .iterateAll()
                   .forEach(b -> blobNamesInOutputBucket.add(b.getName()));
 
-              assertThat(blobNamesInOutputBucket).contains(testFileName);
+              assertThat(blobNamesInOutputBucket).contains(TEST_FILE);
             });
   }
 
   void cleanupCloudStorage() {
-    Page<Blob> blobs = this.storage.list(this.cloudInputBucket);
-    for (Blob blob : blobs.iterateAll()) {
-      blob.delete();
+    BlobId inputBucketBlobId = BlobId.of(cloudInputBucket, TEST_FILE);
+    Blob inputBucketBlob = storage.get(inputBucketBlobId);
+    if (inputBucketBlob != null) {
+      inputBucketBlob.delete();
+    }
+
+    BlobId outputBucketBlobId = BlobId.of(cloudOutputBucket, TEST_FILE);
+    Blob outputBucketBlob = storage.get(outputBucketBlobId);
+    if (outputBucketBlob != null) {
+      outputBucketBlob.delete();
     }
   }
 
   void cleanupLocalDirectory() throws IOException {
-    Path localDirectory = Paths.get(this.outputFolder);
-    List<Path> files = Files.list(localDirectory).collect(Collectors.toList());
-    for (Path file : files) {
-      Files.delete(file);
-    }
-    Files.deleteIfExists(Paths.get(this.outputFolder));
+    // The directory name provided through the gcs-local-directory always get created even if the
+    // tests don't use it.
+    Path unusedDirectory = Paths.get(outputFolder);
+    Files.deleteIfExists(unusedDirectory);
   }
 }
