@@ -19,9 +19,9 @@ package com.example;
 import com.google.cloud.spring.storage.integration.inbound.GcsInboundFileSynchronizer;
 import com.google.cloud.spring.storage.integration.inbound.GcsInboundFileSynchronizingMessageSource;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -32,15 +32,16 @@ import org.springframework.integration.core.MessageSource;
 @TestConfiguration
 public class GcsSpringIntegrationTestConfiguration {
 
-  private String localDirectory;
+  private String uniqueDirectory;
 
-  public GcsSpringIntegrationTestConfiguration() throws IOException {
-    this.localDirectory = Files.createTempDirectory("storage-integration").toString();
+  public GcsSpringIntegrationTestConfiguration(
+      @Value("${gcs-local-directory}") String localDirectory) {
+    uniqueDirectory = String.format("%s-%s", localDirectory, UUID.randomUUID());
   }
 
   @Bean
-  public String tempDir() {
-    return localDirectory;
+  public String uniqueDirectory() {
+    return uniqueDirectory;
   }
 
   @Bean
@@ -49,7 +50,7 @@ public class GcsSpringIntegrationTestConfiguration {
   public MessageSource<File> synchronizerAdapterOverride(GcsInboundFileSynchronizer synchronizer) {
     GcsInboundFileSynchronizingMessageSource syncAdapter =
         new GcsInboundFileSynchronizingMessageSource(synchronizer);
-    syncAdapter.setLocalDirectory(Paths.get(localDirectory).toFile());
+    syncAdapter.setLocalDirectory(Paths.get(uniqueDirectory).toFile());
     return syncAdapter;
   }
 }

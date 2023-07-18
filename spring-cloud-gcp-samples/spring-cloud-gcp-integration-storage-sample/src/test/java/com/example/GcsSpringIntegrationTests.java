@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -59,11 +62,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class GcsSpringIntegrationTests {
 
   private static final String TEST_FILE = String.format("test_file_%s", UUID.randomUUID());
+  private static final Log LOGGER = LogFactory.getLog(GcsSpringIntegrationTests.class);
+
   @Autowired private Storage storage;
 
   @Autowired
-  @Qualifier("tempDir")
-  private String tempDir;
+  @Qualifier("uniqueDirectory")
+  private String uniqueDirectory;
 
   @Value("${gcs-read-bucket}")
   private String cloudInputBucket;
@@ -77,7 +82,7 @@ class GcsSpringIntegrationTests {
   @AfterEach
   void teardownTestEnvironment() throws IOException {
     cleanupCloudStorage();
-    cleanupLocalDirectory();
+    cleanupLocalDirectories();
   }
 
   @Test
@@ -86,10 +91,10 @@ class GcsSpringIntegrationTests {
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
     this.storage.create(blobInfo, "Hello World!".getBytes(StandardCharsets.UTF_8));
     Awaitility.await()
-        .atMost(15, TimeUnit.SECONDS)
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(
             () -> {
-              Path outputFile = Paths.get(tempDir + "/" + TEST_FILE);
+              Path outputFile = Paths.get(uniqueDirectory + "/" + TEST_FILE);
               assertThat(Files.exists(outputFile)).isTrue();
               assertThat(Files.isRegularFile(outputFile)).isTrue();
 
@@ -120,10 +125,26 @@ class GcsSpringIntegrationTests {
     }
   }
 
-  void cleanupLocalDirectory() throws IOException {
-    // The directory name provided through the gcs-local-directory always get created even if the
-    // tests don't use it.
-    Path unusedDirectory = Paths.get(outputFolder);
-    Files.deleteIfExists(unusedDirectory);
+  void cleanupLocalDirectories() throws IOException {
+    cleanupLocalDirectory(Paths.get(uniqueDirectory));
+    cleanupLocalDirectory(Paths.get(outputFolder));
+  }
+
+  void cleanupLocalDirectory(Path testDirectory) throws IOException {
+    if (Files.exists(testDirectory)) {
+      if (Files.isDirectory(testDirectory)) {
+        try (Stream<Path> files = Files.list(testDirectory)) {
+          files.forEach(
+              path -> {
+                try {
+                  Files.delete(path);
+                } catch (IOException ioe) {
+                  LOGGER.info("Error deleting test file.", ioe);
+                }
+              });
+        }
+      }
+      Files.delete(testDirectory);
+    }
   }
 }
