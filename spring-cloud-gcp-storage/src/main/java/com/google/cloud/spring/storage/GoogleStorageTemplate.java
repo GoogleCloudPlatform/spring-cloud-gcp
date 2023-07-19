@@ -17,6 +17,7 @@
 package com.google.cloud.spring.storage;
 
 
+import com.google.api.client.json.JsonParser;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.storage.model.Objects;
 import com.google.api.services.storage.model.StorageObject;
@@ -137,18 +138,18 @@ public class GoogleStorageTemplate {
 
   private static Mono<StorageObject> getStorageObject(String s) {
     try {
-      StorageObject storageObject = GsonFactory.getDefaultInstance().createJsonParser(s)
-          .parse(StorageObject.class);
-      return Mono.just(storageObject);
+      try (JsonParser jsonParser = GsonFactory.getDefaultInstance().createJsonParser(s)) {
+        StorageObject storageObject = jsonParser.parse(StorageObject.class);
+        return Mono.just(storageObject);
+      }
     } catch (IOException e) {
       return Mono.error(e);
     }
   }
 
   private static Mono<Objects> getObjects(String s) {
-    try {
-      Objects storageObject = GsonFactory.getDefaultInstance().createJsonParser(s)
-          .parse(Objects.class);
+    try (JsonParser jsonParser = GsonFactory.getDefaultInstance().createJsonParser(s)) {
+      Objects storageObject = jsonParser.parse(Objects.class);
       return Mono.just(storageObject);
     } catch (IOException e) {
       return Mono.error(e);

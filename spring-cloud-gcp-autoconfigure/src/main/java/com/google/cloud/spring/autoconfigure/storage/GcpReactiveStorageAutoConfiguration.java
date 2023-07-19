@@ -19,7 +19,6 @@ package com.google.cloud.spring.autoconfigure.storage;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.spring.autoconfigure.core.GcpProperties;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
-import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.ReactiveTokenProvider;
 import com.google.cloud.spring.storage.GoogleStorageProtocolResolver;
 import com.google.cloud.spring.storage.GoogleStorageTemplate;
@@ -40,20 +39,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Import(GoogleStorageProtocolResolver.class)
 public class GcpReactiveStorageAutoConfiguration {
 
-  private final GcpProjectIdProvider gcpProjectIdProvider;
-
   private final CredentialsProvider credentialsProvider;
 
   public GcpReactiveStorageAutoConfiguration(
-      GcpProjectIdProvider coreProjectIdProvider,
       CredentialsProvider credentialsProvider,
       GcpStorageProperties gcpStorageProperties)
       throws IOException {
-
-    this.gcpProjectIdProvider =
-        gcpStorageProperties.getProjectId() != null
-            ? gcpStorageProperties::getProjectId
-            : coreProjectIdProvider;
 
     this.credentialsProvider =
         gcpStorageProperties.getCredentials().hasKey()
@@ -63,7 +54,7 @@ public class GcpReactiveStorageAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public WebClient webClient() throws IOException {
+  public WebClient webClient() {
     return WebClient.builder().build();
   }
 
@@ -76,7 +67,7 @@ public class GcpReactiveStorageAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean
   public GoogleStorageTemplate storage(WebClient webClient,
-      ReactiveTokenProvider reactiveTokenProvider) throws IOException {
+      ReactiveTokenProvider reactiveTokenProvider) {
     return new GoogleStorageTemplate(webClient, reactiveTokenProvider);
   }
 
