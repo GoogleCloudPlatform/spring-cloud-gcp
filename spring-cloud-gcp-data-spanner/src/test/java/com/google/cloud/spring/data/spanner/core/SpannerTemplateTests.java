@@ -38,6 +38,8 @@ import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Options;
 import com.google.cloud.spanner.Options.ReadOption;
+import com.google.cloud.spanner.Options.ReadQueryUpdateTransactionOption;
+import com.google.cloud.spanner.Options.RpcPriority;
 import com.google.cloud.spanner.ReadContext;
 import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.ResultSet;
@@ -88,6 +90,9 @@ import org.springframework.data.domain.Sort;
 class SpannerTemplateTests {
 
   private static final Statement DML = Statement.of("update statement");
+
+  private static final ReadQueryUpdateTransactionOption OPTION_RPC_PRIORITY_HIGH =
+      Options.priority(RpcPriority.HIGH);
 
   private DatabaseClient databaseClient;
 
@@ -194,6 +199,69 @@ class SpannerTemplateTests {
         new AfterExecuteDmlEvent(DML, 333L),
         () -> this.spannerTemplate.executePartitionedDmlStatement(DML),
         x -> x.verify(this.databaseClient, times(1)).executePartitionedUpdate(DML));
+  }
+
+  @Test
+  void executePartitionedDmlWithOptionsTest() {
+    when(this.databaseClient.executePartitionedUpdate(DML, OPTION_RPC_PRIORITY_HIGH))
+        .thenReturn(333L);
+    verifyBeforeAndAfterEvents(
+        new BeforeExecuteDmlEvent(DML),
+        new AfterExecuteDmlEvent(DML, 333L),
+        () -> this.spannerTemplate.executePartitionedDmlStatement(DML, OPTION_RPC_PRIORITY_HIGH),
+        x ->
+            x.verify(this.databaseClient, times(1))
+                .executePartitionedUpdate(DML, OPTION_RPC_PRIORITY_HIGH));
+  }
+
+  @Test
+  void readOnlyTransactionPartitionedDmlWithOptionsTest() {
+
+    ReadOnlyTransaction readOnlyTransaction = mock(ReadOnlyTransaction.class);
+    when(this.databaseClient.readOnlyTransaction(
+            TimestampBound.ofReadTimestamp(Timestamp.ofTimeMicroseconds(333))))
+        .thenReturn(readOnlyTransaction);
+
+    SpannerReadOptions testSpannerReadOptions =
+        new SpannerReadOptions().setTimestamp(Timestamp.ofTimeMicroseconds(333));
+    Function<SpannerTemplate, Void> testSpannerOperations =
+        spannerOperations -> {
+          spannerOperations.executePartitionedDmlStatement(
+              Statement.of("fail"), OPTION_RPC_PRIORITY_HIGH);
+          return null;
+        };
+
+    assertThatThrownBy(
+            () ->
+                this.spannerTemplate.performReadOnlyTransaction(
+                    testSpannerOperations, testSpannerReadOptions))
+        .hasMessage("A read-only transaction template cannot execute partitioned DML.");
+  }
+
+  @Test
+  void readWriteTransactionPartitionedDmlWithOptionsTest() {
+
+    TransactionRunner transactionRunner = mock(TransactionRunner.class);
+    when(this.databaseClient.readWriteTransaction()).thenReturn(transactionRunner);
+
+    TransactionContext transactionContext = mock(TransactionContext.class);
+
+    when(transactionRunner.run(any()))
+        .thenAnswer(
+            invocation -> {
+              TransactionCallable transactionCallable = invocation.getArgument(0);
+              return transactionCallable.run(transactionContext);
+            });
+    Function<SpannerTemplate, String> testSpannerOperations =
+        spannerTemplate -> {
+          spannerTemplate.executePartitionedDmlStatement(
+              Statement.of("DML statement here"), OPTION_RPC_PRIORITY_HIGH);
+          return "all done";
+        };
+
+    assertThatThrownBy(
+            () -> this.spannerTemplate.performReadWriteTransaction(testSpannerOperations))
+        .hasMessage("A read-write transaction template cannot execute partitioned DML.");
   }
 
   @Test

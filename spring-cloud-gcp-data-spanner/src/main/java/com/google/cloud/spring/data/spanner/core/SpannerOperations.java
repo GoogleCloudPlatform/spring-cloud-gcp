@@ -18,6 +18,7 @@ package com.google.cloud.spring.data.spanner.core;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
+import com.google.cloud.spanner.Options.UpdateOption;
 import com.google.cloud.spanner.ReadContext;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
@@ -49,6 +50,15 @@ public interface SpannerOperations {
    * @return the lower-bound of number of rows affected.
    */
   long executePartitionedDmlStatement(Statement statement);
+
+  /**
+   * Execute a DML statement in partitioned mode. This is not available inside of transactions.
+   *
+   * @param statement the DML statement to execute.
+   * @param options marks options applicable to update operation.
+   * @return the lower-bound of number of rows affected.
+   */
+  long executePartitionedDmlStatement(Statement statement, UpdateOption... options);
 
   /**
    * Finds a single stored object using a key.

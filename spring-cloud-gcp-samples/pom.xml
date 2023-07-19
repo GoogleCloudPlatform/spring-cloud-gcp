@@ -91,6 +91,7 @@
 			<modules>
 				<module>spring-cloud-gcp-logging-sample</module>
 				<module>spring-cloud-gcp-trace-sample</module>
+				<module>spring-cloud-gcp-vision-api-sample</module>
 			</modules>
 			<build>
 				<plugins>
@@ -134,6 +135,7 @@
 							<systemPropertyVariables>
 								<it.logging>true</it.logging>
 								<it.trace>true</it.trace>
+								<it.vision>true</it.vision>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
