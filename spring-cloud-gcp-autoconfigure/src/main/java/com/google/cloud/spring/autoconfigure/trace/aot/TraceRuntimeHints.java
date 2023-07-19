@@ -18,18 +18,32 @@ package com.google.cloud.spring.autoconfigure.trace.aot;
 
 import io.micrometer.observation.aop.ObservedAspect;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.aot.hint.ExecutableMode;
+import org.springframework.aot.hint.MemberCategory;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
+import org.springframework.aot.hint.TypeReference;
 import org.springframework.util.ReflectionUtils;
 
 public class TraceRuntimeHints implements RuntimeHintsRegistrar {
 
   @Override
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-    Method method = ReflectionUtils.findMethod(ObservedAspect.class,
-        "observeMethod", ProceedingJoinPoint.class);
-    hints.reflection().registerMethod(method, ExecutableMode.INVOKE);
+    Method method =
+        ReflectionUtils.findMethod(
+            ObservedAspect.class, "observeMethod", ProceedingJoinPoint.class);
+    hints
+        .reflection()
+        .registerMethod(method, ExecutableMode.INVOKE)
+        .registerTypes(
+            Arrays.asList(
+                TypeReference.of(com.google.protobuf.Value.class),
+                TypeReference.of(com.google.protobuf.Value.Builder.class)),
+            hint ->
+                hint.withMembers(
+                    MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
+                    MemberCategory.INVOKE_PUBLIC_METHODS));
   }
 }
