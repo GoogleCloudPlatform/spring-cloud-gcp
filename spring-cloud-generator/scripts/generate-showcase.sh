@@ -33,6 +33,7 @@ function verify(){
   SHOWCASE_STARTER_POM_DIFF=$(diff -r ${NEW_DIR}/pom.xml ${OLD_DIR}/pom.xml)
   if [ "$SHOWCASE_STARTER_DIFF" != "" ] || [ "$SHOWCASE_STARTER_POM_DIFF" != "" ]
   then
+      echo "entering the if block of verify() function"
       echo "Differences detected in generated showcase starter module: "
       echo "Diff from src/main: "
       echo $SHOWCASE_STARTER_DIFF
@@ -40,6 +41,7 @@ function verify(){
       echo $SHOWCASE_STARTER_POM_DIFF
       exit 1;
   else
+      echo "entering the else block of verify() function"
       echo "No differences found in showcase-spring-starter"
       rm -r ${NEW_DIR}
   fi
@@ -96,16 +98,22 @@ function generate_showcase_spring_starter(){
 
   # Run google-java-format on generated code
   run_formatter ${SHOWCASE_STARTER_DIR}
-
+  echo "the command run_formatter ${SHOWCASE_STARTER_DIR} - has run succesfully."
   # Remove downloaded repos
   rm -rf ${SPRING_GENERATOR_DIR}/sdk-platform-java
+  echo "the command [rm -rf ${SPRING_GENERATOR_DIR}/sdk-platform-java] - has run succesfully."
 }
 
 if [[ UPDATE -ne 0 ]]; then
     echo "Running script to perform showcase-spring-starter update"
     generate_showcase_spring_starter ${SHOWCASE_STARTER_OLD_DIR}
+    echo "the command [generate_showcase_spring_starter ${SHOWCASE_STARTER_OLD_DIR}] - has run succesfully."
   else
     echo "Running script to perform showcase-spring-starter verification"
+
     generate_showcase_spring_starter ${SHOWCASE_STARTER_NEW_DIR}
+    echo "the command [generate_showcase_spring_starter ${SHOWCASE_STARTER_NEW_DIR}] - has run succesfully."
+
     verify ${SHOWCASE_STARTER_OLD_DIR} ${SHOWCASE_STARTER_NEW_DIR}
+    echo "the command [verify ${SHOWCASE_STARTER_OLD_DIR} ${SHOWCASE_STARTER_NEW_DIR}] - has run succesfully."
 fi
