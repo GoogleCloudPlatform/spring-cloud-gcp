@@ -30,10 +30,10 @@ function verify(){
   OLD_DIR=$1
   NEW_DIR=$2
 
-  SHOWCASE_STARTER_DIFF=$(diff -r ${NEW_DIR}/src/main ${OLD_DIR}/src/main || true)
+  SHOWCASE_STARTER_DIFF=$(diff -r ${NEW_DIR}/src/main ${OLD_DIR}/src/main 2>&1)
   echo "the showcase starter diff is ${SHOWCASE_STARTER_DIFF}"
 
-  SHOWCASE_STARTER_POM_DIFF=$(diff -r ${NEW_DIR}/pom.xml ${OLD_DIR}/pom.xml || true)
+  SHOWCASE_STARTER_POM_DIFF=$(diff -r ${NEW_DIR}/pom.xml ${OLD_DIR}/pom.xml 2>&1)
   echo "the showcase starter pom diff is ${SHOWCASE_STARTER_POM_DIFF}"
 
   if [ "$SHOWCASE_STARTER_DIFF" != "" ] || [ "$SHOWCASE_STARTER_POM_DIFF" != "" ]
