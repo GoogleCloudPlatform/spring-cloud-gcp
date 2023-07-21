@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.trace.aot;
 
+import io.micrometer.observation.aop.ObservedAspect;
 import java.util.Arrays;
 import org.springframework.aot.hint.MemberCategory;
 import org.springframework.aot.hint.RuntimeHints;
@@ -30,6 +31,7 @@ public class TraceRuntimeHints implements RuntimeHintsRegistrar {
         .reflection()
         .registerTypes(
             Arrays.asList(
+                TypeReference.of(ObservedAspect.class),
                 TypeReference.of(com.google.protobuf.Value.class),
                 TypeReference.of(com.google.protobuf.Value.Builder.class)),
             hint ->
