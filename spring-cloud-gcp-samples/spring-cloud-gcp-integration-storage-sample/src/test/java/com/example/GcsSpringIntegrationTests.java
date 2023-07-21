@@ -35,8 +35,9 @@ import java.util.stream.Stream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @PropertySource("classpath:application.properties")
 @SpringBootTest(classes = {GcsSpringIntegrationApplication.class})
 @Import(GcsSpringIntegrationTestConfiguration.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GcsSpringIntegrationTests {
 
   private static final String TEST_FILE = String.format("test_file_%s", UUID.randomUUID());
@@ -79,7 +81,7 @@ class GcsSpringIntegrationTests {
   @Value("${gcs-local-directory}")
   private String outputFolder;
 
-  @AfterEach
+  @AfterAll
   void teardownTestEnvironment() throws IOException {
     cleanupCloudStorage();
     cleanupLocalDirectories();
@@ -109,6 +111,11 @@ class GcsSpringIntegrationTests {
 
               assertThat(blobNamesInOutputBucket).contains(TEST_FILE);
             });
+  }
+
+  @Test
+  void testAutomaticGcsLocalDirectoryCreation() {
+    assertThat(Files.exists(Paths.get(outputFolder))).isTrue();
   }
 
   void cleanupCloudStorage() {
