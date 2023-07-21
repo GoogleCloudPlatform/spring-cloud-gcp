@@ -29,8 +29,13 @@ SHOWCASE_STARTER_NEW_DIR=${SPRING_GENERATOR_DIR}/showcase/showcase-spring-starte
 function verify(){
   OLD_DIR=$1
   NEW_DIR=$2
+
   SHOWCASE_STARTER_DIFF=$(diff -r ${NEW_DIR}/src/main ${OLD_DIR}/src/main)
+  echo "the showcase starter diff is ${SHOWCASE_STARTER_DIFF}"
+
   SHOWCASE_STARTER_POM_DIFF=$(diff -r ${NEW_DIR}/pom.xml ${OLD_DIR}/pom.xml)
+  echo "the showcase starter pom diff is ${SHOWCASE_STARTER_POM_DIFF}"
+
   if [ "$SHOWCASE_STARTER_DIFF" != "" ] || [ "$SHOWCASE_STARTER_POM_DIFF" != "" ]
   then
       echo "entering the if block of verify() function"
@@ -107,12 +112,12 @@ function generate_showcase_spring_starter(){
 if [[ UPDATE -ne 0 ]]; then
     echo "Running script to perform showcase-spring-starter update"
     generate_showcase_spring_starter ${SHOWCASE_STARTER_OLD_DIR}
-    echo "the command [generate_showcase_spring_starter ${SHOWCASE_STARTER_OLD_DIR}] - has run succesfully."
+    echo "the command for showcase-spring-starter update - has run succesfully."
   else
     echo "Running script to perform showcase-spring-starter verification"
 
     generate_showcase_spring_starter ${SHOWCASE_STARTER_NEW_DIR}
-    echo "the command [generate_showcase_spring_starter ${SHOWCASE_STARTER_NEW_DIR}] - has run succesfully."
+    echo "the command for showcase-spring-starter verification - has run succesfully."
 
     verify ${SHOWCASE_STARTER_OLD_DIR} ${SHOWCASE_STARTER_NEW_DIR}
     echo "the command [verify ${SHOWCASE_STARTER_OLD_DIR} ${SHOWCASE_STARTER_NEW_DIR}] - has run succesfully."
