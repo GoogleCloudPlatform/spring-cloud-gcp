@@ -20,7 +20,6 @@ import brave.Tracing;
 import brave.messaging.MessagingTracing;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
-import com.google.cloud.spring.autoconfigure.trace.aot.TraceRuntimeHints;
 import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import io.micrometer.observation.ObservationRegistry;
@@ -35,7 +34,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
@@ -45,7 +43,6 @@ import org.springframework.core.annotation.Order;
 @ConditionalOnClass({PublisherFactory.class, MessagingTracing.class})
 @AutoConfigureAfter({BraveAutoConfiguration.class})
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
-@ImportRuntimeHints(TraceRuntimeHints.class)
 class TracePubSubAutoConfiguration {
 
   @Bean
