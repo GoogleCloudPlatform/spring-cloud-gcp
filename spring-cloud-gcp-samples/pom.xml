@@ -84,6 +84,7 @@
 		<module>spring-cloud-gcp-kotlin-samples</module>
 		<module>spring-cloud-gcp-metrics-sample</module>
 		<module>spring-cloud-gcp-kms-sample</module>
+		<module>spring-cloud-spanner-r2dbc-samples</module>
 	</modules>
 
 	<profiles>
