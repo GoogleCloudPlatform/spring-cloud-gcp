@@ -38,6 +38,7 @@
 		<cloud-sql-socket-factory.version>1.13.1</cloud-sql-socket-factory.version>
 		<guava.version>31.1-jre</guava.version>
 		<r2dbc-postgres-driver.version>1.0.2.RELEASE</r2dbc-postgres-driver.version>
+		<cloud-spanner-r2dbc.version>1.2.2</cloud-spanner-r2dbc.version>
 	</properties>
 
 	<dependencyManagement>
@@ -243,6 +244,11 @@
 				<artifactId>spring-cloud-gcp-starter-kms</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<!-- spring-cloud-gcp-starter-sql -->
 			<dependency>
@@ -273,6 +279,12 @@
 				<groupId>org.postgresql</groupId>
 				<artifactId>r2dbc-postgresql</artifactId>
 				<version>${r2dbc-postgres-driver.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>cloud-spanner-r2dbc</artifactId>
+				<version>${cloud-spanner-r2dbc.version}</version>
 			</dependency>
 
 			<!--Google Cloud Libraries BOM -->
@@ -371,36 +383,5 @@
 			</build>
 		</profile>
 	</profiles>
-
-	<licenses>
-		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
-			<comments>
-				Copyright 2015-2022 the original author or authors.
-
-				Licensed under the Apache License, Version 2.0 (the "License");
-				you may not use this file except in compliance with the License.
-				You may obtain a copy of the License at
-
-				https://www.apache.org/licenses/LICENSE-2.0
-
-				Unless required by applicable law or agreed to in writing, software
-				distributed under the License is distributed on an "AS IS" BASIS,
-				WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-				implied.
-
-				See the License for the specific language governing permissions and
-				limitations under the License.
-			</comments>
-		</license>
-	</licenses>
-
-	<developers>
-		<developer>
-			<organization>Google</organization>
-			<organizationUrl>http://cloud.google.com</organizationUrl>
-		</developer>
-	</developers>
 
 </project>

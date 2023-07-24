@@ -460,6 +460,7 @@
 				<!-- Docs and Samples -->
 				<module>docs</module>
 				<module>spring-cloud-gcp-samples</module>
+				<module>spring-cloud-spanner-spring-data-r2dbc</module>
 			</modules>
 		</profile>
 		<profile>
@@ -678,6 +679,7 @@
 				<module>spring-cloud-gcp-kms</module>
 
 				<module>spring-cloud-previews</module>
+				<module>spring-cloud-spanner-spring-data-r2dbc</module>
 			</modules>
 			<build>
 				<pluginManagement>
@@ -754,7 +756,7 @@
 						</executions>
 						<configuration>
 							<!-- https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8212233 -->
-							<source>17</source>
+							<source>8</source>
 							<excludePackageNames>
 								com.example,
 								com.example.*,
