@@ -13,6 +13,10 @@
 	<name>Spring Framework on Google Cloud Starter - MySQL</name>
 	<url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-mysql</url>
 
+	<properties>
+		<cloud-sql-socket-factory.version>1.13.1</cloud-sql-socket-factory.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.google.cloud</groupId>
@@ -25,6 +29,11 @@
 		<dependency>
 			<groupId>com.google.cloud.sql</groupId>
 			<artifactId>mysql-socket-factory</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.cloud.sql</groupId>
+			<artifactId>mysql-socket-factory-connector-j-8</artifactId>
+			<version>${cloud-sql-socket-factory.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.mysql</groupId>
