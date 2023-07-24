@@ -1,0 +1,24 @@
+# Cloud Spanner Spring Data R2DBC sample
+
+This sample creates a table called `BOOK` on application startup, and deletes it prior to application shutdown.
+
+## Running the Sample
+
+image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fcloud-spanner-r2dbc&cloudshell_open_in_editor=cloud-spanner-r2dbc-samples/cloud-spanner-spring-data-r2dbc-sample/README.adoc]
+
+
+1. Run the sample from the command line, providing `spanner.instance`, `spanner.database` and `gcp.project` properties:
+
+```
+mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dspanner.instance=[SPANNER-INSTANCE] -Dspanner.database=[SPANNER-DATABASE] -Dgcp.project=GCP-PROJECT"
+```
+
+2. Visit http://localhost:8080/index.html
+
+3. Try the different actions available
+
+ - Listing all books.
+ - Adding a new book with only title.
+ - Adding a new book with extra details (a `Map` field in `Book` entity) stored as a spanner JSON column.
+ - Adding a new book with a review (a custom class field in `Book` entity) stored as a spanner JSON column
+ - Searching for a book by its ID.

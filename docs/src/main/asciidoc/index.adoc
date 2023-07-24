@@ -47,6 +47,8 @@ include::metrics.adoc[]
 
 include::spanner.adoc[]
 
+include::spanner-spring-data-r2dbc.adoc[]
+
 include::datastore.adoc[]
 
 include::firestore.adoc[]
