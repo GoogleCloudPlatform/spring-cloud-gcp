@@ -1,16 +1,5 @@
 {
-  "packageRules": [{
-    "packageNames": [
-      "com.coveo:fmt-maven-plugin",
-      "com.google.googlejavaformat:google-java-format"
-    ],
-    "enabled": false
-  },
-    {
-      "major": {
-        "enabled": false
-      }
-    },
+  "packageRules": [
     {
       "matchPackageNames": ["org.springframework.boot:spring-boot-dependencies"],
       "allowedVersions": "<3.0.0"
@@ -44,4 +33,3 @@
     "3.x-dependencies"
   ]
 }
-
