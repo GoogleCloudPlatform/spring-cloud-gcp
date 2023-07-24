@@ -12,10 +12,6 @@
     <artifactId>spring-cloud-gcp-autoconfigure</artifactId>
     <name>Spring Framework on Google Cloud Module - Autoconfigure</name>
 
-    <properties>
-        <cloud-sql-socket-factory.version>1.13.1</cloud-sql-socket-factory.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -85,14 +81,8 @@
         <!-- Adds SocketFactory and MySQL driver to classpath -->
         <dependency>
             <groupId>com.google.cloud.sql</groupId>
-            <artifactId>mysql-socket-factory</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.cloud.sql</groupId>
             <artifactId>mysql-socket-factory-connector-j-8</artifactId>
-            <version>${cloud-sql-socket-factory.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>

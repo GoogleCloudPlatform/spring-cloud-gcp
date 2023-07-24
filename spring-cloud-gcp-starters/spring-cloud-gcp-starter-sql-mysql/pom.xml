@@ -28,10 +28,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.google.cloud.sql</groupId>
-			<artifactId>mysql-socket-factory</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.cloud.sql</groupId>
 			<artifactId>mysql-socket-factory-connector-j-8</artifactId>
 			<version>${cloud-sql-socket-factory.version}</version>
 		</dependency>
