@@ -78,6 +78,11 @@ public class RepositoryManagerSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry fetchLinkableRepositoriesRetry;
   /**
+   * Allow override of retry settings at method-level for fetchGitRefs. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchGitRefsRetry;
+  /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -184,6 +189,14 @@ public class RepositoryManagerSpringProperties implements CredentialsSupplier {
 
   public void setFetchLinkableRepositoriesRetry(Retry fetchLinkableRepositoriesRetry) {
     this.fetchLinkableRepositoriesRetry = fetchLinkableRepositoriesRetry;
+  }
+
+  public Retry getFetchGitRefsRetry() {
+    return this.fetchGitRefsRetry;
+  }
+
+  public void setFetchGitRefsRetry(Retry fetchGitRefsRetry) {
+    this.fetchGitRefsRetry = fetchGitRefsRetry;
   }
 
   public Retry getSetIamPolicyRetry() {
