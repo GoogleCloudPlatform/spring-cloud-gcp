@@ -1,0 +1,3 @@
+org.springframework.data.r2dbc.dialect.DialectResolver$R2dbcDialectProvider=\
+com.google.cloud.spanner.r2dbc.springdata.SpannerR2dbcDialectProvider
+org.springframework.r2dbc.core.binding.BindMarkersFactoryResolver$BindMarkerFactoryProvider=com.google.cloud.spanner.r2dbc.springdata.SpannerBindMarkerFactoryProvider
