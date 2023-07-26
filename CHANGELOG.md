@@ -14,6 +14,22 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.6.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.5.5...v3.6.0) (2023-07-26)
+
+
+### Features
+
+* migrate Cloud Spanner Spring Data R2DBC ([#1971](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1971)) ([f9303f0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f9303f0e6d977594cbf3f740ee7c9ed9afd78c6a))
+
+
+### Dependencies
+
+* bump org.springframework.boot:spring-boot-dependencies ([#2039](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2039)) ([e2a6549](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e2a6549aaf4034fe5ad170ba9d9c4ce2036b8fe6))
+* bump org.springframework.boot:spring-boot-starter-parent ([#2038](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2038)) ([b27f0c7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b27f0c7741a19a052427d5794ff56c65d6c26c44))
+* bump spring-cloud-config.version from 3.1.6 to 3.1.7 ([#1993](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1993)) ([bbb7b9f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/bbb7b9f5bcc9ff638a81556cb7b2701633c0bfd0))
+* bump spring-cloud-dependencies from 2021.0.7 to 2021.0.8 ([#1992](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1992)) ([f4a87b5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f4a87b536031b95e733744b1caf1f5d79100ffef))
+* Manually bumping `cloud-sql-socket-factory.version` from `1.12.0` to `1.13.1` ([#2052](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2052)) ([e6bd1ec](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e6bd1ec72ba5ce4aa862aebcad7e45cb7d68a987))
+
 ## [3.5.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.5.4...v3.5.5) (2023-07-19)
 
 
