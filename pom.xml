@@ -379,7 +379,7 @@
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<systemPropertyVariables>
 							<!--integration tests are not invoked unless the relevant system property is set to true here. -->
-							<it.vision>${it.vision}</it.vision>
+							<it.vision>true</it.vision>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>
