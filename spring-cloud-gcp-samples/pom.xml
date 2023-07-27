@@ -132,8 +132,8 @@
 								<include>${integration-test.pattern}</include>
 							</includes>
 							<systemPropertyVariables>
-								<it.logging>true</it.logging>
-								<it.vision>true</it.vision>
+								<it.logging>${it.logging}</it.logging>
+								<it.vision>${it.vision}</it.vision>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>

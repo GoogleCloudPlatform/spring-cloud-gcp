@@ -89,6 +89,7 @@ jobs:
             --activate-profiles native-sample-config,nativeTest \
             --define notAllModules=true \
             --define maven.javadoc.skip=true \
+            --define it.${{ matrix.it }}=true
             test
         working-directory: ./spring-cloud-gcp-samples
       - name: Retry on Failure
@@ -118,6 +119,7 @@ jobs:
             --batch-mode \
             --activate-profiles spring-native,\!default \
             --define maven.javadoc.skip=true \
+            --define it.${{ matrix.it }}=true \
             test
       - name: Retry on Failure
         id: intTest4
