@@ -36,21 +36,11 @@
 	<properties>
 		<gcp-libraries-bom.version>26.19.0</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.13.1</cloud-sql-socket-factory.version>
-		<guava.version>31.1-jre</guava.version>
 		<r2dbc-postgres-driver.version>1.0.2.RELEASE</r2dbc-postgres-driver.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- Overriding Guava from libraries-bom; Spring Framework on Google Cloud does not require Java 7 support -->
-			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava-bom</artifactId>
-				<version>${guava.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-core</artifactId>
