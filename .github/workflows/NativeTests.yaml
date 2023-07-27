@@ -21,6 +21,10 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
+      matrix:
+        it:
+          - logging
+          - vision
     steps:
       - name: Get current date
         id: date
