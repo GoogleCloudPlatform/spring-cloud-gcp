@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>spring-cloud-gcp</artifactId>
+    <groupId>com.google.cloud</groupId>
+    <version>4.6.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>Spring Framework on Google Cloud Module - Cloud Spanner R2DBC Spring Data Dialect</name>
+  <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
+
+   <dependencies>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>cloud-spanner-r2dbc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-r2dbc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+</project>
