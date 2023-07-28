@@ -155,6 +155,13 @@ public class TensorboardServiceSpringAutoConfiguration {
               clientSettingsBuilder.getTensorboardSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getTensorboardSettings().setRetrySettings(getTensorboardRetrySettings);
 
+      RetrySettings listTensorboardsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listTensorboardsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listTensorboardsSettings()
+          .setRetrySettings(listTensorboardsRetrySettings);
+
       RetrySettings readTensorboardUsageRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.readTensorboardUsageSettings().getRetrySettings(),
@@ -162,13 +169,6 @@ public class TensorboardServiceSpringAutoConfiguration {
       clientSettingsBuilder
           .readTensorboardUsageSettings()
           .setRetrySettings(readTensorboardUsageRetrySettings);
-
-      RetrySettings listTensorboardsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listTensorboardsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .listTensorboardsSettings()
-          .setRetrySettings(listTensorboardsRetrySettings);
 
       RetrySettings createTensorboardExperimentRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -362,20 +362,6 @@ public class TensorboardServiceSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for getTensorboard from properties.");
       }
     }
-    Retry readTensorboardUsageRetry = clientProperties.getReadTensorboardUsageRetry();
-    if (readTensorboardUsageRetry != null) {
-      RetrySettings readTensorboardUsageRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.readTensorboardUsageSettings().getRetrySettings(),
-              readTensorboardUsageRetry);
-      clientSettingsBuilder
-          .readTensorboardUsageSettings()
-          .setRetrySettings(readTensorboardUsageRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for readTensorboardUsage from properties.");
-      }
-    }
     Retry listTensorboardsRetry = clientProperties.getListTensorboardsRetry();
     if (listTensorboardsRetry != null) {
       RetrySettings listTensorboardsRetrySettings =
@@ -388,6 +374,20 @@ public class TensorboardServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listTensorboards from properties.");
+      }
+    }
+    Retry readTensorboardUsageRetry = clientProperties.getReadTensorboardUsageRetry();
+    if (readTensorboardUsageRetry != null) {
+      RetrySettings readTensorboardUsageRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.readTensorboardUsageSettings().getRetrySettings(),
+              readTensorboardUsageRetry);
+      clientSettingsBuilder
+          .readTensorboardUsageSettings()
+          .setRetrySettings(readTensorboardUsageRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for readTensorboardUsage from properties.");
       }
     }
     Retry createTensorboardExperimentRetry = clientProperties.getCreateTensorboardExperimentRetry();

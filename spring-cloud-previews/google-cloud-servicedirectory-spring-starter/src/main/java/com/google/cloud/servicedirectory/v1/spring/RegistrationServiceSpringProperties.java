@@ -132,6 +132,16 @@ public class RegistrationServiceSpringProperties implements CredentialsSupplier 
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry testIamPermissionsRetry;
+  /**
+   * Allow override of retry settings at method-level for listLocations. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listLocationsRetry;
+  /**
+   * Allow override of retry settings at method-level for getLocation. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getLocationRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -312,5 +322,21 @@ public class RegistrationServiceSpringProperties implements CredentialsSupplier 
 
   public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
     this.testIamPermissionsRetry = testIamPermissionsRetry;
+  }
+
+  public Retry getListLocationsRetry() {
+    return this.listLocationsRetry;
+  }
+
+  public void setListLocationsRetry(Retry listLocationsRetry) {
+    this.listLocationsRetry = listLocationsRetry;
+  }
+
+  public Retry getGetLocationRetry() {
+    return this.getLocationRetry;
+  }
+
+  public void setGetLocationRetry(Retry getLocationRetry) {
+    this.getLocationRetry = getLocationRetry;
   }
 }
