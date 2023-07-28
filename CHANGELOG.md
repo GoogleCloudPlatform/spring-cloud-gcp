@@ -14,6 +14,15 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.6.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.6.0...v3.6.1) (2023-07-27)
+
+
+### Dependencies
+
+* **3.x:** stop forcing Guava version ([#2070](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2070)) ([bf22ebe](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/bf22ebed949131f24ff59c08a6fb8d7b686c855a))
+* bump com.google.cloud:libraries-bom from 26.19.0 to 26.20.0 ([#2073](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2073)) ([e8d2c90](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e8d2c90899668d2e371e05452dd5b9f2eee7dc95))
+* bump org.springframework.shell:spring-shell-starter ([#2063](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2063)) ([caedd75](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/caedd75b4de0bdd82a0b2c5af0f50433016b6356))
+
 ## [3.6.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.5.5...v3.6.0) (2023-07-26)
 
 
