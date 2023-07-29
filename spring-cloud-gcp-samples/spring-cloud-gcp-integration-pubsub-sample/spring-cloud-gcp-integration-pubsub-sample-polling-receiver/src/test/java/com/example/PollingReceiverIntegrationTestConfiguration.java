@@ -19,9 +19,6 @@ package com.example;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
-import com.google.cloud.spring.pubsub.core.PubSubTemplate;
-import com.google.cloud.spring.pubsub.integration.AckMode;
-import com.google.cloud.spring.pubsub.integration.inbound.PubSubMessageSource;
 import com.google.pubsub.v1.ProjectName;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
@@ -31,9 +28,6 @@ import com.google.pubsub.v1.TopicName;
 import java.util.UUID;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.integration.annotation.InboundChannelAdapter;
-import org.springframework.integration.annotation.Poller;
-import org.springframework.integration.core.MessageSource;
 
 @TestConfiguration
 public class PollingReceiverIntegrationTestConfiguration {
@@ -41,7 +35,8 @@ public class PollingReceiverIntegrationTestConfiguration {
   private static final String TEST_TOPIC =
       String.format("pubsub-spring-integration-sample-polling-exampleTopic-%s", UUID.randomUUID());
   private static final String TEST_SUBSCRIPTION =
-      String.format("pubsub-spring-integration-sample-polling-exampleSubscription-%s", UUID.randomUUID());
+      String.format(
+          "pubsub-spring-integration-sample-polling-exampleSubscription-%s", UUID.randomUUID());
 
   private TopicAdminClient topicAdminClient;
 
@@ -70,12 +65,7 @@ public class PollingReceiverIntegrationTestConfiguration {
   }
 
   @Bean
-  @InboundChannelAdapter(channel = "pubsubInputChannel", poller = @Poller(fixedDelay = "100"))
-  public MessageSource<Object> pubsubAdapter(PubSubTemplate pubSubTemplate) {
-    PubSubMessageSource messageSource = new PubSubMessageSource(pubSubTemplate, TEST_SUBSCRIPTION);
-    messageSource.setMaxFetchSize(5);
-    messageSource.setAckMode(AckMode.MANUAL);
-    messageSource.setPayloadType(String.class);
-    return messageSource;
+  public String subscription() {
+    return TEST_SUBSCRIPTION;
   }
 }

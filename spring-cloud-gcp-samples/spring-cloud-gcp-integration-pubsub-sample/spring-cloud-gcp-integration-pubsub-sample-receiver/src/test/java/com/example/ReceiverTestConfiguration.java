@@ -19,9 +19,6 @@ package com.example;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
-import com.google.cloud.spring.pubsub.core.PubSubTemplate;
-import com.google.cloud.spring.pubsub.integration.AckMode;
-import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.pubsub.v1.ProjectName;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
@@ -29,10 +26,8 @@ import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.TopicName;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.messaging.MessageChannel;
 
 @TestConfiguration
 public class ReceiverTestConfiguration {
@@ -70,13 +65,7 @@ public class ReceiverTestConfiguration {
   }
 
   @Bean
-  public PubSubInboundChannelAdapter messageChannelAdapter(
-      @Qualifier("pubsubInputChannel") MessageChannel inputChannel, PubSubTemplate pubSubTemplate) {
-    PubSubInboundChannelAdapter adapter =
-        new PubSubInboundChannelAdapter(pubSubTemplate, TEST_SUBSCRIPTION);
-    adapter.setOutputChannel(inputChannel);
-    adapter.setAckMode(AckMode.MANUAL);
-    adapter.setPayloadType(String.class);
-    return adapter;
+  public String subscription() {
+    return TEST_SUBSCRIPTION;
   }
 }

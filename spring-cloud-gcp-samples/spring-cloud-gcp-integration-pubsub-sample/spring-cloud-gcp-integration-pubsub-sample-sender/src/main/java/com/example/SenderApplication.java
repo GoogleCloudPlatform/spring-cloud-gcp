@@ -20,6 +20,7 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -38,9 +39,15 @@ public class SenderApplication {
   }
 
   @Bean
+  public String topic() {
+    return "exampleTopic";
+  }
+
+  @Bean
   @ServiceActivator(inputChannel = "pubSubOutputChannel")
-  public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
-    PubSubMessageHandler adapter = new PubSubMessageHandler(pubsubTemplate, "exampleTopic");
+  public MessageHandler messageSender(
+      PubSubTemplate pubsubTemplate, @Qualifier("topic") String topic) {
+    PubSubMessageHandler adapter = new PubSubMessageHandler(pubsubTemplate, topic);
     adapter.setFailureCallback(
         (exception, message) ->
             LOGGER.info("There was an error sending the message: " + message.getPayload()));

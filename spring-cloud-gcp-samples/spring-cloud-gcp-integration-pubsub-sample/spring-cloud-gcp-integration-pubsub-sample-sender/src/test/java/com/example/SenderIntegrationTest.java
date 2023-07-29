@@ -18,11 +18,20 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.cloud.ServiceOptions;
+import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
+import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
+import com.google.pubsub.v1.ProjectName;
+import com.google.pubsub.v1.Subscription;
+import com.google.pubsub.v1.Topic;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,13 +50,20 @@ import org.springframework.util.MultiValueMap;
  */
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = {"spring.main.allow-bean-definition-overriding=true"},
+        classes = {SenderTestConfiguration.class})
 @DirtiesContext
 class SenderIntegrationTest {
 
+  private static final String PROJECT_NAME =
+          ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
   @Autowired private TestRestTemplate restTemplate;
-
   @Autowired private PubSubTemplate pubSubTemplate;
+  @Autowired private Topic testTopic;
+  @Autowired private Subscription testSubscription;
+  @Autowired private TopicAdminClient topicAdminClient;
+  @Autowired private SubscriptionAdminClient subscriptionAdminClient;
 
   @Test
   void testSample() throws Exception {
@@ -63,7 +79,7 @@ class SenderIntegrationTest {
 
     boolean messageReceived = false;
     for (int i = 0; i < 100; i++) {
-      messages = this.pubSubTemplate.pull("exampleSubscription", 10, true);
+      messages = this.pubSubTemplate.pull(testSubscription.getName(), 10, true);
       messages.forEach(BasicAcknowledgeablePubsubMessage::ack);
 
       if (messages.stream()
@@ -74,5 +90,35 @@ class SenderIntegrationTest {
       Thread.sleep(100);
     }
     assertThat(messageReceived).isTrue();
+  }
+
+  @AfterEach
+  void cleanUp() {
+    List<String> projectTopics = fetchTopicNamesFromProject();
+    String topicName = testTopic.getName();
+    if (projectTopics.contains(topicName)) {
+      this.topicAdminClient.deleteTopic(topicName);
+    }
+    List<String> projectSubscriptions = fetchSubscriptionNamesFromProject();
+    String subscriptionName = testSubscription.getName();
+    if (projectSubscriptions.contains(subscriptionName)) {
+      this.subscriptionAdminClient.deleteSubscription(subscriptionName);
+    }
+  }
+
+  private List<String> fetchTopicNamesFromProject() {
+    TopicAdminClient.ListTopicsPagedResponse listTopicsResponse =
+            topicAdminClient.listTopics("projects/" + PROJECT_NAME);
+    return StreamSupport.stream(listTopicsResponse.iterateAll().spliterator(), false)
+            .map(Topic::getName)
+            .collect(Collectors.toList());
+  }
+
+  private List<String> fetchSubscriptionNamesFromProject() {
+    SubscriptionAdminClient.ListSubscriptionsPagedResponse response =
+            subscriptionAdminClient.listSubscriptions("projects/" + PROJECT_NAME);
+    return StreamSupport.stream(response.iterateAll().spliterator(), false)
+            .map(Subscription::getName)
+            .collect(Collectors.toList());
   }
 }

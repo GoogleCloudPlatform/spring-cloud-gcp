@@ -55,10 +55,17 @@ public class ReceiverApplication {
   }
 
   @Bean
+  public String subscription() {
+    return "exampleSubscription";
+  }
+
+  @Bean
   public PubSubInboundChannelAdapter messageChannelAdapter(
-      @Qualifier("pubsubInputChannel") MessageChannel inputChannel, PubSubTemplate pubSubTemplate) {
+      @Qualifier("pubsubInputChannel") MessageChannel inputChannel,
+      PubSubTemplate pubSubTemplate,
+      @Qualifier("subscription") String subscription) {
     PubSubInboundChannelAdapter adapter =
-        new PubSubInboundChannelAdapter(pubSubTemplate, "exampleSubscription");
+        new PubSubInboundChannelAdapter(pubSubTemplate, subscription);
     adapter.setOutputChannel(inputChannel);
     adapter.setAckMode(AckMode.MANUAL);
     adapter.setPayloadType(String.class);
