@@ -30,10 +30,7 @@ public class TraceRuntimeHints implements RuntimeHintsRegistrar {
     hints
         .reflection()
         .registerTypes(
-            Arrays.asList(
-                TypeReference.of(ObservedAspect.class),
-                TypeReference.of(com.google.protobuf.Value.class),
-                TypeReference.of(com.google.protobuf.Value.Builder.class)),
+            Arrays.asList(TypeReference.of(ObservedAspect.class)),
             hint ->
                 hint.withMembers(
                     MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
