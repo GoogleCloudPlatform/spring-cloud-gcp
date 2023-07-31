@@ -122,7 +122,7 @@ public class SecretManagerConfigDataLocationResolver implements
       return secretManagerServiceClient;
     } catch (IOException e) {
       throw new RuntimeException(
-          "Failed to create the Secret Manager Client for ConfigData loading.");
+          "Failed to create the Secret Manager Client for ConfigData loading.", e);
     }
   }
 
