@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.1</version>
+		<version>3.1.2</version>
 		<relativePath/>
 	</parent>
 
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>4.5.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.7.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -84,6 +84,7 @@
 				<module>spring-cloud-gcp-kotlin-samples</module>
 				<module>spring-cloud-gcp-metrics-sample</module>
 				<module>spring-cloud-gcp-kms-sample</module>
+				<module>spring-cloud-spanner-r2dbc-samples</module>
 			</modules>
 		</profile>
 		<profile>

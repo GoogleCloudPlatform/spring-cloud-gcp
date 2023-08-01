@@ -24,6 +24,7 @@ com.google.cloud.compute.v1.spring.InstanceTemplatesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InstancesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InterconnectAttachmentsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InterconnectLocationsSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.InterconnectRemoteLocationsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InterconnectsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.LicenseCodesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.LicensesSpringAutoConfiguration
