@@ -14,6 +14,14 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.7.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.7.0...v4.7.1) (2023-08-01)
+
+
+### Bug Fixes
+
+* add missing exception cause in createSecretManagerClient ([#1923](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1923)) ([154cbe5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/154cbe5c7a4f3be6eba76e6607ae5fa0528bf909))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.21.0 ([#2088](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2088)) ([e352ad5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e352ad58cb5a23825e213125fbfbc306631fdcb2))
+
 ## [4.7.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.6.0...v4.7.0) (2023-07-28)
 
 
