@@ -33,9 +33,7 @@ public class TestRuntimeHints implements RuntimeHintsRegistrar {
         .registerTypes(
             Arrays.asList(
                 TypeReference.of(ConsoleAppender.class),
-                TypeReference.of(PatternLayoutEncoder.class),
-                TypeReference.of(com.google.protobuf.Value.class),
-                TypeReference.of(com.google.protobuf.Value.Builder.class)),
+                TypeReference.of(PatternLayoutEncoder.class)),
             hint ->
                 hint.withMembers(
                     MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
