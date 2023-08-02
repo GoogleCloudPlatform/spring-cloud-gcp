@@ -26,41 +26,46 @@ import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.TopicName;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
 @TestConfiguration
 public class PollingReceiverIntegrationTestConfiguration {
 
-  private String topicName;
-  private String subscriptionName;
+  private static final String TEST_TOPIC =
+      String.format("pubsub-spring-integration-sample-polling-exampleTopic-%s", UUID.randomUUID());
+  private static final String TEST_SUBSCRIPTION =
+      String.format(
+          "pubsub-spring-integration-sample-polling-exampleSubscription-%s", UUID.randomUUID());
+
   private TopicAdminClient topicAdminClient;
 
   private SubscriptionAdminClient subscriptionAdminClient;
 
   public PollingReceiverIntegrationTestConfiguration(
-      TopicAdminClient topicAdminClient, SubscriptionAdminClient subscriptionAdminClient, @Value("${topicName}") String topicName,
-      @Value("${subscriptionName}") String subscriptionName) {
+      TopicAdminClient topicAdminClient, SubscriptionAdminClient subscriptionAdminClient) {
     this.topicAdminClient = topicAdminClient;
     this.subscriptionAdminClient = subscriptionAdminClient;
-    this.topicName = topicName;
-    this.subscriptionName = subscriptionName;
   }
 
   @Bean
   public Topic createTopic() {
     String projectName = ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
-    return topicAdminClient.createTopic(TopicName.of(projectName, this.topicName));
+    return topicAdminClient.createTopic(TopicName.of(projectName, TEST_TOPIC));
   }
 
   @Bean
   public Subscription createSubscription() {
     String projectName = ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
     return subscriptionAdminClient.createSubscription(
-        SubscriptionName.of(projectName, this.subscriptionName),
-        TopicName.of(projectName, this.topicName),
+        SubscriptionName.of(projectName, TEST_SUBSCRIPTION),
+        TopicName.of(projectName, TEST_TOPIC),
         PushConfig.getDefaultInstance(),
         10);
+  }
+
+  @Bean
+  public String subscription() {
+    return TEST_SUBSCRIPTION;
   }
 }
