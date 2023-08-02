@@ -16,24 +16,23 @@
 
 package com.example;
 
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
-import java.util.UUID;
-
 @TestConfiguration
 public class GcsSpringIntegrationTestConfiguration {
 
-    private String uniqueDirectory;
+  private String uniqueDirectory;
 
-    public GcsSpringIntegrationTestConfiguration(
-            @Value("${gcs-local-directory}") String localDirectory) {
-        uniqueDirectory = String.format("%s-%s", localDirectory, UUID.randomUUID());
-    }
+  public GcsSpringIntegrationTestConfiguration(
+      @Value("${gcs-local-directory}") String localDirectory) {
+    uniqueDirectory = String.format("%s-%s", localDirectory, UUID.randomUUID());
+  }
 
-    @Bean("localDirectoryName")
-    public String uniqueDirectory() {
-        return uniqueDirectory;
-    }
+  @Bean("localDirectoryName")
+  public String uniqueDirectory() {
+    return uniqueDirectory;
+  }
 }
