@@ -44,19 +44,21 @@ import org.springframework.messaging.MessageHandler;
 @SpringBootApplication
 public class GcsSpringIntegrationApplication {
 
+  private static final Log LOGGER = LogFactory.getLog(GcsSpringIntegrationApplication.class);
+
   @Value("${gcs-read-bucket}")
   private String gcsReadBucket;
 
   @Value("${gcs-write-bucket}")
   private String gcsWriteBucket;
 
-  @Value("${gcs-local-directory}")
-  private String localDirectory;
-
-  private static final Log LOGGER = LogFactory.getLog(GcsSpringIntegrationApplication.class);
-
   public static void main(String[] args) {
     SpringApplication.run(GcsSpringIntegrationApplication.class, args);
+  }
+
+  @Bean("localDirectoryName")
+  public String localDirectory(@Value("${gcs-local-directory}") String localDirectory) {
+    return localDirectory;
   }
 
   /**
@@ -83,10 +85,11 @@ public class GcsSpringIntegrationApplication {
    */
   @Bean
   @InboundChannelAdapter(channel = "new-file-channel", poller = @Poller(fixedDelay = "5000"))
-  public MessageSource<File> synchronizerAdapter(GcsInboundFileSynchronizer synchronizer) {
+  public MessageSource<File> synchronizerAdapter(
+      GcsInboundFileSynchronizer synchronizer, String localDirectoryName) {
     GcsInboundFileSynchronizingMessageSource syncAdapter =
         new GcsInboundFileSynchronizingMessageSource(synchronizer);
-    syncAdapter.setLocalDirectory(Paths.get(this.localDirectory).toFile());
+    syncAdapter.setLocalDirectory(Paths.get(localDirectoryName).toFile());
 
     return syncAdapter;
   }

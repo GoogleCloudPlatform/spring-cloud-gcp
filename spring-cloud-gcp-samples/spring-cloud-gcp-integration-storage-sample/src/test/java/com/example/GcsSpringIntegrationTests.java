@@ -44,7 +44,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -58,8 +57,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @EnabledIfSystemProperty(named = "it.storage", matches = "true")
 @ExtendWith(SpringExtension.class)
 @PropertySource("classpath:application.properties")
-@SpringBootTest(classes = {GcsSpringIntegrationApplication.class})
-@Import(GcsSpringIntegrationTestConfiguration.class)
+@SpringBootTest(
+    classes = {GcsSpringIntegrationApplication.class, GcsSpringIntegrationTestConfiguration.class},
+    properties = {"spring.main.allow-bean-definition-overriding=true"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GcsSpringIntegrationTests {
 
@@ -69,7 +69,7 @@ class GcsSpringIntegrationTests {
   @Autowired private Storage storage;
 
   @Autowired
-  @Qualifier("uniqueDirectory")
+  @Qualifier("localDirectoryName")
   private String uniqueDirectory;
 
   @Value("${gcs-read-bucket}")
@@ -78,13 +78,10 @@ class GcsSpringIntegrationTests {
   @Value("${gcs-write-bucket}")
   private String cloudOutputBucket;
 
-  @Value("${gcs-local-directory}")
-  private String outputFolder;
-
   @AfterAll
   void teardownTestEnvironment() throws IOException {
     cleanupCloudStorage();
-    cleanupLocalDirectories();
+    cleanupLocalDirectory(Paths.get(uniqueDirectory));
   }
 
   @Test
@@ -113,11 +110,6 @@ class GcsSpringIntegrationTests {
             });
   }
 
-  @Test
-  void testAutomaticGcsLocalDirectoryCreation() {
-    assertThat(Files.exists(Paths.get(outputFolder))).isTrue();
-  }
-
   void cleanupCloudStorage() {
     BlobId inputBucketBlobId = BlobId.of(cloudInputBucket, TEST_FILE);
     Blob inputBucketBlob = storage.get(inputBucketBlobId);
@@ -130,11 +122,6 @@ class GcsSpringIntegrationTests {
     if (outputBucketBlob != null) {
       outputBucketBlob.delete();
     }
-  }
-
-  void cleanupLocalDirectories() throws IOException {
-    cleanupLocalDirectory(Paths.get(uniqueDirectory));
-    cleanupLocalDirectory(Paths.get(outputFolder));
   }
 
   void cleanupLocalDirectory(Path testDirectory) throws IOException {

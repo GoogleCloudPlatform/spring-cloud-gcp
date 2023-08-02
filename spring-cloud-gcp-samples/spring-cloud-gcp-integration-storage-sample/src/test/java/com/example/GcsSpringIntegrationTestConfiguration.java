@@ -16,41 +16,24 @@
 
 package com.example;
 
-import com.google.cloud.spring.storage.integration.inbound.GcsInboundFileSynchronizer;
-import com.google.cloud.spring.storage.integration.inbound.GcsInboundFileSynchronizingMessageSource;
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.integration.annotation.InboundChannelAdapter;
-import org.springframework.integration.annotation.Poller;
-import org.springframework.integration.core.MessageSource;
+
+import java.util.UUID;
 
 @TestConfiguration
 public class GcsSpringIntegrationTestConfiguration {
 
-  private String uniqueDirectory;
+    private String uniqueDirectory;
 
-  public GcsSpringIntegrationTestConfiguration(
-      @Value("${gcs-local-directory}") String localDirectory) {
-    uniqueDirectory = String.format("%s-%s", localDirectory, UUID.randomUUID());
-  }
+    public GcsSpringIntegrationTestConfiguration(
+            @Value("${gcs-local-directory}") String localDirectory) {
+        uniqueDirectory = String.format("%s-%s", localDirectory, UUID.randomUUID());
+    }
 
-  @Bean
-  public String uniqueDirectory() {
-    return uniqueDirectory;
-  }
-
-  @Bean
-  @Primary
-  @InboundChannelAdapter(channel = "new-file-channel", poller = @Poller(fixedDelay = "5000"))
-  public MessageSource<File> synchronizerAdapterOverride(GcsInboundFileSynchronizer synchronizer) {
-    GcsInboundFileSynchronizingMessageSource syncAdapter =
-        new GcsInboundFileSynchronizingMessageSource(synchronizer);
-    syncAdapter.setLocalDirectory(Paths.get(uniqueDirectory).toFile());
-    return syncAdapter;
-  }
+    @Bean("localDirectoryName")
+    public String uniqueDirectory() {
+        return uniqueDirectory;
+    }
 }

@@ -1,2 +1,0 @@
-org.springframework.aot.hint.RuntimeHintsRegistrar=\
-com.google.cloud.spring.storage.integration.aot.StorageIntegrationRuntimeHint

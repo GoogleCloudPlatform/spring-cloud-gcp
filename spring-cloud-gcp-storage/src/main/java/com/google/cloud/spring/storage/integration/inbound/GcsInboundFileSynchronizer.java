@@ -17,13 +17,16 @@
 package com.google.cloud.spring.storage.integration.inbound;
 
 import com.google.cloud.spring.storage.integration.GcsSessionFactory;
+import com.google.cloud.spring.storage.integration.aot.StorageIntegrationRuntimeHint;
 import com.google.cloud.spring.storage.integration.filters.GcsPersistentAcceptOnceFileListFilter;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.integration.file.remote.synchronizer.AbstractInboundFileSynchronizer;
 import org.springframework.integration.metadata.SimpleMetadataStore;
 
 /** An inbound file synchronizer for Google Cloud Storage. */
+@ImportRuntimeHints(StorageIntegrationRuntimeHint.class)
 public class GcsInboundFileSynchronizer extends AbstractInboundFileSynchronizer<BlobInfo> {
 
   public GcsInboundFileSynchronizer(Storage gcs) {

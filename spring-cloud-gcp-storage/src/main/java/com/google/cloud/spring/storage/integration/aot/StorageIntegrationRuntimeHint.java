@@ -25,7 +25,12 @@ public class StorageIntegrationRuntimeHint implements RuntimeHintsRegistrar {
 
   @Override
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-    hints.reflection().registerType(TypeReference.of("com.google.cloud.storage.Blob[]"),
-        MemberCategory.DECLARED_CLASSES);
+    // This is reflectively called using `getClass` in
+    // org.springframework.integration.file.support.FileUtils#purgeUnwantedElements
+    // which is invoked by AbstractInboundFileSynchronizer, the parent class of GcsInboundFileSynchronizer.
+    hints
+        .reflection()
+        .registerType(
+            TypeReference.of("com.google.cloud.storage.Blob[]"), MemberCategory.DECLARED_CLASSES);
   }
 }
