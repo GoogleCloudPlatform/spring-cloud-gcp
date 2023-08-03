@@ -60,6 +60,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -75,6 +76,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {Application.class})
 @AutoConfigureObservability
+@ImportRuntimeHints(TestRuntimeHints.class)
 class TraceSampleApplicationIntegrationTests {
 
   @DynamicPropertySource
