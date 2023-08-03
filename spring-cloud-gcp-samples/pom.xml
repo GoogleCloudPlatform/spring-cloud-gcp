@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.1</version>
+		<version>3.1.2</version>
 		<relativePath/>
 	</parent>
 
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>4.5.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.7.1</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -84,6 +84,7 @@
 				<module>spring-cloud-gcp-kotlin-samples</module>
 				<module>spring-cloud-gcp-metrics-sample</module>
 				<module>spring-cloud-gcp-kms-sample</module>
+				<module>spring-cloud-spanner-r2dbc-samples</module>
 			</modules>
 		</profile>
 		<profile>
@@ -92,6 +93,7 @@
 				<module>spring-cloud-gcp-logging-sample</module>
 				<module>spring-cloud-gcp-storage-resource-sample</module>
 				<module>spring-cloud-gcp-integration-storage-sample</module>
+				<module>spring-cloud-gcp-trace-sample</module>
 				<module>spring-cloud-gcp-vision-api-sample</module>
 			</modules>
 			<build>
@@ -137,7 +139,9 @@
 								<it.logging>true</it.logging>
 								<it.storage>true</it.storage>
                 <it.vision>true</it.vision>
-								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
+								<it.trace>true</it.trace>
+								<it.vision>true</it.vision>
+                <gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
