@@ -40,6 +40,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
@@ -54,6 +55,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(
     properties = {"spring.main.allow-bean-definition-overriding=true"},
     classes = {PollingReceiverIntegrationTestConfiguration.class})
+@TestPropertySource(locations = "classpath:application-test.properties")
 @DirtiesContext
 class PollingReceiverIntegrationTest {
 
