@@ -180,6 +180,7 @@ function copy_docs_for_provided_version() {
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
     pwd
     ls docs
+    ls docs/target
     ls docs/target/generated-docs
     for f in docs/target/generated-docs/*; do
         file=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
