@@ -40,21 +40,25 @@ import org.springframework.messaging.handler.annotation.Header;
  */
 @SpringBootApplication
 public class PollingReceiverApplication {
-
-  @Value("${subscriptionName}")
-  private String subscriptionName;
-
   private static final Log LOGGER = LogFactory.getLog(PollingReceiverApplication.class);
+
+  static String subscriptionName;
 
   public static void main(String[] args) {
     SpringApplication.run(PollingReceiverApplication.class, args);
   }
 
+  @Value("${subscriptionName}")
+  public void setSubscriptionName(String subscriptionName) {
+    PollingReceiverApplication.subscriptionName =
+        subscriptionName != null ? subscriptionName : "exampleSubscription";
+  }
+
   @Bean
   @InboundChannelAdapter(channel = "pubsubInputChannel", poller = @Poller(fixedDelay = "100"))
-  public MessageSource<Object> pubsubAdapter(
-      PubSubTemplate pubSubTemplate) {
-    PubSubMessageSource messageSource = new PubSubMessageSource(pubSubTemplate, subscriptionName);
+  public MessageSource<Object> pubsubAdapter(PubSubTemplate pubSubTemplate) {
+    PubSubMessageSource messageSource =
+        new PubSubMessageSource(pubSubTemplate, this.subscriptionName);
     messageSource.setMaxFetchSize(5);
     messageSource.setAckMode(AckMode.MANUAL);
     messageSource.setPayloadType(String.class);

@@ -25,7 +25,6 @@ import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.TopicName;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -34,18 +33,17 @@ import org.springframework.context.annotation.Bean;
 public class PollingReceiverIntegrationTestConfiguration {
 
   private String topicName;
-  private String subscriptionName;
   private TopicAdminClient topicAdminClient;
 
   private SubscriptionAdminClient subscriptionAdminClient;
 
   public PollingReceiverIntegrationTestConfiguration(
-      TopicAdminClient topicAdminClient, SubscriptionAdminClient subscriptionAdminClient, @Value("${topicName}") String topicName,
-      @Value("${subscriptionName}") String subscriptionName) {
+      TopicAdminClient topicAdminClient,
+      SubscriptionAdminClient subscriptionAdminClient,
+      @Value("${topicName}") String topicName) {
     this.topicAdminClient = topicAdminClient;
     this.subscriptionAdminClient = subscriptionAdminClient;
     this.topicName = topicName;
-    this.subscriptionName = subscriptionName;
   }
 
   @Bean
@@ -58,7 +56,7 @@ public class PollingReceiverIntegrationTestConfiguration {
   public Subscription createSubscription() {
     String projectName = ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
     return subscriptionAdminClient.createSubscription(
-        SubscriptionName.of(projectName, this.subscriptionName),
+        SubscriptionName.of(projectName, PollingReceiverApplication.subscriptionName),
         TopicName.of(projectName, this.topicName),
         PushConfig.getDefaultInstance(),
         10);
