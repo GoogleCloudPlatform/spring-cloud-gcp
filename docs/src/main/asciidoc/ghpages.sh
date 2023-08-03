@@ -126,7 +126,7 @@ function add_docs_from_target() {
     else
         copy_docs_for_provided_version
     fi
-    commit_changes_if_applicable
+#    commit_changes_if_applicable
 }
 
 
@@ -178,6 +178,8 @@ function copy_docs_for_provided_version() {
     local FOLDER=${DESTINATION_REPO_FOLDER}/${VERSION}
     mkdir -p ${FOLDER}
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
+    echo ${ROOT_FOLDER}/docs/target/generated-docs/*
+    ls ${ROOT_FOLDER}/docs/target/generated-docs/*
     for f in ${ROOT_FOLDER}/docs/target/generated-docs/*; do
         file=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
         copy_docs_for_branch ${file} ${FOLDER}
@@ -208,20 +210,20 @@ function copy_docs_for_branch() {
     fi
 }
 
-function commit_changes_if_applicable() {
-    if [[ "${COMMIT_CHANGES}" == "yes" ]] ; then
-        COMMIT_SUCCESSFUL="no"
-        git commit -a -m "Sync docs from ${CURRENT_BRANCH} to gh-pages" && COMMIT_SUCCESSFUL="yes" || echo "Failed to commit changes"
-
-        # Uncomment the following push if you want to auto push to
-        # the gh-pages branch whenever you commit to main locally.
-        # This is a little extreme. Use with care!
-        ###################################################################
-        if [[ "${COMMIT_SUCCESSFUL}" == "yes" ]] ; then
-            git push origin gh-pages
-        fi
-    fi
-}
+#function commit_changes_if_applicable() {
+#    if [[ "${COMMIT_CHANGES}" == "yes" ]] ; then
+#        COMMIT_SUCCESSFUL="no"
+#        git commit -a -m "Sync docs from ${CURRENT_BRANCH} to gh-pages" && COMMIT_SUCCESSFUL="yes" || echo "Failed to commit changes"
+#
+#        # Uncomment the following push if you want to auto push to
+#        # the gh-pages branch whenever you commit to main locally.
+#        # This is a little extreme. Use with care!
+#        ###################################################################
+#        if [[ "${COMMIT_SUCCESSFUL}" == "yes" ]] ; then
+#            git push origin gh-pages
+#        fi
+#    fi
+#}
 
 # Switch back to the previous branch and exit block
 function checkout_previous_branch() {
