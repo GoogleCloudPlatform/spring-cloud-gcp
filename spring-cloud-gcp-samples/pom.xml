@@ -13,7 +13,7 @@
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>4.6.0</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.7.1</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -84,12 +84,14 @@
 				<module>spring-cloud-gcp-kotlin-samples</module>
 				<module>spring-cloud-gcp-metrics-sample</module>
 				<module>spring-cloud-gcp-kms-sample</module>
+				<module>spring-cloud-spanner-r2dbc-samples</module>
 			</modules>
 		</profile>
 		<profile>
 			<id>native-sample-config</id>
 			<modules>
 				<module>spring-cloud-gcp-logging-sample</module>
+				<module>spring-cloud-gcp-trace-sample</module>
 				<module>spring-cloud-gcp-vision-api-sample</module>
 			</modules>
 			<build>
@@ -134,6 +136,7 @@
 							<systemPropertyVariables>
 								<it.logging>${it.logging}</it.logging>
 								<it.vision>${it.vision}</it.vision>
+								<it.trace>${it.trace}</it.trace>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>

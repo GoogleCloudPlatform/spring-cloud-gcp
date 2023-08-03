@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-dependencies</artifactId>
-	<version>4.6.0</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.7.1</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud Dependencies</name>
 	<description>Spring Framework on Google Cloud Dependencies</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -34,23 +34,14 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.19.0</gcp-libraries-bom.version>
+		<gcp-libraries-bom.version>26.21.0</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.13.1</cloud-sql-socket-factory.version>
-		<guava.version>31.1-jre</guava.version>
 		<r2dbc-postgres-driver.version>1.0.2.RELEASE</r2dbc-postgres-driver.version>
+		<cloud-spanner-r2dbc.version>1.2.2</cloud-spanner-r2dbc.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- Overriding Guava from libraries-bom; Spring Framework on Google Cloud does not require Java 7 support -->
-			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava-bom</artifactId>
-				<version>${guava.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-core</artifactId>
@@ -243,6 +234,11 @@
 				<artifactId>spring-cloud-gcp-starter-kms</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<!-- spring-cloud-gcp-starter-sql -->
 			<dependency>
@@ -273,6 +269,12 @@
 				<groupId>org.postgresql</groupId>
 				<artifactId>r2dbc-postgresql</artifactId>
 				<version>${r2dbc-postgres-driver.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>cloud-spanner-r2dbc</artifactId>
+				<version>${cloud-spanner-r2dbc.version}</version>
 			</dependency>
 
 			<!--Google Cloud Libraries BOM -->
