@@ -116,6 +116,8 @@ function add_docs_from_target() {
         DESTINATION_REPO_FOLDER=${DESTINATION}
         echo "Destination was provided [${DESTINATION}]"
     fi
+    pwd
+    ls
     git checkout gh-pages
     git pull origin gh-pages
 
