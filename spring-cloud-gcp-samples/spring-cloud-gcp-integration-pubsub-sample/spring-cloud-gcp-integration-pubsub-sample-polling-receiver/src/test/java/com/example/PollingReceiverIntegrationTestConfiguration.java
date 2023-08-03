@@ -25,6 +25,7 @@ import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.TopicName;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -53,10 +54,10 @@ public class PollingReceiverIntegrationTestConfiguration {
   }
 
   @Bean
-  public Subscription createSubscription() {
+  public Subscription createSubscription(@Qualifier("subscriptionName") String subscriptionName) {
     String projectName = ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
     return subscriptionAdminClient.createSubscription(
-        SubscriptionName.of(projectName, PollingReceiverApplication.subscriptionName),
+        SubscriptionName.of(projectName, subscriptionName),
         TopicName.of(projectName, this.topicName),
         PushConfig.getDefaultInstance(),
         10);

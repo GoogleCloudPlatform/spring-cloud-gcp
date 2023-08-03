@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -50,14 +51,16 @@ import org.springframework.util.MultiValueMap;
  */
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"spring.main.allow-bean-definition-overriding=true"},
-        classes = {SenderTestConfiguration.class})
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = {"spring.main.allow-bean-definition-overriding=true"},
+    classes = {SenderTestConfiguration.class})
+@TestPropertySource(locations = "classpath:application-test.properties")
 @DirtiesContext
 class SenderIntegrationTest {
 
   private static final String PROJECT_NAME =
-          ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
+      ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
   @Autowired private TestRestTemplate restTemplate;
   @Autowired private PubSubTemplate pubSubTemplate;
   @Autowired private Topic testTopic;
@@ -108,17 +111,17 @@ class SenderIntegrationTest {
 
   private List<String> fetchTopicNamesFromProject() {
     TopicAdminClient.ListTopicsPagedResponse listTopicsResponse =
-            topicAdminClient.listTopics("projects/" + PROJECT_NAME);
+        topicAdminClient.listTopics("projects/" + PROJECT_NAME);
     return StreamSupport.stream(listTopicsResponse.iterateAll().spliterator(), false)
-            .map(Topic::getName)
-            .collect(Collectors.toList());
+        .map(Topic::getName)
+        .collect(Collectors.toList());
   }
 
   private List<String> fetchSubscriptionNamesFromProject() {
     SubscriptionAdminClient.ListSubscriptionsPagedResponse response =
-            subscriptionAdminClient.listSubscriptions("projects/" + PROJECT_NAME);
+        subscriptionAdminClient.listSubscriptions("projects/" + PROJECT_NAME);
     return StreamSupport.stream(response.iterateAll().spliterator(), false)
-            .map(Subscription::getName)
-            .collect(Collectors.toList());
+        .map(Subscription::getName)
+        .collect(Collectors.toList());
   }
 }

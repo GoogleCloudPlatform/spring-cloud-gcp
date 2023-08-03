@@ -25,6 +25,7 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -50,22 +51,23 @@ public class ReceiverApplication {
   }
 
   @Bean
+  public String subscriptionName(@Value("${subscriptionName}") String subscriptionName) {
+    return subscriptionName;
+  }
+
+  @Bean
   public MessageChannel pubsubInputChannel() {
     return new DirectChannel();
   }
 
-  @Bean
-  public String subscription() {
-    return "exampleSubscription";
-  }
 
   @Bean
   public PubSubInboundChannelAdapter messageChannelAdapter(
       @Qualifier("pubsubInputChannel") MessageChannel inputChannel,
       PubSubTemplate pubSubTemplate,
-      @Qualifier("subscription") String subscription) {
+      @Qualifier("subscriptionName") String subscriptionName) {
     PubSubInboundChannelAdapter adapter =
-        new PubSubInboundChannelAdapter(pubSubTemplate, subscription);
+        new PubSubInboundChannelAdapter(pubSubTemplate, subscriptionName);
     adapter.setOutputChannel(inputChannel);
     adapter.setAckMode(AckMode.MANUAL);
     adapter.setPayloadType(String.class);
