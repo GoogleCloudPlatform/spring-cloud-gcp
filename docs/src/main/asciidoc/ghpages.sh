@@ -65,7 +65,10 @@ function build_docs_if_applicable() {
         ./mvnw install -P docs -pl docs -DskipTests -q
         ls -la docs/
         echo "..."
+        echo "IN BUILD DOCS IF APPLICABLE"
+        pwd
         ls -ls docs/target
+        echo "FINISH PRINTING docs/target"
     fi
 }
 
@@ -187,6 +190,10 @@ function copy_docs_for_provided_version() {
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
     for f in docs/target/generated-docs/*; do
         file="reference"
+        original=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
+        echo "PRINTING ORIGINAL IN copy_docs_for_provided_version"
+        echo ${original}
+        echo "FINISHED PRINTING ORIGINAL IN copy_docs_for_provided_version"
         copy_docs_for_branch ${file} ${FOLDER}
     done
     COMMIT_CHANGES="yes"
