@@ -18,15 +18,15 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.AfterClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -36,7 +36,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * This verifies the sample application for using GCP Storage with Spring Resource abstractions.
@@ -51,42 +53,58 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
     classes = {GcsApplication.class})
 class GcsSampleApplicationIntegrationTests {
 
+  private final String filename = String.format("file-%s.txt", UUID.randomUUID());
   @Autowired private Storage storage;
-
   @Autowired private TestRestTemplate testRestTemplate;
-
   @Value("${gcs-resource-test-bucket}")
   private String bucketName;
+  @LocalServerPort private int port;
+  private String appUrl;
 
   @BeforeEach
-  @AfterEach
+  void initializeAppUrl() {
+    this.appUrl = "http://localhost:" + this.port;
+  }
+
+  @AfterClass
   void cleanupCloudStorage() {
-    Page<Blob> blobs = this.storage.list(this.bucketName);
-    for (Blob blob : blobs.iterateAll()) {
+    BlobId blobId = BlobId.of(this.bucketName, filename);
+    Blob blob = storage.get(blobId);
+    if (blob != null) {
       blob.delete();
     }
   }
 
   @Test
   void testGcsResourceIsLoaded() {
-    BlobId blobId = BlobId.of(this.bucketName, "my-file.txt");
+    BlobId blobId = BlobId.of(this.bucketName, filename);
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
     this.storage.create(blobInfo, "Good Morning!".getBytes(StandardCharsets.UTF_8));
 
+    // Verify the contents of the uploaded file.
+    String getUrl =
+        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/")
+            .queryParam("filename", filename)
+            .toUriString();
     Awaitility.await()
         .atMost(15, TimeUnit.SECONDS)
         .untilAsserted(
             () -> {
-              String result = this.testRestTemplate.getForObject("/", String.class);
+              String result = this.testRestTemplate.getForObject(getUrl, String.class);
               assertThat(result).isEqualTo("Good Morning!\n");
             });
 
-    this.testRestTemplate.postForObject("/", "Good Night!", String.class);
+    // Update the contents of the uploaded file and verify.
+    String postUrl =
+        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/")
+            .queryParam("filename", filename)
+            .toUriString();
+    this.testRestTemplate.postForObject(postUrl, "Good Night!", String.class);
     Awaitility.await()
         .atMost(15, TimeUnit.SECONDS)
         .untilAsserted(
             () -> {
-              String result = this.testRestTemplate.getForObject("/", String.class);
+              String result = this.testRestTemplate.getForObject(getUrl, String.class);
               assertThat(result).isEqualTo("Good Night!\n");
             });
   }

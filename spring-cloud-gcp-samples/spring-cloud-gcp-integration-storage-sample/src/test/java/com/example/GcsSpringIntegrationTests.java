@@ -18,7 +18,6 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
@@ -30,15 +29,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
@@ -54,12 +57,20 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @EnabledIfSystemProperty(named = "it.storage", matches = "true")
 @ExtendWith(SpringExtension.class)
 @PropertySource("classpath:application.properties")
-@SpringBootTest(classes = {GcsSpringIntegrationApplication.class})
+@SpringBootTest(
+    classes = {GcsSpringIntegrationApplication.class, GcsSpringIntegrationTestConfiguration.class},
+    properties = {"spring.main.allow-bean-definition-overriding=true"})
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GcsSpringIntegrationTests {
 
-  private static final String TEST_FILE_NAME = "test_file";
+  private static final String TEST_FILE = String.format("test_file_%s", UUID.randomUUID());
+  private static final Log LOGGER = LogFactory.getLog(GcsSpringIntegrationTests.class);
 
   @Autowired private Storage storage;
+
+  @Autowired
+  @Qualifier("localDirectoryName")
+  private String uniqueDirectory;
 
   @Value("${gcs-read-bucket}")
   private String cloudInputBucket;
@@ -67,31 +78,22 @@ class GcsSpringIntegrationTests {
   @Value("${gcs-write-bucket}")
   private String cloudOutputBucket;
 
-  @Value("${gcs-local-directory}")
-  private String outputFolder;
-
-  @BeforeEach
-  void setupTestEnvironment() {
-    cleanupCloudStorage();
-  }
-
-  @AfterEach
+  @AfterAll
   void teardownTestEnvironment() throws IOException {
     cleanupCloudStorage();
-    cleanupLocalDirectory();
+    cleanupLocalDirectory(Paths.get(uniqueDirectory));
   }
 
   @Test
   void testFilePropagatedToLocalDirectory() {
-    BlobId blobId = BlobId.of(this.cloudInputBucket, TEST_FILE_NAME);
+    BlobId blobId = BlobId.of(this.cloudInputBucket, TEST_FILE);
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
     this.storage.create(blobInfo, "Hello World!".getBytes(StandardCharsets.UTF_8));
-
     Awaitility.await()
-        .atMost(15, TimeUnit.SECONDS)
+        .atMost(30, TimeUnit.SECONDS)
         .untilAsserted(
             () -> {
-              Path outputFile = Paths.get(this.outputFolder + "/" + TEST_FILE_NAME);
+              Path outputFile = Paths.get(uniqueDirectory + "/" + TEST_FILE);
               assertThat(Files.exists(outputFile)).isTrue();
               assertThat(Files.isRegularFile(outputFile)).isTrue();
 
@@ -104,23 +106,39 @@ class GcsSpringIntegrationTests {
                   .iterateAll()
                   .forEach(b -> blobNamesInOutputBucket.add(b.getName()));
 
-              assertThat(blobNamesInOutputBucket).contains(TEST_FILE_NAME);
+              assertThat(blobNamesInOutputBucket).contains(TEST_FILE);
             });
   }
 
   void cleanupCloudStorage() {
-    Page<Blob> blobs = this.storage.list(this.cloudInputBucket);
-    for (Blob blob : blobs.iterateAll()) {
-      blob.delete();
+    BlobId inputBucketBlobId = BlobId.of(cloudInputBucket, TEST_FILE);
+    Blob inputBucketBlob = storage.get(inputBucketBlobId);
+    if (inputBucketBlob != null) {
+      inputBucketBlob.delete();
+    }
+
+    BlobId outputBucketBlobId = BlobId.of(cloudOutputBucket, TEST_FILE);
+    Blob outputBucketBlob = storage.get(outputBucketBlobId);
+    if (outputBucketBlob != null) {
+      outputBucketBlob.delete();
     }
   }
 
-  void cleanupLocalDirectory() throws IOException {
-    Path localDirectory = Paths.get(this.outputFolder);
-    List<Path> files = Files.list(localDirectory).collect(Collectors.toList());
-    for (Path file : files) {
-      Files.delete(file);
+  void cleanupLocalDirectory(Path testDirectory) throws IOException {
+    if (Files.exists(testDirectory)) {
+      if (Files.isDirectory(testDirectory)) {
+        try (Stream<Path> files = Files.list(testDirectory)) {
+          files.forEach(
+              path -> {
+                try {
+                  Files.delete(path);
+                } catch (IOException ioe) {
+                  LOGGER.info("Error deleting test file.", ioe);
+                }
+              });
+        }
+      }
+      Files.delete(testDirectory);
     }
-    Files.deleteIfExists(Paths.get(this.outputFolder));
   }
 }

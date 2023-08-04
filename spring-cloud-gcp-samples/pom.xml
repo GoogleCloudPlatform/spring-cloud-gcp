@@ -91,6 +91,8 @@
 			<id>native-sample-config</id>
 			<modules>
 				<module>spring-cloud-gcp-logging-sample</module>
+				<module>spring-cloud-gcp-storage-resource-sample</module>
+				<module>spring-cloud-gcp-integration-storage-sample</module>
 				<module>spring-cloud-gcp-trace-sample</module>
 				<module>spring-cloud-gcp-vision-api-sample</module>
 			</modules>
@@ -135,8 +137,14 @@
 							</includes>
 							<systemPropertyVariables>
 								<it.logging>true</it.logging>
+								<it.storage>true</it.storage>
+                <it.vision>true</it.vision>
 								<it.trace>true</it.trace>
 								<it.vision>true</it.vision>
+                <gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
+								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
+								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
+								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
