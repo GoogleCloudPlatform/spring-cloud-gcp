@@ -63,11 +63,12 @@ function build_docs_if_applicable() {
 #        ./mvnw clean install -DskipTests -T 1C
 #        echo "Running the build docs script"
 #        ./mvnw install -P docs -pl docs -DskipTests -q
-        ls -la docs/
+#        ls -la docs/
         echo "..."
         echo "IN BUILD DOCS IF APPLICABLE"
         pwd
-        ls -ls docs/target
+#        ls -ls docs/target
+        ls
         echo "FINISH PRINTING docs/target"
     fi
 }
