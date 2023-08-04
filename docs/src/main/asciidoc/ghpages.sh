@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-set -ev
+set -e
 
 # Set default props like MAVEN_PATH, ROOT_FOLDER etc.
 function set_default_props() {
@@ -60,8 +60,9 @@ function switch_to_tag() {
 # Build the docs if switch is on
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
+        ./mvnw clean install -DskipTests -T 1C
         echo "Running the build docs script"
-        ./mvnw clean install -P docs -pl docs -DskipTests
+        ./mvnw install -P docs -pl docs -DskipTests -q
         ls -la docs/
         echo "..."
         ls -ls docs/target
