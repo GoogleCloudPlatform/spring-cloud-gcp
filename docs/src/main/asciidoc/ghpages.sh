@@ -181,7 +181,7 @@ function copy_docs_for_provided_version() {
     mkdir -p ${FOLDER}
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
     for f in docs/target/generated-docs/*; do
-        file=${f#docs/target/generated-docs/*}
+        file="reference"
         copy_docs_for_branch ${file} ${FOLDER}
     done
     COMMIT_CHANGES="yes"
