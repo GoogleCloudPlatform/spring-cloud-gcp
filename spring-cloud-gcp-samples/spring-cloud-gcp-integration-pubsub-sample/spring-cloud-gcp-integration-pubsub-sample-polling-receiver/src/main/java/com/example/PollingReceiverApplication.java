@@ -23,6 +23,8 @@ import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +41,6 @@ import org.springframework.messaging.handler.annotation.Header;
  */
 @SpringBootApplication
 public class PollingReceiverApplication {
-
   private static final Log LOGGER = LogFactory.getLog(PollingReceiverApplication.class);
 
   public static void main(String[] args) {
@@ -47,10 +48,15 @@ public class PollingReceiverApplication {
   }
 
   @Bean
+  public String subscriptionName(@Value("${subscriptionName}") String subscriptionName) {
+    return subscriptionName;
+  }
+
+  @Bean
   @InboundChannelAdapter(channel = "pubsubInputChannel", poller = @Poller(fixedDelay = "100"))
-  public MessageSource<Object> pubsubAdapter(PubSubTemplate pubSubTemplate) {
-    PubSubMessageSource messageSource =
-        new PubSubMessageSource(pubSubTemplate, "exampleSubscription");
+  public MessageSource<Object> pubsubAdapter(
+      PubSubTemplate pubSubTemplate, @Qualifier("subscriptionName") String subscriptionName) {
+    PubSubMessageSource messageSource = new PubSubMessageSource(pubSubTemplate, subscriptionName);
     messageSource.setMaxFetchSize(5);
     messageSource.setAckMode(AckMode.MANUAL);
     messageSource.setPayloadType(String.class);
