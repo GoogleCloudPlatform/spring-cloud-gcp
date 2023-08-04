@@ -16,9 +16,6 @@
 
 package com.example;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +26,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * These tests verifies that the pubsub-integration-sample works.
  *
@@ -38,34 +39,40 @@ import org.springframework.web.client.RestTemplate;
 @ExtendWith(OutputCaptureExtension.class)
 class SampleAppIntegrationTest {
 
-  private RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate = new RestTemplate();
 
-  @Test
-  void testSample(CapturedOutput capturedOutput) throws Exception {
+    @Test
+    void testSample(CapturedOutput capturedOutput) throws Exception {
 
-    SpringApplicationBuilder sender =
-        new SpringApplicationBuilder(SenderApplication.class).properties("server.port=8082");
-    sender.run();
+        SpringApplicationBuilder sender =
+                new SpringApplicationBuilder(SampleTestConfiguration.class, SenderApplication.class)
+                        .properties(
+                                "server.port=8082",
+                                "spring.config.name:application-test");
+        sender.run();
 
-    SpringApplicationBuilder receiver =
-        new SpringApplicationBuilder(ReceiverApplication.class).properties("server.port=8081");
-    receiver.run();
+        SpringApplicationBuilder receiver =
+                new SpringApplicationBuilder(SampleTestConfiguration.class, ReceiverApplication.class)
+                        .properties(
+                                "server.port=8081",
+                                "spring.config.name:application-test");
+        receiver.run();
 
-    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-    String message = "test message " + UUID.randomUUID();
-    map.add("message", message);
-    map.add("times", 1);
+        MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+        String message = "test message " + UUID.randomUUID();
+        map.add("message", message);
+        map.add("times", 1);
 
-    this.restTemplate.postForObject("http://localhost:8082/postMessage", map, String.class);
+        this.restTemplate.postForObject("http://localhost:8082/postMessage", map, String.class);
 
-    boolean messageReceived = false;
-    for (int i = 0; i < 100; i++) {
-      if (capturedOutput.toString().contains("Message arrived! Payload: " + message)) {
-        messageReceived = true;
-        break;
-      }
-      Thread.sleep(100);
+        boolean messageReceived = false;
+        for (int i = 0; i < 100; i++) {
+            if (capturedOutput.toString().contains("Message arrived! Payload: " + message)) {
+                messageReceived = true;
+                break;
+            }
+            Thread.sleep(100);
+        }
+        assertThat(messageReceived).isTrue();
     }
-    assertThat(messageReceived).isTrue();
-  }
 }
