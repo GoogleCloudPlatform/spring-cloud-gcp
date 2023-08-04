@@ -353,6 +353,7 @@
 	<profile>
 		<id>spring-native</id>
 		<modules>
+			<module>spring-cloud-gcp-storage</module>
 			<module>spring-cloud-gcp-vision</module>
 		</modules>
 
@@ -379,6 +380,7 @@
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<systemPropertyVariables>
 							<!--integration tests are not invoked unless the relevant system property is set to true here. -->
+              <it.storage>true</it.storage>
 							<it.vision>true</it.vision>
 						</systemPropertyVariables>
 					</configuration>
