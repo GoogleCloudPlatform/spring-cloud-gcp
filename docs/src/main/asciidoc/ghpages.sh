@@ -61,8 +61,9 @@ function switch_to_tag() {
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
         echo "Running the build docs script"
-        ./mvnw clean install -P docs -pl docs -DskipTests -q
+        ./mvnw clean install -P docs -pl docs -DskipTests
         ls -la docs/
+        echo "..."
         ls -ls docs/target
     fi
 }
