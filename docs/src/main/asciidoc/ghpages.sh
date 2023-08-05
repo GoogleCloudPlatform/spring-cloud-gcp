@@ -69,6 +69,7 @@ function build_docs_if_applicable() {
         pwd
 #        ls -ls docs/target
         ls
+        ls docs
         echo "FINISH PRINTING docs/target"
     fi
 }
@@ -194,6 +195,9 @@ function copy_docs_for_provided_version() {
         original=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
         echo "PRINTING ORIGINAL IN copy_docs_for_provided_version"
         echo ${original}
+        ls docs/
+        ls docs/target
+        ls docs/target/generated-docs
         echo "FINISHED PRINTING ORIGINAL IN copy_docs_for_provided_version"
         copy_docs_for_branch ${file} ${FOLDER}
     done
