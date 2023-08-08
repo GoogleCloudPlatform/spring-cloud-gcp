@@ -103,14 +103,14 @@ public class GcpCloudFoundryEnvironmentPostProcessor implements EnvironmentPostP
       }
       // The username and password should be in the generic DataSourceProperties.
       if (gcpCfServiceProperties.containsKey("spring.cloud.gcp.sql.username")) {
-        gcpCfServiceProperties.put(
-            "spring.datasource.username",
-            gcpCfServiceProperties.getProperty("spring.cloud.gcp.sql.username"));
+        String username = gcpCfServiceProperties.getProperty("spring.cloud.gcp.sql.username");
+        gcpCfServiceProperties.put("spring.datasource.username", username);
+        gcpCfServiceProperties.put("spring.r2dbc.username", username);
       }
       if (gcpCfServiceProperties.containsKey("spring.cloud.gcp.sql.password")) {
-        gcpCfServiceProperties.put(
-            "spring.datasource.password",
-            gcpCfServiceProperties.getProperty("spring.cloud.gcp.sql.password"));
+        String password = gcpCfServiceProperties.getProperty("spring.cloud.gcp.sql.password");
+        gcpCfServiceProperties.put("spring.datasource.password", password);
+        gcpCfServiceProperties.put("spring.r2dbc.password", password);
       }
 
       environment
