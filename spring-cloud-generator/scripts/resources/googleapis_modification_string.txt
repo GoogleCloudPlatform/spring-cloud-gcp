@@ -1,4 +1,4 @@
-_spring_cloud_generator_version = "4.7.1" # {x-version-update:spring-cloud-gcp:current}
+_spring_cloud_generator_version = "4.7.2-SNAPSHOT" # {x-version-update:spring-cloud-gcp:current}
 
 maven_install(
     artifacts = [

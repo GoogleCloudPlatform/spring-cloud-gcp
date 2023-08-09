@@ -10,7 +10,7 @@
         <!-- Your own application should inherit from spring-boot-starter-parent -->
         <artifactId>spring-cloud-gcp-samples</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>4.7.1</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>4.7.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
 
     <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->

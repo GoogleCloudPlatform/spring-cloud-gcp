@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>spring-cloud-gcp</artifactId>
 		<groupId>com.google.cloud</groupId>
-		<version>4.7.1</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+		<version>4.7.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 	<packaging>pom</packaging>
 	<name>Spring Framework on Google Cloud Starters</name>
