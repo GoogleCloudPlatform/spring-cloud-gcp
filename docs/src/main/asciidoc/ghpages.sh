@@ -60,7 +60,7 @@ function switch_to_tag() {
 # Build the docs if switch is on
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
-        ./mvnw clean install -DskipTests -T 1C
+        ./mvnw clean install -DskipTests -T 1C -q
         echo "Running the build docs script"
         ./mvnw install -P docs -pl docs -DskipTests -q
         ls -la docs/
