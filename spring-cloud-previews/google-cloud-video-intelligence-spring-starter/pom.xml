@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.google.cloud</groupId>
     <artifactId>spring-cloud-gcp-starters</artifactId>
-    <version>4.7.1</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+    <version>4.7.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     <relativePath>../../spring-cloud-gcp-starters/pom.xml</relativePath>
   </parent>
   <artifactId>google-cloud-video-intelligence-spring-starter</artifactId>
