@@ -15,7 +15,7 @@
     <description>Spring Code Generator for Google Cloud</description>
 
     <properties>
-        <gapic-generator-java-bom.version>2.23.1</gapic-generator-java-bom.version>
+        <gapic-generator-java-bom.version>2.24.0</gapic-generator-java-bom.version>
         <!-- [gapic-test]: protobuf.version for compiling protos used in unit testing
              this should be consistent with version in gapic-generator-java-bom -->
         <protobuf.version>3.23.2</protobuf.version>
