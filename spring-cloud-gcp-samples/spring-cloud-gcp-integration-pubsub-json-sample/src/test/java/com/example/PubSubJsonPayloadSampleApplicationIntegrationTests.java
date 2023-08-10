@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,7 +49,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests the Pub/Sub Json payload app. */
 // Please use "-Dit.pubsub-integration=true" to enable the tests
-// @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
+@EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
