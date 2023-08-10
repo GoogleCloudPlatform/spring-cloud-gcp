@@ -20,6 +20,8 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.MessagingGateway;
@@ -33,7 +35,10 @@ public class SenderConfiguration {
 
   private static final Log LOGGER = LogFactory.getLog(SenderConfiguration.class);
 
-  private static final String TOPIC_NAME = "json-payload-sample-topic";
+  @Bean
+  public String topicName(@Value("${topicName}") String topicName) {
+    return topicName;
+  }
 
   @Bean
   public DirectChannel pubSubOutputChannel() {
@@ -42,10 +47,12 @@ public class SenderConfiguration {
 
   @Bean
   @ServiceActivator(inputChannel = "pubSubOutputChannel")
-  public MessageHandler messageSender(PubSubTemplate pubSubTemplate) {
-    PubSubMessageHandler adapter = new PubSubMessageHandler(pubSubTemplate, TOPIC_NAME);
+  public MessageHandler messageSender(
+      PubSubTemplate pubSubTemplate, @Qualifier("topicName") String topicName) {
+    PubSubMessageHandler adapter = new PubSubMessageHandler(pubSubTemplate, topicName);
     adapter.setSuccessCallback((ackId, message) -> LOGGER.info("Message was sent successfully."));
-    adapter.setFailureCallback((cause, message) -> LOGGER.info("There was an error sending the message."));
+    adapter.setFailureCallback(
+        (cause, message) -> LOGGER.info("There was an error sending the message."));
     return adapter;
   }
 
