@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -39,9 +40,12 @@ public class ReceiverConfiguration {
 
   private static final Log LOGGER = LogFactory.getLog(ReceiverConfiguration.class);
 
-  private static final String SUBSCRIPTION_NAME = "json-payload-sample-subscription";
-
   private final ArrayList<Person> processedPersonsList = new ArrayList<>();
+
+  @Bean
+  public String subscriptionName(@Value("${subscriptionName}") String subscriptionName) {
+    return subscriptionName;
+  }
 
   @Bean
   public DirectChannel pubSubInputChannel() {
@@ -50,9 +54,11 @@ public class ReceiverConfiguration {
 
   @Bean
   public PubSubInboundChannelAdapter messageChannelAdapter(
-      @Qualifier("pubSubInputChannel") MessageChannel inputChannel, PubSubTemplate pubSubTemplate) {
+      @Qualifier("pubSubInputChannel") MessageChannel inputChannel,
+      PubSubTemplate pubSubTemplate,
+      @Qualifier("subscriptionName") String subscriptionName) {
     PubSubInboundChannelAdapter adapter =
-        new PubSubInboundChannelAdapter(pubSubTemplate, SUBSCRIPTION_NAME);
+        new PubSubInboundChannelAdapter(pubSubTemplate, subscriptionName);
     adapter.setOutputChannel(inputChannel);
     adapter.setAckMode(AckMode.MANUAL);
     adapter.setPayloadType(Person.class);
