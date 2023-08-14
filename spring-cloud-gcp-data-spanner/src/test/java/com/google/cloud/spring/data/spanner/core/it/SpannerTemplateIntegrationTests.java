@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
+import com.google.cloud.spring.data.spanner.aot.SpannerRuntimeHints;
+import com.google.cloud.spring.data.spanner.aot.SpannerTestRuntimeHints;
 import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerReadOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
@@ -37,12 +39,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 /** Integration tests that use many features of the Spanner Template. */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
+@ImportRuntimeHints({SpannerTestRuntimeHints.class})
 public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationTest {
 
   @Autowired TemplateTransactionalService transactionalService;

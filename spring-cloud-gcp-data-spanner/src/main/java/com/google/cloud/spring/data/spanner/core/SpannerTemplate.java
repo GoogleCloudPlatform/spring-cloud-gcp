@@ -648,6 +648,8 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
       Class<T> entityClass,
       Set<String> includeProperties,
       boolean allowMissingColumns) {
+    System.out.println("***********IS IT EMPTY****************");
+//    System.out.println(includeProperties.isEmpty());
     return resolveChildEntities(
         this.spannerEntityProcessor.mapToList(
             resultSet, entityClass, includeProperties, allowMissingColumns),

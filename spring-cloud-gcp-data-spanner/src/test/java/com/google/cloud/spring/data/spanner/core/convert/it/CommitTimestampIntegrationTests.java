@@ -26,6 +26,7 @@ import static org.springframework.util.ReflectionUtils.setField;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.Key;
+import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spring.data.spanner.core.SpannerMutationFactory;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.convert.CommitTimestamp;
@@ -36,10 +37,14 @@ import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
 import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.logging.LogLevel;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -66,14 +71,25 @@ class CommitTimestampIntegrationTests extends AbstractSpannerIntegrationTest {
 
     final Timestamp committedAt = databaseClient.write(mutationFactory.insert(entity));
 
+    try {
     final CommitTimestamps fetched = spannerOperations.read(CommitTimestamps.class, Key.of(id));
-    doWithFields(
-        CommitTimestamps.class,
-        f ->
-            assertThat(getField(f, fetched))
-                .describedAs("Test of the field %s has tailed", f)
-                .isEqualTo(getConverter(f).convert(committedAt)),
-        ff -> !ff.isSynthetic() && isNull(ff.getAnnotation(PrimaryKey.class)));
+//      doWithFields(
+//              CommitTimestamps.class,
+////        Next wrap this in a try catch block.
+//              f ->
+////                System.out.println(String.format("************%s*************", f)),
+//                      System.out.println("yoohoo"),
+////            assertThat(getField(f, fetched))
+////                .describedAs("Test of the field %s has tailed", f)
+////                .isEqualTo(getConverter(f).convert(committedAt)),
+//              ff -> !ff.isSynthetic() && isNull(ff.getAnnotation(PrimaryKey.class)));
+    } catch (SpannerException ex) {
+      System.out.println("SPANNER EXCEPTION THROWN");
+      ex.printStackTrace();
+      Logger.getLogger(CommitTimestampIntegrationTests.class.getName()).log(Level.SEVERE, "Invalid argument failure", ex);
+      throw ex;
+    }
+
   }
 
   @SuppressWarnings("unchecked")

@@ -18,6 +18,7 @@ package com.google.cloud.spring.data.spanner.repository.support;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
+import com.google.cloud.spring.data.spanner.aot.SpannerRuntimeHints;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
@@ -25,6 +26,8 @@ import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Function;
+
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
