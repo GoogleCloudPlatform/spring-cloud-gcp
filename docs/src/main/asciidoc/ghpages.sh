@@ -134,8 +134,6 @@ function add_docs_from_target() {
 function copy_docs_for_current_version() {
     if [[ "${CURRENT_BRANCH}" == "main" ]] ; then
         echo -e "Current branch is main - will copy the current docs only to the root folder"
-        echo -e "Current path is: $pwd"
-        ls $pwd
         for f in docs/target/generated-docs/*; do
             file=${f#docs/target/generated-docs/*}
             if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
@@ -147,8 +145,6 @@ function copy_docs_for_current_version() {
         COMMIT_CHANGES="yes"
     else
         echo -e "Current branch is [${CURRENT_BRANCH}]"
-        echo -e "Current path is: $pwd"
-        ls $pwd
         # https://stackoverflow.com/questions/29300806/a-bash-script-to-check-if-a-string-is-present-in-a-comma-separated-list-of-strin
         if [[ ",${ALLOWED_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
             mkdir -p ${ROOT_FOLDER}/${CURRENT_BRANCH}
