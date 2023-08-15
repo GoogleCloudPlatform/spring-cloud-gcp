@@ -71,7 +71,7 @@ function retrieve_doc_properties() {
         -Dexec.executable="echo" \
         -Dexec.args='${docs.main}' \
         --non-recursive \
-        org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+        org.codehaus.mojo:exec-maven-plugin:3.1.0:exec)
     echo "Extracted 'main.adoc' from Maven build [${MAIN_ADOC_VALUE}]"
 
 
@@ -79,7 +79,7 @@ function retrieve_doc_properties() {
     ALLOWED_BRANCHES_VALUE=$("${MAVEN_PATH}"mvn -q \
         -Dexec.executable="echo" \
         -Dexec.args="\${${ALLOW_PROPERTY}}" \
-        org.codehaus.mojo:exec-maven-plugin:1.3.1:exec \
+        org.codehaus.mojo:exec-maven-plugin:3.1.0:exec \
         -P docs \
         -pl docs)
     echo "Extracted '${ALLOW_PROPERTY}' from Maven build [${ALLOWED_BRANCHES_VALUE}]"
@@ -134,6 +134,8 @@ function add_docs_from_target() {
 function copy_docs_for_current_version() {
     if [[ "${CURRENT_BRANCH}" == "main" ]] ; then
         echo -e "Current branch is main - will copy the current docs only to the root folder"
+        echo -e "Current path is: $pwd"
+        ls $pwd
         for f in docs/target/generated-docs/*; do
             file=${f#docs/target/generated-docs/*}
             if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
@@ -145,6 +147,8 @@ function copy_docs_for_current_version() {
         COMMIT_CHANGES="yes"
     else
         echo -e "Current branch is [${CURRENT_BRANCH}]"
+        echo -e "Current path is: $pwd"
+        ls $pwd
         # https://stackoverflow.com/questions/29300806/a-bash-script-to-check-if-a-string-is-present-in-a-comma-separated-list-of-strin
         if [[ ",${ALLOWED_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
             mkdir -p ${ROOT_FOLDER}/${CURRENT_BRANCH}
