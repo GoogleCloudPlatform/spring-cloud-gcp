@@ -61,8 +61,8 @@ function switch_to_tag() {
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
         ./mvnw clean install -P docs -pl docs -DskipTests -q
-        echo "Listing contents of ${ROOT_FOLDER}"
-        find ${ROOT_FOLDER} -type f
+        echo "Listing contents of ${ROOT_FOLDER}/docs/target/"
+        find "${ROOT_FOLDER}/docs/target/" -type f
     else
       echo "Did not build docs"
     fi
