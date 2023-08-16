@@ -61,7 +61,9 @@ function switch_to_tag() {
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
         echo "Building docs in directory: $(pwd)"
-        ./mvnw clean install -P docs -pl docs -DskipTests -q
+        ./mvnw clean install -P docs -pl docs -DskipTests -X
+        echo "Java version:" java -version
+        echo "Maven version" mvn --version
         echo "Listing contents of ${ROOT_FOLDER}/docs/target/"
         find "${ROOT_FOLDER}/docs/target/" -type f
     else
