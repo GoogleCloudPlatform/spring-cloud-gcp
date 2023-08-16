@@ -60,6 +60,7 @@ function switch_to_tag() {
 # Build the docs if switch is on
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
+        echo "Building docs in directory: $(pwd)"
         ./mvnw clean install -P docs -pl docs -DskipTests -q
         echo "Listing contents of ${ROOT_FOLDER}/docs/target/"
         find "${ROOT_FOLDER}/docs/target/" -type f
