@@ -64,7 +64,7 @@ function build_docs_if_applicable() {
         ./mvnw clean install -P docs -pl docs -DskipTests -X
         echo "Java version:" java -version
         echo "Maven version" mvn --version
-        echo "Listing contents of ${ROOT_FOLDER}/docs/target/"
+        echo "Listing contents of ${ROOT_FOLDER}/docs/target/generated-docs/"
         find "${ROOT_FOLDER}/docs/target/" -type f
     else
       echo "Did not build docs"
