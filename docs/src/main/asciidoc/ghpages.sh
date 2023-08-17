@@ -65,7 +65,7 @@ function build_docs_if_applicable() {
         echo "Java version:" java -version
         echo "Maven version" mvn --version
         echo "Listing contents of ${ROOT_FOLDER}/docs/target/generated-docs/"
-        find "${ROOT_FOLDER}/docs/target/" -type f
+        find "${ROOT_FOLDER}/docs/target/generated-docs/" -type f
     else
       echo "Did not build docs"
     fi
