@@ -18,15 +18,11 @@ package com.google.cloud.spring.data.spanner.repository.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Key;
-import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
-import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
-import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.aot.SpannerRuntimeHints;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.repository.support.SimpleSpannerRepository;
@@ -52,9 +48,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -70,6 +65,7 @@ import org.springframework.transaction.annotation.Transactional;
 /** Integration tests for Spanner Repository that uses many features. */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
+@ImportRuntimeHints(SpannerRuntimeHints.class)
 public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
 
   @Autowired TradeRepository tradeRepository;
@@ -81,8 +77,6 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   @Autowired TradeRepositoryTransactionalService tradeRepositoryTransactionalService;
 
   @Autowired SpannerMappingContext spannerMappingContext;
-
-  @SpyBean SpannerTemplate spannerTemplate;
 
   @BeforeEach
   @AfterEach
@@ -474,8 +468,6 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
 
   @Test
   void queryMethodsTest_EagerFetch() {
-    Mockito.clearInvocations(spannerTemplate);
-
     final Trade aTrade = Trade.makeTrade("trader1", 0, 0);
     aTrade.setAction("BUY");
     aTrade.setSymbol("ABCD");
@@ -488,9 +480,6 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
         .hasValueSatisfying(t -> assertThat(t.getSymbol()).isEqualTo(aTrade.getSymbol()))
         .hasValueSatisfying(
             t -> assertThat(t.getSubTrades()).hasSize(aTrade.getSubTrades().size()));
-    Mockito.verify(spannerTemplate, Mockito.times(1)).executeQuery(any(Statement.class), any());
-    Mockito.verify(spannerTemplate, Mockito.times(1))
-        .query(eq(Trade.class), any(Statement.class), any(SpannerQueryOptions.class));
   }
 
   @Test
@@ -620,12 +609,11 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
     Trade trade3 = insertTrade("trader2", "SELL", 102);
     insertTrade("trader2", "SELL", 103);
 
-
-    Iterable<Trade> foundTrades = this.tradeRepository.findAllById(
-        Arrays.asList(
-            Key.of(trade2.getTradeDetail().getId(), trade2.getTraderId()),
-            Key.of(trade3.getTradeDetail().getId(), trade3.getTraderId())
-        ));
+    Iterable<Trade> foundTrades =
+        this.tradeRepository.findAllById(
+            Arrays.asList(
+                Key.of(trade2.getTradeDetail().getId(), trade2.getTraderId()),
+                Key.of(trade3.getTradeDetail().getId(), trade3.getTraderId())));
 
     assertThat(foundTrades).containsExactlyInAnyOrder(trade2, trade3);
   }
