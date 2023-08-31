@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Struct;
-import com.google.cloud.spring.data.spanner.aot.SpannerRuntimeHints;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.repository.support.SimpleSpannerRepository;
@@ -49,7 +48,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -65,7 +63,6 @@ import org.springframework.transaction.annotation.Transactional;
 /** Integration tests for Spanner Repository that uses many features. */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
-@ImportRuntimeHints(SpannerRuntimeHints.class)
 public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
 
   @Autowired TradeRepository tradeRepository;

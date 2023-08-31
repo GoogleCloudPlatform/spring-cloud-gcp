@@ -22,18 +22,17 @@ import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
 
-public class SpannerRuntimeHints implements RuntimeHintsRegistrar {
+public class SpannerSchemaUtilsRuntimeHints implements RuntimeHintsRegistrar {
 
   @Override
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+    // Called reflectively by org.springframework.expression.spel.support.ReflectiveMethodExecutor
+    // which is invoked transitively by SpannerPersistentEntityImpl#tableName() from
+    // SpannerSchemaUtils.
     hints
         .reflection()
         .registerTypes(
-            Arrays.asList(
-                TypeReference.of(
-                    com.google.cloud.spring.data.spanner.repository.support.SimpleSpannerRepository
-                        .class),
-                TypeReference.of(java.lang.String.class)),
+            Arrays.asList(TypeReference.of(java.lang.String.class)),
             hint ->
                 hint.withMembers(
                     MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,

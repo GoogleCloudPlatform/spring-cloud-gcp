@@ -18,7 +18,6 @@ package com.google.cloud.spring.data.spanner.repository.support;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
-import com.google.cloud.spring.data.spanner.aot.SpannerRuntimeHints;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
@@ -26,7 +25,6 @@ import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Function;
-import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +38,6 @@ import org.springframework.util.Assert;
  * @param <I> the id type of the entity
  * @since 1.1
  */
-@ImportRuntimeHints({SpannerRuntimeHints.class})
 public class SimpleSpannerRepository<T, I> implements SpannerRepository<T, I> {
 
   private static final String NON_NULL_ID_REQUIRED = "A non-null ID is required.";
