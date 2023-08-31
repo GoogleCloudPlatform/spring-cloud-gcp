@@ -22,7 +22,7 @@ import static org.springframework.aot.hint.predicate.RuntimeHintsPredicates.refl
 import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.RuntimeHints;
 
-public class SpannerSchemaUtilsRuntimeHintsTests {
+class SpannerSchemaUtilsRuntimeHintsTests {
   @Test
   void registerString() {
     RuntimeHints runtimeHints = new RuntimeHints();

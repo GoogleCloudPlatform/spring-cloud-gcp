@@ -23,9 +23,9 @@ import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
 import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.RuntimeHints;
 
-public class CommitTimestampsRuntimeHintsTests {
+class CommitTimestampsRuntimeHintsTests {
   @Test
-  public void registerCommitTimestamps() {
+  void registerCommitTimestamps() {
     RuntimeHints runtimeHints = new RuntimeHints();
     CommitTimestampsRuntimeHints registrar = new CommitTimestampsRuntimeHints();
     registrar.registerHints(runtimeHints, null);

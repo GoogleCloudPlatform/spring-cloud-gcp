@@ -23,7 +23,7 @@ import com.google.cloud.spring.data.spanner.repository.support.SimpleSpannerRepo
 import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.RuntimeHints;
 
-public class SpannerRepositoryRuntimeHintsTests {
+class SpannerRepositoryRuntimeHintsTests {
 
   @Test
   void registerSimpleSpannerRepository() {
