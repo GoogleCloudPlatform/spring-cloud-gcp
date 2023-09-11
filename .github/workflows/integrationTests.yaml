@@ -135,7 +135,7 @@ jobs:
             --activate-profiles spring-cloud-gcp-ci-it \
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
-            --define 'mysql.db.root.password=${{ secrets.SPRING_CLOUD_GCP_CI_MYSQL_ROOT_PASSWORD }}' \
+            --define mysql.db.root.password=${{ secrets.SPRING_CLOUD_GCP_CI_MYSQL_ROOT_PASSWORD }} \
             --define it.${{ matrix.it }}=true \
             verify
       - name: Aggregate Report
