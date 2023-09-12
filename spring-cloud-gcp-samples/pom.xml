@@ -103,8 +103,8 @@
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
 								<spring.cloud.gcp.sql.instance-connection-name>spring-cloud-gcp-ci:us-central1:testmysql</spring.cloud.gcp.sql.instance-connection-name>
 								<spring.cloud.gcp.sql.database-name>code_samples_test_db</spring.cloud.gcp.sql.database-name>
-								<spring.datasource.password>${mysql.db.root.password}</spring.datasource.password>
-								<spring.r2dbc.password>${mysql.db.root.password}</spring.r2dbc.password>
+								<spring.datasource.password>${db.root.password}</spring.datasource.password>
+								<spring.r2dbc.password>${db.root.password}</spring.r2dbc.password>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
