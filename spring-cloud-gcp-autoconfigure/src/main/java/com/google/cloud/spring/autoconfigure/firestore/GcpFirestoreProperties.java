@@ -30,7 +30,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  */
 @ConfigurationProperties("spring.cloud.gcp.firestore")
 public class GcpFirestoreProperties implements CredentialsSupplier {
-  private static final String ROOT_PATH_FORMAT = "projects/%s/databases/(default)/documents";
+  private static final String ROOT_PATH_FORMAT = "projects/%s/databases/%s/documents";
 
   /**
    * Overrides the GCP OAuth2 credentials specified in the Core module. Uses same URL as Datastore
@@ -92,7 +92,8 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
   }
 
   public String getFirestoreRootPath(GcpProjectIdProvider projectIdProvider) {
-    return String.format(ROOT_PATH_FORMAT, this.getResolvedProjectId(projectIdProvider));
+    return String.format(ROOT_PATH_FORMAT, this.getResolvedProjectId(projectIdProvider),
+        this.getDatabaseId() == null ? "(default)" : this.getDatabaseId());
   }
 
   public static class FirestoreEmulatorProperties {

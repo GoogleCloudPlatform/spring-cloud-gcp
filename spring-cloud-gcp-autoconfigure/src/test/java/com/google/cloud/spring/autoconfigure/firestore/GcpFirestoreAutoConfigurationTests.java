@@ -55,7 +55,7 @@ class GcpFirestoreAutoConfigurationTests {
           .withPropertyValues("spring.cloud.gcp.firestore.project-id=test-project");
 
   @Test
-  void testDatastoreOptionsCorrectlySet() {
+  void testFirestoreOptionsCorrectlySet() {
     this.contextRunner.run(
         context -> {
           FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
@@ -104,6 +104,9 @@ class GcpFirestoreAutoConfigurationTests {
             context -> {
               FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
               assertThat(datastoreOptions.getDatabaseId()).isEqualTo("mydb");
+              String rootPath = context.getBean(GcpFirestoreProperties.class)
+                  .getFirestoreRootPath(() -> "test");
+              assertThat(rootPath).isEqualTo("projects/test/databases/mydb/documents");
             });
   }
 
