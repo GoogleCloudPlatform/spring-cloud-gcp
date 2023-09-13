@@ -97,16 +97,18 @@ class GcpFirestoreAutoConfigurationTests {
   }
 
   @Test
-  void testDatabaseId() {
+  void testDatabaseIdOverride() {
     contextRunner
-        .withPropertyValues("spring.cloud.gcp.firestore.database-id=mydb")
+        .withPropertyValues("spring.cloud.gcp.firestore.database-id=mydb",
+            "spring.cloud.gcp.firestore.project-id=test")
         .run(
             context -> {
               FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
               assertThat(datastoreOptions.getDatabaseId()).isEqualTo("mydb");
               String rootPath = context.getBean(GcpFirestoreProperties.class)
-                  .getFirestoreRootPath(() -> "test");
-              assertThat(rootPath).isEqualTo("projects/test/databases/mydb/documents");
+                  .getFirestoreRootPath(() -> "xyz-ignored");
+              assertThat(rootPath)
+                  .isEqualTo("projects/test/databases/mydb/documents");
             });
   }
 

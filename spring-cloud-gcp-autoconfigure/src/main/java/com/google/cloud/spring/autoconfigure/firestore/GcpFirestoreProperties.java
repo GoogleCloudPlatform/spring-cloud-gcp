@@ -71,6 +71,10 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
     return databaseId;
   }
 
+  private String getResolvedDatabaseId() {
+    return this.getDatabaseId() == null ? "(default)" : this.getDatabaseId();
+  }
+
   public void setDatabaseId(String databaseId) {
     this.databaseId = databaseId;
   }
@@ -93,7 +97,7 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
 
   public String getFirestoreRootPath(GcpProjectIdProvider projectIdProvider) {
     return String.format(ROOT_PATH_FORMAT, this.getResolvedProjectId(projectIdProvider),
-        this.getDatabaseId() == null ? "(default)" : this.getDatabaseId());
+        this.getResolvedDatabaseId());
   }
 
   public static class FirestoreEmulatorProperties {
