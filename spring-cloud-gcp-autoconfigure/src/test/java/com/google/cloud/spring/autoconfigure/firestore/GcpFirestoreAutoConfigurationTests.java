@@ -60,6 +60,7 @@ class GcpFirestoreAutoConfigurationTests {
         context -> {
           FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
           assertThat(datastoreOptions.getProjectId()).isEqualTo("test-project");
+          assertThat(datastoreOptions.getDatabaseId()).isEqualTo("(default)");
         });
   }
 
@@ -92,6 +93,17 @@ class GcpFirestoreAutoConfigurationTests {
             ctx -> {
               assertThatThrownBy(() -> ctx.getBean(TransactionManager.class))
                   .isInstanceOf(NoSuchBeanDefinitionException.class);
+            });
+  }
+
+  @Test
+  void testDatabaseId() {
+    contextRunner
+        .withPropertyValues("spring.cloud.gcp.firestore.database-id=mydb")
+        .run(
+            context -> {
+              FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
+              assertThat(datastoreOptions.getDatabaseId()).isEqualTo("mydb");
             });
   }
 

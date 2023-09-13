@@ -40,6 +40,8 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
 
   private String projectId;
 
+  private String databaseId;
+
   /**
    * The host and port of the Firestore emulator service; can be overridden to specify an emulator.
    */
@@ -63,6 +65,14 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
 
   public void setProjectId(String projectId) {
     this.projectId = projectId;
+  }
+
+  public String getDatabaseId() {
+    return databaseId;
+  }
+
+  public void setDatabaseId(String databaseId) {
+    this.databaseId = databaseId;
   }
 
   public String getHostPort() {

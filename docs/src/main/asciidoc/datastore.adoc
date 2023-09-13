@@ -68,7 +68,7 @@ The following configuration options are available:
 | Name | Description | Required | Default value
 | `spring.cloud.gcp.datastore.enabled` | Enables the Cloud Datastore client | No | `true`
 | `spring.cloud.gcp.datastore.project-id` | Google Cloud project ID where the Google Cloud Datastore API is hosted, if different from the one in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>> | No |
-| `spring.cloud.gcp.datastore.database-id` | Google Cloud project can host multiple databases. You can specify which database will be used. | No |
+| `spring.cloud.gcp.datastore.database-id` | Google Cloud project can host multiple databases. You can specify which database will be used. If not specified, the database id will be "(default)". | No |
 | `spring.cloud.gcp.datastore.credentials.location` | OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>> | No |
 | `spring.cloud.gcp.datastore.credentials.encoded-key` | Base64-encoded OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>> | No |
 | `spring.cloud.gcp.datastore.credentials.scopes` | https://developers.google.com/identity/protocols/googlescopes[OAuth2 scope] for Spring Framework on Google CloudDatastore credentials | No | https://www.googleapis.com/auth/datastore

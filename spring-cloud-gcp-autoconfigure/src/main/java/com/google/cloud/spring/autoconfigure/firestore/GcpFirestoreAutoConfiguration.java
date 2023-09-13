@@ -61,6 +61,8 @@ public class GcpFirestoreAutoConfiguration {
 
   private final String projectId;
 
+  private final String databaseId;
+
   private final CredentialsProvider credentialsProvider;
 
   private final String hostPort;
@@ -74,6 +76,7 @@ public class GcpFirestoreAutoConfiguration {
       throws IOException {
 
     this.projectId = gcpFirestoreProperties.getResolvedProjectId(projectIdProvider);
+    this.databaseId = gcpFirestoreProperties.getDatabaseId();
 
     if (gcpFirestoreProperties.getEmulator().isEnabled()) {
       // if the emulator is enabled, create CredentialsProvider for this particular case.
@@ -92,13 +95,19 @@ public class GcpFirestoreAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean
   public FirestoreOptions firestoreOptions() {
-    return FirestoreOptions.getDefaultInstance().toBuilder()
+
+    FirestoreOptions.Builder builder = FirestoreOptions.getDefaultInstance().toBuilder()
         .setCredentialsProvider(this.credentialsProvider)
         .setProjectId(this.projectId)
         .setHeaderProvider(USER_AGENT_HEADER_PROVIDER)
         .setChannelProvider(
-            InstantiatingGrpcChannelProvider.newBuilder().setEndpoint(this.hostPort).build())
-        .build();
+            InstantiatingGrpcChannelProvider.newBuilder().setEndpoint(this.hostPort).build());
+
+    if (databaseId != null) {
+      builder.setDatabaseId(databaseId);
+    }
+
+    return builder.build();
   }
 
   @Bean
