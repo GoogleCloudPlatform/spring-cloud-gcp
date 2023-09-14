@@ -14,6 +14,32 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.7.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.7.0...v4.7.1) (2023-08-01)
+
+
+### Bug Fixes
+
+* add missing exception cause in createSecretManagerClient ([#1923](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1923)) ([154cbe5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/154cbe5c7a4f3be6eba76e6607ae5fa0528bf909))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.21.0 ([#2088](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2088)) ([e352ad5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e352ad58cb5a23825e213125fbfbc306631fdcb2))
+
+## [4.7.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.6.0...v4.7.0) (2023-07-28)
+
+
+### Features
+
+* **main:** Migrate spanner spring data r2dbc ([#2080](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2080)) ([f5e3c7a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f5e3c7a5d1033d533e40fd1d6297bcd2fd19dbcb))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.20.0 (main) ([#2071](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2071)) ([ca9d1fb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ca9d1fbbdd6ebc4adffbc67b5b6fa71ae6b3ad48))
+* **deps:** update spring cloud ([#2076](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2076)) ([64561c7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/64561c7172617e887af003addae0823c701a0dd2))
+
+
+### Dependencies
+
+* stop forcing Guava version ([#2069](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2069)) ([308c56d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/308c56d0a029915b211d8242cc2bd0a8ffeece9c))
+
 ## [4.6.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.5.1...v4.6.0) (2023-07-24)
 
 

@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>4.6.0</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.7.1</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -36,7 +36,7 @@
 	<properties>
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
-		<spring-cloud-dependencies.version>2022.0.3</spring-cloud-dependencies.version>
+		<spring-cloud-dependencies.version>2022.0.4</spring-cloud-dependencies.version>
 		<spring-boot-dependencies.version>3.1.2</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
@@ -456,6 +456,7 @@
 
 				<module>spring-cloud-previews</module>
 				<module>spring-cloud-generator</module>
+				<module>spring-cloud-spanner-spring-data-r2dbc</module>
 				<!-- Docs and Samples -->
 				<module>docs</module>
 				<module>spring-cloud-gcp-samples</module>
@@ -675,8 +676,8 @@
 				<module>spring-cloud-gcp-security-firebase</module>
 				<module>spring-cloud-gcp-vision</module>
 				<module>spring-cloud-gcp-kms</module>
-
 				<module>spring-cloud-previews</module>
+				<module>spring-cloud-spanner-spring-data-r2dbc</module>
 			</modules>
 			<build>
 				<pluginManagement>
