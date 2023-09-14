@@ -331,10 +331,11 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
                   .flatMapMany(
                       response -> {
                         if (setUpdateTime) {
-                          for (T entity : batch) {
+                          for (int i = 0; i< batch.size(); i++) {
                             getClassMapper()
                                 .setUpdateTime(
-                                    entity, Timestamp.fromProto(response.getCommitTime()));
+                                    batch.get(i), Timestamp.fromProto(
+                                        response.getWriteResults(i).getUpdateTime()));
                           }
                         }
                         return Flux.fromIterable(batch);
