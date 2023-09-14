@@ -107,7 +107,7 @@ jobs:
             --activate-profiles spring-cloud-gcp-ci-it \
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
-            --define "db.root.password=${DB_PASSWORD}" \
+            --define "spring.datasource.password=${DB_PASSWORD}" \
             --define it.${{ matrix.it }}=true \
             verify
         env:
@@ -121,7 +121,7 @@ jobs:
             --activate-profiles spring-cloud-gcp-ci-it \
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
-            --define "db.root.password=${DB_PASSWORD}" \
+            --define "spring.datasource.password=${DB_PASSWORD}" \
             --define it.${{ matrix.it }}=true \
             verify
         env:
