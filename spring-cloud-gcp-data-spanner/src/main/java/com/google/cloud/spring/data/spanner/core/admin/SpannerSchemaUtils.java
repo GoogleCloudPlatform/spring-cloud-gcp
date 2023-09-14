@@ -18,6 +18,7 @@ package com.google.cloud.spring.data.spanner.core.admin;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Type;
+import com.google.cloud.spring.data.spanner.aot.SpannerSchemaUtilsRuntimeHints;
 import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerTypeMapper;
@@ -32,6 +33,7 @@ import java.util.OptionalLong;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.BiFunction;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.util.Assert;
 
@@ -40,6 +42,7 @@ import org.springframework.util.Assert;
  *
  * @since 1.1
  */
+@ImportRuntimeHints(SpannerSchemaUtilsRuntimeHints.class)
 public class SpannerSchemaUtils {
 
   private final SpannerMappingContext mappingContext;

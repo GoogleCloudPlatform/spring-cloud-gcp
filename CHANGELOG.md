@@ -14,6 +14,22 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.7.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.7.1...v4.7.2) (2023-08-10)
+
+
+### Bug Fixes
+
+* add runtime hints for storage ([#2001](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2001)) ([793c798](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/793c79874a49a20d0cb0023d69e68b9b76000409))
+* add runtime hints for trace ([#1990](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/1990)) ([2ba4a75](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2ba4a75bc58fbc48a3f92f6bd6d79a1fd46a905b))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.22.0 ([#2110](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2110)) ([1806818](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/18068189dd47162690b86f230df894ad432ca028))
+
+
+### Dependencies
+
+* bump com.google.errorprone:error_prone_core from 2.20.0 to 2.21.1 ([#2104](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2104)) ([0c9718a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0c9718a3010cf8be750e756a3c0a2064fc18db73))
+* bump gapic-generator-java-bom.version from 2.23.1 to 2.24.0 ([#2097](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2097)) ([67a5756](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/67a57563b1f2b1b5613496835ddb695af286e918))
+* bump org.graalvm.buildtools:native-maven-plugin ([#2107](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2107)) ([f7964c5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f7964c51db2b197fd4c45ce6558a61da985a370d))
+
 ## [4.7.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.7.0...v4.7.1) (2023-08-01)
 
 

@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>4.7.1</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.7.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -59,8 +59,8 @@
 		<maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.20.0</errorprone.version>
-		<native-maven-plugin.version>0.9.23</native-maven-plugin.version>
+		<errorprone.version>2.21.1</errorprone.version>
+		<native-maven-plugin.version>0.9.24</native-maven-plugin.version>
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
@@ -353,7 +353,9 @@
 	<profile>
 		<id>spring-native</id>
 		<modules>
+			<module>spring-cloud-gcp-storage</module>
 			<module>spring-cloud-gcp-vision</module>
+			<module>spring-cloud-gcp-data-spanner</module>
 		</modules>
 
 		<dependencies>
@@ -379,7 +381,9 @@
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<systemPropertyVariables>
 							<!--integration tests are not invoked unless the relevant system property is set to true here. -->
-							<it.vision>${it.vision}</it.vision>
+              <it.storage>true</it.storage>
+							<it.vision>true</it.vision>
+							<it.spanner>true</it.spanner>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>

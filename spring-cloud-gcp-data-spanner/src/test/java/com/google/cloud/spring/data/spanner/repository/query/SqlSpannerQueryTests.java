@@ -18,6 +18,7 @@ package com.google.cloud.spring.data.spanner.repository.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -178,6 +179,8 @@ class SqlSpannerQueryTests {
     sqlSpannerQuery.execute(new Object[] {});
 
     verify(this.spannerTemplate, times(1)).executeQuery(any(), any());
+    verify(this.spannerTemplate, times(1))
+        .query(eq(Trade.class), any(Statement.class), any(SpannerQueryOptions.class));
   }
 
   @Test
