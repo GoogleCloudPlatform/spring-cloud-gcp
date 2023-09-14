@@ -331,7 +331,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
                   .flatMapMany(
                       response -> {
                         if (setUpdateTime) {
-                          for (int i = 0; i< batch.size(); i++) {
+                          for (int i = 0; i < batch.size(); i++) {
                             getClassMapper()
                                 .setUpdateTime(
                                     batch.get(i), Timestamp.fromProto(
