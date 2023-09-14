@@ -115,12 +115,7 @@ jobs:
         id: intTest3
         continue-on-error: true
         run: |
-          ./mvnw \
-            --batch-mode \
-            --activate-profiles spring-native,\!default \
-            --define maven.javadoc.skip=true \
-            --define it.${{ matrix.it }}=true \
-            test
+          MODULE_UNDER_TEST=${matrix.it} bash scripts/native-image-tests.sh
       - name: Retry on Failure
         id: intTest4
         if: steps.intTest3.outcome == 'failure'
