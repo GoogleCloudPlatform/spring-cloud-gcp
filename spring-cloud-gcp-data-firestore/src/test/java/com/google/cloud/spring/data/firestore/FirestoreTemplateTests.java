@@ -42,6 +42,7 @@ import com.google.firestore.v1.RunQueryResponse;
 import com.google.firestore.v1.StructuredQuery;
 import com.google.firestore.v1.Value;
 import com.google.firestore.v1.Write;
+import com.google.firestore.v1.WriteResult;
 import io.grpc.stub.StreamObserver;
 import java.util.HashMap;
 import java.util.Map;
@@ -280,9 +281,11 @@ public class FirestoreTemplateTests {
     doAnswer(
             invocation -> {
               StreamObserver<CommitResponse> streamObserver = invocation.getArgument(1);
+              com.google.protobuf.Timestamp ts = Timestamp.ofTimeMicroseconds(123456789).toProto();
               CommitResponse response =
                   CommitResponse.newBuilder()
-                      .setCommitTime(Timestamp.ofTimeMicroseconds(123456789).toProto())
+                      .addWriteResults(WriteResult.newBuilder().setUpdateTime(ts).build())
+                      .addWriteResults(WriteResult.newBuilder().setUpdateTime(ts).build())
                       .build();
               streamObserver.onNext(response);
               streamObserver.onCompleted();

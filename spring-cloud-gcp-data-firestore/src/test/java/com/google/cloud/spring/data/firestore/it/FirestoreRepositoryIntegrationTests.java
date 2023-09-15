@@ -22,6 +22,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.spring.data.firestore.SimpleFirestoreReactiveRepository;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.entities.User.Address;
@@ -416,5 +417,20 @@ class FirestoreRepositoryIntegrationTests {
                 user -> testUser.flatMap(user1 -> Mono.just(user.getName() + " " + user1.getName())));
     List<String> list = stringFlux.collectList().block();
     assertThat(list).contains("Alice Alice", "Bob Alice");
+  }
+
+  @Test
+  void testUpdateTimeNoDocumentChangeDoesNotResultInOptimisticLockingFailure() {
+    User user = new User();
+    user.setName("Axle");
+    user.setAge(25);
+    userRepository.save(user).block();
+    Timestamp updateTime = user.getUpdateTime();
+    userRepository.save(user).block();
+    Timestamp updateTime2 = user.getUpdateTime();
+    assertThat(updateTime2).isEqualTo(updateTime);
+    user.setAge(26);
+    userRepository.save(user).block();
+    // no optimistic locking exception expected
   }
 }
