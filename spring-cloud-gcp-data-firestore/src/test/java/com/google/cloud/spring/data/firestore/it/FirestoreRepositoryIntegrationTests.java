@@ -420,7 +420,7 @@ class FirestoreRepositoryIntegrationTests {
   }
 
   @Test
-  public void testUpdateTimeNoDocumentChangeDoesNotResultInOptimisticLockingFailure() {
+  void testUpdateTimeNoDocumentChangeDoesNotResultInOptimisticLockingFailure() {
     User user = new User();
     user.setName("Axle");
     user.setAge(25);
