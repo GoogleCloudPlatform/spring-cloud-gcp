@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.firestore;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.rpc.internal.Headers;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
@@ -32,7 +33,9 @@ import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Metadata;
 import io.grpc.auth.MoreCallCredentials;
+import io.grpc.stub.MetadataUtils;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -128,10 +131,23 @@ public class GcpFirestoreAutoConfiguration {
     public FirestoreGrpc.FirestoreStub firestoreGrpcStub(
         @Qualifier("firestoreManagedChannel") ManagedChannel firestoreManagedChannel)
         throws IOException {
-      return FirestoreGrpc.newStub(firestoreManagedChannel)
+
+      FirestoreGrpc.FirestoreStub stub = FirestoreGrpc.newStub(firestoreManagedChannel)
           .withCallCredentials(
               MoreCallCredentials.from(
                   GcpFirestoreAutoConfiguration.this.credentialsProvider.getCredentials()));
+
+      // add routing header for custom database id
+      if (databaseId != null && !databaseId.equals("(default)")) {
+        Metadata routingHeader = new Metadata();
+        Metadata.Key<String> key =
+            Metadata.Key.of(Headers.DYNAMIC_ROUTING_HEADER_KEY, Metadata.ASCII_STRING_MARSHALLER);
+        routingHeader.put(key, "project_id=" + projectId + "&database_id=" + databaseId);
+        stub = stub.withInterceptors(
+            MetadataUtils.newAttachHeadersInterceptor(routingHeader));
+      }
+
+      return stub;
     }
 
     @Bean
