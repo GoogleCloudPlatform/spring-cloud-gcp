@@ -31,12 +31,15 @@ import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.firestore.v1.FirestoreGrpc;
+import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Metadata;
 import io.grpc.auth.MoreCallCredentials;
 import io.grpc.stub.MetadataUtils;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -79,7 +82,7 @@ public class GcpFirestoreAutoConfiguration {
       throws IOException {
 
     this.projectId = gcpFirestoreProperties.getResolvedProjectId(projectIdProvider);
-    this.databaseId = gcpFirestoreProperties.getDatabaseId();
+    this.databaseId = gcpFirestoreProperties.getResolvedDatabaseId();
 
     if (gcpFirestoreProperties.getEmulator().isEnabled()) {
       // if the emulator is enabled, create CredentialsProvider for this particular case.
@@ -137,16 +140,6 @@ public class GcpFirestoreAutoConfiguration {
               MoreCallCredentials.from(
                   GcpFirestoreAutoConfiguration.this.credentialsProvider.getCredentials()));
 
-      // add routing header for custom database id
-      if (databaseId != null && !databaseId.equals("(default)")) {
-        Metadata routingHeader = new Metadata();
-        Metadata.Key<String> key =
-            Metadata.Key.of(Headers.DYNAMIC_ROUTING_HEADER_KEY, Metadata.ASCII_STRING_MARSHALLER);
-        routingHeader.put(key, "project_id=" + projectId + "&database_id=" + databaseId);
-        stub = stub.withInterceptors(
-            MetadataUtils.newAttachHeadersInterceptor(routingHeader));
-      }
-
       return stub;
     }
 
@@ -176,11 +169,26 @@ public class GcpFirestoreAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean(name = "firestoreRoutingHeadersInterceptor")
+    public ClientInterceptor firestoreRoutingHeadersInterceptor() {
+      // add routing header for custom database id
+      Metadata routingHeader = new Metadata();
+      Metadata.Key<String> key =
+          Metadata.Key.of(Headers.DYNAMIC_ROUTING_HEADER_KEY, Metadata.ASCII_STRING_MARSHALLER);
+      routingHeader.put(key,
+          "project_id=" + URLEncoder.encode(projectId, StandardCharsets.US_ASCII)
+              + "&database_id=" + URLEncoder.encode(databaseId, StandardCharsets.US_ASCII));
+      return MetadataUtils.newAttachHeadersInterceptor(routingHeader);
+    }
+
+    @Bean
     @ConditionalOnMissingBean(name = "firestoreManagedChannel")
-    public ManagedChannel firestoreManagedChannel() {
+    public ManagedChannel firestoreManagedChannel(
+        ClientInterceptor firestoreRoutingHeadersInterceptor) {
       return ManagedChannelBuilder.forTarget(
               "dns:///" + GcpFirestoreAutoConfiguration.this.hostPort)
           .userAgent(USER_AGENT_HEADER_PROVIDER.getUserAgent())
+          .intercept(firestoreRoutingHeadersInterceptor)
           .build();
     }
   }

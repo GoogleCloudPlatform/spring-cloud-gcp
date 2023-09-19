@@ -71,7 +71,7 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
     return databaseId;
   }
 
-  private String getResolvedDatabaseId() {
+  public String getResolvedDatabaseId() {
     return this.getDatabaseId() == null ? "(default)" : this.getDatabaseId();
   }
 
