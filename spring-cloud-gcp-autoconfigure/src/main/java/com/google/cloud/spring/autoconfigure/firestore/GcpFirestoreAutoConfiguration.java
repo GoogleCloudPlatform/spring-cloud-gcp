@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.firestore;
 
+import com.google.api.client.util.escape.PercentEscaper;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
@@ -64,6 +65,8 @@ public class GcpFirestoreAutoConfiguration {
 
   private static final UserAgentHeaderProvider USER_AGENT_HEADER_PROVIDER =
       new UserAgentHeaderProvider(GcpFirestoreAutoConfiguration.class);
+
+  private static final PercentEscaper PERCENT_ESCAPER = new PercentEscaper("._-~");
 
   private final String projectId;
 
@@ -168,8 +171,8 @@ public class GcpFirestoreAutoConfiguration {
       Metadata.Key<String> key =
           Metadata.Key.of(Headers.DYNAMIC_ROUTING_HEADER_KEY, Metadata.ASCII_STRING_MARSHALLER);
       routingHeader.put(key,
-          "project_id=" + URLEncoder.encode(projectId, StandardCharsets.US_ASCII)
-              + "&database_id=" + URLEncoder.encode(databaseId, StandardCharsets.US_ASCII));
+          "project_id=" + PERCENT_ESCAPER.escape(projectId)
+              + "&database_id=" + PERCENT_ESCAPER.escape(databaseId));
       return MetadataUtils.newAttachHeadersInterceptor(routingHeader);
     }
 
