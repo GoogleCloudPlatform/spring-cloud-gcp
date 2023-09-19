@@ -392,6 +392,14 @@ public class CloudChannelServiceSpringAutoConfiguration {
           .listPurchasableOffersSettings()
           .setRetrySettings(listPurchasableOffersRetrySettings);
 
+      RetrySettings queryEligibleBillingAccountsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.queryEligibleBillingAccountsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .queryEligibleBillingAccountsSettings()
+          .setRetrySettings(queryEligibleBillingAccountsRetrySettings);
+
       RetrySettings registerSubscriberRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.registerSubscriberSettings().getRetrySettings(), serviceRetry);
@@ -859,6 +867,21 @@ public class CloudChannelServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listPurchasableOffers from properties.");
+      }
+    }
+    Retry queryEligibleBillingAccountsRetry =
+        clientProperties.getQueryEligibleBillingAccountsRetry();
+    if (queryEligibleBillingAccountsRetry != null) {
+      RetrySettings queryEligibleBillingAccountsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.queryEligibleBillingAccountsSettings().getRetrySettings(),
+              queryEligibleBillingAccountsRetry);
+      clientSettingsBuilder
+          .queryEligibleBillingAccountsSettings()
+          .setRetrySettings(queryEligibleBillingAccountsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for queryEligibleBillingAccounts from properties.");
       }
     }
     Retry registerSubscriberRetry = clientProperties.getRegisterSubscriberRetry();
