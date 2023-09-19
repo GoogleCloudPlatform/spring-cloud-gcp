@@ -101,19 +101,14 @@ public class GcpFirestoreAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean
   public FirestoreOptions firestoreOptions() {
-
-    FirestoreOptions.Builder builder = FirestoreOptions.getDefaultInstance().toBuilder()
+    return FirestoreOptions.getDefaultInstance().toBuilder()
         .setCredentialsProvider(this.credentialsProvider)
         .setProjectId(this.projectId)
+        .setDatabaseId(databaseId)
         .setHeaderProvider(USER_AGENT_HEADER_PROVIDER)
         .setChannelProvider(
-            InstantiatingGrpcChannelProvider.newBuilder().setEndpoint(this.hostPort).build());
-
-    if (databaseId != null) {
-      builder.setDatabaseId(databaseId);
-    }
-
-    return builder.build();
+            InstantiatingGrpcChannelProvider.newBuilder().setEndpoint(this.hostPort).build())
+        .build();
   }
 
   @Bean
@@ -134,13 +129,10 @@ public class GcpFirestoreAutoConfiguration {
     public FirestoreGrpc.FirestoreStub firestoreGrpcStub(
         @Qualifier("firestoreManagedChannel") ManagedChannel firestoreManagedChannel)
         throws IOException {
-
-      FirestoreGrpc.FirestoreStub stub = FirestoreGrpc.newStub(firestoreManagedChannel)
+      return FirestoreGrpc.newStub(firestoreManagedChannel)
           .withCallCredentials(
               MoreCallCredentials.from(
                   GcpFirestoreAutoConfiguration.this.credentialsProvider.getCredentials()));
-
-      return stub;
     }
 
     @Bean
