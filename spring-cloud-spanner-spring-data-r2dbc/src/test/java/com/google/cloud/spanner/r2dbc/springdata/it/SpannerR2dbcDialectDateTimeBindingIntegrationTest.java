@@ -43,6 +43,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -66,6 +67,11 @@ import reactor.test.StepVerifier;
 @ContextConfiguration(
     classes = SpannerR2dbcDialectDateTimeBindingIntegrationTest.TestConfiguration.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(
+        properties = {
+        "spring.r2dbc.password=test"
+  }
+)
 class SpannerR2dbcDialectDateTimeBindingIntegrationTest {
 
   private static final Logger log =

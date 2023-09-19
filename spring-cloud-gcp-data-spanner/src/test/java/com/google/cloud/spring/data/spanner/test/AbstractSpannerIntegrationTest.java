@@ -28,6 +28,7 @@ import com.google.cloud.spring.data.spanner.test.domain.Trade;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -58,6 +59,10 @@ import org.springframework.test.context.TestExecutionListeners;
 @TestExecutionListeners(
     listeners = SpannerTestExecutionListener.class,
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
+@SpringBootTest(
+        properties = {
+                "spring.r2dbc.password=test"
+        })
 public abstract class AbstractSpannerIntegrationTest {
 
   @Autowired protected SpannerOperations spannerOperations;

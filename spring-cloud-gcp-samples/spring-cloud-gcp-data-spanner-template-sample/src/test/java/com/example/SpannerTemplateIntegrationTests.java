@@ -37,7 +37,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
-@SpringBootTest
+@SpringBootTest(
+        properties = {
+                "spring.r2dbc.password=test"
+        })
 class SpannerTemplateIntegrationTests {
   @Autowired private SpannerOperations spannerOperations;
 

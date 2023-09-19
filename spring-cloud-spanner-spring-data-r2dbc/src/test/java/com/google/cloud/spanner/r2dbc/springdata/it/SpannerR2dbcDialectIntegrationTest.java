@@ -34,6 +34,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -52,6 +53,11 @@ import reactor.test.StepVerifier;
  */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(
+        properties = {
+                "spring.r2dbc.password=test"
+        }
+)
 class SpannerR2dbcDialectIntegrationTest {
 
   private static final Logger logger =

@@ -31,6 +31,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.TestPropertySource;
@@ -41,6 +42,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
 @EnableAutoConfiguration
+@SpringBootTest(
+        properties = {
+                "spring.r2dbc.password=test"
+        })
 class SpannerRepositoryMultiDatabaseIntegrationTests {
   @Autowired private TraderRepository traderRepository;
 

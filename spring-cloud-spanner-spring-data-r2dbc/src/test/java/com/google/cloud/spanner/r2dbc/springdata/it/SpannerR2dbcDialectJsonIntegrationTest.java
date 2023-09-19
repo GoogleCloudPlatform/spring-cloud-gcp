@@ -44,6 +44,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,6 +72,11 @@ import reactor.test.StepVerifier;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpannerR2dbcDialectJsonIntegrationTest.TestConfiguration.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(
+        properties = {
+                "spring.r2dbc.password=test"
+        }
+)
 class SpannerR2dbcDialectJsonIntegrationTest {
 
   private static final String PROJECT_NAME =

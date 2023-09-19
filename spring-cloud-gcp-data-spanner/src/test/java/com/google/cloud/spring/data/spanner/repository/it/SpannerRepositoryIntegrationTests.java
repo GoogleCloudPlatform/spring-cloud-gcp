@@ -54,6 +54,7 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
@@ -70,6 +71,10 @@ import org.springframework.transaction.annotation.Transactional;
 /** Integration tests for Spanner Repository that uses many features. */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
+@SpringBootTest(
+        properties = {
+                "spring.r2dbc.password=test"
+        })
 public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
 
   @Autowired TradeRepository tradeRepository;

@@ -21,7 +21,11 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = WebEnvironment.RANDOM_PORT,
+        properties = {
+                "spring.r2dbc.password=test"
+        })
 class SpringDataR2dbcAppIntegrationTest {
 
   @DynamicPropertySource

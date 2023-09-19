@@ -53,7 +53,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = {
+        "spring.r2dbc.password=test"
+})
 class SpannerRepositoryIntegrationTests {
   @LocalServerPort private int port;
 
