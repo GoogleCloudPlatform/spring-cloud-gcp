@@ -16,11 +16,13 @@
 
 package com.google.cloud.spring.data.spanner.repository.support;
 
+import com.google.cloud.spring.data.spanner.aot.SpannerRepositoryRuntimeHints;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
@@ -34,6 +36,7 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
  * @param <T> the repository type
  * @since 1.1
  */
+@ImportRuntimeHints(SpannerRepositoryRuntimeHints.class)
 public class SpannerRepositoryFactoryBean<T extends Repository<S, I>, S, I>
     extends RepositoryFactoryBeanSupport<T, S, I> implements ApplicationContextAware {
 

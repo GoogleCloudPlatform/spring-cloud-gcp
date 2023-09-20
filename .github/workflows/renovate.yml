@@ -1,0 +1,20 @@
+name: Renovate Updates
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Renovate
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Renovate
+        uses: renovatebot/forking-renovate@main
+        with:
+          baseBranches: main,3.x
+          createPullRequests: true

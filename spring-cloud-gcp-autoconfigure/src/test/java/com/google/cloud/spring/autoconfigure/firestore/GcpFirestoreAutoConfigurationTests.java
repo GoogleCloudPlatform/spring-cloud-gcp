@@ -26,14 +26,19 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.firestore.v1.FirestoreGrpc;
+import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannel;
+import io.grpc.Metadata;
+import io.grpc.Metadata.Key;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.TransactionManager;
 
 /**
@@ -55,11 +60,14 @@ class GcpFirestoreAutoConfigurationTests {
           .withPropertyValues("spring.cloud.gcp.firestore.project-id=test-project");
 
   @Test
-  void testDatastoreOptionsCorrectlySet() {
+  void testFirestoreOptionsCorrectlySet() {
     this.contextRunner.run(
         context -> {
           FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
           assertThat(datastoreOptions.getProjectId()).isEqualTo("test-project");
+          assertThat(datastoreOptions.getDatabaseId()).isEqualTo("(default)");
+          assertThat(getRoutingHeader(context))
+              .isEqualTo("project_id=test-project&database_id=%28default%29");
         });
   }
 
@@ -78,10 +86,19 @@ class GcpFirestoreAutoConfigurationTests {
         .run(
             ctx -> {
               FirestoreGrpc.FirestoreStub stub =
-                  (FirestoreGrpc.FirestoreStub) ctx.getBean("firestoreGrpcStub");
+                  ctx.getBean("firestoreGrpcStub", FirestoreGrpc.FirestoreStub.class);
               ManagedChannel channel = (ManagedChannel) stub.getChannel();
               assertThat(channel.authority()).isEqualTo("firestore.googleapis.com:443");
+              assertThat(getRoutingHeader(ctx)).isEqualTo("project_id=test-project&database_id=%28default%29");
             });
+  }
+
+  private static String getRoutingHeader(ApplicationContext ctx) {
+    ClientInterceptor clientInterceptor =
+        ctx.getBean("firestoreRoutingHeadersInterceptor", ClientInterceptor.class);
+    Metadata extraHeaders = (Metadata) ReflectionTestUtils.getField(clientInterceptor,
+        "extraHeaders");
+    return extraHeaders.get(Key.of("x-goog-request-params", Metadata.ASCII_STRING_MARSHALLER));
   }
 
   @Test
@@ -92,6 +109,24 @@ class GcpFirestoreAutoConfigurationTests {
             ctx -> {
               assertThatThrownBy(() -> ctx.getBean(TransactionManager.class))
                   .isInstanceOf(NoSuchBeanDefinitionException.class);
+            });
+  }
+
+  @Test
+  void testDatabaseIdOverride() {
+    contextRunner
+        .withPropertyValues("spring.cloud.gcp.firestore.database-id=mydb^2",
+            "spring.cloud.gcp.firestore.project-id=test")
+        .run(
+            context -> {
+              FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
+              assertThat(datastoreOptions.getDatabaseId()).isEqualTo("mydb^2");
+              String rootPath = context.getBean(GcpFirestoreProperties.class)
+                  .getFirestoreRootPath(() -> "xyz-ignored");
+              assertThat(rootPath)
+                  .isEqualTo("projects/test/databases/mydb^2/documents");
+              assertThat(getRoutingHeader(context)).isEqualTo(
+                  "project_id=test&database_id=mydb%5E2");
             });
   }
 

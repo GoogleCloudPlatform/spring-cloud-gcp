@@ -44,11 +44,13 @@ class SampleAppIntegrationTest {
   void testSample(CapturedOutput capturedOutput) throws Exception {
 
     SpringApplicationBuilder sender =
-        new SpringApplicationBuilder(SenderApplication.class).properties("server.port=8082");
+        new SpringApplicationBuilder(SampleTestConfiguration.class, SenderApplication.class)
+            .properties("server.port=8082", "spring.config.name:application-test");
     sender.run();
 
     SpringApplicationBuilder receiver =
-        new SpringApplicationBuilder(ReceiverApplication.class).properties("server.port=8081");
+        new SpringApplicationBuilder(SampleTestConfiguration.class, ReceiverApplication.class)
+            .properties("server.port=8081", "spring.config.name:application-test");
     receiver.run();
 
     MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
