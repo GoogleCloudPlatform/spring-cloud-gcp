@@ -14,6 +14,33 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.7.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.6.3...v3.7.0) (2023-09-20)
+
+
+### Features
+
+* **3.x:** add support for Firestore database id configuration ([#2184](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2184)) ([0c4ff8c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0c4ff8c4a2d093f45e0c200cfbac4e18f7d7067a))
+
+
+### Bug Fixes
+
+* **3.x:** Ensure proper merging of Binder default props [#2179](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2179)) ([27150e7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/27150e76db681902c25390a7ff0b2c1d6be61ccd))
+* Firestore updateTime extraction after commit ([#2168](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2168)) ([46ab69d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/46ab69d2fc3d6f4a73c52053ef47e74ccb3d1493))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.13.1 to 1.14.0 ([#2162](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2162)) ([354ccf3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/354ccf3c98446825890db4756ee94a3e585940a1))
+* bump com.google.cloud:libraries-bom from 26.22.0 to 26.23.0 ([#2167](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2167)) ([2d809bb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2d809bb518db33b52dad34a04d9e00644ca38aee))
+* bump io.asyncer:r2dbc-mysql from 0.9.3 to 0.9.4 ([#2180](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2180)) ([200d4a0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/200d4a03f6f84ce3f250cb83116d7a4dc0679bea))
+* bump java-cfenv.version from 2.4.2 to 2.5.0 ([#2130](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2130)) ([23e2f44](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/23e2f447588c7fb84aa7715ff5d47e6c5e6bd98d))
+* bump org.apache.maven.plugins:maven-enforcer-plugin ([#2156](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2156)) ([7406ca5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7406ca507653055b58c4b64167279eac7c49d9a0))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#2172](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2172)) ([d677538](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d67753804701937dfa175fccce49b47f6565f70a))
+* bump org.projectlombok:lombok from 1.18.28 to 1.18.30 ([#2187](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2187)) ([7708bec](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7708bec85510ed672139f8c4e0e8c743b7a34259))
+* bump org.springframework.boot:spring-boot-dependencies ([#2141](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2141)) ([b7d8aba](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b7d8abaed03dba41e52ace8fdd03bf1040f4230e))
+* bump org.springframework.boot:spring-boot-starter-parent ([#2140](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2140)) ([7160770](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7160770a9c9fc317a7b13ab59da44a5d28b2d2af))
+* bump org.testcontainers:testcontainers-bom from 1.18.3 to 1.19.0 ([#2132](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2132)) ([43d41db](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/43d41db58ff59b1094fd1f7f5532057e3bb6abd9))
+
 ## [3.6.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.6.2...v3.6.3) (2023-08-10)
 
 
