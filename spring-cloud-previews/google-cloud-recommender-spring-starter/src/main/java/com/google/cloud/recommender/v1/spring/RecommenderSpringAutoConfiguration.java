@@ -189,6 +189,14 @@ public class RecommenderSpringAutoConfiguration {
           .getRecommendationSettings()
           .setRetrySettings(getRecommendationRetrySettings);
 
+      RetrySettings markRecommendationDismissedRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.markRecommendationDismissedSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .markRecommendationDismissedSettings()
+          .setRetrySettings(markRecommendationDismissedRetrySettings);
+
       RetrySettings markRecommendationClaimedRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.markRecommendationClaimedSettings().getRetrySettings(),
@@ -309,6 +317,20 @@ public class RecommenderSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getRecommendation from properties.");
+      }
+    }
+    Retry markRecommendationDismissedRetry = clientProperties.getMarkRecommendationDismissedRetry();
+    if (markRecommendationDismissedRetry != null) {
+      RetrySettings markRecommendationDismissedRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.markRecommendationDismissedSettings().getRetrySettings(),
+              markRecommendationDismissedRetry);
+      clientSettingsBuilder
+          .markRecommendationDismissedSettings()
+          .setRetrySettings(markRecommendationDismissedRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for markRecommendationDismissed from properties.");
       }
     }
     Retry markRecommendationClaimedRetry = clientProperties.getMarkRecommendationClaimedRetry();
