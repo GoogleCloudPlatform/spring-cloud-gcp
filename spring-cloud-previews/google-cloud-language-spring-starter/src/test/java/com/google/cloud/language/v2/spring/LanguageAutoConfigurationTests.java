@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.language.v1.spring;
+package com.google.cloud.language.v2.spring;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,8 +28,8 @@ import com.google.api.gax.rpc.TransportChannel;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.cloud.language.v1.LanguageServiceClient;
-import com.google.cloud.language.v1.LanguageServiceSettings;
+import com.google.cloud.language.v2.LanguageServiceClient;
+import com.google.cloud.language.v2.LanguageServiceSettings;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
@@ -79,7 +79,7 @@ class LanguageAutoConfigurationTests {
   void testCredentials_fromServicePropertiesIfSpecified() {
     this.contextRunner
         .withPropertyValues(
-            "com.google.cloud.language.v1.language-service.credentials.location=file:"
+            "com.google.cloud.language.v2.language-service.credentials.location=file:"
                 + SERVICE_CREDENTIAL_LOCATION)
         .run(
             ctx -> {
@@ -142,7 +142,7 @@ class LanguageAutoConfigurationTests {
   @Test
   void testCustomTransportChannelProviderSetToRest() {
     this.contextRunner
-        .withPropertyValues("com.google.cloud.language.v1.language-service.use-rest=true")
+        .withPropertyValues("com.google.cloud.language.v2.language-service.use-rest=true")
         .run(
             ctx -> {
               LanguageServiceClient client = ctx.getBean(LanguageServiceClient.class);
@@ -160,7 +160,7 @@ class LanguageAutoConfigurationTests {
   void testQuotaProjectIdFromProperties() {
     this.contextRunner
         .withPropertyValues(
-            "com.google.cloud.language.v1.language-service.quota-project-id="
+            "com.google.cloud.language.v2.language-service.quota-project-id="
                 + SERVICE_OVERRIDE_CLIENT_ID)
         .run(
             ctx -> {
@@ -175,7 +175,7 @@ class LanguageAutoConfigurationTests {
     Integer customExecutorThreadCount = 3;
     this.contextRunner
         .withPropertyValues(
-            "com.google.cloud.language.v1.language-service.executor-thread-count="
+            "com.google.cloud.language.v2.language-service.executor-thread-count="
                 + customExecutorThreadCount.toString())
         .run(
             ctx -> {
@@ -236,9 +236,9 @@ class LanguageAutoConfigurationTests {
     Duration defaultDurationExpected = Duration.ofMillis(100);
     this.contextRunner
         .withPropertyValues(
-            "com.google.cloud.language.v1.language-service.retry.retry-delay-multiplier="
+            "com.google.cloud.language.v2.language-service.retry.retry-delay-multiplier="
                 + customMultiplier.toString(),
-            "com.google.cloud.language.v1.language-service.retry.max-retry-delay="
+            "com.google.cloud.language.v2.language-service.retry.max-retry-delay="
                 + customDurationString)
         .run(
             ctx -> {
@@ -266,11 +266,11 @@ class LanguageAutoConfigurationTests {
     Duration defaultDurationExpected = Duration.ofMillis(100);
     this.contextRunner
         .withPropertyValues(
-            "com.google.cloud.language.v1.language-service.retry.retry-delay-multiplier="
+            "com.google.cloud.language.v2.language-service.retry.retry-delay-multiplier="
                 + customServiceMultiplier.toString(),
-            "com.google.cloud.language.v1.language-service.retry.max-retry-delay="
+            "com.google.cloud.language.v2.language-service.retry.max-retry-delay="
                 + customDurationString,
-            "com.google.cloud.language.v1.language-service.annotate-text-retry.retry-delay-multiplier="
+            "com.google.cloud.language.v2.language-service.annotate-text-retry.retry-delay-multiplier="
                 + customMethodMultiplier.toString())
         .run(
             ctx -> {
@@ -306,38 +306,38 @@ class LanguageAutoConfigurationTests {
     this.contextRunner
         .withPropertyValues(
             // service-level, all configurable settings
-            "com.google.cloud.language.v1.language-service.retry.retry-delay-multiplier="
+            "com.google.cloud.language.v2.language-service.retry.retry-delay-multiplier="
                 + customServiceMultiplier.toString(),
-            "com.google.cloud.language.v1.language-service.retry.rpc-timeout-multiplier="
+            "com.google.cloud.language.v2.language-service.retry.rpc-timeout-multiplier="
                 + customServiceMultiplier.toString(),
-            "com.google.cloud.language.v1.language-service.retry.initial-retry-delay="
+            "com.google.cloud.language.v2.language-service.retry.initial-retry-delay="
                 + customServiceDurationString,
-            "com.google.cloud.language.v1.language-service.retry.max-retry-delay="
+            "com.google.cloud.language.v2.language-service.retry.max-retry-delay="
                 + customServiceDurationString,
-            "com.google.cloud.language.v1.language-service.retry.initial-rpc-timeout="
+            "com.google.cloud.language.v2.language-service.retry.initial-rpc-timeout="
                 + customServiceDurationString,
-            "com.google.cloud.language.v1.language-service.retry.max-rpc-timeout="
+            "com.google.cloud.language.v2.language-service.retry.max-rpc-timeout="
                 + customServiceDurationString,
-            "com.google.cloud.language.v1.language-service.retry.total-timeout="
+            "com.google.cloud.language.v2.language-service.retry.total-timeout="
                 + customServiceDurationString,
-            "com.google.cloud.language.v1.language-service.retry.max-attempts="
+            "com.google.cloud.language.v2.language-service.retry.max-attempts="
                 + customServiceMaxAttempts.toString(),
             // method-level, all configurable settings
-            "com.google.cloud.language.v1.language-service.annotate-text-retry.retry-delay-multiplier="
+            "com.google.cloud.language.v2.language-service.annotate-text-retry.retry-delay-multiplier="
                 + customMethodMultiplier.toString(),
-            "com.google.cloud.language.v1.language-service.annotate-text-retry.rpc-timeout-multiplier="
+            "com.google.cloud.language.v2.language-service.annotate-text-retry.rpc-timeout-multiplier="
                 + customMethodMultiplier.toString(),
-            "com.google.cloud.language.v1.language-service.annotate-text-retry.initial-retry-delay="
+            "com.google.cloud.language.v2.language-service.annotate-text-retry.initial-retry-delay="
                 + customMethodDurationString,
-            "com.google.cloud.language.v1.language-service.annotate-text-retry.max-retry-delay="
+            "com.google.cloud.language.v2.language-service.annotate-text-retry.max-retry-delay="
                 + customMethodDurationString,
-            "com.google.cloud.language.v1.language-service.annotate-text-retry.initial-rpc-timeout="
+            "com.google.cloud.language.v2.language-service.annotate-text-retry.initial-rpc-timeout="
                 + customMethodDurationString,
-            "com.google.cloud.language.v1.language-service.annotate-text-retry.max-rpc-timeout="
+            "com.google.cloud.language.v2.language-service.annotate-text-retry.max-rpc-timeout="
                 + customMethodDurationString,
-            "com.google.cloud.language.v1.language-service.annotate-text-retry.total-timeout="
+            "com.google.cloud.language.v2.language-service.annotate-text-retry.total-timeout="
                 + customMethodDurationString,
-            "com.google.cloud.language.v1.language-service.annotate-text-retry.max-attempts="
+            "com.google.cloud.language.v2.language-service.annotate-text-retry.max-attempts="
                 + customMethodMaxAttempts.toString())
         .run(
             ctx -> {
@@ -393,17 +393,17 @@ class LanguageAutoConfigurationTests {
     this.contextRunner
         .withPropertyValues(
             // configure total timeout on method-level
-            "com.google.cloud.language.v1.language-service.analyze-sentiment-retry.total-timeout="
+            "com.google.cloud.language.v2.language-service.analyze-sentiment-retry.total-timeout="
                 + customTimeoutString,
-            "com.google.cloud.language.v1.language-service.analyze-entities-retry.total-timeout="
+            "com.google.cloud.language.v2.language-service.analyze-entities-retry.total-timeout="
                 + customTimeoutString,
-            "com.google.cloud.language.v1.language-service.analyze-entity-sentiment-retry.total-timeout="
+            "com.google.cloud.language.v2.language-service.analyze-entity-sentiment-retry.total-timeout="
                 + customTimeoutString,
-            "com.google.cloud.language.v1.language-service.analyze-syntax-retry.total-timeout="
+            "com.google.cloud.language.v2.language-service.analyze-syntax-retry.total-timeout="
                 + customTimeoutString,
-            "com.google.cloud.language.v1.language-service.classify-text-retry.total-timeout="
+            "com.google.cloud.language.v2.language-service.classify-text-retry.total-timeout="
                 + customTimeoutString,
-            "com.google.cloud.language.v1.language-service.annotate-text-retry.total-timeout="
+            "com.google.cloud.language.v2.language-service.annotate-text-retry.total-timeout="
                 + customTimeoutString)
         .run(
             ctx -> {
