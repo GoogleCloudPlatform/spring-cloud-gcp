@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.notebooks.v1.spring;
+package com.google.cloud.notebooks.v2.spring;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.CredentialsProvider;
@@ -22,8 +22,8 @@ import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
-import com.google.cloud.notebooks.v1.NotebookServiceClient;
-import com.google.cloud.notebooks.v1.NotebookServiceSettings;
+import com.google.cloud.notebooks.v2.NotebookServiceClient;
+import com.google.cloud.notebooks.v2.NotebookServiceSettings;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.Retry;
@@ -62,7 +62,7 @@ import org.springframework.context.annotation.Bean;
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)
 @ConditionalOnClass(NotebookServiceClient.class)
 @ConditionalOnProperty(
-    value = "com.google.cloud.notebooks.v1.notebook-service.enabled",
+    value = "com.google.cloud.notebooks.v2.notebook-service.enabled",
     matchIfMissing = true)
 @EnableConfigurationProperties(NotebookServiceSpringProperties.class)
 public class NotebookServiceSpringAutoConfiguration {
@@ -96,6 +96,9 @@ public class NotebookServiceSpringAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean(name = "defaultNotebookServiceTransportChannelProvider")
   public TransportChannelProvider defaultNotebookServiceTransportChannelProvider() {
+    if (this.clientProperties.getUseRest()) {
+      return NotebookServiceSettings.defaultHttpJsonTransportProviderBuilder().build();
+    }
     return NotebookServiceSettings.defaultTransportChannelProvider();
   }
 
@@ -120,7 +123,15 @@ public class NotebookServiceSpringAutoConfiguration {
       @Qualifier("defaultNotebookServiceTransportChannelProvider")
           TransportChannelProvider defaultTransportChannelProvider)
       throws IOException {
-    NotebookServiceSettings.Builder clientSettingsBuilder = NotebookServiceSettings.newBuilder();
+    NotebookServiceSettings.Builder clientSettingsBuilder;
+    if (this.clientProperties.getUseRest()) {
+      clientSettingsBuilder = NotebookServiceSettings.newHttpJsonBuilder();
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Using REST (HTTP/JSON) transport.");
+      }
+    } else {
+      clientSettingsBuilder = NotebookServiceSettings.newBuilder();
+    }
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)
@@ -158,60 +169,13 @@ public class NotebookServiceSpringAutoConfiguration {
               clientSettingsBuilder.getInstanceSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getInstanceSettings().setRetrySettings(getInstanceRetrySettings);
 
-      RetrySettings updateInstanceMetadataItemsRetrySettings =
+      RetrySettings checkInstanceUpgradabilityRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateInstanceMetadataItemsSettings().getRetrySettings(),
+              clientSettingsBuilder.checkInstanceUpgradabilitySettings().getRetrySettings(),
               serviceRetry);
       clientSettingsBuilder
-          .updateInstanceMetadataItemsSettings()
-          .setRetrySettings(updateInstanceMetadataItemsRetrySettings);
-
-      RetrySettings isInstanceUpgradeableRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.isInstanceUpgradeableSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .isInstanceUpgradeableSettings()
-          .setRetrySettings(isInstanceUpgradeableRetrySettings);
-
-      RetrySettings getInstanceHealthRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getInstanceHealthSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .getInstanceHealthSettings()
-          .setRetrySettings(getInstanceHealthRetrySettings);
-
-      RetrySettings listEnvironmentsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listEnvironmentsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .listEnvironmentsSettings()
-          .setRetrySettings(listEnvironmentsRetrySettings);
-
-      RetrySettings getEnvironmentRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getEnvironmentSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.getEnvironmentSettings().setRetrySettings(getEnvironmentRetrySettings);
-
-      RetrySettings listSchedulesRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listSchedulesSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.listSchedulesSettings().setRetrySettings(listSchedulesRetrySettings);
-
-      RetrySettings getScheduleRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getScheduleSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.getScheduleSettings().setRetrySettings(getScheduleRetrySettings);
-
-      RetrySettings listExecutionsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listExecutionsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.listExecutionsSettings().setRetrySettings(listExecutionsRetrySettings);
-
-      RetrySettings getExecutionRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getExecutionSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.getExecutionSettings().setRetrySettings(getExecutionRetrySettings);
+          .checkInstanceUpgradabilitySettings()
+          .setRetrySettings(checkInstanceUpgradabilityRetrySettings);
 
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -264,112 +228,18 @@ public class NotebookServiceSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for getInstance from properties.");
       }
     }
-    Retry updateInstanceMetadataItemsRetry = clientProperties.getUpdateInstanceMetadataItemsRetry();
-    if (updateInstanceMetadataItemsRetry != null) {
-      RetrySettings updateInstanceMetadataItemsRetrySettings =
+    Retry checkInstanceUpgradabilityRetry = clientProperties.getCheckInstanceUpgradabilityRetry();
+    if (checkInstanceUpgradabilityRetry != null) {
+      RetrySettings checkInstanceUpgradabilityRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateInstanceMetadataItemsSettings().getRetrySettings(),
-              updateInstanceMetadataItemsRetry);
+              clientSettingsBuilder.checkInstanceUpgradabilitySettings().getRetrySettings(),
+              checkInstanceUpgradabilityRetry);
       clientSettingsBuilder
-          .updateInstanceMetadataItemsSettings()
-          .setRetrySettings(updateInstanceMetadataItemsRetrySettings);
+          .checkInstanceUpgradabilitySettings()
+          .setRetrySettings(checkInstanceUpgradabilityRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
-            "Configured method-level retry settings for updateInstanceMetadataItems from properties.");
-      }
-    }
-    Retry isInstanceUpgradeableRetry = clientProperties.getIsInstanceUpgradeableRetry();
-    if (isInstanceUpgradeableRetry != null) {
-      RetrySettings isInstanceUpgradeableRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.isInstanceUpgradeableSettings().getRetrySettings(),
-              isInstanceUpgradeableRetry);
-      clientSettingsBuilder
-          .isInstanceUpgradeableSettings()
-          .setRetrySettings(isInstanceUpgradeableRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for isInstanceUpgradeable from properties.");
-      }
-    }
-    Retry getInstanceHealthRetry = clientProperties.getGetInstanceHealthRetry();
-    if (getInstanceHealthRetry != null) {
-      RetrySettings getInstanceHealthRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getInstanceHealthSettings().getRetrySettings(),
-              getInstanceHealthRetry);
-      clientSettingsBuilder
-          .getInstanceHealthSettings()
-          .setRetrySettings(getInstanceHealthRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for getInstanceHealth from properties.");
-      }
-    }
-    Retry listEnvironmentsRetry = clientProperties.getListEnvironmentsRetry();
-    if (listEnvironmentsRetry != null) {
-      RetrySettings listEnvironmentsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listEnvironmentsSettings().getRetrySettings(),
-              listEnvironmentsRetry);
-      clientSettingsBuilder
-          .listEnvironmentsSettings()
-          .setRetrySettings(listEnvironmentsRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for listEnvironments from properties.");
-      }
-    }
-    Retry getEnvironmentRetry = clientProperties.getGetEnvironmentRetry();
-    if (getEnvironmentRetry != null) {
-      RetrySettings getEnvironmentRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getEnvironmentSettings().getRetrySettings(),
-              getEnvironmentRetry);
-      clientSettingsBuilder.getEnvironmentSettings().setRetrySettings(getEnvironmentRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for getEnvironment from properties.");
-      }
-    }
-    Retry listSchedulesRetry = clientProperties.getListSchedulesRetry();
-    if (listSchedulesRetry != null) {
-      RetrySettings listSchedulesRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listSchedulesSettings().getRetrySettings(), listSchedulesRetry);
-      clientSettingsBuilder.listSchedulesSettings().setRetrySettings(listSchedulesRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for listSchedules from properties.");
-      }
-    }
-    Retry getScheduleRetry = clientProperties.getGetScheduleRetry();
-    if (getScheduleRetry != null) {
-      RetrySettings getScheduleRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getScheduleSettings().getRetrySettings(), getScheduleRetry);
-      clientSettingsBuilder.getScheduleSettings().setRetrySettings(getScheduleRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for getSchedule from properties.");
-      }
-    }
-    Retry listExecutionsRetry = clientProperties.getListExecutionsRetry();
-    if (listExecutionsRetry != null) {
-      RetrySettings listExecutionsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listExecutionsSettings().getRetrySettings(),
-              listExecutionsRetry);
-      clientSettingsBuilder.listExecutionsSettings().setRetrySettings(listExecutionsRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for listExecutions from properties.");
-      }
-    }
-    Retry getExecutionRetry = clientProperties.getGetExecutionRetry();
-    if (getExecutionRetry != null) {
-      RetrySettings getExecutionRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getExecutionSettings().getRetrySettings(), getExecutionRetry);
-      clientSettingsBuilder.getExecutionSettings().setRetrySettings(getExecutionRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for getExecution from properties.");
+            "Configured method-level retry settings for checkInstanceUpgradability from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

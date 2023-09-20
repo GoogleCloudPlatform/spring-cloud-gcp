@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.language.v1.spring;
+package com.google.cloud.language.v2.spring;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.CredentialsProvider;
@@ -22,8 +22,8 @@ import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
-import com.google.cloud.language.v1.LanguageServiceClient;
-import com.google.cloud.language.v1.LanguageServiceSettings;
+import com.google.cloud.language.v2.LanguageServiceClient;
+import com.google.cloud.language.v2.LanguageServiceSettings;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.Retry;
@@ -62,7 +62,7 @@ import org.springframework.context.annotation.Bean;
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)
 @ConditionalOnClass(LanguageServiceClient.class)
 @ConditionalOnProperty(
-    value = "com.google.cloud.language.v1.language-service.enabled",
+    value = "com.google.cloud.language.v2.language-service.enabled",
     matchIfMissing = true)
 @EnableConfigurationProperties(LanguageServiceSpringProperties.class)
 public class LanguageServiceSpringAutoConfiguration {
@@ -173,19 +173,6 @@ public class LanguageServiceSpringAutoConfiguration {
           .analyzeEntitiesSettings()
           .setRetrySettings(analyzeEntitiesRetrySettings);
 
-      RetrySettings analyzeEntitySentimentRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.analyzeEntitySentimentSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .analyzeEntitySentimentSettings()
-          .setRetrySettings(analyzeEntitySentimentRetrySettings);
-
-      RetrySettings analyzeSyntaxRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.analyzeSyntaxSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.analyzeSyntaxSettings().setRetrySettings(analyzeSyntaxRetrySettings);
-
       RetrySettings classifyTextRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.classifyTextSettings().getRetrySettings(), serviceRetry);
@@ -230,30 +217,6 @@ public class LanguageServiceSpringAutoConfiguration {
           .setRetrySettings(analyzeEntitiesRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for analyzeEntities from properties.");
-      }
-    }
-    Retry analyzeEntitySentimentRetry = clientProperties.getAnalyzeEntitySentimentRetry();
-    if (analyzeEntitySentimentRetry != null) {
-      RetrySettings analyzeEntitySentimentRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.analyzeEntitySentimentSettings().getRetrySettings(),
-              analyzeEntitySentimentRetry);
-      clientSettingsBuilder
-          .analyzeEntitySentimentSettings()
-          .setRetrySettings(analyzeEntitySentimentRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for analyzeEntitySentiment from properties.");
-      }
-    }
-    Retry analyzeSyntaxRetry = clientProperties.getAnalyzeSyntaxRetry();
-    if (analyzeSyntaxRetry != null) {
-      RetrySettings analyzeSyntaxRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.analyzeSyntaxSettings().getRetrySettings(), analyzeSyntaxRetry);
-      clientSettingsBuilder.analyzeSyntaxSettings().setRetrySettings(analyzeSyntaxRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for analyzeSyntax from properties.");
       }
     }
     Retry classifyTextRetry = clientProperties.getClassifyTextRetry();
