@@ -108,6 +108,7 @@ jobs:
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
             --define "spring.datasource.password=${DB_PASSWORD}" \
+            --define "spring.r2dbc.password=${DB_PASSWORD}" \
             --define it.${{ matrix.it }}=true \
             verify
         env:
@@ -122,6 +123,7 @@ jobs:
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
             --define "spring.datasource.password=${DB_PASSWORD}" \
+            --define "spring.r2dbc.password=${DB_PASSWORD}" \
             --define it.${{ matrix.it }}=true \
             verify
         env:

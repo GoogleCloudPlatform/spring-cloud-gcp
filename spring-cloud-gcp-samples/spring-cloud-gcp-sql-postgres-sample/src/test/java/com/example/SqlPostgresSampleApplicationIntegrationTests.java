@@ -44,7 +44,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
       "spring.cloud.gcp.sql.database-name=code_samples_test_db",
       "spring.cloud.gcp.sql.instance-connection-name=spring-cloud-gcp-ci:us-central1:testpostgres",
       "spring.datasource.username=postgres",
-      "spring.datasource.password=test",
       "spring.datasource.continue-on-error=true",
       "spring.sql.init.mode=always"
     })
