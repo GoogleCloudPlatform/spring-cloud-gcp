@@ -399,8 +399,6 @@ class LanguageAutoConfigurationTests {
                 + customTimeoutString,
             "com.google.cloud.language.v2.language-service.analyze-entity-sentiment-retry.total-timeout="
                 + customTimeoutString,
-            "com.google.cloud.language.v2.language-service.analyze-syntax-retry.total-timeout="
-                + customTimeoutString,
             "com.google.cloud.language.v2.language-service.classify-text-retry.total-timeout="
                 + customTimeoutString,
             "com.google.cloud.language.v2.language-service.annotate-text-retry.total-timeout="
@@ -417,11 +415,9 @@ class LanguageAutoConfigurationTests {
                   .isEqualTo(customTimeoutDuration);
               assertThat(
                       settings
-                          .analyzeEntitySentimentSettings()
+                          .analyzeSentimentSettings()
                           .getRetrySettings()
                           .getTotalTimeout())
-                  .isEqualTo(customTimeoutDuration);
-              assertThat(settings.analyzeSyntaxSettings().getRetrySettings().getTotalTimeout())
                   .isEqualTo(customTimeoutDuration);
               assertThat(settings.classifyTextSettings().getRetrySettings().getTotalTimeout())
                   .isEqualTo(customTimeoutDuration);
