@@ -59,7 +59,7 @@ public class GcpFirestoreEmulatorAutoConfiguration {
   GcpFirestoreEmulatorAutoConfiguration(GcpFirestoreProperties properties) {
     this.hostPort = properties.getHostPort();
     this.projectId = StringUtils.defaultIfEmpty(properties.getProjectId(), "unused");
-    this.rootPath = String.format("projects/%s/databases/(default)", this.projectId);
+    this.rootPath = properties.getFirestoreRootPath(() -> projectId);
   }
 
   @Bean

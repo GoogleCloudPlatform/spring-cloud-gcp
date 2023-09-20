@@ -16,9 +16,11 @@
 
 package com.google.cloud.spring.autoconfigure.firestore;
 
+import com.google.api.client.util.escape.PercentEscaper;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.rpc.internal.Headers;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
@@ -30,9 +32,12 @@ import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.firestore.v1.FirestoreGrpc;
+import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Metadata;
 import io.grpc.auth.MoreCallCredentials;
+import io.grpc.stub.MetadataUtils;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -59,7 +64,11 @@ public class GcpFirestoreAutoConfiguration {
   private static final UserAgentHeaderProvider USER_AGENT_HEADER_PROVIDER =
       new UserAgentHeaderProvider(GcpFirestoreAutoConfiguration.class);
 
+  private static final PercentEscaper PERCENT_ESCAPER = new PercentEscaper("._-~");
+
   private final String projectId;
+
+  private final String databaseId;
 
   private final CredentialsProvider credentialsProvider;
 
@@ -74,6 +83,7 @@ public class GcpFirestoreAutoConfiguration {
       throws IOException {
 
     this.projectId = gcpFirestoreProperties.getResolvedProjectId(projectIdProvider);
+    this.databaseId = gcpFirestoreProperties.getResolvedDatabaseId();
 
     if (gcpFirestoreProperties.getEmulator().isEnabled()) {
       // if the emulator is enabled, create CredentialsProvider for this particular case.
@@ -95,6 +105,7 @@ public class GcpFirestoreAutoConfiguration {
     return FirestoreOptions.getDefaultInstance().toBuilder()
         .setCredentialsProvider(this.credentialsProvider)
         .setProjectId(this.projectId)
+        .setDatabaseId(databaseId)
         .setHeaderProvider(USER_AGENT_HEADER_PROVIDER)
         .setChannelProvider(
             InstantiatingGrpcChannelProvider.newBuilder().setEndpoint(this.hostPort).build())
@@ -151,11 +162,26 @@ public class GcpFirestoreAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean(name = "firestoreRoutingHeadersInterceptor")
+    public ClientInterceptor firestoreRoutingHeadersInterceptor() {
+      // add routing header for custom database id
+      Metadata routingHeader = new Metadata();
+      Metadata.Key<String> key =
+          Metadata.Key.of(Headers.DYNAMIC_ROUTING_HEADER_KEY, Metadata.ASCII_STRING_MARSHALLER);
+      routingHeader.put(key,
+          "project_id=" + PERCENT_ESCAPER.escape(projectId)
+              + "&database_id=" + PERCENT_ESCAPER.escape(databaseId));
+      return MetadataUtils.newAttachHeadersInterceptor(routingHeader);
+    }
+
+    @Bean
     @ConditionalOnMissingBean(name = "firestoreManagedChannel")
-    public ManagedChannel firestoreManagedChannel() {
+    public ManagedChannel firestoreManagedChannel(
+        ClientInterceptor firestoreRoutingHeadersInterceptor) {
       return ManagedChannelBuilder.forTarget(
               "dns:///" + GcpFirestoreAutoConfiguration.this.hostPort)
           .userAgent(USER_AGENT_HEADER_PROVIDER.getUserAgent())
+          .intercept(firestoreRoutingHeadersInterceptor)
           .build();
     }
   }
