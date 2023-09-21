@@ -117,12 +117,12 @@ jobs:
         id: intTest3
         continue-on-error: true
         run: |
-          MODULE_UNDER_TEST="${{ matrix.repo }}" ./.github/workflows/scripts/native-image-tests.sh
+          MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Retry on Failure
         id: intTest4
         if: steps.intTest3.outcome == 'failure'
         run: |
-          MODULE_UNDER_TEST="${{ matrix.repo }}" ./.github/workflows/scripts/native-image-tests.sh
+          MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Aggregate Report
         run: |
           ./mvnw \
