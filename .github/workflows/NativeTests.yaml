@@ -26,6 +26,9 @@ jobs:
           - logging
           - vision
           - trace
+        sample:
+          - logging
+          - storage
     steps:
       - name: Get current date
         id: date
@@ -117,7 +120,7 @@ jobs:
         id: intTest3
         continue-on-error: true
         run: |
-          MODULE_UNDER_TEST="${{ matrix.repo }}" ./scripts/native-image-tests.sh
+          MODULE_UNDER_TEST="${{ matrix.repo }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Retry on Failure
         id: intTest4
         if: steps.intTest3.outcome == 'failure'
