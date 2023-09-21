@@ -25,6 +25,7 @@ jobs:
         it:
           - logging
           - vision
+          - trace
     steps:
       - name: Get current date
         id: date
@@ -115,7 +116,7 @@ jobs:
         id: intTest3
         continue-on-error: true
         run: |
-          MODULE_UNDER_TEST=${matrix.it} bash scripts/native-image-tests.sh
+          MODULE_UNDER_TEST="${{ matrix.repo }}" ./scripts/native-image-tests.sh
       - name: Retry on Failure
         id: intTest4
         if: steps.intTest3.outcome == 'failure'
