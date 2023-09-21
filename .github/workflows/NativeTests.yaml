@@ -23,11 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         it:
-          - logging
           - vision
-          - trace
-        sample:
-          - logging
+          - spanner
           - storage
     steps:
       - name: Get current date
@@ -125,11 +122,7 @@ jobs:
         id: intTest4
         if: steps.intTest3.outcome == 'failure'
         run: |
-          ./mvnw \
-            --batch-mode \
-            --activate-profiles spring-native,\!default \
-            --define maven.javadoc.skip=true \
-            test
+          MODULE_UNDER_TEST="${{ matrix.repo }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Aggregate Report
         run: |
           ./mvnw \
