@@ -13,7 +13,7 @@
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>4.7.1</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.7.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -91,6 +91,8 @@
 			<id>native-sample-config</id>
 			<modules>
 				<module>spring-cloud-gcp-logging-sample</module>
+				<module>spring-cloud-gcp-storage-resource-sample</module>
+				<module>spring-cloud-gcp-integration-storage-sample</module>
 				<module>spring-cloud-gcp-trace-sample</module>
 				<module>spring-cloud-gcp-vision-api-sample</module>
 			</modules>
@@ -137,6 +139,11 @@
 								<it.logging>${it.logging}</it.logging>
 								<it.vision>${it.vision}</it.vision>
 								<it.trace>${it.trace}</it.trace>
+								<it.storage>${it.storage}</it.storage>
+                <gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
+								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
+								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
+								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>

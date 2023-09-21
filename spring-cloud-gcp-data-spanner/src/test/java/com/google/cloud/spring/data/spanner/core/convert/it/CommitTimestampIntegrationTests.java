@@ -26,6 +26,7 @@ import static org.springframework.util.ReflectionUtils.setField;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.Key;
+import com.google.cloud.spring.data.spanner.aot.CommitTimestampsRuntimeHints;
 import com.google.cloud.spring.data.spanner.core.SpannerMutationFactory;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.convert.CommitTimestamp;
@@ -40,12 +41,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Integration tests for the {@link CommitTimestamp} feature. */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
+@ImportRuntimeHints(CommitTimestampsRuntimeHints.class)
 class CommitTimestampIntegrationTests extends AbstractSpannerIntegrationTest {
 
   @Autowired private SpannerOperations spannerOperations;

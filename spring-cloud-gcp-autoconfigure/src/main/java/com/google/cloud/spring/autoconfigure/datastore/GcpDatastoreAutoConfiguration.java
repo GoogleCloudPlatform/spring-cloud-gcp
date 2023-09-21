@@ -70,6 +70,8 @@ public class GcpDatastoreAutoConfiguration {
 
   private final String namespace;
 
+  private final String databaseId;
+
   private final Credentials credentials;
 
   private final String host;
@@ -85,6 +87,7 @@ public class GcpDatastoreAutoConfiguration {
             ? gcpDatastoreProperties.getProjectId()
             : projectIdProvider.getProjectId();
     this.namespace = gcpDatastoreProperties.getNamespace();
+    this.databaseId = gcpDatastoreProperties.getDatabaseId();
 
     String hostToConnect = gcpDatastoreProperties.getHost();
     if (gcpDatastoreProperties.getEmulator().isEnabled()) {
@@ -191,6 +194,10 @@ public class GcpDatastoreAutoConfiguration {
             .setCredentials(this.credentials);
     if (namespace != null) {
       builder.setNamespace(namespace);
+    }
+
+    if (databaseId != null) {
+      builder.setDatabaseId(databaseId);
     }
 
     if (this.host != null) {

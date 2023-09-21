@@ -62,6 +62,7 @@ class GcpDatastoreAutoConfigurationTests {
           .withUserConfiguration(TestConfiguration.class)
           .withPropertyValues(
               "spring.cloud.gcp.datastore.project-id=test-project",
+              "spring.cloud.gcp.datastore.database-id=test-database",
               "spring.cloud.gcp.datastore.namespace=testNamespace",
               "spring.cloud.gcp.datastore.host=localhost:8081",
               "management.health.datastore.enabled=false");
@@ -74,6 +75,7 @@ class GcpDatastoreAutoConfigurationTests {
             .withUserConfiguration(TestConfigurationWithDatastoreBean.class)
             .withPropertyValues(
                 "spring.cloud.gcp.datastore.project-id=test-project",
+                "spring.cloud.gcp.datastore.database-id=test-database",
                 "spring.cloud.gcp.datastore.namespace=testNamespace",
                 "spring.cloud.gcp.datastore.host=localhost:8081",
                 "management.health.datastore.enabled=false");
@@ -94,6 +96,7 @@ class GcpDatastoreAutoConfigurationTests {
             .withUserConfiguration(TestConfigurationWithDatastoreBeanNamespaceProvider.class)
             .withPropertyValues(
                 "spring.cloud.gcp.datastore.project-id=test-project",
+                "spring.cloud.gcp.datastore.database-id=test-database",
                 "spring.cloud.gcp.datastore.namespace=testNamespace",
                 "spring.cloud.gcp.datastore.host=localhost:8081",
                 "management.health.datastore.enabled=false");
@@ -114,6 +117,7 @@ class GcpDatastoreAutoConfigurationTests {
         context -> {
           DatastoreOptions datastoreOptions = getDatastoreBean(context).getOptions();
           assertThat(datastoreOptions.getProjectId()).isEqualTo("test-project");
+          assertThat(datastoreOptions.getDatabaseId()).isEqualTo("test-database");
           assertThat(datastoreOptions.getNamespace()).isEqualTo("testNamespace");
           assertThat(datastoreOptions.getHost()).isEqualTo("localhost:8081");
         });
