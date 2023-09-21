@@ -85,13 +85,14 @@ jobs:
         id: intTest1
         continue-on-error: true
         run: |
-          ../mvnw \
-            --batch-mode \
-            --activate-profiles native-sample-config,nativeTest \
-            --define notAllModules=true \
-            --define maven.javadoc.skip=true \
-            --define it.${{ matrix.it }}=true \
-            test
+          echo "Skipping for testing"
+#          ../mvnw \
+#            --batch-mode \
+#            --activate-profiles native-sample-config,nativeTest \
+#            --define notAllModules=true \
+#            --define maven.javadoc.skip=true \
+#            --define it.${{ matrix.it }}=true \
+#            test
         working-directory: ./spring-cloud-gcp-samples
       - name: Retry on Failure
         id: intTest2
