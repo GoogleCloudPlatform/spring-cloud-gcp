@@ -26,6 +26,10 @@ jobs:
           - vision
           - spanner
           - storage
+          - logging-sample
+          - storage-sample
+          - trace-sample
+          - vision-sample
     steps:
       - name: Get current date
         id: date
