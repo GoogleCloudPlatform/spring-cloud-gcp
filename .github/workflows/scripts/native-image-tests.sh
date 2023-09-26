@@ -1,7 +1,5 @@
 #!/bin/bash
 
-MODULE_UNDER_TEST=storage-sample
-
 # Get directory of script
 scriptDir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 
