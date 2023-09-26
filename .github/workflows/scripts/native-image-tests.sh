@@ -2,22 +2,24 @@
 
 MODULE_UNDER_TEST=storage-sample
 
+# Get directory of script
+scriptDir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
+
+cd "${scriptDir}/../../.." # git repo root
+
 run_sample_tests () {
    module_name=$(echo "$MODULE_UNDER_TEST" | cut -d '-' -f 1)
-    echo "${module_name}"
-    directory_names=$(ls spring-cloud-gcp-samples)
+    directory_names=$(ls 'spring-cloud-gcp-samples')
     module_samples=()
     for dir in $directory_names; do
       if [[ $dir =~ $module_name ]]; then
-        module_samples+=("$dir")
-        echo $dir
+        module_samples+=("spring-cloud-gcp-samples/$dir")
       fi
     done
 
-    joined_sample_names=$(echo "${module_samples[@]// /,}" | sed 's/ /,/g')
-    project_names="spring-cloud-gcp-samples:${joined_sample_names}"
-
-    mvn --batch-mode --activate-profiles native-sample-config,nativeTest --define notAllModules=true --define maven.javadoc.skip=true test
+    joined_sample_names=$(echo "${module_samples[@]}" | sed 's/ /,/g')
+    project_names="${joined_sample_names}"
+    mvn clean --activate-profiles native-sample-config,nativeTest --define notAllModules=true --define maven.javadoc.skip=true -pl="${project_names}" test
 }
 
 run_module_tests() {

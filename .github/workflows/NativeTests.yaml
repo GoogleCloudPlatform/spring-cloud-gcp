@@ -89,25 +89,13 @@ jobs:
         id: intTest1
         continue-on-error: true
         run: |
-          echo "Skipping for testing"
-#          ../mvnw \
-#            --batch-mode \
-#            --activate-profiles native-sample-config,nativeTest \
-#            --define notAllModules=true \
-#            --define maven.javadoc.skip=true \
-#            --define it.${{ matrix.it }}=true \
-#            test
+          MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
         working-directory: ./spring-cloud-gcp-samples
       - name: Retry on Failure
         id: intTest2
         if: steps.intTest1.outcome == 'failure'
         run: |
-          ../mvnw \
-            --batch-mode \
-            --activate-profiles native-sample-config,nativeTest \
-            --define notAllModules=true \
-            --define maven.javadoc.skip=true \
-            test
+          MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
         working-directory: ./spring-cloud-gcp-samples
       - name: Aggregate Report
         run: |
