@@ -90,7 +90,6 @@ jobs:
         continue-on-error: true
         run: |
           MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
-        working-directory: ./spring-cloud-gcp-samples
       - name: Retry on Failure
         id: intTest2
         if: steps.intTest1.outcome == 'failure'
