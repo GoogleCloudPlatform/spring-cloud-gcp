@@ -103,7 +103,6 @@ jobs:
             --define aggregate=true \
             --activate-profiles native-sample-config \
           surefire-report:report-only
-        working-directory: ./spring-cloud-gcp-samples
       - name: Native Tests in Modules
         id: intTest3
         continue-on-error: true
