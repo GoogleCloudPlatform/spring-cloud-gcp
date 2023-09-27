@@ -13,14 +13,14 @@ scriptDir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 cd "${scriptDir}/../../.."
 
 run_sample_tests () {
-   module_name=$(echo "$MODULE_UNDER_TEST" | cut -d '-' -f 1)
-   directory_names=$(ls 'spring-cloud-gcp-samples')
-   module_samples=()
-   for dir in $directory_names; do
-     if [[ $dir =~ $module_name ]]; then
-       module_samples+=("spring-cloud-gcp-samples/$dir")
-     fi
-   done
+  module_name=$(echo "$MODULE_UNDER_TEST" | cut -d '-' -f 1)
+  directory_names=$(ls 'spring-cloud-gcp-samples')
+  module_samples=()
+  for dir in $directory_names; do
+    if [[ $dir =~ $module_name ]]; then
+      module_samples+=("spring-cloud-gcp-samples/$dir")
+    fi
+  done
 
   project_names="$(echo "${module_samples[@]}" | sed 's/ /,/g')"
   mvn clean --activate-profiles native-sample-config,nativeTest --define notAllModules=true --define maven.javadoc.skip=true -pl="${project_names}" test
