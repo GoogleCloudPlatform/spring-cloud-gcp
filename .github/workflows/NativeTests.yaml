@@ -95,7 +95,6 @@ jobs:
         if: steps.intTest1.outcome == 'failure'
         run: |
           MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
-        working-directory: ./spring-cloud-gcp-samples
       - name: Aggregate Report
         run: |
           ./mvnw \
