@@ -16,9 +16,12 @@
 
 package com.example;
 
+import com.google.cloud.spring.storage.GoogleStorageResource;
+import com.google.cloud.storage.Storage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
@@ -26,6 +29,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -35,19 +39,46 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class WebController {
 
+  @Value("${gcs-resource-test-bucket}")
+  private String bucketName;
+
   @Value("gs://${gcs-resource-test-bucket}/my-file.txt")
   private Resource gcsFile;
 
-  @GetMapping("/")
-  public String readGcsFile() throws IOException {
-    return StreamUtils.copyToString(this.gcsFile.getInputStream(), Charset.defaultCharset()) + "\n";
+  private Storage storage;
+
+  private WebController(Storage storage) {
+    this.storage = storage;
   }
 
-  @PostMapping("/")
-  public String writeGcs(@RequestBody String data) throws IOException {
-    try (OutputStream os = ((WritableResource) this.gcsFile).getOutputStream()) {
+  @GetMapping(value = "/")
+  public String readGcsFile(@RequestParam("filename") Optional<String> filename)
+      throws IOException {
+    return StreamUtils.copyToString(
+            filename.isPresent()
+                ? fetchResource(filename.get()).getInputStream()
+                : this.gcsFile.getInputStream(),
+            Charset.defaultCharset())
+        + "\n";
+  }
+
+  @PostMapping(value = "/")
+  public String writeGcs(
+      @RequestBody String data, @RequestParam("filename") Optional<String> filename)
+      throws IOException {
+    return updateResource(
+        filename.map(this::fetchResource).orElse((GoogleStorageResource) this.gcsFile), data);
+  }
+
+  private String updateResource(Resource resource, String data) throws IOException {
+    try (OutputStream os = ((WritableResource) resource).getOutputStream()) {
       os.write(data.getBytes());
     }
     return "file was updated\n";
+  }
+
+  private GoogleStorageResource fetchResource(String filename) {
+    return new GoogleStorageResource(
+        this.storage, String.format("gs://%s/%s", this.bucketName, filename));
   }
 }

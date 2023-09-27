@@ -34,6 +34,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.lang.NonNull;
@@ -48,6 +49,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /** Sample spring boot application. */
 @AutoConfiguration
 @SpringBootApplication
+@ImportRuntimeHints(SampleRuntimeHints.class)
 public class Application implements WebMvcConfigurer {
   private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 

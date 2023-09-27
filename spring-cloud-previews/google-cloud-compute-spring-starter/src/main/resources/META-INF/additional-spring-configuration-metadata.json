@@ -157,6 +157,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.interconnect-remote-locations.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/InterconnectRemoteLocations components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.interconnects.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/Interconnects components.",

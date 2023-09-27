@@ -48,15 +48,20 @@ public class TensorboardServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getTensorboardRetry;
   /**
+   * Allow override of retry settings at method-level for listTensorboards. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listTensorboardsRetry;
+  /**
    * Allow override of retry settings at method-level for readTensorboardUsage. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry readTensorboardUsageRetry;
   /**
-   * Allow override of retry settings at method-level for listTensorboards. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
+   * Allow override of retry settings at method-level for readTensorboardSize. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
    */
-  @NestedConfigurationProperty private Retry listTensorboardsRetry;
+  @NestedConfigurationProperty private Retry readTensorboardSizeRetry;
   /**
    * Allow override of retry settings at method-level for createTensorboardExperiment. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
@@ -215,6 +220,14 @@ public class TensorboardServiceSpringProperties implements CredentialsSupplier {
     this.getTensorboardRetry = getTensorboardRetry;
   }
 
+  public Retry getListTensorboardsRetry() {
+    return this.listTensorboardsRetry;
+  }
+
+  public void setListTensorboardsRetry(Retry listTensorboardsRetry) {
+    this.listTensorboardsRetry = listTensorboardsRetry;
+  }
+
   public Retry getReadTensorboardUsageRetry() {
     return this.readTensorboardUsageRetry;
   }
@@ -223,12 +236,12 @@ public class TensorboardServiceSpringProperties implements CredentialsSupplier {
     this.readTensorboardUsageRetry = readTensorboardUsageRetry;
   }
 
-  public Retry getListTensorboardsRetry() {
-    return this.listTensorboardsRetry;
+  public Retry getReadTensorboardSizeRetry() {
+    return this.readTensorboardSizeRetry;
   }
 
-  public void setListTensorboardsRetry(Retry listTensorboardsRetry) {
-    this.listTensorboardsRetry = listTensorboardsRetry;
+  public void setReadTensorboardSizeRetry(Retry readTensorboardSizeRetry) {
+    this.readTensorboardSizeRetry = readTensorboardSizeRetry;
   }
 
   public Retry getCreateTensorboardExperimentRetry() {
