@@ -95,6 +95,7 @@
 				<module>spring-cloud-gcp-integration-storage-sample</module>
 				<module>spring-cloud-gcp-trace-sample</module>
 				<module>spring-cloud-gcp-vision-api-sample</module>
+				<module>spring-cloud-gcp-vision-ocr-demo</module>
 			</modules>
 			<build>
 				<plugins>
