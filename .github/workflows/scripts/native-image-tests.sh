@@ -1,33 +1,41 @@
 #!/bin/bash
 
-# Get directory of script
-scriptDir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
+# This script executes native image tests based on the MODULE_UNDER_TEST provided.
+# If MODULE_UNDER_TEST is 'vision', for example, then it runs tests under spring-cloud-gcp-vision.
+# If it is 'vision-sample' then it runs tests under spring-cloud-gcp-samples/spring-cloud-gcp-vision-api-sample
+# and spring-cloud-gcp-samples/spring-cloud-gcp-vision-ocr-demo.
 
-cd "${scriptDir}/../../.." # git repo root
+# Native image support has not been added for this module yet.
+EXCLUDED_MODULES=("spring-cloud-spanner-spring-data-r2dbc")
+
+# Get git repo root
+scriptDir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
+cd "${scriptDir}/../../.."
 
 run_sample_tests () {
    module_name=$(echo "$MODULE_UNDER_TEST" | cut -d '-' -f 1)
-    directory_names=$(ls 'spring-cloud-gcp-samples')
-    module_samples=()
-    for dir in $directory_names; do
-      if [[ $dir =~ $module_name ]]; then
-        module_samples+=("spring-cloud-gcp-samples/$dir")
-      fi
-    done
+   directory_names=$(ls 'spring-cloud-gcp-samples')
+   module_samples=()
+   for dir in $directory_names; do
+     if [[ $dir =~ $module_name ]]; then
+       module_samples+=("spring-cloud-gcp-samples/$dir")
+     fi
+   done
 
-    joined_sample_names=$(echo "${module_samples[@]}" | sed 's/ /,/g')
-    project_names="${joined_sample_names}"
-    mvn clean --activate-profiles native-sample-config,nativeTest --define notAllModules=true --define maven.javadoc.skip=true -pl="${project_names}" test
+  project_names="$(echo "${module_samples[@]}" | sed 's/ /,/g')"
+  mvn clean --activate-profiles native-sample-config,nativeTest --define notAllModules=true --define maven.javadoc.skip=true -pl="${project_names}" test
 }
 
 run_module_tests() {
-  if [[ "$MODULE_UNDER_TEST" = "datastore" || "$MODULE_UNDER_TEST" = "firestore" || "$MODULE_UNDER_TEST" = "spanner" ]]; then
-    projectName="spring-cloud-gcp-data-${MODULE_UNDER_TEST}"
-  else
-    projectName="spring-cloud-gcp-${MODULE_UNDER_TEST}"
-  fi
-    mvn clean verify -Pspring-native,!default -pl="${project_names}"
-
+  directory_names=$(ls)
+  module_samples=()
+  for dir in $directory_names; do
+    if [[ $dir =~ $MODULE_UNDER_TEST ]] && [[ ! "${EXCLUDED_MODULES[*]}" =~ $dir ]]; then
+       module_samples+=($dir)
+    fi
+  done
+  project_names="$(echo "${module_samples[@]}" | sed 's/ /,/g')"
+  mvn clean verify -Pspring-native,!default -pl="${project_names}"
 }
 
 if [ -z "$MODULE_UNDER_TEST" ]; then
