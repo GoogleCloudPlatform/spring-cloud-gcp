@@ -5,7 +5,7 @@
   <parent>
     <artifactId>spring-cloud-gcp</artifactId>
     <groupId>com.google.cloud</groupId>
-    <version>4.7.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+    <version>4.8.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -61,7 +61,6 @@
     <module>google-iam-admin-spring-starter</module>
     <module>google-cloud-gsuite-addons-spring-starter</module>
     <module>google-cloud-gkehub-spring-starter</module>
-    <module>google-cloud-game-servers-spring-starter</module>
     <module>google-cloud-functions-spring-starter</module>
     <module>google-cloud-filestore-spring-starter</module>
     <module>google-cloud-eventarc-spring-starter</module>

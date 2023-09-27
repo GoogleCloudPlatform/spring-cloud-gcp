@@ -172,6 +172,14 @@ public class DataMigrationServiceSpringAutoConfiguration {
           .generateSshScriptSettings()
           .setRetrySettings(generateSshScriptRetrySettings);
 
+      RetrySettings generateTcpProxyScriptRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateTcpProxyScriptSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .generateTcpProxyScriptSettings()
+          .setRetrySettings(generateTcpProxyScriptRetrySettings);
+
       RetrySettings listConnectionProfilesRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listConnectionProfilesSettings().getRetrySettings(),
@@ -219,6 +227,32 @@ public class DataMigrationServiceSpringAutoConfiguration {
       clientSettingsBuilder
           .listConversionWorkspacesSettings()
           .setRetrySettings(listConversionWorkspacesRetrySettings);
+
+      RetrySettings createMappingRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createMappingRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .createMappingRuleSettings()
+          .setRetrySettings(createMappingRuleRetrySettings);
+
+      RetrySettings deleteMappingRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteMappingRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .deleteMappingRuleSettings()
+          .setRetrySettings(deleteMappingRuleRetrySettings);
+
+      RetrySettings listMappingRulesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMappingRulesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listMappingRulesSettings()
+          .setRetrySettings(listMappingRulesRetrySettings);
+
+      RetrySettings getMappingRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMappingRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getMappingRuleSettings().setRetrySettings(getMappingRuleRetrySettings);
 
       RetrySettings describeDatabaseEntitiesRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -294,6 +328,20 @@ public class DataMigrationServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for generateSshScript from properties.");
+      }
+    }
+    Retry generateTcpProxyScriptRetry = clientProperties.getGenerateTcpProxyScriptRetry();
+    if (generateTcpProxyScriptRetry != null) {
+      RetrySettings generateTcpProxyScriptRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateTcpProxyScriptSettings().getRetrySettings(),
+              generateTcpProxyScriptRetry);
+      clientSettingsBuilder
+          .generateTcpProxyScriptSettings()
+          .setRetrySettings(generateTcpProxyScriptRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for generateTcpProxyScript from properties.");
       }
     }
     Retry listConnectionProfilesRetry = clientProperties.getListConnectionProfilesRetry();
@@ -378,6 +426,59 @@ public class DataMigrationServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listConversionWorkspaces from properties.");
+      }
+    }
+    Retry createMappingRuleRetry = clientProperties.getCreateMappingRuleRetry();
+    if (createMappingRuleRetry != null) {
+      RetrySettings createMappingRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createMappingRuleSettings().getRetrySettings(),
+              createMappingRuleRetry);
+      clientSettingsBuilder
+          .createMappingRuleSettings()
+          .setRetrySettings(createMappingRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createMappingRule from properties.");
+      }
+    }
+    Retry deleteMappingRuleRetry = clientProperties.getDeleteMappingRuleRetry();
+    if (deleteMappingRuleRetry != null) {
+      RetrySettings deleteMappingRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteMappingRuleSettings().getRetrySettings(),
+              deleteMappingRuleRetry);
+      clientSettingsBuilder
+          .deleteMappingRuleSettings()
+          .setRetrySettings(deleteMappingRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteMappingRule from properties.");
+      }
+    }
+    Retry listMappingRulesRetry = clientProperties.getListMappingRulesRetry();
+    if (listMappingRulesRetry != null) {
+      RetrySettings listMappingRulesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMappingRulesSettings().getRetrySettings(),
+              listMappingRulesRetry);
+      clientSettingsBuilder
+          .listMappingRulesSettings()
+          .setRetrySettings(listMappingRulesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listMappingRules from properties.");
+      }
+    }
+    Retry getMappingRuleRetry = clientProperties.getGetMappingRuleRetry();
+    if (getMappingRuleRetry != null) {
+      RetrySettings getMappingRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMappingRuleSettings().getRetrySettings(),
+              getMappingRuleRetry);
+      clientSettingsBuilder.getMappingRuleSettings().setRetrySettings(getMappingRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getMappingRule from properties.");
       }
     }
     Retry describeDatabaseEntitiesRetry = clientProperties.getDescribeDatabaseEntitiesRetry();

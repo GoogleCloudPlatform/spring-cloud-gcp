@@ -107,8 +107,12 @@ jobs:
             --activate-profiles spring-cloud-gcp-ci-it \
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
+            --define "spring.datasource.password=${DB_PASSWORD}" \
+            --define "spring.r2dbc.password=${DB_PASSWORD}" \
             --define it.${{ matrix.it }}=true \
             verify
+        env:
+          DB_PASSWORD: ${{ secrets.SPRING_CLOUD_GCP_CI_DB_ROOT_PASSWORD }}
       - name: Retry on Failure
         id: intTest2
         if: steps.intTest1.outcome == 'failure'
@@ -118,8 +122,12 @@ jobs:
             --activate-profiles spring-cloud-gcp-ci-it \
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
+            --define "spring.datasource.password=${DB_PASSWORD}" \
+            --define "spring.r2dbc.password=${DB_PASSWORD}" \
             --define it.${{ matrix.it }}=true \
             verify
+        env:
+          DB_PASSWORD: ${{ secrets.SPRING_CLOUD_GCP_CI_DB_ROOT_PASSWORD }}
       - name: Aggregate Report
         run: |
           ./mvnw \
