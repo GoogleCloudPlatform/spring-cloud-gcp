@@ -356,6 +356,7 @@
 			<module>spring-cloud-gcp-storage</module>
 			<module>spring-cloud-gcp-vision</module>
 			<module>spring-cloud-gcp-data-spanner</module>
+			<module>spring-cloud-gcp-secretmanager</module>
 		</modules>
 
 		<dependencies>
@@ -381,9 +382,10 @@
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<systemPropertyVariables>
 							<!--integration tests are not invoked unless the relevant system property is set to true here. -->
-              				<it.storage>true</it.storage>
+							<it.storage>true</it.storage>
 							<it.vision>true</it.vision>
 							<it.spanner>true</it.spanner>
+							<it.secretmanager>true</it.secretmanager>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>
