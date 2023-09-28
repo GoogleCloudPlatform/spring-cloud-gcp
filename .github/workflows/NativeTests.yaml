@@ -89,12 +89,12 @@ jobs:
         id: intTest3
         continue-on-error: true
         run: |
-          EXCLUDED_MODULES=spring-cloud-gcp-spanner-r2dbc-samples MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
+          EXCLUDED_MODULES=spring-cloud-spanner-spring-data-r2dbc MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Retry on Failure
         id: intTest4
         if: steps.intTest3.outcome == 'failure'
         run: |
-          EXCLUDED_MODULES=spring-cloud-gcp-spanner-r2dbc-samples MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
+          EXCLUDED_MODULES=spring-cloud-spanner-spring-data-r2dbc MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Aggregate Report
         run: |
           ./mvnw \
