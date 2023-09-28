@@ -32,9 +32,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-/**
- * Application secret named "application-secret" must exist and have a value of "Hello world.".
- */
+/** Application secret named "application-secret" must exist. */
 @EnabledIfSystemProperty(named = "it.secretmanager", matches = "true")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
@@ -52,12 +50,19 @@ class SecretManagerSampleIntegrationTests {
 
   @Test
   void testApplicationStartup() {
+    // retrieve secret string with secretManagerTemplate directly, to compare with loaded
+    // application
+    String secretString =
+        this.secretManagerTemplate.getSecretString(
+            "sm://" + "application-secret" + "/" + SecretManagerTemplate.LATEST_VERSION);
+
     ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
     assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-    assertThat(response.getBody()).contains(
-        "<b>Application secret from @Value:</b> <i>Hello world.</i>");
-    assertThat(response.getBody()).contains(
-        "<b>Application secret from @ConfigurationProperties:</b> <i>Hello world.</i>");
+    assertThat(response.getBody())
+        .contains("<b>Application secret from @Value:</b> <i>" + secretString + "</i>");
+    assertThat(response.getBody())
+        .contains(
+            "<b>Application secret from @ConfigurationProperties:</b> <i>" + secretString + "</i>");
   }
 
   @Test
