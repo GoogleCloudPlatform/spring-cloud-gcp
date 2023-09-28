@@ -5,9 +5,6 @@
 # If it is 'vision-sample' then it runs tests under spring-cloud-gcp-samples/spring-cloud-gcp-vision-api-sample
 # and spring-cloud-gcp-samples/spring-cloud-gcp-vision-ocr-demo.
 
-# Native image support has not been added for this module yet.
-EXCLUDED_MODULES=("spring-cloud-spanner-spring-data-r2dbc")
-
 # Get git repo root
 scriptDir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 cd "${scriptDir}/../../.."
@@ -21,7 +18,6 @@ run_sample_tests () {
       module_samples+=("spring-cloud-gcp-samples/$dir")
     fi
   done
-
   project_names="$(echo "${module_samples[@]}" | sed 's/ /,/g')"
   mvn clean --activate-profiles native-sample-config,nativeTest --define notAllModules=true --define maven.javadoc.skip=true -pl="${project_names}" test
 }
@@ -30,7 +26,7 @@ run_module_tests() {
   directory_names=$(ls)
   module_samples=()
   for dir in $directory_names; do
-    if [[ $dir =~ $MODULE_UNDER_TEST ]] && [[ ! "${EXCLUDED_MODULES[*]}" =~ $dir ]]; then
+    if [[ $dir =~ $MODULE_UNDER_TEST ]] && [[ ! $dir =~ $EXCLUDED_MODULES  ]]; then
        module_samples+=($dir)
     fi
   done

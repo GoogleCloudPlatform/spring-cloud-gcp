@@ -85,33 +85,16 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-      - name: Native Tests in Samples
-        id: intTest1
-        continue-on-error: true
-        run: |
-          MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
-      - name: Retry on Failure
-        id: intTest2
-        if: steps.intTest1.outcome == 'failure'
-        run: |
-          MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
-      - name: Aggregate Report
-        run: |
-          ./mvnw \
-            --batch-mode \
-            --define aggregate=true \
-            --activate-profiles native-sample-config \
-          surefire-report:report-only
       - name: Native Tests in Modules
         id: intTest3
         continue-on-error: true
         run: |
-          MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
+          EXCLUDED_MODULES=spring-cloud-gcp-spanner-r2dbc-samples MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Retry on Failure
         id: intTest4
         if: steps.intTest3.outcome == 'failure'
         run: |
-          MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
+          EXCLUDED_MODULES=spring-cloud-gcp-spanner-r2dbc-samples MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Aggregate Report
         run: |
           ./mvnw \
