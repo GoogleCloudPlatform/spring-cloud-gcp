@@ -166,11 +166,13 @@ public class GcpFirestoreAutoConfiguration {
     public ClientInterceptor firestoreRoutingHeadersInterceptor() {
       // add routing header for custom database id
       Metadata routingHeader = new Metadata();
-      Metadata.Key<String> key =
-          Metadata.Key.of(Headers.DYNAMIC_ROUTING_HEADER_KEY, Metadata.ASCII_STRING_MARSHALLER);
-      routingHeader.put(key,
-          "project_id=" + PERCENT_ESCAPER.escape(projectId)
-              + "&database_id=" + PERCENT_ESCAPER.escape(databaseId));
+      if (projectId != null && databaseId != null) {
+        Metadata.Key<String> key =
+            Metadata.Key.of(Headers.DYNAMIC_ROUTING_HEADER_KEY, Metadata.ASCII_STRING_MARSHALLER);
+        routingHeader.put(key,
+            "project_id=" + PERCENT_ESCAPER.escape(projectId)
+                + "&database_id=" + PERCENT_ESCAPER.escape(databaseId));
+      }
       return MetadataUtils.newAttachHeadersInterceptor(routingHeader);
     }
 
