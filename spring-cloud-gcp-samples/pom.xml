@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.3</version>
+		<version>3.1.4</version>
 		<relativePath/>
 	</parent>
 
@@ -98,6 +98,7 @@
 				<module>spring-cloud-gcp-integration-storage-sample</module>
 				<module>spring-cloud-gcp-trace-sample</module>
 				<module>spring-cloud-gcp-vision-api-sample</module>
+				<module>spring-cloud-gcp-vision-ocr-demo</module>
 			</modules>
 			<build>
 				<plugins>
@@ -143,10 +144,9 @@
 								<it.pubsub>true</it.pubsub>
 								<it.pubsub-integration>true</it.pubsub-integration>
 								<it.storage>true</it.storage>
-                <it.vision>true</it.vision>
-								<it.trace>true</it.trace>
 								<it.vision>true</it.vision>
-                <gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
+								<it.trace>true</it.trace>
+								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
