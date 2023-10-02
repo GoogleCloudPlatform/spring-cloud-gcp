@@ -92,6 +92,7 @@ jobs:
         if: steps.intTest1.outcome == 'failure'
         run: |
           ../mvnw \
+            clean \
             --batch-mode \
             --activate-profiles native-sample-config,nativeTest \
             --define notAllModules=true \
