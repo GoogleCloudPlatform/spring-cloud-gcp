@@ -30,7 +30,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  */
 @ConfigurationProperties("spring.cloud.gcp.firestore")
 public class GcpFirestoreProperties implements CredentialsSupplier {
-  private static final String ROOT_PATH_FORMAT = "projects/%s/databases/(default)/documents";
+  private static final String ROOT_PATH_FORMAT = "projects/%s/databases/%s/documents";
 
   /**
    * Overrides the GCP OAuth2 credentials specified in the Core module. Uses same URL as Datastore
@@ -39,6 +39,8 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
   private final Credentials credentials = new Credentials(GcpScope.DATASTORE.getUrl());
 
   private String projectId;
+
+  private String databaseId;
 
   /**
    * The host and port of the Firestore emulator service; can be overridden to specify an emulator.
@@ -65,6 +67,18 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
     this.projectId = projectId;
   }
 
+  public String getDatabaseId() {
+    return databaseId;
+  }
+
+  public String getResolvedDatabaseId() {
+    return this.getDatabaseId() == null ? "(default)" : this.getDatabaseId();
+  }
+
+  public void setDatabaseId(String databaseId) {
+    this.databaseId = databaseId;
+  }
+
   public String getHostPort() {
     return hostPort;
   }
@@ -82,7 +96,8 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
   }
 
   public String getFirestoreRootPath(GcpProjectIdProvider projectIdProvider) {
-    return String.format(ROOT_PATH_FORMAT, this.getResolvedProjectId(projectIdProvider));
+    return String.format(ROOT_PATH_FORMAT, this.getResolvedProjectId(projectIdProvider),
+        this.getResolvedDatabaseId());
   }
 
   public static class FirestoreEmulatorProperties {

@@ -68,6 +68,11 @@ public class RecommenderSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getRecommendationRetry;
   /**
+   * Allow override of retry settings at method-level for markRecommendationDismissed. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry markRecommendationDismissedRetry;
+  /**
    * Allow override of retry settings at method-level for markRecommendationClaimed. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
@@ -178,6 +183,14 @@ public class RecommenderSpringProperties implements CredentialsSupplier {
 
   public void setGetRecommendationRetry(Retry getRecommendationRetry) {
     this.getRecommendationRetry = getRecommendationRetry;
+  }
+
+  public Retry getMarkRecommendationDismissedRetry() {
+    return this.markRecommendationDismissedRetry;
+  }
+
+  public void setMarkRecommendationDismissedRetry(Retry markRecommendationDismissedRetry) {
+    this.markRecommendationDismissedRetry = markRecommendationDismissedRetry;
   }
 
   public Retry getMarkRecommendationClaimedRetry() {

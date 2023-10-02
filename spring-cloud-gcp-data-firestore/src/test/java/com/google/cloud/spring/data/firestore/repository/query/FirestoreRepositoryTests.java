@@ -113,8 +113,6 @@ class FirestoreRepositoryTests {
   @Configuration
   @EnableReactiveFirestoreRepositories(basePackageClasses = UserRepository.class)
   static class FirestoreRepositoryTestsConfiguration {
-    private static final String DEFAULT_PARENT =
-        "projects/my-project/databases/(default)/documents";
 
     @Bean
     public FirestoreMappingContext firestoreMappingContext() {
