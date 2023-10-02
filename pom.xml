@@ -381,7 +381,7 @@
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<systemPropertyVariables>
 							<!--integration tests are not invoked unless the relevant system property is set to true here. -->
-              				<it.storage>true</it.storage>
+              <it.storage>true</it.storage>
 							<it.vision>true</it.vision>
 							<it.spanner>true</it.spanner>
 						</systemPropertyVariables>
