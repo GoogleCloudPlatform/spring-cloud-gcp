@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.7.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.0...v3.7.1) (2023-10-03)
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.23.0 to 26.24.0 ([#2219](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2219)) ([4f88efb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4f88efbabfde7fa38032d62b4e1c9c986262c9c3))
+* bump com.google.errorprone:error_prone_core from 2.21.1 to 2.22.0 ([#2199](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2199)) ([46426e1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/46426e1ba7325ac67e0f8632ab242a1809c29fa6))
+* bump commons-io:commons-io from 2.13.0 to 2.14.0 ([#2212](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2212)) ([43ebec1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/43ebec168b9a0a6fa8c80134494793f89cdb7bda))
+* bump org.springframework.boot:spring-boot-dependencies ([#2198](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2198)) ([0759a32](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0759a32a74192d2084c365b3505e09ee7bd6f135))
+* bump org.springframework.boot:spring-boot-starter-parent ([#2200](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2200)) ([1b6e07d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1b6e07d0bb048f13b6f1d4ff8e916eeaf2977aac))
+* bump org.testcontainers:testcontainers-bom from 1.19.0 to 1.19.1 ([#2218](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2218)) ([fbcd1fa](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fbcd1fa4d16656f55027d175f751fd5af3e060c3))
+
 ## [3.7.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.6.3...v3.7.0) (2023-09-20)
 
 
