@@ -60,6 +60,7 @@ class SecretManagerTemplateIntegrationTests {
   void deleteSecret() {
     secretManagerTemplate.deleteSecret(this.secretName);
   }
+
   @Test
   void testReadWriteSecrets() {
     await()
