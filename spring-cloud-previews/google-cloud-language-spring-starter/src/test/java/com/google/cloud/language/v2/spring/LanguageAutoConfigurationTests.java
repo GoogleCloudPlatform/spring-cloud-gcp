@@ -413,11 +413,7 @@ class LanguageAutoConfigurationTests {
                   .isEqualTo(customTimeoutDuration);
               assertThat(settings.analyzeEntitiesSettings().getRetrySettings().getTotalTimeout())
                   .isEqualTo(customTimeoutDuration);
-              assertThat(
-                      settings
-                          .analyzeSentimentSettings()
-                          .getRetrySettings()
-                          .getTotalTimeout())
+              assertThat(settings.analyzeSentimentSettings().getRetrySettings().getTotalTimeout())
                   .isEqualTo(customTimeoutDuration);
               assertThat(settings.classifyTextSettings().getRetrySettings().getTotalTimeout())
                   .isEqualTo(customTimeoutDuration);
