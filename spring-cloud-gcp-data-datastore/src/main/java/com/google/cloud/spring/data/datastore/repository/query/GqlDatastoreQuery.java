@@ -23,6 +23,7 @@ import com.google.cloud.datastore.Cursor;
 import com.google.cloud.datastore.GqlQuery;
 import com.google.cloud.datastore.GqlQuery.Builder;
 import com.google.cloud.datastore.Key;
+import com.google.cloud.spring.data.datastore.aot.DatastoreRepositoryRuntimeHints;
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
 import com.google.cloud.spring.data.datastore.core.DatastoreResultsIterable;
 import com.google.cloud.spring.data.datastore.core.convert.DatastoreNativeTypes;
@@ -44,6 +45,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -65,6 +67,7 @@ import org.springframework.util.StringUtils;
  * @param <T> the return type of the Query Method
  * @since 1.1
  */
+@ImportRuntimeHints(DatastoreRepositoryRuntimeHints.class)
 public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 
   // A small string that isn't used in GQL syntax

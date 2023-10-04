@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.data.datastore.aot;
 
+import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
+import com.google.cloud.spring.data.datastore.repository.support.SimpleDatastoreRepository;
 import java.util.Arrays;
 import org.springframework.aot.hint.MemberCategory;
 import org.springframework.aot.hint.RuntimeHints;
@@ -30,9 +32,8 @@ public class DatastoreRepositoryRuntimeHints implements RuntimeHintsRegistrar {
         .reflection()
         .registerTypes(
             Arrays.asList(
-                TypeReference.of(
-                    com.google.cloud.spring.data.datastore.repository.support
-                        .SimpleDatastoreRepository.class)),
+                TypeReference.of(SimpleDatastoreRepository.class),
+                TypeReference.of(DatastorePageable.class)),
             hint ->
                 hint.withMembers(
                     MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
