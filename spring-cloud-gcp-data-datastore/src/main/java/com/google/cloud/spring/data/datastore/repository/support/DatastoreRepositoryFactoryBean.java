@@ -19,7 +19,6 @@ package com.google.cloud.spring.data.datastore.repository.support;
 import com.google.cloud.spring.data.datastore.aot.DatastoreRepositoryRuntimeHints;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
-import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
