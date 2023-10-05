@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it.testdomains;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Blob;
@@ -24,7 +24,7 @@ import org.springframework.data.annotation.Id;
 
 /** A test entity for Datastore integration tests. */
 @Entity(name = "test_entities_#{\"ci\"}")
-class TestEntity {
+public class TestEntity {
 
   @Id private Long id;
 
@@ -42,7 +42,7 @@ class TestEntity {
 
   TestEntity() {}
 
-  TestEntity(Long id, String color, Long size, Shape shape, Blob blobField) {
+  public TestEntity(Long id, String color, Long size, Shape shape, Blob blobField) {
     this.id = id;
     this.color = color;
     this.size = size;
@@ -50,7 +50,7 @@ class TestEntity {
     this.blobField = blobField;
   }
 
-  TestEntity(
+  public TestEntity(
       Long id,
       String color,
       Long size,
@@ -65,14 +65,14 @@ class TestEntity {
     this.embeddedEntity = embeddedEntity;
   }
 
-  TestEntity(Long id, String color, Long size, Timestamp datetime) {
+  public TestEntity(Long id, String color, Long size, Timestamp datetime) {
     this.id = id;
     this.color = color;
     this.size = size;
     this.datetime = datetime;
   }
 
-  Shape getShape() {
+  public Shape getShape() {
     return this.shape;
   }
 
@@ -80,7 +80,7 @@ class TestEntity {
     this.shape = shape;
   }
 
-  Long getId() {
+  public Long getId() {
     return this.id;
   }
 
@@ -88,15 +88,15 @@ class TestEntity {
     this.id = id;
   }
 
-  Blob getBlobField() {
+  public Blob getBlobField() {
     return this.blobField;
   }
 
-  void setBlobField(Blob blobField) {
+  public void setBlobField(Blob blobField) {
     this.blobField = blobField;
   }
 
-  String getColor() {
+  public String getColor() {
     return this.color;
   }
 
@@ -121,7 +121,7 @@ class TestEntity {
   }
 
   /** An enum that tests conversion and storage. */
-  enum Shape {
+  public enum Shape {
     CIRCLE,
     SQUARE;
   }

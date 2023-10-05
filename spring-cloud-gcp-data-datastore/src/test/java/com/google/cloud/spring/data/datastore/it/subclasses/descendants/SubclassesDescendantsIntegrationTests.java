@@ -18,16 +18,13 @@ package com.google.cloud.spring.data.datastore.it.subclasses.descendants;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
-import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
-import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField;
-import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
-import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import com.google.cloud.spring.data.datastore.it.AbstractDatastoreIntegrationTests;
 import com.google.cloud.spring.data.datastore.it.DatastoreIntegrationTestConfiguration;
-import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
-import java.util.ArrayList;
+import com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains.EntityA;
+import com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains.EntityB;
+import com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains.EntityC;
+import com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains.SubclassesDescendantsEntityArepository;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -35,21 +32,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Id;
-import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-@Repository
-interface SubclassesDescendantsEntityArepository extends DatastoreRepository<EntityA, Key> {}
 
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
 public class SubclassesDescendantsIntegrationTests extends AbstractDatastoreIntegrationTests {
 
-  @Autowired
-  SubclassesDescendantsEntityArepository entityArepository;
+  @Autowired SubclassesDescendantsEntityArepository entityArepository;
 
   @Autowired private DatastoreTemplate datastoreTemplate;
 
@@ -71,31 +62,3 @@ public class SubclassesDescendantsIntegrationTests extends AbstractDatastoreInte
     assertThat(entitiesCofB).hasSize(1);
   }
 }
-
-@Entity(name = "A")
-@DiscriminatorField(field = "type")
-abstract class EntityA {
-  @Id private Key id;
-
-  public Key getId() {
-    return id;
-  }
-}
-
-@Entity(name = "A")
-@DiscriminatorValue("B")
-class EntityB extends EntityA {
-  @Descendants private List<EntityC> entitiesC = new ArrayList<>();
-
-  public void addEntityC(EntityC entityCdescendants) {
-    this.entitiesC.add(entityCdescendants);
-  }
-
-  public List<EntityC> getEntitiesC() {
-    return entitiesC;
-  }
-}
-
-@Entity(name = "A")
-@DiscriminatorValue("C")
-class EntityC extends EntityA {}
