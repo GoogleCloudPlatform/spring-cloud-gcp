@@ -30,6 +30,7 @@ jobs:
           - storage-sample
           - trace-sample
           - vision-sample
+          - pubsub-sample
     steps:
       - name: Get current date
         id: date
@@ -85,45 +86,11 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-<<<<<<< HEAD
-      - name: Native Tests in Samples
-        id: intTest1
-        continue-on-error: true
-        run: |
-          ../mvnw \
-            --batch-mode \
-            --activate-profiles native-sample-config,nativeTest \
-            --define notAllModules=true \
-            --define maven.javadoc.skip=true \
-            test
-        working-directory: ./spring-cloud-gcp-samples
-      - name: Retry on Failure
-        id: intTest2
-        if: steps.intTest1.outcome == 'failure'
-        run: |
-          ../mvnw \
-            --batch-mode \
-            --activate-profiles native-sample-config,nativeTest \
-            --define notAllModules=true \
-            --define maven.javadoc.skip=true \
-            test
-        working-directory: ./spring-cloud-gcp-samples
-      - name: Aggregate Report
-        run: |
-          ../mvnw \
-            clean \
-            --batch-mode \
-            --define aggregate=true \
-            --activate-profiles native-sample-config \
-          surefire-report:report-only
-        working-directory: ./spring-cloud-gcp-samples
-=======
->>>>>>> f2980ce9781b4587a45e3e37bc961328c196b775
       - name: Native Tests in Modules
         id: intTest3
         continue-on-error: true
         run: |
-          EXCLUDED_MODULES=spring-cloud-spanner-spring-data-r2dbc MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
+          EXCLUDED_MODULES=spring-cloud-spanner-spring-data-r2dbc,spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-sample-test MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Aggregate Report
         run: |
           ./mvnw \

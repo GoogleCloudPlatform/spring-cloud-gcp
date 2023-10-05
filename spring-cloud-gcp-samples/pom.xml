@@ -93,6 +93,10 @@
 				<module>spring-cloud-gcp-pubsub-sample</module>
 				<module>spring-cloud-gcp-pubsub-reactive-sample</module>
 				<module>spring-cloud-gcp-integration-pubsub-sample</module>
+				<module>spring-cloud-gcp-pubsub-bus-config-sample</module>
+				<module>spring-cloud-gcp-pubsub-stream-dead-letter-sample</module>
+				<module>spring-cloud-gcp-pubsub-stream-functional-sample</module>
+				<module>spring-cloud-gcp-integration-pubsub-json-sample</module>
 				<module>spring-cloud-gcp-logging-sample</module>
 				<module>spring-cloud-gcp-storage-resource-sample</module>
 				<module>spring-cloud-gcp-integration-storage-sample</module>
