@@ -16,25 +16,19 @@
 
 package com.google.cloud.spring.data.datastore.aot;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.aot.hint.predicate.RuntimeHintsPredicates.reflection;
+
 import com.google.cloud.spring.data.datastore.repository.support.SimpleDatastoreRepository;
-import java.util.Arrays;
-import org.springframework.aot.hint.MemberCategory;
+import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.RuntimeHints;
-import org.springframework.aot.hint.RuntimeHintsRegistrar;
-import org.springframework.aot.hint.TypeReference;
 
-public class DatastoreRepositoryRuntimeHints implements RuntimeHintsRegistrar {
-
-  @Override
-  public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-    hints
-        .reflection()
-        .registerTypes(
-            Arrays.asList(
-                TypeReference.of(SimpleDatastoreRepository.class)),
-            hint ->
-                hint.withMembers(
-                    MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
-                    MemberCategory.INVOKE_DECLARED_METHODS));
+class DatastoreRepositoryRuntimeHintsTest {
+  @Test
+  void registerSimpleDatastoreRepository() {
+    RuntimeHints runtimeHints = new RuntimeHints();
+    DatastoreRepositoryRuntimeHints registrar = new DatastoreRepositoryRuntimeHints();
+    registrar.registerHints(runtimeHints, null);
+    assertThat(runtimeHints).matches(reflection().onType(SimpleDatastoreRepository.class));
   }
 }
