@@ -26,10 +26,12 @@ jobs:
           - vision
           - spanner
           - storage
+          - secretmanager
           - logging-sample
           - storage-sample
           - trace-sample
           - vision-sample
+          - secretmanager-sample
     steps:
       - name: Get current date
         id: date
