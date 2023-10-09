@@ -18,11 +18,13 @@ package com.google.cloud.spring.secretmanager.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.awaitility.Awaitility.await;
 
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.time.Duration;
+import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,18 +40,37 @@ class SecretManagerTemplateIntegrationTests {
 
   @Autowired SecretManagerTemplate secretManagerTemplate;
 
-  @Test
-  void testReadWriteSecrets() {
-    secretManagerTemplate.createSecret("test-secret-1234", "1234");
+  private String secretName;
 
+  @BeforeEach
+  void createSecret() {
+    this.secretName = String.format("test-secret-%s", UUID.randomUUID());
+
+    secretManagerTemplate.createSecret(secretName, "1234");
     await()
         .atMost(Duration.ofSeconds(5))
         .untilAsserted(
             () -> {
-              String secretString = secretManagerTemplate.getSecretString("test-secret-1234");
+              String secretString = secretManagerTemplate.getSecretString(secretName);
+              assertThat(secretString).isEqualTo("1234");
+            });
+  }
+
+  @AfterEach
+  void deleteSecret() {
+    secretManagerTemplate.deleteSecret(this.secretName);
+  }
+
+  @Test
+  void testReadWriteSecrets() {
+    await()
+        .atMost(Duration.ofSeconds(5))
+        .untilAsserted(
+            () -> {
+              String secretString = secretManagerTemplate.getSecretString(this.secretName);
               assertThat(secretString).isEqualTo("1234");
 
-              byte[] secretBytes = secretManagerTemplate.getSecretBytes("test-secret-1234");
+              byte[] secretBytes = secretManagerTemplate.getSecretBytes(this.secretName);
               assertThat(secretBytes).isEqualTo("1234".getBytes());
             });
   }
@@ -63,16 +84,8 @@ class SecretManagerTemplateIntegrationTests {
 
   @Test
   void testUpdateSecrets() {
-    secretManagerTemplate.createSecret("test-update-secret", "5555");
-    await()
-        .atMost(Duration.ofSeconds(5))
-        .untilAsserted(
-            () -> {
-              String secretString = secretManagerTemplate.getSecretString("test-update-secret");
-              assertThat(secretString).isEqualTo("5555");
-            });
 
-    secretManagerTemplate.createSecret("test-update-secret", "6666");
+    secretManagerTemplate.createSecret(this.secretName, "6666");
     await()
         .atMost(Duration.ofSeconds(10))
         .untilAsserted(
