@@ -102,6 +102,7 @@ public class PubSubChannelProvisioner
       ensureSubscriptionExists(subscriptionName, topicName, deadLetterPolicy, autoCreate);
     }
 
+    Assert.hasText(subscriptionName, "Subscription Name cannot be null or empty");
     return new PubSubConsumerDestination(subscriptionName);
   }
 

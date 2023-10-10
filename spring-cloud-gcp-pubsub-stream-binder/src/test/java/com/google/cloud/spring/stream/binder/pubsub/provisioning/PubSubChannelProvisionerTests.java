@@ -236,4 +236,16 @@ class PubSubChannelProvisionerTests {
     assertThatExceptionOfType(ProvisioningException.class)
         .isThrownBy(() -> this.pubSubChannelProvisioner.ensureTopicExists("new_topic", true));
   }
+
+  @Test
+  void testProvisionConsumerDestination_subscriptionNameCannotBeNull() {
+    when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(false);
+    when(this.pubSubConsumerProperties.getSubscriptionName()).thenReturn(null);
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(
+            () ->
+                this.pubSubChannelProvisioner.provisionConsumerDestination(
+                    "topic_A", null, this.properties))
+        .withMessage("Subscription Name cannot be null or empty");
+  }
 }
