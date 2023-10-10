@@ -248,4 +248,44 @@ class PubSubChannelProvisionerTests {
                     "topic_A", null, this.properties))
         .withMessage("Subscription Name cannot be null or empty");
   }
+
+  @Test
+  void testProvisionConsumerDestination_createAnonymousSubscription() {
+    when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(true);
+    String subscriptionNameRegex = "anonymous\\.topic_A\\.[a-f0-9\\-]{36}";
+    this.pubSubChannelProvisioner.provisionConsumerDestination("topic_A", null, this.properties);
+    ArgumentCaptor<Subscription.Builder> argCaptor =
+        ArgumentCaptor.forClass(Subscription.Builder.class);
+    verify(this.pubSubAdminMock).createSubscription(argCaptor.capture());
+    Subscription.Builder sb = argCaptor.getValue();
+    assertThat(sb.getName()).matches(subscriptionNameRegex);
+    assertThat(sb.getTopic()).isEqualTo("topic_A");
+  }
+
+  @Test
+  void testProvisionConsumerDestination_createSubscription() {
+    when(this.pubSubAdminMock.getSubscription("subscription_A"))
+        .thenReturn(
+            Subscription.newBuilder().setTopic("topic_A").setName("subscription_A").build());
+
+    Subscription subscription =
+        this.pubSubChannelProvisioner.ensureSubscriptionExists(
+            "subscription_A", "topic_A", null, true);
+
+    assertThat(subscription.getName()).isEqualTo("subscription_A");
+    assertThat(subscription.getTopic()).isEqualTo("topic_A");
+  }
+
+  @Test
+  void testProvisionConsumerDestination_subscriptionHasDifferentTopic() {
+    when(this.pubSubAdminMock.getSubscription("subscription_A"))
+        .thenReturn(
+            Subscription.newBuilder().setTopic("topic_A").setName("subscription_A").build());
+
+    assertThatExceptionOfType(ProvisioningException.class)
+        .isThrownBy(
+            () ->
+                this.pubSubChannelProvisioner.ensureSubscriptionExists(
+                    "subscription_A", "topic_B", null, true));
+  }
 }

@@ -71,7 +71,6 @@ public class PubSubChannelProvisioner
     String subscriptionName = null;
     String customName = properties.getExtension().getSubscriptionName();
 
-
     boolean autoCreate = properties.getExtension().isAutoCreateResources();
     PubSubConsumerProperties.DeadLetterPolicy deadLetterPolicy =
         properties.getExtension().getDeadLetterPolicy();
