@@ -143,7 +143,6 @@ class PubSubChannelProvisionerTests {
 
   @Test
   void testProvisionConsumerDestination_anonymousGroup() {
-    // should work with auto-create = false
     when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(true);
 
     String subscriptionNameRegex = "anonymous\\.topic_A\\.[a-f0-9\\-]{36}";
@@ -228,6 +227,20 @@ class PubSubChannelProvisionerTests {
   }
 
   @Test
+  void testProvisionConsumerDestination_concurrentTopicCreation() {
+    when(this.pubSubAdminMock.createTopic(any())).thenThrow(AlreadyExistsException.class);
+    when(this.pubSubAdminMock.getTopic("already_existing_topic"))
+            .thenReturn(null)
+            .thenReturn(Topic.newBuilder().setName("already_existing_topic").build());
+
+    // Ensure no exceptions occur if topic already exists on create call
+    assertThat(
+            this.pubSubChannelProvisioner.ensureTopicExists(
+                    "already_existing_topic", true))
+            .isNotNull();
+  }
+
+  @Test
   void testProvisionConsumerDestination_recursiveExistCalls() {
     when(this.pubSubAdminMock.getTopic("new_topic")).thenReturn(null);
     when(this.pubSubAdminMock.createTopic(any())).thenThrow(AlreadyExistsException.class);
@@ -247,19 +260,6 @@ class PubSubChannelProvisionerTests {
                 this.pubSubChannelProvisioner.provisionConsumerDestination(
                     "topic_A", null, this.properties))
         .withMessage("Subscription Name cannot be null or empty");
-  }
-
-  @Test
-  void testProvisionConsumerDestination_createAnonymousSubscription() {
-    when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(true);
-    String subscriptionNameRegex = "anonymous\\.topic_A\\.[a-f0-9\\-]{36}";
-    this.pubSubChannelProvisioner.provisionConsumerDestination("topic_A", null, this.properties);
-    ArgumentCaptor<Subscription.Builder> argCaptor =
-        ArgumentCaptor.forClass(Subscription.Builder.class);
-    verify(this.pubSubAdminMock).createSubscription(argCaptor.capture());
-    Subscription.Builder sb = argCaptor.getValue();
-    assertThat(sb.getName()).matches(subscriptionNameRegex);
-    assertThat(sb.getTopic()).isEqualTo("topic_A");
   }
 
   @Test
