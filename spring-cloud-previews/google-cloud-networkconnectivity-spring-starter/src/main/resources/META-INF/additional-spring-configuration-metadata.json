@@ -5,6 +5,12 @@
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud networkconnectivity/HubService components.",
       "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.networkconnectivity.v1.policy-based-routing-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud networkconnectivity/PolicyBasedRoutingService components.",
+      "defaultValue": true
     }
   ]
 }
