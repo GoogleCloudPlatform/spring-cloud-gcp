@@ -13,6 +13,11 @@
 	<artifactId>spring-cloud-gcp-integration-pubsub-sample-test</artifactId>
 	<name>Spring Framework on Google Cloud Code Sample - Spring Integration Pub/Sub Integration Test</name>
 
+	<properties>
+		<spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+		<start-class>com.example.SenderReceiverApplication</start-class>
+	</properties>
+
 	<!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
 	<dependencyManagement>
 		<dependencies>
@@ -64,9 +69,56 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<skip>true</skip>
+					<mainClass>com.example.SenderReceiverApplication</mainClass>
 				</configuration>
+<!--			</plugin>-->
+<!--			<plugin>-->
+<!--			<groupId>org.apache.maven.plugins</groupId>-->
+<!--			<artifactId>maven-compiler-plugin</artifactId>-->
+<!--			<version>3.11.0</version>-->
+<!--				<dependencies>-->
+<!--					<dependency>-->
+<!--						<groupId>com.google.cloud</groupId>-->
+<!--						<artifactId>spring-cloud-gcp-integration-pubsub-sample-sender</artifactId>-->
+<!--						<version>${project.version}</version>-->
+<!--					</dependency>-->
+<!--					<dependency>-->
+<!--						<groupId>com.google.cloud</groupId>-->
+<!--						<artifactId>spring-cloud-gcp-integration-pubsub-sample-receiver</artifactId>-->
+<!--						<version>${project.version}</version>-->
+<!--					</dependency>-->
+<!--				</dependencies>-->
+<!--			</plugin>-->
+
+
+
+<!--			<plugin>-->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-compiler-plugin</artifactId>-->
+<!--				<version>3.11.0</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>compile-generator</id>-->
+<!--						<phase>generate-sources</phase>-->
+<!--						<goals>-->
+<!--							<goal>compile</goal>-->
+<!--						</goals>-->
+<!--						<configuration>-->
+<!--							<includes>-->
+<!--								<include>../spring-cloud-gcp-integration-pubsub-sample-sender/src/main/java</include>-->
+<!--								<include>../spring-cloud-gcp-integration-pubsub-sample-receiver/src/main/java</include>-->
+<!--							</includes>-->
+<!--						</configuration>-->
+<!--					</execution>-->
+<!--				</executions>-->
 			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>org.springframework.boot</groupId>-->
+<!--				<artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--				<configuration>-->
+<!--					<skip>true</skip>-->
+<!--				</configuration>-->
+<!--			</plugin>-->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
