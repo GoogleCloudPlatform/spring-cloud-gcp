@@ -41,18 +41,13 @@ import org.springframework.web.client.RestTemplate;
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
 @ExtendWith(OutputCaptureExtension.class)
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SenderReceiverApplication.class})
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
+    properties = {"server.port=8082"},
+    classes = {SenderReceiverApplication.class})
 class SampleAppIntegrationTest {
 
   private RestTemplate restTemplate = new RestTemplate();
-
-  @BeforeEach
-  public void startApplications() {
-    SpringApplicationBuilder myApplication =
-        new SpringApplicationBuilder(SenderReceiverApplication.class)
-            .properties("server.port=8082");
-    myApplication.run();
-  }
 
   @Test
   void testSample(CapturedOutput capturedOutput) throws Exception {
