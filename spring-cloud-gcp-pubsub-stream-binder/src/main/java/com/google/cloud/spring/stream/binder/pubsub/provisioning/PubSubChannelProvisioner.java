@@ -141,22 +141,11 @@ public class PubSubChannelProvisioner
       String topicName,
       PubSubConsumerProperties.DeadLetterPolicy deadLetterPolicy,
       boolean autoCreate) {
-    Subscription subscription;
-    subscription = this.pubSubAdmin.getSubscription(subscriptionName);
-    if (subscription != null) {
-      if (!subscription.getTopic().equals(topicName)) {
-        throw new ProvisioningException(
-            "Existing '"
-                + subscriptionName
-                + "' subscription is for a different topic '"
-                + subscription.getTopic()
-                + "', not '"
-                + topicName
-                + "'.");
-      }
-      return subscription;
+    Subscription subscription = this.pubSubAdmin.getSubscription(subscriptionName);
+    if (subscription == null) {
+      return createSubscription(subscriptionName, topicName, deadLetterPolicy, autoCreate);
     }
-    return createSubscription(subscriptionName, topicName, deadLetterPolicy, autoCreate);
+    return subscription;
   }
 
   private Subscription createSubscription(
