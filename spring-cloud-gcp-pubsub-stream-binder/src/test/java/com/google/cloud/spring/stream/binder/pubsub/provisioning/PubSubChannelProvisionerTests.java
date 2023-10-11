@@ -142,48 +142,8 @@ class PubSubChannelProvisionerTests {
   }
 
   @Test
-  void testProvisionConsumerDestination_noTopicException() {
-    when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(false);
-    when(this.pubSubAdminMock.getTopic("topic_A")).thenReturn(null);
-
-    assertThatExceptionOfType(ProvisioningException.class)
-        .isThrownBy(
-            () ->
-                this.pubSubChannelProvisioner.provisionConsumerDestination(
-                    "topic_A", "group_A", this.properties))
-        .withMessage("Non-existing 'topic_A' topic.");
-  }
-
-  @Test
-  void testProvisionConsumerDestination_noSubscriptionException() {
-    when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(false);
-
-    assertThatExceptionOfType(ProvisioningException.class)
-        .isThrownBy(
-            () ->
-                this.pubSubChannelProvisioner.provisionConsumerDestination(
-                    "topic_A", "group_A", this.properties))
-        .withMessage("Non-existing 'topic_A.group_A' subscription.");
-  }
-
-  @Test
-  void testProvisionConsumerDestination_wrongTopicException() {
-    when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(false);
-    when(this.pubSubAdminMock.getSubscription("topic_A.group_A"))
-        .thenReturn(Subscription.newBuilder().setTopic("topic_B").build());
-
-    assertThatExceptionOfType(ProvisioningException.class)
-        .isThrownBy(
-            () ->
-                this.pubSubChannelProvisioner.provisionConsumerDestination(
-                    "topic_A", "group_A", this.properties))
-        .withMessage("Existing 'topic_A.group_A' subscription is for a different topic 'topic_B'.");
-  }
-
-  @Test
   void testProvisionConsumerDestination_anonymousGroup() {
-    // should work with auto-create = false
-    when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(false);
+    when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(true);
 
     String subscriptionNameRegex = "anonymous\\.topic_A\\.[a-f0-9\\-]{36}";
 
@@ -270,14 +230,14 @@ class PubSubChannelProvisionerTests {
   void testProvisionConsumerDestination_concurrentTopicCreation() {
     when(this.pubSubAdminMock.createTopic(any())).thenThrow(AlreadyExistsException.class);
     when(this.pubSubAdminMock.getTopic("already_existing_topic"))
-        .thenReturn(null)
-        .thenReturn(Topic.newBuilder().setName("already_existing_topic").build());
+            .thenReturn(null)
+            .thenReturn(Topic.newBuilder().setName("already_existing_topic").build());
 
     // Ensure no exceptions occur if topic already exists on create call
     assertThat(
-            this.pubSubChannelProvisioner.provisionConsumerDestination(
-                "already_existing_topic", "group1", this.properties))
-        .isNotNull();
+            this.pubSubChannelProvisioner.ensureTopicExists(
+                    "already_existing_topic", true))
+            .isNotNull();
   }
 
   @Test
@@ -288,5 +248,44 @@ class PubSubChannelProvisionerTests {
     // Ensure no infinite loop on recursive call
     assertThatExceptionOfType(ProvisioningException.class)
         .isThrownBy(() -> this.pubSubChannelProvisioner.ensureTopicExists("new_topic", true));
+  }
+
+  @Test
+  void testProvisionConsumerDestination_subscriptionNameCannotBeNull() {
+    when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(false);
+    when(this.pubSubConsumerProperties.getSubscriptionName()).thenReturn(null);
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(
+            () ->
+                this.pubSubChannelProvisioner.provisionConsumerDestination(
+                    "topic_A", null, this.properties))
+        .withMessage("Subscription Name cannot be null or empty");
+  }
+
+  @Test
+  void testProvisionConsumerDestination_createSubscription() {
+    when(this.pubSubAdminMock.getSubscription("subscription_A"))
+        .thenReturn(
+            Subscription.newBuilder().setTopic("topic_A").setName("subscription_A").build());
+
+    Subscription subscription =
+        this.pubSubChannelProvisioner.ensureSubscriptionExists(
+            "subscription_A", "topic_A", null, true);
+
+    assertThat(subscription.getName()).isEqualTo("subscription_A");
+    assertThat(subscription.getTopic()).isEqualTo("topic_A");
+  }
+
+  @Test
+  void testProvisionConsumerDestination_subscriptionHasDifferentTopic() {
+    when(this.pubSubAdminMock.getSubscription("subscription_A"))
+        .thenReturn(
+            Subscription.newBuilder().setTopic("topic_A").setName("subscription_A").build());
+
+    assertThatExceptionOfType(ProvisioningException.class)
+        .isThrownBy(
+            () ->
+                this.pubSubChannelProvisioner.ensureSubscriptionExists(
+                    "subscription_A", "topic_B", null, true));
   }
 }
