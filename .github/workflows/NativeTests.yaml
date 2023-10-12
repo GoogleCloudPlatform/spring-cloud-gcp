@@ -92,7 +92,7 @@ jobs:
         id: intTest3
         continue-on-error: true
         run: |
-          EXCLUDED_MODULES=spring-cloud-spanner-spring-data-r2dbc,spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-sample-test MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
+          EXCLUDED_MODULES=spring-cloud-spanner-spring-data-r2dbc MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Aggregate Report
         run: |
           ./mvnw \
