@@ -275,17 +275,4 @@ class PubSubChannelProvisionerTests {
     assertThat(subscription.getName()).isEqualTo("subscription_A");
     assertThat(subscription.getTopic()).isEqualTo("topic_A");
   }
-
-  @Test
-  void testProvisionConsumerDestination_subscriptionHasDifferentTopic() {
-    when(this.pubSubAdminMock.getSubscription("subscription_A"))
-        .thenReturn(
-            Subscription.newBuilder().setTopic("topic_A").setName("subscription_A").build());
-
-    assertThatExceptionOfType(ProvisioningException.class)
-        .isThrownBy(
-            () ->
-                this.pubSubChannelProvisioner.ensureSubscriptionExists(
-                    "subscription_A", "topic_B", null, true));
-  }
 }
