@@ -30,6 +30,7 @@ import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.cloud.spring.pubsub.support.PubSubTopicUtils;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
+import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
 import com.google.pubsub.v1.DeadLetterPolicy;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
@@ -42,6 +43,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
+import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.cloud.stream.provisioning.ProvisioningException;
 
 /**
@@ -55,9 +58,13 @@ class PubSubChannelProvisionerTests {
 
   @Mock PubSubAdmin pubSubAdminMock;
 
-  @Mock ExtendedConsumerProperties<PubSubConsumerProperties> properties;
+  @Mock ExtendedConsumerProperties<PubSubConsumerProperties> extendedConsumerProperties;
+
+  @Mock ExtendedProducerProperties<PubSubProducerProperties> extendedProducerProperties;
 
   @Mock PubSubConsumerProperties pubSubConsumerProperties;
+
+  @Mock PubSubProducerProperties pubSubProducerProperties;
 
   // class under test
   PubSubChannelProvisioner pubSubChannelProvisioner;
@@ -85,8 +92,11 @@ class PubSubChannelProvisionerTests {
                     .build())
         .when(this.pubSubAdminMock)
         .getTopic(any());
-    when(this.properties.getExtension()).thenReturn(this.pubSubConsumerProperties);
+    when(this.extendedConsumerProperties.getExtension()).thenReturn(this.pubSubConsumerProperties);
     when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(true);
+
+    when(this.extendedProducerProperties.getExtension()).thenReturn(this.pubSubProducerProperties);
+    when(this.pubSubProducerProperties.isAutoCreateResources()).thenReturn(true);
 
     this.pubSubChannelProvisioner = new PubSubChannelProvisioner(this.pubSubAdminMock);
   }
@@ -96,7 +106,7 @@ class PubSubChannelProvisionerTests {
     PubSubConsumerDestination result =
         (PubSubConsumerDestination)
             this.pubSubChannelProvisioner.provisionConsumerDestination(
-                "topic_A", "group_A", this.properties);
+                "topic_A", "group_A", this.extendedConsumerProperties);
 
     assertThat(result.getName()).isEqualTo("topic_A.group_A");
 
@@ -116,7 +126,7 @@ class PubSubChannelProvisionerTests {
     PubSubConsumerDestination result =
         (PubSubConsumerDestination)
             this.pubSubChannelProvisioner.provisionConsumerDestination(
-                fullTopicName, "group_A", this.properties);
+                fullTopicName, "group_A", this.extendedConsumerProperties);
 
     assertThat(result.getName()).isEqualTo("topic_A.group_A");
 
@@ -130,13 +140,13 @@ class PubSubChannelProvisionerTests {
 
   @Test
   void testProvisionConsumerDestination_customSubscription() {
-    when(this.properties.getExtension()).thenReturn(this.pubSubConsumerProperties);
+    when(this.extendedConsumerProperties.getExtension()).thenReturn(this.pubSubConsumerProperties);
     when(this.pubSubConsumerProperties.getSubscriptionName()).thenReturn("my-custom-subscription");
 
     PubSubConsumerDestination result =
         (PubSubConsumerDestination)
             this.pubSubChannelProvisioner.provisionConsumerDestination(
-                "topic_A", "group_A", this.properties);
+                "topic_A", "group_A", this.extendedConsumerProperties);
 
     assertThat(result.getName()).isEqualTo("my-custom-subscription");
   }
@@ -150,7 +160,7 @@ class PubSubChannelProvisionerTests {
     PubSubConsumerDestination result =
         (PubSubConsumerDestination)
             this.pubSubChannelProvisioner.provisionConsumerDestination(
-                "topic_A", null, this.properties);
+                "topic_A", null, this.extendedConsumerProperties);
 
     assertThat(result.getName()).matches(subscriptionNameRegex);
 
@@ -174,7 +184,7 @@ class PubSubChannelProvisionerTests {
             Topic.newBuilder().setName("projects/test-project/topics/deadLetterTopic").build());
 
     this.pubSubChannelProvisioner.provisionConsumerDestination(
-        "topic_A", "group_A", this.properties);
+        "topic_A", "group_A", this.extendedConsumerProperties);
 
     ArgumentCaptor<Subscription.Builder> argCaptor =
         ArgumentCaptor.forClass(Subscription.Builder.class);
@@ -194,7 +204,7 @@ class PubSubChannelProvisionerTests {
     PubSubConsumerDestination result =
         (PubSubConsumerDestination)
             this.pubSubChannelProvisioner.provisionConsumerDestination(
-                "topic_A", null, this.properties);
+                "topic_A", null, this.extendedConsumerProperties);
 
     this.pubSubChannelProvisioner.afterUnbindConsumer(result);
 
@@ -206,7 +216,7 @@ class PubSubChannelProvisionerTests {
     PubSubConsumerDestination result =
         (PubSubConsumerDestination)
             this.pubSubChannelProvisioner.provisionConsumerDestination(
-                "topic_A", null, this.properties);
+                "topic_A", null, this.extendedConsumerProperties);
 
     this.pubSubChannelProvisioner.afterUnbindConsumer(result);
     this.pubSubChannelProvisioner.afterUnbindConsumer(result);
@@ -219,7 +229,7 @@ class PubSubChannelProvisionerTests {
     PubSubConsumerDestination result =
         (PubSubConsumerDestination)
             this.pubSubChannelProvisioner.provisionConsumerDestination(
-                "topic_A", "group1", this.properties);
+                "topic_A", "group1", this.extendedConsumerProperties);
 
     this.pubSubChannelProvisioner.afterUnbindConsumer(result);
 
@@ -258,7 +268,7 @@ class PubSubChannelProvisionerTests {
         .isThrownBy(
             () ->
                 this.pubSubChannelProvisioner.provisionConsumerDestination(
-                    "topic_A", null, this.properties))
+                    "topic_A", null, this.extendedConsumerProperties))
         .withMessage("Subscription Name cannot be null or empty");
   }
 
@@ -277,15 +287,21 @@ class PubSubChannelProvisionerTests {
   }
 
   @Test
-  void testProvisionConsumerDestination_subscriptionHasDifferentTopic() {
-    when(this.pubSubAdminMock.getSubscription("subscription_A"))
-        .thenReturn(
-            Subscription.newBuilder().setTopic("topic_A").setName("subscription_A").build());
+  void testProvisionProducerDestination_createTopic() {
+    ProducerDestination destination = this.pubSubChannelProvisioner.provisionProducerDestination(
+        "topic_A", extendedProducerProperties);
+
+    assertThat(destination.getName()).isEqualTo("topic_A");
+  }
+
+  @Test
+  void testProvisionProducerDestination_dontCreateTopic() {
+    when(this.pubSubProducerProperties.isAutoCreateResources()).thenReturn(false);
+    when(this.pubSubAdminMock.getTopic(any())).thenReturn(null);
 
     assertThatExceptionOfType(ProvisioningException.class)
-        .isThrownBy(
-            () ->
-                this.pubSubChannelProvisioner.ensureSubscriptionExists(
-                    "subscription_A", "topic_B", null, true));
+        .isThrownBy(() -> this.pubSubChannelProvisioner.provisionProducerDestination(
+            "not_yet_created", extendedProducerProperties))
+        .withMessageContaining("Non-existing");
   }
 }
