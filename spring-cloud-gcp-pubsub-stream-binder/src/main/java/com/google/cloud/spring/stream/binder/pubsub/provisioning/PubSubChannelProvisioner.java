@@ -68,7 +68,6 @@ public class PubSubChannelProvisioner
       String group,
       ExtendedConsumerProperties<PubSubConsumerProperties> properties) {
 
-    String subscriptionName = null;
     String customName = properties.getExtension().getSubscriptionName();
 
     boolean autoCreate = properties.getExtension().isAutoCreateResources();
@@ -79,6 +78,7 @@ public class PubSubChannelProvisioner
     String topicShortName =
         TopicName.isParsableFrom(topicName) ? TopicName.parse(topicName).getTopic() : topicName;
 
+    String subscriptionName = null;
     if (StringUtils.hasText(customName)) {
       if (StringUtils.hasText(group)) {
         LOGGER.warn(
@@ -129,8 +129,7 @@ public class PubSubChannelProvisioner
         return this.pubSubAdmin.createTopic(topicName);
       } catch (AlreadyExistsException alreadyExistsException) {
         // Sometimes 2+ instances of this application will race to create the topic, so this ensures
-        // we retry
-        // in the non-winning instances. In the rare case it fails, we throw an exception.
+        // we retry in the non-winning instances. In the rare case it fails, we throw an exception.
         return ensureTopicExists(topicName, false);
       }
     }
@@ -142,20 +141,11 @@ public class PubSubChannelProvisioner
       String topicName,
       PubSubConsumerProperties.DeadLetterPolicy deadLetterPolicy,
       boolean autoCreate) {
-    Subscription subscription;
-    subscription = this.pubSubAdmin.getSubscription(subscriptionName);
-    if (subscription != null) {
-      if (!subscription.getTopic().equals(topicName)) {
-        throw new ProvisioningException(
-            "Existing '"
-                + subscriptionName
-                + "' subscription is for a different topic '"
-                + subscription.getTopic()
-                + "'.");
-      }
-      return subscription;
+    Subscription subscription = this.pubSubAdmin.getSubscription(subscriptionName);
+    if (subscription == null) {
+      return createSubscription(subscriptionName, topicName, deadLetterPolicy, autoCreate);
     }
-    return createSubscription(subscriptionName, topicName, deadLetterPolicy, autoCreate);
+    return subscription;
   }
 
   private Subscription createSubscription(
