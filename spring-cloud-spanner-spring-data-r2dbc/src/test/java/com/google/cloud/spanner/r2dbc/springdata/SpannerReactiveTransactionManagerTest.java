@@ -11,6 +11,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.transaction.TransactionDefinition.ISOLATION_READ_COMMITTED;
@@ -56,7 +57,7 @@ public class SpannerReactiveTransactionManagerTest {
   public void setUp() {
     doReturn(Mono.just(connection)).when(connectionFactory).create();
     when(connection.beginTransaction(any())).thenReturn(Mono.empty());
-    reactiveTransactionManager = new SpannerReactiveTransactionManager();
+    reactiveTransactionManager = new SpannerReactiveTransactionManager(mock(ConnectionFactory.class));
     reactiveTransactionManager.setConnectionFactory(connectionFactory);
   }
 
@@ -65,7 +66,7 @@ public class SpannerReactiveTransactionManagerTest {
     // setup
     TimestampBound fiveSecondStaleness = TimestampBound.ofMaxStaleness(5, TimeUnit.SECONDS);
     R2dbcTransactionManager reactiveTransactionManager = new SpannerReactiveTransactionManager(
-        fiveSecondStaleness); // configured with 5 second staleness
+        mock(ConnectionFactory.class), fiveSecondStaleness); // configured with 5 second staleness
     reactiveTransactionManager.setConnectionFactory(connectionFactory);
 
     // action

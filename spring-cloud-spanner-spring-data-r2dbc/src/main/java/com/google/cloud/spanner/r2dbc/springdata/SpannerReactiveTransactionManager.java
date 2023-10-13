@@ -22,6 +22,7 @@ import static org.springframework.transaction.TransactionDefinition.ISOLATION_RE
 import static org.springframework.transaction.TransactionDefinition.PROPAGATION_NESTED;
 
 import com.google.cloud.spanner.TimestampBound;
+import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.TransactionDefinition;
 import java.util.Arrays;
 import java.util.List;
@@ -38,11 +39,13 @@ public class SpannerReactiveTransactionManager extends R2dbcTransactionManager {
 
   private final TimestampBound timestampBound;
 
-  public SpannerReactiveTransactionManager(TimestampBound timestampBound) {
+  public SpannerReactiveTransactionManager(ConnectionFactory connectionFactory, TimestampBound timestampBound) {
+    super(connectionFactory);
     this.timestampBound = timestampBound;
   }
 
-  public SpannerReactiveTransactionManager() {
+  public SpannerReactiveTransactionManager(ConnectionFactory connectionFactory) {
+    super(connectionFactory);
     this.timestampBound = TimestampBound.strong();
   }
 
