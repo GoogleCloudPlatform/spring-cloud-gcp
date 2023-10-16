@@ -51,6 +51,11 @@ public class HubServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getHubRetry;
   /**
+   * Allow override of retry settings at method-level for listHubSpokes. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listHubSpokesRetry;
+  /**
    * Allow override of retry settings at method-level for listSpokes. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -60,6 +65,61 @@ public class HubServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getSpokeRetry;
+  /**
+   * Allow override of retry settings at method-level for getRouteTable. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getRouteTableRetry;
+  /**
+   * Allow override of retry settings at method-level for getRoute. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getRouteRetry;
+  /**
+   * Allow override of retry settings at method-level for listRoutes. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listRoutesRetry;
+  /**
+   * Allow override of retry settings at method-level for listRouteTables. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listRouteTablesRetry;
+  /**
+   * Allow override of retry settings at method-level for getGroup. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getGroupRetry;
+  /**
+   * Allow override of retry settings at method-level for listGroups. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listGroupsRetry;
+  /**
+   * Allow override of retry settings at method-level for listLocations. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listLocationsRetry;
+  /**
+   * Allow override of retry settings at method-level for getLocation. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getLocationRetry;
+  /**
+   * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry setIamPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getIamPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry testIamPermissionsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -106,6 +166,14 @@ public class HubServiceSpringProperties implements CredentialsSupplier {
     this.getHubRetry = getHubRetry;
   }
 
+  public Retry getListHubSpokesRetry() {
+    return this.listHubSpokesRetry;
+  }
+
+  public void setListHubSpokesRetry(Retry listHubSpokesRetry) {
+    this.listHubSpokesRetry = listHubSpokesRetry;
+  }
+
   public Retry getListSpokesRetry() {
     return this.listSpokesRetry;
   }
@@ -120,5 +188,93 @@ public class HubServiceSpringProperties implements CredentialsSupplier {
 
   public void setGetSpokeRetry(Retry getSpokeRetry) {
     this.getSpokeRetry = getSpokeRetry;
+  }
+
+  public Retry getGetRouteTableRetry() {
+    return this.getRouteTableRetry;
+  }
+
+  public void setGetRouteTableRetry(Retry getRouteTableRetry) {
+    this.getRouteTableRetry = getRouteTableRetry;
+  }
+
+  public Retry getGetRouteRetry() {
+    return this.getRouteRetry;
+  }
+
+  public void setGetRouteRetry(Retry getRouteRetry) {
+    this.getRouteRetry = getRouteRetry;
+  }
+
+  public Retry getListRoutesRetry() {
+    return this.listRoutesRetry;
+  }
+
+  public void setListRoutesRetry(Retry listRoutesRetry) {
+    this.listRoutesRetry = listRoutesRetry;
+  }
+
+  public Retry getListRouteTablesRetry() {
+    return this.listRouteTablesRetry;
+  }
+
+  public void setListRouteTablesRetry(Retry listRouteTablesRetry) {
+    this.listRouteTablesRetry = listRouteTablesRetry;
+  }
+
+  public Retry getGetGroupRetry() {
+    return this.getGroupRetry;
+  }
+
+  public void setGetGroupRetry(Retry getGroupRetry) {
+    this.getGroupRetry = getGroupRetry;
+  }
+
+  public Retry getListGroupsRetry() {
+    return this.listGroupsRetry;
+  }
+
+  public void setListGroupsRetry(Retry listGroupsRetry) {
+    this.listGroupsRetry = listGroupsRetry;
+  }
+
+  public Retry getListLocationsRetry() {
+    return this.listLocationsRetry;
+  }
+
+  public void setListLocationsRetry(Retry listLocationsRetry) {
+    this.listLocationsRetry = listLocationsRetry;
+  }
+
+  public Retry getGetLocationRetry() {
+    return this.getLocationRetry;
+  }
+
+  public void setGetLocationRetry(Retry getLocationRetry) {
+    this.getLocationRetry = getLocationRetry;
+  }
+
+  public Retry getSetIamPolicyRetry() {
+    return this.setIamPolicyRetry;
+  }
+
+  public void setSetIamPolicyRetry(Retry setIamPolicyRetry) {
+    this.setIamPolicyRetry = setIamPolicyRetry;
+  }
+
+  public Retry getGetIamPolicyRetry() {
+    return this.getIamPolicyRetry;
+  }
+
+  public void setGetIamPolicyRetry(Retry getIamPolicyRetry) {
+    this.getIamPolicyRetry = getIamPolicyRetry;
+  }
+
+  public Retry getTestIamPermissionsRetry() {
+    return this.testIamPermissionsRetry;
+  }
+
+  public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
+    this.testIamPermissionsRetry = testIamPermissionsRetry;
   }
 }
