@@ -14,6 +14,15 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.8.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.1...v4.8.2) (2023-10-17)
+
+
+### Bug Fixes
+
+* allow minimal permissions for consumer destination use ([#2233](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2233)) ([d5a42c4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d5a42c4c6035c9b61af129586e87baa9f244984f))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.25.0 ([#2249](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2249)) ([903c3c7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/903c3c7619515d7d9ef4a7afa094e184b7771970))
+* remove unnecessary topic name comparison on subscription ([#2239](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2239)) ([f0f0124](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f0f0124e06e20cdc23d6baf24ecdc1fab5b3f8a2))
+
 ## [4.8.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.0...v4.8.1) (2023-10-03)
 
 
