@@ -39,7 +39,8 @@ public class SpannerReactiveTransactionManager extends R2dbcTransactionManager {
 
   private final TimestampBound timestampBound;
 
-  public SpannerReactiveTransactionManager(ConnectionFactory connectionFactory, TimestampBound timestampBound) {
+  public SpannerReactiveTransactionManager(ConnectionFactory connectionFactory,
+      TimestampBound timestampBound) {
     super(connectionFactory);
     this.timestampBound = timestampBound;
   }
@@ -68,5 +69,9 @@ public class SpannerReactiveTransactionManager extends R2dbcTransactionManager {
       org.springframework.transaction.TransactionDefinition definition) {
     TransactionDefinition delegate = super.createTransactionDefinition(definition);
     return new SpannerTransactionDefinition(delegate, timestampBound);
+  }
+
+  public TimestampBound getTimestampBound() {
+    return timestampBound;
   }
 }
