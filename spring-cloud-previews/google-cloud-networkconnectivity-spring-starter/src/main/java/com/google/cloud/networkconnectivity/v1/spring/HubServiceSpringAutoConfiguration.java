@@ -157,6 +157,11 @@ public class HubServiceSpringAutoConfiguration {
               clientSettingsBuilder.getHubSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getHubSettings().setRetrySettings(getHubRetrySettings);
 
+      RetrySettings listHubSpokesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listHubSpokesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listHubSpokesSettings().setRetrySettings(listHubSpokesRetrySettings);
+
       RetrySettings listSpokesRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listSpokesSettings().getRetrySettings(), serviceRetry);
@@ -166,6 +171,65 @@ public class HubServiceSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getSpokeSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getSpokeSettings().setRetrySettings(getSpokeRetrySettings);
+
+      RetrySettings getRouteTableRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getRouteTableSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getRouteTableSettings().setRetrySettings(getRouteTableRetrySettings);
+
+      RetrySettings getRouteRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getRouteSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getRouteSettings().setRetrySettings(getRouteRetrySettings);
+
+      RetrySettings listRoutesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listRoutesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listRoutesSettings().setRetrySettings(listRoutesRetrySettings);
+
+      RetrySettings listRouteTablesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listRouteTablesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listRouteTablesSettings()
+          .setRetrySettings(listRouteTablesRetrySettings);
+
+      RetrySettings getGroupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getGroupSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getGroupSettings().setRetrySettings(getGroupRetrySettings);
+
+      RetrySettings listGroupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listGroupsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listGroupsSettings().setRetrySettings(listGroupsRetrySettings);
+
+      RetrySettings listLocationsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listLocationsSettings().setRetrySettings(listLocationsRetrySettings);
+
+      RetrySettings getLocationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getLocationSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getLocationSettings().setRetrySettings(getLocationRetrySettings);
+
+      RetrySettings setIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.setIamPolicySettings().setRetrySettings(setIamPolicyRetrySettings);
+
+      RetrySettings getIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIamPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
+
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
@@ -191,6 +255,16 @@ public class HubServiceSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for getHub from properties.");
       }
     }
+    Retry listHubSpokesRetry = clientProperties.getListHubSpokesRetry();
+    if (listHubSpokesRetry != null) {
+      RetrySettings listHubSpokesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listHubSpokesSettings().getRetrySettings(), listHubSpokesRetry);
+      clientSettingsBuilder.listHubSpokesSettings().setRetrySettings(listHubSpokesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listHubSpokes from properties.");
+      }
+    }
     Retry listSpokesRetry = clientProperties.getListSpokesRetry();
     if (listSpokesRetry != null) {
       RetrySettings listSpokesRetrySettings =
@@ -209,6 +283,123 @@ public class HubServiceSpringAutoConfiguration {
       clientSettingsBuilder.getSpokeSettings().setRetrySettings(getSpokeRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getSpoke from properties.");
+      }
+    }
+    Retry getRouteTableRetry = clientProperties.getGetRouteTableRetry();
+    if (getRouteTableRetry != null) {
+      RetrySettings getRouteTableRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getRouteTableSettings().getRetrySettings(), getRouteTableRetry);
+      clientSettingsBuilder.getRouteTableSettings().setRetrySettings(getRouteTableRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getRouteTable from properties.");
+      }
+    }
+    Retry getRouteRetry = clientProperties.getGetRouteRetry();
+    if (getRouteRetry != null) {
+      RetrySettings getRouteRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getRouteSettings().getRetrySettings(), getRouteRetry);
+      clientSettingsBuilder.getRouteSettings().setRetrySettings(getRouteRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getRoute from properties.");
+      }
+    }
+    Retry listRoutesRetry = clientProperties.getListRoutesRetry();
+    if (listRoutesRetry != null) {
+      RetrySettings listRoutesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listRoutesSettings().getRetrySettings(), listRoutesRetry);
+      clientSettingsBuilder.listRoutesSettings().setRetrySettings(listRoutesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listRoutes from properties.");
+      }
+    }
+    Retry listRouteTablesRetry = clientProperties.getListRouteTablesRetry();
+    if (listRouteTablesRetry != null) {
+      RetrySettings listRouteTablesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listRouteTablesSettings().getRetrySettings(),
+              listRouteTablesRetry);
+      clientSettingsBuilder
+          .listRouteTablesSettings()
+          .setRetrySettings(listRouteTablesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listRouteTables from properties.");
+      }
+    }
+    Retry getGroupRetry = clientProperties.getGetGroupRetry();
+    if (getGroupRetry != null) {
+      RetrySettings getGroupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getGroupSettings().getRetrySettings(), getGroupRetry);
+      clientSettingsBuilder.getGroupSettings().setRetrySettings(getGroupRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getGroup from properties.");
+      }
+    }
+    Retry listGroupsRetry = clientProperties.getListGroupsRetry();
+    if (listGroupsRetry != null) {
+      RetrySettings listGroupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listGroupsSettings().getRetrySettings(), listGroupsRetry);
+      clientSettingsBuilder.listGroupsSettings().setRetrySettings(listGroupsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listGroups from properties.");
+      }
+    }
+    Retry listLocationsRetry = clientProperties.getListLocationsRetry();
+    if (listLocationsRetry != null) {
+      RetrySettings listLocationsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listLocationsSettings().getRetrySettings(), listLocationsRetry);
+      clientSettingsBuilder.listLocationsSettings().setRetrySettings(listLocationsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listLocations from properties.");
+      }
+    }
+    Retry getLocationRetry = clientProperties.getGetLocationRetry();
+    if (getLocationRetry != null) {
+      RetrySettings getLocationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getLocationSettings().getRetrySettings(), getLocationRetry);
+      clientSettingsBuilder.getLocationSettings().setRetrySettings(getLocationRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getLocation from properties.");
+      }
+    }
+    Retry setIamPolicyRetry = clientProperties.getSetIamPolicyRetry();
+    if (setIamPolicyRetry != null) {
+      RetrySettings setIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), setIamPolicyRetry);
+      clientSettingsBuilder.setIamPolicySettings().setRetrySettings(setIamPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for setIamPolicy from properties.");
+      }
+    }
+    Retry getIamPolicyRetry = clientProperties.getGetIamPolicyRetry();
+    if (getIamPolicyRetry != null) {
+      RetrySettings getIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIamPolicySettings().getRetrySettings(), getIamPolicyRetry);
+      clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getIamPolicy from properties.");
+      }
+    }
+    Retry testIamPermissionsRetry = clientProperties.getTestIamPermissionsRetry();
+    if (testIamPermissionsRetry != null) {
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(),
+              testIamPermissionsRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for testIamPermissions from properties.");
       }
     }
     return clientSettingsBuilder.build();
