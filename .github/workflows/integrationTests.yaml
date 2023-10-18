@@ -40,8 +40,9 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v2
       - name: Setup Java 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'temurin'
           java-version: 17
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v0
@@ -60,7 +61,7 @@ jobs:
         if: steps.mvn-cache.outputs.cache-hit != 'true'
         run: ./mvnw compile dependency:go-offline
       - name: Mvn install # Need this when the directory/pom structure changes
-        id: install1
+        id: install
         continue-on-error: true
         run: |
           ./mvnw \
@@ -71,7 +72,7 @@ jobs:
             install
       # Unlike for the other integrationTest job, we don't block here as these run in parallel.
       - name: Integration Tests
-        id: intTest1
+        id: intTest
         continue-on-error: true
         run: |
           ./mvnw \
@@ -128,8 +129,9 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v2
       - name: Setup Java 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'temurin'
           java-version: 17
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v0
