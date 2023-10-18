@@ -53,7 +53,7 @@ jobs:
       - name: Maven go offline
         id: mvn-offline
         if: steps.mvn-cache.outputs.cache-hit != 'true'
-        run: ./mvnw dependency:go-offline -ntp -b -T 1.5C
+        run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
       - name: Mvn install # Need this when the directory/pom structure changes
         id: install
         continue-on-error: true
@@ -125,7 +125,7 @@ jobs:
       - name: Maven go offline
         id: mvn-offline
         if: steps.mvn-cache.outputs.cache-hit != 'true'
-        run: ./mvnw dependency:go-offline -ntp -b -T 1.5C
+        run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
       - name: Mvn install # Need this when the directory/pom structure changes
         id: install
         continue-on-error: true
