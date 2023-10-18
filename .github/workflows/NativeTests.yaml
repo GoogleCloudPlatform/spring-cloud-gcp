@@ -11,9 +11,11 @@ on:
     - 'spring-cloud-previews/**'
   workflow_dispatch:
 
+env:
+  EXCLUDED_MODULES: spring-cloud-spanner-spring-data-r2dbc
 
 jobs:
-  NativeTests:
+  parallel-NativeTests:
     if: |
       github.actor != 'dependabot[bot]' && ((
         github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
@@ -24,7 +26,6 @@ jobs:
       matrix:
         it:
           - vision
-          - spanner
           - storage
           - secretmanager
           - logging-sample
@@ -52,9 +53,9 @@ jobs:
       - name: Maven go offline
         id: mvn-offline
         if: steps.mvn-cache.outputs.cache-hit != 'true'
-        run: ./mvnw compile dependency:go-offline
+        run: ./mvnw dependency:go-offline -ntp -b -T 1.5C
       - name: Mvn install # Need this when the directory/pom structure changes
-        id: install1
+        id: install
         continue-on-error: true
         run: |
           ./mvnw \
@@ -63,9 +64,71 @@ jobs:
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
             install
-      - name: Retry install on failure
-        id: install2
-        if: steps.install1.outcome == 'failure'
+      # Unlike for the other NativeTests job, we don't block here as these run in parallel.
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: '22.3.2'
+          java-version: '17'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+      - name: Native Tests in Modules
+        id: intTest
+        continue-on-error: true
+        run: |
+          MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
+      - name: Aggregate Report
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --define aggregate=true \
+            --activate-profiles spring-native,\!default \
+          surefire-report:report-only
+      - name: Archive logs
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v3
+        with:
+          name: Native Test Logs
+          path: |
+            **/target/failsafe-reports/*
+            **/target/site
+
+  NativeTests:
+    if: |
+      github.actor != 'dependabot[bot]' && ((
+        github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
+      ) || (github.event_name != 'pull_request'))
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        it:
+          - spanner
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Set Up Authentication
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.SPRING_CLOUD_GCP_CI_NATIVE_SA_KEY }}
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: spring-cloud-gcp-ci-native
+      - name: Maven go offline
+        id: mvn-offline
+        if: steps.mvn-cache.outputs.cache-hit != 'true'
+        run: ./mvnw dependency:go-offline -ntp -b -T 1.5C
+      - name: Mvn install # Need this when the directory/pom structure changes
+        id: install
+        continue-on-error: true
         run: |
           ./mvnw \
             --batch-mode \
@@ -88,10 +151,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - name: Native Tests in Modules
-        id: intTest3
+        id: intTest
         continue-on-error: true
         run: |
-          EXCLUDED_MODULES=spring-cloud-spanner-spring-data-r2dbc MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
+          MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Aggregate Report
         run: |
           ./mvnw \
