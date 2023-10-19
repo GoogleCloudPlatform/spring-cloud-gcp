@@ -30,7 +30,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Tests sample application endpoint that loads secrets as properties into the application context.
- * Application secret named "application-secret" must exist.
+ * Application secret named "application-secret" must exist and have a value of "Hello world.".
  */
 @EnabledIfSystemProperty(named = "it.secretmanager", matches = "true")
 @ExtendWith(SpringExtension.class)
