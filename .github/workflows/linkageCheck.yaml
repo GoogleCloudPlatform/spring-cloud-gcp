@@ -33,7 +33,7 @@ jobs:
       - name: Maven go offline
         id: mvn-offline
         if: steps.mvn-cache.outputs.cache-hit != 'true'
-        run: ./mvnw compile dependency:go-offline
+        run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
       - name: install
         # install before running Linkage Checker
         run: |
