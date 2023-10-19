@@ -28,6 +28,8 @@ run_sample_tests () {
     mvn -Pnative-sample-config -PnativeTest --define notAllModules=true --define maven.javadoc.skip=true test
     popd
     mvn clean --activate-profiles native-sample-config,nativeTest --define notAllModules=true --define maven.javadoc.skip=true -pl="${filtered_project_names}" test
+  else
+    mvn clean --activate-profiles native-sample-config,nativeTest --define notAllModules=true --define maven.javadoc.skip=true -pl="${project_names}" test
   fi
 }
 

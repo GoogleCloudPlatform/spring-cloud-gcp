@@ -41,11 +41,7 @@ class FunctionalSampleAppIntegrationTest {
 
   @Test
   void testSample(CapturedOutput capturedOutput) {
-    try {
-      FunctionalSampleTestApplication.main(new String[] {});
-    } catch (Throwable ex) {
-      ex.printStackTrace();
-    }
+    FunctionalSampleTestApplication.main(new String[] {});
 
     // Post message to Source over HTTP.
     MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
