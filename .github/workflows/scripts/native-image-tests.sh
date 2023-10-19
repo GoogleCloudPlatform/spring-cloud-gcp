@@ -21,7 +21,14 @@ run_sample_tests () {
     fi
   done
   project_names="$(echo "${module_samples[@]}" | sed 's/ /,/g')"
-  mvn clean --activate-profiles native-sample-config,nativeTest --define notAllModules=true --define maven.javadoc.skip=true -pl="${project_names}" test
+  if [[ $project_names =~ "spring-cloud-gcp-pubsub-stream-functional-sample" ]]; then
+    pushd spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-functional-sample/spring-cloud-gcp-pubsub-stream-functional-sample-test
+    mvn package -Pnative -Pnative-sample-config -DskipTests
+    mvn -Pnative-sample-config -PnativeTest --define notAllModules=true --define maven.javadoc.skip=true test
+    popd
+  else
+      mvn clean --activate-profiles native-sample-config,nativeTest --define notAllModules=true --define maven.javadoc.skip=true -pl="${project_names}" test
+  fi
 }
 
 run_module_tests() {
@@ -46,4 +53,6 @@ if [[ "$MODULE_UNDER_TEST" == *"sample" ]]; then
 else
   run_module_tests
 fi
+
+exit "$RETURN_CODE"
 
