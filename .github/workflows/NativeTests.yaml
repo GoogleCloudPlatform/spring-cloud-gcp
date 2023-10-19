@@ -91,6 +91,7 @@ jobs:
       - name: Native Tests in Modules
         id: intTest3
         continue-on-error: true
+        shell: bash
         run: |
           EXCLUDED_MODULES=spring-cloud-spanner-spring-data-r2dbc MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Aggregate Report
