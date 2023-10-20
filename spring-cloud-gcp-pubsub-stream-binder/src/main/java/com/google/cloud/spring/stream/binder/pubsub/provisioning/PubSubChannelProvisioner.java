@@ -68,10 +68,8 @@ public class PubSubChannelProvisioner
       String group,
       ExtendedConsumerProperties<PubSubConsumerProperties> properties) {
 
-    String subscriptionName;
-    Subscription subscription;
-
     String customName = properties.getExtension().getSubscriptionName();
+
     boolean autoCreate = properties.getExtension().isAutoCreateResources();
     PubSubConsumerProperties.DeadLetterPolicy deadLetterPolicy =
         properties.getExtension().getDeadLetterPolicy();
@@ -79,8 +77,8 @@ public class PubSubChannelProvisioner
     // topicName may be either the short or fully-qualified version.
     String topicShortName =
         TopicName.isParsableFrom(topicName) ? TopicName.parse(topicName).getTopic() : topicName;
-    Topic topic = ensureTopicExists(topicName, autoCreate);
 
+    String subscriptionName = null;
     if (StringUtils.hasText(customName)) {
       if (StringUtils.hasText(group)) {
         LOGGER.warn(
@@ -89,33 +87,21 @@ public class PubSubChannelProvisioner
                 + customName
                 + "'.");
       }
-      subscription = this.pubSubAdmin.getSubscription(customName);
       subscriptionName = customName;
     } else if (StringUtils.hasText(group)) {
       subscriptionName = topicShortName + "." + group;
-      subscription = this.pubSubAdmin.getSubscription(subscriptionName);
-    } else {
-      // Generate anonymous random group since one wasn't provided
-      subscriptionName = "anonymous." + topicShortName + "." + UUID.randomUUID().toString();
-      subscription =
-          this.createSubscription(subscriptionName, topicName, deadLetterPolicy, autoCreate);
-      this.anonymousGroupSubscriptionNames.add(subscriptionName);
     }
 
-    if (subscription == null) {
-      if (autoCreate) {
-        this.createSubscription(subscriptionName, topicName, deadLetterPolicy, autoCreate);
-      } else {
-        throw new ProvisioningException("Non-existing '" + subscriptionName + "' subscription.");
+    if (autoCreate) {
+      if (!StringUtils.hasText(subscriptionName)) {
+        // Generate anonymous random group since one wasn't provided
+        subscriptionName = "anonymous." + topicShortName + "." + UUID.randomUUID();
+        this.anonymousGroupSubscriptionNames.add(subscriptionName);
       }
-    } else if (!subscription.getTopic().equals(topic.getName())) {
-      throw new ProvisioningException(
-          "Existing '"
-              + subscriptionName
-              + "' subscription is for a different topic '"
-              + subscription.getTopic()
-              + "'.");
+      ensureSubscriptionExists(subscriptionName, topicName, deadLetterPolicy, autoCreate);
     }
+
+    Assert.hasText(subscriptionName, "Subscription Name cannot be null or empty");
     return new PubSubConsumerDestination(subscriptionName);
   }
 
@@ -143,12 +129,23 @@ public class PubSubChannelProvisioner
         return this.pubSubAdmin.createTopic(topicName);
       } catch (AlreadyExistsException alreadyExistsException) {
         // Sometimes 2+ instances of this application will race to create the topic, so this ensures
-        // we retry
-        // in the non-winning instances. In the rare case it fails, we throw an exception.
+        // we retry in the non-winning instances. In the rare case it fails, we throw an exception.
         return ensureTopicExists(topicName, false);
       }
     }
     throw new ProvisioningException("Non-existing '" + topicName + "' topic.");
+  }
+
+  Subscription ensureSubscriptionExists(
+      String subscriptionName,
+      String topicName,
+      PubSubConsumerProperties.DeadLetterPolicy deadLetterPolicy,
+      boolean autoCreate) {
+    Subscription subscription = this.pubSubAdmin.getSubscription(subscriptionName);
+    if (subscription == null) {
+      return createSubscription(subscriptionName, topicName, deadLetterPolicy, autoCreate);
+    }
+    return subscription;
   }
 
   private Subscription createSubscription(

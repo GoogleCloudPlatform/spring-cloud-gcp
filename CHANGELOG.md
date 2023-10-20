@@ -14,6 +14,32 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.8.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.1...v4.8.2) (2023-10-17)
+
+
+### Bug Fixes
+
+* allow minimal permissions for consumer destination use ([#2233](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2233)) ([d5a42c4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d5a42c4c6035c9b61af129586e87baa9f244984f))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.25.0 ([#2249](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2249)) ([903c3c7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/903c3c7619515d7d9ef4a7afa094e184b7771970))
+* remove unnecessary topic name comparison on subscription ([#2239](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2239)) ([f0f0124](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f0f0124e06e20cdc23d6baf24ecdc1fab5b3f8a2))
+
+## [4.8.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.0...v4.8.1) (2023-10-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.24.0 ([#2213](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2213)) ([4408d63](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4408d630c1312fbe0c4551083f93ff97dad8c0e1))
+* guard against null projectId in Firestore routing header ([29229f7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/29229f726218228a9ed424e35644a1305b25b545))
+* language test moved to `v2` ([#2216](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2216)) ([ddb2398](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ddb2398204e21d12886b73ff0370e8e158ca3d78))
+
+
+### Dependencies
+
+* bump com.google.errorprone:error_prone_core from 2.21.1 to 2.22.0 ([#2202](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2202)) ([9759fd7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9759fd7166ad4cba262721d2160fade258a7602c))
+* bump commons-io:commons-io from 2.13.0 to 2.14.0 ([#2211](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2211)) ([efc116c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/efc116cf38a528c493097f978680fbfdc0b20d65))
+* bump org.springframework.boot:spring-boot-starter-parent ([#2203](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2203)) ([a86e485](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a86e485bc9b5a9ac16c0d4032bec5cf2b4bd7c13))
+* bump spring-boot-dependencies.version from 3.1.3 to 3.1.4 ([#2201](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2201)) ([e763569](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e7635694c11af39802032afd8c61e9bd73a7f8e0))
+
 ## [4.8.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.7.2...v4.8.0) (2023-09-20)
 
 
