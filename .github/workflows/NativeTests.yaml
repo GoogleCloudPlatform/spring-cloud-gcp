@@ -30,6 +30,7 @@ jobs:
           - storage-sample
           - trace-sample
           - vision-sample
+          - datastore-sample
     steps:
       - name: Get current date
         id: date

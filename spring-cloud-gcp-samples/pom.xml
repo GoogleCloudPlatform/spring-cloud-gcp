@@ -142,6 +142,7 @@
 								<it.vision>true</it.vision>
 								<it.trace>true</it.trace>
 								<it.storage>true</it.storage>
+								<it.datastore>true</it.datastore>
                 <gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
