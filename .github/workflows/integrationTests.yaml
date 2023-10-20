@@ -62,10 +62,10 @@ jobs:
         run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
       - name: Mvn install # Need this when the directory/pom structure changes
         id: install
-        continue-on-error: true
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --threads 1.5C \
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
@@ -73,10 +73,10 @@ jobs:
       # Unlike for the other integrationTest job, we don't block here as these run in parallel.
       - name: Integration Tests
         id: intTest
-        continue-on-error: true
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --activate-profiles spring-cloud-gcp-ci-it \
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
@@ -146,10 +146,10 @@ jobs:
         run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
       - name: Mvn install # Need this when the directory/pom structure changes
         id: install
-        continue-on-error: true
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --threads 1.5C \
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
@@ -163,10 +163,10 @@ jobs:
           same-branch-only: false
       - name: Integration Tests
         id: intTest
-        continue-on-error: true
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --activate-profiles spring-cloud-gcp-ci-it \
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
@@ -180,6 +180,7 @@ jobs:
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --define aggregate=true \
             surefire-report:failsafe-report-only
       - name: Archive logs
