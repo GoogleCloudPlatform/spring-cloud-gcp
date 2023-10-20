@@ -105,6 +105,8 @@ jobs:
       matrix:
         it:
           - spanner
+          - datastore
+          - datastore-sample
     steps:
       - name: Get current date
         id: date
