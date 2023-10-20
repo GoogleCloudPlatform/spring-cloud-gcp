@@ -16,8 +16,6 @@
 
 package com.example;
 
-import com.google.cloud.spring.autoconfigure.datastore.DatastoreProvider;
-import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager;
 import com.google.cloud.spring.data.datastore.core.convert.DatastoreCustomConversions;
 import com.google.cloud.spring.data.datastore.repository.config.EnableDatastoreAuditing;
 import java.util.Arrays;
@@ -33,11 +31,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableDatastoreAuditing
 public class SampleApplicationConfiguration {
-
-  @Bean
-  DatastoreTransactionManager datastoreTransactionManager(DatastoreProvider datastore) {
-    return new DatastoreTransactionManager(datastore);
-  }
 
   @Bean
   public TransactionalRepositoryService transactionalRepositoryService() {
