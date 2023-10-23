@@ -148,6 +148,7 @@
 								<it.logging>true</it.logging>
 								<it.pubsub>true</it.pubsub>
 								<it.pubsub-integration>true</it.pubsub-integration>
+								<it.pubsub-bus>true</it.pubsub-bus>
 								<it.storage>true</it.storage>
 								<it.vision>true</it.vision>
 								<it.trace>true</it.trace>
