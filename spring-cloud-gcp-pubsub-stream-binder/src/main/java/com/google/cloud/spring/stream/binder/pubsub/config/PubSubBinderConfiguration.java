@@ -22,6 +22,7 @@ import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
+import com.google.cloud.spring.stream.binder.pubsub.aot.PubSubConsumerPropertiesRuntimeHints;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubExtendedBindingProperties;
 import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -33,6 +34,7 @@ import org.springframework.cloud.stream.config.ConsumerEndpointCustomizer;
 import org.springframework.cloud.stream.config.ProducerMessageHandlerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.lang.Nullable;
 
 /** Pub/Sub binder configuration. */
@@ -41,6 +43,7 @@ import org.springframework.lang.Nullable;
 @ConditionalOnBean({PubSubAdmin.class, PubSubTemplate.class})
 @ConditionalOnProperty(value = "spring.cloud.gcp.pubsub.binder.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(PubSubExtendedBindingProperties.class)
+@ImportRuntimeHints(PubSubConsumerPropertiesRuntimeHints.class)
 public class PubSubBinderConfiguration {
 
   @Bean
