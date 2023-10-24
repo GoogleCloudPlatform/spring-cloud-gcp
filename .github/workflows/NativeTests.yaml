@@ -33,6 +33,10 @@ jobs:
           - trace-sample
           - vision-sample
           - secretmanager-sample
+          - pubsub-sample
+          - pubsub-integration-sample
+          - pubsub-bus-sample
+          - pubsub-stream-sample
     steps:
       - name: Get current date
         id: date
