@@ -21,7 +21,7 @@
 		<main.basedir>${basedir}/..</main.basedir>
 
 		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
-		<maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 
 		<!-- App engine plugin version, used to deploy sample apps -->
