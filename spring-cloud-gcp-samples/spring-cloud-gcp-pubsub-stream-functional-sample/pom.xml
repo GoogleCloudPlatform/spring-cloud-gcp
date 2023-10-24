@@ -13,6 +13,10 @@
   <packaging>pom</packaging>
   <name>Spring Framework on Google Cloud Code Sample - Pub/Sub Binder for Spring Cloud Stream Functional</name>
 
+  <properties>
+    <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+  </properties>
+
   <modules>
     <module>spring-cloud-gcp-pubsub-stream-functional-sample-source</module>
     <module>spring-cloud-gcp-pubsub-stream-functional-sample-sink</module>
@@ -31,17 +35,5 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
