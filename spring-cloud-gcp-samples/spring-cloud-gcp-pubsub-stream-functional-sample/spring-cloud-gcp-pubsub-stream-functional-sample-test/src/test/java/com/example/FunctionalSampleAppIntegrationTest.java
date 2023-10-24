@@ -18,54 +18,46 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URI;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.concurrent.TimeUnit;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * These tests verifies that the pubsub-integration-sample works.
- *
- * @since 1.1
- */
-@EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
+/** Integration test for the Pub/Sub functional stream binder sample app. */
+// Please use "-Dit.pubsub=true" to enable the tests
+@EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
 @ExtendWith(OutputCaptureExtension.class)
-@RunWith(SpringRunner.class)
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-    properties = {"server.port=8082"},
-    classes = {SenderReceiverApplication.class})
-class SampleAppIntegrationTest {
+class FunctionalSampleAppIntegrationTest {
 
   private RestTemplate restTemplate = new RestTemplate();
 
   @Test
-  void testSample(CapturedOutput capturedOutput) throws Exception {
+  void testSample(CapturedOutput capturedOutput) {
+    FunctionalSampleTestApplication.main(new String[] {});
+
+    // Post message to Source over HTTP.
     MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
     String message = "test message " + UUID.randomUUID();
-    map.add("message", message);
-    map.add("times", 1);
+    map.add("messageBody", message);
+    map.add("username", "integration-test-user");
 
-    this.restTemplate.postForObject("http://localhost:8082/postMessage", map, String.class);
+    URI redirect = this.restTemplate.postForLocation("http://localhost:8080/postMessage", map);
+    assertThat(redirect).hasToString("http://localhost:8080/index.html");
 
-    boolean messageReceived = false;
-    for (int i = 0; i < 100; i++) {
-      if (capturedOutput.toString().contains("Message arrived! Payload: " + message)) {
-        messageReceived = true;
-        break;
-      }
-      Thread.sleep(100);
-    }
-    assertThat(messageReceived).isTrue();
+    Awaitility.await()
+        .atMost(10, TimeUnit.SECONDS)
+        .until(
+            () ->
+                capturedOutput
+                    .getOut()
+                    .contains("New message received from integration-test-user: " + message));
   }
 }

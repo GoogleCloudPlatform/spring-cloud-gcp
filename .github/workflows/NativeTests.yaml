@@ -32,6 +32,7 @@ jobs:
           - storage-sample
           - trace-sample
           - vision-sample
+          - pubsub-sample
           - secretmanager-sample
           - pubsub-sample
           - pubsub-integration-sample

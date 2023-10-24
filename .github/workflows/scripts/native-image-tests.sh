@@ -3,7 +3,9 @@
 # If MODULE_UNDER_TEST is 'vision', for example, then it runs tests under spring-cloud-gcp-vision.
 # If it is 'vision-sample' then it runs tests under spring-cloud-gcp-samples/spring-cloud-gcp-vision-api-sample
 # and spring-cloud-gcp-samples/spring-cloud-gcp-vision-ocr-demo.
+
 set -eo pipefail
+
 # Get git repo root
 scriptDir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 cd "${scriptDir}/../../.."
