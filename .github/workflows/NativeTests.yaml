@@ -32,7 +32,6 @@ jobs:
           - storage-sample
           - trace-sample
           - vision-sample
-          - datastore-sample
           - secretmanager-sample
     steps:
       - name: Get current date
@@ -106,6 +105,7 @@ jobs:
       matrix:
         it:
           - spanner
+          - datastore-sample
     steps:
       - name: Get current date
         id: date

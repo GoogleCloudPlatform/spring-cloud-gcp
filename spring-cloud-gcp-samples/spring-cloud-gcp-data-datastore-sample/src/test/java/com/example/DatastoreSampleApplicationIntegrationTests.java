@@ -36,6 +36,7 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ import org.springframework.util.MultiValueMap;
  * <p>-Dit.datastore=true -Dspring.cloud.gcp.sql.database-name=[...]
  * -Dspring.cloud.gcp.datastore.namespace=[...]
  */
-// please use "-Dit.datastore=true" to enable the tests
+@DisabledInNativeImage
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
