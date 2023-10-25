@@ -34,6 +34,9 @@ jobs:
           - vision-sample
           - pubsub-sample
           - secretmanager-sample
+          - pubsub-integration-sample
+          - pubsub-bus-sample
+          - pubsub-stream-sample
     steps:
       - name: Get current date
         id: date
