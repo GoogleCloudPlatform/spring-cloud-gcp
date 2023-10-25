@@ -98,7 +98,6 @@
 				<module>spring-cloud-gcp-secretmanager-sample</module>
 				<module>spring-cloud-gcp-vision-ocr-demo</module>
 				<module>spring-cloud-gcp-data-datastore-basic-sample</module>
-				<module>spring-cloud-gcp-data-datastore-sample</module>
 			</modules>
 			<build>
 				<plugins>
