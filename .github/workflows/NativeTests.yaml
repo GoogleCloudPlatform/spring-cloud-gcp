@@ -34,7 +34,6 @@ jobs:
           - vision-sample
           - pubsub-sample
           - secretmanager-sample
-          - pubsub-sample
           - pubsub-integration-sample
           - pubsub-bus-sample
           - pubsub-stream-sample
