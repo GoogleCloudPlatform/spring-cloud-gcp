@@ -9,7 +9,10 @@ set -eo pipefail
 # Get git repo root
 scriptDir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 cd "${scriptDir}/../../.."
+
+OLD_IFS="$IFS"
 IFS='-' read -ra MATRIX_SUBSTRINGS <<< "$MODULE_UNDER_TEST"
+IFS="$OLD_IFS"
 
 is_desired_directory() {
   local directory="$1"
