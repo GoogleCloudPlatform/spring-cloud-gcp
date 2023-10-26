@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,19 @@
 
 package com.example;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.net.URI;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-import org.junit.jupiter.api.extension.ExtendWith;
+import com.example.aot.FunctionalSampleRuntimeHints;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.test.system.CapturedOutput;
-import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
-/** Integration test for the Pub/Sub functional stream binder sample app. */
-// Please use "-Dit.pubsub=true" to enable the tests
-@EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
-@ExtendWith(OutputCaptureExtension.class)
-class PubSubStreamBinderSampleAppIntegrationTest {
+@SpringBootApplication
+@ImportRuntimeHints(FunctionalSampleRuntimeHints.class)
+public class FunctionalSampleTestApplication {
 
-  @Test
-  void testSample(CapturedOutput capturedOutput) throws Exception {
-
-    // Run Source app
+  public static void main(String[] args) {
     SpringApplicationBuilder sourceBuilder =
         new SpringApplicationBuilder(FunctionalSourceApplication.class)
             .resourceLoader(
@@ -52,32 +36,12 @@ class PubSubStreamBinderSampleAppIntegrationTest {
                     "spring-cloud-gcp-pubsub-stream-functional-sample-source"));
     sourceBuilder.run();
 
-    // Run Sink app
     SpringApplicationBuilder sinkBuilder =
         new SpringApplicationBuilder(FunctionalSinkApplication.class)
             .resourceLoader(
                 new PropertyRemovingResourceLoader(
                     "spring-cloud-gcp-pubsub-stream-functional-sample-sink"));
     sinkBuilder.run();
-
-    // Post message to Source over HTTP.
-    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-    String message = "test message " + UUID.randomUUID();
-    map.add("messageBody", message);
-    map.add("username", "integration-test-user");
-
-    RestTemplate restTemplate = new RestTemplate();
-
-    URI redirect = restTemplate.postForLocation("http://localhost:8080/postMessage", map);
-    assertThat(redirect).hasToString("http://localhost:8080/index.html");
-
-    Awaitility.await()
-        .atMost(10, TimeUnit.SECONDS)
-        .until(
-            () ->
-                capturedOutput
-                    .getOut()
-                    .contains("New message received from integration-test-user: " + message));
   }
 
   /** Resolves the correct /application.properties file for the specific application. */

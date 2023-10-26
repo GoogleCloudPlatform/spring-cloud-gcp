@@ -13,6 +13,11 @@
 	<artifactId>spring-cloud-gcp-integration-pubsub-sample-test</artifactId>
 	<name>Spring Framework on Google Cloud Code Sample - Spring Integration Pub/Sub Integration Test</name>
 
+	<properties>
+		<spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+		<start-class>com.example.SenderReceiverApplication</start-class>
+	</properties>
+
 	<!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
 	<dependencyManagement>
 		<dependencies>
@@ -38,7 +43,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.14.0</version>
+			<version>2.15.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -63,9 +68,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

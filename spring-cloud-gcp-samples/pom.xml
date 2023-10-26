@@ -21,7 +21,7 @@
 		<main.basedir>${basedir}/..</main.basedir>
 
 		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
-		<maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 
 		<!-- App engine plugin version, used to deploy sample apps -->
@@ -90,6 +90,13 @@
 		<profile>
 			<id>native-sample-config</id>
 			<modules>
+				<module>spring-cloud-gcp-pubsub-sample</module>
+				<module>spring-cloud-gcp-pubsub-reactive-sample</module>
+				<module>spring-cloud-gcp-integration-pubsub-sample</module>
+				<module>spring-cloud-gcp-pubsub-bus-config-sample</module>
+				<module>spring-cloud-gcp-pubsub-stream-dead-letter-sample</module>
+				<module>spring-cloud-gcp-pubsub-stream-functional-sample</module>
+				<module>spring-cloud-gcp-integration-pubsub-json-sample</module>
 				<module>spring-cloud-gcp-logging-sample</module>
 				<module>spring-cloud-gcp-storage-resource-sample</module>
 				<module>spring-cloud-gcp-integration-storage-sample</module>
@@ -140,6 +147,9 @@
 							</includes>
 							<systemPropertyVariables>
 								<it.logging>true</it.logging>
+								<it.pubsub>true</it.pubsub>
+								<it.pubsub-integration>true</it.pubsub-integration>
+								<it.pubsub-bus>true</it.pubsub-bus>
 								<it.storage>true</it.storage>
 								<it.vision>true</it.vision>
 								<it.trace>true</it.trace>

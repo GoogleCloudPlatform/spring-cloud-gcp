@@ -32,7 +32,11 @@ jobs:
           - storage-sample
           - trace-sample
           - vision-sample
+          - pubsub-sample
           - secretmanager-sample
+          - pubsub-integration-sample
+          - pubsub-bus-sample
+          - pubsub-stream-sample
     steps:
       - name: Get current date
         id: date
@@ -56,10 +60,10 @@ jobs:
         run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
       - name: Mvn install # Need this when the directory/pom structure changes
         id: install
-        continue-on-error: true
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --threads 1.5C \
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
@@ -74,13 +78,13 @@ jobs:
           native-image-job-reports: 'true'
       - name: Native Tests in Modules
         id: intTest
-        continue-on-error: true
         run: |
           MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Aggregate Report
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --define aggregate=true \
             --activate-profiles spring-native,\!default \
           surefire-report:report-only
@@ -129,10 +133,10 @@ jobs:
         run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
       - name: Mvn install # Need this when the directory/pom structure changes
         id: install
-        continue-on-error: true
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --threads 1.5C \
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
@@ -153,16 +157,16 @@ jobs:
           native-image-job-reports: 'true'
       - name: Native Tests in Modules
         id: intTest
-        continue-on-error: true
         run: |
           MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Aggregate Report
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --define aggregate=true \
             --activate-profiles spring-native,\!default \
-          surefire-report:report-only
+            surefire-report:report-only
       - name: Archive logs
         if: always()
         continue-on-error: true

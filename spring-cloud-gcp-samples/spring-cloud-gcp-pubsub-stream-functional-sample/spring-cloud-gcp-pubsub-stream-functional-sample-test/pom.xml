@@ -13,19 +13,15 @@
   <name>Spring Framework on Google Cloud Code Sample - Pub/Sub Binder for Spring Cloud Stream Functional Integration Test</name>
 
   <dependencies>
-
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>spring-cloud-gcp-pubsub-stream-functional-sample-source</artifactId>
       <version>${project.version}</version>
-      <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>spring-cloud-gcp-pubsub-stream-functional-sample-sink</artifactId>
       <version>${project.version}</version>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -33,18 +29,15 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
-
 </project>
