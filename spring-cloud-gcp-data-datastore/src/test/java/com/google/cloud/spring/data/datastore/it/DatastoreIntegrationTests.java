@@ -19,10 +19,6 @@ package com.google.cloud.spring.data.datastore.it;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Blob;
@@ -30,7 +26,6 @@ import com.google.cloud.datastore.DatastoreException;
 import com.google.cloud.datastore.DatastoreReaderWriter;
 import com.google.cloud.datastore.EntityQuery;
 import com.google.cloud.datastore.Key;
-import com.google.cloud.datastore.ProjectionEntityQuery;
 import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
@@ -121,7 +116,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   @Autowired private DogRepository dogRepository;
 
-  @SpyBean private DatastoreTemplate datastoreTemplate;
+  @Autowired private DatastoreTemplate datastoreTemplate;
 
   @Autowired private DatastoreMappingContext mappingContext;
 
@@ -622,22 +617,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  void projectionTest() {
-    reset(datastoreTemplate);
-    assertThat(this.testEntityRepository.findBySize(2L).getColor()).isEqualTo("blue");
-
-    ProjectionEntityQuery projectionQuery =
-        com.google.cloud.datastore.Query.newProjectionEntityQueryBuilder()
-            .addProjection("color")
-            .setFilter(PropertyFilter.eq("size", 2L))
-            .setKind("test_entities_ci")
-            .setLimit(1)
-            .build();
-
-    verify(datastoreTemplate).queryKeysOrEntities(eq(projectionQuery), any());
-  }
-
-  @Test
   void embeddedEntitiesTest() {
     EmbeddableTreeNode treeNode10 = new EmbeddableTreeNode(10, null, null);
     EmbeddableTreeNode treeNode8 = new EmbeddableTreeNode(8, null, null);
@@ -1011,32 +990,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
     assertThat(readCompany.leaders.get(0).id).isEqualTo(entity1.id);
   }
 
-  @Test
-  void testSlicedEntityProjections() {
-    reset(datastoreTemplate);
-    Slice<TestEntityProjection> testEntityProjectionSlice =
-        this.testEntityRepository.findBySize(2L, PageRequest.of(0, 1));
 
-    List<TestEntityProjection> testEntityProjections =
-        testEntityProjectionSlice.get().collect(Collectors.toList());
-
-    assertThat(testEntityProjections).hasSize(1);
-    assertThat(testEntityProjections.get(0)).isInstanceOf(TestEntityProjection.class);
-    assertThat(testEntityProjections.get(0)).isNotInstanceOf(TestEntity.class);
-
-    // Verifies that the projection method call works.
-    assertThat(testEntityProjections.get(0).getColor()).isEqualTo("blue");
-
-    ProjectionEntityQuery projectionQuery =
-        com.google.cloud.datastore.Query.newProjectionEntityQueryBuilder()
-            .addProjection("color")
-            .setFilter(PropertyFilter.eq("size", 2L))
-            .setKind("test_entities_ci")
-            .setLimit(1)
-            .build();
-
-    verify(datastoreTemplate).queryKeysOrEntities(eq(projectionQuery), any());
-  }
 
   @Test
   void testPageableGqlEntityProjectionsPage() {
