@@ -10,7 +10,8 @@ scriptDir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 cd "${scriptDir}/../../.."
 
 run_sample_tests () {
-  module_name=$(echo "$MODULE_UNDER_TEST" | cut -d '-' -f 1)
+  #  module_name: only cut the last  word after "-"
+  module_name=$(echo "$MODULE_UNDER_TEST" | rev | cut -d '-' -f2- |rev)
   directory_names=$(ls 'spring-cloud-gcp-samples')
   module_samples=()
   for dir in $directory_names; do
