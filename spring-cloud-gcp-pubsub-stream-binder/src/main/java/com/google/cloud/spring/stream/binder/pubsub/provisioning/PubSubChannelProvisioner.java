@@ -77,6 +77,9 @@ public class PubSubChannelProvisioner
     // topicName may be either the short or fully-qualified version.
     String topicShortName =
         TopicName.isParsableFrom(topicName) ? TopicName.parse(topicName).getTopic() : topicName;
+    if (autoCreate) {
+      ensureTopicExists(topicShortName, autoCreate);
+    }
 
     String subscriptionName = null;
     if (StringUtils.hasText(customName)) {
