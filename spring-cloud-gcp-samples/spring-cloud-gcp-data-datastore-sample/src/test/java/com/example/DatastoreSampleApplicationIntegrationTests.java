@@ -90,12 +90,6 @@ class DatastoreSampleApplicationIntegrationTests {
   }
 
   @Test
-  void runTests() throws Exception {
-    basicTest();
-    testCompoundKeyRestResource();
-    testQueryReturnStream();
-  }
-
   void basicTest() throws Exception {
     Singer johnDoe = new Singer(null, "John", "Doe", null);
     Singer janeDoe = new Singer(null, "Jane", "Doe", null);
@@ -241,6 +235,7 @@ class DatastoreSampleApplicationIntegrationTests {
         .collect(Collectors.toList());
   }
 
+  @Test
   void testQueryReturnStream() {
     Stream<Singer> streamResult = singerRepository.findStreamOfSingersByLastName("Doe");
     assertThat(streamResult).isInstanceOf(Stream.class);

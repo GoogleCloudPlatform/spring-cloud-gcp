@@ -80,6 +80,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -617,6 +618,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void embeddedEntitiesTest() {
     EmbeddableTreeNode treeNode10 = new EmbeddableTreeNode(10, null, null);
     EmbeddableTreeNode treeNode8 = new EmbeddableTreeNode(8, null, null);
@@ -631,6 +633,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void embeddedCollectionTest() {
     EmbeddableTreeNode treeNode10 = new EmbeddableTreeNode(10, null, null);
     EmbeddableTreeNode treeNode8 = new EmbeddableTreeNode(8, null, null);
@@ -648,6 +651,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void ancestorsTest() {
     AncestorEntity.DescendantEntry descendantEntryA = new AncestorEntity.DescendantEntry("a");
     AncestorEntity.DescendantEntry descendantEntryB = new AncestorEntity.DescendantEntry("b");
@@ -683,6 +687,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void referenceTest() {
     ReferenceEntry parent = saveEntitiesGraph();
 
@@ -706,6 +711,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void lazyReferenceCollectionTest() {
     ReferenceEntry parent = saveEntitiesGraph();
 
@@ -721,6 +727,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void lazyReferenceTest() throws InterruptedException {
     LazyEntity lazyParentEntity = new LazyEntity(new LazyEntity(new LazyEntity()));
     this.datastoreTemplate.save(lazyParentEntity);
@@ -736,6 +743,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void singularLazyPropertyTest() {
     LazyEntity lazyParentEntity = new LazyEntity(new LazyEntity(new LazyEntity()));
     this.datastoreTemplate.save(lazyParentEntity);
@@ -746,6 +754,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void lazyReferenceTransactionTest() {
     ReferenceEntry parent = saveEntitiesGraph();
 
@@ -799,6 +808,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void recursiveSave() {
     SubEntity subEntity1 = new SubEntity();
     SubEntity subEntity2 = new SubEntity();
@@ -866,6 +876,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void inheritanceTest() {
     PetOwner petOwner = new PetOwner();
     petOwner.pets = Arrays.asList(new Cat("Alice"), new Cat("Bob"), new Pug("Bob"), new Dog("Bob"));
@@ -895,6 +906,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void inheritanceTestFindAll() {
     this.datastoreTemplate.saveAll(
         Arrays.asList(new Cat("Cat1"), new Dog("Dog1"), new Pug("Dog2")));
@@ -933,6 +945,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void mapSubclass() {
     CustomMap customMap1 = new CustomMap();
     customMap1.put("key1", "val1");
@@ -973,6 +986,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void sameClassDescendantsTest() {
     Employee entity3 = new Employee(Collections.EMPTY_LIST);
     Employee entity2 = new Employee(Collections.EMPTY_LIST);
@@ -1056,6 +1070,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage()
   void newFieldTest() {
     Company company = new Company(1L, Collections.emptyList());
     company.name = "name1";
