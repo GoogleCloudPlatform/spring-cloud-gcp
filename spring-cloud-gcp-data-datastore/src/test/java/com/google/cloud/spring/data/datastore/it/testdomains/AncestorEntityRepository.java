@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2017-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,5 @@
 package com.google.cloud.spring.data.datastore.it.testdomains;
 
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
-import com.google.cloud.spring.data.datastore.repository.query.Query;
-import java.util.List;
 
-public interface DogRepository extends DatastoreRepository<Dog, Long> {
-  List<Dog> findByName(String s);
-
-  @Query("select * from Pet")
-  List<Dog> findByCustomQuery();
-}
+public interface AncestorEntityRepository extends DatastoreRepository<AncestorEntity, Long> {}

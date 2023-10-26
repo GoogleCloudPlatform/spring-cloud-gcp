@@ -84,7 +84,6 @@ import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -618,7 +617,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void embeddedEntitiesTest() {
     EmbeddableTreeNode treeNode10 = new EmbeddableTreeNode(10, null, null);
     EmbeddableTreeNode treeNode8 = new EmbeddableTreeNode(8, null, null);
@@ -633,7 +631,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void embeddedCollectionTest() {
     EmbeddableTreeNode treeNode10 = new EmbeddableTreeNode(10, null, null);
     EmbeddableTreeNode treeNode8 = new EmbeddableTreeNode(8, null, null);
@@ -651,7 +648,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void ancestorsTest() {
     AncestorEntity.DescendantEntry descendantEntryA = new AncestorEntity.DescendantEntry("a");
     AncestorEntity.DescendantEntry descendantEntryB = new AncestorEntity.DescendantEntry("b");
@@ -687,7 +683,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void referenceTest() {
     ReferenceEntry parent = saveEntitiesGraph();
 
@@ -808,7 +803,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void recursiveSave() {
     SubEntity subEntity1 = new SubEntity();
     SubEntity subEntity2 = new SubEntity();
@@ -1070,7 +1064,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage()
+  @DisabledInNativeImage
   void newFieldTest() {
     Company company = new Company(1L, Collections.emptyList());
     company.name = "name1";

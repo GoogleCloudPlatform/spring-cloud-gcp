@@ -29,7 +29,7 @@ public class DatastoreCoreRuntimeHints implements RuntimeHintsRegistrar {
     hints
         .reflection()
         .registerTypes(
-            Arrays.asList(TypeReference.of(java.lang.String.class),
+            Arrays.asList(
                 TypeReference.of(java.util.HashMap.class)),
             hint ->
                 hint.withMembers(
