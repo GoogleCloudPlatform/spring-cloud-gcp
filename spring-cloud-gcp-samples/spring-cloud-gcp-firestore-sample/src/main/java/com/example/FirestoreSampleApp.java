@@ -31,11 +31,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportRuntimeHints;
 
 /**
  * @since 1.2
  */
 @SpringBootApplication
+@ImportRuntimeHints(SampleRuntimeHints.class)
 public class FirestoreSampleApp {
   @Autowired Firestore firestore;
 
