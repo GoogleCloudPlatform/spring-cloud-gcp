@@ -105,6 +105,7 @@ jobs:
       matrix:
         it:
           - spanner
+          - starter-firestore-sample
     steps:
       - name: Get current date
         id: date
