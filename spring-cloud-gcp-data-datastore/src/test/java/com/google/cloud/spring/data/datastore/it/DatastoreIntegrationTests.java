@@ -940,7 +940,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void mapSubclass() {
     CustomMap customMap1 = new CustomMap();
     customMap1.put("key1", "val1");

@@ -18,4 +18,5 @@ package com.google.cloud.spring.data.datastore.it.testdomains;
 
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 
+// temp repository until ID property not filled for template get fixed for native image.
 public interface EventRepository extends DatastoreRepository<Event, String> {}

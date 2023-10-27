@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,5 +18,6 @@ package com.google.cloud.spring.data.datastore.it.testdomains;
 
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 
+// temp repository until ID property not filled for template get fixed for native image.
 public interface EmbeddableTreeNodeRepository
     extends DatastoreRepository<EmbeddableTreeNode, Long> {}
