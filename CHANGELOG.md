@@ -14,6 +14,23 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.7.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.2...v3.7.3) (2023-10-27)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.14.0 to 1.14.1 ([#2242](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2242)) ([90a9b35](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/90a9b35ae631972e28e94e99223fc72c34406488))
+* bump com.google.cloud:libraries-bom from 26.25.0 to 26.26.0 ([#2298](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2298)) ([b9d95cf](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b9d95cf035f6d0823629818f06bd02ef72408a25))
+* bump com.google.cloud.tools:appengine-maven-plugin ([#2224](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2224)) ([63a9032](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/63a903298b5c9a6910b568199c062f7875cc40a1))
+* bump com.google.errorprone:error_prone_core from 2.22.0 to 2.23.0 ([#2269](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2269)) ([15afe6e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/15afe6e3e573343d798d4501a7afcf4efbeef17f))
+* bump commons-io:commons-io from 2.14.0 to 2.15.0 ([#2293](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2293)) ([ec14f61](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ec14f6186dfcbedc12e436bbbdce8e92ee9fd381))
+* bump io.asyncer:r2dbc-mysql from 0.9.4 to 0.9.6 ([#2248](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2248)) ([a420d9a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a420d9a91c6f07fc79f2d538df8a98ac5baf21dc))
+* bump org.apache.maven.plugins:maven-checkstyle-plugin ([#2289](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2289)) ([7b7c7c7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7b7c7c77caa030bfc7e645f6f09fb285b35a22f2))
+* bump org.jacoco:jacoco-maven-plugin from 0.8.10 to 0.8.11 ([#2256](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2256)) ([c0d95aa](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c0d95aa1c2664b1a78c59c3fc175886f987e2713))
+* bump org.springframework.boot:spring-boot-dependencies ([#2276](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2276)) ([0b9856c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0b9856cd4a08e9043baa26af10c2eda6f078fa77))
+* bump org.springframework.boot:spring-boot-starter-parent ([#2277](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2277)) ([d9a8b51](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d9a8b51702a2a8974e5bcff41be6dbb6bd00fe19))
+* bump org.springframework.shell:spring-shell-starter ([#2225](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2225)) ([c45c296](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c45c296c6560f486e5e11b1444e30bddb0884977))
+
 ## [3.7.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.1...v3.7.2) (2023-10-16)
 
 
