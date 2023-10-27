@@ -103,12 +103,7 @@ jobs:
         run: |
           gcloud components install pubsub-emulator beta && \
             gcloud components update
-      - name: Maven go offline
-        id: mvn-offline
-        if: steps.mvn-cache.outputs.cache-hit != 'true'
-        run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
-        env:
-          REPO: ${{ inputs.mavenRepository }}
+
       - name: Retry install on failure
         id: install2
         if: steps.install1.outcome == 'failure'
