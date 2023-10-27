@@ -54,10 +54,6 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: spring-cloud-gcp-ci-native
-      - name: Maven go offline
-        id: mvn-offline
-        if: steps.mvn-cache.outputs.cache-hit != 'true'
-        run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
       - name: Mvn install # Need this when the directory/pom structure changes
         id: install
         run: |
@@ -126,10 +122,6 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: spring-cloud-gcp-ci-native
-      - name: Maven go offline
-        id: mvn-offline
-        if: steps.mvn-cache.outputs.cache-hit != 'true'
-        run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
       - name: Mvn install # Need this when the directory/pom structure changes
         id: install
         run: |
