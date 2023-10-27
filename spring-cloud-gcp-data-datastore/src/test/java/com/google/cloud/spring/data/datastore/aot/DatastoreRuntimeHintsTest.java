@@ -20,15 +20,34 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.aot.hint.predicate.RuntimeHintsPredicates.reflection;
 
 import com.google.cloud.spring.data.datastore.repository.query.DatastorePageable;
+import com.google.cloud.spring.data.datastore.repository.support.SimpleDatastoreRepository;
+import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.RuntimeHints;
 
-class DatastoreQueryRuntimeHintsTest {
+class DatastoreRuntimeHintsTest {
   @Test
   void registerSimpleDatastoreRepository() {
+    RuntimeHints runtimeHints = new RuntimeHints();
+    DatastoreRepositoryRuntimeHints registrar = new DatastoreRepositoryRuntimeHints();
+    registrar.registerHints(runtimeHints, null);
+    assertThat(runtimeHints).matches(reflection().onType(SimpleDatastoreRepository.class));
+    assertThat(runtimeHints).matches(reflection().onType(DatastorePageable.class));
+  }
+
+  @Test
+  void registerDatastorePageable() {
     RuntimeHints runtimeHints = new RuntimeHints();
     DatastoreQueryRuntimeHints registrar = new DatastoreQueryRuntimeHints();
     registrar.registerHints(runtimeHints, null);
     assertThat(runtimeHints).matches(reflection().onType(DatastorePageable.class));
+  }
+
+  @Test
+  void registerHashMap() {
+    RuntimeHints runtimeHints = new RuntimeHints();
+    DatastoreCoreRuntimeHints registrar = new DatastoreCoreRuntimeHints();
+    registrar.registerHints(runtimeHints, null);
+    assertThat(runtimeHints).matches(reflection().onType(HashMap.class));
   }
 }
