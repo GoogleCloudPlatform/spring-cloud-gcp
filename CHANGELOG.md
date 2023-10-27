@@ -14,6 +14,29 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.8.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.2...v4.8.3) (2023-10-27)
+
+
+### Bug Fixes
+
+* add back original comment. ([#2263](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2263)) ([dc1b821](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/dc1b82167f9be99cf86bac34c55defcc41485c92))
+* **deps:** update cloud-sql-socket-factory.version to v1.14.1 ([#2241](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2241)) ([e2527ae](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e2527ae6b39400516bc4cf155c0ba980cc23598d))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.26.0 ([#2297](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2297)) ([5b7db44](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5b7db44f4c73eb70c4a8e5fa6faaa21d875fc4a3))
+* **deps:** update dependency io.micrometer:micrometer-tracing-bom to v1.1.6 ([#2232](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2232)) ([06ac904](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/06ac9041884ad40b62d166c7fd3e70a0b5ccafbc))
+* Ensure topic exists in consumer only if autoCreateResources is true ([#2296](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2296)) ([c8d25c8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c8d25c86492dd59784f407683f883fab274c6d93))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.14.0 to 1.14.1 ([#2243](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2243)) ([79dfcfe](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/79dfcfe7d94bb7f69f39ca1facdddff258b05f7f))
+* bump com.google.cloud.tools:appengine-maven-plugin ([#2226](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2226)) ([db0d63e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/db0d63eaa3e32dc0abf9ab8841e72afb04945c31))
+* bump com.google.errorprone:error_prone_core from 2.22.0 to 2.23.0 ([#2268](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2268)) ([45ebb90](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/45ebb9003218fc2105b73bbbbc3f160969f42b0a))
+* bump commons-io:commons-io from 2.14.0 to 2.15.0 ([#2292](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2292)) ([3b32c77](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3b32c772ac630106a51ed4fbc1e9505c5ce09724))
+* bump io.micrometer:micrometer-tracing-bom from 1.1.5 to 1.1.6 ([#2234](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2234)) ([8970fb2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8970fb238db59cdc9643db49a0fa2d50d4395146))
+* bump org.apache.maven.plugins:maven-checkstyle-plugin ([#2287](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2287)) ([7f56ce0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7f56ce029d1f0c938b41ef13f023ff6711071ebb))
+* bump org.graalvm.buildtools:native-maven-plugin ([#2282](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2282)) ([2e32f5f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2e32f5fd5906c2122b7f551a62fe5aa0377a2805))
+* bump org.jacoco:jacoco-maven-plugin from 0.8.10 to 0.8.11 ([#2253](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2253)) ([5e05fc2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5e05fc2753bb79f0c8561fc06e9eccb728be7398))
+
 ## [4.8.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.1...v4.8.2) (2023-10-17)
 
 
