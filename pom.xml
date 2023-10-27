@@ -357,6 +357,7 @@
 			<module>spring-cloud-gcp-vision</module>
 			<module>spring-cloud-gcp-data-spanner</module>
 			<module>spring-cloud-gcp-secretmanager</module>
+			<module>spring-cloud-gcp-data-datastore</module>
 		</modules>
 
 		<dependencies>
@@ -386,6 +387,7 @@
 							<it.vision>true</it.vision>
 							<it.spanner>true</it.spanner>
 							<it.secretmanager>true</it.secretmanager>
+							<it.datastore>true</it.datastore>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>
