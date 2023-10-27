@@ -371,6 +371,16 @@ public class SecurityCenterSpringAutoConfiguration {
           .testIamPermissionsSettings()
           .setRetrySettings(testIamPermissionsRetrySettings);
 
+      RetrySettings simulateSecurityHealthAnalyticsCustomModuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder
+                  .simulateSecurityHealthAnalyticsCustomModuleSettings()
+                  .getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .simulateSecurityHealthAnalyticsCustomModuleSettings()
+          .setRetrySettings(simulateSecurityHealthAnalyticsCustomModuleRetrySettings);
+
       RetrySettings updateExternalSystemRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.updateExternalSystemSettings().getRetrySettings(),
@@ -853,6 +863,23 @@ public class SecurityCenterSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for testIamPermissions from properties.");
+      }
+    }
+    Retry simulateSecurityHealthAnalyticsCustomModuleRetry =
+        clientProperties.getSimulateSecurityHealthAnalyticsCustomModuleRetry();
+    if (simulateSecurityHealthAnalyticsCustomModuleRetry != null) {
+      RetrySettings simulateSecurityHealthAnalyticsCustomModuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder
+                  .simulateSecurityHealthAnalyticsCustomModuleSettings()
+                  .getRetrySettings(),
+              simulateSecurityHealthAnalyticsCustomModuleRetry);
+      clientSettingsBuilder
+          .simulateSecurityHealthAnalyticsCustomModuleSettings()
+          .setRetrySettings(simulateSecurityHealthAnalyticsCustomModuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for simulateSecurityHealthAnalyticsCustomModule from properties.");
       }
     }
     Retry updateExternalSystemRetry = clientProperties.getUpdateExternalSystemRetry();
