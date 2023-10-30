@@ -280,7 +280,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>4.7.1</strong></p>
+<p><strong>4.8.3</strong></p>
 </div>
 </div>
 </div>
@@ -412,7 +412,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
        &lt;dependency&gt;
            &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
            &lt;artifactId&gt;spring-cloud-gcp-dependencies&lt;/artifactId&gt;
-           &lt;version&gt;4.7.1&lt;/version&gt;
+           &lt;version&gt;4.8.3&lt;/version&gt;
            &lt;type&gt;pom&lt;/type&gt;
            &lt;scope&gt;import&lt;/scope&gt;
        &lt;/dependency&gt;
@@ -426,7 +426,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:4.7.1")
+    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:4.8.3")
 }</code></pre>
 </div>
 </div>
@@ -7210,6 +7210,12 @@ The following configuration options are available:</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.database-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project can host multiple databases. You can specify which database will be used. If not specified, the database id will be "(default)".</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.datastore.credentials.location</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2 credentials for authenticating with the Google Cloud Datastore API, if different from the ones in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
@@ -9184,6 +9190,12 @@ To begin using this library, add the <code>spring-cloud-gcp-data-firestore</code
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.firestore.project-id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project ID where the Google Cloud Firestore API is hosted, if different from the one in the <a href="#spring-cloud-gcp-core">Spring Framework on Google Cloud Core Module</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.gcp.firestore.database-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Google Cloud project can host multiple databases. You can specify which database will be used. If not specified, the database id will be "(default)".</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -11452,7 +11464,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-config&lt;/artifactId&gt;
-    &lt;version&gt;4.7.1&lt;/version&gt;
+    &lt;version&gt;4.8.3&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -11464,7 +11476,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 <pre class="highlight"><code>dependencies {
     compile group: 'org.springframework.cloud',
     name: 'spring-cloud-gcp-starter-config',
-    version: '4.7.1'
+    version: '4.8.3'
 }</code></pre>
 </div>
 </div>
