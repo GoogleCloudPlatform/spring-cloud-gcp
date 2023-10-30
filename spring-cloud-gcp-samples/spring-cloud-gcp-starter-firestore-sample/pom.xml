@@ -7,12 +7,12 @@
         <!-- Your own application should inherit from spring-boot-starter-parent -->
         <artifactId>spring-cloud-gcp-samples</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>4.8.2</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>4.8.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>spring-cloud-gcp-firestore-sample</artifactId>
-    <name>Spring Framework on Google Cloud Code Sample - Firestore</name>
+    <artifactId>spring-cloud-gcp-starter-firestore-sample</artifactId>
+    <name>Spring Framework on Google Cloud Code Sample - Firestore Client Library with Starter</name>
 
     <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
     <dependencyManagement>

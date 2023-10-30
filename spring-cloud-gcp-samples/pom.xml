@@ -13,7 +13,7 @@
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>4.8.2</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.8.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -75,7 +75,7 @@
 				<module>spring-cloud-gcp-sql-postgres-sample</module>
 				<module>spring-cloud-gcp-sql-postgres-r2dbc-sample</module>
 				<module>spring-cloud-gcp-vision-ocr-demo</module>
-				<module>spring-cloud-gcp-firestore-sample</module>
+				<module>spring-cloud-gcp-starter-firestore-sample</module>
 				<module>spring-cloud-gcp-data-multi-sample</module>
 				<module>spring-cloud-gcp-data-firestore-sample</module>
 				<module>spring-cloud-gcp-bigquery-sample</module>
@@ -105,6 +105,7 @@
 				<module>spring-cloud-gcp-secretmanager-sample</module>
 				<module>spring-cloud-gcp-vision-ocr-demo</module>
 				<module>spring-cloud-gcp-data-datastore-basic-sample</module>
+				<module>spring-cloud-gcp-starter-firestore-sample</module>
 			</modules>
 			<build>
 				<plugins>
@@ -153,6 +154,7 @@
 								<it.trace>true</it.trace>
 								<it.secretmanager>true</it.secretmanager>
 								<it.datastore>true</it.datastore>
+								<it.firestore>true</it.firestore>
 								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>

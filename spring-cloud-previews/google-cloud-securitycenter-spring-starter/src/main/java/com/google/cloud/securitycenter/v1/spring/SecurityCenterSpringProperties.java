@@ -197,6 +197,12 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry testIamPermissionsRetry;
   /**
+   * Allow override of retry settings at method-level for
+   * simulateSecurityHealthAnalyticsCustomModule. If defined, this takes precedence over
+   * service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry simulateSecurityHealthAnalyticsCustomModuleRetry;
+  /**
    * Allow override of retry settings at method-level for updateExternalSystem. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -545,6 +551,16 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
 
   public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
     this.testIamPermissionsRetry = testIamPermissionsRetry;
+  }
+
+  public Retry getSimulateSecurityHealthAnalyticsCustomModuleRetry() {
+    return this.simulateSecurityHealthAnalyticsCustomModuleRetry;
+  }
+
+  public void setSimulateSecurityHealthAnalyticsCustomModuleRetry(
+      Retry simulateSecurityHealthAnalyticsCustomModuleRetry) {
+    this.simulateSecurityHealthAnalyticsCustomModuleRetry =
+        simulateSecurityHealthAnalyticsCustomModuleRetry;
   }
 
   public Retry getUpdateExternalSystemRetry() {
