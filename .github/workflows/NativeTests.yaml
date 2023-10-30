@@ -105,6 +105,8 @@ jobs:
       matrix:
         it:
           - spanner
+          - kms
+          - kms-sample
     steps:
       - name: Get current date
         id: date
