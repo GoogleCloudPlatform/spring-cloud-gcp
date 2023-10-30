@@ -37,6 +37,7 @@ jobs:
           - pubsub-integration-sample
           - pubsub-bus-sample
           - pubsub-stream-sample
+          - starter-firestore-sample
     steps:
       - name: Get current date
         id: date
@@ -105,7 +106,6 @@ jobs:
       matrix:
         it:
           - spanner
-          - starter-firestore-sample
     steps:
       - name: Get current date
         id: date
