@@ -27,17 +27,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportRuntimeHints;
 
 /**
  * @since 1.2
  */
 @SpringBootApplication
+@ImportRuntimeHints(SampleRuntimeHints.class)
 public class FirestoreSampleApp {
   @Autowired Firestore firestore;
+
+  @Value("${document.id.1:ada}")
+  private String documentIdAda;
+
+  @Value("${document.id.2:joe}")
+  private String documentIdJoe;
 
   public static void main(String[] args) {
     SpringApplication.run(FirestoreSampleApp.class, args);
@@ -56,8 +65,8 @@ public class FirestoreSampleApp {
 
   private void writeDocumentFromMap()
       throws InterruptedException, java.util.concurrent.ExecutionException {
-    DocumentReference docRef = this.firestore.collection("users").document("ada");
-    // Add document data with id "ada" using a hashmap
+    DocumentReference docRef = this.firestore.collection("users").document(documentIdAda);
+    // Add document data with id ada-"uuid" using a hashmap
     Map<String, Object> data = new HashMap<>();
     data.put("name", "Ada");
     data.put("phones", Arrays.asList(123, 456));
@@ -70,20 +79,20 @@ public class FirestoreSampleApp {
   }
 
   private void writeDocumentFromObject() throws ExecutionException, InterruptedException {
-    // Add document data with id "joe" using a custom User class
+    // Add document data with id joe-"uuid" using a custom User class
     User data =
         new User(
             "Joe",
             Arrays.asList(new Phone(12345, PhoneType.CELL), new Phone(54321, PhoneType.WORK)));
 
     // .get() blocks on response
-    WriteResult writeResult = this.firestore.document("users/joe").set(data).get();
+    WriteResult writeResult = this.firestore.document("users/" + documentIdJoe).set(data).get();
 
     System.out.println("Update time: " + writeResult.getUpdateTime());
   }
 
   private void readDocumentToMap() throws ExecutionException, InterruptedException {
-    DocumentReference docRef = this.firestore.document("users/ada");
+    DocumentReference docRef = this.firestore.document("users/" + documentIdAda);
 
     ApiFuture<DocumentSnapshot> documentSnapshotApiFuture = docRef.get();
 
@@ -94,7 +103,7 @@ public class FirestoreSampleApp {
 
   private void readDocumentToObject() throws ExecutionException, InterruptedException {
     ApiFuture<DocumentSnapshot> documentSnapshotApiFuture =
-        this.firestore.document("users/joe").get();
+        this.firestore.document("users/" + documentIdJoe).get();
 
     User user = documentSnapshotApiFuture.get().toObject(User.class);
 
