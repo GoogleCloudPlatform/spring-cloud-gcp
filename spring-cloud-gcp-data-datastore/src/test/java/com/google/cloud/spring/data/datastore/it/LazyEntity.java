@@ -41,6 +41,10 @@ public class LazyEntity {
     return this.lazyChild;
   }
 
+  public void setLazyChild(LazyEntity lazyChild) {
+    this.lazyChild = lazyChild;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
