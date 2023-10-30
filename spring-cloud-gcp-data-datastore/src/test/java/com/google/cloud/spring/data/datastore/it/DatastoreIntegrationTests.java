@@ -476,7 +476,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
     assertThat(this.testEntityRepository.getKey().getId()).isEqualTo((Long) 1L);
     assertThat(this.testEntityRepository.getSizes(1L)).hasSize(3);
     assertThat(this.testEntityRepository.getOneSize(2L)).isEqualTo(2);
-    // assertThat(this.testEntityRepository.getOneTestEntity(2L)).isNotNull();
+    assertThat(this.testEntityRepository.getOneTestEntity(2L)).isNotNull();
   }
 
   @Test
