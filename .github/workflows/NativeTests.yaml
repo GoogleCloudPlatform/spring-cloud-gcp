@@ -38,6 +38,8 @@ jobs:
           - pubsub-bus-sample
           - pubsub-stream-sample
           - starter-firestore-sample
+          - kms
+          - kms-sample
     steps:
       - name: Get current date
         id: date
@@ -106,8 +108,6 @@ jobs:
       matrix:
         it:
           - spanner
-          - kms
-          - kms-sample
     steps:
       - name: Get current date
         id: date
