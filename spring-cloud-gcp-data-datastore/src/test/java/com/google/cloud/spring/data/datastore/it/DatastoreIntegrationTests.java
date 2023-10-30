@@ -670,12 +670,12 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
     assertThat(loadedEntity).isEqualTo(ancestorEntity);
 
     ancestorEntity.descendants.forEach(
-        descendatEntry -> descendatEntry.name = descendatEntry.name + " updated");
+        descendantEntry -> descendantEntry.name = descendantEntry.name + " updated");
     this.datastoreTemplate.save(ancestorEntity);
     waitUntilTrue(
         () ->
             this.datastoreTemplate.findAll(AncestorEntity.DescendantEntry.class).stream()
-                .allMatch(descendatEntry -> descendatEntry.name.contains("updated")));
+                .allMatch(descendantEntry -> descendantEntry.name.contains("updated")));
 
     AncestorEntity loadedEntityAfterUpdate =
         this.datastoreTemplate.findById(ancestorEntity.id, AncestorEntity.class);
