@@ -410,7 +410,7 @@ From this point onward, your application will connect to your locally running em
 Spring Framework on Google Cloud provides Firestore sample applications to demonstrate API usage:
 
 - https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-firestore-sample[Reactive Firestore Repository sample application]:
-- https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-firestore-sample[Firestore Client Library sample application]
+- https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-starter-firestore-sample[Firestore Client Library sample application]
 
 === Test
 
