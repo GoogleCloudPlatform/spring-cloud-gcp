@@ -52,7 +52,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
 @EnableConfigurationProperties(GcpPubSubProperties.class)
 public class PubSubSubscriptionHealthIndicatorAutoConfiguration
-    extends CompositeHealthContributorConfiguration<PubSubHealthIndicator, PubSubTemplate> {
+    extends CompositeHealthContributorConfiguration<PubSubSubscriptionHealthIndicator, HealthTrackerRegistry> {
 
   private final GcpPubSubProperties gcpPubSubProperties;
 
@@ -60,7 +60,7 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration
 
   public PubSubSubscriptionHealthIndicatorAutoConfiguration(
       GcpPubSubProperties gcpPubSubProperties, GcpProjectIdProvider projectIdProvider) {
-    super((PubSubTemplate template) -> { throw new UnsupportedOperationException(); });
+    super(PubSubSubscriptionHealthIndicator::new);
     this.projectId =
         (gcpPubSubProperties.getProjectId() != null)
             ? gcpPubSubProperties.getProjectId()
