@@ -104,6 +104,7 @@
 				<module>spring-cloud-gcp-vision-api-sample</module>
 				<module>spring-cloud-gcp-secretmanager-sample</module>
 				<module>spring-cloud-gcp-vision-ocr-demo</module>
+				<module>spring-cloud-gcp-data-datastore-basic-sample</module>
 				<module>spring-cloud-gcp-starter-firestore-sample</module>
 				<module>spring-cloud-gcp-data-firestore-sample</module>
 			</modules>
@@ -139,8 +140,6 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
-							<!-- https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#integration-tests.no-starter-parent -->
-							<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 							<excludes combine.self="override" />
 							<includes>
 								<!--including all integration tests for testing purposes.-->
@@ -155,8 +154,9 @@
 								<it.vision>true</it.vision>
 								<it.trace>true</it.trace>
 								<it.secretmanager>true</it.secretmanager>
+								<it.datastore>true</it.datastore>
 								<it.firestore>true</it.firestore>
-                <gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
+								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>

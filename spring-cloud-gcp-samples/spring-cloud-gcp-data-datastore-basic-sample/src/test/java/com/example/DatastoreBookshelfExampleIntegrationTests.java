@@ -78,8 +78,8 @@ class DatastoreBookshelfExampleIntegrationTests {
   void testSerializedPage() {
     String responseBody = sendRequest("/allbooksserialized", null, HttpMethod.GET);
     assertThat(responseBody)
-        .contains("content\":[{\"id\":12345678}],\"pageable\":")
-        .containsPattern("\"urlSafeCursor\":\".+\"");
+        .contains("content\":[{\"id\":12345678}]")
+        .containsPattern("\"pageable\":.+\"urlSafeCursor\":\".+\"");
   }
 
   @Test

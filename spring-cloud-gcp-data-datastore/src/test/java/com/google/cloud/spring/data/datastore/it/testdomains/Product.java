@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it.testdomains;
 
-import java.util.List;
+import com.google.cloud.datastore.Key;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Reference;
 
-/** A test entity that uses lists of embedded relationships to build a tree. */
-public class TreeCollection {
-  @Id private long id;
+public class Product {
+  @Id private Key id;
 
-  private List<EmbeddableTreeNode> treeNodes;
+  @Reference private Store store;
 
-  public TreeCollection(long id, List<EmbeddableTreeNode> treeNodes) {
-    this.id = id;
-    this.treeNodes = treeNodes;
+  public Product(Store store) {
+    this.store = store;
+  }
+
+  @Override
+  public String toString() {
+    return "Product{" + "id=" + id + ", store=" + store + '}';
   }
 
   @Override
@@ -36,16 +40,22 @@ public class TreeCollection {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof Product)) {
       return false;
     }
-    TreeCollection that = (TreeCollection) o;
-    return Objects.equals(this.treeNodes, that.treeNodes);
+
+    Product product = (Product) o;
+
+    if (!Objects.equals(id, product.id)) {
+      return false;
+    }
+    return Objects.equals(store, product.store);
   }
 
   @Override
   public int hashCode() {
-
-    return Objects.hash(this.treeNodes);
+    int result = id != null ? id.hashCode() : 0;
+    result = 31 * result + (store != null ? store.hashCode() : 0);
+    return result;
   }
 }

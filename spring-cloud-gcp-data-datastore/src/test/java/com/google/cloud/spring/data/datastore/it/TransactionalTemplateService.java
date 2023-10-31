@@ -20,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
+import com.google.cloud.spring.data.datastore.it.testdomains.ReferenceEntry;
+import com.google.cloud.spring.data.datastore.it.testdomains.TestEntity;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,20 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it.testdomains;
 
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import org.springframework.data.annotation.Id;
 
-/** A test entity for Datastore integration tests. */
-@Entity
-class EmbeddedEntity {
+@Entity(name = "company")
+public class CompanyWithBooleanPrimitive {
+  @Id Long id;
 
-  private String stringField;
+  public String name;
 
-  EmbeddedEntity(String stringField) {
-    this.stringField = stringField;
-  }
+  public boolean active;
 
-  String getStringField() {
-    return stringField;
-  }
-
-  void setStringField(String stringField) {
-    this.stringField = stringField;
-  }
-
-  @Override
-  public String toString() {
-    return "EmbeddedEntity{" + "stringField='" + stringField + '\'' + '}';
+  CompanyWithBooleanPrimitive(Long id) {
+    this.id = id;
   }
 }

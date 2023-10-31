@@ -19,10 +19,6 @@ package com.google.cloud.spring.data.datastore.it;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Blob;
@@ -30,25 +26,41 @@ import com.google.cloud.datastore.DatastoreException;
 import com.google.cloud.datastore.DatastoreReaderWriter;
 import com.google.cloud.datastore.EntityQuery;
 import com.google.cloud.datastore.Key;
-import com.google.cloud.datastore.ProjectionEntityQuery;
 import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
-import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
-import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField;
-import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
-import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-import com.google.cloud.spring.data.datastore.core.mapping.Unindexed;
 import com.google.cloud.spring.data.datastore.entities.CustomMap;
-import com.google.cloud.spring.data.datastore.entities.Product;
-import com.google.cloud.spring.data.datastore.entities.ServiceConfiguration;
-import com.google.cloud.spring.data.datastore.entities.Store;
-import com.google.cloud.spring.data.datastore.it.TestEntity.Shape;
-import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
-import com.google.cloud.spring.data.datastore.repository.query.Query;
+import com.google.cloud.spring.data.datastore.it.testdomains.AncestorEntity;
+import com.google.cloud.spring.data.datastore.it.testdomains.Cat;
+import com.google.cloud.spring.data.datastore.it.testdomains.CommunicationChannels;
+import com.google.cloud.spring.data.datastore.it.testdomains.Company;
+import com.google.cloud.spring.data.datastore.it.testdomains.CompanyWithBooleanPrimitive;
+import com.google.cloud.spring.data.datastore.it.testdomains.Dog;
+import com.google.cloud.spring.data.datastore.it.testdomains.DogRepository;
+import com.google.cloud.spring.data.datastore.it.testdomains.EmbeddableTreeNode;
+import com.google.cloud.spring.data.datastore.it.testdomains.EmbeddedEntity;
+import com.google.cloud.spring.data.datastore.it.testdomains.Employee;
+import com.google.cloud.spring.data.datastore.it.testdomains.Event;
+import com.google.cloud.spring.data.datastore.it.testdomains.LazyEntity;
+import com.google.cloud.spring.data.datastore.it.testdomains.ParentEntity;
+import com.google.cloud.spring.data.datastore.it.testdomains.Pet;
+import com.google.cloud.spring.data.datastore.it.testdomains.PetOwner;
+import com.google.cloud.spring.data.datastore.it.testdomains.PetRepository;
+import com.google.cloud.spring.data.datastore.it.testdomains.Product;
+import com.google.cloud.spring.data.datastore.it.testdomains.ProductRepository;
+import com.google.cloud.spring.data.datastore.it.testdomains.Pug;
+import com.google.cloud.spring.data.datastore.it.testdomains.ReferenceEntry;
+import com.google.cloud.spring.data.datastore.it.testdomains.ServiceConfiguration;
+import com.google.cloud.spring.data.datastore.it.testdomains.Store;
+import com.google.cloud.spring.data.datastore.it.testdomains.SubEntity;
+import com.google.cloud.spring.data.datastore.it.testdomains.TestEntity;
+import com.google.cloud.spring.data.datastore.it.testdomains.TestEntity.Shape;
+import com.google.cloud.spring.data.datastore.it.testdomains.TestEntityProjection;
+import com.google.cloud.spring.data.datastore.it.testdomains.TestEntityRepository;
+import com.google.cloud.spring.data.datastore.it.testdomains.TreeCollection;
 import com.google.cloud.spring.data.datastore.repository.support.SimpleDatastoreRepository;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -59,7 +71,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -69,13 +80,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Reference;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
@@ -107,7 +116,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   @Autowired private DogRepository dogRepository;
 
-  @SpyBean private DatastoreTemplate datastoreTemplate;
+  @Autowired private DatastoreTemplate datastoreTemplate;
 
   @Autowired private DatastoreMappingContext mappingContext;
 
@@ -608,22 +617,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  void projectionTest() {
-    reset(datastoreTemplate);
-    assertThat(this.testEntityRepository.findBySize(2L).getColor()).isEqualTo("blue");
-
-    ProjectionEntityQuery projectionQuery =
-        com.google.cloud.datastore.Query.newProjectionEntityQueryBuilder()
-            .addProjection("color")
-            .setFilter(PropertyFilter.eq("size", 2L))
-            .setKind("test_entities_ci")
-            .setLimit(1)
-            .build();
-
-    verify(datastoreTemplate).queryKeysOrEntities(eq(projectionQuery), any());
-  }
-
-  @Test
   void embeddedEntitiesTest() {
     EmbeddableTreeNode treeNode10 = new EmbeddableTreeNode(10, null, null);
     EmbeddableTreeNode treeNode8 = new EmbeddableTreeNode(8, null, null);
@@ -677,12 +670,12 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
     assertThat(loadedEntity).isEqualTo(ancestorEntity);
 
     ancestorEntity.descendants.forEach(
-        descendatEntry -> descendatEntry.name = descendatEntry.name + " updated");
+        descendantEntry -> descendantEntry.name = descendantEntry.name + " updated");
     this.datastoreTemplate.save(ancestorEntity);
     waitUntilTrue(
         () ->
             this.datastoreTemplate.findAll(AncestorEntity.DescendantEntry.class).stream()
-                .allMatch(descendatEntry -> descendatEntry.name.contains("updated")));
+                .allMatch(descendantEntry -> descendantEntry.name.contains("updated")));
 
     AncestorEntity loadedEntityAfterUpdate =
         this.datastoreTemplate.findById(ancestorEntity.id, AncestorEntity.class);
@@ -690,6 +683,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void referenceTest() {
     ReferenceEntry parent = saveEntitiesGraph();
 
@@ -713,6 +707,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void lazyReferenceCollectionTest() {
     ReferenceEntry parent = saveEntitiesGraph();
 
@@ -728,6 +723,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void lazyReferenceTest() throws InterruptedException {
     LazyEntity lazyParentEntity = new LazyEntity(new LazyEntity(new LazyEntity()));
     this.datastoreTemplate.save(lazyParentEntity);
@@ -743,6 +739,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void singularLazyPropertyTest() {
     LazyEntity lazyParentEntity = new LazyEntity(new LazyEntity(new LazyEntity()));
     this.datastoreTemplate.save(lazyParentEntity);
@@ -753,6 +750,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void lazyReferenceTransactionTest() {
     ReferenceEntry parent = saveEntitiesGraph();
 
@@ -873,6 +871,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void inheritanceTest() {
     PetOwner petOwner = new PetOwner();
     petOwner.pets = Arrays.asList(new Cat("Alice"), new Cat("Bob"), new Pug("Bob"), new Dog("Bob"));
@@ -902,6 +901,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void inheritanceTestFindAll() {
     this.datastoreTemplate.saveAll(
         Arrays.asList(new Cat("Cat1"), new Dog("Dog1"), new Pug("Dog2")));
@@ -962,16 +962,16 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   void readOnlySaveTest() {
 
     assertThatThrownBy(() -> this.transactionalTemplateService.writingInReadOnly())
-            .isInstanceOf(TransactionSystemException.class)
-            .hasMessageContaining("Cloud Datastore transaction failed to commit.");
+        .isInstanceOf(TransactionSystemException.class)
+        .hasMessageContaining("Cloud Datastore transaction failed to commit.");
   }
 
   @Test
   void readOnlyDeleteTest() {
 
     assertThatThrownBy(() -> this.transactionalTemplateService.deleteInReadOnly())
-            .isInstanceOf(TransactionSystemException.class)
-            .hasMessageContaining("Cloud Datastore transaction failed to commit.");
+        .isInstanceOf(TransactionSystemException.class)
+        .hasMessageContaining("Cloud Datastore transaction failed to commit.");
   }
 
   @Test
@@ -980,6 +980,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void sameClassDescendantsTest() {
     Employee entity3 = new Employee(Collections.EMPTY_LIST);
     Employee entity2 = new Employee(Collections.EMPTY_LIST);
@@ -997,32 +998,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
     assertThat(readCompany.leaders.get(0).id).isEqualTo(entity1.id);
   }
 
-  @Test
-  void testSlicedEntityProjections() {
-    reset(datastoreTemplate);
-    Slice<TestEntityProjection> testEntityProjectionSlice =
-        this.testEntityRepository.findBySize(2L, PageRequest.of(0, 1));
 
-    List<TestEntityProjection> testEntityProjections =
-        testEntityProjectionSlice.get().collect(Collectors.toList());
-
-    assertThat(testEntityProjections).hasSize(1);
-    assertThat(testEntityProjections.get(0)).isInstanceOf(TestEntityProjection.class);
-    assertThat(testEntityProjections.get(0)).isNotInstanceOf(TestEntity.class);
-
-    // Verifies that the projection method call works.
-    assertThat(testEntityProjections.get(0).getColor()).isEqualTo("blue");
-
-    ProjectionEntityQuery projectionQuery =
-        com.google.cloud.datastore.Query.newProjectionEntityQueryBuilder()
-            .addProjection("color")
-            .setFilter(PropertyFilter.eq("size", 2L))
-            .setKind("test_entities_ci")
-            .setLimit(1)
-            .build();
-
-    verify(datastoreTemplate).queryKeysOrEntities(eq(projectionQuery), any());
-  }
 
   @Test
   void testPageableGqlEntityProjectionsPage() {
@@ -1088,6 +1064,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  @DisabledInNativeImage
   void newFieldTest() {
     Company company = new Company(1L, Collections.emptyList());
     company.name = "name1";
@@ -1193,213 +1170,4 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
                     .collect(Collectors.toList()));
     assertThat(redIdListReverseSorted).containsExactly("4", "3", "1");
   }
-}
-
-/** Test class. */
-@Entity
-class ParentEntity {
-  @Id Long id;
-
-  @Reference List<SubEntity> subEntities;
-
-  @Reference SubEntity singularSubEntity;
-
-  @Descendants List<SubEntity> descendants;
-
-  ParentEntity(
-      List<SubEntity> subEntities, List<SubEntity> descendants, SubEntity singularSubEntity) {
-    this.subEntities = subEntities;
-    this.singularSubEntity = singularSubEntity;
-    this.descendants = descendants;
-  }
-}
-
-/** Test class. */
-@Entity
-class SubEntity {
-  @Id Key key;
-
-  @Reference ParentEntity parent;
-
-  @Reference SubEntity sibling;
-
-  @Unindexed List<String> stringList;
-
-  String stringProperty;
-
-  @Unindexed List<SubEntity> embeddedSubEntities;
-}
-
-class PetOwner {
-  @Id Long id;
-
-  @Reference Collection<Pet> pets;
-}
-
-@Entity
-@DiscriminatorField(field = "pet_type")
-abstract class Pet {
-  @Id Long id;
-
-  String name;
-
-  Pet(String name) {
-    this.name = name;
-  }
-
-  abstract String speak();
-}
-
-@DiscriminatorValue("cat")
-class Cat extends Pet {
-
-  Cat(String name) {
-    super(name);
-  }
-
-  @Override
-  String speak() {
-    return "meow";
-  }
-}
-
-@DiscriminatorValue("dog")
-class Dog extends Pet {
-
-  Dog(String name) {
-    super(name);
-  }
-
-  @Override
-  String speak() {
-    return "woof";
-  }
-}
-
-@DiscriminatorValue("pug")
-class Pug extends Dog {
-
-  Pug(String name) {
-    super(name);
-  }
-
-  @Override
-  String speak() {
-    return "woof woof";
-  }
-}
-
-interface PetRepository extends DatastoreRepository<Pet, Long> {
-  List<Pet> findByName(String s);
-}
-
-interface DogRepository extends DatastoreRepository<Dog, Long> {
-  List<Dog> findByName(String s);
-
-  @Query("select * from Pet")
-  List<Dog> findByCustomQuery();
-}
-
-@Entity
-class Event {
-  @Id private String eventName;
-
-  private Map<CommunicationChannels, String> preferences;
-
-  Event(String eventName, Map<CommunicationChannels, String> preferences) {
-    this.eventName = eventName;
-    this.preferences = preferences;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Event event = (Event) o;
-    return Objects.equals(this.eventName, event.eventName)
-        && Objects.equals(this.preferences, event.preferences);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.eventName, this.preferences);
-  }
-}
-
-@Entity(name = "company")
-class Company {
-  @Id Long id;
-
-  @Descendants List<Employee> leaders;
-
-  String name;
-
-  Company(Long id, List<Employee> leaders) {
-    this.id = id;
-    this.leaders = leaders;
-  }
-}
-
-@Entity(name = "company")
-class CompanyWithBooleanPrimitive {
-  @Id Long id;
-
-  String name;
-
-  boolean active;
-
-  CompanyWithBooleanPrimitive(Long id) {
-    this.id = id;
-  }
-}
-
-@Entity
-class Employee {
-  @Id public Key id;
-
-  @Descendants public List<Employee> subordinates;
-
-  Employee(List<Employee> subordinates) {
-    this.subordinates = subordinates;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Employee that = (Employee) o;
-    return Objects.equals(this.id, that.id) && Objects.equals(this.subordinates, that.subordinates);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.id, this.subordinates);
-  }
-
-  @Override
-  public String toString() {
-    return "Employee{"
-        + "id="
-        + this.id.getNameOrId()
-        + ", subordinates="
-        + (this.subordinates != null
-            ? this.subordinates.stream()
-                .map(employee -> employee.id.getNameOrId())
-                .collect(Collectors.toList())
-            : null)
-        + '}';
-  }
-}
-
-enum CommunicationChannels {
-  EMAIL,
-  SMS;
 }

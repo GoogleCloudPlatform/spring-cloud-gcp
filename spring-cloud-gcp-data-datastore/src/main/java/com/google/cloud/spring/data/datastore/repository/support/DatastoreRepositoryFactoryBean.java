@@ -16,12 +16,14 @@
 
 package com.google.cloud.spring.data.datastore.repository.support;
 
+import com.google.cloud.spring.data.datastore.aot.DatastoreRepositoryRuntimeHints;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
-import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.ImportRuntimeHints;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
@@ -32,9 +34,9 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
  * @param <I> the id type of the entities
  * @since 1.1
  */
-public class DatastoreRepositoryFactoryBean<S, I>
-    extends RepositoryFactoryBeanSupport<DatastoreRepository<S, I>, S, I>
-    implements ApplicationContextAware {
+@ImportRuntimeHints(DatastoreRepositoryRuntimeHints.class)
+public class DatastoreRepositoryFactoryBean<T extends Repository<S, I>, S, I>
+    extends RepositoryFactoryBeanSupport<T, S, I> implements ApplicationContextAware {
 
   private DatastoreMappingContext datastoreMappingContext;
 
@@ -47,7 +49,7 @@ public class DatastoreRepositoryFactoryBean<S, I>
    *
    * @param repositoryInterface must not be {@literal null}.
    */
-  DatastoreRepositoryFactoryBean(Class<DatastoreRepository<S, I>> repositoryInterface) {
+  DatastoreRepositoryFactoryBean(Class<T> repositoryInterface) {
     super(repositoryInterface);
   }
 

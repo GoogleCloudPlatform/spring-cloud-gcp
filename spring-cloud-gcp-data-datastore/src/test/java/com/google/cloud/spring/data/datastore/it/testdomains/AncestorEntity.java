@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it.testdomains;
 
 import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
@@ -25,13 +25,15 @@ import org.springframework.data.annotation.Id;
 
 /** An ancestor entity for integration tests. */
 public class AncestorEntity {
-  @Id Long id;
+  @Id
+  public Long id;
 
   String name;
 
-  @Descendants List<DescendantEntry> descendants;
+  @Descendants
+  public List<DescendantEntry> descendants;
 
-  AncestorEntity(String name, List<DescendantEntry> descendants) {
+  public AncestorEntity(String name, List<DescendantEntry> descendants) {
     this.name = name;
     this.descendants = descendants;
   }
@@ -59,9 +61,9 @@ public class AncestorEntity {
   public static class DescendantEntry {
     @Id Key id;
 
-    String name;
+    public String name;
 
-    DescendantEntry(String name) {
+    public DescendantEntry(String name) {
       this.name = name;
     }
 
