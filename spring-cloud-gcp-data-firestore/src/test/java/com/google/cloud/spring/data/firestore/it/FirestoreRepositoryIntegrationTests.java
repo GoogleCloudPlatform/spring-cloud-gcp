@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,8 @@ import reactor.test.StepVerifier;
 
 @EnabledIfSystemProperty(named = "it.firestore", matches = "true")
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = FirestoreIntegrationTestsConfiguration.class)
+@ContextConfiguration(classes = FirestoreTransactionIntegrationTestsConfiguration.class)
+@DisabledInNativeImage
 class FirestoreRepositoryIntegrationTests {
   // tag::autowire[]
   @Autowired UserRepository userRepository;

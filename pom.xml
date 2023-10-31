@@ -359,6 +359,7 @@
 			<module>spring-cloud-gcp-secretmanager</module>
 			<module>spring-cloud-gcp-kms</module>
 			<module>spring-cloud-gcp-data-datastore</module>
+			<module>spring-cloud-gcp-data-firestore</module>
 		</modules>
 
 		<dependencies>
@@ -390,6 +391,7 @@
 							<it.secretmanager>true</it.secretmanager>
 							<it.kms>true</it.kms>
 							<it.datastore>true</it.datastore>
+							<it.firestore>true</it.firestore>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>

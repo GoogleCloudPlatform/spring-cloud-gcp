@@ -23,12 +23,14 @@ import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFirestoreRepositories;
+import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
 import java.io.IOException;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +43,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource("application-test.properties")
 @EnableReactiveFirestoreRepositories(basePackageClasses = UserRepository.class)
 @EnableTransactionManagement
-public class FirestoreIntegrationTestsConfiguration {
+public class FirestoreTransactionIntegrationTestsConfiguration {
   @Value("projects/${test.integration.firestore.project-id}/databases/(default)/documents")
   String defaultParent;
 
@@ -68,6 +70,14 @@ public class FirestoreIntegrationTestsConfiguration {
       FirestoreMappingContext firestoreMappingContext) {
     return new FirestoreTemplate(
         firestoreStub, this.defaultParent, classMapper, firestoreMappingContext);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public ReactiveFirestoreTransactionManager firestoreTransactionManager(
+      FirestoreGrpc.FirestoreStub firestoreStub, FirestoreClassMapper classMapper) {
+    return Mockito.spy(
+        new ReactiveFirestoreTransactionManager(firestoreStub, this.defaultParent, classMapper));
   }
 
   // tag::user_service_bean[]
