@@ -39,6 +39,8 @@ jobs:
           - pubsub-stream-sample
           - datastore
           - starter-firestore-sample
+          - kms
+          - kms-sample
     steps:
       - name: Get current date
         id: date
