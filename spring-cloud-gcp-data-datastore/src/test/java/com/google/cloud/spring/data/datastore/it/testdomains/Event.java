@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.datastore.entities;
+package com.google.cloud.spring.data.datastore.it.testdomains;
 
-import com.google.cloud.datastore.Key;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import java.util.Map;
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 
-@Entity(name = "store")
-public class Store {
-  @Id private Key id;
+@Entity
+public class Event {
+  @Id
+  private String eventName;
 
-  private String name;
+  private Map<CommunicationChannels, String> preferences;
 
-  public Store(String name) {
-    this.name = name;
-  }
-
-  @Override
-  public String toString() {
-    return "Store{" + "id=" + id + ", name='" + name + '\'' + '}';
+  public Event(String eventName, Map<CommunicationChannels, String> preferences) {
+    this.eventName = eventName;
+    this.preferences = preferences;
   }
 
   @Override
@@ -40,22 +38,16 @@ public class Store {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Store)) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-
-    Store store = (Store) o;
-
-    if (id != null ? !id.equals(store.id) : store.id != null) {
-      return false;
-    }
-    return name != null ? name.equals(store.name) : store.name == null;
+    Event event = (Event) o;
+    return Objects.equals(this.eventName, event.eventName)
+        && Objects.equals(this.preferences, event.preferences);
   }
 
   @Override
   public int hashCode() {
-    int result = id != null ? id.hashCode() : 0;
-    result = 31 * result + (name != null ? name.hashCode() : 0);
-    return result;
+    return Objects.hash(this.eventName, this.preferences);
   }
 }

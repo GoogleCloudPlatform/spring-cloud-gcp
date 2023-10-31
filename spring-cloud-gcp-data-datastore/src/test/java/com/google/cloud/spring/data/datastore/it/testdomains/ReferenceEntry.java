@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it.testdomains;
 
 import com.google.cloud.spring.data.datastore.core.mapping.LazyReference;
 import java.util.Collections;
@@ -26,15 +26,15 @@ import org.springframework.data.annotation.Reference;
 
 /** A test class that holds references as relationships. */
 public class ReferenceEntry {
-  @Id Long id;
+  @Id public Long id;
 
-  String name;
+  public String name;
 
-  @Reference ReferenceEntry sibling;
+  @Reference public ReferenceEntry sibling;
 
-  @LazyReference List<ReferenceEntry> children;
+  @LazyReference public List<ReferenceEntry> children;
 
-  ReferenceEntry(String name, ReferenceEntry sibling, List<ReferenceEntry> children) {
+  public ReferenceEntry(String name, ReferenceEntry sibling, List<ReferenceEntry> children) {
     this.name = name;
     this.sibling = sibling;
     this.children = children;

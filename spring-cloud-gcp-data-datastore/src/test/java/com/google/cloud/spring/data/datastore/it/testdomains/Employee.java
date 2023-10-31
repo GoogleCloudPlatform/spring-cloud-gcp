@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it.testdomains;
 
+import com.google.cloud.datastore.Key;
+import com.google.cloud.spring.data.datastore.core.mapping.Descendants;
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.springframework.data.annotation.Id;
 
-/** A test class that uses embedded relationships to represent a tree. */
 @Entity
-public class EmbeddableTreeNode {
-  @Id long value;
+public class Employee {
+  @Id public Key id;
 
-  EmbeddableTreeNode left;
+  @Descendants public List<Employee> subordinates;
 
-  EmbeddableTreeNode right;
-
-  public EmbeddableTreeNode(long value, EmbeddableTreeNode left, EmbeddableTreeNode right) {
-    this.value = value;
-    this.left = left;
-    this.right = right;
+  public Employee(List<Employee> subordinates) {
+    this.subordinates = subordinates;
   }
 
   @Override
@@ -43,27 +42,26 @@ public class EmbeddableTreeNode {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    EmbeddableTreeNode treeNode = (EmbeddableTreeNode) o;
-    return this.value == treeNode.value
-        && Objects.equals(this.left, treeNode.left)
-        && Objects.equals(this.right, treeNode.right);
+    Employee that = (Employee) o;
+    return Objects.equals(this.id, that.id) && Objects.equals(this.subordinates, that.subordinates);
   }
 
   @Override
   public int hashCode() {
-
-    return Objects.hash(this.value, this.left, this.right);
+    return Objects.hash(this.id, this.subordinates);
   }
 
   @Override
   public String toString() {
-    return "EmbeddableTreeNode{"
-        + "value="
-        + this.value
-        + ", left="
-        + this.left
-        + ", right="
-        + this.right
+    return "Employee{"
+        + "id="
+        + this.id.getNameOrId()
+        + ", subordinates="
+        + (this.subordinates != null
+            ? this.subordinates.stream()
+                .map(employee -> employee.id.getNameOrId())
+                .collect(Collectors.toList())
+            : null)
         + '}';
   }
 }

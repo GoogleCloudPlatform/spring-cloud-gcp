@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it.testdomains;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Key;
-import com.google.cloud.spring.data.datastore.it.TestEntity.Shape;
+import com.google.cloud.spring.data.datastore.it.testdomains.TestEntity.Shape;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import com.google.cloud.spring.data.datastore.repository.query.Query;
 import java.util.LinkedList;
@@ -37,7 +37,7 @@ import org.springframework.lang.Nullable;
 
 /** A repository for testing Query Methods that uses many advanced features. */
 @Nonnull
-interface TestEntityRepository extends DatastoreRepository<TestEntity, Long> {
+public interface TestEntityRepository extends DatastoreRepository<TestEntity, Long> {
 
   @Query("select * from  test_entities_ci where size = @size ")
   LinkedList<TestEntity> findEntitiesWithCustomQuery(@Param("size") long size);
@@ -79,7 +79,7 @@ interface TestEntityRepository extends DatastoreRepository<TestEntity, Long> {
 
   @Query(
       value =
-          "select __key__ from |com.google.cloud.spring.data.datastore.it.TestEntity| "
+          "select __key__ from |com.google.cloud.spring.data.datastore.it.testdomains.TestEntity| "
               + "where size = :#{#size}",
       exists = true)
   boolean existsByEntitiesWithCustomQuery(@Param("size") long size);

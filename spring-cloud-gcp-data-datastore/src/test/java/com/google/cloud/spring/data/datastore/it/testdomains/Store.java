@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.datastore.entities;
+package com.google.cloud.spring.data.datastore.it.testdomains;
 
 import com.google.cloud.datastore.Key;
+import com.google.cloud.spring.data.datastore.core.mapping.Entity;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Reference;
 
-public class Product {
+@Entity(name = "store")
+public class Store {
   @Id private Key id;
 
-  @Reference private Store store;
+  private String name;
 
-  public Product(Store store) {
-    this.store = store;
+  public Store(String name) {
+    this.name = name;
   }
 
   @Override
   public String toString() {
-    return "Product{" + "id=" + id + ", store=" + store + '}';
+    return "Store{" + "id=" + id + ", name='" + name + '\'' + '}';
   }
 
   @Override
@@ -39,22 +40,22 @@ public class Product {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Product)) {
+    if (!(o instanceof Store)) {
       return false;
     }
 
-    Product product = (Product) o;
+    Store store = (Store) o;
 
-    if (id != null ? !id.equals(product.id) : product.id != null) {
+    if (id != null ? !id.equals(store.id) : store.id != null) {
       return false;
     }
-    return store != null ? store.equals(product.store) : product.store == null;
+    return name != null ? name.equals(store.name) : store.name == null;
   }
 
   @Override
   public int hashCode() {
     int result = id != null ? id.hashCode() : 0;
-    result = 31 * result + (store != null ? store.hashCode() : 0);
+    result = 31 * result + (name != null ? name.hashCode() : 0);
     return result;
   }
 }
