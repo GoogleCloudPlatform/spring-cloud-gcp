@@ -111,6 +111,7 @@ jobs:
           - spanner
           - datastore-basic-sample
           - data-firestore-sample
+          - data-firestore
     steps:
       - name: Get current date
         id: date
