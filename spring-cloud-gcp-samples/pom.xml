@@ -106,6 +106,7 @@
 				<module>spring-cloud-gcp-vision-ocr-demo</module>
 				<module>spring-cloud-gcp-data-datastore-basic-sample</module>
 				<module>spring-cloud-gcp-starter-firestore-sample</module>
+				<module>spring-cloud-gcp-kms-sample</module>
 				<module>spring-cloud-gcp-data-firestore-sample</module>
 			</modules>
 			<build>
@@ -156,6 +157,9 @@
 								<it.secretmanager>true</it.secretmanager>
 								<it.datastore>true</it.datastore>
 								<it.firestore>true</it.firestore>
+								<it.kms>true</it.kms>
+								<kms-test-project-id>spring-cloud-gcp-ci-native</kms-test-project-id>
+								<kms-test-encrypted-text>CiQA04Sv0lCnHhQQIwKI0XDU+XcU6q1ryy+VuQJ6oh6VF8eJRocSLgBVx+glEafbllCrwhS8utmM9RYAC80xizA/YYyjE/roXcRDj9AGpfTS3iDKg5E=</kms-test-encrypted-text>
 								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
@@ -175,6 +179,8 @@
 						<artifactId>maven-failsafe-plugin</artifactId>
 						<configuration>
 							<systemPropertyVariables>
+								<kms-test-project-id>spring-cloud-gcp-ci</kms-test-project-id>
+								<kms-test-encrypted-text>CiQA9oGpAZWS7YfHvtvl3gD42KD3cpaPtVb/OvaQvx/T5wikp2sSLgDPaDHEgKQWhD5HPNKqYiFGDP5SofmM0Nec5q/AyyYgRUBimEmG8i6vrpiEf9o=</kms-test-encrypted-text>
 								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
