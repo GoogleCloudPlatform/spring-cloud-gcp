@@ -358,6 +358,7 @@
 			<module>spring-cloud-gcp-data-spanner</module>
 			<module>spring-cloud-gcp-secretmanager</module>
 			<module>spring-cloud-gcp-kms</module>
+			<module>spring-cloud-gcp-data-datastore</module>
 		</modules>
 
 		<dependencies>
@@ -388,6 +389,7 @@
 							<it.spanner>true</it.spanner>
 							<it.secretmanager>true</it.secretmanager>
 							<it.kms>true</it.kms>
+							<it.datastore>true</it.datastore>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>

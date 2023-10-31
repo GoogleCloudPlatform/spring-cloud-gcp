@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,22 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it.testdomains;
 
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
-import com.google.cloud.spring.data.datastore.core.mapping.LazyReference;
+import com.google.cloud.spring.data.datastore.entities.CustomMap;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
 
 @Entity
-public class LazyEntity {
-  @Id Long id;
+public class ServiceConfiguration {
+  @Id private String serviceName;
 
-  @LazyReference LazyEntity lazyChild;
+  private CustomMap customMap;
 
-  public LazyEntity() {}
-
-  public LazyEntity(LazyEntity child) {
-    this.lazyChild = child;
-  }
-
-  Long getId() {
-    return this.id;
-  }
-
-  LazyEntity getLazyChild() {
-    return this.lazyChild;
+  public ServiceConfiguration(String serviceName, CustomMap customMap) {
+    this.serviceName = serviceName;
+    this.customMap = customMap;
   }
 
   @Override
@@ -49,18 +40,13 @@ public class LazyEntity {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    LazyEntity that = (LazyEntity) o;
-    return Objects.equals(getId(), that.getId())
-        && Objects.equals(getLazyChild(), that.getLazyChild());
+    ServiceConfiguration that = (ServiceConfiguration) o;
+    return Objects.equals(serviceName, that.serviceName)
+        && Objects.equals(customMap, that.customMap);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getLazyChild());
-  }
-
-  @Override
-  public String toString() {
-    return "LazyEntity{" + "id=" + this.id + ", lazyChild=" + this.lazyChild + '}';
+    return Objects.hash(serviceName, customMap);
   }
 }

@@ -37,6 +37,7 @@ jobs:
           - pubsub-integration-sample
           - pubsub-bus-sample
           - pubsub-stream-sample
+          - datastore
           - starter-firestore-sample
           - kms
           - kms-sample
@@ -108,6 +109,7 @@ jobs:
       matrix:
         it:
           - spanner
+          - datastore-basic-sample
     steps:
       - name: Get current date
         id: date
