@@ -243,7 +243,6 @@ public class SpannerCompositeKeyProperty implements SpannerPersistentProperty {
     return false;
   }
 
-  @Override
   public boolean isReadable() {
     return true;
   }
