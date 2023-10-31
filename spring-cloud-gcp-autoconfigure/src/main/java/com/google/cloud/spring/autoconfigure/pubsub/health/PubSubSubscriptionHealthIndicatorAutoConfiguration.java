@@ -60,6 +60,7 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration
 
   public PubSubSubscriptionHealthIndicatorAutoConfiguration(
       GcpPubSubProperties gcpPubSubProperties, GcpProjectIdProvider projectIdProvider) {
+    super((PubSubTemplate template) -> { throw new UnsupportedOperationException(); });
     this.projectId =
         (gcpPubSubProperties.getProjectId() != null)
             ? gcpPubSubProperties.getProjectId()
