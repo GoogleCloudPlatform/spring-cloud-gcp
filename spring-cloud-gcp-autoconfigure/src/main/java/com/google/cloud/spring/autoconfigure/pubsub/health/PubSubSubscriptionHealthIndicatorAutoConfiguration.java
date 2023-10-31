@@ -22,7 +22,6 @@ import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubProperties;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistryImpl;
 import java.io.IOException;
@@ -46,13 +45,14 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @ConditionalOnClass({HealthIndicator.class, MetricServiceClient.class})
 @ConditionalOnEnabledHealthIndicator("pubsub-subscriber")
 @ConditionalOnProperty({
-  "spring.cloud.gcp.pubsub.health.lagThreshold",
-  "spring.cloud.gcp.pubsub.health.backlogThreshold"
+    "spring.cloud.gcp.pubsub.health.lagThreshold",
+    "spring.cloud.gcp.pubsub.health.backlogThreshold"
 })
 @AutoConfigureBefore(GcpPubSubAutoConfiguration.class)
 @EnableConfigurationProperties(GcpPubSubProperties.class)
 public class PubSubSubscriptionHealthIndicatorAutoConfiguration
-    extends CompositeHealthContributorConfiguration<PubSubSubscriptionHealthIndicator, HealthTrackerRegistry> {
+    extends
+    CompositeHealthContributorConfiguration<PubSubSubscriptionHealthIndicator, HealthTrackerRegistry> {
 
   private final GcpPubSubProperties gcpPubSubProperties;
 
