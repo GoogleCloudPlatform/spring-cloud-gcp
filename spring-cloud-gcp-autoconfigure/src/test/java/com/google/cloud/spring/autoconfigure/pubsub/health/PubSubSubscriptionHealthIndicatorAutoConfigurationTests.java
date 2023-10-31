@@ -39,21 +39,41 @@ class PubSubSubscriptionHealthIndicatorAutoConfigurationTests {
               AutoConfigurations.of(
                   PubSubSubscriptionHealthIndicatorAutoConfiguration.class,
                   GcpPubSubAutoConfiguration.class))
-          .withPropertyValues(
-              "spring.cloud.gcp.pubsub.health.lagThreshold=1",
-              "spring.cloud.gcp.pubsub.health.backlogThreshold=1")
           .withBean(GcpProjectIdProvider.class, () -> () -> "fake project")
-          .withBean(CredentialsProvider.class, () -> () -> mock(Credentials.class))
-          .withBean(HealthTrackerRegistry.class, () -> mock(HealthTrackerRegistry.class));
+          .withBean(CredentialsProvider.class, () -> () -> mock(Credentials.class));
 
   @Test
   void healthIndicatorPresent_defaults() {
     this.contextRunner
-        .run(
-            ctx -> {
-              PubSubSubscriptionHealthIndicator healthIndicator =
-                  ctx.getBean(PubSubSubscriptionHealthIndicator.class);
-              assertThat(healthIndicator).isNotNull();
-            });
+        .withPropertyValues(
+            "spring.cloud.gcp.pubsub.health.lagThreshold=1",
+            "spring.cloud.gcp.pubsub.health.backlogThreshold=1")
+        .run(ctx -> assertThat(ctx).hasSingleBean(PubSubSubscriptionHealthIndicator.class));
+  }
+
+  @Test
+  void healthIndicatorNotPresent_whenDisabled() {
+    this.contextRunner
+        .withPropertyValues(
+            "management.health.pubsub-subscriber.enabled:false",
+            "spring.cloud.gcp.pubsub.health.lagThreshold=1",
+            "spring.cloud.gcp.pubsub.health.backlogThreshold=1")
+        .run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubSubscriptionHealthIndicator.class));
+  }
+
+  @Test
+  void healthIndicatorNotPresent_whenMissingLagThreshold() {
+    this.contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.pubsub.health.backlogThreshold=1")
+        .run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubSubscriptionHealthIndicator.class));
+  }
+
+  @Test
+  void healthIndicatorNotPresent_whenMissingBacklogThreshold() {
+    this.contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.pubsub.health.lagThreshold=1")
+        .run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubSubscriptionHealthIndicator.class));
   }
 }
