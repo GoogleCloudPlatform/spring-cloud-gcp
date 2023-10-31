@@ -378,7 +378,7 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 
       this.noLimitQuery = this.finalGql;
       Pageable pageable = paramAccessor.getPageable();
-      if (!pageable.equals(Pageable.unpaged())) {
+      if (pageable.isPaged()) {
         this.finalGql += LIMIT_CLAUSE;
         this.tagsOrdered.add(LIMIT_TAG_NAME);
         this.limitPosition = this.params.size();
