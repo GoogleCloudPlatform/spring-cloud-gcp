@@ -18,6 +18,8 @@ package com.google.cloud.spring.data.datastore.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.cloud.spring.data.datastore.it.testdomains.TestEntity;
+import com.google.cloud.spring.data.datastore.it.testdomains.TestEntityRepository;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
@@ -36,7 +38,8 @@ class ParallelDatastoreIntegrationTests extends AbstractDatastoreIntegrationTest
 
   private static final int PARALLEL_OPERATIONS = 10;
 
-  @Autowired TestEntityRepository testEntityRepository;
+  @Autowired
+  TestEntityRepository testEntityRepository;
 
   @AfterEach
   void deleteAll() {

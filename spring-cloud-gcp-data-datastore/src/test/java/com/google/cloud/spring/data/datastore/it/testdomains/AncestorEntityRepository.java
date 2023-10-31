@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.datastore.it;
+package com.google.cloud.spring.data.datastore.it.testdomains;
 
-import com.google.cloud.datastore.Key;
-import com.google.cloud.spring.data.datastore.entities.Product;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface ProductRepository extends DatastoreRepository<Product, Key> {}
+// temp repository until ID property not filled for template get fixed for native image.
+public interface AncestorEntityRepository extends DatastoreRepository<AncestorEntity, Long> {}
