@@ -23,6 +23,7 @@ import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFirestoreRepositories;
+import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
@@ -81,5 +82,12 @@ public class FirestoreIntegrationTestsConfiguration {
   @ConditionalOnMissingBean
   public FirestoreClassMapper getClassMapper(FirestoreMappingContext mappingContext) {
     return new FirestoreDefaultClassMapper(mappingContext);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public ReactiveFirestoreTransactionManager firestoreTransactionManager(
+      FirestoreGrpc.FirestoreStub firestoreStub, FirestoreClassMapper classMapper) {
+    return new ReactiveFirestoreTransactionManager(firestoreStub, this.defaultParent, classMapper);
   }
 }

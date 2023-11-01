@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.reactive.TransactionalOperator;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -48,6 +49,7 @@ import reactor.test.StepVerifier;
 class FirestoreIntegrationTests {
 
   @Autowired FirestoreTemplate firestoreTemplate;
+  @Autowired ReactiveFirestoreTransactionManager txManager;
 
   @BeforeAll
   static void setLogger() {
@@ -255,5 +257,28 @@ class FirestoreIntegrationTests {
 
     this.firestoreTemplate.deleteAll(User.class).block();
     assertThat(this.firestoreTemplate.count(User.class).block()).isZero();
+  }
+
+  @Test
+  void transactionTest() {
+    User alice = new User("Alice", 29);
+    User bob = new User("Bob", 60);
+
+    User user = new User(null, 40);
+
+    DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+    transactionDefinition.setReadOnly(false);
+    TransactionalOperator operator =
+        TransactionalOperator.create(this.txManager, transactionDefinition);
+
+    this.firestoreTemplate
+        .save(alice)
+        .then(this.firestoreTemplate.save(bob))
+        .then(this.firestoreTemplate.save(user))
+        .as(operator::transactional)
+        .block();
+
+    assertThat(this.firestoreTemplate.findAll(User.class).collectList().block())
+        .containsExactlyInAnyOrder(bob, alice, user);
   }
 }
