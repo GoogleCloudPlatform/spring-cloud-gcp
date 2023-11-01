@@ -369,7 +369,6 @@
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
                             <systemPropertyVariables>
-                                <spring.cloud.gcp.firestore.project-id>spring-cloud-gcp-ci</spring.cloud.gcp.firestore.project-id>
                                 <spring.cloud.gcp.firestore.database-id>firestoredb</spring.cloud.gcp.firestore.database-id>
                             </systemPropertyVariables>
                         </configuration>
