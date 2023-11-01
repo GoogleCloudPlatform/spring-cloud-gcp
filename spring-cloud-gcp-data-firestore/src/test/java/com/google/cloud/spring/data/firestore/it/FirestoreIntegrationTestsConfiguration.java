@@ -59,12 +59,8 @@ public class FirestoreIntegrationTestsConfiguration {
 
   @Autowired
   public FirestoreIntegrationTestsConfiguration(
-      @Value("${test.integration.firestore.project-id:default}") String projectId,
       @Value("${test.integration.firestore.database-id:(default)}") String databaseId) {
-    this.projectId =
-        (projectId.equals("default"))
-            ? new DefaultGcpProjectIdProvider().getProjectId()
-            : projectId;
+    this.projectId = new DefaultGcpProjectIdProvider().getProjectId();
     this.databaseId = databaseId;
     this.defaultParent =
         String.format("projects/%s/databases/%s/documents", this.projectId, databaseId);
