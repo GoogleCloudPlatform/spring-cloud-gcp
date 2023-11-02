@@ -19,6 +19,7 @@ package com.google.cloud.spring.data.firestore.it;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.Timestamp;
+import com.google.cloud.spring.data.firestore.FirestoreIntegrationTestsConfiguration;
 import com.google.cloud.spring.data.firestore.SimpleFirestoreReactiveRepository;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.entities.User.Address;

@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import ch.qos.logback.classic.Level;
 import com.google.cloud.Timestamp;
+import com.google.cloud.spring.data.firestore.FirestoreIntegrationTestsConfiguration;
 import com.google.cloud.spring.data.firestore.FirestoreReactiveOperations;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.entities.PhoneNumber;

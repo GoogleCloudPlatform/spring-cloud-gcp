@@ -25,7 +25,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 // tag::user_service[]
-class UserService {
+public class UserService {
   @Autowired private UserRepository userRepository;
 
   // end::user_service[]
