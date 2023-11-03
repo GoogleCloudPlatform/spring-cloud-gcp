@@ -13,7 +13,7 @@
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>4.8.2</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.8.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -75,7 +75,7 @@
 				<module>spring-cloud-gcp-sql-postgres-sample</module>
 				<module>spring-cloud-gcp-sql-postgres-r2dbc-sample</module>
 				<module>spring-cloud-gcp-vision-ocr-demo</module>
-				<module>spring-cloud-gcp-firestore-sample</module>
+				<module>spring-cloud-gcp-starter-firestore-sample</module>
 				<module>spring-cloud-gcp-data-multi-sample</module>
 				<module>spring-cloud-gcp-data-firestore-sample</module>
 				<module>spring-cloud-gcp-bigquery-sample</module>
@@ -104,6 +104,9 @@
 				<module>spring-cloud-gcp-vision-api-sample</module>
 				<module>spring-cloud-gcp-secretmanager-sample</module>
 				<module>spring-cloud-gcp-vision-ocr-demo</module>
+				<module>spring-cloud-gcp-data-datastore-basic-sample</module>
+				<module>spring-cloud-gcp-starter-firestore-sample</module>
+				<module>spring-cloud-gcp-kms-sample</module>
 				<module>spring-cloud-gcp-data-spanner-template-sample</module>
 				<module>spring-cloud-gcp-data-spanner-repository-sample</module>
 			</modules>
@@ -114,11 +117,8 @@
 						<artifactId>native-maven-plugin</artifactId>
 						<configuration>
 							<buildArgs>
-
 								<buildArg>--trace-class-initialization=org.apache.commons.logging.LogFactoryService</buildArg>
 								<buildArg>--initialize-at-build-time=org.apache.commons.logging.LogFactory</buildArg>
-								<buildArg>-g</buildArg>
-								<buildArg>-H:+SourceLevelDebug</buildArg>
 							</buildArgs>
 						</configuration>
 						<executions>
@@ -142,8 +142,6 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
-							<!-- https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#integration-tests.no-starter-parent -->
-							<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 							<excludes combine.self="override" />
 							<includes>
 								<!--including all integration tests for testing purposes.-->
@@ -159,7 +157,12 @@
 								<it.spanner>true</it.spanner>
 								<it.trace>true</it.trace>
 								<it.secretmanager>true</it.secretmanager>
-                <gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
+								<it.datastore>true</it.datastore>
+								<it.firestore>true</it.firestore>
+								<it.kms>true</it.kms>
+								<kms-test-project-id>spring-cloud-gcp-ci-native</kms-test-project-id>
+								<kms-test-encrypted-text>CiQA04Sv0lCnHhQQIwKI0XDU+XcU6q1ryy+VuQJ6oh6VF8eJRocSLgBVx+glEafbllCrwhS8utmM9RYAC80xizA/YYyjE/roXcRDj9AGpfTS3iDKg5E=</kms-test-encrypted-text>
+								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
@@ -178,6 +181,8 @@
 						<artifactId>maven-failsafe-plugin</artifactId>
 						<configuration>
 							<systemPropertyVariables>
+								<kms-test-project-id>spring-cloud-gcp-ci</kms-test-project-id>
+								<kms-test-encrypted-text>CiQA9oGpAZWS7YfHvtvl3gD42KD3cpaPtVb/OvaQvx/T5wikp2sSLgDPaDHEgKQWhD5HPNKqYiFGDP5SofmM0Nec5q/AyyYgRUBimEmG8i6vrpiEf9o=</kms-test-encrypted-text>
 								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>

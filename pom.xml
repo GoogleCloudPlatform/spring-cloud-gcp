@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>4.8.2</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.8.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -357,6 +357,8 @@
 			<module>spring-cloud-gcp-vision</module>
 			<module>spring-cloud-gcp-data-spanner</module>
 			<module>spring-cloud-gcp-secretmanager</module>
+			<module>spring-cloud-gcp-kms</module>
+			<module>spring-cloud-gcp-data-datastore</module>
 		</modules>
 
 		<dependencies>
@@ -386,6 +388,8 @@
 							<it.vision>true</it.vision>
 							<it.spanner>true</it.spanner>
 							<it.secretmanager>true</it.secretmanager>
+							<it.kms>true</it.kms>
+							<it.datastore>true</it.datastore>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>

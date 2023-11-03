@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -40,6 +41,12 @@ class KmsSampleIntegrationTests {
 
   @Autowired private TestRestTemplate testRestTemplate;
 
+  @Value("${kms-test-project-id}")
+  private String projectId;
+
+  @Value("${kms-test-encrypted-text}")
+  private String encryptedText;
+
   @Test
   void testApplicationStartup() {
     ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
@@ -49,7 +56,7 @@ class KmsSampleIntegrationTests {
   @Test
   void testEncrypt() {
     MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-    params.add("keyId", "spring-cloud-gcp-ci/us-east1/integration-test-key-ring/test-key");
+    params.add("keyId", String.format("%s/us-east1/integration-test-key-ring/test-key", projectId));
     params.add("text", "12345");
 
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
@@ -63,11 +70,8 @@ class KmsSampleIntegrationTests {
   @Test
   void testDecrypt() {
     MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-    params.add("keyId", "spring-cloud-gcp-ci/us-east1/integration-test-key-ring/test-key");
-    params.add(
-        "encryptedText",
-        "CiQA9oGpAZWS7YfHvtvl3gD42KD3cpaPtVb/OvaQvx/T5wikp2sSLgDPaDHEgKQWhD5HPNKqYiFGDP5SofmM0Nec5q/AyyYgRUBimEmG8i6vrpiEf9o=");
-
+    params.add("keyId", String.format("%s/us-east1/integration-test-key-ring/test-key", projectId));
+    params.add("encryptedText", encryptedText);
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
 
     ResponseEntity<String> response =

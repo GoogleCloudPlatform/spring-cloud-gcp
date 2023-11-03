@@ -43,6 +43,7 @@ import com.google.cloud.datastore.StructuredQuery.Filter;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.cloud.datastore.Value;
 import com.google.cloud.datastore.aggregation.Aggregation;
+import com.google.cloud.spring.data.datastore.aot.DatastoreCoreRuntimeHints;
 import com.google.cloud.spring.data.datastore.core.convert.DatastoreEntityConverter;
 import com.google.cloud.spring.data.datastore.core.convert.ObjectToKeyFactory;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
@@ -80,6 +81,7 @@ import java.util.stream.StreamSupport;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.NullHandler;
@@ -102,6 +104,7 @@ import org.springframework.util.TypeUtils;
  *
  * @since 1.1
  */
+@ImportRuntimeHints(DatastoreCoreRuntimeHints.class)
 public class DatastoreTemplate implements DatastoreOperations, ApplicationEventPublisherAware {
 
   private int maxWriteSize = 500;
