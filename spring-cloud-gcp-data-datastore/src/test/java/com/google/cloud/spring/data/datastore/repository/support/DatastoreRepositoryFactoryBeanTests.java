@@ -29,7 +29,8 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
 /** Tests for the Datastore Repository factory bean. */
 class DatastoreRepositoryFactoryBeanTests {
 
-  private DatastoreRepositoryFactoryBean<Object, String> datastoreRepositoryFactoryBean;
+  private DatastoreRepositoryFactoryBean<DatastoreRepository<Object, String>, Object, String>
+      datastoreRepositoryFactoryBean;
 
   private DatastoreMappingContext datastoreMappingContext = new DatastoreMappingContext();
 

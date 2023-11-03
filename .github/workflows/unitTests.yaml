@@ -37,11 +37,6 @@ jobs:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-unified-${{ steps.date.outputs.date }}
 
-    - name: Maven go offline
-      id: mvn-offline
-      if: steps.mvn-cache.outputs.cache-hit != 'true'
-      run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
-
     - name: Mvn install # Need this when the directory/pom structure changes
       id: install1
       continue-on-error: true
@@ -112,11 +107,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-unified-${{ steps.date.outputs.date }}
-
-      - name: Maven go offline
-        id: mvn-offline
-        if: steps.mvn-cache.outputs.cache-hit != 'true'
-        run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
 
       - name: releaseCheck
         run: |

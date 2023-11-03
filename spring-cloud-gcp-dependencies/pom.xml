@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-dependencies</artifactId>
-	<version>4.8.2</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.8.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud Dependencies</name>
 	<description>Spring Framework on Google Cloud Dependencies</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -34,10 +34,10 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.25.0</gcp-libraries-bom.version>
+		<gcp-libraries-bom.version>26.26.0</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.14.1</cloud-sql-socket-factory.version>
 		<r2dbc-postgres-driver.version>1.0.2.RELEASE</r2dbc-postgres-driver.version>
-		<cloud-spanner-r2dbc.version>1.2.2</cloud-spanner-r2dbc.version>
+		<cloud-spanner-r2dbc.version>1.3.0</cloud-spanner-r2dbc.version>
 	</properties>
 
 	<dependencyManagement>

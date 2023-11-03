@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -284,6 +285,33 @@ class PubSubChannelProvisionerTests {
 
     assertThat(subscription.getName()).isEqualTo("subscription_A");
     assertThat(subscription.getTopic()).isEqualTo("topic_A");
+  }
+
+
+  @Test
+  void testProvisionConsumerDestination_createTopic_whenAutoCreateResources_isTrue() {
+    doReturn(null).when(this.pubSubAdminMock).getTopic("not_yet_created");
+
+    PubSubConsumerDestination result =
+        (PubSubConsumerDestination)
+            this.pubSubChannelProvisioner.provisionConsumerDestination(
+                "not_yet_created", "group_A", this.extendedConsumerProperties);
+
+    verify(pubSubAdminMock).getTopic("not_yet_created");
+    verify(pubSubAdminMock).createTopic("not_yet_created");
+  }
+
+  @Test
+  void testProvisionConsumerDestination_dontCreateTopic_whenAutoCreateResources_isFalse() {
+    when(this.pubSubConsumerProperties.isAutoCreateResources()).thenReturn(false);
+
+    PubSubConsumerDestination result =
+        (PubSubConsumerDestination)
+            this.pubSubChannelProvisioner.provisionConsumerDestination(
+                "not_yet_created", "group_A", this.extendedConsumerProperties);
+
+    verify(pubSubAdminMock, never()).getTopic("not_yet_created");
+    verify(pubSubAdminMock, never()).createTopic("not_yet_created");
   }
 
   @Test
