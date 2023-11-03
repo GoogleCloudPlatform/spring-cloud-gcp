@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.firestore.it;
+package com.google.cloud.spring.data.firestore;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.entities.UserRepository;
+import com.google.cloud.spring.data.firestore.it.UserService;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
@@ -30,6 +31,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
 import java.io.IOException;
+import java.util.UUID;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -46,6 +48,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class FirestoreTransactionIntegrationTestsConfiguration {
   @Value("projects/${test.integration.firestore.project-id}/databases/(default)/documents")
   String defaultParent;
+  String uuid = UUID.randomUUID().toString();
 
   @Bean
   FirestoreGrpc.FirestoreStub firestoreStub() throws IOException {
@@ -69,7 +72,7 @@ public class FirestoreTransactionIntegrationTestsConfiguration {
       FirestoreClassMapper classMapper,
       FirestoreMappingContext firestoreMappingContext) {
     return new FirestoreTemplate(
-        firestoreStub, this.defaultParent, classMapper, firestoreMappingContext);
+        firestoreStub, this.defaultParent, classMapper, firestoreMappingContext, uuid);
   }
 
   @Bean

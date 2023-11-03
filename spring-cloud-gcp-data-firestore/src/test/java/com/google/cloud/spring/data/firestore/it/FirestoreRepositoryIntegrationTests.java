@@ -28,9 +28,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ class FirestoreRepositoryIntegrationTests {
   @Autowired UserService userService;
   // end::autowire_user_service[]
 
-  @BeforeEach
+  @AfterEach
   void cleanTestEnvironment() {
     this.userRepository.deleteAll().block();
   }

@@ -22,6 +22,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.google.cloud.spring.data.firestore.FirestoreTransactionIntegrationTestsConfiguration;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.entities.UserRepository;
 import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;

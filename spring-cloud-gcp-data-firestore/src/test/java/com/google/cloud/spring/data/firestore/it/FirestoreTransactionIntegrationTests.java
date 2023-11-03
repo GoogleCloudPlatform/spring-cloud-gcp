@@ -26,6 +26,7 @@ import ch.qos.logback.classic.Level;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spring.data.firestore.FirestoreDataException;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.FirestoreTransactionIntegrationTestsConfiguration;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import java.util.List;
