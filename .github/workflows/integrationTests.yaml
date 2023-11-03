@@ -16,7 +16,7 @@ on:
 
 
 jobs:
-  integrationTests:
+  parallel-integrationTests:
     if: |
       github.actor != 'dependabot[bot]' && ((
         github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
@@ -26,25 +26,13 @@ jobs:
       fail-fast: false
       matrix:
         it:
-          - bigquery
-          - cloudsql
           - config
-          - datastore
-          - firestore
-          - kms
-          - logging
-          - metrics
-          - multisample
-          - kotlin
           - pubsub
           - pubsub-bus
           - pubsub-docs
           - pubsub-emulator
           - pubsub-integration
           - secretmanager
-          - spanner
-          - storage
-          - trace
           - vision
     steps:
       - name: Get current date
@@ -52,8 +40,9 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v2
       - name: Setup Java 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'temurin'
           java-version: 17
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v0
@@ -70,23 +59,97 @@ jobs:
       - name: Maven go offline
         id: mvn-offline
         if: steps.mvn-cache.outputs.cache-hit != 'true'
-        run: ./mvnw compile dependency:go-offline
+        run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
       - name: Mvn install # Need this when the directory/pom structure changes
-        id: install1
-        continue-on-error: true
+        id: install
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --threads 1.5C \
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
             install
-      - name: Retry install on failure
-        id: install2
-        if: steps.install1.outcome == 'failure'
+      # Unlike for the other integrationTest job, we don't block here as these run in parallel.
+      - name: Integration Tests
+        id: intTest
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
+            --activate-profiles spring-cloud-gcp-ci-it \
+            --define maven.javadoc.skip=true \
+            --define skip.surefire.tests=true \
+            --define "spring.datasource.password=${DB_PASSWORD}" \
+            --define "spring.r2dbc.password=${DB_PASSWORD}" \
+            --define it.${{ matrix.it }}=true \
+            verify
+        env:
+          DB_PASSWORD: ${{ secrets.SPRING_CLOUD_GCP_CI_DB_ROOT_PASSWORD }}
+      - name: Aggregate Report
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --define aggregate=true \
+            surefire-report:failsafe-report-only
+      - name: Archive logs
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v2
+        with:
+          name: Integration Test Logs - ${{ matrix.it}}
+          path: |
+            **/target/failsafe-reports/*
+            **/target/site
+  integrationTests:
+    if: |
+      github.actor != 'dependabot[bot]' && ((
+        github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
+      ) || (github.event_name != 'pull_request'))
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        it:
+          - bigquery
+          - cloudsql
+          - datastore
+          - firestore
+          - kms
+          - logging
+          - metrics
+          - multisample
+          - kotlin
+          - spanner
+          - storage
+          - trace
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v2
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          version: latest
+          project_id: spring-cloud-gcp-ci
+          service_account_key: ${{ secrets.SPRING_CLOUD_GCP_CI_SA_KEY }}
+          export_default_credentials: true
+      - name: Maven go offline
+        id: mvn-offline
+        if: steps.mvn-cache.outputs.cache-hit != 'true'
+        run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
+      - name: Mvn install # Need this when the directory/pom structure changes
+        id: install
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --no-transfer-progress \
             --threads 1.5C \
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
@@ -99,31 +162,25 @@ jobs:
           continue-after-seconds: 1200 # 30 min
           same-branch-only: false
       - name: Integration Tests
-        id: intTest1
-        continue-on-error: true
+        id: intTest
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --activate-profiles spring-cloud-gcp-ci-it \
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
+            --define "spring.datasource.password=${DB_PASSWORD}" \
+            --define "spring.r2dbc.password=${DB_PASSWORD}" \
             --define it.${{ matrix.it }}=true \
             verify
-      - name: Retry on Failure
-        id: intTest2
-        if: steps.intTest1.outcome == 'failure'
-        run: |
-          ./mvnw \
-            --batch-mode \
-            --activate-profiles spring-cloud-gcp-ci-it \
-            --define maven.javadoc.skip=true \
-            --define skip.surefire.tests=true \
-            --define it.${{ matrix.it }}=true \
-            verify
+        env:
+          DB_PASSWORD: ${{ secrets.SPRING_CLOUD_GCP_CI_DB_ROOT_PASSWORD }}
       - name: Aggregate Report
         run: |
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --define aggregate=true \
             surefire-report:failsafe-report-only
       - name: Archive logs

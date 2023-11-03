@@ -170,6 +170,13 @@ public class TensorboardServiceSpringAutoConfiguration {
           .readTensorboardUsageSettings()
           .setRetrySettings(readTensorboardUsageRetrySettings);
 
+      RetrySettings readTensorboardSizeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.readTensorboardSizeSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .readTensorboardSizeSettings()
+          .setRetrySettings(readTensorboardSizeRetrySettings);
+
       RetrySettings createTensorboardExperimentRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.createTensorboardExperimentSettings().getRetrySettings(),
@@ -388,6 +395,20 @@ public class TensorboardServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for readTensorboardUsage from properties.");
+      }
+    }
+    Retry readTensorboardSizeRetry = clientProperties.getReadTensorboardSizeRetry();
+    if (readTensorboardSizeRetry != null) {
+      RetrySettings readTensorboardSizeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.readTensorboardSizeSettings().getRetrySettings(),
+              readTensorboardSizeRetry);
+      clientSettingsBuilder
+          .readTensorboardSizeSettings()
+          .setRetrySettings(readTensorboardSizeRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for readTensorboardSize from properties.");
       }
     }
     Retry createTensorboardExperimentRetry = clientProperties.getCreateTensorboardExperimentRetry();

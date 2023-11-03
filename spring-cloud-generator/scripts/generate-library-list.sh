@@ -66,7 +66,8 @@ for d in ./google-cloud-java/*java-*/; do
   monorepo_name=$(echo $d | sed 's#^./google-cloud-java/##' | sed 's#/$##')
 
   # get folder location source of truth from ".OwlBot.yaml"
-  googleapis_path=$(grep 'java/gapic-google' $d/.OwlBot.yaml | sed 's#^.*"/##' | sed 's#/[^/]*/.\*-java.*$##')
+  # will only consider the first occurence
+  googleapis_path=$(grep -e 'java/gapic-google' $d/.OwlBot.yaml | head -n 1| sed 's#^.*"/##' | sed 's#/[^/]*/.\*-java.*$##')
   repo_folder=$(grep 'java/gapic-google' $d/.OwlBot.yaml -A1| tail -n1 |  sed "s#^.*$monorepo_name/[^/]*/##"| sed 's#"$##')
 
   # figure out path to look out changes for: v[1-9]

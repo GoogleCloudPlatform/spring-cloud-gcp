@@ -19,12 +19,16 @@ package com.example;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -36,23 +40,17 @@ import org.springframework.web.client.RestTemplate;
  */
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
 @ExtendWith(OutputCaptureExtension.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
+    properties = {"server.port=8082"},
+    classes = {SenderReceiverApplication.class})
 class SampleAppIntegrationTest {
 
   private RestTemplate restTemplate = new RestTemplate();
 
   @Test
   void testSample(CapturedOutput capturedOutput) throws Exception {
-
-    SpringApplicationBuilder sender =
-        new SpringApplicationBuilder(SampleTestConfiguration.class, SenderApplication.class)
-            .properties("server.port=8082", "spring.config.name:application-test");
-    sender.run();
-
-    SpringApplicationBuilder receiver =
-        new SpringApplicationBuilder(SampleTestConfiguration.class, ReceiverApplication.class)
-            .properties("server.port=8081", "spring.config.name:application-test");
-    receiver.run();
-
     MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
     String message = "test message " + UUID.randomUUID();
     map.add("message", message);

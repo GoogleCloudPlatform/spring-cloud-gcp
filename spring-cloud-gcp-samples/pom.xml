@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.2</version>
+		<version>3.1.5</version>
 		<relativePath/>
 	</parent>
 
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>4.7.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.8.2</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -21,11 +21,11 @@
 		<main.basedir>${basedir}/..</main.basedir>
 
 		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
-		<maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 
 		<!-- App engine plugin version, used to deploy sample apps -->
-		<app-engine-maven-plugin.version>2.4.4</app-engine-maven-plugin.version>
+		<app-engine-maven-plugin.version>2.5.0</app-engine-maven-plugin.version>
 
 		<!-- Deploy plugin is skipped for all samples but exists -->
 		<maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
@@ -90,11 +90,20 @@
 		<profile>
 			<id>native-sample-config</id>
 			<modules>
+				<module>spring-cloud-gcp-pubsub-sample</module>
+				<module>spring-cloud-gcp-pubsub-reactive-sample</module>
+				<module>spring-cloud-gcp-integration-pubsub-sample</module>
+				<module>spring-cloud-gcp-pubsub-bus-config-sample</module>
+				<module>spring-cloud-gcp-pubsub-stream-dead-letter-sample</module>
+				<module>spring-cloud-gcp-pubsub-stream-functional-sample</module>
+				<module>spring-cloud-gcp-integration-pubsub-json-sample</module>
 				<module>spring-cloud-gcp-logging-sample</module>
 				<module>spring-cloud-gcp-storage-resource-sample</module>
 				<module>spring-cloud-gcp-integration-storage-sample</module>
 				<module>spring-cloud-gcp-trace-sample</module>
 				<module>spring-cloud-gcp-vision-api-sample</module>
+				<module>spring-cloud-gcp-secretmanager-sample</module>
+				<module>spring-cloud-gcp-vision-ocr-demo</module>
 				<module>spring-cloud-gcp-data-spanner-template-sample</module>
 				<module>spring-cloud-gcp-data-spanner-repository-sample</module>
 			</modules>
@@ -105,8 +114,11 @@
 						<artifactId>native-maven-plugin</artifactId>
 						<configuration>
 							<buildArgs>
+
 								<buildArg>--trace-class-initialization=org.apache.commons.logging.LogFactoryService</buildArg>
 								<buildArg>--initialize-at-build-time=org.apache.commons.logging.LogFactory</buildArg>
+								<buildArg>-g</buildArg>
+								<buildArg>-H:+SourceLevelDebug</buildArg>
 							</buildArgs>
 						</configuration>
 						<executions>
@@ -139,11 +151,14 @@
 							</includes>
 							<systemPropertyVariables>
 								<it.logging>true</it.logging>
+								<it.pubsub>true</it.pubsub>
+								<it.pubsub-integration>true</it.pubsub-integration>
+								<it.pubsub-bus>true</it.pubsub-bus>
 								<it.storage>true</it.storage>
-                <it.vision>true</it.vision>
-								<it.trace>true</it.trace>
 								<it.vision>true</it.vision>
 								<it.spanner>true</it.spanner>
+								<it.trace>true</it.trace>
+								<it.secretmanager>true</it.secretmanager>
                 <gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
@@ -169,8 +184,6 @@
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
 								<spring.cloud.gcp.sql.instance-connection-name>spring-cloud-gcp-ci:us-central1:testmysql</spring.cloud.gcp.sql.instance-connection-name>
 								<spring.cloud.gcp.sql.database-name>code_samples_test_db</spring.cloud.gcp.sql.database-name>
-								<spring.datasource.password>test</spring.datasource.password>
-								<spring.r2dbc.password>test</spring.r2dbc.password>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>

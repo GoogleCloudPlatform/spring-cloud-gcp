@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>4.7.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.8.2</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -37,30 +37,30 @@
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
 		<spring-cloud-dependencies.version>2022.0.4</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>3.1.2</spring-boot-dependencies.version>
+		<spring-boot-dependencies.version>3.1.5</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
-		<java-cfenv.version>2.4.2</java-cfenv.version>
-		<micrometer-tracing.verison>1.1.3</micrometer-tracing.verison>
+		<java-cfenv.version>2.5.0</java-cfenv.version>
+		<micrometer-tracing.verison>1.1.6</micrometer-tracing.verison>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-		<maven-failsafe-plugin.version>3.1.2</maven-failsafe-plugin.version>
+		<maven-failsafe-plugin.version>3.2.1</maven-failsafe-plugin.version>
 		<maven-flatten-plugin.version>1.5.0</maven-flatten-plugin.version>
 		<maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
 		<maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-		<maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.3.0</maven-source-plugin.version>
-		<maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+		<maven-surefire-plugin.version>3.2.1</maven-surefire-plugin.version>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
-		<maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.21.1</errorprone.version>
-		<native-maven-plugin.version>0.9.24</native-maven-plugin.version>
+		<errorprone.version>2.23.0</errorprone.version>
+		<native-maven-plugin.version>0.9.28</native-maven-plugin.version>
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
@@ -356,6 +356,7 @@
 			<module>spring-cloud-gcp-storage</module>
 			<module>spring-cloud-gcp-vision</module>
 			<module>spring-cloud-gcp-data-spanner</module>
+			<module>spring-cloud-gcp-secretmanager</module>
 		</modules>
 
 		<dependencies>
@@ -381,9 +382,10 @@
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<systemPropertyVariables>
 							<!--integration tests are not invoked unless the relevant system property is set to true here. -->
-              				<it.storage>true</it.storage>
+							<it.storage>true</it.storage>
 							<it.vision>true</it.vision>
 							<it.spanner>true</it.spanner>
+							<it.secretmanager>true</it.secretmanager>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>
@@ -541,7 +543,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.10</version>
+						<version>0.8.11</version>
 						<executions>
 							<execution>
 								<goals>

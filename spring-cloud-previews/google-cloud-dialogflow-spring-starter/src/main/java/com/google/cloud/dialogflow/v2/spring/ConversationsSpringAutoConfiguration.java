@@ -209,6 +209,13 @@ public class ConversationsSpringAutoConfiguration {
           .generateStatelessSummarySettings()
           .setRetrySettings(generateStatelessSummaryRetrySettings);
 
+      RetrySettings searchKnowledgeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.searchKnowledgeSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .searchKnowledgeSettings()
+          .setRetrySettings(searchKnowledgeRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -314,6 +321,19 @@ public class ConversationsSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for generateStatelessSummary from properties.");
+      }
+    }
+    Retry searchKnowledgeRetry = clientProperties.getSearchKnowledgeRetry();
+    if (searchKnowledgeRetry != null) {
+      RetrySettings searchKnowledgeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.searchKnowledgeSettings().getRetrySettings(),
+              searchKnowledgeRetry);
+      clientSettingsBuilder
+          .searchKnowledgeSettings()
+          .setRetrySettings(searchKnowledgeRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for searchKnowledge from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

@@ -72,6 +72,7 @@ jobs:
           set -e
           ./mvnw \
             --batch-mode \
+            --no-transfer-progress \
             --show-version \
             --threads 1.5C \
             --define maven.test.skip=true \

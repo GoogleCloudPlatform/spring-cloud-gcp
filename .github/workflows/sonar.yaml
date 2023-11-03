@@ -4,7 +4,6 @@ on:
     branches:
       - main
       - 3.x
-      - 2.x
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
@@ -42,50 +41,26 @@ jobs:
       - name: Maven go offline
         id: mvn-offline
         if: steps.mvn-cache.outputs.cache-hit != 'true'
-        run: ./mvnw compile dependency:go-offline
+        run: ./mvnw dependency:go-offline -ntp -B -T 1.5C
       - name: Mvn install w/ coverage # Need this when the directory/pom structure changes
-        id: install1
-        continue-on-error: true
+        id: install
         run: |
           ./mvnw \
             --batch-mode \
-            --show-version \
-            --threads 1.5C \
-            --activate-profiles codecov \
-            clean \
-            install
-      - name: Retry Install on Failure
-        id: install2
-        if: steps.install1.outcome == 'failure'
-        run: |
-          ./mvnw \
-            --batch-mode \
+            --no-transfer-progress \
             --show-version \
             --threads 1.5C \
             --activate-profiles codecov \
             clean \
             install
       - name: Build and analyze
-        id: sonar1
-        continue-on-error: true
+        id: sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: |
           ./mvnw \
             --batch-mode \
-            --activate-profiles codecov \
-            --define sonar.projectKey=GoogleCloudPlatform_spring-cloud-gcp \
-            --define sonar.host.url=https://sonarcloud.io \
-            --define sonar.organization=googlecloudplatform \
-            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-      - name: Retry Sonar on Failure
-        id: sonar2
-        if: steps.sonar1.outcome == 'failure'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        run: |
-          ./mvnw \
-            --batch-mode \
+            --no-transfer-progress \
             --activate-profiles codecov \
             --define sonar.projectKey=GoogleCloudPlatform_spring-cloud-gcp \
             --define sonar.host.url=https://sonarcloud.io \

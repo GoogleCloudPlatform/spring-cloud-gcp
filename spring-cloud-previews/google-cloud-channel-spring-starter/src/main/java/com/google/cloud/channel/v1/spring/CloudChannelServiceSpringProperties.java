@@ -208,6 +208,11 @@ public class CloudChannelServiceSpringProperties implements CredentialsSupplier 
    */
   @NestedConfigurationProperty private Retry listPurchasableOffersRetry;
   /**
+   * Allow override of retry settings at method-level for queryEligibleBillingAccounts. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry queryEligibleBillingAccountsRetry;
+  /**
    * Allow override of retry settings at method-level for registerSubscriber. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -532,6 +537,14 @@ public class CloudChannelServiceSpringProperties implements CredentialsSupplier 
 
   public void setListPurchasableOffersRetry(Retry listPurchasableOffersRetry) {
     this.listPurchasableOffersRetry = listPurchasableOffersRetry;
+  }
+
+  public Retry getQueryEligibleBillingAccountsRetry() {
+    return this.queryEligibleBillingAccountsRetry;
+  }
+
+  public void setQueryEligibleBillingAccountsRetry(Retry queryEligibleBillingAccountsRetry) {
+    this.queryEligibleBillingAccountsRetry = queryEligibleBillingAccountsRetry;
   }
 
   public Retry getRegisterSubscriberRetry() {

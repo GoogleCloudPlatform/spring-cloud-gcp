@@ -56,6 +56,11 @@ public class DataMigrationServiceSpringProperties implements CredentialsSupplier
    */
   @NestedConfigurationProperty private Retry generateSshScriptRetry;
   /**
+   * Allow override of retry settings at method-level for generateTcpProxyScript. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry generateTcpProxyScriptRetry;
+  /**
    * Allow override of retry settings at method-level for listConnectionProfiles. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -85,6 +90,26 @@ public class DataMigrationServiceSpringProperties implements CredentialsSupplier
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listConversionWorkspacesRetry;
+  /**
+   * Allow override of retry settings at method-level for createMappingRule. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createMappingRuleRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteMappingRule. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteMappingRuleRetry;
+  /**
+   * Allow override of retry settings at method-level for listMappingRules. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listMappingRulesRetry;
+  /**
+   * Allow override of retry settings at method-level for getMappingRule. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getMappingRuleRetry;
   /**
    * Allow override of retry settings at method-level for describeDatabaseEntities. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
@@ -159,6 +184,14 @@ public class DataMigrationServiceSpringProperties implements CredentialsSupplier
     this.generateSshScriptRetry = generateSshScriptRetry;
   }
 
+  public Retry getGenerateTcpProxyScriptRetry() {
+    return this.generateTcpProxyScriptRetry;
+  }
+
+  public void setGenerateTcpProxyScriptRetry(Retry generateTcpProxyScriptRetry) {
+    this.generateTcpProxyScriptRetry = generateTcpProxyScriptRetry;
+  }
+
   public Retry getListConnectionProfilesRetry() {
     return this.listConnectionProfilesRetry;
   }
@@ -205,6 +238,38 @@ public class DataMigrationServiceSpringProperties implements CredentialsSupplier
 
   public void setListConversionWorkspacesRetry(Retry listConversionWorkspacesRetry) {
     this.listConversionWorkspacesRetry = listConversionWorkspacesRetry;
+  }
+
+  public Retry getCreateMappingRuleRetry() {
+    return this.createMappingRuleRetry;
+  }
+
+  public void setCreateMappingRuleRetry(Retry createMappingRuleRetry) {
+    this.createMappingRuleRetry = createMappingRuleRetry;
+  }
+
+  public Retry getDeleteMappingRuleRetry() {
+    return this.deleteMappingRuleRetry;
+  }
+
+  public void setDeleteMappingRuleRetry(Retry deleteMappingRuleRetry) {
+    this.deleteMappingRuleRetry = deleteMappingRuleRetry;
+  }
+
+  public Retry getListMappingRulesRetry() {
+    return this.listMappingRulesRetry;
+  }
+
+  public void setListMappingRulesRetry(Retry listMappingRulesRetry) {
+    this.listMappingRulesRetry = listMappingRulesRetry;
+  }
+
+  public Retry getGetMappingRuleRetry() {
+    return this.getMappingRuleRetry;
+  }
+
+  public void setGetMappingRuleRetry(Retry getMappingRuleRetry) {
+    this.getMappingRuleRetry = getMappingRuleRetry;
   }
 
   public Retry getDescribeDatabaseEntitiesRetry() {

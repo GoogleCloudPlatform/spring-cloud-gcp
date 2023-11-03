@@ -42,6 +42,8 @@ public class GcpDatastoreProperties implements CredentialsSupplier {
 
   private String projectId;
 
+  private String databaseId;
+
   private String namespace;
 
   @Override
@@ -59,6 +61,14 @@ public class GcpDatastoreProperties implements CredentialsSupplier {
 
   public void setProjectId(String projectId) {
     this.projectId = projectId;
+  }
+
+  public String getDatabaseId() {
+    return databaseId;
+  }
+
+  public void setDatabaseId(String databaseId) {
+    this.databaseId = databaseId;
   }
 
   public String getNamespace() {

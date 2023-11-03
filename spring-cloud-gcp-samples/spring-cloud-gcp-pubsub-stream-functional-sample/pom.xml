@@ -5,13 +5,17 @@
   <parent>
     <artifactId>spring-cloud-gcp-samples</artifactId>
     <groupId>com.google.cloud</groupId>
-    <version>4.7.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+    <version>4.8.2</version><!-- {x-version-update:spring-cloud-gcp:current} -->
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>spring-cloud-gcp-pubsub-stream-functional-sample</artifactId>
   <packaging>pom</packaging>
   <name>Spring Framework on Google Cloud Code Sample - Pub/Sub Binder for Spring Cloud Stream Functional</name>
+
+  <properties>
+    <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+  </properties>
 
   <modules>
     <module>spring-cloud-gcp-pubsub-stream-functional-sample-source</module>
@@ -31,17 +35,5 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
