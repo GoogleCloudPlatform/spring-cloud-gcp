@@ -72,6 +72,22 @@ class DatastoreBookshelfExampleIntegrationTests {
   @AfterEach
   void cleanUp() {
     this.datastoreTemplate.deleteAll(Book.class);
+    this.datastoreTemplate.deleteAll(BookWithNoRepo.class);
+  }
+
+  @Test
+  void testTemplateMethodWithRepo() {
+    Book book = new Book("A Boring Book", "Alice", 2000);
+    this.datastoreTemplate.save(book);
+    assertThat(this.datastoreTemplate.count(Book.class)).isEqualTo(5L);
+  }
+
+  @Test
+  void testTemplateMethodWithNoRepo() {
+    BookWithNoRepo book = new BookWithNoRepo("A Boring Book", "Alice", 2000);
+    this.datastoreTemplate.save(book);
+    assertThat(this.datastoreTemplate.count(BookWithNoRepo.class)).isEqualTo(1L);
+
   }
 
   @Test
