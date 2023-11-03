@@ -104,6 +104,8 @@
 				<module>spring-cloud-gcp-vision-api-sample</module>
 				<module>spring-cloud-gcp-secretmanager-sample</module>
 				<module>spring-cloud-gcp-vision-ocr-demo</module>
+				<module>spring-cloud-gcp-data-spanner-template-sample</module>
+				<module>spring-cloud-gcp-data-spanner-repository-sample</module>
 				<module>spring-cloud-gcp-data-datastore-basic-sample</module>
 				<module>spring-cloud-gcp-starter-firestore-sample</module>
 				<module>spring-cloud-gcp-kms-sample</module>
