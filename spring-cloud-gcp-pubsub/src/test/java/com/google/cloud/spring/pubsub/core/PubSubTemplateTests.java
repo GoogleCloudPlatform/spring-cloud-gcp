@@ -18,6 +18,8 @@ package com.google.cloud.spring.pubsub.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -40,6 +42,7 @@ import com.google.cloud.spring.pubsub.core.test.allowed.AllowedPayload;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.pubsub.support.converter.JacksonPubSubMessageConverter;
+import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
 import java.io.IOException;
@@ -130,11 +133,15 @@ class PubSubTemplateTests {
     doAnswer(
             invocation -> {
               PubsubMessage message = invocation.getArgument(1);
-              assertThat(message.getData().toStringUtf8())
-                  .isEqualTo(
-                      "{\"@class\":"
-                          + "\"com.google.cloud.spring.pubsub.core.test.allowed.AllowedPayload\""
-                          + ",\"name\":\"allowed\",\"value\":12345}");
+              HashMap<String, Object> messageData = new Gson().fromJson(message.getData().toStringUtf8(), HashMap.class);
+
+              assertTrue(messageData.containsKey("@class"));
+              assertEquals("com.google.cloud.spring.pubsub.core.test.allowed.AllowedPayload", messageData.get("@class"));
+              assertTrue(messageData.containsKey("name"));
+              assertEquals("allowed", messageData.get("name"));
+              assertTrue(messageData.containsKey("value"));
+              assertEquals(12345.0, messageData.get("value"));
+
               return null;
             })
         .when(pubSubPublisherTemplate)
