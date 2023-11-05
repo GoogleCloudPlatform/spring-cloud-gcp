@@ -29,6 +29,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiService;
 import com.google.api.core.SettableApiFuture;
@@ -79,8 +80,10 @@ class PubSubTemplateTests {
   private PubSubPublisherTemplate createPublisherTemplate() {
     PubSubPublisherTemplate pubSubPublisherTemplate =
         new PubSubPublisherTemplate(this.mockPublisherFactory);
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
     pubSubPublisherTemplate.setMessageConverter(
-        new JacksonPubSubMessageConverter(new ObjectMapper()));
+        new JacksonPubSubMessageConverter(objectMapper));
     return pubSubPublisherTemplate;
   }
 
