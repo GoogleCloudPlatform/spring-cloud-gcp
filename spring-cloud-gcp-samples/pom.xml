@@ -104,6 +104,7 @@
 				<module>spring-cloud-gcp-vision-api-sample</module>
 				<module>spring-cloud-gcp-secretmanager-sample</module>
 				<module>spring-cloud-gcp-vision-ocr-demo</module>
+				<module>spring-cloud-gcp-data-spanner-template-sample</module>
 				<module>spring-cloud-gcp-data-datastore-basic-sample</module>
 				<module>spring-cloud-gcp-starter-firestore-sample</module>
 				<module>spring-cloud-gcp-kms-sample</module>
@@ -152,6 +153,7 @@
 								<it.pubsub-bus>true</it.pubsub-bus>
 								<it.storage>true</it.storage>
 								<it.vision>true</it.vision>
+								<it.spanner>true</it.spanner>
 								<it.trace>true</it.trace>
 								<it.secretmanager>true</it.secretmanager>
 								<it.datastore>true</it.datastore>
