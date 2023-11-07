@@ -50,7 +50,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource("application-test.properties")
 @EnableReactiveFirestoreRepositories(basePackageClasses = UserRepository.class)
 @EnableTransactionManagement
-public class gitFirestoreIntegrationTestsConfiguration {
+public class FirestoreIntegrationTestsConfiguration {
   String defaultParent;
 
   String uuid = UUID.randomUUID().toString();

@@ -16,8 +16,10 @@
 
 package com.google.cloud.spring.data.firestore;
 
+import com.google.api.client.util.escape.PercentEscaper;
+import com.google.api.gax.rpc.internal.Headers;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.data.firestore.entities.UserRepository;
 import com.google.cloud.spring.data.firestore.it.UserService;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
@@ -27,12 +29,16 @@ import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFi
 import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
 import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.CallCredentials;
+import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Metadata;
 import io.grpc.auth.MoreCallCredentials;
+import io.grpc.stub.MetadataUtils;
 import java.io.IOException;
 import java.util.UUID;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -46,18 +52,36 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableReactiveFirestoreRepositories(basePackageClasses = UserRepository.class)
 @EnableTransactionManagement
 public class FirestoreTransactionIntegrationTestsConfiguration {
-  @Value("projects/${test.integration.firestore.project-id}/databases/(default)/documents")
   String defaultParent;
+
   String uuid = UUID.randomUUID().toString();
 
+  String projectId;
+
+  String databaseId;
+
+  @Autowired
+  public FirestoreTransactionIntegrationTestsConfiguration(
+      @Value("${test.integration.firestore.database-id:(default)}") String databaseId) {
+    this.projectId = new DefaultGcpProjectIdProvider().getProjectId();
+    this.databaseId = databaseId;
+    this.defaultParent =
+        String.format("projects/%s/databases/%s/documents", this.projectId, databaseId);
+  }
+
+  private static final PercentEscaper PERCENT_ESCAPER = new PercentEscaper("._-~");
+
   @Bean
-  FirestoreGrpc.FirestoreStub firestoreStub() throws IOException {
+  FirestoreGrpc.FirestoreStub firestoreStub(ClientInterceptor firestoreRoutingHeadersInterceptor)
+      throws IOException {
     GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
     CallCredentials callCredentials = MoreCallCredentials.from(credentials);
 
     // Create a channel
     ManagedChannel channel =
-        ManagedChannelBuilder.forTarget("dns:///firestore.googleapis.com:443").build();
+        ManagedChannelBuilder.forTarget("dns:///firestore.googleapis.com:443")
+            .intercept(firestoreRoutingHeadersInterceptor)
+            .build();
     return FirestoreGrpc.newStub(channel).withCallCredentials(callCredentials);
   }
 
@@ -76,6 +100,24 @@ public class FirestoreTransactionIntegrationTestsConfiguration {
   }
 
   @Bean
+  @ConditionalOnMissingBean(name = "firestoreRoutingHeadersInterceptor")
+  public ClientInterceptor firestoreRoutingHeadersInterceptor() {
+    // add routing header for custom database id
+    Metadata routingHeader = new Metadata();
+    if (projectId != null && databaseId != null) {
+      Metadata.Key<String> key =
+          Metadata.Key.of(Headers.DYNAMIC_ROUTING_HEADER_KEY, Metadata.ASCII_STRING_MARSHALLER);
+      routingHeader.put(
+          key,
+          "project_id="
+              + PERCENT_ESCAPER.escape(projectId)
+              + "&database_id="
+              + PERCENT_ESCAPER.escape(databaseId));
+    }
+    return MetadataUtils.newAttachHeadersInterceptor(routingHeader);
+  }
+  
+  @Bean
   @ConditionalOnMissingBean
   public ReactiveFirestoreTransactionManager firestoreTransactionManager(
       FirestoreGrpc.FirestoreStub firestoreStub, FirestoreClassMapper classMapper) {
@@ -88,6 +130,7 @@ public class FirestoreTransactionIntegrationTestsConfiguration {
   public UserService userService() {
     return new UserService();
   }
+
   // end::user_service_bean[]
 
   @Bean
