@@ -56,7 +56,7 @@ class FirestoreRepositoryIntegrationTests {
   @Autowired UserService userService;
   // end::autowire_user_service[]
 
-  @AfterEach
+  @BeforeEach
   void cleanTestEnvironment() {
     this.userRepository.deleteAll().block();
   }
