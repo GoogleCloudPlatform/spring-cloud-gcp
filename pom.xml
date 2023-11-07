@@ -360,6 +360,7 @@
 			<module>spring-cloud-gcp-kms</module>
 			<module>spring-cloud-gcp-data-datastore</module>
 			<module>spring-cloud-gcp-data-firestore</module>
+			<module>spring-cloud-gcp-core</module>
 		</modules>
 
 		<dependencies>
@@ -381,6 +382,7 @@
 						<includes>
 							<!--including all integration tests for testing purposes. -->
 							<include>${integration-test.pattern}</include>
+							<include>com.google.cloud.spring.core.**Tests</include>
 						</includes>
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<systemPropertyVariables>
