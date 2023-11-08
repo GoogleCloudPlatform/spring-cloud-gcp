@@ -61,8 +61,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 /** Tests for the conversion and mapping of entities for write. */
 class ConverterAwareMappingSpannerEntityWriterTests {
@@ -364,7 +367,7 @@ class ConverterAwareMappingSpannerEntityWriterTests {
   }
 
   @Test
-  void writeJsonArrayTest() {
+  void writeJsonArrayTest() throws JSONException {
     TestEntities.Params parameters = new TestEntities.Params("some value", "some other value");
     TestEntities.TestEntityJsonArray testEntity = new TestEntities.TestEntityJsonArray("id1", Arrays.asList(parameters, parameters));
 
@@ -376,12 +379,17 @@ class ConverterAwareMappingSpannerEntityWriterTests {
 
     this.spannerEntityWriter.write(testEntity, writeBuilder::set);
 
-    List<String> stringList = new ArrayList<>();
-    stringList.add("{\"p1\":\"some value\",\"p2\":\"some other value\"}");
-    stringList.add("{\"p1\":\"some value\",\"p2\":\"some other value\"}");
-
+    ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
     verify(valueBinder).to(testEntity.id);
-    verify(valueBinder).toJsonArray(stringList);
+    verify(valueBinder).toJsonArray(captor.capture());
+    JSONAssert.assertEquals(
+        "{\"p1\":\"some value\",\"p2\":\"some other value\"}",
+        captor.getValue().get(0),
+        true);
+    JSONAssert.assertEquals(
+        "{\"p1\":\"some value\",\"p2\":\"some other value\"}",
+        captor.getValue().get(1),
+        true);
   }
 
   @Test
