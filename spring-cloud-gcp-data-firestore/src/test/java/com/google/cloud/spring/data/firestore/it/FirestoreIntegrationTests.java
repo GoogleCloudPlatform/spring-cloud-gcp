@@ -23,6 +23,7 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.spring.data.firestore.FirestoreIntegrationTestsConfiguration;
 import com.google.cloud.spring.data.firestore.FirestoreReactiveOperations;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.aot.ItTestRuntimeHints;
 import com.google.cloud.spring.data.firestore.entities.PhoneNumber;
 import com.google.cloud.spring.data.firestore.entities.User;
 import com.google.cloud.spring.data.firestore.transaction.ReactiveFirestoreTransactionManager;
@@ -36,6 +37,7 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.reactive.TransactionalOperator;
@@ -47,6 +49,7 @@ import reactor.test.StepVerifier;
 @EnabledIfSystemProperty(named = "it.firestore", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = FirestoreIntegrationTestsConfiguration.class)
+@ImportRuntimeHints(ItTestRuntimeHints.class)
 class FirestoreIntegrationTests {
 
   @Autowired FirestoreTemplate firestoreTemplate;
