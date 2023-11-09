@@ -14,6 +14,20 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.7.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.3...v3.7.4) (2023-11-09)
+
+
+### Bug Fixes
+
+* **3.x:** Ensure topic exists in consumer only if autoCreateResources is true ([#2294](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2294)) ([892666e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/892666ef106c58b3c11e37cbb08dc8ebf6394314))
+
+
+### Dependencies
+
+* bump com.google.cloud:cloud-spanner-r2dbc from 1.2.2 to 1.3.0 ([#2315](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2315)) ([4be1da6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4be1da6ab8ca5b1c8d595b13e7324354380c920b))
+* bump com.google.cloud:libraries-bom from 26.26.0 to 26.27.0 ([#2334](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2334)) ([0d8b746](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0d8b74694334159075d8980350110b7c72a09afa))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#2328](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2328)) ([8b08dd9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8b08dd9f18ec89a990518a357c0ee1640d743ce1))
+
 ## [3.7.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.2...v3.7.3) (2023-10-27)
 
 
