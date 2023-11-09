@@ -153,6 +153,31 @@ public class DlpServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry activateJobTriggerRetry;
   /**
+   * Allow override of retry settings at method-level for createDiscoveryConfig. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createDiscoveryConfigRetry;
+  /**
+   * Allow override of retry settings at method-level for updateDiscoveryConfig. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateDiscoveryConfigRetry;
+  /**
+   * Allow override of retry settings at method-level for getDiscoveryConfig. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getDiscoveryConfigRetry;
+  /**
+   * Allow override of retry settings at method-level for listDiscoveryConfigs. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listDiscoveryConfigsRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteDiscoveryConfig. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteDiscoveryConfigRetry;
+  /**
    * Allow override of retry settings at method-level for createDlpJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -424,6 +449,46 @@ public class DlpServiceSpringProperties implements CredentialsSupplier {
 
   public void setActivateJobTriggerRetry(Retry activateJobTriggerRetry) {
     this.activateJobTriggerRetry = activateJobTriggerRetry;
+  }
+
+  public Retry getCreateDiscoveryConfigRetry() {
+    return this.createDiscoveryConfigRetry;
+  }
+
+  public void setCreateDiscoveryConfigRetry(Retry createDiscoveryConfigRetry) {
+    this.createDiscoveryConfigRetry = createDiscoveryConfigRetry;
+  }
+
+  public Retry getUpdateDiscoveryConfigRetry() {
+    return this.updateDiscoveryConfigRetry;
+  }
+
+  public void setUpdateDiscoveryConfigRetry(Retry updateDiscoveryConfigRetry) {
+    this.updateDiscoveryConfigRetry = updateDiscoveryConfigRetry;
+  }
+
+  public Retry getGetDiscoveryConfigRetry() {
+    return this.getDiscoveryConfigRetry;
+  }
+
+  public void setGetDiscoveryConfigRetry(Retry getDiscoveryConfigRetry) {
+    this.getDiscoveryConfigRetry = getDiscoveryConfigRetry;
+  }
+
+  public Retry getListDiscoveryConfigsRetry() {
+    return this.listDiscoveryConfigsRetry;
+  }
+
+  public void setListDiscoveryConfigsRetry(Retry listDiscoveryConfigsRetry) {
+    this.listDiscoveryConfigsRetry = listDiscoveryConfigsRetry;
+  }
+
+  public Retry getDeleteDiscoveryConfigRetry() {
+    return this.deleteDiscoveryConfigRetry;
+  }
+
+  public void setDeleteDiscoveryConfigRetry(Retry deleteDiscoveryConfigRetry) {
+    this.deleteDiscoveryConfigRetry = deleteDiscoveryConfigRetry;
   }
 
   public Retry getCreateDlpJobRetry() {
