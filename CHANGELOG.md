@@ -14,6 +14,19 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.8.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.3...v4.8.4) (2023-11-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.27.0 ([#2331](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2331)) ([22a817d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/22a817d45769598995f047a3b4856f8c74194b3b))
+
+
+### Dependencies
+
+* bump com.google.cloud:cloud-spanner-r2dbc from 1.2.2 to 1.3.0 ([#2316](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2316)) ([2afa03a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2afa03a3e0514dd89309e07eac0bd152054baca0))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#2329](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2329)) ([f212e4a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f212e4a37492d587ff33f943c3325e633297daa7))
+
 ## [4.8.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.2...v4.8.3) (2023-10-27)
 
 
