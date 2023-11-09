@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -52,6 +53,7 @@ import org.springframework.util.LinkedMultiValueMap;
     classes = BigQuerySampleApplication.class,
     properties = "spring.cloud.gcp.bigquery.datasetName=test_dataset")
 @EnabledIfSystemProperty(named = "it.bigquery", matches = "true")
+@ImportRuntimeHints({TestResourcesRuntimeHints.class})
 class BigQuerySampleApplicationIntegrationTests {
 
   private static final String DATASET_NAME = "test_dataset";
