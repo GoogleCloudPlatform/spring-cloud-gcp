@@ -58,6 +58,11 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry listTargetsRetry;
   /**
+   * Allow override of retry settings at method-level for rollbackTarget. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry rollbackTargetRetry;
+  /**
    * Allow override of retry settings at method-level for getTarget. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -132,6 +137,31 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getConfigRetry;
+  /**
+   * Allow override of retry settings at method-level for getAutomation. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getAutomationRetry;
+  /**
+   * Allow override of retry settings at method-level for listAutomations. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listAutomationsRetry;
+  /**
+   * Allow override of retry settings at method-level for getAutomationRun. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getAutomationRunRetry;
+  /**
+   * Allow override of retry settings at method-level for listAutomationRuns. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listAutomationRunsRetry;
+  /**
+   * Allow override of retry settings at method-level for cancelAutomationRun. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry cancelAutomationRunRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -217,6 +247,14 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
 
   public void setListTargetsRetry(Retry listTargetsRetry) {
     this.listTargetsRetry = listTargetsRetry;
+  }
+
+  public Retry getRollbackTargetRetry() {
+    return this.rollbackTargetRetry;
+  }
+
+  public void setRollbackTargetRetry(Retry rollbackTargetRetry) {
+    this.rollbackTargetRetry = rollbackTargetRetry;
   }
 
   public Retry getGetTargetRetry() {
@@ -337,6 +375,46 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
 
   public void setGetConfigRetry(Retry getConfigRetry) {
     this.getConfigRetry = getConfigRetry;
+  }
+
+  public Retry getGetAutomationRetry() {
+    return this.getAutomationRetry;
+  }
+
+  public void setGetAutomationRetry(Retry getAutomationRetry) {
+    this.getAutomationRetry = getAutomationRetry;
+  }
+
+  public Retry getListAutomationsRetry() {
+    return this.listAutomationsRetry;
+  }
+
+  public void setListAutomationsRetry(Retry listAutomationsRetry) {
+    this.listAutomationsRetry = listAutomationsRetry;
+  }
+
+  public Retry getGetAutomationRunRetry() {
+    return this.getAutomationRunRetry;
+  }
+
+  public void setGetAutomationRunRetry(Retry getAutomationRunRetry) {
+    this.getAutomationRunRetry = getAutomationRunRetry;
+  }
+
+  public Retry getListAutomationRunsRetry() {
+    return this.listAutomationRunsRetry;
+  }
+
+  public void setListAutomationRunsRetry(Retry listAutomationRunsRetry) {
+    this.listAutomationRunsRetry = listAutomationRunsRetry;
+  }
+
+  public Retry getCancelAutomationRunRetry() {
+    return this.cancelAutomationRunRetry;
+  }
+
+  public void setCancelAutomationRunRetry(Retry cancelAutomationRunRetry) {
+    this.cancelAutomationRunRetry = cancelAutomationRunRetry;
   }
 
   public Retry getListLocationsRetry() {
