@@ -50,7 +50,7 @@ import reactor.test.StepVerifier;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = FirestoreTransactionIntegrationTestsConfiguration.class)
 @DisabledInNativeImage
-public class FirestoreTransactionIntegrationTests {
+class FirestoreTransactionIntegrationTests {
 
   @Autowired FirestoreTemplate firestoreTemplate;
 
