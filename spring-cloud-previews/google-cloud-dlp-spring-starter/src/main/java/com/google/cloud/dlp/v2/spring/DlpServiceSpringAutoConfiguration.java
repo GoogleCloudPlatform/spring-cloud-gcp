@@ -312,6 +312,45 @@ public class DlpServiceSpringAutoConfiguration {
           .activateJobTriggerSettings()
           .setRetrySettings(activateJobTriggerRetrySettings);
 
+      RetrySettings createDiscoveryConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createDiscoveryConfigSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .createDiscoveryConfigSettings()
+          .setRetrySettings(createDiscoveryConfigRetrySettings);
+
+      RetrySettings updateDiscoveryConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateDiscoveryConfigSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .updateDiscoveryConfigSettings()
+          .setRetrySettings(updateDiscoveryConfigRetrySettings);
+
+      RetrySettings getDiscoveryConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDiscoveryConfigSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getDiscoveryConfigSettings()
+          .setRetrySettings(getDiscoveryConfigRetrySettings);
+
+      RetrySettings listDiscoveryConfigsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDiscoveryConfigsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listDiscoveryConfigsSettings()
+          .setRetrySettings(listDiscoveryConfigsRetrySettings);
+
+      RetrySettings deleteDiscoveryConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteDiscoveryConfigSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .deleteDiscoveryConfigSettings()
+          .setRetrySettings(deleteDiscoveryConfigRetrySettings);
+
       RetrySettings createDlpJobRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.createDlpJobSettings().getRetrySettings(), serviceRetry);
@@ -681,6 +720,76 @@ public class DlpServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for activateJobTrigger from properties.");
+      }
+    }
+    Retry createDiscoveryConfigRetry = clientProperties.getCreateDiscoveryConfigRetry();
+    if (createDiscoveryConfigRetry != null) {
+      RetrySettings createDiscoveryConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createDiscoveryConfigSettings().getRetrySettings(),
+              createDiscoveryConfigRetry);
+      clientSettingsBuilder
+          .createDiscoveryConfigSettings()
+          .setRetrySettings(createDiscoveryConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createDiscoveryConfig from properties.");
+      }
+    }
+    Retry updateDiscoveryConfigRetry = clientProperties.getUpdateDiscoveryConfigRetry();
+    if (updateDiscoveryConfigRetry != null) {
+      RetrySettings updateDiscoveryConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateDiscoveryConfigSettings().getRetrySettings(),
+              updateDiscoveryConfigRetry);
+      clientSettingsBuilder
+          .updateDiscoveryConfigSettings()
+          .setRetrySettings(updateDiscoveryConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateDiscoveryConfig from properties.");
+      }
+    }
+    Retry getDiscoveryConfigRetry = clientProperties.getGetDiscoveryConfigRetry();
+    if (getDiscoveryConfigRetry != null) {
+      RetrySettings getDiscoveryConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDiscoveryConfigSettings().getRetrySettings(),
+              getDiscoveryConfigRetry);
+      clientSettingsBuilder
+          .getDiscoveryConfigSettings()
+          .setRetrySettings(getDiscoveryConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getDiscoveryConfig from properties.");
+      }
+    }
+    Retry listDiscoveryConfigsRetry = clientProperties.getListDiscoveryConfigsRetry();
+    if (listDiscoveryConfigsRetry != null) {
+      RetrySettings listDiscoveryConfigsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDiscoveryConfigsSettings().getRetrySettings(),
+              listDiscoveryConfigsRetry);
+      clientSettingsBuilder
+          .listDiscoveryConfigsSettings()
+          .setRetrySettings(listDiscoveryConfigsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listDiscoveryConfigs from properties.");
+      }
+    }
+    Retry deleteDiscoveryConfigRetry = clientProperties.getDeleteDiscoveryConfigRetry();
+    if (deleteDiscoveryConfigRetry != null) {
+      RetrySettings deleteDiscoveryConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteDiscoveryConfigSettings().getRetrySettings(),
+              deleteDiscoveryConfigRetry);
+      clientSettingsBuilder
+          .deleteDiscoveryConfigSettings()
+          .setRetrySettings(deleteDiscoveryConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteDiscoveryConfig from properties.");
       }
     }
     Retry createDlpJobRetry = clientProperties.getCreateDlpJobRetry();

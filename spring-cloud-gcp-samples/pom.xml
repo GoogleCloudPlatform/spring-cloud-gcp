@@ -13,7 +13,7 @@
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>4.8.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>4.8.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -109,6 +109,7 @@
 				<module>spring-cloud-gcp-starter-firestore-sample</module>
 				<module>spring-cloud-gcp-kms-sample</module>
 				<module>spring-cloud-gcp-data-firestore-sample</module>
+				<module>spring-cloud-gcp-bigquery-sample</module>
 			</modules>
 			<build>
 				<plugins>
@@ -160,6 +161,7 @@
 								<it.datastore>true</it.datastore>
 								<it.firestore>true</it.firestore>
 								<it.kms>true</it.kms>
+								<it.bigquery>true</it.bigquery>
 								<kms-test-project-id>spring-cloud-gcp-ci-native</kms-test-project-id>
 								<kms-test-encrypted-text>CiQA04Sv0lCnHhQQIwKI0XDU+XcU6q1ryy+VuQJ6oh6VF8eJRocSLgBVx+glEafbllCrwhS8utmM9RYAC80xizA/YYyjE/roXcRDj9AGpfTS3iDKg5E=</kms-test-encrypted-text>
 								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>

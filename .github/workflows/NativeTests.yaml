@@ -42,6 +42,7 @@ jobs:
           - starter-firestore-sample
           - kms
           - kms-sample
+          - bigquery-sample
     steps:
       - name: Get current date
         id: date
