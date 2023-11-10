@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.data.firestore.it;
+package com.google.cloud.spring.data.firestore;
 
 import com.google.api.client.util.escape.PercentEscaper;
 import com.google.api.gax.rpc.internal.Headers;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
-import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.entities.UserRepository;
+import com.google.cloud.spring.data.firestore.it.UserService;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
@@ -36,6 +36,7 @@ import io.grpc.Metadata;
 import io.grpc.auth.MoreCallCredentials;
 import io.grpc.stub.MetadataUtils;
 import java.io.IOException;
+import java.util.UUID;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,15 +51,17 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource("application-test.properties")
 @EnableReactiveFirestoreRepositories(basePackageClasses = UserRepository.class)
 @EnableTransactionManagement
-public class FirestoreIntegrationTestsConfiguration {
+public class FirestoreTransactionIntegrationTestsConfiguration {
   String defaultParent;
+
+  String uuid = UUID.randomUUID().toString();
 
   String projectId;
 
   String databaseId;
 
   @Autowired
-  public FirestoreIntegrationTestsConfiguration(
+  public FirestoreTransactionIntegrationTestsConfiguration(
       @Value("${test.integration.firestore.database-id:(default)}") String databaseId) {
     this.projectId = new DefaultGcpProjectIdProvider().getProjectId();
     this.databaseId = databaseId;
@@ -93,7 +96,7 @@ public class FirestoreIntegrationTestsConfiguration {
       FirestoreClassMapper classMapper,
       FirestoreMappingContext firestoreMappingContext) {
     return new FirestoreTemplate(
-        firestoreStub, this.defaultParent, classMapper, firestoreMappingContext);
+        firestoreStub, this.defaultParent, classMapper, firestoreMappingContext, uuid);
   }
 
   @Bean
@@ -113,7 +116,7 @@ public class FirestoreIntegrationTestsConfiguration {
     }
     return MetadataUtils.newAttachHeadersInterceptor(routingHeader);
   }
-
+  
   @Bean
   @ConditionalOnMissingBean
   public ReactiveFirestoreTransactionManager firestoreTransactionManager(
@@ -127,6 +130,7 @@ public class FirestoreIntegrationTestsConfiguration {
   public UserService userService() {
     return new UserService();
   }
+
   // end::user_service_bean[]
 
   @Bean

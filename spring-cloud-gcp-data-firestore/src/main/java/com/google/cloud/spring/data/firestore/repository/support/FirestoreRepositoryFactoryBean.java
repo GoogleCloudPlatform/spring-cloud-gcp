@@ -17,7 +17,9 @@
 package com.google.cloud.spring.data.firestore.repository.support;
 
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import com.google.cloud.spring.data.firestore.aot.FirestoreRepositoryRuntimeHints;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
@@ -30,6 +32,7 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
  * @param <T> the repository type
  * @since 1.2
  */
+@ImportRuntimeHints(FirestoreRepositoryRuntimeHints.class)
 public class FirestoreRepositoryFactoryBean<T extends Repository<S, I>, S, I>
     extends RepositoryFactoryBeanSupport<T, S, I> {
 

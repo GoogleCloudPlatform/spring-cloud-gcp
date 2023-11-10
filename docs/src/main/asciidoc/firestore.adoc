@@ -235,7 +235,7 @@ In order to use it, you would need to autowire `ReactiveFirestoreTransactionMana
 [source, java]
 ----
 public class MyApplication {
-include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google/cloud/spring/data/firestore/it/FirestoreRepositoryIntegrationTests.java[tag=autowire_tx_manager]
+include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google/cloud/spring/data/firestore/it/FirestoreRepositoryTransactionIntegrationTests.java[tag=autowire_tx_manager]
 }
 ----
 
@@ -244,14 +244,14 @@ Note that you can switch between read-only and read-write transactions using `Tr
 
 [source, java, indent=0]
 ----
-include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google/cloud/spring/data/firestore/it/FirestoreRepositoryIntegrationTests.java[tag=repository_transactional_operator]
+include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google/cloud/spring/data/firestore/it/FirestoreRepositoryTransactionIntegrationTests.java[tag=repository_transactional_operator]
 ----
 
 When you have an instance of  `TransactionalOperator`, you can invoke a sequence of Firestore operations in a transaction by using `operator::transactional`:
 
 [source, java, indent=0]
 ----
-include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google/cloud/spring/data/firestore/it/FirestoreRepositoryIntegrationTests.java[tag=repository_operations_in_a_transaction]
+include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google/cloud/spring/data/firestore/it/FirestoreRepositoryTransactionIntegrationTests.java[tag=repository_operations_in_a_transaction]
 ----
 
 NOTE: Read operations in a transaction can only happen before write operations.
