@@ -334,7 +334,7 @@ class ConverterAwareMappingSpannerEntityWriterTests {
   }
 
   @Test
-  void writeJsonTest() {
+  void writeJsonTest() throws JSONException {
     TestEntities.Params parameters = new TestEntities.Params("some value", "some other value");
     TestEntities.TestEntityJson testEntity = new TestEntities.TestEntityJson("id1", parameters);
 
@@ -346,8 +346,15 @@ class ConverterAwareMappingSpannerEntityWriterTests {
 
     this.spannerEntityWriter.write(testEntity, writeBuilder::set);
 
-    verify(valueBinder).to(testEntity.id);
-    verify(valueBinder).to(Value.json("{\"p1\":\"some value\",\"p2\":\"some other value\"}"));
+    ArgumentCaptor<String> captor1 = ArgumentCaptor.forClass(String.class);
+    ArgumentCaptor<Value> captor2 = ArgumentCaptor.forClass(Value.class);
+    verify(valueBinder).to(captor1.capture());
+    verify(valueBinder).to(captor2.capture());
+    assertThat(captor1.getValue()).isEqualTo(testEntity.id);
+    JSONAssert.assertEquals(
+        "{\"p1\":\"some value\",\"p2\":\"some other value\"}",
+        captor2.getValue().getString(),
+        true);
   }
 
   @Test
