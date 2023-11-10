@@ -111,7 +111,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
     this.mappingContext = mappingContext;
   }
 
-  protected FirestoreTemplate(
+  FirestoreTemplate(
       FirestoreStub firestoreStub,
       String parent,
       FirestoreClassMapper classMapper,
