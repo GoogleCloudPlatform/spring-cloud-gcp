@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.data.firestore;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,6 +30,7 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
+import com.google.cloud.spring.data.firestore.mapping.FirestorePersistentEntityImpl;
 import com.google.cloud.spring.data.firestore.mapping.UpdateTime;
 import com.google.firestore.v1.CommitRequest;
 import com.google.firestore.v1.CommitResponse;
@@ -49,6 +51,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.util.TypeInformation;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -73,6 +76,23 @@ public class FirestoreTemplateTests {
             parent,
             new FirestoreDefaultClassMapper(mappingContext),
             mappingContext);
+  }
+
+  @Test
+  void templateWithSuffixForTestTest() {
+    FirestoreMappingContext mappingContext = new FirestoreMappingContext();
+    FirestoreTemplate firestoreTemplateWithSuffix =
+        new FirestoreTemplate(
+            this.firestoreStub,
+            parent,
+            new FirestoreDefaultClassMapper(mappingContext),
+            mappingContext,
+            "_suffix");
+
+    FirestorePersistentEntityImpl<TestEntity> persistentEntity =
+        new FirestorePersistentEntityImpl<TestEntity>(TypeInformation.of(TestEntity.class));
+    String name = firestoreTemplateWithSuffix.buildResourceName(persistentEntity, "resource");
+    assertThat(name).isEqualTo(parent + "/testEntities_suffix/resource");
   }
 
   @Test

@@ -108,6 +108,7 @@
 				<module>spring-cloud-gcp-data-datastore-basic-sample</module>
 				<module>spring-cloud-gcp-starter-firestore-sample</module>
 				<module>spring-cloud-gcp-kms-sample</module>
+				<module>spring-cloud-gcp-data-firestore-sample</module>
 				<module>spring-cloud-gcp-bigquery-sample</module>
 			</modules>
 			<build>
