@@ -1067,7 +1067,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void newFieldTest() {
     Company company = new Company(1L, Collections.emptyList());
     company.name = "name1";

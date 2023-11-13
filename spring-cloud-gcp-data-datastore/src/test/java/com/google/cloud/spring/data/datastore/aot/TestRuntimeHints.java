@@ -19,6 +19,8 @@ package com.google.cloud.spring.data.datastore.aot;
 import com.google.cloud.spring.data.datastore.entities.CustomMap;
 import com.google.cloud.spring.data.datastore.it.testdomains.AncestorEntity;
 import com.google.cloud.spring.data.datastore.it.testdomains.AncestorEntity.DescendantEntry;
+import com.google.cloud.spring.data.datastore.it.testdomains.Company;
+import com.google.cloud.spring.data.datastore.it.testdomains.CompanyWithBooleanPrimitive;
 import com.google.cloud.spring.data.datastore.it.testdomains.EmbeddableTreeNode;
 import com.google.cloud.spring.data.datastore.it.testdomains.Event;
 import com.google.cloud.spring.data.datastore.it.testdomains.ParentEntity;
@@ -40,6 +42,8 @@ public class TestRuntimeHints implements RuntimeHintsRegistrar {
         .registerTypes(
             Arrays.asList(
                 TypeReference.of(AncestorEntity.class),
+                TypeReference.of(Company.class),
+                TypeReference.of(CompanyWithBooleanPrimitive.class),
                 TypeReference.of(DescendantEntry.class),
                 TypeReference.of(EmbeddableTreeNode.class),
                 TypeReference.of(ServiceConfiguration.class),
