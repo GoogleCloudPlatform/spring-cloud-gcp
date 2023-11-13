@@ -361,6 +361,7 @@
 			<module>spring-cloud-gcp-data-datastore</module>
 			<module>spring-cloud-gcp-data-firestore</module>
 			<module>spring-cloud-gcp-core</module>
+			<module>spring-cloud-gcp-bigquery</module>
 		</modules>
 
 		<dependencies>
@@ -394,6 +395,7 @@
 							<it.kms>true</it.kms>
 							<it.datastore>true</it.datastore>
 							<it.firestore>true</it.firestore>
+							<it.bigquery>true</it.bigquery>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>

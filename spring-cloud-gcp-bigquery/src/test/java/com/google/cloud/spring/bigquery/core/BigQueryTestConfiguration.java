@@ -16,11 +16,17 @@
 
 package com.google.cloud.spring.bigquery.core;
 
+import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.JobInfo.WriteDisposition;
 import com.google.cloud.bigquery.storage.v1.BigQueryWriteClient;
+import com.google.cloud.bigquery.storage.v1.BigQueryWriteSettings;
 import com.google.cloud.spring.bigquery.integration.outbound.BigQueryFileMessageHandler;
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
+import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +34,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /** Provides autoconfiguration for the BigQuery integration tests. */
 @EnableIntegration
@@ -40,14 +47,36 @@ public class BigQueryTestConfiguration {
   /** The BigQuery Write API Batch Size to used for the integration tests. */
   private static final int JSON_WRITER_BATCH_SIZE = 1000;
 
+
+  private final String projectId;
+
+  private final CredentialsProvider credentialsProvider;
+
+  public BigQueryTestConfiguration() throws IOException {
+
+    this.projectId = new DefaultGcpProjectIdProvider().getProjectId();
+    this.credentialsProvider = new DefaultCredentialsProvider(Credentials::new);
+  }
+
   @Bean
-  public BigQuery bigQuery() {
-    return BigQueryOptions.getDefaultInstance().getService();
+  public BigQuery bigQuery() throws IOException {
+    BigQueryOptions bigQueryOptions =
+        BigQueryOptions.newBuilder()
+            .setProjectId(this.projectId)
+            .setCredentials(this.credentialsProvider.getCredentials())
+            .setHeaderProvider(new UserAgentHeaderProvider(this.getClass()))
+            .build();
+    return bigQueryOptions.getService();
   }
 
   @Bean
   public BigQueryWriteClient bigQueryWriteClient() throws IOException {
-    return BigQueryWriteClient.create();
+    BigQueryWriteSettings bigQueryWriteSettings =
+        BigQueryWriteSettings.newBuilder()
+            .setCredentialsProvider(this.credentialsProvider)
+            .setQuotaProjectId(this.projectId)
+            .build();
+    return BigQueryWriteClient.create(bigQueryWriteSettings);
   }
 
   @Bean
