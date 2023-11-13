@@ -995,7 +995,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void sameClassDescendantsTest() {
     Employee entity3 = new Employee(Collections.EMPTY_LIST);
     Employee entity2 = new Employee(Collections.EMPTY_LIST);

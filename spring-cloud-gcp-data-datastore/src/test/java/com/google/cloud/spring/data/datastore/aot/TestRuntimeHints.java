@@ -22,6 +22,7 @@ import com.google.cloud.spring.data.datastore.it.testdomains.AncestorEntity.Desc
 import com.google.cloud.spring.data.datastore.it.testdomains.Company;
 import com.google.cloud.spring.data.datastore.it.testdomains.CompanyWithBooleanPrimitive;
 import com.google.cloud.spring.data.datastore.it.testdomains.EmbeddableTreeNode;
+import com.google.cloud.spring.data.datastore.it.testdomains.Employee;
 import com.google.cloud.spring.data.datastore.it.testdomains.Event;
 import com.google.cloud.spring.data.datastore.it.testdomains.ParentEntity;
 import com.google.cloud.spring.data.datastore.it.testdomains.ReferenceEntity;
@@ -51,6 +52,7 @@ public class TestRuntimeHints implements RuntimeHintsRegistrar {
                 TypeReference.of(CustomMap.class),
                 TypeReference.of(DescendantEntry.class),
                 TypeReference.of(EmbeddableTreeNode.class),
+                TypeReference.of(Employee.class),
                 TypeReference.of(Event.class),
                 TypeReference.of(ParentEntity.class),
                 TypeReference.of(ReferenceEntity.class),
