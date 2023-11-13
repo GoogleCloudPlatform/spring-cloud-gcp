@@ -28,7 +28,6 @@ import com.google.cloud.spring.data.datastore.it.subclasses.references.testdomai
 import java.util.Arrays;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
-public class SubclassesReferencesIntegrationTests extends AbstractDatastoreIntegrationTests {
+class SubclassesReferencesIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   @Autowired SubclassesReferencesEntityArepository entityArepository;
 
@@ -52,7 +51,7 @@ public class SubclassesReferencesIntegrationTests extends AbstractDatastoreInteg
   }
 
   @Test
-  void testEntityCcontainsReferenceToEntityB() {
+  void testEntityContainsReferenceToEntityB() {
     EntityB entityB1 = new EntityB();
     EntityC entityC1 = new EntityC(entityB1);
     entityArepository.saveAll(Arrays.asList(entityB1, entityC1));
