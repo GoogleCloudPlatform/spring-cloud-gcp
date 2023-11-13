@@ -34,6 +34,9 @@ import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
 
+/**
+ * Runtime hints for integration test.
+ */
 public class TestRuntimeHints implements RuntimeHintsRegistrar {
 
   @Override
@@ -45,15 +48,15 @@ public class TestRuntimeHints implements RuntimeHintsRegistrar {
                 TypeReference.of(AncestorEntity.class),
                 TypeReference.of(Company.class),
                 TypeReference.of(CompanyWithBooleanPrimitive.class),
+                TypeReference.of(CustomMap.class),
                 TypeReference.of(DescendantEntry.class),
                 TypeReference.of(EmbeddableTreeNode.class),
-                TypeReference.of(ServiceConfiguration.class),
-                TypeReference.of(CustomMap.class),
-                TypeReference.of(TreeCollection.class),
-                TypeReference.of(SubEntity.class),
-                TypeReference.of(ReferenceEntity.class),
                 TypeReference.of(Event.class),
                 TypeReference.of(ParentEntity.class),
+                TypeReference.of(ReferenceEntity.class),
+                TypeReference.of(ServiceConfiguration.class),
+                TypeReference.of(SubEntity.class),
+                TypeReference.of(TreeCollection.class),
                 TypeReference.of(com.google.cloud.spring.data.datastore.it.subclasses.references.testdomains.EntityA.class),
                 TypeReference.of(com.google.cloud.spring.data.datastore.it.subclasses.references.testdomains.EntityB.class),
                 TypeReference.of(com.google.cloud.spring.data.datastore.it.subclasses.references.testdomains.EntityC.class),

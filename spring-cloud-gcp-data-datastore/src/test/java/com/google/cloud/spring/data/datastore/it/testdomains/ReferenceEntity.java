@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.data.datastore.it.testdomains;
 
-import com.google.cloud.spring.data.datastore.core.mapping.LazyReference;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
