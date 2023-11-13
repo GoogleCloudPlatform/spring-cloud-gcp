@@ -110,6 +110,7 @@
 				<module>spring-cloud-gcp-kms-sample</module>
 				<module>spring-cloud-gcp-data-firestore-sample</module>
 				<module>spring-cloud-gcp-bigquery-sample</module>
+				<module>spring-cloud-gcp-metrics-sample</module>
 			</modules>
 			<build>
 				<plugins>
@@ -162,6 +163,7 @@
 								<it.firestore>true</it.firestore>
 								<it.kms>true</it.kms>
 								<it.bigquery>true</it.bigquery>
+								<it.metrics>true</it.metrics>
 								<kms-test-project-id>spring-cloud-gcp-ci-native</kms-test-project-id>
 								<kms-test-encrypted-text>CiQA04Sv0lCnHhQQIwKI0XDU+XcU6q1ryy+VuQJ6oh6VF8eJRocSLgBVx+glEafbllCrwhS8utmM9RYAC80xizA/YYyjE/roXcRDj9AGpfTS3iDKg5E=</kms-test-encrypted-text>
 								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
