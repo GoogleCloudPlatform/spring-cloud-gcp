@@ -17,6 +17,9 @@
 package com.google.cloud.spring.data.datastore.aot;
 
 import com.google.cloud.spring.data.datastore.entities.CustomMap;
+import com.google.cloud.spring.data.datastore.it.subclasses.references.testdomains.EntityA;
+import com.google.cloud.spring.data.datastore.it.subclasses.references.testdomains.EntityB;
+import com.google.cloud.spring.data.datastore.it.subclasses.references.testdomains.EntityC;
 import com.google.cloud.spring.data.datastore.it.testdomains.AncestorEntity;
 import com.google.cloud.spring.data.datastore.it.testdomains.AncestorEntity.DescendantEntry;
 import com.google.cloud.spring.data.datastore.it.testdomains.Company;
@@ -53,7 +56,13 @@ public class TestRuntimeHints implements RuntimeHintsRegistrar {
                 TypeReference.of(SubEntity.class),
                 TypeReference.of(ReferenceEntity.class),
                 TypeReference.of(Event.class),
-                TypeReference.of(ParentEntity.class)),
+                TypeReference.of(ParentEntity.class),
+                TypeReference.of(EntityA.class),
+                TypeReference.of(EntityB.class),
+                TypeReference.of(EntityC.class),
+                TypeReference.of(com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains.EntityA.class),
+                TypeReference.of(com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains.EntityB.class),
+                TypeReference.of(com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains.EntityC.class)),
             hint ->
                 hint.withMembers(
                     MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,

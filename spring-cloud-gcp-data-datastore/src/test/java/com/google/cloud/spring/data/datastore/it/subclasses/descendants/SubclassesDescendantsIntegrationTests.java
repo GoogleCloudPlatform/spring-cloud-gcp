@@ -39,7 +39,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
-@DisabledInNativeImage
 public class SubclassesDescendantsIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   @Autowired SubclassesDescendantsEntityArepository entityArepository;
