@@ -28,6 +28,7 @@ import com.google.cloud.datastore.EntityQuery;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
+import com.google.cloud.spring.data.datastore.aot.TestRuntimeHints;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
@@ -84,6 +85,7 @@ import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -102,6 +104,7 @@ import org.springframework.transaction.TransactionSystemException;
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
+@ImportRuntimeHints({TestRuntimeHints.class})
 class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   // This value is multiplied against recorded actual times needed to wait for eventual
