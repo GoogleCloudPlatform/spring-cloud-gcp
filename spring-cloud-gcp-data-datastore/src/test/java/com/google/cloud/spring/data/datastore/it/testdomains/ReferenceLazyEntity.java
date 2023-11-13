@@ -25,16 +25,16 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 
 /** A test class that holds references as relationships. */
-public class ReferenceEntry {
+public class ReferenceLazyEntity {
   @Id public Long id;
 
   public String name;
 
-  @Reference public ReferenceEntry sibling;
+  @Reference public ReferenceLazyEntity sibling;
 
-  @LazyReference public List<ReferenceEntry> children;
+  @LazyReference public List<ReferenceLazyEntity> children;
 
-  public ReferenceEntry(String name, ReferenceEntry sibling, List<ReferenceEntry> children) {
+  public ReferenceLazyEntity(String name, ReferenceLazyEntity sibling, List<ReferenceLazyEntity> children) {
     this.name = name;
     this.sibling = sibling;
     this.children = children;
@@ -48,7 +48,7 @@ public class ReferenceEntry {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ReferenceEntry that = (ReferenceEntry) o;
+    ReferenceLazyEntity that = (ReferenceLazyEntity) o;
     return Objects.equals(this.id, that.id)
         && Objects.equals(this.name, that.name)
         && Objects.equals(this.sibling, that.sibling)

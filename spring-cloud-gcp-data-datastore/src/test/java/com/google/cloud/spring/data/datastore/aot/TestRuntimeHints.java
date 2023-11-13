@@ -24,6 +24,7 @@ import com.google.cloud.spring.data.datastore.it.testdomains.CompanyWithBooleanP
 import com.google.cloud.spring.data.datastore.it.testdomains.EmbeddableTreeNode;
 import com.google.cloud.spring.data.datastore.it.testdomains.Event;
 import com.google.cloud.spring.data.datastore.it.testdomains.ParentEntity;
+import com.google.cloud.spring.data.datastore.it.testdomains.ReferenceEntity;
 import com.google.cloud.spring.data.datastore.it.testdomains.ServiceConfiguration;
 import com.google.cloud.spring.data.datastore.it.testdomains.SubEntity;
 import com.google.cloud.spring.data.datastore.it.testdomains.TreeCollection;
@@ -50,6 +51,7 @@ public class TestRuntimeHints implements RuntimeHintsRegistrar {
                 TypeReference.of(CustomMap.class),
                 TypeReference.of(TreeCollection.class),
                 TypeReference.of(SubEntity.class),
+                TypeReference.of(ReferenceEntity.class),
                 TypeReference.of(Event.class),
                 TypeReference.of(ParentEntity.class)),
             hint ->
