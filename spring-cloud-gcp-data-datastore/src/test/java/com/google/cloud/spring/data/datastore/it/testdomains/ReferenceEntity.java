@@ -72,7 +72,7 @@ public class ReferenceEntity {
         + '\''
         + ", sibling="
         + this.sibling
-        + ", childeren="
+        + ", children="
         + this.children
         + '}';
   }

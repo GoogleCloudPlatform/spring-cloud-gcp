@@ -24,7 +24,7 @@ import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 
-/** A test class that holds references as relationships. */
+/** A test class that holds references and lazy references as relationships. */
 public class ReferenceLazyEntity {
   @Id public Long id;
 
@@ -73,7 +73,7 @@ public class ReferenceLazyEntity {
         + '\''
         + ", sibling="
         + this.sibling
-        + ", childeren="
+        + ", children="
         + this.children
         + '}';
   }
