@@ -19,12 +19,15 @@ package com.google.cloud.spring.data.datastore.aot;
 import com.google.cloud.spring.data.datastore.entities.CustomMap;
 import com.google.cloud.spring.data.datastore.it.testdomains.AncestorEntity;
 import com.google.cloud.spring.data.datastore.it.testdomains.AncestorEntity.DescendantEntry;
+import com.google.cloud.spring.data.datastore.it.testdomains.Cat;
 import com.google.cloud.spring.data.datastore.it.testdomains.Company;
 import com.google.cloud.spring.data.datastore.it.testdomains.CompanyWithBooleanPrimitive;
 import com.google.cloud.spring.data.datastore.it.testdomains.EmbeddableTreeNode;
 import com.google.cloud.spring.data.datastore.it.testdomains.Employee;
 import com.google.cloud.spring.data.datastore.it.testdomains.Event;
 import com.google.cloud.spring.data.datastore.it.testdomains.ParentEntity;
+import com.google.cloud.spring.data.datastore.it.testdomains.PetOwner;
+import com.google.cloud.spring.data.datastore.it.testdomains.Pug;
 import com.google.cloud.spring.data.datastore.it.testdomains.ReferenceEntity;
 import com.google.cloud.spring.data.datastore.it.testdomains.ServiceConfiguration;
 import com.google.cloud.spring.data.datastore.it.testdomains.SubEntity;
@@ -47,6 +50,7 @@ public class TestRuntimeHints implements RuntimeHintsRegistrar {
         .registerTypes(
             Arrays.asList(
                 TypeReference.of(AncestorEntity.class),
+                TypeReference.of(Cat.class),
                 TypeReference.of(Company.class),
                 TypeReference.of(CompanyWithBooleanPrimitive.class),
                 TypeReference.of(CustomMap.class),
@@ -55,6 +59,8 @@ public class TestRuntimeHints implements RuntimeHintsRegistrar {
                 TypeReference.of(Employee.class),
                 TypeReference.of(Event.class),
                 TypeReference.of(ParentEntity.class),
+                TypeReference.of(PetOwner.class),
+                TypeReference.of(Pug.class),
                 TypeReference.of(ReferenceEntity.class),
                 TypeReference.of(ServiceConfiguration.class),
                 TypeReference.of(SubEntity.class),

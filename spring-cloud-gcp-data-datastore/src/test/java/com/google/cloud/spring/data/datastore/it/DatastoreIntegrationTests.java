@@ -886,7 +886,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void inheritanceTest() {
     PetOwner petOwner = new PetOwner();
     petOwner.pets = Arrays.asList(new Cat("Alice"), new Cat("Bob"), new Pug("Bob"), new Dog("Bob"));
@@ -916,7 +915,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void inheritanceTestFindAll() {
     this.datastoreTemplate.saveAll(
         Arrays.asList(new Cat("Cat1"), new Dog("Dog1"), new Pug("Dog2")));
