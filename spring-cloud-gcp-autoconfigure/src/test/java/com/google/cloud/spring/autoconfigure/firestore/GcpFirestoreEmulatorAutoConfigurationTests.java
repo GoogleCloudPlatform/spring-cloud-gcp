@@ -26,22 +26,73 @@ import com.google.auth.Credentials;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
-import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.data.firestore.FirestoreTemplate;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
-/** Tests for the Firestore emulator config. */
+/** Tests for Firestore Emulator autoconfiguration. */
 class GcpFirestoreEmulatorAutoConfigurationTests {
 
-  GcpProjectIdProvider projectId = () -> "projectId";
-
-  private final ApplicationContextRunner contextRunner =
+  ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
           .withConfiguration(
               AutoConfigurations.of(
-                  GcpFirestoreEmulatorAutoConfiguration.class, GcpFirestoreAutoConfiguration.class))
-          .withBean("projectId", GcpProjectIdProvider.class, () -> projectId);
+                  GcpFirestoreEmulatorAutoConfiguration.class,
+                  GcpContextAutoConfiguration.class,
+                  GcpFirestoreAutoConfiguration.class,
+                  FirestoreTransactionManagerAutoConfiguration.class));
+
+  @Test
+  void testAutoConfigurationEnabled() {
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.firestore.project-id=",
+            "spring.cloud.gcp.firestore.emulator.enabled=true",
+            "spring.cloud.gcp.firestore.host-port=localhost:9000")
+        .run(
+            context -> {
+              FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
+              String endpoint =
+                  ((InstantiatingGrpcChannelProvider)
+                          firestoreOptions.getTransportChannelProvider())
+                      .getEndpoint();
+              assertThat(endpoint).isEqualTo("localhost:9000");
+
+              assertThat(firestoreOptions.getProjectId()).isEqualTo("unused");
+            });
+  }
+
+  @Test
+  void testAutoConfigurationDisabled() {
+    contextRunner.run(
+        context -> {
+          FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
+          String endpoint =
+              ((InstantiatingGrpcChannelProvider) firestoreOptions.getTransportChannelProvider())
+                  .getEndpoint();
+          assertThat(endpoint).isEqualTo("firestore.googleapis.com:443");
+        });
+  }
+
+  @Test
+  void testThatIfProjectIdIsGivenItWillBeUsed() {
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.firestore.project-id=demo",
+            "spring.cloud.gcp.firestore.emulator.enabled=true",
+            "spring.cloud.gcp.firestore.host-port=localhost:9000")
+        .run(
+            context -> {
+              FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
+              assertThat(firestoreOptions.getProjectId()).isEqualTo("demo");
+            });
+  }
 
   @Test
   void testEmulatorEnabledConfig() {
@@ -100,6 +151,36 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
               InstantiatingGrpcChannelProvider channelProvider =
                   (InstantiatingGrpcChannelProvider) datastoreOptions.getTransportChannelProvider();
               assertThat(channelProvider.getEndpoint()).isEqualTo("firestore.googleapis.com:443");
+            });
+  }
+
+  @Test
+  void testFirestoreTemplateParent() {
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.firestore.project-id=demo",
+            "spring.cloud.gcp.firestore.emulator.enabled=true",
+            "spring.cloud.gcp.firestore.database-id=testdb")
+        .run(
+            context -> {
+              FirestoreTemplate template = context.getBean(FirestoreTemplate.class);
+              assertThat("projects/demo/databases/testdb/documents").isEqualTo(ReflectionTestUtils.getField(template, "parent"));
+            });
+  }
+
+  @Test
+  void testDefaultCredentials() {
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.firestore.project-id=demo",
+            "spring.cloud.gcp.firestore.emulator.enabled=true",
+            "spring.cloud.gcp.firestore.database-id=testdb")
+        .run(
+            context -> {
+              FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
+              Credentials credentials = firestoreOptions.getCredentials();
+              List<String>  header = credentials.getRequestMetadata().get("google-cloud-resource-prefix");
+              assertThat(header).isEqualTo(List.of("projects/demo/databases/testdb"));
             });
   }
 }
