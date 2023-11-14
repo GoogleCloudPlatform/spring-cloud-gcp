@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.data.datastore.it.testdomains;
 
-import com.google.cloud.spring.data.datastore.core.mapping.LazyReference;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -25,16 +24,16 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 
 /** A test class that holds references as relationships. */
-public class ReferenceEntry {
+public class ReferenceEntity {
   @Id public Long id;
 
   public String name;
 
-  @Reference public ReferenceEntry sibling;
+  @Reference public ReferenceEntity sibling;
 
-  @LazyReference public List<ReferenceEntry> children;
+  @Reference public List<ReferenceEntity> children;
 
-  public ReferenceEntry(String name, ReferenceEntry sibling, List<ReferenceEntry> children) {
+  public ReferenceEntity(String name, ReferenceEntity sibling, List<ReferenceEntity> children) {
     this.name = name;
     this.sibling = sibling;
     this.children = children;
@@ -48,7 +47,7 @@ public class ReferenceEntry {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ReferenceEntry that = (ReferenceEntry) o;
+    ReferenceEntity that = (ReferenceEntity) o;
     return Objects.equals(this.id, that.id)
         && Objects.equals(this.name, that.name)
         && Objects.equals(this.sibling, that.sibling)
@@ -65,7 +64,7 @@ public class ReferenceEntry {
 
   @Override
   public String toString() {
-    return "ReferenceEntry{"
+    return "ReferenceEntity{"
         + "id="
         + this.id
         + ", name='"
@@ -73,7 +72,7 @@ public class ReferenceEntry {
         + '\''
         + ", sibling="
         + this.sibling
-        + ", childeren="
+        + ", children="
         + this.children
         + '}';
   }
