@@ -25,6 +25,7 @@ jobs:
       fail-fast: false
       matrix:
         it:
+          - core
           - vision
           - storage
           - secretmanager
@@ -41,6 +42,8 @@ jobs:
           - starter-firestore-sample
           - kms
           - kms-sample
+          - bigquery-sample
+          - metrics-sample
     steps:
       - name: Get current date
         id: date
@@ -110,6 +113,8 @@ jobs:
         it:
           - spanner
           - datastore-basic-sample
+          - data-firestore-sample
+          - data-firestore
     steps:
       - name: Get current date
         id: date

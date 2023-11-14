@@ -87,6 +87,9 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
   private int writeBufferSize = FIRESTORE_WRITE_MAX_SIZE;
 
+
+  private String collectionNameSuffix = "";
+
   /**
    * Constructor for FirestoreTemplate.
    *
@@ -106,6 +109,20 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
     this.databasePath = Util.extractDatabasePath(parent);
     this.classMapper = classMapper;
     this.mappingContext = mappingContext;
+  }
+
+  FirestoreTemplate(
+      FirestoreStub firestoreStub,
+      String parent,
+      FirestoreClassMapper classMapper,
+      FirestoreMappingContext mappingContext,
+      String collectionNameSuffix) {
+    this.firestoreStub = firestoreStub;
+    this.parent = parent;
+    this.databasePath = Util.extractDatabasePath(parent);
+    this.classMapper = classMapper;
+    this.mappingContext = mappingContext;
+    this.collectionNameSuffix = collectionNameSuffix;
   }
 
   /**
@@ -280,7 +297,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
   @Override
   public String buildResourceName(FirestorePersistentEntity<?> persistentEntity, String resource) {
-    return this.parent + "/" + persistentEntity.collectionName() + "/" + resource;
+    return this.parent + "/" + persistentEntity.collectionName() + collectionNameSuffix + "/" + resource;
   }
 
   private FirestoreReactiveOperations withParent(String resourceName) {
@@ -362,7 +379,7 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
                   queryBuilder != null ? queryBuilder.clone() : StructuredQuery.newBuilder();
               builder.addFrom(
                   StructuredQuery.CollectionSelector.newBuilder()
-                      .setCollectionId(persistentEntity.collectionName())
+                      .setCollectionId(persistentEntity.collectionName() + collectionNameSuffix)
                       .build());
               if (projection != null) {
                 builder.setSelect(projection);

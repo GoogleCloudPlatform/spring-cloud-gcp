@@ -178,6 +178,11 @@ public class CloudDeploySpringAutoConfiguration {
               clientSettingsBuilder.listTargetsSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listTargetsSettings().setRetrySettings(listTargetsRetrySettings);
 
+      RetrySettings rollbackTargetRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.rollbackTargetSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.rollbackTargetSettings().setRetrySettings(rollbackTargetRetrySettings);
+
       RetrySettings getTargetRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getTargetSettings().getRetrySettings(), serviceRetry);
@@ -255,6 +260,39 @@ public class CloudDeploySpringAutoConfiguration {
               clientSettingsBuilder.getConfigSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getConfigSettings().setRetrySettings(getConfigRetrySettings);
 
+      RetrySettings getAutomationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getAutomationSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getAutomationSettings().setRetrySettings(getAutomationRetrySettings);
+
+      RetrySettings listAutomationsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAutomationsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listAutomationsSettings()
+          .setRetrySettings(listAutomationsRetrySettings);
+
+      RetrySettings getAutomationRunRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getAutomationRunSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getAutomationRunSettings()
+          .setRetrySettings(getAutomationRunRetrySettings);
+
+      RetrySettings listAutomationRunsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAutomationRunsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listAutomationRunsSettings()
+          .setRetrySettings(listAutomationRunsRetrySettings);
+
+      RetrySettings cancelAutomationRunRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.cancelAutomationRunSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .cancelAutomationRunSettings()
+          .setRetrySettings(cancelAutomationRunRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -322,6 +360,17 @@ public class CloudDeploySpringAutoConfiguration {
       clientSettingsBuilder.listTargetsSettings().setRetrySettings(listTargetsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listTargets from properties.");
+      }
+    }
+    Retry rollbackTargetRetry = clientProperties.getRollbackTargetRetry();
+    if (rollbackTargetRetry != null) {
+      RetrySettings rollbackTargetRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.rollbackTargetSettings().getRetrySettings(),
+              rollbackTargetRetry);
+      clientSettingsBuilder.rollbackTargetSettings().setRetrySettings(rollbackTargetRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for rollbackTarget from properties.");
       }
     }
     Retry getTargetRetry = clientProperties.getGetTargetRetry();
@@ -478,6 +527,71 @@ public class CloudDeploySpringAutoConfiguration {
       clientSettingsBuilder.getConfigSettings().setRetrySettings(getConfigRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getConfig from properties.");
+      }
+    }
+    Retry getAutomationRetry = clientProperties.getGetAutomationRetry();
+    if (getAutomationRetry != null) {
+      RetrySettings getAutomationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getAutomationSettings().getRetrySettings(), getAutomationRetry);
+      clientSettingsBuilder.getAutomationSettings().setRetrySettings(getAutomationRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getAutomation from properties.");
+      }
+    }
+    Retry listAutomationsRetry = clientProperties.getListAutomationsRetry();
+    if (listAutomationsRetry != null) {
+      RetrySettings listAutomationsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAutomationsSettings().getRetrySettings(),
+              listAutomationsRetry);
+      clientSettingsBuilder
+          .listAutomationsSettings()
+          .setRetrySettings(listAutomationsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listAutomations from properties.");
+      }
+    }
+    Retry getAutomationRunRetry = clientProperties.getGetAutomationRunRetry();
+    if (getAutomationRunRetry != null) {
+      RetrySettings getAutomationRunRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getAutomationRunSettings().getRetrySettings(),
+              getAutomationRunRetry);
+      clientSettingsBuilder
+          .getAutomationRunSettings()
+          .setRetrySettings(getAutomationRunRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getAutomationRun from properties.");
+      }
+    }
+    Retry listAutomationRunsRetry = clientProperties.getListAutomationRunsRetry();
+    if (listAutomationRunsRetry != null) {
+      RetrySettings listAutomationRunsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAutomationRunsSettings().getRetrySettings(),
+              listAutomationRunsRetry);
+      clientSettingsBuilder
+          .listAutomationRunsSettings()
+          .setRetrySettings(listAutomationRunsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listAutomationRuns from properties.");
+      }
+    }
+    Retry cancelAutomationRunRetry = clientProperties.getCancelAutomationRunRetry();
+    if (cancelAutomationRunRetry != null) {
+      RetrySettings cancelAutomationRunRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.cancelAutomationRunSettings().getRetrySettings(),
+              cancelAutomationRunRetry);
+      clientSettingsBuilder
+          .cancelAutomationRunSettings()
+          .setRetrySettings(cancelAutomationRunRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for cancelAutomationRun from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

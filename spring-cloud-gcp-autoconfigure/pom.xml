@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-cloud-gcp</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>4.8.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>4.8.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -369,7 +369,7 @@
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
                             <systemPropertyVariables>
-                                <spring.cloud.gcp.firestore.project-id>spring-cloud-gcp-ci-firestore</spring.cloud.gcp.firestore.project-id>
+                                <spring.cloud.gcp.firestore.database-id>firestoredb</spring.cloud.gcp.firestore.database-id>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
