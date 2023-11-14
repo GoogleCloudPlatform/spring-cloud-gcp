@@ -25,6 +25,7 @@ import com.google.cloud.NoCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,9 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-/** Tests for Firestore Emulator autoconfiguration. */
+/**
+ * Tests for Firestore Emulator autoconfiguration.
+ */
 class GcpFirestoreEmulatorAutoConfigurationTests {
 
   ApplicationContextRunner contextRunner =
@@ -42,8 +45,7 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
                   GcpFirestoreEmulatorAutoConfiguration.class,
                   GcpContextAutoConfiguration.class,
                   GcpFirestoreAutoConfiguration.class,
-                  FirestoreTransactionManagerAutoConfiguration.class))
-          .withBean(CredentialsProvider.class, () -> NoCredentials::getInstance);
+                  FirestoreTransactionManagerAutoConfiguration.class));
 
   @Test
   void testAutoConfigurationEnabled() {
@@ -57,7 +59,7 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
               FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
               String endpoint =
                   ((InstantiatingGrpcChannelProvider)
-                          firestoreOptions.getTransportChannelProvider())
+                      firestoreOptions.getTransportChannelProvider())
                       .getEndpoint();
               assertThat(endpoint).isEqualTo("localhost:9000");
 
@@ -67,14 +69,17 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
 
   @Test
   void testAutoConfigurationDisabled() {
-    contextRunner.run(
-        context -> {
-          FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
-          String endpoint =
-              ((InstantiatingGrpcChannelProvider) firestoreOptions.getTransportChannelProvider())
-                  .getEndpoint();
-          assertThat(endpoint).isEqualTo("firestore.googleapis.com:443");
-        });
+    contextRunner
+        .withBean(CredentialsProvider.class, () -> NoCredentials::getInstance)
+        .withBean(GcpProjectIdProvider.class, () -> () -> "my-project")
+        .run(
+            context -> {
+              FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
+              String endpoint =
+                  ((InstantiatingGrpcChannelProvider) firestoreOptions.getTransportChannelProvider())
+                      .getEndpoint();
+              assertThat(endpoint).isEqualTo("firestore.googleapis.com:443");
+            });
   }
 
   @Test
@@ -138,7 +143,8 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
         .run(
             context -> {
               FirestoreTemplate template = context.getBean(FirestoreTemplate.class);
-              assertThat("projects/demo/databases/testdb/documents").isEqualTo(ReflectionTestUtils.getField(template, "parent"));
+              assertThat("projects/demo/databases/testdb/documents").isEqualTo(
+                  ReflectionTestUtils.getField(template, "parent"));
             });
   }
 
@@ -153,7 +159,8 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
             context -> {
               FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
               Credentials credentials = firestoreOptions.getCredentials();
-              List<String>  header = credentials.getRequestMetadata().get("google-cloud-resource-prefix");
+              List<String> header = credentials.getRequestMetadata()
+                  .get("google-cloud-resource-prefix");
               assertThat(header).isEqualTo(List.of("projects/demo/databases/testdb"));
             });
   }
