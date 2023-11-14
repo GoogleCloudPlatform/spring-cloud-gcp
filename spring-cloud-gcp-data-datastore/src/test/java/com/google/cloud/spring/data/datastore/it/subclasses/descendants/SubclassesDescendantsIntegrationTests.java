@@ -52,7 +52,7 @@ class SubclassesDescendantsIntegrationTests extends AbstractDatastoreIntegration
   }
 
   @Test
-  void testEntityContainsReferenceToEntityB() {
+  void testEntityCcontainsReferenceToEntityB() {
     EntityB entityB1 = new EntityB();
     EntityC entityC1 = new EntityC();
     entityB1.addEntityC(entityC1);

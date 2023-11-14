@@ -51,7 +51,7 @@ class SubclassesReferencesIntegrationTests extends AbstractDatastoreIntegrationT
   }
 
   @Test
-  void testEntityContainsReferenceToEntityB() {
+  void testEntityCcontainsReferenceToEntityB() {
     EntityB entityB1 = new EntityB();
     EntityC entityC1 = new EntityC(entityB1);
     entityArepository.saveAll(Arrays.asList(entityB1, entityC1));
