@@ -118,6 +118,8 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
   void testDefaultConfig() {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.firestore.projectId=test-project")
+        .withBean(CredentialsProvider.class, () -> NoCredentials::getInstance)
+        .withBean(GcpProjectIdProvider.class, () -> () -> "my-project")
         .run(
             context -> {
               GcpFirestoreProperties gcpFirestoreProperties =
