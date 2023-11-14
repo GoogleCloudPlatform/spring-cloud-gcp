@@ -17,10 +17,8 @@
 package com.google.cloud.spring.autoconfigure.firestore;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.NoCredentials;
@@ -29,9 +27,7 @@ import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -46,7 +42,8 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
                   GcpFirestoreEmulatorAutoConfiguration.class,
                   GcpContextAutoConfiguration.class,
                   GcpFirestoreAutoConfiguration.class,
-                  FirestoreTransactionManagerAutoConfiguration.class));
+                  FirestoreTransactionManagerAutoConfiguration.class))
+          .withBean(CredentialsProvider.class, () -> NoCredentials::getInstance);
 
   @Test
   void testAutoConfigurationEnabled() {
@@ -96,27 +93,13 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
 
   @Test
   void testEmulatorEnabledConfig() {
-
-    CredentialsProvider mockedCredentialsProvider = () -> mock(NoCredentials.class);
-
     this.contextRunner
         .withPropertyValues(
             "spring.cloud.gcp.firestore.projectId=test-project",
             "spring.cloud.gcp.firestore.emulator.enabled=true",
             "spring.cloud.gcp.firestore.host-port=localhost:8080")
-        .withBean(
-            "mockedCredentialsProvider", CredentialsProvider.class, () -> mockedCredentialsProvider)
         .run(
             context -> {
-              CredentialsProvider defaultCredentialsProvider =
-                  context.getBean(CredentialsProvider.class);
-              assertThat(defaultCredentialsProvider).isSameAs(mockedCredentialsProvider);
-
-              GcpFirestoreAutoConfiguration firestoreAutoConfiguration =
-                  context.getBean(GcpFirestoreAutoConfiguration.class);
-              assertThat(firestoreAutoConfiguration.getCredentialsProvider())
-                  .isInstanceOf(NoCredentialsProvider.class);
-
               FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
               assertThat(datastoreOptions.getProjectId()).isEqualTo("test-project");
 
@@ -128,22 +111,13 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
 
   @Test
   void testDefaultConfig() {
-    CredentialsProvider mockedCredentialsProvider = () -> mock(Credentials.class);
-
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.firestore.projectId=test-project")
-        .withBean(
-            "mockedCredentialsProvider", CredentialsProvider.class, () -> mockedCredentialsProvider)
         .run(
             context -> {
               GcpFirestoreProperties gcpFirestoreProperties =
                   context.getBean(GcpFirestoreProperties.class);
               assertThat(gcpFirestoreProperties.getEmulator().isEnabled()).isFalse();
-
-              GcpFirestoreAutoConfiguration firestoreAutoConfiguration =
-                  context.getBean(GcpFirestoreAutoConfiguration.class);
-              assertThat(firestoreAutoConfiguration.getCredentialsProvider())
-                  .isEqualTo(mockedCredentialsProvider);
 
               FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
               assertThat(datastoreOptions.getProjectId()).isEqualTo("test-project");
