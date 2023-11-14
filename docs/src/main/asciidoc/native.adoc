@@ -1,0 +1,74 @@
+== Native Image Support (Experimental)
+
+https://www.graalvm.org/docs/[GraalVM Native Image] allows you to ahead-of-time compile Java code to a standalone executable.
+GraalVM native images are supported in Spring Boot since 3.0 and Spring Framework 6.0.
+
+WARNING: Native Image Support for Spring Framework on Google Cloud is Experimental.
+Compatibility with native image compilation are available "as is" and might have limited support.
+
+=== Usage
+
+==== Paketo Buildpacks
+
+Doesn't require GraalVM to be installed on the local environment.
+Needs docker to be installed and the following
+
+1. spring-boot-starter-parent
+
+[source]
+----
+<parent>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-parent</artifactId>
+<version>3.0.5</version>
+</parent>
+----
+
+2. native-maven-plugin
+
+[source]
+----
+<plugin>
+<groupId>org.graalvm.buildtools</groupId>
+<artifactId>native-maven-plugin</artifactId>
+</plugin>
+----
+
+3. Call `mvn -Pnative spring-boot:build-image`
+
+==== Native Build Plugins
+
+Needs GraalVM to be installed on the local environment and the following:
+
+1. `org.springframework.boot:spring-boot-starter-parent`.
+No special dependencies for native image support.
+It is all baked into the spring boot dependency.
+This dependency provides the `native` profile.
+2. The `spring-boot-maven-plugin` - provides Spring Boot support in Maven and inherits a lot of default configurations from the spring-boot-starter-parent.
+
+[source]
+----
+<plugin>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-maven-plugin</artifactId>
+</plugin>
+----
+
+3. Org.graalvm.buildtools: native-maven-plugin.
+The spring boot maven plugin uses this to activate native image compilation.
+4. Call `mvn -Pnative native:compile`
+
+For more details, please refer to Spring boot guide to https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#native-image.developing-your-first-application[Developing Your First GraalVM Native Application]
+
+=== Guides Specific to a Module
+
+==== Datastore
+
+To use `DatastoreTemplate` without the `DatastoreRepository`, user needs to register runtime hints for domain POJOs in the application. See details in sample application.
+
+===== Relationships
+@LazyReference is not yet supported for Native Image.
+
+==== Firestore
+
+To use `FirestoreTemplate` methods without `FirestoreReactiveRepository`, user needs to register runtime hints for domain POJOs in the application. For more details, refer to sample application.
