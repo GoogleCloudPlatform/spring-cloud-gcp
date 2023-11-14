@@ -80,7 +80,7 @@ public class GcpFirestoreEmulatorAutoConfiguration {
     final Map<String, List<String>> headerMap = new HashMap<>();
     headerMap.put("Authorization", Collections.singletonList("Bearer owner"));
     headerMap.put("google-cloud-resource-prefix", Collections.singletonList(
-        rootPath.substring(0, rootPath.indexOf("/documents"))));
+        rootPath.substring(0, rootPath.lastIndexOf("/documents"))));
 
     return new Credentials() {
       @Override
