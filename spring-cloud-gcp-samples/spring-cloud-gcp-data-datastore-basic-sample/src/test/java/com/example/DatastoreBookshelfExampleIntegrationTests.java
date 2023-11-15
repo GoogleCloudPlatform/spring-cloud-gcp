@@ -29,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,7 @@ import org.springframework.util.MultiValueMap;
     classes = DatastoreBookshelfExample.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
+@ImportRuntimeHints(DomainTypeRuntimeHints.class)
 class DatastoreBookshelfExampleIntegrationTests {
 
   @Autowired private DatastoreTemplate datastoreTemplate;
@@ -141,6 +143,18 @@ class DatastoreBookshelfExampleIntegrationTests {
           .doesNotContain("title='The Crack in Space', author='Philip K. Dick', year=1966")
           .doesNotContain("title='Ubik', author='Philip K. Dick', year=1969");
     });
+  }
+
+  @Test
+  void templateMethodTest() {
+    // @ImportRuntimeHints(DomainTypeRuntimeHints.class) is needed for this test to run successfully
+    // with AOT. Computer is a domain class not managed by Spring Data Repository.
+    Computer chromebook = new Computer("Lenovo", "Chromebook Duet 5", 2023);
+
+    this.datastoreTemplate.deleteAll(Computer.class);
+    assertThat(this.datastoreTemplate.count(Computer.class)).isZero();
+    this.datastoreTemplate.save(chromebook);
+    assertThat(this.datastoreTemplate.findAll(Computer.class)).contains(chromebook);
   }
 
   private String sendRequest(String url, String json, HttpMethod method) {
