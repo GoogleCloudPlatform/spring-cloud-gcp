@@ -8,11 +8,12 @@ image:https://sonarcloud.io/api/project_badges/measure?project=GoogleCloudPlatfo
 This project makes it easy for Spring users to run their applications on Google Cloud.
 You can check our project website https://spring.io/projects/spring-cloud-gcp[here].
 
-For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation below or the https://googleapis.dev/java/spring-cloud-gcp/latest/index.html[latest Javadocs].
+For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation or Javadocs:
 
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html[Spring Framework on Google Cloud Latest]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.4.0/reference/html/index.html[Spring Framework on Google Cloud 3.4.0]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/2.0.11/reference/html/index.html[Spring Framework on Google Cloud 2.0.11]
+// {x-version-update-start:spring-cloud-gcp:released}
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.8.4/reference/html/index.html[Spring Framework on Google Cloud 4.8.4 (Latest)] - https://googleapis.dev/java/spring-cloud-gcp/4.8.4/index.html[Javadocs 4.8.4]
+// {x-version-update-end}
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.7.4/reference/html/index.html[Spring Framework on Google Cloud 3.7.4] - https://googleapis.dev/java/spring-cloud-gcp/3.7.4/index.html[Javadocs 3.7.4]
 
 If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Framework on Google Cloud sample applications] or the https://codelabs.developers.google.com/spring[Spring on Google Cloud codelabs].
 
