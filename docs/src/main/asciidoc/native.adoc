@@ -8,6 +8,9 @@ Compatibility with native image compilation are available "as is" and might have
 
 === Usage
 
+This section provides a quick guide to build native image for Spring Boot Application with Google Cloud integrations.
+For more details, please refer to Spring boot guide to https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#native-image.developing-your-first-application[Developing Your First GraalVM Native Application]
+
 ==== Paketo Buildpacks
 
 Doesn't require GraalVM to be installed on the local environment.
@@ -54,21 +57,20 @@ This dependency provides the `native` profile.
 </plugin>
 ----
 
-3. Org.graalvm.buildtools: native-maven-plugin.
+3. `org.graalvm.buildtools: native-maven-plugin`.
 The spring boot maven plugin uses this to activate native image compilation.
 4. Call `mvn -Pnative native:compile`
-
-For more details, please refer to Spring boot guide to https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#native-image.developing-your-first-application[Developing Your First GraalVM Native Application]
 
 === Guides Specific to a Module
 
 ==== Datastore
 
-To use `DatastoreTemplate` without the `DatastoreRepository`, user needs to register runtime hints for domain POJOs in the application. See details in sample application.
+To use `DatastoreTemplate` methods on Domain types not managed by `DatastoreRepository`, you need to register runtime hints for these domain POJOs in your application. For more details, refer to example
+https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-basic-sample/src/main/java/com/example/DomainTypeRuntimeHints.java[`DomainTypeRuntimeHints`] in Datastore basic sample.
 
 ===== Relationships
 @LazyReference is not yet supported for Native Image.
 
 ==== Firestore
 
-To use `FirestoreTemplate` methods without `FirestoreReactiveRepository`, user needs to register runtime hints for domain POJOs in the application. For more details, refer to https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-firestore-sample/src/main/java/com/example/DataClassRuntimeHints.java[`DataClassRuntimeHints`] in Reactive Firestore Repository sample application.
+To use `FirestoreTemplate`  methods on Domain types not managed by `FirestoreReactiveRepository`, you need to register runtime hints for these domain POJOs in your application. For more details, refer to example https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-firestore-sample/src/main/java/com/example/DomainTypeRuntimeHints.java[`DomainTypeRuntimeHints`] in Reactive Firestore Repository sample application.
