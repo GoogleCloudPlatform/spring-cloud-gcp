@@ -69,7 +69,7 @@ public class WebController {
   public Mono<Void> incrementCount(@PathVariable String id) {
     return r2dbcRepository.findById(id)
         .doOnNext(Book::incrementCount)
-        .flatMap(book -> r2dbcRepository.save(book))
+        .flatMap(r2dbcRepository::save)
         .log()
         .then();
   }

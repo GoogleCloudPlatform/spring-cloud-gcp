@@ -91,6 +91,7 @@ class SpringDataR2dbcAppIntegrationTest {
             books -> {
               assertThat(books).hasSize(1);
               assertThat(books[0].getTitle()).isEqualTo("Call of the wild");
+              assertThat(books[0].getCount()).isEqualTo(0);
               id.set(books[0].getId());
             });
 
