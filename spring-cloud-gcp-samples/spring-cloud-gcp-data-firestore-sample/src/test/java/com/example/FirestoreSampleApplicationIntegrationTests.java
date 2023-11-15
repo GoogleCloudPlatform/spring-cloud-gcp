@@ -41,7 +41,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = FirestoreSampleApplication.class)
 @TestPropertySource("classpath:application-test.properties")
-@ImportRuntimeHints(DataClassRuntimeHints.class)
+@ImportRuntimeHints(DomainTypeRuntimeHints.class)
 class FirestoreSampleApplicationIntegrationTests {
   private static final User ALPHA_USER =
       new User("Alpha", 49, singletonList(new Pet("rat", "Snowflake")));

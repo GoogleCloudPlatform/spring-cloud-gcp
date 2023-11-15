@@ -19,7 +19,10 @@ package com.example;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.spring.data.firestore.Document;
 
-/** Example POJO to demonstrate Spring Cloud GCP Spring Data Firestore operations. */
+/**
+ * Example POJO to demonstrate Spring Cloud GCP Spring Data Firestore operations.To demonstrate
+ * template usage without repository.
+ */
 @Document(collectionName = "people")
 public class Person {
 
