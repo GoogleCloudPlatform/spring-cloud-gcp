@@ -86,6 +86,27 @@
       return false;
     }
 
+    function incrementCount() {
+      const id = document.getElementById('bookIdCountIncrement').value;
+      if (!id) {
+        appendOutput("Please provide non-empty id");
+        return false;
+      }
+
+      fetch('/increment-count/' + id, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'}
+      }).then(response => {
+         if (response.ok) {
+           appendOutput("Count updated.");
+         } else {
+           appendOutput("Failed to update count.");
+         }
+       });
+
+      return false;
+    }
+
   </script>
 
   <style>
@@ -141,6 +162,10 @@
   <div class="buttonLink">
     Search for: <input id="bookId" name="bookId"/> <a class="buttonLink" href="/cloud-spanner-r2dbc-samples/cloud-spanner-spring-data-r2dbc-sample/src/main/resources/static" onClick="return findBookById();">Find
     Books</a>
+  </div>
+
+  <div class="buttonLink">
+    Read count: <input id="bookIdCountIncrement" name="bookId" placeholder="Book ID"/> <a class="buttonLink" href="/cloud-spanner-r2dbc-samples/cloud-spanner-spring-data-r2dbc-sample/src/main/resources/static" onClick="return incrementCount();">Increment</a>
   </div>
 </div>
 

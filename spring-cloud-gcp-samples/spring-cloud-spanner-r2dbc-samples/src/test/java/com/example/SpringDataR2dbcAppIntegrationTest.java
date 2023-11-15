@@ -105,6 +105,24 @@ class SpringDataR2dbcAppIntegrationTest {
             book -> {
               assertThat(book.getTitle()).isEqualTo("Call of the wild");
             });
+
+    this.webTestClient
+        .post()
+        .uri("/increment-count/" + id.get())
+        .exchange()
+        .expectStatus()
+        .is2xxSuccessful();
+
+    this.webTestClient
+        .get()
+        .uri("/search/" + id.get())
+        .exchange()
+        .expectBody(Book.class)
+        .value(
+            book -> {
+              assertThat(book.getCount()).isEqualTo(1);
+            });
+
   }
 
   @Test
