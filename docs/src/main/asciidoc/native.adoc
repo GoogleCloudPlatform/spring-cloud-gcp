@@ -71,4 +71,4 @@ To use `DatastoreTemplate` without the `DatastoreRepository`, user needs to regi
 
 ==== Firestore
 
-To use `FirestoreTemplate` methods without `FirestoreReactiveRepository`, user needs to register runtime hints for domain POJOs in the application. For more details, refer to sample application.
+To use `FirestoreTemplate` methods without `FirestoreReactiveRepository`, user needs to register runtime hints for domain POJOs in the application. For more details, refer to https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-firestore-sample/src/main/java/com/example/DataClassRuntimeHints.java[`DataClassRuntimeHints`] in Reactive Firestore Repository sample application.
