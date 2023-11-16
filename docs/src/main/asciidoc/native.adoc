@@ -1,7 +1,7 @@
 == Native Image Support (Experimental)
 
 https://www.graalvm.org/docs/[GraalVM Native Image] allows you to ahead-of-time compile Java code to a standalone executable.
-GraalVM native images are supported in Spring Boot since 3.0 and Spring Framework 6.0. Discover more in Spring boot guide to https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html[GraalVM Native Image Support]
+GraalVM native images are supported in Spring Boot since 3.0 and Spring Framework 6.0. Discover more in Spring Boot guide to https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html[GraalVM Native Image Support]
 
 WARNING: Native image support for Spring Framework on Google Cloud is **Experimental**.
 Compatibility with native image compilation is available "as is" and might have limited support.
@@ -41,7 +41,7 @@ Compatibility with native image compilation is available "as is" and might have 
 === Usage
 
 This section provides a quick guide to build native images for Spring Boot Applications with Google Cloud integrations.
-For more details, please refer to Spring boot guide to https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#native-image.developing-your-first-application[Developing Your First GraalVM Native Application]
+For more details, please refer to Spring Boot guide to https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#native-image.developing-your-first-application[Developing Your First GraalVM Native Application]
 
 ==== Paketo Buildpacks
 
@@ -100,7 +100,7 @@ To use `DatastoreTemplate` methods on Domain types not managed by `DatastoreRepo
 https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-basic-sample/src/main/java/com/example/DomainTypeRuntimeHints.java[`DomainTypeRuntimeHints`] in Datastore basic sample.
 
 ===== Relationships
-@LazyReference is not yet supported for Native Image.
+@LazyReference is not yet supported for native image.
 
 ==== Firestore
 
