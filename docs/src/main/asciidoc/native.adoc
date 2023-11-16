@@ -3,8 +3,40 @@
 https://www.graalvm.org/docs/[GraalVM Native Image] allows you to ahead-of-time compile Java code to a standalone executable.
 GraalVM native images are supported in Spring Boot since 3.0 and Spring Framework 6.0.
 
-WARNING: Native Image Support for Spring Framework on Google Cloud is Experimental.
+WARNING: Native Image Support for Spring Framework on Google Cloud is **Experimental**.
 Compatibility with native image compilation are available "as is" and might have limited support.
+
+=== Currently Included Modules
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-cloud-gcp-core[Google Cloud Core]
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-storage[Cloud Storage]
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-pubsub[Cloud PubSub]
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-integration[Spring Integration for Cloud PubSub and Cloud Storage]
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-cloud-stream[Spring Cloud Stream binder to Google Cloud Pub/Sub]
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-cloud-bus[Cloud Pub/Sub as the Spring Cloud Bus]
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-trace[Cloud Trace]
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-logging[Cloud Logging]
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-monitoring[Cloud Monitoring]
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-data-cloud-spanner[Spring Data Cloud Spanner] (See details in <<detail_guides>> )
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-data-cloud-datastore[Spring Data Cloud Datastore] (See details in <<detail_guides>> )
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-data-cloud-firestore[Spring Data Cloud Firestore] (See details in <<detail_guides>> )
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-vision[Cloud Vision]
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#secret-manager[Cloud Secret Manager]
+
+https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#google-cloud-key-management-service[Cloud KMS]
 
 === Usage
 
@@ -61,7 +93,7 @@ This dependency provides the `native` profile.
 The spring boot maven plugin uses this to activate native image compilation.
 4. Call `mvn -Pnative native:compile`
 
-=== Guides Specific to a Module
+=== Guides Specific to a Module [[detail_guides]]
 
 ==== Datastore
 
