@@ -182,7 +182,7 @@ function copy_docs_for_provided_version() {
         echo "${f}"
         file=${f#${ROOT_FOLDER}/docs/target/generated-docs/}
         copy_docs_for_branch "${file}" "${FOLDER}"
-    done < <(find "${ROOT_FOLDER}"/docs/target/generated-docs/* -prune -type d)
+    done < <(find ${ROOT_FOLDER}/docs/target/generated-docs -mindepth 1 -maxdepth 1 -type d)
 
     COMMIT_CHANGES="yes"
     CURRENT_BRANCH="v${VERSION}"
