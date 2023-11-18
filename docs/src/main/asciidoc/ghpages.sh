@@ -135,7 +135,7 @@ function copy_docs_for_current_version() {
     if [[ "${CURRENT_BRANCH}" == "main" ]] ; then
         echo -e "Current branch is main - will copy the current docs only to the root folder"
         for f in docs/target/generated-docs/*; do
-            file=${f#docs/target/generated-docs/*}
+            file=${f#docs/target/generated-docs/}
             if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
                 # Not ignored...
                 cp -rf $f ${ROOT_FOLDER}/
@@ -147,10 +147,10 @@ function copy_docs_for_current_version() {
         echo -e "Current branch is [${CURRENT_BRANCH}]"
         # https://stackoverflow.com/questions/29300806/a-bash-script-to-check-if-a-string-is-present-in-a-comma-separated-list-of-strin
         if [[ ",${ALLOWED_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
-            mkdir -p ${ROOT_FOLDER}/${CURRENT_BRANCH}
+            mkdir -p "${ROOT_FOLDER}/${CURRENT_BRANCH}"
             echo -e "Branch [${CURRENT_BRANCH}] is allowed! Will copy the current docs to the [${CURRENT_BRANCH}] folder"
             for f in docs/target/generated-docs/*; do
-                file=${f#docs/target/generated-docs/*}
+                file=${f#docs/target/generated-docs/}
                 if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
                     # Not ignored...
                     # We want users to access 1.0.0.RELEASE/ instead of 1.0.0.RELEASE/spring-cloud.sleuth.html
@@ -178,11 +178,11 @@ function copy_docs_for_provided_version() {
     local FOLDER=${DESTINATION_REPO_FOLDER}/${VERSION}
     mkdir -p "${FOLDER}"
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
-    for f in "${ROOT_FOLDER}"/docs/target/generated-docs/*; do
+    while IFS= read -r f; do
         echo "${f}"
         file=${f#${ROOT_FOLDER}/docs/target/generated-docs/}
         copy_docs_for_branch "${file}" "${FOLDER}"
-    done
+    done < <(find "${ROOT_FOLDER}"/docs/target/generated-docs/* -prune -type d)
 
     COMMIT_CHANGES="yes"
     CURRENT_BRANCH="v${VERSION}"
