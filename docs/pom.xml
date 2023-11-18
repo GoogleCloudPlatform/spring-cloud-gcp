@@ -43,26 +43,6 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-resources-plugin</artifactId>
 						<version>${maven-resources-plugin.version}</version>
-						<executions>
-							<execution>
-								<id>copy-asciidoc-resources</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<outputDirectory>${project.build.directory}/refdocs/</outputDirectory>
-									<resources>
-										<resource>
-											<directory>src/main/asciidoc</directory>
-											<excludes>
-												<exclude>ghpages.sh</exclude>
-											</excludes>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
