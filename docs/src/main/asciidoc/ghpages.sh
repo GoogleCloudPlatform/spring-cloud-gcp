@@ -5,7 +5,7 @@ set -ev
 # Set default props like MAVEN_PATH, ROOT_FOLDER etc.
 function set_default_props() {
     # The script should be run from the root folder
-    ROOT_FOLDER=`pwd`
+    ROOT_FOLDER=$(pwd)
     echo "Current folder is ${ROOT_FOLDER}"
 
     if [[ ! -e "${ROOT_FOLDER}/.git" ]]; then
@@ -25,7 +25,7 @@ function set_default_props() {
 
 # Check if gh-pages exists and docs have been built
 function check_if_anything_to_sync() {
-    git remote set-url --push origin `git config remote.origin.url | sed -e 's/^git:/https:/'`
+    git remote set-url --push origin $(git config remote.origin.url | sed -e 's/^git:/https:/')
 
     if ! (git remote set-branches --add origin gh-pages && git fetch -q); then
         echo "No gh-pages, so not syncing"
@@ -54,7 +54,7 @@ function retrieve_current_branch() {
 
 # Switches to the provided value of the release version. We always prefix it with `v`
 function switch_to_tag() {
-    git checkout v${VERSION}
+    git checkout v"${VERSION}"
 }
 
 # Build the docs if switch is on
@@ -176,12 +176,14 @@ function copy_docs_for_current_version() {
 # Copies the docs by using the explicitly provided version
 function copy_docs_for_provided_version() {
     local FOLDER=${DESTINATION_REPO_FOLDER}/${VERSION}
-    mkdir -p ${FOLDER}
+    mkdir -p "${FOLDER}"
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
-    for f in ${ROOT_FOLDER}/docs/target/generated-docs/*; do
-        file=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
-        copy_docs_for_branch ${file} ${FOLDER}
+    for f in "${ROOT_FOLDER}"/docs/target/generated-docs/*; do
+        echo "${f}"
+        file=${f#${ROOT_FOLDER}/docs/target/generated-docs/}
+        copy_docs_for_branch "${file}" "${FOLDER}"
     done
+
     COMMIT_CHANGES="yes"
     CURRENT_BRANCH="v${VERSION}"
 }
@@ -282,7 +284,7 @@ EOF
 #
 # ==========================================
 
-while [[ $# > 0 ]]
+while [[ $# -gt 0 ]]
 do
 key="$1"
 case ${key} in
