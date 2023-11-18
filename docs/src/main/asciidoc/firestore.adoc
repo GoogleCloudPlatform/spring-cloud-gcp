@@ -1,7 +1,7 @@
 :spring-data-commons-ref: https://docs.spring.io/spring-data/data-commons/docs/current/reference/html
 
 == Spring Data Cloud Firestore
-NOTE: Currently some features are not supported: query by example, projections, and auditing.
+NOTE: Currently, some features are not supported: query by example, projections, and auditing.
 
 https://projects.spring.io/spring-data/[Spring Data] is an abstraction for storing and retrieving POJOs in numerous storage technologies.
 Spring Framework on Google Cloud adds Spring Data Reactive Repositories support for https://cloud.google.com/firestore/[Google Cloud Firestore] in native mode, providing reactive template and repositories support.
@@ -283,7 +283,7 @@ include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google
 
 [source, java, indent=0]
 ----
-include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google/cloud/spring/data/firestore/it/FirestoreIntegrationTestsConfiguration.java[tag=user_service_bean]
+include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google/cloud/spring/data/firestore/FirestoreIntegrationTestsConfiguration.java[tag=user_service_bean]
 ----
 
 After that, you can autowire your service like so:
