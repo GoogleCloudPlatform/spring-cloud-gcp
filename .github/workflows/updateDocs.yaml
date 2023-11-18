@@ -32,12 +32,6 @@ jobs:
         distribution: 'temurin'
         java-version: 17
 
-    - uses: actions/cache@v3
-      id: mvn-cache
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-unified-${{ steps.date.outputs.date }}
-
     - name: Remove SNAPSHOT # Needed for releases
       run: |
         if [[ -n "${{ github.event.release.tag_name }}" ]] ; then
