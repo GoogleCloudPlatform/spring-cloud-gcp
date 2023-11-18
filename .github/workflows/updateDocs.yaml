@@ -22,7 +22,7 @@ jobs:
     - name: Get current date
       id: date
       run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
@@ -31,7 +31,7 @@ jobs:
       with:
         java-version: 17
 
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       id: mvn-cache
       with:
         path: ~/.m2/repository
