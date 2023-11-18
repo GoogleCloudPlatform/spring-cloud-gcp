@@ -67,7 +67,7 @@ function build_docs_if_applicable() {
 # Get the name of the `docs.main` property
 # Get allowed branches - assumes that a `docs` module is available under `docs` profile
 function retrieve_doc_properties() {
-    MAIN_ADOC_VALUE=$("${MAVEN_PATH}"mvn \
+    MAIN_ADOC_VALUE=$("${MAVEN_PATH}"mvn -q \
         -Dexec.executable="echo" \
         -Dexec.args='${docs.main}' \
         --non-recursive \
@@ -76,7 +76,7 @@ function retrieve_doc_properties() {
 
 
     ALLOW_PROPERTY=${ALLOW_PROPERTY:-"docs.allowed.branches"}
-    ALLOWED_BRANCHES_VALUE=$("${MAVEN_PATH}"mvn \
+    ALLOWED_BRANCHES_VALUE=$("${MAVEN_PATH}"mvn -q \
         -Dexec.executable="echo" \
         -Dexec.args="\${${ALLOW_PROPERTY}}" \
         org.codehaus.mojo:exec-maven-plugin:3.1.0:exec \
