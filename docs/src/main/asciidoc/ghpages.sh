@@ -61,8 +61,9 @@ function switch_to_tag() {
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
         ./mvnw clean \
+               process-resources \
                org.asciidoctor:asciidoctor-maven-plugin:process-asciidoc \
-               install -P docs -pl docs -DskipTests -X
+               install -P docs -pl docs -DskipTests
     fi
 }
 
