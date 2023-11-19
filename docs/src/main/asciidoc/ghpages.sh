@@ -195,7 +195,6 @@ function copy_docs_for_provided_version() {
     local FOLDER=${DESTINATION_REPO_FOLDER}/${VERSION}
     mkdir -p "${FOLDER}"
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
-    #
     move_files_into_folder "${ROOT_FOLDER}"/docs/target/generated-docs
     for f in "${ROOT_FOLDER}"/docs/target/generated-docs/*; do
         file=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
@@ -242,12 +241,12 @@ function commit_changes_if_applicable() {
     fi
 }
 
-# Move files with the given folder to its nested folder for backwards compatibility.
+# Move files with the given folder to its nested folder (reference/html/) for
+# backwards compatibility.
 function move_files_into_folder() {
   local directory=$1
   mkdir -p "${directory}/reference/html"
   find "${directory}" -mindepth 1 -maxdepth 1 -exec mv {} "${directory}/reference/html/" \;
-  rm -rf "${directory}/images"
 }
 
 # Switch back to the previous branch and exit block
