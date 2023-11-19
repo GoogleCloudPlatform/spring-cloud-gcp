@@ -62,8 +62,6 @@ function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
         ./mvnw clean \
                org.asciidoctor:asciidoctor-maven-plugin:process-asciidoc \
-               -Dasciidoctor.sourceDirectory=src/main/asciidoc \
-               -Dasciidoctor.outputDirectory=target/generated-docs/reference/html \
                install -P docs -pl docs -DskipTests -X
     fi
 }
