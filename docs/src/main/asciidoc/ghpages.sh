@@ -138,6 +138,9 @@ function copy_docs_for_current_version() {
         echo -e "Current branch is main - will copy the current docs only to the root folder"
         for f in docs/target/generated-docs/*; do
             file=${f#docs/target/generated-docs/*}
+            if [[ "${file}" != "reference" ]]; then
+              continue
+            fi
             if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
                 # Not ignored...
                 cp -rf $f ${ROOT_FOLDER}/
@@ -153,6 +156,9 @@ function copy_docs_for_current_version() {
             echo -e "Branch [${CURRENT_BRANCH}] is allowed! Will copy the current docs to the [${CURRENT_BRANCH}] folder"
             for f in docs/target/generated-docs/*; do
                 file=${f#docs/target/generated-docs/*}
+                if [[ "${file}" != "reference" ]]; then
+                  continue
+                fi
                 if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
                     # Not ignored...
                     # We want users to access 1.0.0.RELEASE/ instead of 1.0.0.RELEASE/spring-cloud.sleuth.html
@@ -182,7 +188,9 @@ function copy_docs_for_provided_version() {
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
     for f in "${ROOT_FOLDER}"/docs/target/generated-docs/*; do
         file=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
-        copy_docs_for_branch "${file}" "${FOLDER}"
+        if [[ "${file}" == "reference" ]]; then
+          copy_docs_for_branch "${file}" "${FOLDER}"
+        fi
     done
     COMMIT_CHANGES="yes"
     CURRENT_BRANCH="v${VERSION}"
