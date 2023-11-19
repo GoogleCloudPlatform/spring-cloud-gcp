@@ -60,6 +60,18 @@ function switch_to_tag() {
 # Build the docs if switch is on
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
+        # After releasing 4.6.0, the org.asciidoctor:asciidoctor-maven-plugin
+        # is not downloaded and executed in GH action runner environment for
+        # unknown reasons.
+        # Explicitly list process-asciidoc (goal of asciidoctor-maven-plugin)
+        # as a workaround.
+        # Another issue that I can't reproduce in local environment is only listing
+        # process-asciidoc will cause maven-resources-plugin copies *.adoc files
+        # to target/refdocs AFTER executing process-asciidoc, as a result,
+        # no html files will be generated.
+        # As a workaround, list process-resources lifecycle to enforce
+        # maven-resources-plugin to copy .adoc files to target/refdocs before
+        # executing process-asciidoc.
         ./mvnw clean \
                process-resources \
                org.asciidoctor:asciidoctor-maven-plugin:process-asciidoc \
@@ -137,11 +149,9 @@ function add_docs_from_target() {
 function copy_docs_for_current_version() {
     if [[ "${CURRENT_BRANCH}" == "main" ]] ; then
         echo -e "Current branch is main - will copy the current docs only to the root folder"
+        move_files_into_folder "${ROOT_FOLDER}"/docs/target/generated-docs
         for f in docs/target/generated-docs/*; do
             file=${f#docs/target/generated-docs/*}
-            if [[ "${file}" != "reference" ]]; then
-              continue
-            fi
             if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
                 # Not ignored...
                 cp -rf $f ${ROOT_FOLDER}/
@@ -155,11 +165,9 @@ function copy_docs_for_current_version() {
         if [[ ",${ALLOWED_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
             mkdir -p "${ROOT_FOLDER}/${CURRENT_BRANCH}"
             echo -e "Branch [${CURRENT_BRANCH}] is allowed! Will copy the current docs to the [${CURRENT_BRANCH}] folder"
+            move_files_into_folder "${ROOT_FOLDER}"/docs/target/generated-docs
             for f in docs/target/generated-docs/*; do
                 file=${f#docs/target/generated-docs/*}
-                if [[ "${file}" != "reference" ]]; then
-                  continue
-                fi
                 if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
                     # Not ignored...
                     # We want users to access 1.0.0.RELEASE/ instead of 1.0.0.RELEASE/spring-cloud.sleuth.html
@@ -187,6 +195,7 @@ function copy_docs_for_provided_version() {
     local FOLDER=${DESTINATION_REPO_FOLDER}/${VERSION}
     mkdir -p "${FOLDER}"
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
+    #
     move_files_into_folder "${ROOT_FOLDER}"/docs/target/generated-docs
     for f in "${ROOT_FOLDER}"/docs/target/generated-docs/*; do
         file=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
@@ -233,10 +242,12 @@ function commit_changes_if_applicable() {
     fi
 }
 
+# Move files with the given folder to its nested folder for backwards compatibility.
 function move_files_into_folder() {
   local directory=$1
   mkdir -p "${directory}/reference/html"
-  find "${directory}" -mindepth 1 -maxdepth 1 -exec mv {} "${directory}/reference/html" \;
+  find "${directory}" -mindepth 1 -maxdepth 1 -exec mv {} "${directory}/reference/html/" \;
+  rm -rf "${directory}/images"
 }
 
 # Switch back to the previous branch and exit block
