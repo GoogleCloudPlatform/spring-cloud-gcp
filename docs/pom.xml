@@ -51,19 +51,6 @@
 					<plugin>
 						<groupId>org.asciidoctor</groupId>
 						<artifactId>asciidoctor-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>asciidoc-to-html</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>process-asciidoc</goal>
-								</goals>
-								<configuration>
-									<sourceDirectory>src/main/asciidoc</sourceDirectory>
-									<outputDirectory>${project.build.directory}/generated-docs/reference/html</outputDirectory>
-								</configuration>
-							</execution>
-						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
