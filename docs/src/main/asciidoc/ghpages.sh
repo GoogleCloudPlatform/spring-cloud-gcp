@@ -187,11 +187,10 @@ function copy_docs_for_provided_version() {
     local FOLDER=${DESTINATION_REPO_FOLDER}/${VERSION}
     mkdir -p "${FOLDER}"
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
+    move_files_into_folder "${ROOT_FOLDER}"/docs/target/generated-docs
     for f in "${ROOT_FOLDER}"/docs/target/generated-docs/*; do
         file=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
-        if [[ "${file}" == "reference" ]]; then
-          copy_docs_for_branch "${file}" "${FOLDER}"
-        fi
+        copy_docs_for_branch "${file}" "${FOLDER}"
     done
     COMMIT_CHANGES="yes"
     CURRENT_BRANCH="v${VERSION}"
@@ -232,6 +231,12 @@ function commit_changes_if_applicable() {
             git push origin gh-pages
         fi
     fi
+}
+
+function move_files_into_folder() {
+  local directory=$1
+  mkdir -p "${directory}/reference/html"
+  find "${directory}" -mindepth 1 -maxdepth 1 -exec mv {} "${directory}/reference/html" \;
 }
 
 # Switch back to the previous branch and exit block
