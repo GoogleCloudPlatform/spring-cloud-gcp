@@ -51,6 +51,42 @@
 					<plugin>
 						<groupId>org.asciidoctor</groupId>
 						<artifactId>asciidoctor-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-html-documentation</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>process-asciidoc</goal>
+								</goals>
+								<configuration>
+									<backend>spring-html</backend>
+									<sourceDocumentExtensions>
+										<sourceDocumentExtension>.adoc</sourceDocumentExtension>
+									</sourceDocumentExtensions>
+									<outputDirectory>${generated-docs-multipage-output.dir}
+									</outputDirectory>
+									<doctype>book</doctype>
+									<attributes>
+										<docinfo>shared</docinfo>
+										<stylesdir>css/</stylesdir>
+										<stylesheet>site.css</stylesheet>
+										<linkcss>true</linkcss>
+										<icons>font</icons>
+										<highlightjsdir>js/highlight</highlightjsdir>
+										<highlightjs-theme>github</highlightjs-theme>
+										<imagesdir>./images</imagesdir>
+										<attribute-missing>warn</attribute-missing>
+										<source-highlighter>highlight.js</source-highlighter>
+									</attributes>
+									<logHandler>
+										<outputToConsole>true</outputToConsole>
+										<failIf>
+											<!--												<severity>DEBUG</severity>-->
+										</failIf>
+									</logHandler>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>

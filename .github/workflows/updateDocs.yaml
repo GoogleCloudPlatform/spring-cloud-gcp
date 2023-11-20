@@ -38,16 +38,16 @@ jobs:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-unified-${{ steps.date.outputs.date }}
 
-    - name: Mvn install # Need this when the version/directory/pom structure changes
-      run: |
-        ./mvnw \
-          --batch-mode \
-          --no-transfer-progress \
-          --show-version \
-          --threads 1.5C \
-          --define maven.test.skip=true \
-          --define maven.javadoc.skip=true \
-          install
+#    - name: Mvn install # Need this when the version/directory/pom structure changes
+#      run: |
+#        ./mvnw \
+#          --batch-mode \
+#          --no-transfer-progress \
+#          --show-version \
+#          --threads 1.5C \
+#          --define maven.test.skip=true \
+#          --define maven.javadoc.skip=true \
+#          install
 
     - name: Remove SNAPSHOT # Needed for releases
       run: |
