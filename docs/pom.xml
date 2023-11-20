@@ -52,13 +52,6 @@
 					<plugin>
 						<groupId>org.asciidoctor</groupId>
 						<artifactId>asciidoctor-maven-plugin</artifactId>
-						<dependencies>
-							<dependency>
-								<groupId>org.codehaus.plexus</groupId>
-								<artifactId>plexus-utils</artifactId>
-								<version>4.0.0</version>
-							</dependency>
-						</dependencies>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
