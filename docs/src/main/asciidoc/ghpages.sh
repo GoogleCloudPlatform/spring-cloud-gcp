@@ -71,7 +71,7 @@ function retrieve_doc_properties() {
         -Dexec.executable="echo" \
         -Dexec.args='${docs.main}' \
         --non-recursive \
-        org.codehaus.mojo:exec-maven-plugin:3.1.0:exec)
+        org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
     echo "Extracted 'main.adoc' from Maven build [${MAIN_ADOC_VALUE}]"
 
 
@@ -79,7 +79,7 @@ function retrieve_doc_properties() {
     ALLOWED_BRANCHES_VALUE=$("${MAVEN_PATH}"mvn -q \
         -Dexec.executable="echo" \
         -Dexec.args="\${${ALLOW_PROPERTY}}" \
-        org.codehaus.mojo:exec-maven-plugin:3.1.0:exec \
+        org.codehaus.mojo:exec-maven-plugin:1.3.1:exec \
         -P docs \
         -pl docs)
     echo "Extracted '${ALLOW_PROPERTY}' from Maven build [${ALLOWED_BRANCHES_VALUE}]"
