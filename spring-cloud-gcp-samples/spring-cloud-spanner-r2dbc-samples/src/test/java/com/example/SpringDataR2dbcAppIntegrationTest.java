@@ -91,6 +91,7 @@ class SpringDataR2dbcAppIntegrationTest {
             books -> {
               assertThat(books).hasSize(1);
               assertThat(books[0].getTitle()).isEqualTo("Call of the wild");
+              assertThat(books[0].getCount()).isEqualTo(0);
               id.set(books[0].getId());
             });
 
@@ -105,6 +106,24 @@ class SpringDataR2dbcAppIntegrationTest {
             book -> {
               assertThat(book.getTitle()).isEqualTo("Call of the wild");
             });
+
+    this.webTestClient
+        .post()
+        .uri("/increment-count/" + id.get())
+        .exchange()
+        .expectStatus()
+        .is2xxSuccessful();
+
+    this.webTestClient
+        .get()
+        .uri("/search/" + id.get())
+        .exchange()
+        .expectBody(Book.class)
+        .value(
+            book -> {
+              assertThat(book.getCount()).isEqualTo(1);
+            });
+
   }
 
   @Test
