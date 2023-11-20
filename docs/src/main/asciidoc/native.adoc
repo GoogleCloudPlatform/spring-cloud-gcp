@@ -1,7 +1,7 @@
 == Native Image Support (Experimental)
 
 https://www.graalvm.org/docs/[GraalVM Native Image] allows you to ahead-of-time compile Java code to a standalone executable.
-GraalVM native images are supported in Spring Boot since 3.0 and Spring Framework 6.0. Discover more in Spring Boot guide to https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html[GraalVM Native Image Support]
+GraalVM native images are supported since Spring Boot 3.0 and Spring Framework 6.0. Discover more in Spring Boot guide to https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html[GraalVM Native Image Support]
 
 WARNING: Native image support for Spring Framework on Google Cloud is **Experimental**.
 Compatibility with native image compilation is available "as is" and might have limited support.
@@ -41,9 +41,9 @@ Compatibility with native image compilation is available "as is" and might have 
 === Setup and Usage
 
 Spring Boot includes buildpack support for native images directly for both Maven and Gradle.
-If you want to generate a native executable directly without using Docker, you can use GraalVM Native Build Tools.
+You can also generate a native executable directly without using Docker with GraalVM Native Build Tools.
 
-To build a native image container using Maven you should ensure that your `pom.xml` file uses the `spring-boot-starter-parent` in order to inherit the `native` profile and the `org.graalvm.buildtools:native-maven-plugin`.
+To build a native image container or generate a native executable using Maven you should ensure that your `pom.xml` file uses the `spring-boot-starter-parent` in order to inherit the `native` profile and the `org.graalvm.buildtools:native-maven-plugin`.
 
 For details on setup and build, please refer to Spring Boot guide to https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#native-image.developing-your-first-application[Developing Your First GraalVM Native Application]
 
