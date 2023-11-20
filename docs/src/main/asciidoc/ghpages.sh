@@ -60,7 +60,13 @@ function switch_to_tag() {
 # Build the docs if switch is on
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
-        ./mvnw clean install -P docs -pl docs -DskipTests
+        # Disable CI profile (inherited from spring-cloud-build/pom.xml) so
+        # process-asciidoc can be executed in GH action runner.
+        # Profile CI will be activated in GH action runner because
+        # there's env.GITHUB_API_URL defined in the environment by
+        # default.
+        # See https://github.com/spring-cloud/spring-cloud-build/blob/main/pom.xml#L1406C12-L1419.
+        ./mvnw clean install -P docs -P '!CI' -pl docs -DskipTests
     fi
 }
 
