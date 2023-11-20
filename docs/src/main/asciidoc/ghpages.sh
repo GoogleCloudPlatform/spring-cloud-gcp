@@ -325,5 +325,5 @@ fi
 build_docs_if_applicable
 retrieve_doc_properties
 stash_changes
-add_docs_from_target
-checkout_previous_branch
+#add_docs_from_target
+#checkout_previous_branch
