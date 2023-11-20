@@ -38,59 +38,14 @@ Compatibility with native image compilation is available "as is" and might have 
 
 - https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#google-cloud-key-management-service[Cloud KMS]
 
-=== Usage
+=== Setup and Usage
 
-This section provides a quick guide to build native images for Spring Boot Applications with Google Cloud integrations.
-For more details, please refer to Spring Boot guide to https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#native-image.developing-your-first-application[Developing Your First GraalVM Native Application]
+Spring Boot includes buildpack support for native images directly for both Maven and Gradle.
+If you want to generate a native executable directly without using Docker, you can use GraalVM Native Build Tools.
 
-==== Paketo Buildpacks
+To build a native image container using Maven you should ensure that your `pom.xml` file uses the `spring-boot-starter-parent` in order to inherit the `native` profile and the `org.graalvm.buildtools:native-maven-plugin`.
 
-Doesn't require GraalVM to be installed on the local environment.
-Needs docker to be installed and the following
-
-1. spring-boot-starter-parent
-
-    [source]
-    ----
-    <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    </parent>
-    ----
-
-2. native-maven-plugin
-
-    [source]
-    ----
-    <plugin>
-    <groupId>org.graalvm.buildtools</groupId>
-    <artifactId>native-maven-plugin</artifactId>
-    </plugin>
-    ----
-
-3. Call `mvn -Pnative spring-boot:build-image`
-
-==== Native Build Plugins
-
-Needs GraalVM to be installed on the local environment and the following:
-
-1. `org.springframework.boot:spring-boot-starter-parent`.
-    No special dependencies for native image support.
-    It is all baked into the spring boot dependency.
-    This dependency provides the `native` profile.
-2. The `spring-boot-maven-plugin` - provides Spring Boot support in Maven and inherits a lot of default configurations from the spring-boot-starter-parent.
-
-    [source]
-    ----
-    <plugin>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-maven-plugin</artifactId>
-    </plugin>
-    ----
-
-3. `org.graalvm.buildtools: native-maven-plugin`.
-    The spring boot maven plugin uses this to activate native image compilation.
-4. Call `mvn -Pnative native:compile`
+For details on setup and build, please refer to Spring Boot guide to https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#native-image.developing-your-first-application[Developing Your First GraalVM Native Application]
 
 === Module-specific Implementation Notes [[detail_guides]]
 
