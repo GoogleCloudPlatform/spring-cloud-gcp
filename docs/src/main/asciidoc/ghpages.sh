@@ -234,6 +234,15 @@ function commit_changes_if_applicable() {
     fi
 }
 
+# Switch back to the previous branch and exit block
+function checkout_previous_branch() {
+    # If -version was provided we need to come back to root project
+    cd ${ROOT_FOLDER}
+    git checkout ${CURRENT_BRANCH} || echo "Failed to check the branch... continuing with the script"
+    if [ "$dirty" != "0" ]; then git stash pop; fi
+    exit 0
+}
+
 # Assert if properties have been properly passed
 function assert_properties() {
 echo "VERSION [${VERSION}], DESTINATION [${DESTINATION}], CLONE [${CLONE}]"
@@ -328,3 +337,4 @@ build_docs_if_applicable
 retrieve_doc_properties
 stash_changes
 add_docs_from_target
+checkout_previous_branch
