@@ -111,6 +111,7 @@
 				<module>spring-cloud-gcp-data-firestore-sample</module>
 				<module>spring-cloud-gcp-bigquery-sample</module>
 				<module>spring-cloud-gcp-metrics-sample</module>
+				<module>spring-cloud-gcp-sql-mysql-sample</module>
 			</modules>
 			<build>
 				<plugins>
@@ -164,12 +165,15 @@
 								<it.kms>true</it.kms>
 								<it.bigquery>true</it.bigquery>
 								<it.metrics>true</it.metrics>
+								<it.cloudsql>true</it.cloudsql>
 								<kms-test-project-id>spring-cloud-gcp-ci-native</kms-test-project-id>
 								<kms-test-encrypted-text>CiQA04Sv0lCnHhQQIwKI0XDU+XcU6q1ryy+VuQJ6oh6VF8eJRocSLgBVx+glEafbllCrwhS8utmM9RYAC80xizA/YYyjE/roXcRDj9AGpfTS3iDKg5E=</kms-test-encrypted-text>
 								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
+								<spring.cloud.gcp.sql.instance-connection-name>spring-cloud-gcp-ci:us-central1:testmysql</spring.cloud.gcp.sql.instance-connection-name>
+								<spring.cloud.gcp.sql.database-name>code_samples_test_db</spring.cloud.gcp.sql.database-name>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
