@@ -167,8 +167,12 @@ jobs:
             --batch-mode \
             --no-transfer-progress \
             --define aggregate=true \
+            --define "spring.datasource.password=${DB_PASSWORD}" \
+            --define "spring.r2dbc.password=${DB_PASSWORD}" \
             --activate-profiles spring-native,\!default \
             surefire-report:report-only
+        env:
+          DB_PASSWORD: ${{ secrets.SPRING_CLOUD_GCP_CI_DB_ROOT_PASSWORD }}
       - name: Archive logs
         if: always()
         continue-on-error: true
