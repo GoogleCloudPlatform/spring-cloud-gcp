@@ -350,6 +350,43 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<!-- Used to test compatibility against Spring Boot 3.2 -->
+			<id>spring-boot-3-2</id>
+			<repositories>
+				<repository>
+				<id>central</id>
+				<url>https://repo1.maven.org/maven2/</url>
+			  </repository>
+				<repository>
+					<id>spring-milestones</id>
+					<url>https://repo.spring.io/milestone</url>
+				</repository>
+			</repositories>
+			<properties>
+				<spring-cloud-dependencies.version>2023.0.0-M2</spring-cloud-dependencies.version>
+				<spring-boot-dependencies.version>3.2.0</spring-boot-dependencies.version>
+			</properties>
+			<modules>
+				<module>spring-cloud-gcp-autoconfigure</module>
+				<module>spring-cloud-gcp-bigquery</module>
+				<module>spring-cloud-gcp-cloudfoundry</module>
+				<module>spring-cloud-gcp-core</module>
+				<module>spring-cloud-gcp-data-datastore</module>
+				<module>spring-cloud-gcp-data-firestore</module>
+				<module>spring-cloud-gcp-data-spanner</module>
+				<module>spring-cloud-gcp-dependencies</module>
+				<module>spring-cloud-gcp-kms</module>
+				<module>spring-cloud-gcp-logging</module>
+				<module>spring-cloud-gcp-pubsub</module>
+				<module>spring-cloud-gcp-pubsub-stream-binder</module>
+				<module>spring-cloud-gcp-secretmanager</module>
+				<module>spring-cloud-gcp-security-firebase</module>
+				<module>spring-cloud-gcp-security-iap</module>
+				<module>spring-cloud-gcp-storage</module>
+				<module>spring-cloud-gcp-vision</module>
+			</modules>
+		</profile>
 	<profile>
 		<id>spring-native</id>
 		<modules>

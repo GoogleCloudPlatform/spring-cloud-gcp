@@ -1,0 +1,32 @@
+name: Spring Boot 3.2 Compatibility
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  unitTests:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Get current date
+      id: date
+      run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
+
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v3
+      with:
+        java-version: 17
+        distribution: 'temurin'
+
+    - name: Compile against Spring Boot 3.2 # Need this when the directory/pom structure changes
+      id: compile
+      run: |
+        ./mvnw \
+          --batch-mode \
+          --show-version \
+          --threads 1.5C \
+          -Pspring-boot-3-2 \
+          compile
