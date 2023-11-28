@@ -112,6 +112,7 @@
 				<module>spring-cloud-gcp-bigquery-sample</module>
 				<module>spring-cloud-gcp-metrics-sample</module>
 				<module>spring-cloud-gcp-sql-mysql-sample</module>
+				<module>spring-cloud-gcp-sql-postgres-sample</module>
 			</modules>
 			<build>
 				<plugins>
@@ -172,9 +173,10 @@
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
-								<spring.cloud.gcp.sql.instance-connection-name>spring-cloud-gcp-ci:us-central1:testmysql</spring.cloud.gcp.sql.instance-connection-name>
+								<spring.cloud.gcp.sql.instance-connection-name>spring-cloud-gcp-ci-native:us-central1:testmysql</spring.cloud.gcp.sql.instance-connection-name>
 								<spring.cloud.gcp.sql.database-name>code_samples_test_db</spring.cloud.gcp.sql.database-name>
 								<spring.datasource.password>${env.DB_PASSWORD}</spring.datasource.password>
+								<spring.r2dbc.password>${env.DB_PASSWORD}</spring.r2dbc.password>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
