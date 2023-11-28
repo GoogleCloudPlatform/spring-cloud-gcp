@@ -113,6 +113,7 @@
 				<module>spring-cloud-gcp-metrics-sample</module>
 				<module>spring-cloud-gcp-sql-mysql-sample</module>
 				<module>spring-cloud-gcp-sql-postgres-sample</module>
+				<module>spring-cloud-gcp-sql-postgres-r2dbc-sample</module>
 			</modules>
 			<build>
 				<plugins>
