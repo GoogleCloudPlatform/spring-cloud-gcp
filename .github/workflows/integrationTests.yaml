@@ -168,6 +168,7 @@ jobs:
             verify
         env:
           DB_PASSWORD: ${{ secrets.SPRING_CLOUD_GCP_CI_DB_ROOT_PASSWORD }}
+          GOOGLE_CLOUD_PROJECT: spring-cloud-gcp-ci
       - name: Aggregate Report
         run: |
           ./mvnw \
