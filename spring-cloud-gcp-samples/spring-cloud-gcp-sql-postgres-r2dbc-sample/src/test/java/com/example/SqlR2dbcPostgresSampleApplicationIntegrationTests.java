@@ -34,7 +34,7 @@ import org.springframework.http.ResponseEntity;
     classes = {SqlApplication.class},
     properties = {
       "spring.cloud.gcp.sql.databaseName=code_samples_test_r2dbc_db",
-      "spring.cloud.gcp.sql.instanceConnectionName=${GOOGLE_CLOUD_PROJECT}:us-central1:testpostgres",
+      "spring.cloud.gcp.sql.instanceConnectionName=${GCLOUD_PROJECT}:us-central1:testpostgres",
       "spring.cloud.gcp.sql.enable-iam.auth=true"
     })
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")

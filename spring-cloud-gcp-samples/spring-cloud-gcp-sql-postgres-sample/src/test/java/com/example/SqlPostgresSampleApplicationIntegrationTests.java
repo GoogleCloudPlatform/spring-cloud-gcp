@@ -41,7 +41,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
     classes = {SqlApplication.class},
     properties = {
       "spring.cloud.gcp.sql.database-name=code_samples_test_db",
-      "spring.cloud.gcp.sql.instance-connection-name=${GOOGLE_CLOUD_PROJECT}:us-central1:testpostgres",
+      "spring.cloud.gcp.sql.instance-connection-name=${GCLOUD_PROJECT}:us-central1:testpostgres",
       "spring.datasource.username=postgres",
       "spring.datasource.continue-on-error=true",
       "spring.sql.init.mode=always"
