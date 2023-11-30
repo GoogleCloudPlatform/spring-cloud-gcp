@@ -37,9 +37,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  * Simple integration test to verify the SQL sample application. This test will use the properties
  * set in resources/application.properties.
  *
- * <p>Run with: mvn -Dit.cloudsql test
+ * <p>Run with: mvn -Dit.cloudsql verify
  */
-//Please use "-Dit.cloudsql=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(

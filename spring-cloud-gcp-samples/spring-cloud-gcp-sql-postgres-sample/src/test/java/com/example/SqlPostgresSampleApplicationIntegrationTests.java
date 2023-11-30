@@ -34,7 +34,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Simple integration test to verify the SQL sample application with Postgres. */
-// Please use "-Dit.cloudsql=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
@@ -42,7 +41,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
     classes = {SqlApplication.class},
     properties = {
       "spring.cloud.gcp.sql.database-name=code_samples_test_db",
-      "spring.cloud.gcp.sql.instance-connection-name=spring-cloud-gcp-ci:us-central1:testpostgres",
+      "spring.cloud.gcp.sql.instance-connection-name=${GCLOUD_PROJECT}:us-central1:testpostgres",
       "spring.datasource.username=postgres",
       "spring.datasource.continue-on-error=true",
       "spring.sql.init.mode=always"
