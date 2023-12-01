@@ -17,6 +17,7 @@
 package com.example;
 
 import com.google.cloud.spring.data.datastore.core.mapping.Entity;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.springframework.data.annotation.Id;
 
@@ -61,17 +62,11 @@ public class Computer {
 
   @Override
   public String toString() {
-    return "Computer{"
-        + "id="
-        + this.id
-        + ", brand='"
-        + this.brand
-        + '\''
-        + ", model='"
-        + this.model
-        + '\''
-        + ", year="
-        + this.year
-        + '}';
+    return MoreObjects.toStringHelper(this)
+        .add("id", id)
+        .add("brand", brand)
+        .add("model", model)
+        .add("year", year)
+        .toString();
   }
 }
