@@ -10,6 +10,8 @@ Compatibility with native image compilation is available "as is" and has no SLAs
 
 - https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-cloud-gcp-core[Google Cloud Core]
 
+--https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-sql[Cloud SQL]
+
 - https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-storage[Cloud Storage]
 
 - https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-pubsub[Cloud PubSub]
