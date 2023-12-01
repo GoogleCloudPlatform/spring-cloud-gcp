@@ -1,7 +1,7 @@
 == Native Image Support (Preview)
 
 https://www.graalvm.org/docs/[GraalVM Native Image] allows you to ahead-of-time compile Java code to a standalone executable.
-GraalVM native images are supported since Spring Boot 3.0 and Spring Framework 6.0. Discover more in Spring Boot guide to https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html[GraalVM Native Image Support]
+GraalVM native images are supported since Spring Boot 3.0 and Spring Framework 6.0. Discover more in Spring Boot guide to https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html[GraalVM Native Image Support]. Refer to https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html#native-image.introducing-graalvm-native-images.understanding-aot-processing[this section] to learn more about Spring ahead-of-time processing and its limitations.
 
 WARNING: Native image support for Spring Framework on Google Cloud is in **Preview**.
 Compatibility with native image compilation is available "as is" and has no SLAs or technical support commitments, as defined in our https://cloud.google.com/products#product-launch-stages[product launch stages] for previews.
