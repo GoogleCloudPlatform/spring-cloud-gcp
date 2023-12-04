@@ -35,7 +35,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.util.Assert;
 
 /**
- * {@link HealthContributorAutoConfiguration Auto-configuration} for {@link SpannerHealthIndicator}.
+ * {@link HealthContributorAutoConfiguration Auto-configuration} for
+ * {@link SpannerHealthIndicator}.
  *
  * @since 2.0.6
  */
@@ -49,11 +50,12 @@ import org.springframework.util.Assert;
 public class SpannerHealthIndicatorAutoConfiguration
     extends CompositeHealthContributorConfiguration<SpannerHealthIndicator, SpannerTemplate> {
 
-  private SpannerHealthIndicatorProperties spannerHealthProperties;
-
   public SpannerHealthIndicatorAutoConfiguration(
       SpannerHealthIndicatorProperties spannerHealthProperties) {
-    this.spannerHealthProperties = spannerHealthProperties;
+    super(spannerTemplate ->
+        new SpannerHealthIndicator(
+            spannerTemplate,
+            spannerHealthProperties.getQuery()));
   }
 
   @Bean
@@ -61,10 +63,5 @@ public class SpannerHealthIndicatorAutoConfiguration
   public HealthContributor spannerHealthContributor(Map<String, SpannerTemplate> spannerTemplates) {
     Assert.notNull(spannerTemplates, "SpannerTemplates must be provided");
     return createContributor(spannerTemplates);
-  }
-
-  @Override
-  protected SpannerHealthIndicator createIndicator(SpannerTemplate spannerTemplate) {
-    return new SpannerHealthIndicator(spannerTemplate, this.spannerHealthProperties.getQuery());
   }
 }
