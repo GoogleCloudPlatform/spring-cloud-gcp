@@ -53,9 +53,9 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 |===
 | Spring Framework on Google Cloud | Spring Cloud | Spring Boot | Spring Framework | Supported
 
-|2.0.x |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes[2020.0.x] (3.0/Illford) |2.4.x, 2.5.x|5.3.x| No
-|3.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes[2021.0.x] (3.1/Jubilee) |2.6.x, 2.7.x | 5.3.x| Yes
 |4.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2022.0-Release-Notes[2022.0.x] (4.0/Kilburn) |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes[3.0.x], https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.1-Release-Notes[3.1.x]| https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x[6.x]| Yes
+|3.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes[2021.0.x] (3.1/Jubilee) |2.6.x, 2.7.x | 5.3.x| Yes
+|2.0.x |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes[2020.0.x] (3.0/Illford) |2.4.x, 2.5.x|5.3.x| No
 |===
 
 == Spring Initializr
