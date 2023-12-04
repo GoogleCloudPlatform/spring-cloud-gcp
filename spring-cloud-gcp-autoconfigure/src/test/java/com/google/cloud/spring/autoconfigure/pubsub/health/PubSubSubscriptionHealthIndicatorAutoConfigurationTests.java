@@ -21,9 +21,9 @@ import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -40,7 +40,8 @@ class PubSubSubscriptionHealthIndicatorAutoConfigurationTests {
                   PubSubSubscriptionHealthIndicatorAutoConfiguration.class,
                   GcpPubSubAutoConfiguration.class))
           .withBean(GcpProjectIdProvider.class, () -> () -> "fake project")
-          .withBean(CredentialsProvider.class, () -> () -> mock(Credentials.class));
+          .withBean(CredentialsProvider.class, () -> () -> mock(Credentials.class))
+          .withBean(MetricServiceClient.class, () -> mock(MetricServiceClient.class));
 
   @Test
   void healthIndicatorPresent_defaults() {
