@@ -115,29 +115,6 @@
 				<module>spring-cloud-gcp-sql-postgres-sample</module>
 				<module>spring-cloud-gcp-sql-postgres-r2dbc-sample</module>
 			</modules>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.graalvm.buildtools</groupId>
-						<artifactId>native-maven-plugin</artifactId>
-						<configuration>
-							<buildArgs>
-								<buildArg>--trace-class-initialization=org.apache.commons.logging.LogFactoryService</buildArg>
-								<buildArg>--initialize-at-build-time=org.apache.commons.logging.LogFactory</buildArg>
-							</buildArgs>
-						</configuration>
-						<executions>
-							<execution>
-								<id>build-native</id>
-								<goals>
-									<goal>compile-no-fork</goal>
-								</goals>
-								<phase>package</phase>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 		<profile>
 			<id>nativeTest</id>
