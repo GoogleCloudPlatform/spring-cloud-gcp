@@ -14,7 +14,7 @@
 	<name>Spring Framework on Google Cloud Code Sample - Kotlin App Sample</name>
 
 	<properties>
-		<kotlin.version>1.9.20</kotlin.version>
+		<kotlin.version>1.9.21</kotlin.version>
 	</properties>
 
 	<!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
