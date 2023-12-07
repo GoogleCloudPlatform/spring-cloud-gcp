@@ -24,10 +24,5 @@
 			<artifactId>spring-cloud-gcp-vision</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>google-cloud-vision</artifactId>
-		</dependency>
-
 	</dependencies>
 </project>
