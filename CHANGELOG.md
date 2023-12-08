@@ -14,6 +14,19 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.7.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.4...v3.7.5) (2023-12-08)
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.27.0 to 26.28.0 ([#2412](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2412)) ([676befb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/676befb908ffc52c7d75a75bceed1c80faf49984))
+* bump commons-io:commons-io from 2.15.0 to 2.15.1 ([#2392](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2392)) ([1f43db8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1f43db8545c7edb92ba3a2b98f51fb7cbc2b226c))
+* bump org.codehaus.mojo:build-helper-maven-plugin ([#2382](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2382)) ([5bcdf2b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5bcdf2bbc0dbcd2b0ba0424d8c4cf61b597ab78e))
+* bump org.springframework.boot:spring-boot-dependencies ([#2376](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2376)) ([5ff72d3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5ff72d3305f5c578f0ce1cde10b3cd4d2bde2dba))
+* bump org.springframework.boot:spring-boot-starter-parent ([#2375](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2375)) ([a048059](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a048059f5cb09dd969b7dd380ebae1df14e4a7e4))
+* bump org.springframework.shell:spring-shell-starter ([#2388](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2388)) ([0f57631](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0f57631d3a0e41e6756b3095cf904d1fd9b55970))
+* bump org.testcontainers:testcontainers-bom from 1.19.1 to 1.19.3 ([#2369](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2369)) ([c5b03aa](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c5b03aaa481df91d72fbfb1b1ddda228a7b8d41f))
+
 ## [3.7.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.3...v3.7.4) (2023-11-09)
 
 
