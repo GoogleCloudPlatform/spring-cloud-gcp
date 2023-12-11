@@ -13,6 +13,24 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.aiplatform.v1.feature-online-store-admin-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/FeatureOnlineStoreAdminService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.feature-online-store-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/FeatureOnlineStoreService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.feature-registry-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/FeatureRegistryService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.aiplatform.v1.featurestore-online-serving-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud aiplatform/FeaturestoreOnlineServingService components.",
@@ -40,6 +58,12 @@
       "name": "com.google.cloud.aiplatform.v1.job-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud aiplatform/JobService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.llm-utility-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/LlmUtilityService components.",
       "defaultValue": true
     },
     {

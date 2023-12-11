@@ -91,6 +91,31 @@ public class RecaptchaEnterpriseServiceSpringProperties implements CredentialsSu
    */
   @NestedConfigurationProperty private Retry getMetricsRetry;
   /**
+   * Allow override of retry settings at method-level for createFirewallPolicy. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createFirewallPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for listFirewallPolicies. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listFirewallPoliciesRetry;
+  /**
+   * Allow override of retry settings at method-level for getFirewallPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getFirewallPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for updateFirewallPolicy. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateFirewallPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteFirewallPolicy. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteFirewallPolicyRetry;
+  /**
    * Allow override of retry settings at method-level for listRelatedAccountGroups. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -213,6 +238,46 @@ public class RecaptchaEnterpriseServiceSpringProperties implements CredentialsSu
 
   public void setGetMetricsRetry(Retry getMetricsRetry) {
     this.getMetricsRetry = getMetricsRetry;
+  }
+
+  public Retry getCreateFirewallPolicyRetry() {
+    return this.createFirewallPolicyRetry;
+  }
+
+  public void setCreateFirewallPolicyRetry(Retry createFirewallPolicyRetry) {
+    this.createFirewallPolicyRetry = createFirewallPolicyRetry;
+  }
+
+  public Retry getListFirewallPoliciesRetry() {
+    return this.listFirewallPoliciesRetry;
+  }
+
+  public void setListFirewallPoliciesRetry(Retry listFirewallPoliciesRetry) {
+    this.listFirewallPoliciesRetry = listFirewallPoliciesRetry;
+  }
+
+  public Retry getGetFirewallPolicyRetry() {
+    return this.getFirewallPolicyRetry;
+  }
+
+  public void setGetFirewallPolicyRetry(Retry getFirewallPolicyRetry) {
+    this.getFirewallPolicyRetry = getFirewallPolicyRetry;
+  }
+
+  public Retry getUpdateFirewallPolicyRetry() {
+    return this.updateFirewallPolicyRetry;
+  }
+
+  public void setUpdateFirewallPolicyRetry(Retry updateFirewallPolicyRetry) {
+    this.updateFirewallPolicyRetry = updateFirewallPolicyRetry;
+  }
+
+  public Retry getDeleteFirewallPolicyRetry() {
+    return this.deleteFirewallPolicyRetry;
+  }
+
+  public void setDeleteFirewallPolicyRetry(Retry deleteFirewallPolicyRetry) {
+    this.deleteFirewallPolicyRetry = deleteFirewallPolicyRetry;
   }
 
   public Retry getListRelatedAccountGroupsRetry() {
