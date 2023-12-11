@@ -43,6 +43,7 @@ jobs:
           - kms
           - kms-sample
           - bigquery-sample
+          - bigquery
     steps:
       - name: Get current date
         id: date
