@@ -22,6 +22,7 @@ import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.JobInfo.WriteDisposition;
 import com.google.cloud.bigquery.storage.v1.BigQueryWriteClient;
 import com.google.cloud.bigquery.storage.v1.BigQueryWriteSettings;
+import com.google.cloud.spring.bigquery.integration.outbound.BigQueryFileMessageHandler;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
@@ -102,5 +103,11 @@ public class BigQueryTestConfiguration {
         new BigQueryTemplate(bigQuery, bigQueryWriteClient, bqInitSettings, taskScheduler);
     bigQueryTemplate.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE);
     return bigQueryTemplate;
+  }
+
+  @Bean
+  public BigQueryFileMessageHandler messageHandler(BigQueryTemplate bigQueryTemplate) {
+    BigQueryFileMessageHandler messageHandler = new BigQueryFileMessageHandler(bigQueryTemplate);
+    return messageHandler;
   }
 }

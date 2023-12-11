@@ -30,6 +30,7 @@ import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableResult;
+import com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration;
 import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders;
 import java.io.File;
 import java.time.Duration;
