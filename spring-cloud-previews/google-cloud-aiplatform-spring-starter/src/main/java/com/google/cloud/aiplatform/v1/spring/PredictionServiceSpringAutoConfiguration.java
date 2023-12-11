@@ -160,6 +160,18 @@ public class PredictionServiceSpringAutoConfiguration {
               clientSettingsBuilder.rawPredictSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.rawPredictSettings().setRetrySettings(rawPredictRetrySettings);
 
+      RetrySettings directPredictRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.directPredictSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.directPredictSettings().setRetrySettings(directPredictRetrySettings);
+
+      RetrySettings directRawPredictRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.directRawPredictSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .directRawPredictSettings()
+          .setRetrySettings(directRawPredictRetrySettings);
+
       RetrySettings explainRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.explainSettings().getRetrySettings(), serviceRetry);
@@ -214,6 +226,30 @@ public class PredictionServiceSpringAutoConfiguration {
       clientSettingsBuilder.rawPredictSettings().setRetrySettings(rawPredictRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for rawPredict from properties.");
+      }
+    }
+    Retry directPredictRetry = clientProperties.getDirectPredictRetry();
+    if (directPredictRetry != null) {
+      RetrySettings directPredictRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.directPredictSettings().getRetrySettings(), directPredictRetry);
+      clientSettingsBuilder.directPredictSettings().setRetrySettings(directPredictRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for directPredict from properties.");
+      }
+    }
+    Retry directRawPredictRetry = clientProperties.getDirectRawPredictRetry();
+    if (directRawPredictRetry != null) {
+      RetrySettings directRawPredictRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.directRawPredictSettings().getRetrySettings(),
+              directRawPredictRetry);
+      clientSettingsBuilder
+          .directRawPredictSettings()
+          .setRetrySettings(directRawPredictRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for directRawPredict from properties.");
       }
     }
     Retry explainRetry = clientProperties.getExplainRetry();

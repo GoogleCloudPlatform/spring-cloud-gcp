@@ -20,7 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
-import com.google.cloud.spring.data.datastore.it.testdomains.ReferenceEntry;
+import com.google.cloud.spring.data.datastore.it.testdomains.ReferenceEntity;
+import com.google.cloud.spring.data.datastore.it.testdomains.ReferenceLazyEntity;
 import com.google.cloud.spring.data.datastore.it.testdomains.TestEntity;
 import java.time.Duration;
 import java.util.List;
@@ -81,14 +82,14 @@ public class TransactionalTemplateService {
   }
 
   @Transactional
-  public ReferenceEntry findByIdLazy(long id) {
-    return this.datastoreTemplate.findById(id, ReferenceEntry.class);
+  public ReferenceLazyEntity findByIdLazy(long id) {
+    return this.datastoreTemplate.findById(id, ReferenceLazyEntity.class);
   }
 
   @Transactional
   @SuppressWarnings("ReturnValueIgnored")
-  public ReferenceEntry findByIdLazyAndLoad(long id) {
-    ReferenceEntry entry = this.datastoreTemplate.findById(id, ReferenceEntry.class);
+  public ReferenceLazyEntity findByIdLazyAndLoad(long id) {
+    ReferenceLazyEntity entry = this.datastoreTemplate.findById(id, ReferenceLazyEntity.class);
     entry.children.size();
     return entry;
   }

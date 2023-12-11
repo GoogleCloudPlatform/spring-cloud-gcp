@@ -41,7 +41,7 @@
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
 		<java-cfenv.version>2.5.0</java-cfenv.version>
-		<micrometer-tracing.verison>1.1.6</micrometer-tracing.verison>
+		<micrometer-tracing.verison>1.2.0</micrometer-tracing.verison>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -50,7 +50,7 @@
 		<maven-flatten-plugin.version>1.5.0</maven-flatten-plugin.version>
 		<maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
 		<maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-		<maven-javadoc-plugin.version>3.6.2</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.3.0</maven-source-plugin.version>
 		<maven-surefire-plugin.version>3.2.2</maven-surefire-plugin.version>
 		<maven.compiler.source>17</maven.compiler.source>
@@ -404,10 +404,6 @@
 					<artifactId>native-maven-plugin</artifactId>
 					<version>${native-maven-plugin.version}</version>
 					<configuration>
-						<buildArgs>
-							<buildArg>--trace-class-initialization=org.apache.commons.logging.LogFactoryService</buildArg>
-							<buildArg>--initialize-at-build-time=org.apache.commons.logging.LogFactory</buildArg>
-						</buildArgs>
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<metadataRepository>
 							<enabled>true</enabled>
@@ -854,7 +850,7 @@
 			<name>Apache License, Version 2.0</name>
 			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
 			<comments>
-				Copyright 2015-2022 the original author or authors.
+				Copyright 2015-2023 the original author or authors.
 
 				Licensed under the Apache License, Version 2.0 (the "License");
 				you may not use this file except in compliance with the License.

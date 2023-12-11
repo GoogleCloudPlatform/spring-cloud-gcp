@@ -44,6 +44,7 @@ jobs:
           - kms-sample
           - bigquery-sample
           - bigquery
+          - metrics-sample
     steps:
       - name: Get current date
         id: date
@@ -115,6 +116,8 @@ jobs:
           - datastore-basic-sample
           - data-firestore-sample
           - data-firestore
+          - sql-mysql-sample
+          - sql-postgres-sample
     steps:
       - name: Get current date
         id: date
@@ -160,6 +163,8 @@ jobs:
         id: intTest
         run: |
           MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
+        env:
+          DB_PASSWORD: ${{ secrets.SPRING_CLOUD_GCP_CI_NATIVE_DB_ROOT_PASSWORD }}
       - name: Aggregate Report
         run: |
           ./mvnw \

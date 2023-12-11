@@ -51,6 +51,16 @@ public class PredictionServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry rawPredictRetry;
   /**
+   * Allow override of retry settings at method-level for directPredict. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry directPredictRetry;
+  /**
+   * Allow override of retry settings at method-level for directRawPredict. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry directRawPredictRetry;
+  /**
    * Allow override of retry settings at method-level for explain. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
@@ -124,6 +134,22 @@ public class PredictionServiceSpringProperties implements CredentialsSupplier {
 
   public void setRawPredictRetry(Retry rawPredictRetry) {
     this.rawPredictRetry = rawPredictRetry;
+  }
+
+  public Retry getDirectPredictRetry() {
+    return this.directPredictRetry;
+  }
+
+  public void setDirectPredictRetry(Retry directPredictRetry) {
+    this.directPredictRetry = directPredictRetry;
+  }
+
+  public Retry getDirectRawPredictRetry() {
+    return this.directRawPredictRetry;
+  }
+
+  public void setDirectRawPredictRetry(Retry directRawPredictRetry) {
+    this.directRawPredictRetry = directRawPredictRetry;
   }
 
   public Retry getExplainRetry() {

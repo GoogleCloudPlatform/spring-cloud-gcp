@@ -219,6 +219,12 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-firestore</artifactId>
             <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -251,6 +257,12 @@
           <groupId>com.google.cloud</groupId>
           <artifactId>google-cloud-vision</artifactId>
           <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -278,6 +290,12 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-monitoring</artifactId>
             <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Config -->
@@ -334,7 +352,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.15.0</version>
+            <version>2.15.1</version>
             <scope>test</scope>
         </dependency>
 

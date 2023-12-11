@@ -163,6 +163,20 @@ public class DatasetServiceSpringAutoConfiguration {
               clientSettingsBuilder.listDatasetsSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listDatasetsSettings().setRetrySettings(listDatasetsRetrySettings);
 
+      RetrySettings getDatasetVersionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDatasetVersionSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getDatasetVersionSettings()
+          .setRetrySettings(getDatasetVersionRetrySettings);
+
+      RetrySettings listDatasetVersionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDatasetVersionsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listDatasetVersionsSettings()
+          .setRetrySettings(listDatasetVersionsRetrySettings);
+
       RetrySettings listDataItemsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listDataItemsSettings().getRetrySettings(), serviceRetry);
@@ -255,6 +269,34 @@ public class DatasetServiceSpringAutoConfiguration {
       clientSettingsBuilder.listDatasetsSettings().setRetrySettings(listDatasetsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listDatasets from properties.");
+      }
+    }
+    Retry getDatasetVersionRetry = clientProperties.getGetDatasetVersionRetry();
+    if (getDatasetVersionRetry != null) {
+      RetrySettings getDatasetVersionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDatasetVersionSettings().getRetrySettings(),
+              getDatasetVersionRetry);
+      clientSettingsBuilder
+          .getDatasetVersionSettings()
+          .setRetrySettings(getDatasetVersionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getDatasetVersion from properties.");
+      }
+    }
+    Retry listDatasetVersionsRetry = clientProperties.getListDatasetVersionsRetry();
+    if (listDatasetVersionsRetry != null) {
+      RetrySettings listDatasetVersionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDatasetVersionsSettings().getRetrySettings(),
+              listDatasetVersionsRetry);
+      clientSettingsBuilder
+          .listDatasetVersionsSettings()
+          .setRetrySettings(listDatasetVersionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listDatasetVersions from properties.");
       }
     }
     Retry listDataItemsRetry = clientProperties.getListDataItemsRetry();

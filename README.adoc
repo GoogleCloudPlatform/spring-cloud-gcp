@@ -8,11 +8,12 @@ image:https://sonarcloud.io/api/project_badges/measure?project=GoogleCloudPlatfo
 This project makes it easy for Spring users to run their applications on Google Cloud.
 You can check our project website https://spring.io/projects/spring-cloud-gcp[here].
 
-For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation below or the https://googleapis.dev/java/spring-cloud-gcp/latest/index.html[latest Javadocs].
+For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation or Javadocs:
 
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html[Spring Framework on Google Cloud Latest]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.4.0/reference/html/index.html[Spring Framework on Google Cloud 3.4.0]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/2.0.11/reference/html/index.html[Spring Framework on Google Cloud 2.0.11]
+// {x-version-update-start:spring-cloud-gcp:released}
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.8.4/reference/html/index.html[Spring Framework on Google Cloud 4.8.4 (Latest)] - https://googleapis.dev/java/spring-cloud-gcp/4.8.4/index.html[Javadocs 4.8.4]
+// {x-version-update-end}
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.7.4/reference/html/index.html[Spring Framework on Google Cloud 3.7.4] - https://googleapis.dev/java/spring-cloud-gcp/3.7.4/index.html[Javadocs 3.7.4]
 
 If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Framework on Google Cloud sample applications] or the https://codelabs.developers.google.com/spring[Spring on Google Cloud codelabs].
 
@@ -52,9 +53,9 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 |===
 | Spring Framework on Google Cloud | Spring Cloud | Spring Boot | Spring Framework | Supported
 
-|2.0.x |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes[2020.0.x] (3.0/Illford) |2.4.x, 2.5.x|5.3.x| No
+|4.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2022.0-Release-Notes[2022.0.x] (4.0/Kilburn) |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes[3.0.x], https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.1-Release-Notes[3.1.x]| https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x[6.x]| Yes
 |3.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes[2021.0.x] (3.1/Jubilee) |2.6.x, 2.7.x | 5.3.x| Yes
-|4.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2022.0-Release-Notes[2022.0.x] (4.0/Kilburn) |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes[3.x]| https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x[6.x]| Yes
+|2.0.x |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes[2020.0.x] (3.0/Illford) |2.4.x, 2.5.x|5.3.x| No
 |===
 
 == Spring Initializr

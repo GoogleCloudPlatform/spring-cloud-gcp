@@ -283,7 +283,7 @@ include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google
 
 [source, java, indent=0]
 ----
-include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google/cloud/spring/data/firestore/it/FirestoreIntegrationTestsConfiguration.java[tag=user_service_bean]
+include::{project-root}/spring-cloud-gcp-data-firestore/src/test/java/com/google/cloud/spring/data/firestore/FirestoreIntegrationTestsConfiguration.java[tag=user_service_bean]
 ----
 
 After that, you can autowire your service like so:

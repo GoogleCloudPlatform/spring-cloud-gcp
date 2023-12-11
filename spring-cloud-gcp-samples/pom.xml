@@ -110,30 +110,11 @@
 				<module>spring-cloud-gcp-kms-sample</module>
 				<module>spring-cloud-gcp-data-firestore-sample</module>
 				<module>spring-cloud-gcp-bigquery-sample</module>
+				<module>spring-cloud-gcp-metrics-sample</module>
+				<module>spring-cloud-gcp-sql-mysql-sample</module>
+				<module>spring-cloud-gcp-sql-postgres-sample</module>
+				<module>spring-cloud-gcp-sql-postgres-r2dbc-sample</module>
 			</modules>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.graalvm.buildtools</groupId>
-						<artifactId>native-maven-plugin</artifactId>
-						<configuration>
-							<buildArgs>
-								<buildArg>--trace-class-initialization=org.apache.commons.logging.LogFactoryService</buildArg>
-								<buildArg>--initialize-at-build-time=org.apache.commons.logging.LogFactory</buildArg>
-							</buildArgs>
-						</configuration>
-						<executions>
-							<execution>
-								<id>build-native</id>
-								<goals>
-									<goal>compile-no-fork</goal>
-								</goals>
-								<phase>package</phase>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 		<profile>
 			<id>nativeTest</id>
@@ -162,12 +143,18 @@
 								<it.firestore>true</it.firestore>
 								<it.kms>true</it.kms>
 								<it.bigquery>true</it.bigquery>
+								<it.metrics>true</it.metrics>
+								<it.cloudsql>true</it.cloudsql>
 								<kms-test-project-id>spring-cloud-gcp-ci-native</kms-test-project-id>
 								<kms-test-encrypted-text>CiQA04Sv0lCnHhQQIwKI0XDU+XcU6q1ryy+VuQJ6oh6VF8eJRocSLgBVx+glEafbllCrwhS8utmM9RYAC80xizA/YYyjE/roXcRDj9AGpfTS3iDKg5E=</kms-test-encrypted-text>
 								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
+								<spring.cloud.gcp.sql.instance-connection-name>spring-cloud-gcp-ci-native:us-central1:testmysql</spring.cloud.gcp.sql.instance-connection-name>
+								<spring.cloud.gcp.sql.database-name>code_samples_test_db</spring.cloud.gcp.sql.database-name>
+								<spring.datasource.password>${env.DB_PASSWORD}</spring.datasource.password>
+								<spring.r2dbc.password>${env.DB_PASSWORD}</spring.r2dbc.password>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
