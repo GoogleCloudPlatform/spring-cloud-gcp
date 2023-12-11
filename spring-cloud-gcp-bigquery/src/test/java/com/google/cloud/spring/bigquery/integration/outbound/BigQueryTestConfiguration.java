@@ -32,11 +32,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.config.EnableIntegration;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /** Provides autoconfiguration for the BigQuery integration tests. */
-@EnableIntegration
 @Configuration
 public class BigQueryTestConfiguration {
 
@@ -77,6 +76,15 @@ public class BigQueryTestConfiguration {
             .setQuotaProjectId(this.projectId)
             .build();
     return BigQueryWriteClient.create(bigQueryWriteSettings);
+  }
+
+  @Bean
+  public ThreadPoolTaskScheduler taskScheduler() {
+    ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+    scheduler.setPoolSize(threadPoolSize);
+    scheduler.setThreadNamePrefix("gcp-bigquery");
+    scheduler.setDaemon(true);
+    return scheduler;
   }
 
   @Bean
