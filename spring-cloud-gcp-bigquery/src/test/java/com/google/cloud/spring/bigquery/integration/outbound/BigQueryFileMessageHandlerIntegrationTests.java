@@ -30,7 +30,6 @@ import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableResult;
-import com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration;
 import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders;
 import java.io.File;
 import java.time.Duration;
@@ -41,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +57,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = BigQueryTestConfiguration.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@DisabledInNativeImage
 class BigQueryFileMessageHandlerIntegrationTests {
 
   private static final String TABLE_NAME = "test_table";
