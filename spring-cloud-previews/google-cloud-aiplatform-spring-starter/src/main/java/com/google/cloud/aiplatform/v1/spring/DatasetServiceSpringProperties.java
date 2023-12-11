@@ -56,6 +56,16 @@ public class DatasetServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry listDatasetsRetry;
   /**
+   * Allow override of retry settings at method-level for getDatasetVersion. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getDatasetVersionRetry;
+  /**
+   * Allow override of retry settings at method-level for listDatasetVersions. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listDatasetVersionsRetry;
+  /**
    * Allow override of retry settings at method-level for listDataItems. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -157,6 +167,22 @@ public class DatasetServiceSpringProperties implements CredentialsSupplier {
 
   public void setListDatasetsRetry(Retry listDatasetsRetry) {
     this.listDatasetsRetry = listDatasetsRetry;
+  }
+
+  public Retry getGetDatasetVersionRetry() {
+    return this.getDatasetVersionRetry;
+  }
+
+  public void setGetDatasetVersionRetry(Retry getDatasetVersionRetry) {
+    this.getDatasetVersionRetry = getDatasetVersionRetry;
+  }
+
+  public Retry getListDatasetVersionsRetry() {
+    return this.listDatasetVersionsRetry;
+  }
+
+  public void setListDatasetVersionsRetry(Retry listDatasetVersionsRetry) {
+    this.listDatasetVersionsRetry = listDatasetVersionsRetry;
   }
 
   public Retry getListDataItemsRetry() {
