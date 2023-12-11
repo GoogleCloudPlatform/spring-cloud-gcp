@@ -34,11 +34,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /** Provides autoconfiguration for the BigQuery integration tests. */
-@Configuration
 @SpringBootConfiguration
 public class BigQueryTestConfiguration {
 
