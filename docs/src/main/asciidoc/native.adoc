@@ -36,6 +36,8 @@ Compatibility with native image compilation is available "as is" and has no SLAs
 
 - https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-data-cloud-firestore[Spring Data Cloud Firestore] (See details in <<detail_guides>> )
 
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#bigquery[BigQuery]
+
 - https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-vision[Cloud Vision]
 
 - https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#secret-manager[Cloud Secret Manager]
