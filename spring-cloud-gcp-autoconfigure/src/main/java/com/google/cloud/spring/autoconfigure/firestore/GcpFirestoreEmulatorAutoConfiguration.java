@@ -79,7 +79,8 @@ public class GcpFirestoreEmulatorAutoConfiguration {
   private Credentials emulatorCredentials() {
     final Map<String, List<String>> headerMap = new HashMap<>();
     headerMap.put("Authorization", Collections.singletonList("Bearer owner"));
-    headerMap.put("google-cloud-resource-prefix", Collections.singletonList(rootPath));
+    headerMap.put("google-cloud-resource-prefix", Collections.singletonList(
+        rootPath.substring(0, rootPath.lastIndexOf("/documents"))));
 
     return new Credentials() {
       @Override
@@ -120,7 +121,7 @@ public class GcpFirestoreEmulatorAutoConfiguration {
         FirestoreClassMapper classMapper,
         FirestoreMappingContext firestoreMappingContext) {
       return new FirestoreTemplate(
-          firestoreStub, rootPath + "/documents", classMapper, firestoreMappingContext);
+          firestoreStub, rootPath, classMapper, firestoreMappingContext);
     }
 
     @Bean
