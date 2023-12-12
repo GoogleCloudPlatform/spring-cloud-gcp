@@ -77,7 +77,6 @@ jobs:
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
             install
-      # Unlike for the other NativeTests job, we don't block here as these run in parallel.
       - uses: graalvm/setup-graalvm@v1
         with:
           version: '22.3.2'
@@ -87,6 +86,8 @@ jobs:
           native-image-job-reports: 'true'
       - name: Native Tests in Modules
         id: intTest
+        env:
+          DB_PASSWORD: ${{ secrets.SPRING_CLOUD_GCP_CI_NATIVE_DB_ROOT_PASSWORD }}
         run: |
           MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
       - name: Aggregate Report
@@ -96,7 +97,7 @@ jobs:
             --no-transfer-progress \
             --define aggregate=true \
             --activate-profiles spring-native,\!default \
-          surefire-report:report-only
+            surefire-report:report-only
       - name: Archive logs
         if: always()
         continue-on-error: true
