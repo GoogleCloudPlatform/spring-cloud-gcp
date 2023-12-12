@@ -78,7 +78,7 @@ updates:
     # Ignore formatter dependency versions used in codegen modules, since they are fixed for Java 8 support
     - dependency-name: "com.coveo:fmt-maven-plugin"
     - dependency-name: "com.google.googlejavaformat:google-java-format"
-    # Ignore dependencies that will be manually upgraded with Spring Boot 3.0 support:
+    # Ignore dependencies corresponding to Spring Boot 3.2+, Spring Cloud 2023.x:
     # Spring Boot dependencies
     - dependency-name: "org.springframework.boot:spring-boot-dependencies"
       versions: [">=3.2.0"]
