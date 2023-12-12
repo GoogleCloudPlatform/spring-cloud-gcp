@@ -14,6 +14,35 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.9.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.4...v4.9.0) (2023-12-12)
+
+
+### Features
+
+* only commit change if it's not a snapshot version ([#2370](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2370)) ([a50fb4b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a50fb4ba83f618d77342a013125ae81bc8c82dc5))
+
+
+### Bug Fixes
+
+* add metrics sample to native CI ([#2345](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2345)) ([44d48df](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/44d48df4c56fc737f06d8e121b428b26aa309e8e))
+* backport Spring Boot 3.2 compatibility updates to Spring Cloud GCP 4.x ([#2397](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2397)) ([a640b75](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a640b758ad8d8b7f1d36b720b5efa2b6cc26f29d))
+* disable profile `CI` when building reference docs ([#2367](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2367)) ([d207fd8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d207fd8cfeacc37dda65dfd70de156487dbf3a83))
+* GcpFirestoreEmulatorAutoConfiguration constructs invalid document parent ([#2348](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2348)) ([7e66d55](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7e66d55f8c48573b03494ad251535c466c63a70e))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.27.0 to 26.28.0 ([#2414](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2414)) ([f58a315](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f58a3153c42599225c308d087743408e509a46ec))
+* bump commons-io:commons-io from 2.15.0 to 2.15.1 ([#2393](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2393)) ([fd56746](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fd56746f8c909e49b0b897d525f33b88c17379e6))
+* bump io.micrometer:micrometer-tracing-bom from 1.1.6 to 1.2.0 ([#2349](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2349)) ([bfc58bd](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/bfc58bd1b9e4cf9d837b04a2ab477b78e2a4ad49))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#2401](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2401)) ([2b64f9a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2b64f9ab8a4485e352e4de36afd23e068521345b))
+* bump org.codehaus.mojo:build-helper-maven-plugin ([#2381](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2381)) ([9045e48](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9045e48291817299a8c13987de05a52447be46cf))
+
+
+### Documentation
+
+* fix readme to reflect Spring Boot 3.0.x & 3.1.x compatibility ([#2402](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2402)) ([20d536e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/20d536e018bc8fd4c12a6d585cac81f4ab583f15))
+
 ## [4.8.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.3...v4.8.4) (2023-11-09)
 
 
