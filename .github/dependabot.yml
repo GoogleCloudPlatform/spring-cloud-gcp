@@ -46,7 +46,7 @@ updates:
       versions: ["3.x"]
     # Spring Cloud dependencies
     - dependency-name: "org.springframework.cloud:spring-cloud-dependencies"
-      versions: ["2022.x"]
+      versions: ["2022.x", "2023.x"]
     - dependency-name: "org.springframework.cloud:spring-cloud-config"
       versions: ["4.x"]
     - dependency-name: "org.springframework.cloud:spring-cloud-function"
@@ -59,3 +59,41 @@ updates:
       versions: ["3.x"]
     # Spring Native dependencies: 
     # Will be superseded by Spring Boot 3 official native support
+
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  commit-message:
+    # Prefix all commit messages with "deps: "
+    prefix: "deps"
+  open-pull-requests-limit: 10
+  target-branch: "4.x"
+  labels:
+    - "4.x dependencies"
+  ignore:
+    # Ignore major version updates - these should be made manually
+    - dependency-name: "*"
+      update-types: [ "version-update:semver-major" ]
+    # Ignore formatter dependency versions used in codegen modules, since they are fixed for Java 8 support
+    - dependency-name: "com.coveo:fmt-maven-plugin"
+    - dependency-name: "com.google.googlejavaformat:google-java-format"
+    # Ignore dependencies that will be manually upgraded with Spring Boot 3.0 support:
+    # Spring Boot dependencies
+    - dependency-name: "org.springframework.boot:spring-boot-dependencies"
+      versions: [">=3.2.0"]
+    - dependency-name: "org.springframework.boot:spring-boot-starter-parent"
+      versions: [">=3.2.0"]
+    # Spring Cloud dependencies
+    - dependency-name: "org.springframework.cloud:spring-cloud-dependencies"
+      versions: ["2023.x"]
+    - dependency-name: "org.springframework.cloud:spring-cloud-config"
+      versions: [">=4.1.0"]
+    - dependency-name: "org.springframework.cloud:spring-cloud-function"
+      versions: [">=4.1.0"]
+    # spring-cloud-dependencies-parent should be eventually removed per #1294
+    - dependency-name: "org.springframework.cloud:spring-cloud-dependencies-parent"
+      versions: [">=4.1.0"]
+    # Spring Shell dependencies
+    - dependency-name: "org.springframework.shell:spring-shell-starter"
+      versions: [">=3.2.0"]
