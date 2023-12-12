@@ -91,9 +91,6 @@ updates:
       versions: [">=4.1.0"]
     - dependency-name: "org.springframework.cloud:spring-cloud-function"
       versions: [">=4.1.0"]
-    # spring-cloud-dependencies-parent should be eventually removed per #1294
-    - dependency-name: "org.springframework.cloud:spring-cloud-dependencies-parent"
-      versions: [">=4.1.0"]
     # Spring Shell dependencies
     - dependency-name: "org.springframework.shell:spring-shell-starter"
       versions: [">=3.2.0"]
