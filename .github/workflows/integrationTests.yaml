@@ -69,6 +69,8 @@ jobs:
             --threads 1.5C \
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
+            --define org.slf4j.simpleLogger.showDateTime=true \
+            --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
             install
       # Unlike for the other integrationTest job, we don't block here as these run in parallel.
       - name: Integration Tests
@@ -80,6 +82,8 @@ jobs:
             --activate-profiles spring-cloud-gcp-ci-it \
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
+            --define org.slf4j.simpleLogger.showDateTime=true \
+            --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
             --define "spring.datasource.password=${DB_PASSWORD}" \
             --define "spring.r2dbc.password=${DB_PASSWORD}" \
             --define it.${{ matrix.it }}=true \
@@ -152,6 +156,8 @@ jobs:
             --threads 1.5C \
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
+            --define org.slf4j.simpleLogger.showDateTime=true \
+            --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
             install
       - name: Wait our turn for running integration tests
         uses: softprops/turnstyle@v1
@@ -169,6 +175,8 @@ jobs:
             --activate-profiles spring-cloud-gcp-ci-it \
             --define maven.javadoc.skip=true \
             --define skip.surefire.tests=true \
+            --define org.slf4j.simpleLogger.showDateTime=true \
+            --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
             --define "spring.datasource.password=${DB_PASSWORD}" \
             --define "spring.r2dbc.password=${DB_PASSWORD}" \
             --define it.${{ matrix.it }}=true \
