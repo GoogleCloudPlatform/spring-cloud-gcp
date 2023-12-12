@@ -28,6 +28,7 @@ import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import java.util.List;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -145,8 +146,8 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
         .run(
             context -> {
               FirestoreTemplate template = context.getBean(FirestoreTemplate.class);
-              assertThat("projects/demo/databases/testdb/documents").isEqualTo(
-                  ReflectionTestUtils.getField(template, "parent"));
+              assertThat(ReflectionTestUtils.getField(template, "parent")).isEqualTo(
+                  "projects/demo/databases/testdb/documents");
             });
   }
 
@@ -163,7 +164,7 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
               Credentials credentials = firestoreOptions.getCredentials();
               List<String> header = credentials.getRequestMetadata()
                   .get("google-cloud-resource-prefix");
-              assertThat(header).isEqualTo(List.of("projects/demo/databases/testdb"));
+              assertThat(header).isEqualTo(Lists.list("projects/demo/databases/testdb"));
             });
   }
 }
