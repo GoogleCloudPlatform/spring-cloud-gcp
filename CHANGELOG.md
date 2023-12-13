@@ -14,6 +14,17 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.0.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.9.0...v5.0.0) (2023-12-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* Spring Cloud 2023 and Spring Boot 3.2.0 ([#2438](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2438))
+
+### Features
+
+* Spring Cloud 2023 and Spring Boot 3.2.0 ([#2438](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2438)) ([ee4a9d6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ee4a9d6364e04810a6a97fb59a2ebe0158b0f19b))
+
 ## [4.9.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.4...v4.9.0) (2023-12-12)
 
 
