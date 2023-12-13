@@ -66,3 +66,7 @@ https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-g
 ==== Firestore
 
 To use `FirestoreTemplate`  methods on Domain types not managed by `FirestoreReactiveRepository`, you need to register runtime hints for these domain POJOs in your application. For more details, refer to example https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-firestore-sample/src/main/java/com/example/DomainTypeRuntimeHints.java[`DomainTypeRuntimeHints`] in Reactive Firestore Repository sample application.
+
+==== Spanner
+
+To use `SpannerTemplate`  methods on Domain types not managed by `SpannerRepository`, you need to register runtime hints for these domain POJOs in your application. For more details, refer to example https://github.com/GoogleCloudPlatform/spring-cloud-gcp/blob/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample/src/main/java/com/example/SpannerTemplateRuntimeHints.java[`SpannerTemplateRuntimeHints`] in the Spanner Template sample application.
