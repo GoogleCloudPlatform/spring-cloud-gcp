@@ -402,6 +402,9 @@
 					<artifactId>native-maven-plugin</artifactId>
 					<version>${native-maven-plugin.version}</version>
 					<configuration>
+						<buildArgs>
+							<buildArg>--trace-class-initialization=org.springframework.aot.AotDetector</buildArg>
+						</buildArgs>
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<metadataRepository>
 							<enabled>true</enabled>
