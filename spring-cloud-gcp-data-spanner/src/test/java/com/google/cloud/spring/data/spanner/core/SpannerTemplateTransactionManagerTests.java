@@ -52,6 +52,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,6 +60,7 @@ import org.springframework.transaction.annotation.Transactional;
 /** Tests for Spanner Template when using transactional annotation. */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
+@DisabledInAotMode
 class SpannerTemplateTransactionManagerTests {
   private static final List<Mutation> INSERT_MUTATION =
       Arrays.asList(Mutation.newInsertBuilder("custom_test_table").build());
