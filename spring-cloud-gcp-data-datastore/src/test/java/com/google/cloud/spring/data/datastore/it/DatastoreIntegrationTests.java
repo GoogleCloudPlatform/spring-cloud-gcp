@@ -97,6 +97,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.transaction.TransactionSystemException;
@@ -106,6 +107,7 @@ import org.springframework.transaction.TransactionSystemException;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
 @ImportRuntimeHints({TestRuntimeHints.class})
+@DisabledInAotMode
 class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   // This value is multiplied against recorded actual times needed to wait for eventual
@@ -712,6 +714,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   @Test
   @DisabledInNativeImage
+  @DisabledInAotMode
   void lazyReferenceCollectionTest() {
     ReferenceLazyEntity parent = saveEntitiesGraph();
 
@@ -728,6 +731,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   @Test
   @DisabledInNativeImage
+  @DisabledInAotMode
   void lazyReferenceTest() throws InterruptedException {
     LazyEntity lazyParentEntity = new LazyEntity(new LazyEntity(new LazyEntity()));
     this.datastoreTemplate.save(lazyParentEntity);
@@ -744,6 +748,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   @Test
   @DisabledInNativeImage
+  @DisabledInAotMode
   void singularLazyPropertyTest() {
     LazyEntity lazyParentEntity = new LazyEntity(new LazyEntity(new LazyEntity()));
     this.datastoreTemplate.save(lazyParentEntity);
@@ -755,6 +760,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   @Test
   @DisabledInNativeImage
+  @DisabledInAotMode
   void lazyReferenceTransactionTest() {
     ReferenceLazyEntity parent = saveEntitiesGraph();
 

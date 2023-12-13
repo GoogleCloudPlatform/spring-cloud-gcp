@@ -44,11 +44,13 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests the auditing features of the template. */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
+@DisabledInAotMode
 class DatastoreTemplateAuditingTests {
 
   private static final Instant LONG_AGO = Instant.parse("2000-01-01T00:00:00.00Z");

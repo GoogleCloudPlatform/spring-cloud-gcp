@@ -46,11 +46,13 @@ import org.springframework.integration.file.remote.RemoteFileTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests for the streaming message source. */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
+@DisabledInAotMode
 class GcsStreamingMessageSourceTests {
 
   @Autowired private PollableChannel unsortedChannel;
