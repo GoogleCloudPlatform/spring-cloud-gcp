@@ -27,9 +27,9 @@ jobs:
         it:
           - bigquery-sample
           - core
-          - data-firestore
+          #- data-firestore ## https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2455
           - data-firestore-sample
-          - datastore
+          #- datastore ## https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2455
           - datastore-basic-sample
           - kms
           - kms-sample
@@ -38,7 +38,7 @@ jobs:
           - pubsub-sample
           - pubsub-bus-sample
           - pubsub-integration-sample
-          - pubsub-stream-sample
+          #- pubsub-stream-sample ## https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2456
           - secretmanager
           - secretmanager-sample
           - spanner

@@ -47,12 +47,14 @@ import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.file.filters.AcceptOnceFileListFilter;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /** Tests for inbound file synchronizer. */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
+@DisabledInAotMode
 class GcsInboundFileSynchronizerTests {
 
   @Autowired private Storage gcs;
