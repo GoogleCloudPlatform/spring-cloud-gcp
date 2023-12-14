@@ -16,33 +16,14 @@ on GitHub.
 
 ## [5.0.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.9.0...v5.0.0) (2023-12-13)
 
-Spring Boot 3.2.0 Upgrade: Unleash the Power of Virtual Threads and Beyond!
-
-### 🚀 Key Highlights:
-
-- **Embrace the Future**: Unleash the potential of Virtual Threads for smoother performance and resource efficiency.
-- **Checkpoint & Restore**: Take advantage of JVM Checkpoint Restore (Project CRaC) for seamless disaster recovery.
-- **SSL Reloading**: Keep your connections secure with automatic SSL Bundle Reloading. 
-- **Observability** Powerhouse: Dive deeper into your system with enhanced Observability Improvements.
-- **Client-Centric**: Leverage the flexibility of RestClient and JdbcClient for versatile communication.
-- **Server & Messaging Upgrades**: Embrace the power of Jetty 12, Spring for Apache Pulsar, and improved SSL bundle support for Kafka and RabbitMQ.
-- **Jar Harmony**: Benefit from reworked Nested Jar handling for a cleaner and more predictable environment.
-- **Docker Delight**: Enjoy streamlined Docker Image Building improvements for faster and more efficient deployments.
-
-### 🛠️ System Requirements & Upgrades:
-- **Java 17**: Step up to the latest Java version for optimal performance.
-- **Spring Framework & Boot**: Embrace the power of **Spring Framework 6.1** and **Spring Boot 3.2.0**.
-- **Spring Cloud**: Upgrade to **Spring Cloud 2023.0** for the latest features and bug fixes.
-- **Plugin Versions**: Update your plugin versions to ensure compatibility.
-- **CI Optimization**: Simplify your CI workflows by removing Java 8 & 11.
-- **Auto-configuration**: Enable auto-configuration for a smoother upgrade experience.
-
 ### ⚠ BREAKING CHANGES
 
 * Spring Cloud 2023 and Spring Boot 3.2.0 ([#2438](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2438))
 
 ### 🎉 Get Ready to Explore!
-Upgrade today and unlock the power of Spring Boot 3.2.0! For detailed information and instructions, refer to the official Spring Boot documentation.
+[Spring Boot 3.2.0 Upgrade](https://spring.io/blog/2023/11/23/spring-boot-3-2-0-available-now): Unleash the Power of Virtual Threads and Beyond!
+
+Upgrade today and unlock the power of Spring Boot 3.2.0! For detailed information and instructions, refer to the official Spring Boot [documentation](https://spring.io/projects/spring-boot#learn) and [release notes](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes).
 
 
 ## [4.9.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.4...v4.9.0) (2023-12-12)
