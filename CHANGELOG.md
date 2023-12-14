@@ -21,9 +21,10 @@ on GitHub.
 * Spring Cloud 2023 and Spring Boot 3.2.0 ([#2438](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2438))
 
 ### 🎉 Get Ready to Explore!
-[Spring Boot 3.2.0 Upgrade](https://spring.io/blog/2023/11/23/spring-boot-3-2-0-available-now): Unleash the Power of Virtual Threads and Beyond!
-
-Upgrade today and unlock the power of Spring Boot 3.2.0! For detailed information and instructions, refer to the official Spring Boot [documentation](https://spring.io/projects/spring-boot#learn) and [release notes](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes).
+[Spring Boot 3.2.0 Upgrade](https://spring.io/blog/2023/11/23/spring-boot-3-2-0-available-now): 
+Upgrade today and unlock the power of Spring Boot 3.2.0! For detailed information and instructions, 
+refer to the official Spring Boot [documentation](https://spring.io/projects/spring-boot#learn) and 
+[release notes](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes).
 
 
 ## [4.9.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.4...v4.9.0) (2023-12-12)
