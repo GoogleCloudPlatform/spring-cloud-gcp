@@ -52,15 +52,36 @@ run_sample_tests () {
       fi
     done
     pushd spring-cloud-gcp-pubsub-stream-functional-sample/spring-cloud-gcp-pubsub-stream-functional-sample-test
-    mvn package -Pnative -Pnative-sample-config -DskipTests
-    mvn -Pnative-sample-config -PnativeTest --define notAllModules=true --define maven.javadoc.skip=true test
+    mvn package \
+      -Pnative -Pnative-sample-config \
+      --define skipTests \
+      --define org.slf4j.simpleLogger.showDateTime=true \
+      --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
+    mvn test \
+      -Pnative-sample-config -PnativeTest \
+      --define notAllModules=true \
+      --define maven.javadoc.skip=true \
+      --define org.slf4j.simpleLogger.showDateTime=true \
+      --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
     popd
     filtered_project_names="$(echo "${filtered_modules[@]}" | sed 's/ /,/g')"
-    mvn clean --activate-profiles native-sample-config,nativeTest --define notAllModules=true --define maven.javadoc.skip=true -pl="${filtered_project_names}" test
+    mvn clean test \
+      --activate-profiles native-sample-config,nativeTest \
+      --define notAllModules=true \
+      --define maven.javadoc.skip=true \
+      -pl="${filtered_project_names}" \
+      --define org.slf4j.simpleLogger.showDateTime=true \
+      --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
 
   else
     project_names="$(echo "${module_samples[@]}" | sed 's/ /,/g')"
-    mvn clean --activate-profiles native-sample-config,nativeTest --define notAllModules=true --define maven.javadoc.skip=true -pl="${project_names}" test
+    mvn clean test \
+      --activate-profiles native-sample-config,nativeTest \
+      --define notAllModules=true \
+      --define maven.javadoc.skip=true \
+      -pl="${project_names}" \
+      --define org.slf4j.simpleLogger.showDateTime=true \
+      --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
   fi
   popd
 }
@@ -74,7 +95,11 @@ run_module_tests() {
     fi
   done
   project_names="$(echo "${module_samples[@]}" | sed 's/ /,/g')"
-  mvn clean verify -Pspring-native,!default -pl="${project_names}"
+  mvn clean verify \
+    -Pspring-native,!default \
+    -pl="${project_names}" \
+    --define org.slf4j.simpleLogger.showDateTime=true \
+    --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
 }
 
 

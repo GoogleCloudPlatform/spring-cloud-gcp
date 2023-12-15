@@ -41,11 +41,13 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests the auditing features of the template. */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
+@DisabledInAotMode
 class SpannerTemplateAuditingTests {
 
   private static final List<Mutation> UPSERT_MUTATION =

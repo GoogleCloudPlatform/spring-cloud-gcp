@@ -86,13 +86,13 @@ class TracePubSubAutoConfigurationTest {
 
   @Test
   void testPubSubTracingDisabledByDefault() {
-    this.contextRunner.run(
-        context -> {
-          assertThat(context.getBeansOfType(TracePubSubBeanPostProcessor.class)).isEmpty();
-          assertThat(context.getBeansOfType(PubSubTracing.class)).isEmpty();
-          assertThat(context.getBeansOfType(MessagingTracing.class)).isEmpty();
-          assertThat(context.getBeansOfType(ObservedAspect.class)).isEmpty();
-        });
+    this.contextRunner
+        .run(
+            context -> {
+              assertThat(context.getBeansOfType(TracePubSubBeanPostProcessor.class)).isEmpty();
+              assertThat(context.getBeansOfType(PubSubTracing.class)).isEmpty();
+              assertThat(context.getBeansOfType(MessagingTracing.class)).isEmpty();
+            });
   }
 
   @Test

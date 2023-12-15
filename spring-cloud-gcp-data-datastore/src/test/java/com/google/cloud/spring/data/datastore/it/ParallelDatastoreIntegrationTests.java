@@ -28,12 +28,14 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests performing many operations at the same time using single instances of the repository. */
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
+@DisabledInAotMode
 class ParallelDatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   private static final int PARALLEL_OPERATIONS = 10;

@@ -32,11 +32,13 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
+@DisabledInAotMode
 class SubclassesReferencesIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   @Autowired SubclassesReferencesEntityArepository entityArepository;
