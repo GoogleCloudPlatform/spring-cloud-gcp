@@ -30,5 +30,11 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>spring-cloud-gcp-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

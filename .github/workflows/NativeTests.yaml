@@ -26,6 +26,7 @@ jobs:
       matrix:
         it:
           - bigquery-sample
+          - bigquery
           - core
           #- data-firestore ## https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2455
           - data-firestore-sample
