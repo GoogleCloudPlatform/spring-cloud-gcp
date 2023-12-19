@@ -1,6 +1,7 @@
 name: Update Docs
 
 on:
+  pull_request:
   push:
     branches:
     - main
@@ -62,5 +63,5 @@ jobs:
         elif [[ -n "${{ github.event.inputs.committish }}" ]] && [[ "${{ github.event.inputs.committish }}" != "main" ]] ; then
             ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.inputs.committish }} --destination . --build
         else
-          ./docs/src/main/asciidoc/ghpages.sh --build
+          ./mvnw install -P docs -P '!CI' -pl docs -DskipTests # Simplified PR check
         fi
