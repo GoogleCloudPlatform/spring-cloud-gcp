@@ -1,6 +1,7 @@
 primaryBranch: main
 releaseType: java-yoshi
 handleGHRelease: true
+last-release-sha: 103846dbe135790a59788a5ae3bafe56ededba3e
 extraFiles: [
   "README.adoc",
   "spring-cloud-generator/scripts/resources/googleapis_modification_string.txt"
