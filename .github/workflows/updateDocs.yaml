@@ -1,6 +1,7 @@
 name: Update Docs
 
 on:
+  pull_request:
   push:
     branches:
     - main
