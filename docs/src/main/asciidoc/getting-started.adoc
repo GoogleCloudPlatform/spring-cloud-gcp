@@ -6,12 +6,12 @@ This section describes how to get up to speed with Spring Framework on Google Cl
 
 Spring Framework on Google Cloud has dependency and transitive dependencies on Spring Projects. The table below outlines the versions of Spring Cloud, Spring Boot and Spring Framework versions that are compatible with certain Spring Framework on Google Cloud version.
 |===
-| Spring Framework on Google Cloud | Spring Cloud | Spring Boot | Spring Framework
+| Spring Framework on Google Cloud | Spring Cloud | Spring Boot | Spring Framework | Supported
 
-|5.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2023.0-Release-Notes[2023.0.x] (Leyton) |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes[3.2.x]| https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x#whats-new-in-version-61[6.1.x]
-|4.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2022.0-Release-Notes[2022.0.x] (Kilburn) |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes[3.0.x], https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.1-Release-Notes[3.1.x]| https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x#whats-new-in-version-60[6.x]
-|3.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes[2021.0.x] (Jubilee) |2.6.x, 2.7.x | 5.3.x
-|2.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes[2020.0.x] (Ilford) |2.4.x, 2.5.x | 5.3.x
+|5.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2023.0-Release-Notes[2023.0.x] (Leyton) |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes[3.2.x]| https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x#whats-new-in-version-61[6.1.x]| Yes
+|4.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2022.0-Release-Notes[2022.0.x] (Kilburn) |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes[3.0.x], https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.1-Release-Notes[3.1.x]| https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x#whats-new-in-version-60[6.x]| Yes
+|3.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes[2021.0.x] (Jubilee) |2.6.x, 2.7.x | 5.3.x| Yes
+|2.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes[2020.0.x] (Ilford) |2.4.x, 2.5.x|5.3.x| No
 |===
 
 
