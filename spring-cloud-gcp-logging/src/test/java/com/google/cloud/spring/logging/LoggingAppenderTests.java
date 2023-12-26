@@ -38,4 +38,17 @@ class LoggingAppenderTests {
         .contains("spring-cloud-gcp-logging")
         .contains("Spring");
   }
+
+  @Test
+  void testSetLogDestinationProjectId() {
+    LoggingAppender loggingAppender = new LoggingAppender();
+    loggingAppender.setCredentialsFile("src/test/resources/fake-project-key.json");
+    loggingAppender.setLogDestinationProjectId("my-log-destination-project");
+    assertThat(loggingAppender.getLoggingOptions().getCredentials()).isNotNull();
+    assertThat(loggingAppender.getLoggingOptions().getProjectId()).isEqualTo("my-log-destination-project");
+    assertThat(loggingAppender.getLoggingOptions().getUserAgent())
+        .isNotNull()
+        .contains("spring-cloud-gcp-logging")
+        .contains("Spring");
+  }
 }
