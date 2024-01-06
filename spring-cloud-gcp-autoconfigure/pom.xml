@@ -169,6 +169,13 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Spanner R2DBC-->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Trace -->
         <dependency>
             <groupId>io.micrometer</groupId>
