@@ -76,10 +76,15 @@ class SpannerDatabaseAdminTemplateTests {
 
   @Test
   void getTableRelationshipsTest() {
+    when(this.mockDatabasePage.getValues())
+        .thenReturn(
+            List.of(new Database(this.databaseId, State.READY, this.databaseAdminClient)));
     ReadContext readContext = mock(ReadContext.class);
 
     Struct s1 =
         Struct.newBuilder()
+            .set("table_schema")
+            .to("")
             .set("table_name")
             .to(Value.string("grandpa"))
             .set("parent_table_name")
@@ -87,6 +92,8 @@ class SpannerDatabaseAdminTemplateTests {
             .build();
     Struct s2 =
         Struct.newBuilder()
+            .set("table_schema")
+            .to("")
             .set("table_name")
             .to(Value.string("parent_a"))
             .set("parent_table_name")
@@ -94,6 +101,8 @@ class SpannerDatabaseAdminTemplateTests {
             .build();
     Struct s3 =
         Struct.newBuilder()
+            .set("table_schema")
+            .to("")
             .set("table_name")
             .to(Value.string("parent_b"))
             .set("parent_table_name")
@@ -101,14 +110,70 @@ class SpannerDatabaseAdminTemplateTests {
             .build();
     Struct s4 =
         Struct.newBuilder()
+            .set("table_schema")
+            .to("")
             .set("table_name")
             .to(Value.string("child"))
             .set("parent_table_name")
             .to(Value.string("parent_a"))
             .build();
+    Struct s5 =
+        Struct.newBuilder()
+            .set("table_schema")
+            .to("INFORMATION_SCHEMA")
+            .set("table_name")
+            .to(Value.string("TABLES"))
+            .set("parent_table_name")
+            .to(Value.string(null))
+            .build();
+    Struct s6 =
+        Struct.newBuilder()
+            .set("table_schema")
+            .to("")
+            .set("table_name")
+            .to(Value.string("TABLES"))
+            .set("parent_table_name")
+            .to(Value.string(null))
+            .build();
+    Struct s7 =
+        Struct.newBuilder()
+            .set("table_schema")
+            .to("")
+            .set("table_name")
+            .to(Value.string("CHILD_TABLES"))
+            .set("parent_table_name")
+            .to(Value.string("TABLES"))
+            .build();
+    Struct s8 =
+        Struct.newBuilder()
+            .set("table_schema")
+            .to("my_schema")
+            .set("table_name")
+            .to(Value.string("grandpa"))
+            .set("parent_table_name")
+            .to(Value.string(null))
+            .build();
+    Struct s9 =
+        Struct.newBuilder()
+            .set("table_schema")
+            .to("my_schema")
+            .set("table_name")
+            .to(Value.string("dad"))
+            .set("parent_table_name")
+            .to(Value.string("grandpa"))
+            .build();
+    Struct s10 =
+        Struct.newBuilder()
+            .set("table_schema")
+            .to("my_schema")
+            .set("table_name")
+            .to(Value.string("child"))
+            .set("parent_table_name")
+            .to(Value.string("dad"))
+            .build();
 
     MockResults mockResults = new MockResults();
-    mockResults.structs = Arrays.asList(s1, s2, s3, s4);
+    mockResults.structs = Arrays.asList(s1, s2, s3, s4, s5, s6, s7, s8, s9, s10);
     ResultSet results = mock(ResultSet.class);
     when(results.next()).thenAnswer(invocation -> mockResults.next());
     when(results.getCurrentRowAsStruct()).thenAnswer(invocation -> mockResults.getCurrent());
@@ -118,9 +183,27 @@ class SpannerDatabaseAdminTemplateTests {
     Map<String, Set<String>> relationships =
         this.spannerDatabaseAdminTemplate.getParentChildTablesMap();
 
-    assertThat(relationships).hasSize(2);
+    assertThat(this.spannerDatabaseAdminTemplate.tableExists("some-random-table")).isFalse();
+    assertThat(this.spannerDatabaseAdminTemplate.tableExists("grandpa")).isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.tableExists("parent_a")).isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.tableExists("parent_b")).isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.tableExists("child")).isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.tableExists("child")).isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.tableExists("INFORMATION_SCHEMA.TABLES")).isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.tableExists("TABLES")).isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.tableExists("CHILD_TABLES")).isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.tableExists("my_schema.grandpa")).isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.tableExists("my_schema.dad")).isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate.tableExists("my_schema.child")).isTrue();
+
+    assertThat(relationships).hasSize(5);
     assertThat(relationships.get("grandpa")).containsExactlyInAnyOrder("parent_a", "parent_b");
     assertThat(relationships.get("parent_a")).containsExactlyInAnyOrder("child");
+    assertThat(relationships.get("child")).isNull();
+    assertThat(relationships.get("TABLES")).containsExactlyInAnyOrder("CHILD_TABLES");
+    assertThat(relationships.get("INFORMATION_SCHEMA.TABLES")).isNull();
+    assertThat(relationships.get("my_schema.grandpa")).containsExactlyInAnyOrder("my_schema.dad");
+    assertThat(relationships.get("my_schema.dad")).containsExactlyInAnyOrder("my_schema.child");
 
     assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("grandpa", "child"))
         .as("verify grand-child relationship")
@@ -139,6 +222,19 @@ class SpannerDatabaseAdminTemplateTests {
         .isFalse();
     assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("parent_b", "child"))
         .as("verify not parent-child relationship")
+        .isFalse();
+    
+    assertThat(this.spannerDatabaseAdminTemplate
+        .isInterleaved("my_schema.grandpa", "my_schema.dad"))
+        .as("verify my-schema grand-child relationship")
+        .isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate
+        .isInterleaved("my_schema.grandpa", "my_schema.child"))
+        .as("verify my-schema grand-child relationship")
+        .isTrue();
+    assertThat(this.spannerDatabaseAdminTemplate
+        .isInterleaved("my_schema.grandpa", "child"))
+        .as("verify not my-schema grand-child relationship")
         .isFalse();
   }
 

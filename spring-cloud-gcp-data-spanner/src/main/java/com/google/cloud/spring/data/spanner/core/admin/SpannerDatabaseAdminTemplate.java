@@ -20,6 +20,7 @@ import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
+import com.google.cloud.spanner.Dialect;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
@@ -27,6 +28,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
@@ -40,6 +42,8 @@ import org.springframework.util.Assert;
  */
 public class SpannerDatabaseAdminTemplate {
 
+  private static final String TABLE_SCHEMA_COL_NAME = "table_schema";
+  
   private static final String TABLE_NAME_COL_NAME = "table_name";
 
   private static final String PARENT_TABLE_NAME_COL_NAME = "parent_table_name";
@@ -47,6 +51,8 @@ public class SpannerDatabaseAdminTemplate {
   private static final Statement TABLE_AND_PARENT_QUERY =
       Statement.of(
           "SELECT t."
+              + TABLE_SCHEMA_COL_NAME
+              + ", t."
               + TABLE_NAME_COL_NAME
               + ", t."
               + PARENT_TABLE_NAME_COL_NAME
@@ -151,13 +157,35 @@ public class SpannerDatabaseAdminTemplate {
       while (results.next()) {
         Struct row = results.getCurrentRowAsStruct();
         relationships.put(
-            row.getString(TABLE_NAME_COL_NAME),
+            getQualifiedTableName(
+                row.getString(TABLE_SCHEMA_COL_NAME),
+                row.getString(TABLE_NAME_COL_NAME)),
             row.isNull(PARENT_TABLE_NAME_COL_NAME)
                 ? null
-                : row.getString(PARENT_TABLE_NAME_COL_NAME));
+                : getQualifiedTableName(
+                    // Parent/child tables must be in the same schema, and so there is no separate
+                    // schema name column for the parent table.
+                    row.getString(TABLE_SCHEMA_COL_NAME),
+                    row.getString(PARENT_TABLE_NAME_COL_NAME)));
       }
       return relationships;
     }
+  }
+  
+  private String getQualifiedTableName(String schema, String table) {
+    if (schema == null || Objects.equals(schema, getDefaultSchemaName())) {
+      return table;
+    }
+    return schema + "." + table;
+  }
+  
+  private String getDefaultSchemaName() {
+    // TODO: Get the default schema directly from the dialect when this is supported in the Spanner
+    //       Java client.
+    if (databaseClientProvider.get().getDialect() == Dialect.POSTGRESQL) {
+      return "public";
+    }
+    return "";
   }
 
   /**
