@@ -408,7 +408,7 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<!-- need for JaCoCo -->
-							<argLine>@{argLine} -Xms512m -Xmx512m</argLine>
+							<argLine>@{argLine} -Xms512m -Xmx512m --add-opens=java.base/java.math=ALL-UNNAMED</argLine>
 							<includes>
 								<include>**/*Tests.java</include>
 								<include>**/*Test.java</include>
