@@ -14,6 +14,19 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.7.6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.5...v3.7.6) (2024-01-17)
+
+
+### Bug Fixes
+
+* **3.x:** delegate to all parent logging options ([4653003](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/465300393fe78449ae55c441e326a7920db7bc60))
+* **3.x:** GcpFirestoreEmulatorAutoConfiguration constructs invalid document parent ([#2429](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2429)) ([30f7b7a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/30f7b7a776bd75415a6ff214f110ad087757073d))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.28.0 to 26.30.0 ([#2514](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2514)) ([664d878](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/664d8780e971eba9367c2d08360f5d02c66540cb))
+
 ## [3.7.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.4...v3.7.5) (2023-12-08)
 
 
