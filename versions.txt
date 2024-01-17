@@ -1,4 +1,4 @@
 # Format:
 # module:released-version:current-version
 
-spring-cloud-gcp:3.7.6:3.7.6
+spring-cloud-gcp:3.7.6:3.7.7-SNAPSHOT
