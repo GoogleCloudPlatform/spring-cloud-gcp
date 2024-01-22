@@ -14,6 +14,14 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.9.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.9.0...v4.9.1) (2024-01-22)
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.28.0 to 26.30.0 ([#2516](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2516)) ([f03e072](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f03e072b95aac2aebb4ab171a55ac3273eb0fa6e))
+* bump io.micrometer:micrometer-tracing-bom from 1.2.0 to 1.2.1 ([#2444](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2444)) ([338ffa9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/338ffa9a8ecc6f3302d6635017846b13791cb579))
+
 ## [4.9.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.4...v4.9.0) (2023-12-12)
 
 
