@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 # To VERIFY: ./scripts/generate-showcase.sh
 # To UPDATE: /scripts/generate-showcase.sh -u
@@ -64,7 +65,9 @@ function generate_showcase_spring_starter(){
 
   # Clone sdk-platform-java (with showcase library)
   git clone https://github.com/googleapis/sdk-platform-java.git
-  cd sdk-platform-java && git checkout "v${GAPIC_GENERATOR_JAVA_VERSION}"
+  
+  # cd sdk-platform-java && git checkout "v${GAPIC_GENERATOR_JAVA_VERSION}"
+  cd sdk-platform-java && git checkout "41f6ef62b96f9edd3dd594cecc5512edbc4ac4c9"
 
   # Install showcase client libraries locally
   cd showcase && mvn clean install
@@ -81,7 +84,8 @@ function generate_showcase_spring_starter(){
   modify_build_file "BUILD.bazel"
 
   # Invoke bazel target for generating showcase-spring-starter
-  bazelisk build --tool_java_language_version=17 --tool_java_runtime_version=remotejdk_17 //showcase:showcase_java_gapic_spring
+  bazelisk clean
+  bazelisk build --subcommands --tool_java_language_version=17 --tool_java_runtime_version=remotejdk_17 //showcase:showcase_java_gapic_spring
 
   # Post-process generated modules
   copy_and_unzip "../bazel-bin/showcase/showcase_java_gapic_spring-spring.srcjar" "showcase_java_gapic_spring-spring.srcjar" "${SPRING_GENERATOR_DIR}/showcase" ${SHOWCASE_STARTER_DIR}
