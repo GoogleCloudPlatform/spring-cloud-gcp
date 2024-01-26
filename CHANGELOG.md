@@ -14,6 +14,39 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.0.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.0.0...v5.0.1) (2024-01-26)
+
+
+### Bug Fixes
+
+* (Spanner) include schema name in table name ([#2510](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2510)) ([5dfe226](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5dfe2260c60203970ea7cff917e9bf15c528ddfa))
+* delegate to all parent logging options ([#2500](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2500)) ([cd706b7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cd706b7b5c845461dccede0ce615310261dd6ab8))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.30.0 ([#2440](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2440)) ([7d11582](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7d11582dd8cc4bc0925cbf030eb28def43144e27))
+* **deps:** update dependency io.micrometer:micrometer-tracing-bom to v1.2.2 ([#2423](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2423)) ([07ade87](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/07ade87dae3b5f63f9c9ec4299a6c700ac4f619e))
+* **deps:** update dependency org.postgresql:r2dbc-postgresql to v1.0.4.release ([#2430](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2430)) ([4bd907f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4bd907f9eecdd31ff22ddea2d3483d2a0c5dc543))
+* **deps:** update zipkin-gcp.version to v1.1.1 ([#2475](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2475)) ([675da8e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/675da8eb396fd3f2305749e5a379b5e93b929b02))
+
+
+### Dependencies
+
+* bump com.google.cloud.tools:appengine-maven-plugin ([#2524](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2524)) ([31b8ea2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/31b8ea27fa474739bc67208a18eab8797dd5e027))
+* bump com.google.errorprone:error_prone_core from 2.23.0 to 2.24.1 ([#2551](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2551)) ([e23e488](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e23e48852350f089873c33c389db630a1b7bba20))
+* bump io.micrometer:micrometer-tracing-bom from 1.2.0 to 1.2.2 ([#2507](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2507)) ([838bb0d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/838bb0d90c9bfed125615833d84dec6de744338d))
+* bump org.apache.maven.plugins:maven-compiler-plugin ([#2499](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2499)) ([d0aa4b3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d0aa4b3079942ca9a1013162a12850e3d34cba73))
+* bump org.codehaus.mojo:flatten-maven-plugin from 1.5.0 to 1.6.0 ([#2550](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2550)) ([0594973](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0594973fc8a2172bcc131055b58fa2b7d3ba7b72))
+* bump org.postgresql:r2dbc-postgresql ([#2508](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2508)) ([9324393](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/932439388a5057d5eedd4ac60b5670fbf2eb08fc))
+* bump org.springframework.boot:spring-boot-starter-parent ([#2529](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2529)) ([8908612](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/890861240ec8435c631ba4d38c67a29e9c409c8f))
+* bump spring-boot-dependencies.version from 3.2.0 to 3.2.2 ([#2549](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2549)) ([20148b9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/20148b95d57163f6a5231f99c88cd983eb8d3474))
+* bump zipkin-gcp.version from 1.0.4 to 1.1.0 ([#2482](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2482)) ([c3a835d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c3a835d20d7ed7597008848d271b99700df702ce))
+* bump zipkin-gcp.version from 1.1.0 to 1.1.1 ([#2552](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2552)) ([f7b4d1e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f7b4d1eda2981f9ca1983436b88fd9b7708eae4e))
+
+
+### Documentation
+
+* Improved CHANGELOG.md for 5.x ([#2466](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2466)) ([c30ae65](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c30ae65024bb52efcd77da7bf6aeb7c14351d92c))
+* update compatibility table in docs ([#2487](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2487)) ([8ed8ecd](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8ed8ecd756a1a11db97bca88abf9fbaecc3e68fe))
+* Update SECURITY.md for 5.x ([#2465](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2465)) ([5ac7cc9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5ac7cc92b18d03af8cd1f4475338908782724315)), closes [#2460](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2460)
+
 ## [5.0.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.9.0...v5.0.0) (2023-12-13)
 
 ### ⚠ BREAKING CHANGES
