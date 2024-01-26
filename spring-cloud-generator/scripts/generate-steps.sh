@@ -53,10 +53,19 @@ function save_error_info () {
 function setup_googleapis(){
   git clone https://github.com/googleapis/googleapis.git
   cd googleapis
+
+  git remote add debug git@github.com:zhumin8/googleapis.git
+  git checkout -b debug-spring-rule
+  echo "show current branch: "
+  git symbolic-ref --short HEAD
   modify_workspace_file "WORKSPACE" "../../spring-cloud-generator" "../scripts/resources/googleapis_modification_string.txt"
   # In repository_rules.bzl, add switch for new spring rule
   JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"\@spring_cloud_generator\/\/:java_gapic_spring.bzl\\\",\n    )"
   perl -0777 -pi -e "s/(rules\[\"java_gapic_library\"\] \= _switch\((.*?)\))/\$1\n$JAVA_SPRING_SWITCH/s" repository_rules.bzl
+
+  git add .
+  git commit -m "In repository_rules.bzl, add switch for new spring rule."
+  git push debug debug-spring-rule
 }
 
 # Parameterized function that handles modifications to the bazel WORKSPACE file,
