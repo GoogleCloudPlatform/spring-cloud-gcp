@@ -24,7 +24,7 @@
 		<!-- Dependency versions -->
 		<spring-native.version>0.12.2</spring-native.version>
 		<google-cloud-graalvm-support.version>0.7.0</google-cloud-graalvm-support.version>
-		<testcontainers.version>1.19.3</testcontainers.version>
+		<testcontainers.version>1.19.4</testcontainers.version>
 
 		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
 		<maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
