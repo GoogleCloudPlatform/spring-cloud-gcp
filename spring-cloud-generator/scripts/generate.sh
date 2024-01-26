@@ -74,6 +74,14 @@ done <<< "${LIBRARIES}"
 # Invoke all bazel build targets
 echo "invoking bazel_build_all"
 cd ${SPRING_GENERATOR_DIR}/googleapis
+# Add commit for debug before invoking bazel_build_all
+git checkout -b debug-spring-rule-all
+echo "show current branch: "
+git symbolic-ref --short HEAD
+git add .
+git commit -m "debug: added all changes to repo before etching all `*java_gapic_spring` build rules and build them."
+git push debug debug-spring-rule-all
+
 bazel_build_all
 cd ${SPRING_GENERATOR_DIR}
 
