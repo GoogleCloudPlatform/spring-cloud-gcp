@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Spring Cloud Stream</title>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
+
+</head>
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
+<li><a href="#spring-cloud-stream">Spring Cloud Stream</a>
+<ul class="sectlevel2">
+<li><a href="#_overview">Overview</a></li>
+<li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_binding_with_functions">Binding with Functions</a></li>
+<li><a href="#_sample">Sample</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="spring-cloud-stream"><a class="anchor" href="#spring-cloud-stream"></a><a class="link" href="#spring-cloud-stream">Spring Cloud Stream</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Framework on Google Cloud provides a <a href="https://cloud.spring.io/spring-cloud-stream/">Spring Cloud Stream</a> binder to Google Cloud Pub/Sub.</p>
+</div>
+<div class="paragraph">
+<p>The provided binder relies on the <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-pubsub/src/main/java/com/google/cloud/spring/pubsub/integration">Spring Integration Channel Adapters for Google Cloud Pub/Sub</a>.</p>
+</div>
+<div class="paragraph">
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-gcp-pubsub-stream-binder&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gradle coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-pubsub-stream-binder")
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_overview"><a class="anchor" href="#_overview"></a><a class="link" href="#_overview">Overview</a></h3>
+<div class="paragraph">
+<p>This binder binds producers to Google Cloud Pub/Sub topics and consumers to subscriptions.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Partitioning is currently not supported by this binder.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration"><a class="anchor" href="#_configuration"></a><a class="link" href="#_configuration">Configuration</a></h3>
+<div class="paragraph">
+<p>You can configure the Spring Cloud Stream Binder for Google Cloud Pub/Sub to automatically generate the underlying resources, like the Google Cloud Pub/Sub topics and subscriptions for producers and consumers.
+For that, you can use the <code>spring.cloud.stream.gcp.pubsub.bindings.&lt;consumer/produer name&gt;.&lt;consumer|producer&gt;.auto-create-resources</code> property, which is turned ON by default.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For more info about consumer/producer naming convention, please refer to <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_functional_binding_names">Functional binding names</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Starting with version 1.1, these and other binder properties can be configured globally for all the bindings, e.g. <code>spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources</code>.</p>
+</div>
+<div class="paragraph">
+<p>If you are using Pub/Sub autoconfiguration from the Spring Framework on Google Cloud Pub/Sub Starter, you should refer to the <a href="#pubsub-configuration">configuration</a> section for other Pub/Sub parameters.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+To use this binder with a <a href="https://cloud.google.com/pubsub/docs/emulator">running emulator</a>, configure its host and port via <code>spring.cloud.gcp.pubsub.emulator-host</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_producer_synchronous_sending_configuration"><a class="anchor" href="#_producer_synchronous_sending_configuration"></a><a class="link" href="#_producer_synchronous_sending_configuration">Producer Synchronous Sending Configuration</a></h4>
+<div class="paragraph">
+<p>By default, this binder will send messages to Cloud Pub/Sub asynchronously.
+If synchronous sending is preferred (for example, to allow propagating errors back to the sender), set <code>spring.cloud.stream.gcp.pubsub.default.producer.sync</code> property to <code>true</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_producer_destination_configuration"><a class="anchor" href="#_producer_destination_configuration"></a><a class="link" href="#_producer_destination_configuration">Producer Destination Configuration</a></h4>
+<div class="paragraph">
+<p>If automatic resource creation is turned ON and the topic corresponding to the destination name does not exist, it will be created.</p>
+</div>
+<div class="paragraph">
+<p>For example, for the following configuration, a topic called <code>myEvents</code> would be created.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre class="highlight"><code>spring.cloud.stream.bindings.{PRODUCER_NAME}.destination=myEvents
+spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.auto-create-resources=true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_consumer_destination_configuration"><a class="anchor" href="#_consumer_destination_configuration"></a><a class="link" href="#_consumer_destination_configuration">Consumer Destination Configuration</a></h4>
+<div class="paragraph">
+<p>A <code>PubSubInboundChannelAdapter</code> will be configured for your consumer endpoint.
+You may adjust the ack mode of the consumer endpoint using the <code>ack-mode</code> property.
+The ack mode controls how messages will be acknowledged when they are successfully received.
+The three possible options are: <code>AUTO</code> (default), <code>AUTO_ACK</code>, and <code>MANUAL</code>.
+These options are described in detail in the <a href="#inbound-channel-adapter-using-pubsub-streaming-pull">Pub/Sub channel adapter documentation</a>.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre class="highlight"><code># How to set the ACK mode of the consumer endpoint.
+spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.ack-mode=AUTO_ACK</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With automatic resource creation turned ON for a consumer, the library creates a topic and/or a subscription if they do not exist.
+The topic name becomes the same as the destination name, and the subscription name follows these rules (in order of precedence):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A user-defined, pre-existing subscription (use <code>spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.subscriptionName</code>)</p>
+</li>
+<li>
+<p>A consumer group using the topic name (use <code>spring.cloud.stream.bindings.events.group</code> to create a subscription named <code>&lt;topicName&gt;.&lt;group&gt;</code>)</p>
+</li>
+<li>
+<p>If neither of the above are specified, the library creates an anonymous subscription with the name <code>anonymous.&lt;destinationName&gt;.&lt;randomUUID&gt;</code>.
+Then when the binder shuts down, the library automatically cleans up all Pub/Sub subscriptions created for anonymous consumer groups.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, with this configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre class="highlight"><code>spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
+spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-resources=false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Only an anonymous subscription named <code>anonymous.myEvents.a6d83782-c5a3-4861-ac38-e6e2af15a7be</code> is created and later cleaned up.</p>
+</div>
+<div class="paragraph">
+<p>In another example, with the following configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre class="highlight"><code>spring.cloud.stream.bindings.{CONSUMER_NAME}.destination=myEvents
+spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.auto-create-resources=true
+
+# specify consumer group, and avoid anonymous consumer group generation
+spring.cloud.stream.bindings.{CONSUMER_NAME}.group=consumerGroup1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These resources will be created:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A topic named <code>myEvents</code></p>
+</li>
+<li>
+<p>A subscription named <code>myEvents.consumerGroup1</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_header_mapping"><a class="anchor" href="#_header_mapping"></a><a class="link" href="#_header_mapping">Header Mapping</a></h4>
+<div class="paragraph">
+<p>You can filter incoming and outgoing message headers with <code>allowHeaders</code> property.
+For example, for a consumer to allow only two headers, provide a comma separated list like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre>spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.allowedHeaders=allowed1, allowed2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where <code>CONSUMER_NAME</code> should be replaced by the method which is consuming/reading messages from Cloud Pub/Sub and allowed1, allowed2 is the comma separated list of headers that the user wants to keep.</p>
+</div>
+<div class="paragraph">
+<p>A similar style is applicable for producers as well. For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre>spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.allowedHeaders=allowed3,allowed4</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where <code>PRODUCER_NAME</code> should be replaced by the method which is producing/sending messages to Cloud Pub/Sub and allowed3, allowed4 is the comma separated list of headers that user wants to map. All other headers will be removed before the message is sent to Cloud Pub/Sub.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_endpoint_customization"><a class="anchor" href="#_endpoint_customization"></a><a class="link" href="#_endpoint_customization">Endpoint Customization</a></h4>
+<div class="paragraph">
+<p>You may customize channel routing by defining a <code>ConsumerEndpointCustomizer</code> in your autoconfiguration. This is useful if you want to customize the default configurations provided by the Pub/Sub Spring Cloud Stream Binder.</p>
+</div>
+<div class="paragraph">
+<p>The example below demonstrates how to use a <code>ConsumerEndpointCustomizer</code> to override the default error channel configured by the binder.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public ConsumerEndpointCustomizer&lt;PubSubInboundChannelAdapter&gt; messageChannelAdapter() {
+    return (endpoint, destinationName, group) -&gt; {
+        NamedComponent namedComponent = (NamedComponent) endpoint.getOutputChannel();
+        String channelName = namedComponent.getBeanName();
+        endpoint.setErrorChannelName(channelName + ".errors");
+    };
+}
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_binding_with_functions"><a class="anchor" href="#_binding_with_functions"></a><a class="link" href="#_binding_with_functions">Binding with Functions</a></h3>
+<div class="paragraph">
+<p>Since version 3.0, Spring Cloud Stream supports a functional programming model natively.
+This means that the only requirement for turning your application into a sink is presence of a <code>java.util.function.Consumer</code> bean in the application context.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>@Bean
+public Consumer&lt;UserMessage&gt; logUserMessage() {
+  return userMessage -&gt; {
+    // process message
+  }
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A source application is one where a <code>Supplier</code> bean is present.
+It can return an object, in which case Spring Cloud Stream will invoke the supplier repeatedly.
+Alternatively, the function can return a reactive stream, which will be used as is.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>@Bean
+Supplier&lt;Flux&lt;UserMessage&gt;&gt; generateUserMessages() {
+  return () -&gt; /* flux creation logic */;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A processor application works similarly to a source application, except it is triggered by presence of a <code>Function</code> bean.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sample"><a class="anchor" href="#_sample"></a><a class="link" href="#_sample">Sample</a></h3>
+<div class="paragraph">
+<p>Sample applications are available:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-functional-sample">streaming input, functional style</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+</div>
+  </div>
+</div>
+</body>
+</html>
