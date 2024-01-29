@@ -1,4 +1,5 @@
 com.google.cloud.aiplatform.v1.spring.DatasetServiceSpringAutoConfiguration
+com.google.cloud.aiplatform.v1.spring.DeploymentResourcePoolServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.EndpointServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.FeatureOnlineStoreAdminServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.FeatureOnlineStoreServiceSpringAutoConfiguration

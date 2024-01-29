@@ -153,6 +153,11 @@ public class RoutersSpringAutoConfiguration {
               clientSettingsBuilder.getSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getSettings().setRetrySettings(getRetrySettings);
 
+      RetrySettings getNatIpInfoRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getNatIpInfoSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getNatIpInfoSettings().setRetrySettings(getNatIpInfoRetrySettings);
+
       RetrySettings getNatMappingInfoRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getNatMappingInfoSettings().getRetrySettings(), serviceRetry);
@@ -200,6 +205,16 @@ public class RoutersSpringAutoConfiguration {
       clientSettingsBuilder.getSettings().setRetrySettings(getRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for get from properties.");
+      }
+    }
+    Retry getNatIpInfoRetry = clientProperties.getGetNatIpInfoRetry();
+    if (getNatIpInfoRetry != null) {
+      RetrySettings getNatIpInfoRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getNatIpInfoSettings().getRetrySettings(), getNatIpInfoRetry);
+      clientSettingsBuilder.getNatIpInfoSettings().setRetrySettings(getNatIpInfoRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getNatIpInfo from properties.");
       }
     }
     Retry getNatMappingInfoRetry = clientProperties.getGetNatMappingInfoRetry();

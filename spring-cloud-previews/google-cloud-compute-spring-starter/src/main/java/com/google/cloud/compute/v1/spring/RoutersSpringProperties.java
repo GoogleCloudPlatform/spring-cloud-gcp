@@ -53,6 +53,11 @@ public class RoutersSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getRetry;
   /**
+   * Allow override of retry settings at method-level for getNatIpInfo. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getNatIpInfoRetry;
+  /**
    * Allow override of retry settings at method-level for getNatMappingInfo. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -116,6 +121,14 @@ public class RoutersSpringProperties implements CredentialsSupplier {
 
   public void setGetRetry(Retry getRetry) {
     this.getRetry = getRetry;
+  }
+
+  public Retry getGetNatIpInfoRetry() {
+    return this.getNatIpInfoRetry;
+  }
+
+  public void setGetNatIpInfoRetry(Retry getNatIpInfoRetry) {
+    this.getNatIpInfoRetry = getNatIpInfoRetry;
   }
 
   public Retry getGetNatMappingInfoRetry() {

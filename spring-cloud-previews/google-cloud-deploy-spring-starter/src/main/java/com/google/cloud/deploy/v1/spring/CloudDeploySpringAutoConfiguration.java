@@ -188,6 +188,21 @@ public class CloudDeploySpringAutoConfiguration {
               clientSettingsBuilder.getTargetSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getTargetSettings().setRetrySettings(getTargetRetrySettings);
 
+      RetrySettings listCustomTargetTypesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listCustomTargetTypesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listCustomTargetTypesSettings()
+          .setRetrySettings(listCustomTargetTypesRetrySettings);
+
+      RetrySettings getCustomTargetTypeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getCustomTargetTypeSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getCustomTargetTypeSettings()
+          .setRetrySettings(getCustomTargetTypeRetrySettings);
+
       RetrySettings listReleasesRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listReleasesSettings().getRetrySettings(), serviceRetry);
@@ -381,6 +396,34 @@ public class CloudDeploySpringAutoConfiguration {
       clientSettingsBuilder.getTargetSettings().setRetrySettings(getTargetRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getTarget from properties.");
+      }
+    }
+    Retry listCustomTargetTypesRetry = clientProperties.getListCustomTargetTypesRetry();
+    if (listCustomTargetTypesRetry != null) {
+      RetrySettings listCustomTargetTypesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listCustomTargetTypesSettings().getRetrySettings(),
+              listCustomTargetTypesRetry);
+      clientSettingsBuilder
+          .listCustomTargetTypesSettings()
+          .setRetrySettings(listCustomTargetTypesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listCustomTargetTypes from properties.");
+      }
+    }
+    Retry getCustomTargetTypeRetry = clientProperties.getGetCustomTargetTypeRetry();
+    if (getCustomTargetTypeRetry != null) {
+      RetrySettings getCustomTargetTypeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getCustomTargetTypeSettings().getRetrySettings(),
+              getCustomTargetTypeRetry);
+      clientSettingsBuilder
+          .getCustomTargetTypeSettings()
+          .setRetrySettings(getCustomTargetTypeRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getCustomTargetType from properties.");
       }
     }
     Retry listReleasesRetry = clientProperties.getListReleasesRetry();

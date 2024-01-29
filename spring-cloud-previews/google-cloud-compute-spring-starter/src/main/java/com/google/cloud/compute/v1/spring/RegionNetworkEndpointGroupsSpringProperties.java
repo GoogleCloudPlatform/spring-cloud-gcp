@@ -52,6 +52,11 @@ public class RegionNetworkEndpointGroupsSpringProperties implements CredentialsS
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listRetry;
+  /**
+   * Allow override of retry settings at method-level for listNetworkEndpoints. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listNetworkEndpointsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -96,5 +101,13 @@ public class RegionNetworkEndpointGroupsSpringProperties implements CredentialsS
 
   public void setListRetry(Retry listRetry) {
     this.listRetry = listRetry;
+  }
+
+  public Retry getListNetworkEndpointsRetry() {
+    return this.listNetworkEndpointsRetry;
+  }
+
+  public void setListNetworkEndpointsRetry(Retry listNetworkEndpointsRetry) {
+    this.listNetworkEndpointsRetry = listNetworkEndpointsRetry;
   }
 }

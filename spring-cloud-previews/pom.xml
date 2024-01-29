@@ -29,12 +29,12 @@
     <module>google-cloud-storage-transfer-spring-starter</module>
     <module>google-cloud-speech-spring-starter</module>
     <module>google-cloud-shell-spring-starter</module>
-    <module>google-cloud-servicedirectory-spring-starter</module>
     <module>google-cloud-service-usage-spring-starter</module>
     <module>google-cloud-service-management-spring-starter</module>
+    <module>google-cloud-servicedirectory-spring-starter</module>
     <module>google-cloud-service-control-spring-starter</module>
-    <module>google-cloud-securitycenter-spring-starter</module>
     <module>google-cloud-security-private-ca-spring-starter</module>
+    <module>google-cloud-securitycenter-spring-starter</module>
     <module>google-cloud-scheduler-spring-starter</module>
     <module>google-cloud-retail-spring-starter</module>
     <module>google-cloud-resource-settings-spring-starter</module>
@@ -49,8 +49,8 @@
     <module>google-cloud-orchestration-airflow-spring-starter</module>
     <module>google-cloud-optimization-spring-starter</module>
     <module>google-cloud-notebooks-spring-starter</module>
-    <module>google-cloud-networkconnectivity-spring-starter</module>
     <module>google-cloud-network-management-spring-starter</module>
+    <module>google-cloud-networkconnectivity-spring-starter</module>
     <module>google-cloud-monitoring-dashboard-spring-starter</module>
     <module>google-cloud-memcache-spring-starter</module>
     <module>google-cloud-managed-identities-spring-starter</module>
@@ -73,11 +73,11 @@
     <module>google-cloud-deploy-spring-starter</module>
     <module>google-cloud-debugger-client-spring-starter</module>
     <module>google-cloud-datastream-spring-starter</module>
-    <module>google-cloud-dataproc-spring-starter</module>
     <module>google-cloud-dataproc-metastore-spring-starter</module>
+    <module>google-cloud-dataproc-spring-starter</module>
     <module>google-cloud-dataplex-spring-starter</module>
-    <module>google-cloud-datacatalog-spring-starter</module>
     <module>google-cloud-data-fusion-spring-starter</module>
+    <module>google-cloud-datacatalog-spring-starter</module>
     <module>google-cloud-containeranalysis-spring-starter</module>
     <module>google-cloud-container-spring-starter</module>
     <module>google-cloud-contact-center-insights-spring-starter</module>
