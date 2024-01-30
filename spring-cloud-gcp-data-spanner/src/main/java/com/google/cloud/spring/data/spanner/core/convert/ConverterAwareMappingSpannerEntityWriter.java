@@ -41,6 +41,9 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+
+import com.google.protobuf.AbstractMessage;
+import com.google.protobuf.ProtocolMessageEnum;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.util.Assert;
 
@@ -106,6 +109,8 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
     map.put(boolean[].class, (BiFunction<ValueBinder, boolean[], ?>) ValueBinder::toBoolArray);
     map.put(long[].class, (BiFunction<ValueBinder, long[], ?>) ValueBinder::toInt64Array);
     map.put(Struct.class, (BiFunction<ValueBinder, Struct, ?>) ValueBinder::to);
+    map.put(ProtocolMessageEnum.class, (BiFunction<ValueBinder, ProtocolMessageEnum, ?>) ValueBinder::to);
+    map.put(AbstractMessage.class, (BiFunction<ValueBinder, AbstractMessage, ?>) ValueBinder::to);
 
     singleItemTypeValueBinderMethodMap = Collections.unmodifiableMap(map);
   }
