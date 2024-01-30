@@ -688,6 +688,7 @@
 				<module>spring-cloud-gcp-security-firebase</module>
 				<module>spring-cloud-gcp-vision</module>
 				<module>spring-cloud-gcp-kms</module>
+				<module>spring-cloud-previews</module>
 				<module>spring-cloud-spanner-spring-data-r2dbc</module>
 			</modules>
 			<build>
