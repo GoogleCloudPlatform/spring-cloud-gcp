@@ -769,6 +769,7 @@ class DefaultSubscriberFactoryTests {
     when(this.mockTransportChannel.getEmptyCallContext()).thenReturn(this.mockApiCallContext);
     when(this.mockApiCallContext.withCredentials(any())).thenReturn(this.mockApiCallContext);
     when(this.mockApiCallContext.withTransportChannel(any())).thenReturn(this.mockApiCallContext);
+    when(this.mockApiCallContext.withEndpointContext(any())).thenReturn(this.mockApiCallContext);
 
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
