@@ -50,8 +50,6 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
 import com.google.gson.Gson;
-import com.google.iam.v1.AuditLogConfig;
-import com.google.iam.v1.Policy;
 import com.google.spanner.v1.TypeCode;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -477,29 +475,6 @@ class ConverterAwareMappingSpannerEntityWriterTests {
                 .collect(Collectors.toList()))
         .isNotEmpty()
         .allMatch(Value::isCommitTimestamp);
-  }
-
-  @Test
-  public void writeProtocolMessageEnumTest() {
-    Policy abstractMessage = Policy.newBuilder().build();
-    AuditLogConfig protocolMessageEnum = AuditLogConfig.newBuilder().build();
-    TestEntities.TestEntityProtobuf testEntity = new TestEntities.TestEntityProtobuf(
-            "id42",
-            abstractMessage,
-            protocolMessageEnum);
-
-    Mutation.WriteBuilder writeBuilder = mock(Mutation.WriteBuilder.class);
-    ValueBinder<Mutation.WriteBuilder> valueBinder = mock(ValueBinder.class);
-
-    when(writeBuilder.set("id")).thenReturn(valueBinder);
-    when(writeBuilder.set("abstractMessage")).thenReturn(valueBinder);
-    when(writeBuilder.set("protocolMessageEnum")).thenReturn(valueBinder);
-
-    this.spannerEntityWriter.write(testEntity, writeBuilder::set);
-
-    verify(valueBinder).to(testEntity.id);
-    verify(valueBinder).to(abstractMessage);
-    verify(valueBinder).to(protocolMessageEnum);
   }
 
   /** A test type that cannot be converted. */

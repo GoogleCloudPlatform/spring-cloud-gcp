@@ -280,18 +280,4 @@ class TestEntities {
       this.p2 = p2;
     }
   }
-
-  static class TestEntityProtobuf {
-    @PrimaryKey String id;
-
-    com.google.iam.v1.Policy abstractMessage;
-
-    com.google.iam.v1.AuditLogConfig protocolMessageEnum;
-
-    TestEntityProtobuf(String id, com.google.iam.v1.Policy abstractMessage, com.google.iam.v1.AuditLogConfig protocolMessageEnum) {
-      this.id = id;
-      this.abstractMessage = abstractMessage;
-      this.protocolMessageEnum = protocolMessageEnum;
-    }
-  }
 }

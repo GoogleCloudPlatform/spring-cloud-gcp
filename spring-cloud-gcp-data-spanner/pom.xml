@@ -47,10 +47,5 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.google.api.grpc</groupId>
-			<artifactId>proto-google-iam-v1</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 </project>
