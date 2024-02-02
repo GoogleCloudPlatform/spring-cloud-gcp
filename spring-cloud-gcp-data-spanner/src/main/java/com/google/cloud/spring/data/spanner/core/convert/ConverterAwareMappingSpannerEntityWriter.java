@@ -29,8 +29,6 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
-import com.google.protobuf.AbstractMessage;
-import com.google.protobuf.ProtocolMessageEnum;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -108,8 +106,6 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
     map.put(boolean[].class, (BiFunction<ValueBinder, boolean[], ?>) ValueBinder::toBoolArray);
     map.put(long[].class, (BiFunction<ValueBinder, long[], ?>) ValueBinder::toInt64Array);
     map.put(Struct.class, (BiFunction<ValueBinder, Struct, ?>) ValueBinder::to);
-    map.put(ProtocolMessageEnum.class, (BiFunction<ValueBinder, ProtocolMessageEnum, ?>) ValueBinder::to);
-    map.put(AbstractMessage.class, (BiFunction<ValueBinder, AbstractMessage, ?>) ValueBinder::to);
 
     singleItemTypeValueBinderMethodMap = Collections.unmodifiableMap(map);
   }
