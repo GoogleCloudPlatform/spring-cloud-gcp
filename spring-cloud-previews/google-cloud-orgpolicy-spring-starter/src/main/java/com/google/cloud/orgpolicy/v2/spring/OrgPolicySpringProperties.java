@@ -77,6 +77,31 @@ public class OrgPolicySpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deletePolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for createCustomConstraint. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createCustomConstraintRetry;
+  /**
+   * Allow override of retry settings at method-level for updateCustomConstraint. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateCustomConstraintRetry;
+  /**
+   * Allow override of retry settings at method-level for getCustomConstraint. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getCustomConstraintRetry;
+  /**
+   * Allow override of retry settings at method-level for listCustomConstraints. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listCustomConstraintsRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteCustomConstraint. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteCustomConstraintRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -169,5 +194,45 @@ public class OrgPolicySpringProperties implements CredentialsSupplier {
 
   public void setDeletePolicyRetry(Retry deletePolicyRetry) {
     this.deletePolicyRetry = deletePolicyRetry;
+  }
+
+  public Retry getCreateCustomConstraintRetry() {
+    return this.createCustomConstraintRetry;
+  }
+
+  public void setCreateCustomConstraintRetry(Retry createCustomConstraintRetry) {
+    this.createCustomConstraintRetry = createCustomConstraintRetry;
+  }
+
+  public Retry getUpdateCustomConstraintRetry() {
+    return this.updateCustomConstraintRetry;
+  }
+
+  public void setUpdateCustomConstraintRetry(Retry updateCustomConstraintRetry) {
+    this.updateCustomConstraintRetry = updateCustomConstraintRetry;
+  }
+
+  public Retry getGetCustomConstraintRetry() {
+    return this.getCustomConstraintRetry;
+  }
+
+  public void setGetCustomConstraintRetry(Retry getCustomConstraintRetry) {
+    this.getCustomConstraintRetry = getCustomConstraintRetry;
+  }
+
+  public Retry getListCustomConstraintsRetry() {
+    return this.listCustomConstraintsRetry;
+  }
+
+  public void setListCustomConstraintsRetry(Retry listCustomConstraintsRetry) {
+    this.listCustomConstraintsRetry = listCustomConstraintsRetry;
+  }
+
+  public Retry getDeleteCustomConstraintRetry() {
+    return this.deleteCustomConstraintRetry;
+  }
+
+  public void setDeleteCustomConstraintRetry(Retry deleteCustomConstraintRetry) {
+    this.deleteCustomConstraintRetry = deleteCustomConstraintRetry;
   }
 }

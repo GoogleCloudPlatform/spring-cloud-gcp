@@ -195,6 +195,45 @@ public class OrgPolicySpringAutoConfiguration {
               clientSettingsBuilder.deletePolicySettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.deletePolicySettings().setRetrySettings(deletePolicyRetrySettings);
 
+      RetrySettings createCustomConstraintRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createCustomConstraintSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .createCustomConstraintSettings()
+          .setRetrySettings(createCustomConstraintRetrySettings);
+
+      RetrySettings updateCustomConstraintRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateCustomConstraintSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .updateCustomConstraintSettings()
+          .setRetrySettings(updateCustomConstraintRetrySettings);
+
+      RetrySettings getCustomConstraintRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getCustomConstraintSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getCustomConstraintSettings()
+          .setRetrySettings(getCustomConstraintRetrySettings);
+
+      RetrySettings listCustomConstraintsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listCustomConstraintsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listCustomConstraintsSettings()
+          .setRetrySettings(listCustomConstraintsRetrySettings);
+
+      RetrySettings deleteCustomConstraintRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteCustomConstraintSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .deleteCustomConstraintSettings()
+          .setRetrySettings(deleteCustomConstraintRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -274,6 +313,76 @@ public class OrgPolicySpringAutoConfiguration {
       clientSettingsBuilder.deletePolicySettings().setRetrySettings(deletePolicyRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for deletePolicy from properties.");
+      }
+    }
+    Retry createCustomConstraintRetry = clientProperties.getCreateCustomConstraintRetry();
+    if (createCustomConstraintRetry != null) {
+      RetrySettings createCustomConstraintRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createCustomConstraintSettings().getRetrySettings(),
+              createCustomConstraintRetry);
+      clientSettingsBuilder
+          .createCustomConstraintSettings()
+          .setRetrySettings(createCustomConstraintRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createCustomConstraint from properties.");
+      }
+    }
+    Retry updateCustomConstraintRetry = clientProperties.getUpdateCustomConstraintRetry();
+    if (updateCustomConstraintRetry != null) {
+      RetrySettings updateCustomConstraintRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateCustomConstraintSettings().getRetrySettings(),
+              updateCustomConstraintRetry);
+      clientSettingsBuilder
+          .updateCustomConstraintSettings()
+          .setRetrySettings(updateCustomConstraintRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateCustomConstraint from properties.");
+      }
+    }
+    Retry getCustomConstraintRetry = clientProperties.getGetCustomConstraintRetry();
+    if (getCustomConstraintRetry != null) {
+      RetrySettings getCustomConstraintRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getCustomConstraintSettings().getRetrySettings(),
+              getCustomConstraintRetry);
+      clientSettingsBuilder
+          .getCustomConstraintSettings()
+          .setRetrySettings(getCustomConstraintRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getCustomConstraint from properties.");
+      }
+    }
+    Retry listCustomConstraintsRetry = clientProperties.getListCustomConstraintsRetry();
+    if (listCustomConstraintsRetry != null) {
+      RetrySettings listCustomConstraintsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listCustomConstraintsSettings().getRetrySettings(),
+              listCustomConstraintsRetry);
+      clientSettingsBuilder
+          .listCustomConstraintsSettings()
+          .setRetrySettings(listCustomConstraintsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listCustomConstraints from properties.");
+      }
+    }
+    Retry deleteCustomConstraintRetry = clientProperties.getDeleteCustomConstraintRetry();
+    if (deleteCustomConstraintRetry != null) {
+      RetrySettings deleteCustomConstraintRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteCustomConstraintSettings().getRetrySettings(),
+              deleteCustomConstraintRetry);
+      clientSettingsBuilder
+          .deleteCustomConstraintSettings()
+          .setRetrySettings(deleteCustomConstraintRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteCustomConstraint from properties.");
       }
     }
     return clientSettingsBuilder.build();

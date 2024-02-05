@@ -439,6 +439,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.snapshot-settings-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/SnapshotSettingsService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.snapshots.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/Snapshots components.",

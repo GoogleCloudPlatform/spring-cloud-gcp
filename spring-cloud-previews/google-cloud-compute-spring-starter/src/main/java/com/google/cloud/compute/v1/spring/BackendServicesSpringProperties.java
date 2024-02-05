@@ -68,10 +68,20 @@ public class BackendServicesSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry listRetry;
   /**
+   * Allow override of retry settings at method-level for listUsable. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listUsableRetry;
+  /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry testIamPermissionsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -142,11 +152,27 @@ public class BackendServicesSpringProperties implements CredentialsSupplier {
     this.listRetry = listRetry;
   }
 
+  public Retry getListUsableRetry() {
+    return this.listUsableRetry;
+  }
+
+  public void setListUsableRetry(Retry listUsableRetry) {
+    this.listUsableRetry = listUsableRetry;
+  }
+
   public Retry getSetIamPolicyRetry() {
     return this.setIamPolicyRetry;
   }
 
   public void setSetIamPolicyRetry(Retry setIamPolicyRetry) {
     this.setIamPolicyRetry = setIamPolicyRetry;
+  }
+
+  public Retry getTestIamPermissionsRetry() {
+    return this.testIamPermissionsRetry;
+  }
+
+  public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
+    this.testIamPermissionsRetry = testIamPermissionsRetry;
   }
 }
