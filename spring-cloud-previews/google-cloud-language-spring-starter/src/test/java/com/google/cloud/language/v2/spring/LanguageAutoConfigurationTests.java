@@ -195,7 +195,6 @@ class LanguageAutoConfigurationTests {
     when(mockTransportChannel.getEmptyCallContext()).thenReturn(mockApiCallContext);
     when(mockApiCallContext.withCredentials(any())).thenReturn(mockApiCallContext);
     when(mockApiCallContext.withTransportChannel(any())).thenReturn(mockApiCallContext);
-    when(mockApiCallContext.withEndpointContext(any())).thenReturn(mockApiCallContext);
 
     contextRunner
         .withBean(

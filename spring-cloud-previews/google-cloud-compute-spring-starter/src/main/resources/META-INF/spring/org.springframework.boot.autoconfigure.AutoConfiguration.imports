@@ -71,6 +71,7 @@ com.google.cloud.compute.v1.spring.RoutersSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RoutesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.SecurityPoliciesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ServiceAttachmentsSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.SnapshotSettingsServiceSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.SnapshotsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.SslCertificatesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.SslPoliciesSpringAutoConfiguration
