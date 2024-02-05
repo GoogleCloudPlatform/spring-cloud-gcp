@@ -14,6 +14,27 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.9.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.9.1...v4.9.2) (2024-02-05)
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.30.0 to 26.31.0 ([#2567](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2567)) ([9d6ab07](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9d6ab077f792366b16da47e39a68a274f8dd2cf4))
+* bump com.google.cloud.tools:appengine-maven-plugin ([#2526](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2526)) ([7f45eb7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7f45eb747894378ae5c5279a62dfbe760657bd6d))
+* bump com.google.cloud.tools:appengine-maven-plugin ([#2559](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2559)) ([485a4e0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/485a4e024f541b6b7fa830c570f0f8af2f611a2f))
+* bump com.google.errorprone:error_prone_core from 2.23.0 to 2.24.1 ([#2546](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2546)) ([e37c79b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e37c79bd57a269d49d3873657c4104d9455c3f3b))
+* bump com.google.truth:truth from 1.1.5 to 1.3.0 ([#2535](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2535)) ([1f8ba9b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1f8ba9b92b5370f1640a449f207c351149e3f1e1))
+* bump com.google.truth:truth from 1.3.0 to 1.4.0 ([#2579](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2579)) ([6ddcb24](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6ddcb24005617ba2cf15e0da278b33fcb85d7fbd))
+* bump io.micrometer:micrometer-tracing-bom from 1.2.1 to 1.2.2 ([#2545](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2545)) ([0df38b0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0df38b0ce2ff61d38d6c8535ed7b9fa31e153b5d))
+* bump org.apache.maven.plugins:maven-compiler-plugin ([#2498](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2498)) ([5334976](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5334976889b2d849c0266b65b5f03fb744b7ca86))
+* bump org.codehaus.mojo:flatten-maven-plugin from 1.5.0 to 1.6.0 ([#2547](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2547)) ([f2dc439](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f2dc439b7173a9e53dd8f2652bf8f97846a35cb6))
+* bump org.graalvm.buildtools:native-maven-plugin ([#2573](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2573)) ([b151c67](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b151c67c9abc1db3265f15f064d72081d87e9384))
+* bump org.postgresql:r2dbc-postgresql ([#2509](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2509)) ([a8790fd](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a8790fd7df3698dbb7d438fb598653ebddf56589))
+* bump org.springframework.boot:spring-boot-starter-parent ([#2528](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2528)) ([c0b54e6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c0b54e6266ddde6a084a83ffa3029e63b0ce0241))
+* bump org.springframework.cloud:spring-cloud-dependencies ([#2560](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2560)) ([12803ea](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/12803eaf0e7efbd161f1227be2a7eba12d7362dd))
+* bump spring-boot-dependencies.version from 3.1.5 to 3.1.8 ([#2534](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2534)) ([52f89f4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/52f89f4bf34169bfeda823aeafa28f2ebd5dc072))
+* bump zipkin-gcp.version from 1.0.4 to 1.1.1 ([#2532](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2532)) ([576922f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/576922f0622a25b331fb09e0eedf4f0757619d09))
+
 ## [4.9.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.9.0...v4.9.1) (2024-01-22)
 
 
