@@ -14,6 +14,16 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.0.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.0.1...v5.0.2) (2024-02-05)
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.30.0 to 26.31.0 ([#2565](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2565)) ([6efd6d0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6efd6d0de86cbdfba3df8e60ae0cac81d5e6c4d7))
+* bump com.google.cloud.tools:appengine-maven-plugin ([#2558](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2558)) ([908c115](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/908c115afdd729cdf4abc9e0363475e77a5945a6))
+* bump com.google.truth:truth from 1.3.0 to 1.4.0 ([#2578](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2578)) ([796cde7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/796cde7c58210e27df0525246aa7fa884137da7a))
+* bump org.graalvm.buildtools:native-maven-plugin ([#2572](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2572)) ([cd98502](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cd98502c12d74c1ce3df6ff75c84bdf19f0198c5))
+
 ## [5.0.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.0.0...v5.0.1) (2024-01-26)
 
 
