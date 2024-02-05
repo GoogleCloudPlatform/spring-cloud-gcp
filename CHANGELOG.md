@@ -14,6 +14,24 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.7.7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.6...v3.7.7) (2024-02-05)
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.30.0 to 26.31.0 ([#2566](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2566)) ([f224e72](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f224e722df70922784912d364fe82ed557b8fa5e))
+* bump com.google.cloud.tools:appengine-maven-plugin ([#2525](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2525)) ([728a21a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/728a21abf9c703d8d1dc9ce7a89cb1b69bebae40))
+* bump com.google.cloud.tools:appengine-maven-plugin ([#2557](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2557)) ([c24a550](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c24a5509084de0d0f1116b71339baec03698251d))
+* bump com.google.errorprone:error_prone_core from 2.23.0 to 2.24.1 ([#2504](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2504)) ([a940de9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a940de9268ea9e078852ffecd03c5921d8e22961))
+* bump io.asyncer:r2dbc-mysql from 0.9.6 to 0.9.7 ([#2511](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2511)) ([7afbaf5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7afbaf5ea24564722391b0740d4a31e73e108f29))
+* bump org.apache.maven.plugins:maven-compiler-plugin ([#2497](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2497)) ([611d5b6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/611d5b6f0a5a3b44c713e4edd15a3cbdca09b8ca))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#2400](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2400)) ([692a50a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/692a50a7ad72c50196a51b8d497b94df0256ef15))
+* bump org.codehaus.mojo:flatten-maven-plugin from 1.5.0 to 1.6.0 ([#2522](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2522)) ([5f3f0ba](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5f3f0bacdc8b7f69eec63c17cabf39c0890b8fa2))
+* bump org.springframework.cloud:spring-cloud-dependencies ([#2485](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2485)) ([517cca8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/517cca8b17ff1732ec438ff0b5d38e5145d9fc94))
+* bump org.testcontainers:testcontainers-bom from 1.19.3 to 1.19.4 ([#2553](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2553)) ([ba0553e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ba0553e5f94b207875fe38d3e5e61f28a70669a3))
+* bump spring-cloud-config.version from 3.1.7 to 3.1.8 ([#2483](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2483)) ([98e09b1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/98e09b1a3ffeb0fa469847a9f6892b98fdc337e7))
+* bump zipkin-gcp.version from 1.0.4 to 1.1.1 ([#2506](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2506)) ([726d74f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/726d74ff76427e5801b7394289ef7a0e9b690003))
+
 ## [3.7.6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.5...v3.7.6) (2024-01-17)
 
 
