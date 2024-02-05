@@ -7,6 +7,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.aiplatform.v1.deployment-resource-pool-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/DeploymentResourcePoolService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.aiplatform.v1.endpoint-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud aiplatform/EndpointService components.",

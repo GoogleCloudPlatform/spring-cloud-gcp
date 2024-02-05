@@ -230,6 +230,13 @@ public class CloudBillingSpringAutoConfiguration {
           .testIamPermissionsSettings()
           .setRetrySettings(testIamPermissionsRetrySettings);
 
+      RetrySettings moveBillingAccountRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.moveBillingAccountSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .moveBillingAccountSettings()
+          .setRetrySettings(moveBillingAccountRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -364,6 +371,20 @@ public class CloudBillingSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for testIamPermissions from properties.");
+      }
+    }
+    Retry moveBillingAccountRetry = clientProperties.getMoveBillingAccountRetry();
+    if (moveBillingAccountRetry != null) {
+      RetrySettings moveBillingAccountRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.moveBillingAccountSettings().getRetrySettings(),
+              moveBillingAccountRetry);
+      clientSettingsBuilder
+          .moveBillingAccountSettings()
+          .setRetrySettings(moveBillingAccountRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for moveBillingAccount from properties.");
       }
     }
     return clientSettingsBuilder.build();

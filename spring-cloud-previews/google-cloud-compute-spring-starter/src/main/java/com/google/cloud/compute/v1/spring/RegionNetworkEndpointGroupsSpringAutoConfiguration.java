@@ -161,6 +161,14 @@ public class RegionNetworkEndpointGroupsSpringAutoConfiguration {
               clientSettingsBuilder.listSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listSettings().setRetrySettings(listRetrySettings);
 
+      RetrySettings listNetworkEndpointsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listNetworkEndpointsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listNetworkEndpointsSettings()
+          .setRetrySettings(listNetworkEndpointsRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -183,6 +191,20 @@ public class RegionNetworkEndpointGroupsSpringAutoConfiguration {
       clientSettingsBuilder.listSettings().setRetrySettings(listRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for list from properties.");
+      }
+    }
+    Retry listNetworkEndpointsRetry = clientProperties.getListNetworkEndpointsRetry();
+    if (listNetworkEndpointsRetry != null) {
+      RetrySettings listNetworkEndpointsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listNetworkEndpointsSettings().getRetrySettings(),
+              listNetworkEndpointsRetry);
+      clientSettingsBuilder
+          .listNetworkEndpointsSettings()
+          .setRetrySettings(listNetworkEndpointsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listNetworkEndpoints from properties.");
       }
     }
     return clientSettingsBuilder.build();
