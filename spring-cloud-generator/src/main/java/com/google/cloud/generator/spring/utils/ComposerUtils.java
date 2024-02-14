@@ -31,8 +31,10 @@ import java.util.List;
 
 public class ComposerUtils {
 
-  public static Boolean shouldSupportRestOptionWithGrpcDefault(Transport transport, Service service) {
-    return transport.equals(Transport.GRPC_REST) && service.hasAnyEnabledMethodsForTransport(Transport.REST);
+  public static Boolean shouldSupportRestOptionWithGrpcDefault(Transport transport,
+      Service service) {
+    return transport.equals(Transport.GRPC_REST) && service.hasAnyEnabledMethodsForTransport(
+        Transport.REST);
   }
 
   public static ExprStatement createMemberVarStatement(

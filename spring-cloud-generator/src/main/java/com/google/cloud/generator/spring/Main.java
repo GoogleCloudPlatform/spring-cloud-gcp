@@ -23,6 +23,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import java.io.IOException;
 
 public class Main {
+
   public static void main(String[] args) throws IOException {
     ExtensionRegistry registry = ExtensionRegistry.newInstance();
     ProtoRegistry.registerAllExtensions(registry);

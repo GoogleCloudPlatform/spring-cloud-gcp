@@ -18,16 +18,16 @@ name: showcase.googleapis.com
 title: Client Libraries Showcase API
 
 apis:
-  - name: google.showcase.v1beta1.Compliance
-  - name: google.showcase.v1beta1.Echo
-  - name: google.showcase.v1beta1.Identity
-  - name: google.showcase.v1beta1.Messaging
-  - name: google.showcase.v1beta1.SequenceService
-  - name: google.showcase.v1beta1.Testing
-  # Mix-in services
-  - name: 'google.cloud.location.Locations'
-  - name: 'google.iam.v1.IAMPolicy'
-  - name: 'google.longrunning.Operations'
+- name: google.showcase.v1beta1.Compliance
+- name: google.showcase.v1beta1.Echo
+- name: google.showcase.v1beta1.Identity
+- name: google.showcase.v1beta1.Messaging
+- name: google.showcase.v1beta1.SequenceService
+- name: google.showcase.v1beta1.Testing
+# Mix-in services
+- name: 'google.cloud.location.Locations'
+- name: 'google.iam.v1.IAMPolicy'
+- name: 'google.longrunning.Operations'
 
 documentation:
   summary: |-
@@ -36,71 +36,71 @@ documentation:
 
 backend:
   rules:
-    - selector: 'google.cloud.location.Locations.*'
-      deadline: 60.0
-    - selector: 'google.iam.v1.IAMPolicy.*'
-      deadline: 60.0
-    - selector: 'google.longrunning.Operations.*'
-      deadline: 60.0
+  - selector: 'google.cloud.location.Locations.*'
+    deadline: 60.0
+  - selector: 'google.iam.v1.IAMPolicy.*'
+    deadline: 60.0
+  - selector: 'google.longrunning.Operations.*'
+    deadline: 60.0
 
 http:
   rules:
-    - selector: google.cloud.location.Locations.ListLocations
-      get:  '/v1beta1/{name=projects/*}/locations'
-    - selector: google.cloud.location.Locations.GetLocation
-      get:  '/v1beta1/{name=projects/*/locations/*}'
-    - selector: google.iam.v1.IAMPolicy.SetIamPolicy
-      post: '/v1beta1/{resource=users/*}:setIamPolicy'
+  - selector: google.cloud.location.Locations.ListLocations
+    get: '/v1beta1/{name=projects/*}/locations'
+  - selector: google.cloud.location.Locations.GetLocation
+    get: '/v1beta1/{name=projects/*/locations/*}'
+  - selector: google.iam.v1.IAMPolicy.SetIamPolicy
+    post: '/v1beta1/{resource=users/*}:setIamPolicy'
+    body: '*'
+    additional_bindings:
+    - post: '/v1beta1/{resource=rooms/*}:setIamPolicy'
       body: '*'
-      additional_bindings:
-        - post: '/v1beta1/{resource=rooms/*}:setIamPolicy'
-          body: '*'
-        - post: '/v1beta1/{resource=rooms/*/blurbs/*}:setIamPolicy'
-          body: '*'
-        - post: '/v1beta1/{resource=sequences/*}:setIamPolicy'
-          body: '*'
-    - selector: google.iam.v1.IAMPolicy.GetIamPolicy
-      get: '/v1beta1/{resource=users/*}:getIamPolicy'
-      additional_bindings:
-        - get: '/v1beta1/{resource=rooms/*}:getIamPolicy'
-        - get: '/v1beta1/{resource=rooms/*/blurbs/*}:getIamPolicy'
-        - get: '/v1beta1/{resource=sequences/*}:getIamPolicy'
-    - selector: google.iam.v1.IAMPolicy.TestIamPermissions
-      post: '/v1beta1/{resource=users/*}:testIamPermissions'
+    - post: '/v1beta1/{resource=rooms/*/blurbs/*}:setIamPolicy'
       body: '*'
-      additional_bindings:
-        - post: '/v1beta1/{resource=rooms/*}:testIamPermissions'
-          body: '*'
-        - post: '/v1beta1/{resource=rooms/*/blurbs/*}:testIamPermissions'
-          body: '*'
-        - post: '/v1beta1/{resource=sequences/*}:testIamPermissions'
-          body: '*'
-    - selector: google.longrunning.Operations.ListOperations
-      get: '/v1beta1/operations'
-      additional_bindings:
-        - get: '/v1beta2/operations'
-        - get: '/v1beta3/operations'
-    - selector: google.longrunning.Operations.GetOperation
-      get: '/v1beta1/{name=operations/**}'
-      additional_bindings:
-        - get: '/v1beta2/{name=operations/**}'
-        - get: '/v1beta3/{name=operations/**}'
-    - selector: google.longrunning.Operations.DeleteOperation
-      delete: '/v1beta1/{name=operations/**}'
-      additional_bindings:
-        - delete: '/v1beta2/{name=operations/**}'
-        - delete: '/v1beta3/{name=operations/**}'
-    - selector: google.longrunning.Operations.CancelOperation
-      post: '/v1beta1/{name=operations/**}:cancel'
-      additional_bindings:
-        - post: '/v1beta2/{name=operations/**}:cancel'
-        - post: '/v1beta3/{name=operations/**}:cancel'
+    - post: '/v1beta1/{resource=sequences/*}:setIamPolicy'
+      body: '*'
+  - selector: google.iam.v1.IAMPolicy.GetIamPolicy
+    get: '/v1beta1/{resource=users/*}:getIamPolicy'
+    additional_bindings:
+    - get: '/v1beta1/{resource=rooms/*}:getIamPolicy'
+    - get: '/v1beta1/{resource=rooms/*/blurbs/*}:getIamPolicy'
+    - get: '/v1beta1/{resource=sequences/*}:getIamPolicy'
+  - selector: google.iam.v1.IAMPolicy.TestIamPermissions
+    post: '/v1beta1/{resource=users/*}:testIamPermissions'
+    body: '*'
+    additional_bindings:
+    - post: '/v1beta1/{resource=rooms/*}:testIamPermissions'
+      body: '*'
+    - post: '/v1beta1/{resource=rooms/*/blurbs/*}:testIamPermissions'
+      body: '*'
+    - post: '/v1beta1/{resource=sequences/*}:testIamPermissions'
+      body: '*'
+  - selector: google.longrunning.Operations.ListOperations
+    get: '/v1beta1/operations'
+    additional_bindings:
+    - get: '/v1beta2/operations'
+    - get: '/v1beta3/operations'
+  - selector: google.longrunning.Operations.GetOperation
+    get: '/v1beta1/{name=operations/**}'
+    additional_bindings:
+    - get: '/v1beta2/{name=operations/**}'
+    - get: '/v1beta3/{name=operations/**}'
+  - selector: google.longrunning.Operations.DeleteOperation
+    delete: '/v1beta1/{name=operations/**}'
+    additional_bindings:
+    - delete: '/v1beta2/{name=operations/**}'
+    - delete: '/v1beta3/{name=operations/**}'
+  - selector: google.longrunning.Operations.CancelOperation
+    post: '/v1beta1/{name=operations/**}:cancel'
+    additional_bindings:
+    - post: '/v1beta2/{name=operations/**}:cancel'
+    - post: '/v1beta3/{name=operations/**}:cancel'
 publishing:
-    method_settings:
-    - selector: google.showcase.v1beta1.Echo.Echo
-      auto_populated_fields:
-      - request_id
-      - second_request_id
-      - third_request_id
-      - fourth_request_id
-      - non_existent_field
+  method_settings:
+  - selector: google.showcase.v1beta1.Echo.Echo
+    auto_populated_fields:
+    - request_id
+    - second_request_id
+    - third_request_id
+    - fourth_request_id
+    - non_existent_field

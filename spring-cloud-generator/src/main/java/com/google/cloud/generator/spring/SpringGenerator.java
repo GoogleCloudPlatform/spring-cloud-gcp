@@ -26,6 +26,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import java.util.List;
 
 public class SpringGenerator {
+
   public static CodeGeneratorResponse generateSpring(CodeGeneratorRequest request) {
     GapicContext context = Parser.parse(request);
     List<GapicClass> clazzes = SpringComposer.composeServiceAutoConfigClasses(context);

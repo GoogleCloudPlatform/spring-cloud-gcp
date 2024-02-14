@@ -40,6 +40,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
 public class SpringWriter {
+
   static class GapicWriterException extends RuntimeException {
 
     public GapicWriterException(String errorMessage, Throwable cause) {
