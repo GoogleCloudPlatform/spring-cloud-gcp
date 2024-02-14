@@ -44,7 +44,7 @@ service Echo {
   // for "show").
   option (google.api.default_host) = "localhost:7469";
   option (google.api.oauth_scopes) =
-    "https://www.googleapis.com/auth/cloud-platform";
+      "https://www.googleapis.com/auth/cloud-platform";
 
   // This method simply echos the request. This method is showcases unary rpcs.
   rpc Echo(EchoRequest) returns (EchoResponse) {
@@ -175,7 +175,7 @@ message EchoRequest {
 
   string parent = 6 [
     (google.api.resource_reference).child_type =
-      "showcase.googleapis.com/AnythingGoes",
+        "showcase.googleapis.com/AnythingGoes",
     (google.api.field_behavior) = REQUIRED
   ];
 

@@ -84,14 +84,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 public class SpringAutoConfigClassComposer implements ClassComposer {
-
   private static final SpringAutoConfigClassComposer INSTANCE = new SpringAutoConfigClassComposer();
 
   private static final Map<String, TypeNode> STATIC_TYPES = createStaticTypes();
   private static final Statement EMPTY_LINE_STATEMENT = EmptyLineStatement.create();
 
-  private SpringAutoConfigClassComposer() {
-  }
+  private SpringAutoConfigClassComposer() {}
 
   public static SpringAutoConfigClassComposer instance() {
     return INSTANCE;

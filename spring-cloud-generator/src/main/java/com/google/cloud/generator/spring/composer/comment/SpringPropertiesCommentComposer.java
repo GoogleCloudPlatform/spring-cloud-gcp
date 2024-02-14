@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SpringPropertiesCommentComposer {
-
   private static final String CLASS_HEADER_GENERAL_DESCRIPTION =
       "Provides default property values for %s client bean";
   private static final String CREDENTIALS_DESCRIPTION =

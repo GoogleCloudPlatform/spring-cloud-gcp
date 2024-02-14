@@ -65,8 +65,7 @@ public class SpringAutoconfigCommentComposer {
   public static final String CLIENT_BEAN_RETURN_STATEMENT =
       "a {@link %s} bean configured with {@link %s}";
 
-  public SpringAutoconfigCommentComposer() {
-  }
+  public SpringAutoconfigCommentComposer() {}
 
   public static List<CommentStatement> createClassHeaderComments(Service service) {
 

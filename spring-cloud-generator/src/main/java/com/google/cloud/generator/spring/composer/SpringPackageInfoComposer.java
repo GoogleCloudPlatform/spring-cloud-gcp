@@ -25,7 +25,6 @@ import com.google.cloud.generator.spring.utils.Utils;
 import com.google.common.base.Preconditions;
 
 public class SpringPackageInfoComposer {
-
   private static final String PACKAGE_INFO_TITLE_PATTERN =
       "Spring Boot auto-configurations for %s.";
 

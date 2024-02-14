@@ -29,7 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SpringWriterTest {
-
   private GapicContext context;
 
   @Before
