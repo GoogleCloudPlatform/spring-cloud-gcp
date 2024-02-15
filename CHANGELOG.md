@@ -14,6 +14,14 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.0.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.0.2...v5.0.3) (2024-02-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.32.0 ([#2588](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2588)) ([750ae11](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/750ae115c14c48f0fd87e01cfce4ccdcaf3230c6))
+* transfer `TestProtoLoader.parseShowcaseEcho()` to autogen tests ([#2603](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2603)) ([72a4f76](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/72a4f766930abe342d773cf51390ce30d802b4cf))
+
 ## [5.0.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.0.1...v5.0.2) (2024-02-05)
 
 
