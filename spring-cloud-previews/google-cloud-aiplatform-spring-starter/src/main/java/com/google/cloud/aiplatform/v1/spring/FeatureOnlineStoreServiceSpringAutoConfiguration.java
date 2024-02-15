@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -158,6 +158,14 @@ public class FeatureOnlineStoreServiceSpringAutoConfiguration {
           .fetchFeatureValuesSettings()
           .setRetrySettings(fetchFeatureValuesRetrySettings);
 
+      RetrySettings searchNearestEntitiesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.searchNearestEntitiesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .searchNearestEntitiesSettings()
+          .setRetrySettings(searchNearestEntitiesRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -201,6 +209,20 @@ public class FeatureOnlineStoreServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for fetchFeatureValues from properties.");
+      }
+    }
+    Retry searchNearestEntitiesRetry = clientProperties.getSearchNearestEntitiesRetry();
+    if (searchNearestEntitiesRetry != null) {
+      RetrySettings searchNearestEntitiesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.searchNearestEntitiesSettings().getRetrySettings(),
+              searchNearestEntitiesRetry);
+      clientSettingsBuilder
+          .searchNearestEntitiesSettings()
+          .setRetrySettings(searchNearestEntitiesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for searchNearestEntities from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

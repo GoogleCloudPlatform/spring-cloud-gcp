@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,6 +177,13 @@ public class PredictionServiceSpringAutoConfiguration {
               clientSettingsBuilder.explainSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.explainSettings().setRetrySettings(explainRetrySettings);
 
+      RetrySettings generateContentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateContentSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .generateContentSettings()
+          .setRetrySettings(generateContentRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -260,6 +267,19 @@ public class PredictionServiceSpringAutoConfiguration {
       clientSettingsBuilder.explainSettings().setRetrySettings(explainRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for explain from properties.");
+      }
+    }
+    Retry generateContentRetry = clientProperties.getGenerateContentRetry();
+    if (generateContentRetry != null) {
+      RetrySettings generateContentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateContentSettings().getRetrySettings(),
+              generateContentRetry);
+      clientSettingsBuilder
+          .generateContentSettings()
+          .setRetrySettings(generateContentRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for generateContent from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

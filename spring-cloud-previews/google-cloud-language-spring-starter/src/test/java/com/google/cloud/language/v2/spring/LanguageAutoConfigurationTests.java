@@ -40,6 +40,11 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.threeten.bp.Duration;
 
+/**
+ * This class is wiped out and re-created as part of the generation process. Please make changes to
+ * https://github.com/GoogleCloudPlatform/spring-cloud-gcp/blob/main/spring-cloud-generator/spring-cloud-previews-template/google-cloud-language-spring-starter/src/test/java/com/google/cloud/language/v2/spring/LanguageAutoConfigurationTests.java
+ * to retain the changes in the next generation workflow run.
+ */
 @ExtendWith(MockitoExtension.class)
 class LanguageAutoConfigurationTests {
 
