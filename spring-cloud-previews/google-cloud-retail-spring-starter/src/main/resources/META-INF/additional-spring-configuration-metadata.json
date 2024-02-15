@@ -1,6 +1,12 @@
 {
   "properties": [
     {
+      "name": "com.google.cloud.retail.v2.analytics-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud retail/AnalyticsService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.retail.v2.catalog-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud retail/CatalogService components.",
