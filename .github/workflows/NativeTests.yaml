@@ -28,9 +28,9 @@ jobs:
           - bigquery-sample
           - bigquery
           - core
-          #- data-firestore ## https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2455
+          - data-firestore
           - data-firestore-sample
-          #- datastore ## https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2455
+          - datastore
           - datastore-basic-sample
           - kms
           - kms-sample
