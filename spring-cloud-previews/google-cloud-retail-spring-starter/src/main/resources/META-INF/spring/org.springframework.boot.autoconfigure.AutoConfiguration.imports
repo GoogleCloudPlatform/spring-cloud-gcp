@@ -1,3 +1,4 @@
+com.google.cloud.retail.v2.spring.AnalyticsServiceSpringAutoConfiguration
 com.google.cloud.retail.v2.spring.CatalogServiceSpringAutoConfiguration
 com.google.cloud.retail.v2.spring.CompletionServiceSpringAutoConfiguration
 com.google.cloud.retail.v2.spring.ControlServiceSpringAutoConfiguration

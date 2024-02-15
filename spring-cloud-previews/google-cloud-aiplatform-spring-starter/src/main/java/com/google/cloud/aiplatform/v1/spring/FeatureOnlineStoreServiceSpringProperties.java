@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,11 @@ public class FeatureOnlineStoreServiceSpringProperties implements CredentialsSup
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry fetchFeatureValuesRetry;
+  /**
+   * Allow override of retry settings at method-level for searchNearestEntities. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry searchNearestEntitiesRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -106,6 +111,14 @@ public class FeatureOnlineStoreServiceSpringProperties implements CredentialsSup
 
   public void setFetchFeatureValuesRetry(Retry fetchFeatureValuesRetry) {
     this.fetchFeatureValuesRetry = fetchFeatureValuesRetry;
+  }
+
+  public Retry getSearchNearestEntitiesRetry() {
+    return this.searchNearestEntitiesRetry;
+  }
+
+  public void setSearchNearestEntitiesRetry(Retry searchNearestEntitiesRetry) {
+    this.searchNearestEntitiesRetry = searchNearestEntitiesRetry;
   }
 
   public Retry getListLocationsRetry() {
