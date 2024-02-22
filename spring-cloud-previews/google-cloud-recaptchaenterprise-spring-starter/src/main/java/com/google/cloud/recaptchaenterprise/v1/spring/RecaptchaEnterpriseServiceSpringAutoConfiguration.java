@@ -247,6 +247,14 @@ public class RecaptchaEnterpriseServiceSpringAutoConfiguration {
           .deleteFirewallPolicySettings()
           .setRetrySettings(deleteFirewallPolicyRetrySettings);
 
+      RetrySettings reorderFirewallPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.reorderFirewallPoliciesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .reorderFirewallPoliciesSettings()
+          .setRetrySettings(reorderFirewallPoliciesRetrySettings);
+
       RetrySettings listRelatedAccountGroupsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listRelatedAccountGroupsSettings().getRetrySettings(),
@@ -457,6 +465,20 @@ public class RecaptchaEnterpriseServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for deleteFirewallPolicy from properties.");
+      }
+    }
+    Retry reorderFirewallPoliciesRetry = clientProperties.getReorderFirewallPoliciesRetry();
+    if (reorderFirewallPoliciesRetry != null) {
+      RetrySettings reorderFirewallPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.reorderFirewallPoliciesSettings().getRetrySettings(),
+              reorderFirewallPoliciesRetry);
+      clientSettingsBuilder
+          .reorderFirewallPoliciesSettings()
+          .setRetrySettings(reorderFirewallPoliciesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for reorderFirewallPolicies from properties.");
       }
     }
     Retry listRelatedAccountGroupsRetry = clientProperties.getListRelatedAccountGroupsRetry();

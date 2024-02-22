@@ -68,6 +68,61 @@ public class EnvironmentsSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry pollAirflowCommandRetry;
   /**
+   * Allow override of retry settings at method-level for listWorkloads. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listWorkloadsRetry;
+  /**
+   * Allow override of retry settings at method-level for createUserWorkloadsSecret. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createUserWorkloadsSecretRetry;
+  /**
+   * Allow override of retry settings at method-level for getUserWorkloadsSecret. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getUserWorkloadsSecretRetry;
+  /**
+   * Allow override of retry settings at method-level for listUserWorkloadsSecrets. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listUserWorkloadsSecretsRetry;
+  /**
+   * Allow override of retry settings at method-level for updateUserWorkloadsSecret. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateUserWorkloadsSecretRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteUserWorkloadsSecret. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteUserWorkloadsSecretRetry;
+  /**
+   * Allow override of retry settings at method-level for createUserWorkloadsConfigMap. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createUserWorkloadsConfigMapRetry;
+  /**
+   * Allow override of retry settings at method-level for getUserWorkloadsConfigMap. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getUserWorkloadsConfigMapRetry;
+  /**
+   * Allow override of retry settings at method-level for listUserWorkloadsConfigMaps. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listUserWorkloadsConfigMapsRetry;
+  /**
+   * Allow override of retry settings at method-level for updateUserWorkloadsConfigMap. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateUserWorkloadsConfigMapRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteUserWorkloadsConfigMap. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteUserWorkloadsConfigMapRetry;
+  /**
    * Allow override of retry settings at method-level for fetchDatabaseProperties. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -148,6 +203,94 @@ public class EnvironmentsSpringProperties implements CredentialsSupplier {
 
   public void setPollAirflowCommandRetry(Retry pollAirflowCommandRetry) {
     this.pollAirflowCommandRetry = pollAirflowCommandRetry;
+  }
+
+  public Retry getListWorkloadsRetry() {
+    return this.listWorkloadsRetry;
+  }
+
+  public void setListWorkloadsRetry(Retry listWorkloadsRetry) {
+    this.listWorkloadsRetry = listWorkloadsRetry;
+  }
+
+  public Retry getCreateUserWorkloadsSecretRetry() {
+    return this.createUserWorkloadsSecretRetry;
+  }
+
+  public void setCreateUserWorkloadsSecretRetry(Retry createUserWorkloadsSecretRetry) {
+    this.createUserWorkloadsSecretRetry = createUserWorkloadsSecretRetry;
+  }
+
+  public Retry getGetUserWorkloadsSecretRetry() {
+    return this.getUserWorkloadsSecretRetry;
+  }
+
+  public void setGetUserWorkloadsSecretRetry(Retry getUserWorkloadsSecretRetry) {
+    this.getUserWorkloadsSecretRetry = getUserWorkloadsSecretRetry;
+  }
+
+  public Retry getListUserWorkloadsSecretsRetry() {
+    return this.listUserWorkloadsSecretsRetry;
+  }
+
+  public void setListUserWorkloadsSecretsRetry(Retry listUserWorkloadsSecretsRetry) {
+    this.listUserWorkloadsSecretsRetry = listUserWorkloadsSecretsRetry;
+  }
+
+  public Retry getUpdateUserWorkloadsSecretRetry() {
+    return this.updateUserWorkloadsSecretRetry;
+  }
+
+  public void setUpdateUserWorkloadsSecretRetry(Retry updateUserWorkloadsSecretRetry) {
+    this.updateUserWorkloadsSecretRetry = updateUserWorkloadsSecretRetry;
+  }
+
+  public Retry getDeleteUserWorkloadsSecretRetry() {
+    return this.deleteUserWorkloadsSecretRetry;
+  }
+
+  public void setDeleteUserWorkloadsSecretRetry(Retry deleteUserWorkloadsSecretRetry) {
+    this.deleteUserWorkloadsSecretRetry = deleteUserWorkloadsSecretRetry;
+  }
+
+  public Retry getCreateUserWorkloadsConfigMapRetry() {
+    return this.createUserWorkloadsConfigMapRetry;
+  }
+
+  public void setCreateUserWorkloadsConfigMapRetry(Retry createUserWorkloadsConfigMapRetry) {
+    this.createUserWorkloadsConfigMapRetry = createUserWorkloadsConfigMapRetry;
+  }
+
+  public Retry getGetUserWorkloadsConfigMapRetry() {
+    return this.getUserWorkloadsConfigMapRetry;
+  }
+
+  public void setGetUserWorkloadsConfigMapRetry(Retry getUserWorkloadsConfigMapRetry) {
+    this.getUserWorkloadsConfigMapRetry = getUserWorkloadsConfigMapRetry;
+  }
+
+  public Retry getListUserWorkloadsConfigMapsRetry() {
+    return this.listUserWorkloadsConfigMapsRetry;
+  }
+
+  public void setListUserWorkloadsConfigMapsRetry(Retry listUserWorkloadsConfigMapsRetry) {
+    this.listUserWorkloadsConfigMapsRetry = listUserWorkloadsConfigMapsRetry;
+  }
+
+  public Retry getUpdateUserWorkloadsConfigMapRetry() {
+    return this.updateUserWorkloadsConfigMapRetry;
+  }
+
+  public void setUpdateUserWorkloadsConfigMapRetry(Retry updateUserWorkloadsConfigMapRetry) {
+    this.updateUserWorkloadsConfigMapRetry = updateUserWorkloadsConfigMapRetry;
+  }
+
+  public Retry getDeleteUserWorkloadsConfigMapRetry() {
+    return this.deleteUserWorkloadsConfigMapRetry;
+  }
+
+  public void setDeleteUserWorkloadsConfigMapRetry(Retry deleteUserWorkloadsConfigMapRetry) {
+    this.deleteUserWorkloadsConfigMapRetry = deleteUserWorkloadsConfigMapRetry;
   }
 
   public Retry getFetchDatabasePropertiesRetry() {

@@ -266,6 +266,13 @@ public class DataTransferServiceSpringAutoConfiguration {
           .enrollDataSourcesSettings()
           .setRetrySettings(enrollDataSourcesRetrySettings);
 
+      RetrySettings unenrollDataSourcesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.unenrollDataSourcesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .unenrollDataSourcesSettings()
+          .setRetrySettings(unenrollDataSourcesRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -479,6 +486,20 @@ public class DataTransferServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for enrollDataSources from properties.");
+      }
+    }
+    Retry unenrollDataSourcesRetry = clientProperties.getUnenrollDataSourcesRetry();
+    if (unenrollDataSourcesRetry != null) {
+      RetrySettings unenrollDataSourcesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.unenrollDataSourcesSettings().getRetrySettings(),
+              unenrollDataSourcesRetry);
+      clientSettingsBuilder
+          .unenrollDataSourcesSettings()
+          .setRetrySettings(unenrollDataSourcesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for unenrollDataSources from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

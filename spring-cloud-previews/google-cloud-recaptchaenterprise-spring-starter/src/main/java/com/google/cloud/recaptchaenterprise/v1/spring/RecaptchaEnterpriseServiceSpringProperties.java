@@ -116,6 +116,11 @@ public class RecaptchaEnterpriseServiceSpringProperties implements CredentialsSu
    */
   @NestedConfigurationProperty private Retry deleteFirewallPolicyRetry;
   /**
+   * Allow override of retry settings at method-level for reorderFirewallPolicies. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry reorderFirewallPoliciesRetry;
+  /**
    * Allow override of retry settings at method-level for listRelatedAccountGroups. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -278,6 +283,14 @@ public class RecaptchaEnterpriseServiceSpringProperties implements CredentialsSu
 
   public void setDeleteFirewallPolicyRetry(Retry deleteFirewallPolicyRetry) {
     this.deleteFirewallPolicyRetry = deleteFirewallPolicyRetry;
+  }
+
+  public Retry getReorderFirewallPoliciesRetry() {
+    return this.reorderFirewallPoliciesRetry;
+  }
+
+  public void setReorderFirewallPoliciesRetry(Retry reorderFirewallPoliciesRetry) {
+    this.reorderFirewallPoliciesRetry = reorderFirewallPoliciesRetry;
   }
 
   public Retry getListRelatedAccountGroupsRetry() {
