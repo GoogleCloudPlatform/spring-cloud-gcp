@@ -14,6 +14,16 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.9.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.9.3...v4.9.4) (2024-02-22)
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.32.0 to 26.33.0 ([#2626](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2626)) ([4ed53c4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4ed53c4ffdfb1d2e9d6f1479ec76ec2669a2a1ec))
+* bump com.google.errorprone:error_prone_core from 2.24.1 to 2.25.0 ([#2614](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2614)) ([b1415d4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b1415d4bd2848e16453c2711fc541d05cfaa6c97))
+* bump io.micrometer:micrometer-tracing-bom from 1.2.2 to 1.2.3 ([#2593](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2593)) ([b9274aa](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b9274aa536d0d3d391c3eccbb0070eee14b3f8c5))
+* bump org.graalvm.buildtools:native-maven-plugin ([#2620](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2620)) ([1e144a8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1e144a8d00260e2ab6aac549652d95823d98bd8e))
+
 ## [4.9.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.9.2...v4.9.3) (2024-02-13)
 
 
