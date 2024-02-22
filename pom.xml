@@ -60,7 +60,7 @@
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
 		<errorprone.version>2.25.0</errorprone.version>
-		<native-maven-plugin.version>0.10.0</native-maven-plugin.version>
+		<native-maven-plugin.version>0.10.1</native-maven-plugin.version>
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
