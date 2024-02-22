@@ -48,7 +48,7 @@ Read https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#produ
 
 ==== Metrics Disambiguation
 
-By default, `spring-cloud-gcp-starter-metrics`/the `StackdriverMeterRegistry` does not add any application/pod specific tags to the metrics,
+By default, the autoconfigured Bean `StackdriverMeterRegistry` provided by `spring-cloud-gcp-starter-metrics` does not add any application/pod specific tags to the metrics,
 thus google is unable to distinguish between multiple metric sources.
 This could lead to the following warning inside your applications logs:
 
