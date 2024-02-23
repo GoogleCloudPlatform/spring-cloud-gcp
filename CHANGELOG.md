@@ -14,6 +14,26 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.0.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.0.3...v5.0.4) (2024-02-23)
+
+
+### Bug Fixes
+
+* configure the ObjectMapper to prevent from flaky behavior in the test case testPublish_Object ([#2340](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2340)) ([8f3afad](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8f3afad9750f779ea1fff6b7fdc0e091e191decf))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.33.0 ([#2622](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2622)) ([51f1d6d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/51f1d6d8c788508786f8655ded878d97edf37694))
+* **deps:** update dependency io.micrometer:micrometer-tracing-bom to v1.2.3 ([#2589](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2589)) ([c9f833d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c9f833dde1da29ff03f17ff82b36a2bc587d5fc8))
+* metrics documentation wording in Metrics Disambiguation section. ([#2476](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2476)) ([f6b5411](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f6b5411dcbfe2789b8f085032017b387e0b6c379))
+* use bazelisk info to obtain googleapis bazel-bin when generating… ([#2635](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2635)) ([3e39459](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3e39459d45e60e65ae684a22e8bc1ff91b24d799))
+
+
+### Dependencies
+
+* bump com.google.errorprone:error_prone_core from 2.24.1 to 2.25.0 ([#2616](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2616)) ([8840612](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8840612cb430dccfa8b57bef6477b21feae39d28))
+* bump io.micrometer:micrometer-tracing-bom from 1.2.2 to 1.2.3 ([#2591](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2591)) ([eb14314](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/eb14314ac07bf0823995a89cc12e0fcd3a8b8269))
+* bump org.graalvm.buildtools:native-maven-plugin ([#2619](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2619)) ([7c1ed93](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7c1ed93d8a343217f2f36e624a75e05be6ea679f))
+* bump org.springframework.boot:spring-boot-starter-parent ([#2638](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2638)) ([b405965](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b405965f553c7ba04ff39b1bc96276580d7384d2))
+* bump spring-boot-dependencies.version from 3.2.2 to 3.2.3 ([#2639](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2639)) ([fa5ab16](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fa5ab16e0b276043c2a9d757be6d9367fff83973))
+
 ## [5.0.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.0.2...v5.0.3) (2024-02-15)
 
 
