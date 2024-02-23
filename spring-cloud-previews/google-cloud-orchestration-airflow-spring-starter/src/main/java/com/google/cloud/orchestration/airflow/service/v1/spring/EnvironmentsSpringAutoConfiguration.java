@@ -193,6 +193,91 @@ public class EnvironmentsSpringAutoConfiguration {
           .pollAirflowCommandSettings()
           .setRetrySettings(pollAirflowCommandRetrySettings);
 
+      RetrySettings listWorkloadsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listWorkloadsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listWorkloadsSettings().setRetrySettings(listWorkloadsRetrySettings);
+
+      RetrySettings createUserWorkloadsSecretRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createUserWorkloadsSecretSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .createUserWorkloadsSecretSettings()
+          .setRetrySettings(createUserWorkloadsSecretRetrySettings);
+
+      RetrySettings getUserWorkloadsSecretRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getUserWorkloadsSecretSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getUserWorkloadsSecretSettings()
+          .setRetrySettings(getUserWorkloadsSecretRetrySettings);
+
+      RetrySettings listUserWorkloadsSecretsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listUserWorkloadsSecretsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listUserWorkloadsSecretsSettings()
+          .setRetrySettings(listUserWorkloadsSecretsRetrySettings);
+
+      RetrySettings updateUserWorkloadsSecretRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateUserWorkloadsSecretSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .updateUserWorkloadsSecretSettings()
+          .setRetrySettings(updateUserWorkloadsSecretRetrySettings);
+
+      RetrySettings deleteUserWorkloadsSecretRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteUserWorkloadsSecretSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .deleteUserWorkloadsSecretSettings()
+          .setRetrySettings(deleteUserWorkloadsSecretRetrySettings);
+
+      RetrySettings createUserWorkloadsConfigMapRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createUserWorkloadsConfigMapSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .createUserWorkloadsConfigMapSettings()
+          .setRetrySettings(createUserWorkloadsConfigMapRetrySettings);
+
+      RetrySettings getUserWorkloadsConfigMapRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getUserWorkloadsConfigMapSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getUserWorkloadsConfigMapSettings()
+          .setRetrySettings(getUserWorkloadsConfigMapRetrySettings);
+
+      RetrySettings listUserWorkloadsConfigMapsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listUserWorkloadsConfigMapsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listUserWorkloadsConfigMapsSettings()
+          .setRetrySettings(listUserWorkloadsConfigMapsRetrySettings);
+
+      RetrySettings updateUserWorkloadsConfigMapRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateUserWorkloadsConfigMapSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .updateUserWorkloadsConfigMapSettings()
+          .setRetrySettings(updateUserWorkloadsConfigMapRetrySettings);
+
+      RetrySettings deleteUserWorkloadsConfigMapRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteUserWorkloadsConfigMapSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .deleteUserWorkloadsConfigMapSettings()
+          .setRetrySettings(deleteUserWorkloadsConfigMapRetrySettings);
+
       RetrySettings fetchDatabasePropertiesRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.fetchDatabasePropertiesSettings().getRetrySettings(),
@@ -270,6 +355,159 @@ public class EnvironmentsSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for pollAirflowCommand from properties.");
+      }
+    }
+    Retry listWorkloadsRetry = clientProperties.getListWorkloadsRetry();
+    if (listWorkloadsRetry != null) {
+      RetrySettings listWorkloadsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listWorkloadsSettings().getRetrySettings(), listWorkloadsRetry);
+      clientSettingsBuilder.listWorkloadsSettings().setRetrySettings(listWorkloadsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listWorkloads from properties.");
+      }
+    }
+    Retry createUserWorkloadsSecretRetry = clientProperties.getCreateUserWorkloadsSecretRetry();
+    if (createUserWorkloadsSecretRetry != null) {
+      RetrySettings createUserWorkloadsSecretRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createUserWorkloadsSecretSettings().getRetrySettings(),
+              createUserWorkloadsSecretRetry);
+      clientSettingsBuilder
+          .createUserWorkloadsSecretSettings()
+          .setRetrySettings(createUserWorkloadsSecretRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createUserWorkloadsSecret from properties.");
+      }
+    }
+    Retry getUserWorkloadsSecretRetry = clientProperties.getGetUserWorkloadsSecretRetry();
+    if (getUserWorkloadsSecretRetry != null) {
+      RetrySettings getUserWorkloadsSecretRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getUserWorkloadsSecretSettings().getRetrySettings(),
+              getUserWorkloadsSecretRetry);
+      clientSettingsBuilder
+          .getUserWorkloadsSecretSettings()
+          .setRetrySettings(getUserWorkloadsSecretRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getUserWorkloadsSecret from properties.");
+      }
+    }
+    Retry listUserWorkloadsSecretsRetry = clientProperties.getListUserWorkloadsSecretsRetry();
+    if (listUserWorkloadsSecretsRetry != null) {
+      RetrySettings listUserWorkloadsSecretsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listUserWorkloadsSecretsSettings().getRetrySettings(),
+              listUserWorkloadsSecretsRetry);
+      clientSettingsBuilder
+          .listUserWorkloadsSecretsSettings()
+          .setRetrySettings(listUserWorkloadsSecretsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listUserWorkloadsSecrets from properties.");
+      }
+    }
+    Retry updateUserWorkloadsSecretRetry = clientProperties.getUpdateUserWorkloadsSecretRetry();
+    if (updateUserWorkloadsSecretRetry != null) {
+      RetrySettings updateUserWorkloadsSecretRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateUserWorkloadsSecretSettings().getRetrySettings(),
+              updateUserWorkloadsSecretRetry);
+      clientSettingsBuilder
+          .updateUserWorkloadsSecretSettings()
+          .setRetrySettings(updateUserWorkloadsSecretRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateUserWorkloadsSecret from properties.");
+      }
+    }
+    Retry deleteUserWorkloadsSecretRetry = clientProperties.getDeleteUserWorkloadsSecretRetry();
+    if (deleteUserWorkloadsSecretRetry != null) {
+      RetrySettings deleteUserWorkloadsSecretRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteUserWorkloadsSecretSettings().getRetrySettings(),
+              deleteUserWorkloadsSecretRetry);
+      clientSettingsBuilder
+          .deleteUserWorkloadsSecretSettings()
+          .setRetrySettings(deleteUserWorkloadsSecretRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteUserWorkloadsSecret from properties.");
+      }
+    }
+    Retry createUserWorkloadsConfigMapRetry =
+        clientProperties.getCreateUserWorkloadsConfigMapRetry();
+    if (createUserWorkloadsConfigMapRetry != null) {
+      RetrySettings createUserWorkloadsConfigMapRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createUserWorkloadsConfigMapSettings().getRetrySettings(),
+              createUserWorkloadsConfigMapRetry);
+      clientSettingsBuilder
+          .createUserWorkloadsConfigMapSettings()
+          .setRetrySettings(createUserWorkloadsConfigMapRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createUserWorkloadsConfigMap from properties.");
+      }
+    }
+    Retry getUserWorkloadsConfigMapRetry = clientProperties.getGetUserWorkloadsConfigMapRetry();
+    if (getUserWorkloadsConfigMapRetry != null) {
+      RetrySettings getUserWorkloadsConfigMapRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getUserWorkloadsConfigMapSettings().getRetrySettings(),
+              getUserWorkloadsConfigMapRetry);
+      clientSettingsBuilder
+          .getUserWorkloadsConfigMapSettings()
+          .setRetrySettings(getUserWorkloadsConfigMapRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getUserWorkloadsConfigMap from properties.");
+      }
+    }
+    Retry listUserWorkloadsConfigMapsRetry = clientProperties.getListUserWorkloadsConfigMapsRetry();
+    if (listUserWorkloadsConfigMapsRetry != null) {
+      RetrySettings listUserWorkloadsConfigMapsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listUserWorkloadsConfigMapsSettings().getRetrySettings(),
+              listUserWorkloadsConfigMapsRetry);
+      clientSettingsBuilder
+          .listUserWorkloadsConfigMapsSettings()
+          .setRetrySettings(listUserWorkloadsConfigMapsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listUserWorkloadsConfigMaps from properties.");
+      }
+    }
+    Retry updateUserWorkloadsConfigMapRetry =
+        clientProperties.getUpdateUserWorkloadsConfigMapRetry();
+    if (updateUserWorkloadsConfigMapRetry != null) {
+      RetrySettings updateUserWorkloadsConfigMapRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateUserWorkloadsConfigMapSettings().getRetrySettings(),
+              updateUserWorkloadsConfigMapRetry);
+      clientSettingsBuilder
+          .updateUserWorkloadsConfigMapSettings()
+          .setRetrySettings(updateUserWorkloadsConfigMapRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateUserWorkloadsConfigMap from properties.");
+      }
+    }
+    Retry deleteUserWorkloadsConfigMapRetry =
+        clientProperties.getDeleteUserWorkloadsConfigMapRetry();
+    if (deleteUserWorkloadsConfigMapRetry != null) {
+      RetrySettings deleteUserWorkloadsConfigMapRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteUserWorkloadsConfigMapSettings().getRetrySettings(),
+              deleteUserWorkloadsConfigMapRetry);
+      clientSettingsBuilder
+          .deleteUserWorkloadsConfigMapSettings()
+          .setRetrySettings(deleteUserWorkloadsConfigMapRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteUserWorkloadsConfigMap from properties.");
       }
     }
     Retry fetchDatabasePropertiesRetry = clientProperties.getFetchDatabasePropertiesRetry();

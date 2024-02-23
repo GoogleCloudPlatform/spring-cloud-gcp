@@ -201,7 +201,10 @@ function postprocess_library() {
   rule_prefix=$(cat googleapis/$googleapis_folder/BUILD.bazel | grep _java_gapic_spring | perl -lane 'print m/"(.*)_java_gapic_spring/')
 
   # copy generated code and unzip
-  cp googleapis/bazel-bin/$googleapis_folder/"$rule_prefix"_java_gapic_spring-spring.srcjar ../spring-cloud-previews
+  pushd googleapis
+  bazel_bin_location=$(bazelisk info bazel-bin)
+  popd
+  cp ${bazel_bin_location}/${googleapis_folder}/"${rule_prefix}"_java_gapic_spring-spring.srcjar ../spring-cloud-previews
   cd ../spring-cloud-previews
   unzip -o "$rule_prefix"_java_gapic_spring-spring.srcjar -d "$starter_artifactid"/
   rm -rf "$rule_prefix"_java_gapic_spring-spring.srcjar
