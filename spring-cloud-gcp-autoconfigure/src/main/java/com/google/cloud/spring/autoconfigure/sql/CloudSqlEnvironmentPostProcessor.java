@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.sql;
 
+import com.google.cloud.sql.ConnectorRegistry;
 import com.google.cloud.sql.core.CoreSocketFactory;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +84,7 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
       CredentialsPropertiesSetter.setCredentials(sqlProperties, propertiesRetriever.getGcpProperties());
 
       // support usage metrics
-      CoreSocketFactory.setApplicationName(
+      ConnectorRegistry.addArtifactId(
           "spring-cloud-gcp-sql/" + this.getClass().getPackage().getImplementationVersion());
     }
   }
