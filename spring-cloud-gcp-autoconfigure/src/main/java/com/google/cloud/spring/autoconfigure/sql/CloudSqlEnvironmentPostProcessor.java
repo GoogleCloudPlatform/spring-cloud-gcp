@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.sql;
 
 import com.google.cloud.sql.ConnectorRegistry;
-import com.google.cloud.sql.core.CoreSocketFactory;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.logging.Log;
