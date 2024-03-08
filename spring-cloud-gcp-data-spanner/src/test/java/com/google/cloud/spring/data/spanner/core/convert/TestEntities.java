@@ -56,15 +56,21 @@ class TestEntities {
     long longField;
 
     double doubleField;
+    float floatField;
 
     // This double array is forced to be stored as a String for testing
     @Column(spannerType = TypeCode.STRING)
     double[] doubleArray;
 
+    // This double array is forced to be stored as a String for testing
+    @Column(spannerType = TypeCode.STRING)
+    float[] floatArray;
+
     // int is not a native Cloud Spanner type, so this will utilize custom conversions.
     int intField;
 
     List<Double> doubleList;
+    List<Float> floatList;
 
     List<String> stringList;
 
