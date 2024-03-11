@@ -39,7 +39,7 @@ jobs:
           - pubsub-sample
           - pubsub-bus-sample
           - pubsub-integration-sample
-          #- pubsub-stream-sample ## https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2456
+          - pubsub-stream-sample
           - secretmanager
           - secretmanager-sample
           - spanner
