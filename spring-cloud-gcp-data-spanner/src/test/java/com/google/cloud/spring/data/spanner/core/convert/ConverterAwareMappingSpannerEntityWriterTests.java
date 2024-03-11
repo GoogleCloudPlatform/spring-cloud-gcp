@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -97,6 +98,10 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     t.doubleArray = new double[] {3.33, 3.33, 3.33};
     t.doubleList = new ArrayList<>();
     t.doubleList.add(3.33);
+    t.floatField = 3.33F;
+    t.floatArray = new float[] {3.33F, 3.33F, 3.33F};
+    t.floatList = new ArrayList<>();
+    t.floatList.add(3.33F);
     t.stringList = new ArrayList<>();
     t.stringList.add("stringstringstring");
     t.dateField = Date.fromYearMonthDay(2018, 11, 22);
@@ -192,6 +197,18 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     when(doubleListFieldBinder.toFloat64Array((Iterable<Double>) any())).thenReturn(null);
     when(writeBuilder.set("doubleList")).thenReturn(doubleListFieldBinder);
 
+    ValueBinder<WriteBuilder> floatFieldBinder = mock(ValueBinder.class);
+    when(floatFieldBinder.to(anyFloat())).thenReturn(null);
+    when(writeBuilder.set("floatField")).thenReturn(floatFieldBinder);
+
+    ValueBinder<WriteBuilder> floatArrayFieldBinder = mock(ValueBinder.class);
+    when(floatArrayFieldBinder.toStringArray(any())).thenReturn(null);
+    when(writeBuilder.set("floatArray")).thenReturn(floatArrayFieldBinder);
+
+    ValueBinder<WriteBuilder> floatListFieldBinder = mock(ValueBinder.class);
+    when(floatListFieldBinder.toFloat32Array((Iterable<Float>) any())).thenReturn(null);
+    when(writeBuilder.set("floatList")).thenReturn(floatListFieldBinder);
+
     ValueBinder<WriteBuilder> stringListFieldBinder = mock(ValueBinder.class);
     when(stringListFieldBinder.toStringArray(any())).thenReturn(null);
     when(writeBuilder.set("stringList")).thenReturn(stringListFieldBinder);
@@ -257,6 +274,9 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     verify(doubleFieldBinder, times(1)).to(Double.valueOf(t.doubleField));
     verify(doubleArrayFieldBinder, times(1)).to("3.33,3.33,3.33");
     verify(doubleListFieldBinder, times(1)).toFloat64Array(t.doubleList);
+    verify(floatFieldBinder, times(1)).to(Float.valueOf(t.floatField));
+    verify(floatArrayFieldBinder, times(1)).to("3.33,3.33,3.33");
+    verify(floatListFieldBinder, times(1)).toFloat32Array(t.floatList);
     verify(stringListFieldBinder, times(1)).toStringArray(t.stringList);
     verify(booleanListFieldBinder, times(1)).toBoolArray(t.booleanList);
     verify(longListFieldBinder, times(1)).toStringArray(any());

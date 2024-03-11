@@ -49,6 +49,7 @@ import org.springframework.lang.NonNull;
 class ConverterAwareMappingSpannerEntityProcessorTests {
 
   private static final Offset<Double> DELTA = Offset.offset(0.00001);
+  private static final Offset<Float> DELTA_FLOAT = Offset.offset(0.00001F);
 
   private static final Converter<SpannerType, JavaType> SPANNER_TO_JAVA =
       new Converter<SpannerType, JavaType>() {
@@ -183,6 +184,7 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
   @Test
   void mapToListTest() {
     List<Double> doubleList = Collections.singletonList(3.33);
+    List<Float> floatList = Collections.singletonList(3.33F);
     List<String> stringList = Collections.singletonList("string");
     List<Instant> instants =
         Arrays.asList(
@@ -219,6 +221,12 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
             .to(Value.float64Array(new double[] {3.33, 3.33, 3.33}))
             .set("doubleList")
             .to(Value.float64Array(doubleList))
+            .set("floatField")
+            .to(Value.float32(3.33F))
+            .set("floatArray")
+            .to(Value.float32Array(new float[] {3.33F, 3.33F, 3.33F}))
+            .set("floatList")
+            .to(Value.float32Array(floatList))
             .set("stringList")
             .to(Value.stringArray(stringList))
             .set("booleanList")
@@ -273,6 +281,12 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
             .to(Value.float64Array(new double[] {5.55, 5.55}))
             .set("doubleList")
             .to(Value.float64Array(doubleList))
+            .set("floatField")
+            .to(Value.float32(5.55F))
+            .set("floatArray")
+            .to(Value.float32Array(new float[] {5.55F, 5.55F}))
+            .set("floatList")
+            .to(Value.float32Array(floatList))
             .set("stringList")
             .to(Value.stringArray(stringList))
             .set("booleanList")
@@ -337,6 +351,8 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
     assertThat(t1.dateField.getYear()).isEqualTo(2018);
     assertThat(t1.doubleField).isEqualTo(3.33, DELTA);
     assertThat(t1.doubleArray).hasSize(3);
+    assertThat(t1.floatField).isEqualTo(3.33F, DELTA_FLOAT);
+    assertThat(t1.floatArray).hasSize(3);
     assertThat(t1.bigDecimals).containsExactly(BigDecimal.ONE, BigDecimal.ZERO);
 
     assertThat(t2)
@@ -358,6 +374,10 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
     assertThat(t2.doubleArray).hasSize(2);
     assertThat(t2.doubleList).hasSize(1);
     assertThat(t2.doubleList.get(0)).isEqualTo(3.33, DELTA);
+    assertThat(t2.floatField).isEqualTo(5.55F, DELTA_FLOAT);
+    assertThat(t2.floatArray).hasSize(2);
+    assertThat(t2.floatList).hasSize(1);
+    assertThat(t2.floatList.get(0)).isEqualTo(3.33F, DELTA_FLOAT);
     assertThat(t2.stringList).containsExactly("string");
     assertThat(t2.bigDecimalField).isEqualTo(new BigDecimal("0.0001"));
     assertThat(t2.bigDecimals).containsExactly(new BigDecimal("-0.999"), new BigDecimal("10.9001"));
