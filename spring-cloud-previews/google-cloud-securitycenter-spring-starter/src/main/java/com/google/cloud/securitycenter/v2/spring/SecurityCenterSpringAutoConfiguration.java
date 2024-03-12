@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.securitycenter.v1.spring;
+package com.google.cloud.securitycenter.v2.spring;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.CredentialsProvider;
@@ -22,8 +22,8 @@ import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
-import com.google.cloud.securitycenter.v1.SecurityCenterClient;
-import com.google.cloud.securitycenter.v1.SecurityCenterSettings;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient;
+import com.google.cloud.securitycenter.v2.SecurityCenterSettings;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.Retry;
@@ -62,7 +62,7 @@ import org.springframework.context.annotation.Bean;
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)
 @ConditionalOnClass(SecurityCenterClient.class)
 @ConditionalOnProperty(
-    value = "com.google.cloud.securitycenter.v1.security-center.enabled",
+    value = "com.google.cloud.securitycenter.v2.security-center.enabled",
     matchIfMissing = true)
 @EnableConfigurationProperties(SecurityCenterSpringProperties.class)
 public class SecurityCenterSpringAutoConfiguration {
@@ -159,20 +159,21 @@ public class SecurityCenterSpringAutoConfiguration {
     }
     Retry serviceRetry = clientProperties.getRetry();
     if (serviceRetry != null) {
-      RetrySettings createSecurityHealthAnalyticsCustomModuleRetrySettings =
+      RetrySettings batchCreateResourceValueConfigsRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .createSecurityHealthAnalyticsCustomModuleSettings()
-                  .getRetrySettings(),
+              clientSettingsBuilder.batchCreateResourceValueConfigsSettings().getRetrySettings(),
               serviceRetry);
       clientSettingsBuilder
-          .createSecurityHealthAnalyticsCustomModuleSettings()
-          .setRetrySettings(createSecurityHealthAnalyticsCustomModuleRetrySettings);
+          .batchCreateResourceValueConfigsSettings()
+          .setRetrySettings(batchCreateResourceValueConfigsRetrySettings);
 
-      RetrySettings createSourceRetrySettings =
+      RetrySettings createBigQueryExportRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.createSourceSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.createSourceSettings().setRetrySettings(createSourceRetrySettings);
+              clientSettingsBuilder.createBigQueryExportSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .createBigQueryExportSettings()
+          .setRetrySettings(createBigQueryExportRetrySettings);
 
       RetrySettings createFindingRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -194,6 +195,19 @@ public class SecurityCenterSpringAutoConfiguration {
           .createNotificationConfigSettings()
           .setRetrySettings(createNotificationConfigRetrySettings);
 
+      RetrySettings createSourceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createSourceSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.createSourceSettings().setRetrySettings(createSourceRetrySettings);
+
+      RetrySettings deleteBigQueryExportRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteBigQueryExportSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .deleteBigQueryExportSettings()
+          .setRetrySettings(deleteBigQueryExportRetrySettings);
+
       RetrySettings deleteMuteConfigRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.deleteMuteConfigSettings().getRetrySettings(), serviceRetry);
@@ -209,15 +223,13 @@ public class SecurityCenterSpringAutoConfiguration {
           .deleteNotificationConfigSettings()
           .setRetrySettings(deleteNotificationConfigRetrySettings);
 
-      RetrySettings deleteSecurityHealthAnalyticsCustomModuleRetrySettings =
+      RetrySettings deleteResourceValueConfigRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .deleteSecurityHealthAnalyticsCustomModuleSettings()
-                  .getRetrySettings(),
+              clientSettingsBuilder.deleteResourceValueConfigSettings().getRetrySettings(),
               serviceRetry);
       clientSettingsBuilder
-          .deleteSecurityHealthAnalyticsCustomModuleSettings()
-          .setRetrySettings(deleteSecurityHealthAnalyticsCustomModuleRetrySettings);
+          .deleteResourceValueConfigSettings()
+          .setRetrySettings(deleteResourceValueConfigRetrySettings);
 
       RetrySettings getBigQueryExportRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -225,6 +237,18 @@ public class SecurityCenterSpringAutoConfiguration {
       clientSettingsBuilder
           .getBigQueryExportSettings()
           .setRetrySettings(getBigQueryExportRetrySettings);
+
+      RetrySettings getSimulationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getSimulationSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getSimulationSettings().setRetrySettings(getSimulationRetrySettings);
+
+      RetrySettings getValuedResourceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getValuedResourceSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getValuedResourceSettings()
+          .setRetrySettings(getValuedResourceRetrySettings);
 
       RetrySettings getIamPolicyRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -244,63 +268,37 @@ public class SecurityCenterSpringAutoConfiguration {
           .getNotificationConfigSettings()
           .setRetrySettings(getNotificationConfigRetrySettings);
 
-      RetrySettings getOrganizationSettingsRetrySettings =
+      RetrySettings getResourceValueConfigRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getOrganizationSettingsSettings().getRetrySettings(),
+              clientSettingsBuilder.getResourceValueConfigSettings().getRetrySettings(),
               serviceRetry);
       clientSettingsBuilder
-          .getOrganizationSettingsSettings()
-          .setRetrySettings(getOrganizationSettingsRetrySettings);
-
-      RetrySettings getEffectiveSecurityHealthAnalyticsCustomModuleRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .getEffectiveSecurityHealthAnalyticsCustomModuleSettings()
-                  .getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .getEffectiveSecurityHealthAnalyticsCustomModuleSettings()
-          .setRetrySettings(getEffectiveSecurityHealthAnalyticsCustomModuleRetrySettings);
-
-      RetrySettings getSecurityHealthAnalyticsCustomModuleRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .getSecurityHealthAnalyticsCustomModuleSettings()
-                  .getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .getSecurityHealthAnalyticsCustomModuleSettings()
-          .setRetrySettings(getSecurityHealthAnalyticsCustomModuleRetrySettings);
+          .getResourceValueConfigSettings()
+          .setRetrySettings(getResourceValueConfigRetrySettings);
 
       RetrySettings getSourceRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getSourceSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getSourceSettings().setRetrySettings(getSourceRetrySettings);
 
-      RetrySettings groupAssetsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.groupAssetsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.groupAssetsSettings().setRetrySettings(groupAssetsRetrySettings);
-
       RetrySettings groupFindingsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.groupFindingsSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.groupFindingsSettings().setRetrySettings(groupFindingsRetrySettings);
 
-      RetrySettings listAssetsRetrySettings =
+      RetrySettings listAttackPathsRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listAssetsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.listAssetsSettings().setRetrySettings(listAssetsRetrySettings);
-
-      RetrySettings listDescendantSecurityHealthAnalyticsCustomModulesRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .listDescendantSecurityHealthAnalyticsCustomModulesSettings()
-                  .getRetrySettings(),
-              serviceRetry);
+              clientSettingsBuilder.listAttackPathsSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder
-          .listDescendantSecurityHealthAnalyticsCustomModulesSettings()
-          .setRetrySettings(listDescendantSecurityHealthAnalyticsCustomModulesRetrySettings);
+          .listAttackPathsSettings()
+          .setRetrySettings(listAttackPathsRetrySettings);
+
+      RetrySettings listBigQueryExportsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBigQueryExportsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listBigQueryExportsSettings()
+          .setRetrySettings(listBigQueryExportsRetrySettings);
 
       RetrySettings listFindingsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -322,30 +320,25 @@ public class SecurityCenterSpringAutoConfiguration {
           .listNotificationConfigsSettings()
           .setRetrySettings(listNotificationConfigsRetrySettings);
 
-      RetrySettings listEffectiveSecurityHealthAnalyticsCustomModulesRetrySettings =
+      RetrySettings listResourceValueConfigsRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .listEffectiveSecurityHealthAnalyticsCustomModulesSettings()
-                  .getRetrySettings(),
+              clientSettingsBuilder.listResourceValueConfigsSettings().getRetrySettings(),
               serviceRetry);
       clientSettingsBuilder
-          .listEffectiveSecurityHealthAnalyticsCustomModulesSettings()
-          .setRetrySettings(listEffectiveSecurityHealthAnalyticsCustomModulesRetrySettings);
-
-      RetrySettings listSecurityHealthAnalyticsCustomModulesRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .listSecurityHealthAnalyticsCustomModulesSettings()
-                  .getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .listSecurityHealthAnalyticsCustomModulesSettings()
-          .setRetrySettings(listSecurityHealthAnalyticsCustomModulesRetrySettings);
+          .listResourceValueConfigsSettings()
+          .setRetrySettings(listResourceValueConfigsRetrySettings);
 
       RetrySettings listSourcesRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listSourcesSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listSourcesSettings().setRetrySettings(listSourcesRetrySettings);
+
+      RetrySettings listValuedResourcesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listValuedResourcesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listValuedResourcesSettings()
+          .setRetrySettings(listValuedResourcesRetrySettings);
 
       RetrySettings setFindingStateRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -354,15 +347,15 @@ public class SecurityCenterSpringAutoConfiguration {
           .setFindingStateSettings()
           .setRetrySettings(setFindingStateRetrySettings);
 
-      RetrySettings setMuteRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.setMuteSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.setMuteSettings().setRetrySettings(setMuteRetrySettings);
-
       RetrySettings setIamPolicyRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.setIamPolicySettings().setRetrySettings(setIamPolicyRetrySettings);
+
+      RetrySettings setMuteRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setMuteSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.setMuteSettings().setRetrySettings(setMuteRetrySettings);
 
       RetrySettings testIamPermissionsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -371,15 +364,13 @@ public class SecurityCenterSpringAutoConfiguration {
           .testIamPermissionsSettings()
           .setRetrySettings(testIamPermissionsRetrySettings);
 
-      RetrySettings simulateSecurityHealthAnalyticsCustomModuleRetrySettings =
+      RetrySettings updateBigQueryExportRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .simulateSecurityHealthAnalyticsCustomModuleSettings()
-                  .getRetrySettings(),
+              clientSettingsBuilder.updateBigQueryExportSettings().getRetrySettings(),
               serviceRetry);
       clientSettingsBuilder
-          .simulateSecurityHealthAnalyticsCustomModuleSettings()
-          .setRetrySettings(simulateSecurityHealthAnalyticsCustomModuleRetrySettings);
+          .updateBigQueryExportSettings()
+          .setRetrySettings(updateBigQueryExportRetrySettings);
 
       RetrySettings updateExternalSystemRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -409,28 +400,13 @@ public class SecurityCenterSpringAutoConfiguration {
           .updateNotificationConfigSettings()
           .setRetrySettings(updateNotificationConfigRetrySettings);
 
-      RetrySettings updateOrganizationSettingsRetrySettings =
+      RetrySettings updateResourceValueConfigRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateOrganizationSettingsSettings().getRetrySettings(),
+              clientSettingsBuilder.updateResourceValueConfigSettings().getRetrySettings(),
               serviceRetry);
       clientSettingsBuilder
-          .updateOrganizationSettingsSettings()
-          .setRetrySettings(updateOrganizationSettingsRetrySettings);
-
-      RetrySettings updateSecurityHealthAnalyticsCustomModuleRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .updateSecurityHealthAnalyticsCustomModuleSettings()
-                  .getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .updateSecurityHealthAnalyticsCustomModuleSettings()
-          .setRetrySettings(updateSecurityHealthAnalyticsCustomModuleRetrySettings);
-
-      RetrySettings updateSourceRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateSourceSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.updateSourceSettings().setRetrySettings(updateSourceRetrySettings);
+          .updateResourceValueConfigSettings()
+          .setRetrySettings(updateResourceValueConfigRetrySettings);
 
       RetrySettings updateSecurityMarksRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -439,66 +415,42 @@ public class SecurityCenterSpringAutoConfiguration {
           .updateSecurityMarksSettings()
           .setRetrySettings(updateSecurityMarksRetrySettings);
 
-      RetrySettings createBigQueryExportRetrySettings =
+      RetrySettings updateSourceRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.createBigQueryExportSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .createBigQueryExportSettings()
-          .setRetrySettings(createBigQueryExportRetrySettings);
-
-      RetrySettings deleteBigQueryExportRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.deleteBigQueryExportSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .deleteBigQueryExportSettings()
-          .setRetrySettings(deleteBigQueryExportRetrySettings);
-
-      RetrySettings updateBigQueryExportRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateBigQueryExportSettings().getRetrySettings(),
-              serviceRetry);
-      clientSettingsBuilder
-          .updateBigQueryExportSettings()
-          .setRetrySettings(updateBigQueryExportRetrySettings);
-
-      RetrySettings listBigQueryExportsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listBigQueryExportsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .listBigQueryExportsSettings()
-          .setRetrySettings(listBigQueryExportsRetrySettings);
+              clientSettingsBuilder.updateSourceSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.updateSourceSettings().setRetrySettings(updateSourceRetrySettings);
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
     }
-    Retry createSecurityHealthAnalyticsCustomModuleRetry =
-        clientProperties.getCreateSecurityHealthAnalyticsCustomModuleRetry();
-    if (createSecurityHealthAnalyticsCustomModuleRetry != null) {
-      RetrySettings createSecurityHealthAnalyticsCustomModuleRetrySettings =
+    Retry batchCreateResourceValueConfigsRetry =
+        clientProperties.getBatchCreateResourceValueConfigsRetry();
+    if (batchCreateResourceValueConfigsRetry != null) {
+      RetrySettings batchCreateResourceValueConfigsRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .createSecurityHealthAnalyticsCustomModuleSettings()
-                  .getRetrySettings(),
-              createSecurityHealthAnalyticsCustomModuleRetry);
+              clientSettingsBuilder.batchCreateResourceValueConfigsSettings().getRetrySettings(),
+              batchCreateResourceValueConfigsRetry);
       clientSettingsBuilder
-          .createSecurityHealthAnalyticsCustomModuleSettings()
-          .setRetrySettings(createSecurityHealthAnalyticsCustomModuleRetrySettings);
+          .batchCreateResourceValueConfigsSettings()
+          .setRetrySettings(batchCreateResourceValueConfigsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
-            "Configured method-level retry settings for createSecurityHealthAnalyticsCustomModule from properties.");
+            "Configured method-level retry settings for batchCreateResourceValueConfigs from properties.");
       }
     }
-    Retry createSourceRetry = clientProperties.getCreateSourceRetry();
-    if (createSourceRetry != null) {
-      RetrySettings createSourceRetrySettings =
+    Retry createBigQueryExportRetry = clientProperties.getCreateBigQueryExportRetry();
+    if (createBigQueryExportRetry != null) {
+      RetrySettings createBigQueryExportRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.createSourceSettings().getRetrySettings(), createSourceRetry);
-      clientSettingsBuilder.createSourceSettings().setRetrySettings(createSourceRetrySettings);
+              clientSettingsBuilder.createBigQueryExportSettings().getRetrySettings(),
+              createBigQueryExportRetry);
+      clientSettingsBuilder
+          .createBigQueryExportSettings()
+          .setRetrySettings(createBigQueryExportRetrySettings);
       if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for createSource from properties.");
+        LOGGER.trace(
+            "Configured method-level retry settings for createBigQueryExport from properties.");
       }
     }
     Retry createFindingRetry = clientProperties.getCreateFindingRetry();
@@ -539,6 +491,30 @@ public class SecurityCenterSpringAutoConfiguration {
             "Configured method-level retry settings for createNotificationConfig from properties.");
       }
     }
+    Retry createSourceRetry = clientProperties.getCreateSourceRetry();
+    if (createSourceRetry != null) {
+      RetrySettings createSourceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createSourceSettings().getRetrySettings(), createSourceRetry);
+      clientSettingsBuilder.createSourceSettings().setRetrySettings(createSourceRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for createSource from properties.");
+      }
+    }
+    Retry deleteBigQueryExportRetry = clientProperties.getDeleteBigQueryExportRetry();
+    if (deleteBigQueryExportRetry != null) {
+      RetrySettings deleteBigQueryExportRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteBigQueryExportSettings().getRetrySettings(),
+              deleteBigQueryExportRetry);
+      clientSettingsBuilder
+          .deleteBigQueryExportSettings()
+          .setRetrySettings(deleteBigQueryExportRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteBigQueryExport from properties.");
+      }
+    }
     Retry deleteMuteConfigRetry = clientProperties.getDeleteMuteConfigRetry();
     if (deleteMuteConfigRetry != null) {
       RetrySettings deleteMuteConfigRetrySettings =
@@ -567,21 +543,18 @@ public class SecurityCenterSpringAutoConfiguration {
             "Configured method-level retry settings for deleteNotificationConfig from properties.");
       }
     }
-    Retry deleteSecurityHealthAnalyticsCustomModuleRetry =
-        clientProperties.getDeleteSecurityHealthAnalyticsCustomModuleRetry();
-    if (deleteSecurityHealthAnalyticsCustomModuleRetry != null) {
-      RetrySettings deleteSecurityHealthAnalyticsCustomModuleRetrySettings =
+    Retry deleteResourceValueConfigRetry = clientProperties.getDeleteResourceValueConfigRetry();
+    if (deleteResourceValueConfigRetry != null) {
+      RetrySettings deleteResourceValueConfigRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .deleteSecurityHealthAnalyticsCustomModuleSettings()
-                  .getRetrySettings(),
-              deleteSecurityHealthAnalyticsCustomModuleRetry);
+              clientSettingsBuilder.deleteResourceValueConfigSettings().getRetrySettings(),
+              deleteResourceValueConfigRetry);
       clientSettingsBuilder
-          .deleteSecurityHealthAnalyticsCustomModuleSettings()
-          .setRetrySettings(deleteSecurityHealthAnalyticsCustomModuleRetrySettings);
+          .deleteResourceValueConfigSettings()
+          .setRetrySettings(deleteResourceValueConfigRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
-            "Configured method-level retry settings for deleteSecurityHealthAnalyticsCustomModule from properties.");
+            "Configured method-level retry settings for deleteResourceValueConfig from properties.");
       }
     }
     Retry getBigQueryExportRetry = clientProperties.getGetBigQueryExportRetry();
@@ -596,6 +569,30 @@ public class SecurityCenterSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getBigQueryExport from properties.");
+      }
+    }
+    Retry getSimulationRetry = clientProperties.getGetSimulationRetry();
+    if (getSimulationRetry != null) {
+      RetrySettings getSimulationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getSimulationSettings().getRetrySettings(), getSimulationRetry);
+      clientSettingsBuilder.getSimulationSettings().setRetrySettings(getSimulationRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getSimulation from properties.");
+      }
+    }
+    Retry getValuedResourceRetry = clientProperties.getGetValuedResourceRetry();
+    if (getValuedResourceRetry != null) {
+      RetrySettings getValuedResourceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getValuedResourceSettings().getRetrySettings(),
+              getValuedResourceRetry);
+      clientSettingsBuilder
+          .getValuedResourceSettings()
+          .setRetrySettings(getValuedResourceRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getValuedResource from properties.");
       }
     }
     Retry getIamPolicyRetry = clientProperties.getGetIamPolicyRetry();
@@ -632,52 +629,18 @@ public class SecurityCenterSpringAutoConfiguration {
             "Configured method-level retry settings for getNotificationConfig from properties.");
       }
     }
-    Retry getOrganizationSettingsRetry = clientProperties.getGetOrganizationSettingsRetry();
-    if (getOrganizationSettingsRetry != null) {
-      RetrySettings getOrganizationSettingsRetrySettings =
+    Retry getResourceValueConfigRetry = clientProperties.getGetResourceValueConfigRetry();
+    if (getResourceValueConfigRetry != null) {
+      RetrySettings getResourceValueConfigRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getOrganizationSettingsSettings().getRetrySettings(),
-              getOrganizationSettingsRetry);
+              clientSettingsBuilder.getResourceValueConfigSettings().getRetrySettings(),
+              getResourceValueConfigRetry);
       clientSettingsBuilder
-          .getOrganizationSettingsSettings()
-          .setRetrySettings(getOrganizationSettingsRetrySettings);
+          .getResourceValueConfigSettings()
+          .setRetrySettings(getResourceValueConfigRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
-            "Configured method-level retry settings for getOrganizationSettings from properties.");
-      }
-    }
-    Retry getEffectiveSecurityHealthAnalyticsCustomModuleRetry =
-        clientProperties.getGetEffectiveSecurityHealthAnalyticsCustomModuleRetry();
-    if (getEffectiveSecurityHealthAnalyticsCustomModuleRetry != null) {
-      RetrySettings getEffectiveSecurityHealthAnalyticsCustomModuleRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .getEffectiveSecurityHealthAnalyticsCustomModuleSettings()
-                  .getRetrySettings(),
-              getEffectiveSecurityHealthAnalyticsCustomModuleRetry);
-      clientSettingsBuilder
-          .getEffectiveSecurityHealthAnalyticsCustomModuleSettings()
-          .setRetrySettings(getEffectiveSecurityHealthAnalyticsCustomModuleRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for getEffectiveSecurityHealthAnalyticsCustomModule from properties.");
-      }
-    }
-    Retry getSecurityHealthAnalyticsCustomModuleRetry =
-        clientProperties.getGetSecurityHealthAnalyticsCustomModuleRetry();
-    if (getSecurityHealthAnalyticsCustomModuleRetry != null) {
-      RetrySettings getSecurityHealthAnalyticsCustomModuleRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .getSecurityHealthAnalyticsCustomModuleSettings()
-                  .getRetrySettings(),
-              getSecurityHealthAnalyticsCustomModuleRetry);
-      clientSettingsBuilder
-          .getSecurityHealthAnalyticsCustomModuleSettings()
-          .setRetrySettings(getSecurityHealthAnalyticsCustomModuleRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for getSecurityHealthAnalyticsCustomModule from properties.");
+            "Configured method-level retry settings for getResourceValueConfig from properties.");
       }
     }
     Retry getSourceRetry = clientProperties.getGetSourceRetry();
@@ -690,16 +653,6 @@ public class SecurityCenterSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for getSource from properties.");
       }
     }
-    Retry groupAssetsRetry = clientProperties.getGroupAssetsRetry();
-    if (groupAssetsRetry != null) {
-      RetrySettings groupAssetsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.groupAssetsSettings().getRetrySettings(), groupAssetsRetry);
-      clientSettingsBuilder.groupAssetsSettings().setRetrySettings(groupAssetsRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for groupAssets from properties.");
-      }
-    }
     Retry groupFindingsRetry = clientProperties.getGroupFindingsRetry();
     if (groupFindingsRetry != null) {
       RetrySettings groupFindingsRetrySettings =
@@ -710,31 +663,31 @@ public class SecurityCenterSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for groupFindings from properties.");
       }
     }
-    Retry listAssetsRetry = clientProperties.getListAssetsRetry();
-    if (listAssetsRetry != null) {
-      RetrySettings listAssetsRetrySettings =
+    Retry listAttackPathsRetry = clientProperties.getListAttackPathsRetry();
+    if (listAttackPathsRetry != null) {
+      RetrySettings listAttackPathsRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listAssetsSettings().getRetrySettings(), listAssetsRetry);
-      clientSettingsBuilder.listAssetsSettings().setRetrySettings(listAssetsRetrySettings);
+              clientSettingsBuilder.listAttackPathsSettings().getRetrySettings(),
+              listAttackPathsRetry);
+      clientSettingsBuilder
+          .listAttackPathsSettings()
+          .setRetrySettings(listAttackPathsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for listAssets from properties.");
+        LOGGER.trace("Configured method-level retry settings for listAttackPaths from properties.");
       }
     }
-    Retry listDescendantSecurityHealthAnalyticsCustomModulesRetry =
-        clientProperties.getListDescendantSecurityHealthAnalyticsCustomModulesRetry();
-    if (listDescendantSecurityHealthAnalyticsCustomModulesRetry != null) {
-      RetrySettings listDescendantSecurityHealthAnalyticsCustomModulesRetrySettings =
+    Retry listBigQueryExportsRetry = clientProperties.getListBigQueryExportsRetry();
+    if (listBigQueryExportsRetry != null) {
+      RetrySettings listBigQueryExportsRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .listDescendantSecurityHealthAnalyticsCustomModulesSettings()
-                  .getRetrySettings(),
-              listDescendantSecurityHealthAnalyticsCustomModulesRetry);
+              clientSettingsBuilder.listBigQueryExportsSettings().getRetrySettings(),
+              listBigQueryExportsRetry);
       clientSettingsBuilder
-          .listDescendantSecurityHealthAnalyticsCustomModulesSettings()
-          .setRetrySettings(listDescendantSecurityHealthAnalyticsCustomModulesRetrySettings);
+          .listBigQueryExportsSettings()
+          .setRetrySettings(listBigQueryExportsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
-            "Configured method-level retry settings for listDescendantSecurityHealthAnalyticsCustomModules from properties.");
+            "Configured method-level retry settings for listBigQueryExports from properties.");
       }
     }
     Retry listFindingsRetry = clientProperties.getListFindingsRetry();
@@ -774,38 +727,18 @@ public class SecurityCenterSpringAutoConfiguration {
             "Configured method-level retry settings for listNotificationConfigs from properties.");
       }
     }
-    Retry listEffectiveSecurityHealthAnalyticsCustomModulesRetry =
-        clientProperties.getListEffectiveSecurityHealthAnalyticsCustomModulesRetry();
-    if (listEffectiveSecurityHealthAnalyticsCustomModulesRetry != null) {
-      RetrySettings listEffectiveSecurityHealthAnalyticsCustomModulesRetrySettings =
+    Retry listResourceValueConfigsRetry = clientProperties.getListResourceValueConfigsRetry();
+    if (listResourceValueConfigsRetry != null) {
+      RetrySettings listResourceValueConfigsRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .listEffectiveSecurityHealthAnalyticsCustomModulesSettings()
-                  .getRetrySettings(),
-              listEffectiveSecurityHealthAnalyticsCustomModulesRetry);
+              clientSettingsBuilder.listResourceValueConfigsSettings().getRetrySettings(),
+              listResourceValueConfigsRetry);
       clientSettingsBuilder
-          .listEffectiveSecurityHealthAnalyticsCustomModulesSettings()
-          .setRetrySettings(listEffectiveSecurityHealthAnalyticsCustomModulesRetrySettings);
+          .listResourceValueConfigsSettings()
+          .setRetrySettings(listResourceValueConfigsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
-            "Configured method-level retry settings for listEffectiveSecurityHealthAnalyticsCustomModules from properties.");
-      }
-    }
-    Retry listSecurityHealthAnalyticsCustomModulesRetry =
-        clientProperties.getListSecurityHealthAnalyticsCustomModulesRetry();
-    if (listSecurityHealthAnalyticsCustomModulesRetry != null) {
-      RetrySettings listSecurityHealthAnalyticsCustomModulesRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .listSecurityHealthAnalyticsCustomModulesSettings()
-                  .getRetrySettings(),
-              listSecurityHealthAnalyticsCustomModulesRetry);
-      clientSettingsBuilder
-          .listSecurityHealthAnalyticsCustomModulesSettings()
-          .setRetrySettings(listSecurityHealthAnalyticsCustomModulesRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for listSecurityHealthAnalyticsCustomModules from properties.");
+            "Configured method-level retry settings for listResourceValueConfigs from properties.");
       }
     }
     Retry listSourcesRetry = clientProperties.getListSourcesRetry();
@@ -816,6 +749,20 @@ public class SecurityCenterSpringAutoConfiguration {
       clientSettingsBuilder.listSourcesSettings().setRetrySettings(listSourcesRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listSources from properties.");
+      }
+    }
+    Retry listValuedResourcesRetry = clientProperties.getListValuedResourcesRetry();
+    if (listValuedResourcesRetry != null) {
+      RetrySettings listValuedResourcesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listValuedResourcesSettings().getRetrySettings(),
+              listValuedResourcesRetry);
+      clientSettingsBuilder
+          .listValuedResourcesSettings()
+          .setRetrySettings(listValuedResourcesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listValuedResources from properties.");
       }
     }
     Retry setFindingStateRetry = clientProperties.getSetFindingStateRetry();
@@ -831,16 +778,6 @@ public class SecurityCenterSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for setFindingState from properties.");
       }
     }
-    Retry setMuteRetry = clientProperties.getSetMuteRetry();
-    if (setMuteRetry != null) {
-      RetrySettings setMuteRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.setMuteSettings().getRetrySettings(), setMuteRetry);
-      clientSettingsBuilder.setMuteSettings().setRetrySettings(setMuteRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for setMute from properties.");
-      }
-    }
     Retry setIamPolicyRetry = clientProperties.getSetIamPolicyRetry();
     if (setIamPolicyRetry != null) {
       RetrySettings setIamPolicyRetrySettings =
@@ -849,6 +786,16 @@ public class SecurityCenterSpringAutoConfiguration {
       clientSettingsBuilder.setIamPolicySettings().setRetrySettings(setIamPolicyRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for setIamPolicy from properties.");
+      }
+    }
+    Retry setMuteRetry = clientProperties.getSetMuteRetry();
+    if (setMuteRetry != null) {
+      RetrySettings setMuteRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setMuteSettings().getRetrySettings(), setMuteRetry);
+      clientSettingsBuilder.setMuteSettings().setRetrySettings(setMuteRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for setMute from properties.");
       }
     }
     Retry testIamPermissionsRetry = clientProperties.getTestIamPermissionsRetry();
@@ -865,21 +812,18 @@ public class SecurityCenterSpringAutoConfiguration {
             "Configured method-level retry settings for testIamPermissions from properties.");
       }
     }
-    Retry simulateSecurityHealthAnalyticsCustomModuleRetry =
-        clientProperties.getSimulateSecurityHealthAnalyticsCustomModuleRetry();
-    if (simulateSecurityHealthAnalyticsCustomModuleRetry != null) {
-      RetrySettings simulateSecurityHealthAnalyticsCustomModuleRetrySettings =
+    Retry updateBigQueryExportRetry = clientProperties.getUpdateBigQueryExportRetry();
+    if (updateBigQueryExportRetry != null) {
+      RetrySettings updateBigQueryExportRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .simulateSecurityHealthAnalyticsCustomModuleSettings()
-                  .getRetrySettings(),
-              simulateSecurityHealthAnalyticsCustomModuleRetry);
+              clientSettingsBuilder.updateBigQueryExportSettings().getRetrySettings(),
+              updateBigQueryExportRetry);
       clientSettingsBuilder
-          .simulateSecurityHealthAnalyticsCustomModuleSettings()
-          .setRetrySettings(simulateSecurityHealthAnalyticsCustomModuleRetrySettings);
+          .updateBigQueryExportSettings()
+          .setRetrySettings(updateBigQueryExportRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
-            "Configured method-level retry settings for simulateSecurityHealthAnalyticsCustomModule from properties.");
+            "Configured method-level retry settings for updateBigQueryExport from properties.");
       }
     }
     Retry updateExternalSystemRetry = clientProperties.getUpdateExternalSystemRetry();
@@ -934,45 +878,18 @@ public class SecurityCenterSpringAutoConfiguration {
             "Configured method-level retry settings for updateNotificationConfig from properties.");
       }
     }
-    Retry updateOrganizationSettingsRetry = clientProperties.getUpdateOrganizationSettingsRetry();
-    if (updateOrganizationSettingsRetry != null) {
-      RetrySettings updateOrganizationSettingsRetrySettings =
+    Retry updateResourceValueConfigRetry = clientProperties.getUpdateResourceValueConfigRetry();
+    if (updateResourceValueConfigRetry != null) {
+      RetrySettings updateResourceValueConfigRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateOrganizationSettingsSettings().getRetrySettings(),
-              updateOrganizationSettingsRetry);
+              clientSettingsBuilder.updateResourceValueConfigSettings().getRetrySettings(),
+              updateResourceValueConfigRetry);
       clientSettingsBuilder
-          .updateOrganizationSettingsSettings()
-          .setRetrySettings(updateOrganizationSettingsRetrySettings);
+          .updateResourceValueConfigSettings()
+          .setRetrySettings(updateResourceValueConfigRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
-            "Configured method-level retry settings for updateOrganizationSettings from properties.");
-      }
-    }
-    Retry updateSecurityHealthAnalyticsCustomModuleRetry =
-        clientProperties.getUpdateSecurityHealthAnalyticsCustomModuleRetry();
-    if (updateSecurityHealthAnalyticsCustomModuleRetry != null) {
-      RetrySettings updateSecurityHealthAnalyticsCustomModuleRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder
-                  .updateSecurityHealthAnalyticsCustomModuleSettings()
-                  .getRetrySettings(),
-              updateSecurityHealthAnalyticsCustomModuleRetry);
-      clientSettingsBuilder
-          .updateSecurityHealthAnalyticsCustomModuleSettings()
-          .setRetrySettings(updateSecurityHealthAnalyticsCustomModuleRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for updateSecurityHealthAnalyticsCustomModule from properties.");
-      }
-    }
-    Retry updateSourceRetry = clientProperties.getUpdateSourceRetry();
-    if (updateSourceRetry != null) {
-      RetrySettings updateSourceRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateSourceSettings().getRetrySettings(), updateSourceRetry);
-      clientSettingsBuilder.updateSourceSettings().setRetrySettings(updateSourceRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for updateSource from properties.");
+            "Configured method-level retry settings for updateResourceValueConfig from properties.");
       }
     }
     Retry updateSecurityMarksRetry = clientProperties.getUpdateSecurityMarksRetry();
@@ -989,60 +906,14 @@ public class SecurityCenterSpringAutoConfiguration {
             "Configured method-level retry settings for updateSecurityMarks from properties.");
       }
     }
-    Retry createBigQueryExportRetry = clientProperties.getCreateBigQueryExportRetry();
-    if (createBigQueryExportRetry != null) {
-      RetrySettings createBigQueryExportRetrySettings =
+    Retry updateSourceRetry = clientProperties.getUpdateSourceRetry();
+    if (updateSourceRetry != null) {
+      RetrySettings updateSourceRetrySettings =
           RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.createBigQueryExportSettings().getRetrySettings(),
-              createBigQueryExportRetry);
-      clientSettingsBuilder
-          .createBigQueryExportSettings()
-          .setRetrySettings(createBigQueryExportRetrySettings);
+              clientSettingsBuilder.updateSourceSettings().getRetrySettings(), updateSourceRetry);
+      clientSettingsBuilder.updateSourceSettings().setRetrySettings(updateSourceRetrySettings);
       if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for createBigQueryExport from properties.");
-      }
-    }
-    Retry deleteBigQueryExportRetry = clientProperties.getDeleteBigQueryExportRetry();
-    if (deleteBigQueryExportRetry != null) {
-      RetrySettings deleteBigQueryExportRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.deleteBigQueryExportSettings().getRetrySettings(),
-              deleteBigQueryExportRetry);
-      clientSettingsBuilder
-          .deleteBigQueryExportSettings()
-          .setRetrySettings(deleteBigQueryExportRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for deleteBigQueryExport from properties.");
-      }
-    }
-    Retry updateBigQueryExportRetry = clientProperties.getUpdateBigQueryExportRetry();
-    if (updateBigQueryExportRetry != null) {
-      RetrySettings updateBigQueryExportRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.updateBigQueryExportSettings().getRetrySettings(),
-              updateBigQueryExportRetry);
-      clientSettingsBuilder
-          .updateBigQueryExportSettings()
-          .setRetrySettings(updateBigQueryExportRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for updateBigQueryExport from properties.");
-      }
-    }
-    Retry listBigQueryExportsRetry = clientProperties.getListBigQueryExportsRetry();
-    if (listBigQueryExportsRetry != null) {
-      RetrySettings listBigQueryExportsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listBigQueryExportsSettings().getRetrySettings(),
-              listBigQueryExportsRetry);
-      clientSettingsBuilder
-          .listBigQueryExportsSettings()
-          .setRetrySettings(listBigQueryExportsRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for listBigQueryExports from properties.");
+        LOGGER.trace("Configured method-level retry settings for updateSource from properties.");
       }
     }
     return clientSettingsBuilder.build();

@@ -145,6 +145,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.instant-snapshots.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/InstantSnapshots components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.interconnect-attachments.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/InterconnectAttachments components.",
@@ -328,6 +334,12 @@
       "name": "com.google.cloud.compute.v1.region-instances.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionInstances components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.region-instant-snapshots.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionInstantSnapshots components.",
       "defaultValue": true
     },
     {
