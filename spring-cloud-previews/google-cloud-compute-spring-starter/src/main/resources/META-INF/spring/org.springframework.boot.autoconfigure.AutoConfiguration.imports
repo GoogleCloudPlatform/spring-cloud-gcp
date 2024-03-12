@@ -22,6 +22,7 @@ com.google.cloud.compute.v1.spring.InstanceGroupManagersSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InstanceGroupsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InstanceTemplatesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InstancesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.InstantSnapshotsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InterconnectAttachmentsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InterconnectLocationsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InterconnectRemoteLocationsSpringAutoConfiguration
@@ -53,6 +54,7 @@ com.google.cloud.compute.v1.spring.RegionInstanceGroupManagersSpringAutoConfigur
 com.google.cloud.compute.v1.spring.RegionInstanceGroupsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionInstanceTemplatesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionInstancesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.RegionInstantSnapshotsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionNetworkEndpointGroupsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionNetworkFirewallPoliciesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionNotificationEndpointsSpringAutoConfiguration
