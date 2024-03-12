@@ -14,6 +14,25 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.1.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.0.4...v5.1.0) (2024-03-12)
+
+
+### Features
+
+* **spanner:** support float32 type. ([4cad2f6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4cad2f6b7c3e9d2c30e5f3d41360c71527e4dabe))
+
+
+### Bug Fixes
+
+* **deps:** update cloud-sql-socket-factory.version to v1.16.0 ([#2643](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2643)) ([67d54f0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/67d54f0a7437ffd38aab17f8d98dc75e170007b2))
+* Use GoogleCredentials to fetch user credentials for Cloud SQL ([#2644](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2644)) ([5eb77b4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5eb77b450a925d7c5846fe3966e246182380a4f3))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.33.0 to 26.34.0  ([4cad2f6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4cad2f6b7c3e9d2c30e5f3d41360c71527e4dabe))
+* bump io.micrometer:micrometer-tracing-bom from 1.2.3 to 1.2.4 ([#2677](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2677)) ([414e54e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/414e54ef2e8eeee4afe9a7462b49aff7e5c129d7))
+
 ## [5.0.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.0.3...v5.0.4) (2024-02-23)
 
 
