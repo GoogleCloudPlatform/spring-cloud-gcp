@@ -14,6 +14,20 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.9...v3.8.0) (2024-03-13)
+
+
+### Features
+
+* **spanner:** support float32 type. ([efe7edf](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/efe7edfd5fd4cf81382a345e003435d1710000ff))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.33.0 to 26.34.0 ([efe7edf](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/efe7edfd5fd4cf81382a345e003435d1710000ff))
+* bump org.apache.maven.plugins:maven-gpg-plugin from 3.1.0 to 3.2.0 ([#2673](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2673)) ([6c7b19f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6c7b19fa9d5769ceefca3ecb4451f61e14e2a5a6))
+* bump org.testcontainers:testcontainers-bom from 1.19.4 to 1.19.7 ([#2651](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2651)) ([9479f89](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9479f897c9ae120fc24dccfb4a80550f30af73ff))
+
 ## [3.7.9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.7.8...v3.7.9) (2024-02-22)
 
 
