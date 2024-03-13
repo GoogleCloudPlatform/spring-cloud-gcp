@@ -14,6 +14,23 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.10.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.9.4...v4.10.0) (2024-03-12)
+
+
+### Features
+
+* **spanner:** support float32 type. ([39a1d96](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/39a1d96b940e8f7b7fa1e77098ea586428f2a492))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.33.0 to 26.34.0 ([39a1d96](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/39a1d96b940e8f7b7fa1e77098ea586428f2a492))
+* bump com.google.errorprone:error_prone_core from 2.25.0 to 2.26.0 ([#2674](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2674)) ([82004ad](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/82004adcaf914bd74e54b6aee702590479923069))
+* bump io.micrometer:micrometer-tracing-bom from 1.2.3 to 1.2.4 ([#2675](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2675)) ([bf80d7a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/bf80d7afe48b1489965bbecc83000605c571eb52))
+* bump org.apache.maven.plugins:maven-gpg-plugin from 3.1.0 to 3.2.0 ([#2676](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2676)) ([cc94b3c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cc94b3c74ca541c8aad7d17058a26e200b692595))
+* bump org.springframework.boot:spring-boot-starter-parent ([#2637](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2637)) ([9e5eaf4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9e5eaf41b3b3008e6127ec341136a41fd43a8228))
+* bump spring-boot-dependencies.version from 3.1.8 to 3.1.9 ([#2636](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2636)) ([c73e496](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c73e4966f5b9334fa122ca58b1a50a9c1aba5c94))
+
 ## [4.9.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.9.3...v4.9.4) (2024-02-22)
 
 
