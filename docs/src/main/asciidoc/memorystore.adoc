@@ -26,6 +26,7 @@ In short, the following dependencies are needed:
     <artifactId>spring-boot-starter-data-redis</artifactId>
 </dependency>
 ----
+For reactive applications, you can also use `spring-boot-starter-data-redis-reactive` instead.
 
 And then you can use `org.springframework.cache.annotation.Cacheable` annotation for methods you'd like to be cached.
 [source,java]
