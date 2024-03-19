@@ -35,7 +35,7 @@
 
 	<properties>
 		<gcp-libraries-bom.version>26.34.0</gcp-libraries-bom.version>
-		<cloud-sql-socket-factory.version>1.16.0</cloud-sql-socket-factory.version>
+		<cloud-sql-socket-factory.version>1.17.1</cloud-sql-socket-factory.version>
 		<r2dbc-postgres-driver.version>1.0.4.RELEASE</r2dbc-postgres-driver.version>
 		<cloud-spanner-r2dbc.version>1.3.0</cloud-spanner-r2dbc.version>
 	</properties>
