@@ -25,6 +25,9 @@ git clone https://github.com/googleapis/google-cloud-java.git
 cd ./google-cloud-java
 git checkout $commitish
 
+# read googleapis committish used in hermetic build
+googleapis_committish=$(yq -r ".googleapis_commitish" generation_config.yaml)
+
 cd ${SPRING_GENERATOR_DIR}
 # start file, always override is present
 filename=${SPRING_GENERATOR_DIR}/scripts/resources/library_list.txt
@@ -75,12 +78,6 @@ for d in ./google-cloud-java/*java-*/; do
   version_folder=$(find "$d$repo_folder/main/java/com/google/" -type d -name 'v[0-9]' |sort -d -r | head -n 1 | sed "s#^$d##")
   version_number=$(echo $version_folder | sed 's#.*/##')
   googleapis_folder="$googleapis_path/$version_number"
-
-  # get commitish from git log
-  # criteria: changes happen before tag,  touches path, and with changes in googleapis/googleapis
-  cd $d || { echo "Failed to get into directory $d"; exit 1; }
-  googleapis_committish=$(git log $commitish -- "$version_folder" | grep -m 1 'Source-Link:.*googleapis/googleapis.*' | sed 's#^.*/commit/##')
-  cd ~- || { echo "Failed to get back to previous directory"; exit 1; }
 
   echo "$api_shortname, $googleapis_folder, $distribution_name, $googleapis_committish, $monorepo_folder" >> $filename
   count=$((count+1))
