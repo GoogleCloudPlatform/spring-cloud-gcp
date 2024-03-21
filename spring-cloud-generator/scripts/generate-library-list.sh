@@ -27,6 +27,7 @@ git checkout $commitish
 
 # read googleapis committish used in hermetic build
 googleapis_committish=$(yq -r ".googleapis_commitish" generation_config.yaml)
+echo "googleapis_committish: ${googleapis_committish}"
 
 cd ${SPRING_GENERATOR_DIR}
 # start file, always override is present
