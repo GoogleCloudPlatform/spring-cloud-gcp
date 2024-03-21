@@ -3,9 +3,9 @@
 === Spring Caching
 
 https://cloud.google.com/memorystore/[Cloud Memorystore for Redis] provides a fully managed in-memory data store service.
-Cloud Memorystore is compatible with the Redis protocol, allowing easy integration with https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-caching.html[Spring Caching].
+Cloud Memorystore is compatible with the Redis protocol, allowing easy integration with https://docs.spring.io/spring-boot/docs/3.2.x/reference/html/io.html#io.caching[Spring Caching].
 
-All you have to do is create a Cloud Memorystore instance and use its IP address in `application.properties` file as `spring.redis.host` property value.
+All you have to do is create a Cloud Memorystore instance and use its IP address in `application.properties` file as `spring.data.redis.host` property value. (Read more about this property in https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#appendix.application-properties.data[Spring Boot documentation]. )
 Everything else is exactly the same as setting up redis-backed Spring caching.
 
 [NOTE]
@@ -26,6 +26,7 @@ In short, the following dependencies are needed:
     <artifactId>spring-boot-starter-data-redis</artifactId>
 </dependency>
 ----
+For reactive applications, you can also use `spring-boot-starter-data-redis-reactive` instead.
 
 And then you can use `org.springframework.cache.annotation.Cacheable` annotation for methods you'd like to be cached.
 [source,java]
