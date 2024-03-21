@@ -66,9 +66,6 @@ jobs:
           go install github.com/bazelbuild/buildtools/buildozer@latest
           export PATH=$PATH:$(go env GOPATH)/bin
           buildozer --version
-      - name: Install yq
-        run: |
-          sudo apt-get install -q -y yq
       - name: Compile non-autogen libraries
         continue-on-error: false
         run: |
