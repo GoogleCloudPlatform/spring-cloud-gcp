@@ -37,7 +37,7 @@
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
 		<spring-cloud-dependencies.version>2023.0.0</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>3.2.3</spring-boot-dependencies.version>
+		<spring-boot-dependencies.version>3.2.4</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>1.1.1</zipkin-gcp.version>
 		<java-cfenv.version>2.5.0</java-cfenv.version>
