@@ -18,21 +18,10 @@ if [[ -z "$commitish" ]]; then
   exit 1
 fi
 
-# download the monorepo, need to loop through metadata there
-git clone https://github.com/googleapis/google-cloud-java.git
-
-# switch to the specified release commitish
-cd ./google-cloud-java
-git checkout $commitish
-
-# read googleapis committish used in hermetic build
-googleapis_committish=$(yq -r ".googleapis_commitish" generation_config.yaml)
-echo "googleapis_committish: ${googleapis_committish}"
-
 cd ${SPRING_GENERATOR_DIR}
 # start file, always override is present
 filename=${SPRING_GENERATOR_DIR}/scripts/resources/library_list.txt
-echo "# api_shortname, googleapis-folder, distribution_name:version, googleapis_committish, monorepo_folder" > "$filename"
+echo "# api_shortname, googleapis-folder, distribution_name:version, monorepo_folder" > "$filename"
 
 # loop through folders
 count=0
@@ -72,10 +61,7 @@ for d in ./google-cloud-java/*java-*/; do
   proto_paths_stable=$(echo "$library" | yq -r '.GAPICs[] | select(.proto_path | test("/v[0-9]+$")) | .proto_path')
   proto_paths_latest=$(echo "$proto_paths_stable" | sort -d -r | head -n 1)
 
-  echo "$api_shortname, $proto_paths_latest, $distribution_name, $googleapis_committish, $monorepo_folder" >> $filename
+  echo "$api_shortname, $proto_paths_latest, $distribution_name, $monorepo_folder" >> $filename
   count=$((count+1))
 done
 echo "Total in-scope client libraries: $count"
-
-# clean up
-rm -rf google-cloud-java/
