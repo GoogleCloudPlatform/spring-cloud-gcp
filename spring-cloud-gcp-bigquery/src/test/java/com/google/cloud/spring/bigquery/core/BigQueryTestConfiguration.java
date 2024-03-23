@@ -17,6 +17,7 @@
 package com.google.cloud.spring.bigquery.core;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.JobInfo.WriteDisposition;
@@ -35,6 +36,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.threeten.bp.Duration;
 
 /** Provides autoconfiguration for the BigQuery integration tests. */
 @SpringBootConfiguration
@@ -65,6 +67,13 @@ public class BigQueryTestConfiguration {
             .setProjectId(this.projectId)
             .setCredentials(this.credentialsProvider.getCredentials())
             .setHeaderProvider(new UserAgentHeaderProvider(this.getClass()))
+            .setRetrySettings(
+                RetrySettings
+                    .newBuilder()
+                    .setMaxAttempts(10)
+                    .setTotalTimeout(Duration.ofSeconds(120))
+                    .build()
+            )
             .build();
     return bigQueryOptions.getService();
   }
