@@ -16,7 +16,7 @@
 
 package com.google.cloud.generator.spring;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.api.generator.gapic.model.GapicContext;
 import com.google.api.generator.test.framework.Assert;
