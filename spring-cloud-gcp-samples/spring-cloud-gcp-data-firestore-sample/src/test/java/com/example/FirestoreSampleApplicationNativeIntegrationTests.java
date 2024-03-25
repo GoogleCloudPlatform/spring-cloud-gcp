@@ -19,8 +19,7 @@ package com.example;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,10 +71,11 @@ public class FirestoreSampleApplicationNativeIntegrationTests {
 
   @BeforeAll
   static void beforeAll() {
-    assumeThat(
-        "Firestore Native tests are " + "disabled. Please use '-Dit.native=true' to enable them. ",
-        System.getProperty("it.native"),
-        is("true"));
+
+    assumeTrue(
+        Boolean.parseBoolean(System.getProperty("it.native")),
+        "Firestore Native tests are disabled. Please use '-Dit.native=true' to enable them."
+    );
 
     FirestoreOptions options =
         FirestoreOptions.getDefaultInstance().toBuilder()

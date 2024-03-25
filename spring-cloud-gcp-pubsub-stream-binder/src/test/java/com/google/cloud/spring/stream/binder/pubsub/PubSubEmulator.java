@@ -18,8 +18,8 @@ package com.google.cloud.spring.stream.binder.pubsub;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -95,7 +95,7 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Para
       throws IOException, InterruptedException {
 
     assumeTrue(
-        "PubSubEmulator rule disabled. Please enable with -Dit.pubsub-emulator.", this.enableTests);
+        this.enableTests, "PubSubEmulator rule disabled. Please enable with -Dit.pubsub-emulator.");
 
     startEmulator();
     determineHostPort();
