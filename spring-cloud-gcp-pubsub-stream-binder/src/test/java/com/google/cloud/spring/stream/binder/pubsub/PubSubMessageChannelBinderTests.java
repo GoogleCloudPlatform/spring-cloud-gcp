@@ -17,6 +17,7 @@
 package com.google.cloud.spring.stream.binder.pubsub;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,7 +42,6 @@ import java.util.Map;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -181,7 +181,7 @@ class PubSubMessageChannelBinderTests {
                                                     errorChannel);
                           PubSubHeaderMapper mapper = (PubSubHeaderMapper) FieldUtils.readField(messageHandler, "headerMapper", true);
                           String[] headersToCheck = (String[]) FieldUtils.readField(mapper, "outboundHeaderPatterns", true);
-                          Assert.assertArrayEquals(headersToCheck, new String[]{"foo4", "foo5"});
+                          assertArrayEquals(headersToCheck, new String[]{"foo4", "foo5"});
                         });
   }
 
@@ -323,7 +323,7 @@ class PubSubMessageChannelBinderTests {
                                     (PubSubInboundChannelAdapter) messageProducer;
                PubSubHeaderMapper mapper = (PubSubHeaderMapper) FieldUtils.readField(inboundChannelAdapter, "headerMapper", true);
                String [] headersToCheck = (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true);
-               Assert.assertArrayEquals(headersToCheck, (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true));
+               assertArrayEquals(headersToCheck, (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true));
           });
   }
 
@@ -353,7 +353,7 @@ class PubSubMessageChannelBinderTests {
                                     (PubSubInboundChannelAdapter) messageProducer;
                           PubSubHeaderMapper mapper = (PubSubHeaderMapper) FieldUtils.readField(inboundChannelAdapter, "headerMapper", true);
                           String [] headersToCheck = (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true);
-                          Assert.assertArrayEquals(headersToCheck, new String[]{"foo2", "foo3"});
+                          assertArrayEquals(headersToCheck, new String[]{"foo2", "foo3"});
                         });
   }
 
