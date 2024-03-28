@@ -157,6 +157,12 @@ public class GcpPubSubAutoConfiguration {
   public ThreadPoolTaskScheduler pubsubPublisherThreadPool() {
     ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
     scheduler.setPoolSize(this.gcpPubSubProperties.getPublisher().getExecutorThreads());
+    scheduler.setAcceptTasksAfterContextClose(
+        this.gcpPubSubProperties.getPublisher().getExecutorAcceptTasksAfterContextClose());
+    scheduler.setWaitForTasksToCompleteOnShutdown(
+        this.gcpPubSubProperties.getPublisher().getExecutorWaitForTasksToCompleteOnShutdown());
+    scheduler.setAwaitTerminationMillis(
+        this.gcpPubSubProperties.getPublisher().getExecutorAwaitTerminationMillis());
     scheduler.setThreadNamePrefix("gcp-pubsub-publisher");
     scheduler.setDaemon(true);
     return scheduler;
