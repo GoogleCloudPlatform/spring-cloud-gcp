@@ -414,6 +414,53 @@ public class DlpServiceSpringAutoConfiguration {
           .deleteStoredInfoTypeSettings()
           .setRetrySettings(deleteStoredInfoTypeRetrySettings);
 
+      RetrySettings listProjectDataProfilesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listProjectDataProfilesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listProjectDataProfilesSettings()
+          .setRetrySettings(listProjectDataProfilesRetrySettings);
+
+      RetrySettings listTableDataProfilesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listTableDataProfilesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listTableDataProfilesSettings()
+          .setRetrySettings(listTableDataProfilesRetrySettings);
+
+      RetrySettings listColumnDataProfilesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listColumnDataProfilesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listColumnDataProfilesSettings()
+          .setRetrySettings(listColumnDataProfilesRetrySettings);
+
+      RetrySettings getProjectDataProfileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getProjectDataProfileSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getProjectDataProfileSettings()
+          .setRetrySettings(getProjectDataProfileRetrySettings);
+
+      RetrySettings getTableDataProfileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getTableDataProfileSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getTableDataProfileSettings()
+          .setRetrySettings(getTableDataProfileRetrySettings);
+
+      RetrySettings getColumnDataProfileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getColumnDataProfileSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getColumnDataProfileSettings()
+          .setRetrySettings(getColumnDataProfileRetrySettings);
+
       RetrySettings hybridInspectDlpJobRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.hybridInspectDlpJobSettings().getRetrySettings(), serviceRetry);
@@ -910,6 +957,90 @@ public class DlpServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for deleteStoredInfoType from properties.");
+      }
+    }
+    Retry listProjectDataProfilesRetry = clientProperties.getListProjectDataProfilesRetry();
+    if (listProjectDataProfilesRetry != null) {
+      RetrySettings listProjectDataProfilesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listProjectDataProfilesSettings().getRetrySettings(),
+              listProjectDataProfilesRetry);
+      clientSettingsBuilder
+          .listProjectDataProfilesSettings()
+          .setRetrySettings(listProjectDataProfilesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listProjectDataProfiles from properties.");
+      }
+    }
+    Retry listTableDataProfilesRetry = clientProperties.getListTableDataProfilesRetry();
+    if (listTableDataProfilesRetry != null) {
+      RetrySettings listTableDataProfilesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listTableDataProfilesSettings().getRetrySettings(),
+              listTableDataProfilesRetry);
+      clientSettingsBuilder
+          .listTableDataProfilesSettings()
+          .setRetrySettings(listTableDataProfilesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listTableDataProfiles from properties.");
+      }
+    }
+    Retry listColumnDataProfilesRetry = clientProperties.getListColumnDataProfilesRetry();
+    if (listColumnDataProfilesRetry != null) {
+      RetrySettings listColumnDataProfilesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listColumnDataProfilesSettings().getRetrySettings(),
+              listColumnDataProfilesRetry);
+      clientSettingsBuilder
+          .listColumnDataProfilesSettings()
+          .setRetrySettings(listColumnDataProfilesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listColumnDataProfiles from properties.");
+      }
+    }
+    Retry getProjectDataProfileRetry = clientProperties.getGetProjectDataProfileRetry();
+    if (getProjectDataProfileRetry != null) {
+      RetrySettings getProjectDataProfileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getProjectDataProfileSettings().getRetrySettings(),
+              getProjectDataProfileRetry);
+      clientSettingsBuilder
+          .getProjectDataProfileSettings()
+          .setRetrySettings(getProjectDataProfileRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getProjectDataProfile from properties.");
+      }
+    }
+    Retry getTableDataProfileRetry = clientProperties.getGetTableDataProfileRetry();
+    if (getTableDataProfileRetry != null) {
+      RetrySettings getTableDataProfileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getTableDataProfileSettings().getRetrySettings(),
+              getTableDataProfileRetry);
+      clientSettingsBuilder
+          .getTableDataProfileSettings()
+          .setRetrySettings(getTableDataProfileRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getTableDataProfile from properties.");
+      }
+    }
+    Retry getColumnDataProfileRetry = clientProperties.getGetColumnDataProfileRetry();
+    if (getColumnDataProfileRetry != null) {
+      RetrySettings getColumnDataProfileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getColumnDataProfileSettings().getRetrySettings(),
+              getColumnDataProfileRetry);
+      clientSettingsBuilder
+          .getColumnDataProfileSettings()
+          .setRetrySettings(getColumnDataProfileRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getColumnDataProfile from properties.");
       }
     }
     Retry hybridInspectDlpJobRetry = clientProperties.getHybridInspectDlpJobRetry();

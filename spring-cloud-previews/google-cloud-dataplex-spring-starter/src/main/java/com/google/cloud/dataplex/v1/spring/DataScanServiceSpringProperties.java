@@ -68,6 +68,11 @@ public class DataScanServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry listDataScanJobsRetry;
   /**
+   * Allow override of retry settings at method-level for generateDataQualityRules. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry generateDataQualityRulesRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -153,6 +158,14 @@ public class DataScanServiceSpringProperties implements CredentialsSupplier {
 
   public void setListDataScanJobsRetry(Retry listDataScanJobsRetry) {
     this.listDataScanJobsRetry = listDataScanJobsRetry;
+  }
+
+  public Retry getGenerateDataQualityRulesRetry() {
+    return this.generateDataQualityRulesRetry;
+  }
+
+  public void setGenerateDataQualityRulesRetry(Retry generateDataQualityRulesRetry) {
+    this.generateDataQualityRulesRetry = generateDataQualityRulesRetry;
   }
 
   public Retry getListLocationsRetry() {
