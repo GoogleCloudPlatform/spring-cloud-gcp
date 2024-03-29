@@ -41,6 +41,7 @@ fi
 
 # If not provided, generate and set library list path variable
 # find googleapis commitish from monrepo tag
+GOOGLEAPIS_COMMITTISH=""
 if [[ -z "$LIBRARY_LIST_PATH" ]]; then
   echo "No LIBRARY_LIST_PATH override provided, generating for MONOREPO_TAG: ${MONOREPO_TAG}"
   cd ${SPRING_GENERATOR_DIR}

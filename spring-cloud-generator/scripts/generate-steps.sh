@@ -27,8 +27,9 @@ function compute_monorepo_version() {
 }
 
 # Generate list of in-scope libraries to use (as static data source to generate modules from)
-# Uses heuristic approach to parse googleapis commitish and other metadata from google-cloud-java
-# See generate-library-list.sh and https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1390 for details
+# Get googleapis committish used for specified release and assign to global GOOGLEAPIS_COMMITTISH.
+# For each library in google-cloud-java, parse information from ".repo-metadata.json"
+# and hermetic build config file: generation_config.yaml
 # Assumes current working directory is spring-cloud-generator
 #
 # $1 - Monorepo version tag (or committish)
