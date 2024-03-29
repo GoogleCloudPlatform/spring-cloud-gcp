@@ -1,3 +1,4 @@
+com.google.cloud.dataplex.v1.spring.CatalogServiceSpringAutoConfiguration
 com.google.cloud.dataplex.v1.spring.ContentServiceSpringAutoConfiguration
 com.google.cloud.dataplex.v1.spring.DataTaxonomyServiceSpringAutoConfiguration
 com.google.cloud.dataplex.v1.spring.DataScanServiceSpringAutoConfiguration
