@@ -14,6 +14,15 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.1.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.1.0...v5.1.1) (2024-03-29)
+
+
+### Bug Fixes
+
+* add config options to facilitate late shutdown of pubsub publisher ThreadPoolTaskScheduler (GoogleCloudPlatform[#2721](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2721)) ([#2738](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2738)) ([13e4911](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/13e49116d4b33843120821b33a98a01ea80f9f4d))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.35.0 ([#2754](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2754)) ([cd3bc45](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cd3bc45c61a77f04adf503084302e0bb35fa1739))
+* Update README.adoc on doc versions ([#2724](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2724)) ([10fd702](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/10fd702c18ca39e9f030050c87993377e8ba7041))
+
 ## [5.1.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.0.4...v5.1.0) (2024-03-12)
 
 
