@@ -14,6 +14,14 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.1.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.1.1...v5.1.2) (2024-03-29)
+
+
+### Dependencies
+
+* bump org.springframework.cloud:spring-cloud-dependencies ([#2744](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2744)) ([a0d97da](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a0d97da63ced23327de55b6955deabfb7597cfe8))
+* bump spring-cloud-config.version from 4.1.0 to 4.1.1 ([#2743](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2743)) ([631f39e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/631f39e99fedaded0909df273cd74bbc04b50beb))
+
 ## [5.1.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.1.0...v5.1.1) (2024-03-29)
 
 
