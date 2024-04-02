@@ -30,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.ServiceOptions;
@@ -332,5 +333,25 @@ class BigQueryTemplateTest {
     CompletableFuture<WriteApiResponse> futRes =
         bqTemplateSpy.writeJsonStream(TABLE, jsonInputStream, getDefaultSchema());
     assertThat(futRes).withFailMessage("boom!").failsWithin(Duration.ofSeconds(1));
+  }
+
+
+
+  @Test
+  void testWriterIsClosed() throws Exception {
+    BigQueryJsonDataWriter writer = mock(BigQueryJsonDataWriter.class);
+    doReturn(writer)
+        .when(bqTemplateSpy)
+        .getBigQueryJsonDataWriter(any(TableName.class));
+
+    doReturn(BatchCommitWriteStreamsResponse.getDefaultInstance())
+        .when(bqTemplateSpy)
+        .getCommitResponse(any(TableName.class), any(BigQueryJsonDataWriter.class));
+
+    WriteApiResponse apiRes = bqTemplateSpy.getWriteApiResponse(
+        TABLE,
+        new ByteArrayInputStream(newLineSeperatedJson.getBytes()));
+
+    verify(writer).close();
   }
 }

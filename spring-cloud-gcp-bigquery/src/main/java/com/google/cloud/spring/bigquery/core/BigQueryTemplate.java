@@ -294,58 +294,55 @@ public class BigQueryTemplate implements BigQueryOperations {
     TableName parentTable =
         TableName.of(bigQuery.getOptions().getProjectId(), datasetName, tableName);
 
-    // Initialize a write stream for the specified table.
-    BigQueryJsonDataWriter writer = getBigQueryJsonDataWriter(parentTable);
+    try (BigQueryJsonDataWriter writer = getBigQueryJsonDataWriter(parentTable)) {
+      try {
+        // Write data in batches. Ref: https://cloud.google.com/bigquery/quotas#write-api-limits
+        long offset = 0;
+        int currentBatchSize = 0;
 
-    try {
-      // Write data in batches. Ref: https://cloud.google.com/bigquery/quotas#write-api-limits
-      long offset = 0;
-      int currentBatchSize = 0;
+        BufferedReader jsonReader = new BufferedReader(new InputStreamReader(jsonInputStream));
+        String jsonLine = null;
+        JSONArray jsonBatch = new JSONArray();
+        while ((jsonLine = jsonReader.readLine()) != null) { // read the inputstream line by line
+          JSONObject jsonObj = new JSONObject(jsonLine); // cast the JSON string into JSON Object
+          jsonBatch.put(jsonObj);
+          currentBatchSize++;
+          if (currentBatchSize == getBatchSize()) {
+            // append the batch, increment the offset and reset the batch
+            writer.append(jsonBatch, offset);
+            offset += jsonBatch.length();
+            jsonBatch = new JSONArray();
+            currentBatchSize = 0;
+          }
+        }
 
-      BufferedReader jsonReader = new BufferedReader(new InputStreamReader(jsonInputStream));
-      String jsonLine = null;
-      JSONArray jsonBatch = new JSONArray();
-      while ((jsonLine = jsonReader.readLine()) != null) { // read the input stream line by line
-        JSONObject jsonObj = new JSONObject(jsonLine); // cast the JSON string into JSON Object
-        jsonBatch.put(jsonObj);
-        currentBatchSize++;
-        if (currentBatchSize
-            == getBatchSize()) { // append the batch, increment the offset and reset
-          // the batch
+        if (jsonBatch.length() != 0) {
+          // there might be records less than JSON_STREAM_WRITER_BATCH_SIZE, append those as well
           writer.append(jsonBatch, offset);
-          offset += jsonBatch.length();
-          jsonBatch = new JSONArray();
-          currentBatchSize = 0;
+        }
+
+      } catch (Exception e) {
+        throw new BigQueryException("Failed to append records. \n" + e);
+      }
+
+      // Finalize the stream before committing it
+      writer.finalizeWriteStream();
+
+      BatchCommitWriteStreamsResponse commitResponse = getCommitResponse(parentTable, writer);
+      // If the response does not have a commit time, it means the commit operation failed.
+      if (!commitResponse.hasCommitTime()) {
+        for (StorageError err : commitResponse.getStreamErrorsList()) {
+          apiResponse.addError(err); // this object is returned to the user
         }
       }
 
-      if (jsonBatch.length()
-          != 0) { // there might be records less than JSON_STREAM_WRITER_BATCH_SIZE, append those as
-        // well
-        writer.append(jsonBatch, offset);
+      // set isSuccessful flag to true of there were no errors
+      if (apiResponse.getErrors().isEmpty()) {
+        apiResponse.setSuccessful(true);
       }
 
-    } catch (Exception e) {
-      throw new BigQueryException("Failed to append records. \n" + e);
+      return apiResponse;
     }
-
-    // Finalize the stream before committing it
-    writer.finalizeWriteStream();
-
-    BatchCommitWriteStreamsResponse commitResponse = getCommitResponse(parentTable, writer);
-    // If the response does not have a commit time, it means the commit operation failed.
-    if (!commitResponse.hasCommitTime()) {
-      for (StorageError err : commitResponse.getStreamErrorsList()) {
-        apiResponse.addError(err); // this object is returned to the user
-      }
-    }
-
-    // set isSuccessful flag to true of there were no errors
-    if (apiResponse.getErrors().isEmpty()) {
-      apiResponse.setSuccessful(true);
-    }
-
-    return apiResponse;
   }
 
   @VisibleForTesting
