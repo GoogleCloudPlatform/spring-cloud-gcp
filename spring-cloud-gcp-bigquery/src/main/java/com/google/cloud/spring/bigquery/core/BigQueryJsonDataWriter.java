@@ -124,7 +124,7 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
   }
 
   @Override
-  public void close() throws Exception {
+  public void close() {
     // Close the connection to the server.
     streamWriter.close();
   }
