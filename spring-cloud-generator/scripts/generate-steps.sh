@@ -35,7 +35,7 @@ function compute_monorepo_version() {
 # $1 - Monorepo version tag (or committish)
 function generate_libraries_list(){
   monorepo_commitish=$1
-  git clone https://github.com/googleapis/google-cloud-java.git
+  git clone --depth=1 https://github.com/googleapis/google-cloud-java.git
   pushd google-cloud-java || { echo "Failure: google-cloud-java folder does not exists."; exit 1; }
   # read googleapis committish used in hermetic build
   GOOGLEAPIS_COMMITTISH=$(yq -r ".googleapis_commitish" generation_config.yaml)
@@ -63,9 +63,10 @@ function save_error_info () {
 # $1 - googleapis commitish
 function setup_googleapis(){
   googleapis_commitish=$1
-  git clone https://github.com/googleapis/googleapis.git
+  git clone --depth=1 https://github.com/googleapis/googleapis.git
   cd googleapis
-  git checkout ${googleapis_commitish}
+  git fetch origin "${googleapis_commitish}"
+  git checkout "${googleapis_commitish}"
   modify_workspace_file "WORKSPACE" "../../spring-cloud-generator" "../scripts/resources/googleapis_modification_string.txt"
   # In repository_rules.bzl, add switch for new spring rule
   JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"\@spring_cloud_generator\/\/:java_gapic_spring.bzl\\\",\n    )"
