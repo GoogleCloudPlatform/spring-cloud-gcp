@@ -1,0 +1,72 @@
+== Native Image Support (Preview)
+
+https://www.graalvm.org/docs/[GraalVM Native Image] allows you to ahead-of-time compile Java code to a standalone executable.
+GraalVM native images are supported since Spring Boot 3.0 and Spring Framework 6.0. Discover more in Spring Boot guide to https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html[GraalVM Native Image Support].
+
+Refer to https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html#native-image.introducing-graalvm-native-images.understanding-aot-processing[this section] to learn more about Spring ahead-of-time processing and its limitations. There are also additional limitations specific to Spring Cloud projects listed https://github.com/spring-cloud/spring-cloud-release/wiki/AOT-transformations-and-native-image-support[here].
+
+WARNING: Native image support for Spring Framework on Google Cloud is in **Preview**.
+Compatibility with native image compilation is available "as is" and has no SLAs or technical support commitments, as defined in our https://cloud.google.com/products#product-launch-stages[product launch stages] for previews.
+
+=== Currently Included Modules
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-cloud-gcp-core[Google Cloud Core]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-sql[Cloud SQL]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-storage[Cloud Storage]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-pubsub[Cloud PubSub]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-integration[Spring Integration for Cloud PubSub and Cloud Storage]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-cloud-stream[Spring Cloud Stream binder to Google Cloud Pub/Sub]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-cloud-bus[Cloud Pub/Sub as the Spring Cloud Bus]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-trace[Cloud Trace]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-logging[Cloud Logging]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-monitoring[Cloud Monitoring]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-data-cloud-spanner[Spring Data Cloud Spanner] (See details in <<detail_guides>> )
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-data-cloud-datastore[Spring Data Cloud Datastore] (See details in <<detail_guides>> )
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#spring-data-cloud-firestore[Spring Data Cloud Firestore] (See details in <<detail_guides>> )
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#bigquery[BigQuery]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#cloud-vision[Cloud Vision]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#secret-manager[Cloud Secret Manager]
+
+- https://googlecloudplatform.github.io/spring-cloud-gcp//reference/html/index.html#google-cloud-key-management-service[Cloud KMS]
+
+=== Setup and Usage
+
+Spring Boot includes buildpack support for native images directly for both Maven and Gradle.
+You can also generate a native executable directly without using Docker with GraalVM Native Build Tools.
+
+To build a native image container or generate a native executable using Maven you should ensure that your `pom.xml` file uses the `spring-boot-starter-parent` in order to inherit the `native` profile and the `org.graalvm.buildtools:native-maven-plugin`.
+
+For details on setup and build, please refer to Spring Boot guide to https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#native-image.developing-your-first-application[Developing Your First GraalVM Native Application]
+
+=== Module-specific Implementation Notes [[detail_guides]]
+
+==== Datastore
+
+To use `DatastoreTemplate` methods on Domain types not managed by `DatastoreRepository`, you need to register runtime hints for these domain POJOs in your application. For more details, refer to example
+https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-basic-sample/src/main/java/com/example/DomainTypeRuntimeHints.java[`DomainTypeRuntimeHints`] in Datastore basic sample.
+
+===== Relationships
+@LazyReference is not yet supported for native image.
+
+==== Firestore
+
+To use `FirestoreTemplate`  methods on Domain types not managed by `FirestoreReactiveRepository`, you need to register runtime hints for these domain POJOs in your application. For more details, refer to example https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-firestore-sample/src/main/java/com/example/DomainTypeRuntimeHints.java[`DomainTypeRuntimeHints`] in Reactive Firestore Repository sample application.
+
+==== Spanner
+
+To use `SpannerTemplate`  methods on Domain types not managed by `SpannerRepository`, you need to register runtime hints for these domain POJOs in your application. For more details, refer to example https://github.com/GoogleCloudPlatform/spring-cloud-gcp/blob/main/spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample/src/main/java/com/example/SpannerTemplateRuntimeHints.java[`SpannerTemplateRuntimeHints`] in the Spanner Template sample application.
