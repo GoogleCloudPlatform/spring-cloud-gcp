@@ -78,7 +78,7 @@ public class BigQueryJsonDataWriter implements AutoCloseable {
     // For more information about JsonStreamWriter, see:
     // https://googleapis.dev/java/google-cloud-bigquerystorage/latest/com/google/cloud/bigquery/storage/v1beta2/JsonStreamWriter.html
     streamWriter =
-        JsonStreamWriter.newBuilder(writeStream.getName(), writeStream.getTableSchema()).build();
+        JsonStreamWriter.newBuilder(writeStream.getName(), writeStream.getTableSchema(), bigQueryWriteClient).build();
     this.bigQueryWriteClient = bigQueryWriteClient;
   }
 
