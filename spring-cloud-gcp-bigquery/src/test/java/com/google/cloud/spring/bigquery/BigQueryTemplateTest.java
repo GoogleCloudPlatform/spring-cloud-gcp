@@ -44,6 +44,7 @@ import com.google.cloud.bigquery.spi.BigQueryRpcFactory;
 import com.google.cloud.bigquery.spi.v2.BigQueryRpc;
 import com.google.cloud.bigquery.storage.v1.BatchCommitWriteStreamsResponse;
 import com.google.cloud.bigquery.storage.v1.BigQueryWriteClient;
+import com.google.cloud.bigquery.storage.v1.StorageError;
 import com.google.cloud.bigquery.storage.v1.TableName;
 import com.google.cloud.spring.bigquery.core.BigQueryJsonDataWriter;
 import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
@@ -335,7 +336,26 @@ class BigQueryTemplateTest {
     assertThat(futRes).withFailMessage("boom!").failsWithin(Duration.ofSeconds(1));
   }
 
+  @Test
+  void testWriterAppendsErrors() throws Exception {
+    BigQueryJsonDataWriter writer = mock(BigQueryJsonDataWriter.class);
+    doReturn(writer)
+        .when(bqTemplateSpy)
+        .getBigQueryJsonDataWriter(any(TableName.class));
 
+    StorageError storageError = StorageError.newBuilder().build();
+    doReturn(BatchCommitWriteStreamsResponse.getDefaultInstance()
+            .toBuilder().clearCommitTime().addStreamErrors(storageError).build())
+        .when(bqTemplateSpy)
+        .getCommitResponse(any(TableName.class), any(BigQueryJsonDataWriter.class));
+
+    WriteApiResponse apiRes = bqTemplateSpy.getWriteApiResponse(
+        TABLE,
+        new ByteArrayInputStream(newLineSeperatedJson.getBytes()));
+
+    assertThat(apiRes.isSuccessful()).isFalse();
+    assertThat(apiRes.getErrors()).contains(storageError);
+  }
 
   @Test
   void testWriterIsClosed() throws Exception {
