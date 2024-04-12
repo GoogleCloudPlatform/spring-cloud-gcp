@@ -92,6 +92,17 @@ Enables message ordering. | No | false
 The publisher endpoint.
 Example: `"us-east1-pubsub.googleapis.com:443"`.
 This is useful in conjunction with enabling message ordering because sending messages to the same region ensures they are received in order even when multiple publishers are used. | No | pubsub.googleapis.com:443
+| `spring.cloud.gcp.pubsub.publisher.executor-accept-tasks-after-context-close` |
+Sets the underlying `ThreadPoolTaskScheduler` 's https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/concurrent/ExecutorConfigurationSupport.html#setAcceptTasksAfterContextClose(boolean)[acceptTasksAfterContextClose] property.
+If true, tasks will be accepted after the `ContextClosedEvent` at the expense of a longer shutdown phase. | No | false
+| `spring.cloud.gcp.pubsub.publisher.executor-await-termination-millis` |
+Sets the underlying `ThreadPoolTaskScheduler` 's https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/concurrent/ExecutorConfigurationSupport.html#setAwaitTerminationMillis(long)[awaitTerminationMillis] property.
+Determines the maximum number of milliseconds the scheduler will block on shutdown while waiting for remaining tasks to complete.
+This is particularly useful if the remaining tasks need access to other resources that are also managed by the container. | No | 0
+| `spring.cloud.gcp.pubsub.publisher.executor-wait-for-tasks-to-complete-on-shutdown` |
+Sets the underlying `ThreadPoolTaskScheduler` 's https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/concurrent/ExecutorConfigurationSupport.html#setWaitForTasksToCompleteOnShutdown(boolean)[waitForTasksToCompleteOnShutdown] property.
+Determines whether to wait for scheduled tasks to complete on shutdown, not interrupting running tasks and executing all tasks in the queue.
+When true, replicates the default behavior before Spring 6.1.x. | No | false
 |===
 
 ===== Subscription-specific Configurations
