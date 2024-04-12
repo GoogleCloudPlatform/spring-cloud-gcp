@@ -322,7 +322,7 @@ public class BigQueryTemplate implements BigQueryOperations {
         }
 
       } catch (Exception e) {
-        throw new BigQueryException("Failed to append records. \n" + e);
+        throw new BigQueryException("Failed to append records.", e);
       }
 
       // Finalize the stream before committing it
