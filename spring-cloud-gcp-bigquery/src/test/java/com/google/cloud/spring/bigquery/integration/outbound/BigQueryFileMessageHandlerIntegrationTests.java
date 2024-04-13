@@ -76,7 +76,9 @@ class BigQueryFileMessageHandlerIntegrationTests {
   @BeforeEach
   @AfterEach
   void setup() {
-    tableName = TABLE_NAME_PREFIX + UUID.randomUUID();
+    if (tableName == null) {
+      tableName = TABLE_NAME_PREFIX + UUID.randomUUID();
+    }
     // Clear the previous dataset before beginning the test.
     this.bigquery.delete(TableId.of(DATASET_NAME, tableName));
   }
