@@ -77,7 +77,7 @@ class BigQueryFileMessageHandlerIntegrationTests {
   @AfterEach
   void setup() {
     if (tableName == null) {
-      tableName = TABLE_NAME_PREFIX + UUID.randomUUID();
+      tableName = TABLE_NAME_PREFIX + UUID.randomUUID().toString().replace('-', '_');
     }
     // Clear the previous dataset before beginning the test.
     this.bigquery.delete(TableId.of(DATASET_NAME, tableName));
@@ -113,7 +113,8 @@ class BigQueryFileMessageHandlerIntegrationTests {
     jobFuture.get();
 
     QueryJobConfiguration queryJobConfiguration =
-        QueryJobConfiguration.newBuilder("SELECT * FROM test_dataset.test_table").build();
+        QueryJobConfiguration.newBuilder(String.format("SELECT * FROM test_dataset.%s", tableName))
+            .build();
     TableResult result = this.bigquery.query(queryJobConfiguration);
 
     assertThat(result.getTotalRows()).isEqualTo(1);
@@ -148,7 +149,8 @@ class BigQueryFileMessageHandlerIntegrationTests {
     jobFuture.get();
 
     QueryJobConfiguration queryJobConfiguration =
-        QueryJobConfiguration.newBuilder("SELECT * FROM test_dataset.test_table").build();
+        QueryJobConfiguration.newBuilder(String.format("SELECT * FROM test_dataset.%s", tableName))
+            .build();
     TableResult result = this.bigquery.query(queryJobConfiguration);
 
     assertThat(result.getTotalRows()).isEqualTo(1);
@@ -175,7 +177,8 @@ class BigQueryFileMessageHandlerIntegrationTests {
     assertThat(job).isNotNull();
 
     QueryJobConfiguration queryJobConfiguration =
-        QueryJobConfiguration.newBuilder("SELECT * FROM test_dataset.test_table").build();
+        QueryJobConfiguration.newBuilder(String.format("SELECT * FROM test_dataset.%s", tableName))
+            .build();
     TableResult result = this.bigquery.query(queryJobConfiguration);
     assertThat(result.getTotalRows()).isEqualTo(1);
   }
