@@ -60,8 +60,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 class BigQueryFileMessageHandlerIntegrationTests {
 
-  private static final String TABLE_NAME_PREFIX = "test_table_";
-
   private String tableName;
 
   @Autowired
@@ -77,7 +75,7 @@ class BigQueryFileMessageHandlerIntegrationTests {
   @AfterEach
   void setup() {
     if (tableName == null) {
-      tableName = TABLE_NAME_PREFIX + UUID.randomUUID().toString().replace('-', '_');
+      tableName = "test_table_" + UUID.randomUUID().toString().replace('-', '_');
     }
     // Clear the previous dataset before beginning the test.
     this.bigquery.delete(TableId.of(DATASET_NAME, tableName));
