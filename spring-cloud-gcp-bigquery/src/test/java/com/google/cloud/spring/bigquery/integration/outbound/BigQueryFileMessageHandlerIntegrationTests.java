@@ -35,6 +35,7 @@ import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders
 import java.io.File;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -59,19 +60,25 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 class BigQueryFileMessageHandlerIntegrationTests {
 
-  private static final String TABLE_NAME = "test_table";
+  private String tableName;
 
-  @Autowired private ThreadPoolTaskScheduler taskScheduler;
+  @Autowired
+  private ThreadPoolTaskScheduler taskScheduler;
 
-  @Autowired private BigQuery bigquery;
+  @Autowired
+  private BigQuery bigquery;
 
-  @Autowired private BigQueryFileMessageHandler messageHandler;
+  @Autowired
+  private BigQueryFileMessageHandler messageHandler;
 
   @BeforeEach
   @AfterEach
   void setup() {
+    if (tableName == null) {
+      tableName = "test_table_" + UUID.randomUUID().toString().replace('-', '_');
+    }
     // Clear the previous dataset before beginning the test.
-    this.bigquery.delete(TableId.of(DATASET_NAME, TABLE_NAME));
+    this.bigquery.delete(TableId.of(DATASET_NAME, tableName));
   }
 
   @Test
@@ -83,7 +90,7 @@ class BigQueryFileMessageHandlerIntegrationTests {
             Field.newBuilder("County", StandardSQLTypeName.STRING).setMode(Mode.NULLABLE).build());
 
     HashMap<String, Object> messageHeaders = new HashMap<>();
-    messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, TABLE_NAME);
+    messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, tableName);
     messageHeaders.put(BigQuerySpringMessageHeaders.FORMAT_OPTIONS, FormatOptions.csv());
     messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_SCHEMA, schema);
 
@@ -104,7 +111,8 @@ class BigQueryFileMessageHandlerIntegrationTests {
     jobFuture.get();
 
     QueryJobConfiguration queryJobConfiguration =
-        QueryJobConfiguration.newBuilder("SELECT * FROM test_dataset.test_table").build();
+        QueryJobConfiguration.newBuilder(String.format("SELECT * FROM test_dataset.%s", tableName))
+            .build();
     TableResult result = this.bigquery.query(queryJobConfiguration);
 
     assertThat(result.getTotalRows()).isEqualTo(1);
@@ -119,7 +127,7 @@ class BigQueryFileMessageHandlerIntegrationTests {
   @Test
   void testLoadFile() throws InterruptedException, ExecutionException {
     HashMap<String, Object> messageHeaders = new HashMap<>();
-    this.messageHandler.setTableName(TABLE_NAME);
+    this.messageHandler.setTableName(tableName);
     this.messageHandler.setFormatOptions(FormatOptions.csv());
 
     Message<File> message =
@@ -139,7 +147,8 @@ class BigQueryFileMessageHandlerIntegrationTests {
     jobFuture.get();
 
     QueryJobConfiguration queryJobConfiguration =
-        QueryJobConfiguration.newBuilder("SELECT * FROM test_dataset.test_table").build();
+        QueryJobConfiguration.newBuilder(String.format("SELECT * FROM test_dataset.%s", tableName))
+            .build();
     TableResult result = this.bigquery.query(queryJobConfiguration);
 
     assertThat(result.getTotalRows()).isEqualTo(1);
@@ -155,7 +164,7 @@ class BigQueryFileMessageHandlerIntegrationTests {
     this.messageHandler.setSync(true);
 
     HashMap<String, Object> messageHeaders = new HashMap<>();
-    messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, TABLE_NAME);
+    messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, tableName);
     messageHeaders.put(BigQuerySpringMessageHeaders.FORMAT_OPTIONS, FormatOptions.csv());
 
     Message<File> message =
@@ -166,7 +175,8 @@ class BigQueryFileMessageHandlerIntegrationTests {
     assertThat(job).isNotNull();
 
     QueryJobConfiguration queryJobConfiguration =
-        QueryJobConfiguration.newBuilder("SELECT * FROM test_dataset.test_table").build();
+        QueryJobConfiguration.newBuilder(String.format("SELECT * FROM test_dataset.%s", tableName))
+            .build();
     TableResult result = this.bigquery.query(queryJobConfiguration);
     assertThat(result.getTotalRows()).isEqualTo(1);
   }
@@ -174,7 +184,7 @@ class BigQueryFileMessageHandlerIntegrationTests {
   @Test
   void testLoadFile_cancel() {
     HashMap<String, Object> messageHeaders = new HashMap<>();
-    messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, TABLE_NAME);
+    messageHeaders.put(BigQuerySpringMessageHeaders.TABLE_NAME, tableName);
     messageHeaders.put(BigQuerySpringMessageHeaders.FORMAT_OPTIONS, FormatOptions.csv());
 
     Message<File> message =
