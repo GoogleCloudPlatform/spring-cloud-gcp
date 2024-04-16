@@ -5,7 +5,7 @@
   <parent>
     <artifactId>spring-cloud-gcp</artifactId>
     <groupId>com.google.cloud</groupId>
-    <version>5.1.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+    <version>5.1.2</version><!-- {x-version-update:spring-cloud-gcp:current} -->
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -21,6 +21,7 @@
     <module>google-cloud-vmmigration-spring-starter</module>
     <module>google-cloud-video-transcoder-spring-starter</module>
     <module>google-cloud-video-intelligence-spring-starter</module>
+    <module>google-cloud-translate-spring-starter</module>
     <module>google-cloud-trace-spring-starter</module>
     <module>google-cloud-tpu-spring-starter</module>
     <module>google-cloud-texttospeech-spring-starter</module>
@@ -58,6 +59,7 @@
     <module>google-cloud-iot-spring-starter</module>
     <module>google-cloud-ids-spring-starter</module>
     <module>google-cloud-iamcredentials-spring-starter</module>
+    <module>google-iam-policy-spring-starter</module>
     <module>google-iam-admin-spring-starter</module>
     <module>google-cloud-gsuite-addons-spring-starter</module>
     <module>google-cloud-gkehub-spring-starter</module>

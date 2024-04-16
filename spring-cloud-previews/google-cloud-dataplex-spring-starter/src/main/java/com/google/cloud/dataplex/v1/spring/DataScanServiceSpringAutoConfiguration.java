@@ -186,6 +186,14 @@ public class DataScanServiceSpringAutoConfiguration {
           .listDataScanJobsSettings()
           .setRetrySettings(listDataScanJobsRetrySettings);
 
+      RetrySettings generateDataQualityRulesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateDataQualityRulesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .generateDataQualityRulesSettings()
+          .setRetrySettings(generateDataQualityRulesRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -253,6 +261,20 @@ public class DataScanServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listDataScanJobs from properties.");
+      }
+    }
+    Retry generateDataQualityRulesRetry = clientProperties.getGenerateDataQualityRulesRetry();
+    if (generateDataQualityRulesRetry != null) {
+      RetrySettings generateDataQualityRulesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateDataQualityRulesSettings().getRetrySettings(),
+              generateDataQualityRulesRetry);
+      clientSettingsBuilder
+          .generateDataQualityRulesSettings()
+          .setRetrySettings(generateDataQualityRulesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for generateDataQualityRules from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
