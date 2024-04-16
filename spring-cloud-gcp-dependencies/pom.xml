@@ -239,6 +239,24 @@
 				<artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>spring-cloud-gcp-starter-alloydb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!-- spring-cloud-gcp-starter-alloydb -->
+			<dependency>
+			    <groupId>com.google.cloud</groupId>
+			    <artifactId>alloydb-jdbc-connector</artifactId>
+			    <version>1.1.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>42.7.3</version>
+			</dependency>
 
 			<!-- spring-cloud-gcp-starter-sql -->
 			<dependency>

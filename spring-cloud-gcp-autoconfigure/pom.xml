@@ -298,6 +298,13 @@
             </exclusions>
         </dependency>
 
+        <!-- AlloyDB -->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>alloydb-jdbc-connector</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Config -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

@@ -3,7 +3,8 @@ com.google.cloud.spring.autoconfigure.config.GcpConfigBootstrapConfiguration
 org.springframework.boot.env.EnvironmentPostProcessor=\
 com.google.cloud.spring.autoconfigure.sql.CloudSqlEnvironmentPostProcessor,\
 com.google.cloud.spring.autoconfigure.sql.R2dbcCloudSqlEnvironmentPostProcessor,\
-com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerEnvironmentPostProcessor
+com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerEnvironmentPostProcessor,\
+com.google.cloud.spring.autoconfigure.alloydb.AlloyDbEnvironmentPostProcessor
 # ConfigData Location Resolvers
 org.springframework.boot.context.config.ConfigDataLocationResolver=\
 com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolver
