@@ -37,7 +37,7 @@ Or use the reactive starter for a reactive application:
 </dependency>
 ----
 
-You can find the address of your Cloud Memorystore instance on the https://console.cloud.google.com/memorystore/redis/[Cloud Memorystore for Redis page] in the Google Cloud Console, or via the `gcloud redis instances describe` command.
+Refer to Memorystore guides for instructions to find the address of your Cloud Memorystore instance in the [Google Cloud Console](https://cloud.google.com/memorystore/docs/redis/create-instance-console#creating_a_redis_instance), or via the [gcloud command](https://cloud.google.com/memorystore/docs/redis/create-instance-gcloud#creating-redis).
 
 Configure the host and port of the Cloud Memorystore instance like this:
 
@@ -55,7 +55,7 @@ spring.data.redis.port: <cloud_memorystore_port> <2>
 ==== Authentication
 
 If you've enabled https://cloud.google.com/memorystore/docs/redis/about-redis-auth[authentication] for the Cloud Memorystore instance, you will need to provide the auth string via the `spring.data.redis.password` configuration property.
-You can find the auth string for your instance on the https://console.cloud.google.com/memorystore/redis/[Cloud Memorystore for Redis page] in the Google Cloud Console, or via the `gcloud redis instances get-auth-string` command.
+You can find the auth string for your instance following [this guide](https://cloud.google.com/memorystore/docs/redis/manage-redis-auth#getting_the_auth_string).
 
 Remember to never commit plain-text secrets in your configuration properties file, so use an alternative method to provide this value to the application during startup.
 You can for instance load it from Secret Manager, use a Kubernetes secret, or provide it to your application via an environment variable.
@@ -63,7 +63,7 @@ You can for instance load it from Secret Manager, use a Kubernetes secret, or pr
 ==== In-transit encryption
 
 If you've enabled https://cloud.google.com/memorystore/docs/redis/about-in-transit-encryption[in-transit encryption] for the Cloud Memorystore instance, you will need to configure the server CA certificate file via an SSL bundle.
-You can find the `server-ca.pem` file on the https://console.cloud.google.com/memorystore/redis/[Cloud Memorystore for Redis page] in the Google Cloud Console, or via the `gcloud redis instances describe` command.
+Follow guide in [this page](https://cloud.google.com/memorystore/docs/redis/manage-in-transit-encryption#downloading_the_certificate_authority) to download the certificate `server-ca.pem` file .
 You can include this file in your project as a resource file, e.g. `src/main/resources/redis/server-ca.pem`.
 
 Configure an SSL bundle to use the `server-ca.pem` file:
