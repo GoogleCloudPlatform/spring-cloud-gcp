@@ -34,6 +34,10 @@ import org.springframework.util.StringUtils;
  */
 public class AlloyDbEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
+  private static final String JDBC_URL_TEMPLATE = "jdbc:postgresql:///%s?socketFactory=com.google.cloud.alloydb.SocketFactory";
+  private static final String JDBC_DRIVER_CLASS = "org.postgresql.Driver";
+  private static final String DEFAULT_USERNAME = "postgres";
+
   @Override
   public void postProcessEnvironment(
       ConfigurableEnvironment environment, SpringApplication application) {
@@ -57,9 +61,9 @@ public class AlloyDbEnvironmentPostProcessor implements EnvironmentPostProcessor
     // configure default JDBC driver and username as fallback values when not
     // specified
     Map<String, Object> fallbackMap = new HashMap<>();
-    fallbackMap.put("spring.datasource.username", getDefaultUsername());
+    fallbackMap.put("spring.datasource.username", DEFAULT_USERNAME);
     fallbackMap.put(
-        "spring.datasource.driver-class-name", getJdbcDriverClass());
+        "spring.datasource.driver-class-name", JDBC_DRIVER_CLASS);
     environment
         .getPropertySources()
         .addLast(new MapPropertySource("ALLOYDB_DATA_SOURCE_FALLBACK", fallbackMap));
@@ -71,14 +75,13 @@ public class AlloyDbEnvironmentPostProcessor implements EnvironmentPostProcessor
         .getPropertySources()
         .addFirst(new MapPropertySource("ALLOYDB_DATA_SOURCE_URL", primaryMap));
 
-    System.out.println("HERE");
     // support usage metrics
     ConnectorRegistry.addArtifactId(
         "spring-cloud-gcp-alloydb/" + this.getClass().getPackage().getImplementationVersion());
   }
 
   private String getJdbcUrl(AlloyDbProperties properties) {
-    String jdbcUrl = String.format(this.getJdbcUrlTemplate(), properties.getDatabaseName());
+    String jdbcUrl = String.format(JDBC_URL_TEMPLATE, properties.getDatabaseName());
 
     if (StringUtils.hasText(properties.getInstanceConnectionUri())) {
       jdbcUrl += "&alloydbInstanceName=" + properties.getInstanceConnectionUri();
@@ -113,17 +116,5 @@ public class AlloyDbEnvironmentPostProcessor implements EnvironmentPostProcessor
     }
 
     return jdbcUrl;
-  }
-
-  private String getJdbcUrlTemplate() {
-    return "jdbc:postgresql:///%s?socketFactory=com.google.cloud.alloydb.SocketFactory";
-  }
-
-  private String getJdbcDriverClass() {
-    return "org.postgresql.Driver";
-  }
-
-  private String getDefaultUsername() {
-    return "postgres";
   }
 }
