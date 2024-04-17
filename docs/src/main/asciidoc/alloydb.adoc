@@ -10,8 +10,6 @@ The role of the starters is to read configuration from properties and assume def
 === JDBC Support
 Maven and Gradle coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
 
-To use PostgreSQL:
-
 [source,xml]
 ----
 <dependency>
@@ -49,14 +47,14 @@ public List<Map<String, Object>> listUsers() {
 
 You can rely on
 https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database[Spring Boot data source autoconfiguration] to configure a `DataSource` bean.
-In other words, properties like the SQL username, `spring.datasource.username`, and password, `spring.datasource.password` can be used.
+In other words, properties like the username, `spring.datasource.username`, and password, `spring.datasource.password` can be used.
 There is also some configuration specific to Google AlloyDB (see "AlloyDB Configuration Properties" section below).
 
 |===
 | Property name | Description | Required | Default value
-| `spring.datasource.username` | Database username | No | MySQL: `root`; PostgreSQL: `postgres`
+| `spring.datasource.username` | Database username | No | `postgres`
 | `spring.datasource.password` | Database password | No | `null`
-| `spring.datasource.driver-class-name` | JDBC driver to use. | No | PostgreSQL: `org.postgresql.Driver`
+| `spring.datasource.driver-class-name` | JDBC driver to use. | No | `org.postgresql.Driver`
 |===
 
 NOTE: If you provide your own `spring.datasource.url`, it will be ignored, unless you disable AlloyDB autoconfiguration with `spring.cloud.gcp.alloydb.enabled=false`.
