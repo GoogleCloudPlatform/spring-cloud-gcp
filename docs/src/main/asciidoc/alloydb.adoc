@@ -13,8 +13,8 @@ Maven and Gradle coordinates, using <<getting-started.adoc#bill-of-materials, Sp
 [source,xml]
 ----
 <dependency>
-<groupId>com.google.cloud</groupId>
-<artifactId>spring-cloud-gcp-starter-alloydb</artifactId>
+  <groupId>com.google.cloud</groupId>
+  <artifactId>spring-cloud-gcp-starter-alloydb</artifactId>
 </dependency>
 ----
 
@@ -61,9 +61,9 @@ NOTE: If you provide your own `spring.datasource.url`, it will be ignored, unles
 
 ===== `DataSource` creation flow
 
-Spring Boot starter for Google AlloyDB registers a `AlloyDbEnvironmentPostProcessor` that provides a correctly formatted `spring.datasource.url` property to the environment based on the properties mentioned above.
+Spring Boot starter for Google AlloyDB registers an `AlloyDbEnvironmentPostProcessor` that provides a correctly formatted `spring.datasource.url` property to the environment based on the properties mentioned above.
 It also provides defaults for `spring.datasource.username` and `spring.datasource.driver-class-name`, which can be overridden.
-The starter also configures credentials for the JDBC connection based on the properties below.
+The starter also configures credentials for the JDBC connection based on the AlloyDB properties below.
 
 The user properties and the properties provided by the `AlloyDbEnvironmentPostProcessor` are then used by https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html[Spring Boot] to create the `DataSource`.
 You can select the type of connection pool (e.g., Tomcat, HikariCP, etc.) by https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database[adding their dependency to the classpath].
@@ -91,7 +91,7 @@ However, it doesn't compromise the security of the communication because the con
 | `spring.cloud.gcp.alloydb.database-name` | The name of the database to connect to. | Yes |
 | `spring.cloud.gcp.alloydb.instance-connection-uri` | The Google AlloyDB instance connection URI. | Yes |
 For example, `projects/PROJECT_ID/locations/REGION_ID/clusters/CLUSTER_ID/instances/INSTANCE_ID`.
-| `spring.cloud.gcp.alloydb.ip-type` | Specifies a preferred IP type for connecting to a AlloyDB instance. | No | `PRIVATE`
+| `spring.cloud.gcp.alloydb.ip-type` | Specifies a preferred IP type for connecting to a AlloyDB instance. (`PUBLIC`, `PRIVATE`, `PSC`) | No | `PRIVATE`
 | `spring.cloud.gcp.alloydb.enable-iam-auth` | Specifies whether to enable IAM database authentication. | No | `False`
 | `spring.cloud.gcp.alloydb.admin-service-endpoint` | An alternate AlloyDB API endpoint. | No |
 | `spring.cloud.gcp.alloydb.quota-project` | The project ID for quota and billing. | No |
