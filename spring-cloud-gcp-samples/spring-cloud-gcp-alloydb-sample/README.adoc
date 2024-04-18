@@ -8,7 +8,7 @@ You will create a cluster and primary instance, a database within the instance, 
 
 image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-alloydb-sample/README.adoc]
 
-1. Create a Google AlloyDB cluster and its primary instance following https://cloud.google.com/alloydb/docs/quickstart/create-and-connect[these instructions].
+1. Create a Google AlloyDB cluster and its primary instance following https://cloud.google.com/alloydb/docs/quickstart/integrate-cloud-run[these instructions].
 
   You will be asked to set a password for the `postgres` root user; remember this value.
 
@@ -31,6 +31,11 @@ Then, uncomment the `spring.cloud.gcp.alloydb.credentials.location` property in 
 4. Run `$ mvn clean install` from the root directory of the project.
 
 == Running the application
+
+NOTE: You need to run the sample from a VM within the created VPC to connect to AlloyDB using its private IP. 
+To connect using Public IP, enable the AlloyDB instance's for external connections 
+following https://cloud.google.com/alloydb/docs/connect-public-ip[these instructions] and 
+add `spring.cloud.gcp.alloydb.ip-type=PUBLIC` to your `application.properties`.
 
 You can run the `AlloyDBApplication` Spring Boot app by running the following command in the same directory as this
 sample (spring-cloud-gcp-samples/spring-cloud-gcp-alloydb-sample):
