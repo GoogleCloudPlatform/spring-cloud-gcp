@@ -1,34 +1,106 @@
 == Cloud Memorystore for Redis
 
-=== Spring Caching
-
 https://cloud.google.com/memorystore/[Cloud Memorystore for Redis] provides a fully managed in-memory data store service.
-Cloud Memorystore is compatible with the Redis protocol, allowing easy integration with https://docs.spring.io/spring-boot/docs/3.2.x/reference/html/io.html#io.caching[Spring Caching].
+Cloud Memorystore for Redis is compatible with the Redis protocol, allowing both programmatic access to the data store as well as easy integration with Spring caching.
 
-All you have to do is create a Cloud Memorystore instance and use its IP address in `application.properties` file as `spring.data.redis.host` property value. (Read more about this property in https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#appendix.application-properties.data[Spring Boot documentation]. )
-Everything else is exactly the same as setting up redis-backed Spring caching.
+Cloud Memorystore for Redis documentation can be found https://cloud.google.com/memorystore/docs/redis/[here].
+Use this documentation to create a Cloud Memorystore for Redis instance for your application.
 
 [NOTE]
 ====
-Memorystore instances and your application instances have to be located in the same region.
+Cloud Memorystore instances and your application instances have to be located in the same region.
 ====
 
-In short, the following dependencies are needed:
+=== Spring Data Redis
 
+Because Cloud Memorystore is compatible with Redis, your application can use Spring Data Redis to connect to a Cloud Memorystore instance.
+
+Add the Spring Boot Data Redis starter for a blocking I/O application:
+
+.pom.xml
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+----
+
+Or use the reactive starter for a reactive application:
+
+.pom.xml
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+</dependency>
+----
+
+Refer to Memorystore guides for instructions to find the address of your Cloud Memorystore instance in the https://cloud.google.com/memorystore/docs/redis/create-instance-console#creating_a_redis_instance[Google Cloud Console], or via the https://cloud.google.com/memorystore/docs/redis/create-instance-gcloud#creating-redis[gcloud command].
+
+Configure the host and port of the Cloud Memorystore instance like this:
+
+.src/main/resources/application.properties
+[source]
+----
+spring.data.redis.host: <cloud_memorystore_host> <1>
+spring.data.redis.port: <cloud_memorystore_port> <2>
+----
+<1> Replace `<cloud_memorystore_host>` with the actual IP address of the Memorystore instance.
+<2> Replace `<cloud_memorystore_post>` with the actual port of the Memorystore instance.
+
+(Read more about these configuration properties in the https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties[Spring Boot documentation].)
+
+==== Authentication
+
+If you've enabled https://cloud.google.com/memorystore/docs/redis/about-redis-auth[authentication] for the Cloud Memorystore instance, you will need to provide the auth string via the `spring.data.redis.password` configuration property.
+You can find the auth string for your instance following https://cloud.google.com/memorystore/docs/redis/manage-redis-auth#getting_the_auth_string[this guide].
+
+Remember to never commit plain-text secrets in your configuration properties file, so use an alternative method to provide this value to the application during startup.
+You can for instance load it from Secret Manager, use a Kubernetes secret, or provide it to your application via an environment variable.
+
+==== In-transit encryption
+
+If you've enabled https://cloud.google.com/memorystore/docs/redis/about-in-transit-encryption[in-transit encryption] for the Cloud Memorystore instance, you will need to configure the server CA certificate file via an SSL bundle.
+Follow guide in https://cloud.google.com/memorystore/docs/redis/manage-in-transit-encryption#downloading_the_certificate_authority[this page] to download the certificate `server-ca.pem` file.
+You can include this file in your project as a resource file, e.g. `src/main/resources/redis/server-ca.pem`.
+
+Configure an SSL bundle to use the `server-ca.pem` file:
+
+.src/main/resources/application.properties
+[source]
+----
+spring.data.redis.ssl.bundle: cloud-memorystore
+spring.ssl.bundle.pem.cloud-memorystore.truststore.certificate: classpath:redis/server-ca.pem <1>
+----
+<1> You can replace this location with a local file path if you don't want to add this file to your application's classpath, e.g. `file:/path/to/server-ca.pem`.
+It is also possible to put the contents of the `server-ca.pem` file here directly.
+
+Spring Boot automatically enables encrypted access, when an SSL bundle is configured.
+
+See the Spring Boot https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.ssl[SSL] documentation for more information about SSL bundles.
+
+==== Programmatic access
+
+See https://docs.spring.io/spring-boot/docs/current/reference/html/data.html#data.nosql.redis.connecting[connecting to Redis] in the Spring Boot documentation for ways to programmatically interact with Cloud Memorystore.
+
+=== Spring Caching
+
+Optionally, Cloud Memorystore can be used as a (Redis) backend for https://docs.spring.io/spring-boot/docs/current/reference/html/io.html#io.caching[Spring caching] by adding this starter dependency (in addition to the Spring Data Redis starter):
+
+.pom.xml
 [source,xml]
 ----
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-cache</artifactId>
 </dependency>
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-redis</artifactId>
-</dependency>
 ----
-For reactive applications, you can also use `spring-boot-starter-data-redis-reactive` instead.
 
-And then you can use `org.springframework.cache.annotation.Cacheable` annotation for methods you'd like to be cached.
+Add the `@EnableCaching` annotation on your `@SpringBootApplication` class, or one of its `@Configuration` classes to enable caching support.
+
+This lets you use the `org.springframework.cache.annotation.Cacheable` annotation for methods you'd like to be cached.
 [source,java]
 ----
 @Cacheable("cache1")
@@ -37,6 +109,6 @@ public String hello(@PathVariable String name) {
 }
 ----
 
-If you are interested in a detailed how-to guide, please check https://codelabs.developers.google.com/codelabs/cloud-spring-cache-memorystore/[Spring Boot Caching using Cloud Memorystore codelab].
+See the https://docs.spring.io/spring-boot/docs/current/reference/html/io.html#io.caching.provider.redis[Redis cache provider documentation] for information about configuring cache names, time-to-live, etc.
 
-Cloud Memorystore documentation can be found https://cloud.google.com/memorystore/docs/redis/[here].
+If you are interested in a detailed how-to guide, please check https://codelabs.developers.google.com/codelabs/cloud-spring-cache-memorystore/[Spring Boot Caching using Cloud Memorystore codelab].
