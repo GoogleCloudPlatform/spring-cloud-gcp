@@ -1,0 +1,145 @@
+[#alloydb]
+== AlloyDB
+
+Spring Framework on Google Cloud adds integrations with
+https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html[Spring JDBC], so you can run your PostgreSQL databases in https://cloud.google.com/alloydb[Google AlloyDB] using Spring JDBC.
+
+The AlloyDB support is provided by Spring Framework on Google Cloud in the form of a Spring Boot AlloyDB starter for PostgreSQL.
+The role of the starters is to read configuration from properties and assume default settings so that user experience connecting to PostgreSQL is as simple as possible.
+
+=== JDBC Support
+Maven and Gradle coordinates, using <<getting-started.adoc#bill-of-materials, Spring Framework on Google Cloud BOM>>:
+
+[source,xml]
+----
+<dependency>
+  <groupId>com.google.cloud</groupId>
+  <artifactId>spring-cloud-gcp-starter-alloydb</artifactId>
+</dependency>
+----
+
+[source,subs="normal"]
+----
+dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-starter-alloydb")
+}
+----
+
+==== Prerequisites
+
+In order to use the Spring Boot Starters for Google AlloyDB, the Google AlloyDB API must be enabled in your Google Cloud project.
+
+To do that, go to the https://console.cloud.google.com/apis/library[API library page] of the Google Cloud Console, search for "AlloyDB API" and enable the option that is called "AlloyDB API" .
+
+
+==== Spring Boot Starter for Google AlloyDB
+
+The Spring Boot Starters for Google AlloyDB provide an autoconfigured https://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html[`DataSource`] object.
+Coupled with Spring JDBC, it provides a
+https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html#jdbc-JdbcTemplate[`JdbcTemplate`] object bean that allows for operations such as querying and modifying a database.
+
+[source,java]
+----
+public List<Map<String, Object>> listUsers() {
+    return jdbcTemplate.queryForList("SELECT * FROM user;");
+}
+----
+
+You can rely on
+https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database[Spring Boot data source autoconfiguration] to configure a `DataSource` bean.
+In other words, properties like the username, `spring.datasource.username`, and password, `spring.datasource.password` can be used.
+There is also some configuration specific to Google AlloyDB (see "AlloyDB Configuration Properties" section below).
+
+|===
+| Property name | Description | Required | Default value
+| `spring.datasource.username` | Database username | No | `postgres`
+| `spring.datasource.password` | Database password | No | `null`
+| `spring.datasource.driver-class-name` | JDBC driver to use. | No | `org.postgresql.Driver`
+|===
+
+NOTE: If you provide your own `spring.datasource.url`, it will be ignored, unless you disable AlloyDB autoconfiguration with `spring.cloud.gcp.alloydb.enabled=false`.
+
+===== `DataSource` creation flow
+
+Spring Boot starter for Google AlloyDB registers an `AlloyDbEnvironmentPostProcessor` that provides a correctly formatted `spring.datasource.url` property to the environment based on the properties mentioned above.
+It also provides defaults for `spring.datasource.username` and `spring.datasource.driver-class-name`, which can be overridden.
+The starter also configures credentials for the JDBC connection based on the AlloyDB properties below.
+
+The user properties and the properties provided by the `AlloyDbEnvironmentPostProcessor` are then used by https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html[Spring Boot] to create the `DataSource`.
+You can select the type of connection pool (e.g., Tomcat, HikariCP, etc.) by https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-connect-to-production-database[adding their dependency to the classpath].
+
+Using the created `DataSource` in conjunction with Spring JDBC provides you with a fully configured and operational `JdbcTemplate` object that you can use to interact with your AlloyDB database.
+You can connect to your database with as little as a database and instance names.
+
+=== AlloyDB IAM database authentication
+
+Currently, AlloyDB supports https://cloud.google.com/alloydb/docs/manage-iam-authn[IAM database authentication].
+It allows you to connect to the database using an IAM account, rather than a predefined database username and password.
+You will need to do the following to enable it:
+
+. In your AlloyDB instance settings, turn on the `alloydb.iam_authentication` flag.
+. Add the IAM user or service account to the list of cluster users.
+. In the application settings, set `spring.cloud.gcp.alloydb.enable-iam-auth` to `true`. Note that this will also set the database protocol `sslmode` to `disabled`, as it's required for IAM authentication to work.
+However, it doesn't compromise the security of the communication because the connection is always encrypted.
+. Set `spring.datasource.username` to the IAM user or service account created in step 2. Note that IAM user or service account still needs to be https://www.postgresql.org/docs/current/sql-grant.html[granted permissions] before modifying or querying the database.
+
+=== AlloyDB Configuration Properties
+
+|===
+| Property name | Description | Required | Default value
+| `spring.cloud.gcp.alloydb.enabled` | Enables or disables AlloyDB auto configuration | No | `true`
+| `spring.cloud.gcp.alloydb.database-name` | The name of the database to connect to. | Yes |
+| `spring.cloud.gcp.alloydb.instance-connection-uri` | The Google AlloyDB instance connection URI. | Yes |
+For example, `projects/PROJECT_ID/locations/REGION_ID/clusters/CLUSTER_ID/instances/INSTANCE_ID`.
+| `spring.cloud.gcp.alloydb.ip-type` | Specifies a preferred IP type for connecting to a AlloyDB instance. (`PUBLIC`, `PRIVATE`, `PSC`) | No | `PRIVATE`
+| `spring.cloud.gcp.alloydb.enable-iam-auth` | Specifies whether to enable IAM database authentication. | No | `False`
+| `spring.cloud.gcp.alloydb.admin-service-endpoint` | An alternate AlloyDB API endpoint. | No |
+| `spring.cloud.gcp.alloydb.quota-project` | The project ID for quota and billing. | No |
+| `spring.cloud.gcp.alloydb.target-principal` | The service account to impersonate when connecting to the database and database admin API. | No |
+| `spring.cloud.gcp.alloydb.delegates` | A comma-separated list of service accounts delegates. | No |
+| `spring.cloud.gcp.alloydb.named-connector` | The name of the named connector. | No |
+| `spring.cloud.gcp.alloydb.credentials.location` | File system path to the Google OAuth2 credentials private key file.
+Used to authenticate and authorize new connections to a Google AlloyDB instance. | No
+|===
+
+=== Troubleshooting tips
+
+[#connection-issues]
+==== Connection issues
+If you're not able to connect to a database and see an endless loop of `Connecting to AlloyDB instance [...] on IP [...]`, it's likely that exceptions are being thrown and logged at a level lower than your logger's level.
+This may be the case with HikariCP, if your logger is set to INFO or higher level.
+
+To see what's going on in the background, you should add a `logback.xml` file to your application resources folder, that looks like this:
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/base.xml"/>
+  <logger name="com.zaxxer.hikari.pool" level="DEBUG"/>
+</configuration>
+----
+
+==== PostgreSQL: `java.net.SocketException: already connected` issue
+
+We found this exception to be common if your Maven project's parent is `spring-boot` version `1.5.x`, or in any other circumstance that would cause the version of the `org.postgresql:postgresql` dependency to be an older one (e.g., `9.4.1212.jre7`).
+
+To fix this, re-declare the dependency in its correct version.
+For example, in Maven:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.postgresql</groupId>
+  <artifactId>postgresql</artifactId>
+  <version>42.7.3</version>
+</dependency>
+----
+
+
+=== Samples
+
+Available sample applications and codelabs:
+
+- https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-alloydb-sample[Spring Framework on Google Cloud AlloyDB]
+- Codelab: https://codelabs.developers.google.com/create-alloydb-database-with-cloud-run-job[Creating AlloyDB database with Cloud Run Job]

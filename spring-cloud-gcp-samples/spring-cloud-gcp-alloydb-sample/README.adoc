@@ -1,0 +1,48 @@
+= Spring Framework on Google Cloud AlloyDB Sample
+
+This code sample demonstrates how to connect to a Google Cloud AlloyDB instance using the link:../../spring-cloud-gcp-starters/spring-cloud-gcp-starter-alloydb[Spring Framework on Google Cloud AlloyDB Starter].
+
+You will create a cluster and primary instance, a database within the instance, populate the database and then query it.
+
+== Setup
+
+image:http://gstatic.com/cloudssh/images/open-btn.svg[link=https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fspring-cloud-gcp&cloudshell_open_in_editor=spring-cloud-gcp-samples/spring-cloud-gcp-alloydb-sample/README.adoc]
+
+1. Create a Google AlloyDB cluster and its primary instance following https://cloud.google.com/alloydb/docs/quickstart/integrate-cloud-run[these instructions].
+
+  You will be asked to set a password for the `postgres` root user; remember this value.
+
+2. Open the link:src/main/resources/application.properties[application.properties] file and set the following properties:
+- `spring.datasource.password` - Set this to the password that you chose for the `postgres` user.
+- `spring.cloud.gcp.alloydb.database-name` - Set this to the name of the database you created.
+- `spring.cloud.gcp.alloydb.instance-connection-uri` - Set this to the instance URI of your AlloyDB instance.
+The instance-connection-uri should be in the form: `projects/PROJECT_ID/locations/REGION_ID/clusters/CLUSTER_ID/instances/INSTANCE_ID`.
++
+For example, your instance connection name might look like: `projects/my-gcp-project/locations/us-central1/clusters/test-cluster/instances/test-instance`
+
++
+If you would like to use a different user, set the `spring.datasource.username` property appropriately.
+
+3. https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login[If you are authenticated in the Cloud SDK], your credentials will be automatically found by the Spring Boot Starter for Google Cloud AlloyDB.
++
+Alternatively, https://console.cloud.google.com/iam-admin/serviceaccounts[create a service account from the Google Cloud Console] and download its private key.
+Then, uncomment the `spring.cloud.gcp.alloydb.credentials.location` property in the link:src/main/resources/application.properties[application.properties] file and fill its value with the path to your service account private key on your local file system, prepended with `file:`.
+
+4. Run `$ mvn clean install` from the root directory of the project.
+
+== Running the application
+
+NOTE: You need to run the sample from a VM within the created VPC to connect to AlloyDB using its private IP. 
+To connect using Public IP, enable the AlloyDB instance's for external connections 
+following https://cloud.google.com/alloydb/docs/connect-public-ip[these instructions] and 
+add `spring.cloud.gcp.alloydb.ip-type=PUBLIC` to your `application.properties`.
+
+You can run the `AlloyDBApplication` Spring Boot app by running the following command in the same directory as this
+sample (spring-cloud-gcp-samples/spring-cloud-gcp-alloydb-sample):
+
+`$ mvn spring-boot:run`
+
+The database will be populated based on the link:src/main/resources/schema.sql[schema.sql] and link:src/main/resources/data.sql[data.sql] files.
+
+When the application is up, navigate to http://localhost:8080/getTuples in your browser, or use the `Web Preview`
+button in Cloud Shell to preview the app on port 8080. This will print the contents of the `users` table.

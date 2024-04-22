@@ -1,2 +1,3 @@
 org.springframework.aot.hint.RuntimeHintsRegistrar=\
-    com.google.cloud.spring.autoconfigure.sql.SqlRuntimeHints
+    com.google.cloud.spring.autoconfigure.sql.SqlRuntimeHints,\
+    com.google.cloud.spring.autoconfigure.alloydb.AlloyDbRuntimeHints
