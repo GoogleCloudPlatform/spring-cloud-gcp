@@ -143,6 +143,12 @@
       "type": "java.lang.Boolean",
       "description": "Whether to enable the Pub/Sub health indicator when used with Spring Boot Actuator.",
       "defaultValue": true
+    },
+    {
+      "name": "spring.cloud.gcp.alloydb.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Alloydb support components.",
+      "defaultValue": true
     }
   ]
 }

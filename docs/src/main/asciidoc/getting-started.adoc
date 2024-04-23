@@ -128,6 +128,10 @@ Refer for the full list https://github.com/GoogleCloudPlatform/spring-cloud-gcp/
 | Provides a security layer over applications deployed to Firebase
 | <<security-firebase.adoc#security-firebase, com.google.cloud:spring-cloud-gcp-starter-security-firebase>>
 
+| AlloyDB
+| AlloyDB integrations with PostgreSQL
+| <<alloydb.adoc#alloydb, com.google.cloud:spring-cloud-gcp-starter-alloydb>>
+
 |===
 
 ==== Spring Initializr
@@ -186,6 +190,9 @@ https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-g
 
 | Cloud Security - Firebase
 | https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-security-firebase-sample[spring-cloud-gcp-security-firebase-sample]
+
+| AlloyDB
+| https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-alloydb-sample[spring-cloud-gcp-alloydb-sample]
 |===
 
 Each sample application demonstrates how to use Spring Framework on Google Cloud libraries in context and how to setup the dependencies for the project.
