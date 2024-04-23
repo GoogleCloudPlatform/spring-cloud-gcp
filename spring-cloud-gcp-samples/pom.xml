@@ -85,6 +85,7 @@
 				<module>spring-cloud-gcp-metrics-sample</module>
 				<module>spring-cloud-gcp-kms-sample</module>
 				<module>spring-cloud-spanner-r2dbc-samples</module>
+				<module>spring-cloud-gcp-alloydb-sample</module>
 			</modules>
 		</profile>
 		<profile>
@@ -114,6 +115,7 @@
 				<module>spring-cloud-gcp-sql-mysql-sample</module>
 				<module>spring-cloud-gcp-sql-postgres-sample</module>
 				<module>spring-cloud-gcp-sql-postgres-r2dbc-sample</module>
+				<module>spring-cloud-gcp-alloydb-sample</module>
 			</modules>
 		</profile>
 		<profile>
@@ -145,6 +147,7 @@
 								<it.bigquery>true</it.bigquery>
 								<it.metrics>true</it.metrics>
 								<it.cloudsql>true</it.cloudsql>
+								<it.alloydb>true</it.alloydb>
 								<kms-test-project-id>spring-cloud-gcp-ci-native</kms-test-project-id>
 								<kms-test-encrypted-text>CiQA04Sv0lCnHhQQIwKI0XDU+XcU6q1ryy+VuQJ6oh6VF8eJRocSLgBVx+glEafbllCrwhS8utmM9RYAC80xizA/YYyjE/roXcRDj9AGpfTS3iDKg5E=</kms-test-encrypted-text>
 								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
@@ -155,6 +158,8 @@
 								<spring.cloud.gcp.sql.database-name>code_samples_test_db</spring.cloud.gcp.sql.database-name>
 								<spring.datasource.password>${env.DB_PASSWORD}</spring.datasource.password>
 								<spring.r2dbc.password>${env.DB_PASSWORD}</spring.r2dbc.password>
+								<spring.cloud.gcp.alloydb.instance-connection-uri>projects/spring-cloud-gcp-ci-native/locations/us-central1/clusters/testcluster/instances/testpostgres</spring.cloud.gcp.alloydb.instance-connection-uri>
+								<spring.cloud.gcp.alloydb.database-name>code_samples_test_db</spring.cloud.gcp.alloydb.database-name>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
@@ -178,6 +183,8 @@
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
 								<spring.cloud.gcp.sql.instance-connection-name>spring-cloud-gcp-ci:us-central1:testmysql</spring.cloud.gcp.sql.instance-connection-name>
 								<spring.cloud.gcp.sql.database-name>code_samples_test_db</spring.cloud.gcp.sql.database-name>
+								<spring.cloud.gcp.alloydb.instance-connection-uri>projects/spring-cloud-gcp-ci-native/locations/us-central1/clusters/testcluster/instances/testpostgres</spring.cloud.gcp.alloydb.instance-connection-uri>
+								<spring.cloud.gcp.alloydb.database-name>code_samples_test_db</spring.cloud.gcp.alloydb.database-name>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
