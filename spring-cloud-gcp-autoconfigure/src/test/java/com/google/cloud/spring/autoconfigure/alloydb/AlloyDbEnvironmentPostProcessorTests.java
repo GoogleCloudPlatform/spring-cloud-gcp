@@ -29,8 +29,11 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.PropertySource;
 
 class AlloyDbEnvironmentPostProcessorTests {
 
@@ -63,6 +66,79 @@ class AlloyDbEnvironmentPostProcessorTests {
                           + String.format("&alloydbInstanceName=%s", INSTANCE_URI));
               assertThat(dataSource.getUsername()).matches("postgres");
               assertThat(dataSource.getPassword()).isNull();
+            });
+  }
+
+  @Test
+  void testAlloyDbSpringDataSourceUrlPropertyOverride() {
+    this.contextRunner
+        .withPropertyValues(
+            String.format("spring.cloud.gcp.alloydb.instance-connection-uri=%s", INSTANCE_URI),
+            "spring.datasource.password=",
+            "spring.datasource.url=jdbc:h2:mem:none;MODE=MySQL;DB_CLOSE_ON_EXIT=FALSE")
+        .run(
+            context -> {
+              HikariDataSource dataSource = (HikariDataSource) context.getBean(DataSource.class);
+              assertThat(dataSource.getDriverClassName()).matches("org.postgresql.Driver");
+              assertThat(dataSource.getJdbcUrl())
+                  .isEqualTo(
+                    "jdbc:postgresql:///test-database?"
+                        + "socketFactory=com.google.cloud.alloydb.SocketFactory"
+                        + String.format("&alloydbInstanceName=%s", INSTANCE_URI));
+              assertThat(dataSource.getUsername()).matches("postgres");
+              assertThat(dataSource.getPassword()).isNull();
+              assertThat(getSpringDatasourceDriverClassName(context))
+                  .matches("org.postgresql.Driver");
+              assertThat(context.getEnvironment().getProperty("spring.datasource.url"))
+                  .isEqualTo(
+                    "jdbc:postgresql:///test-database?"
+                        + "socketFactory=com.google.cloud.alloydb.SocketFactory"
+                        + String.format("&alloydbInstanceName=%s", INSTANCE_URI));
+            });
+  }
+
+  @Test
+  void testAlloyDbDataSourceWithIgnoredProvidedUrl() {
+    this.contextRunner
+        .withPropertyValues(
+            String.format("spring.cloud.gcp.alloydb.instance-connection-uri=%s", INSTANCE_URI),
+            "spring.datasource.password=",
+            "spring.datasource.url=test-url")
+        .run(
+            context -> {
+              HikariDataSource dataSource = (HikariDataSource) context.getBean(DataSource.class);
+              assertThat(dataSource.getDriverClassName()).matches("org.postgresql.Driver");
+              assertThat(dataSource.getJdbcUrl())
+                  .isEqualTo(
+                      "jdbc:postgresql:///test-database?"
+                          + "socketFactory=com.google.cloud.alloydb.SocketFactory"
+                          + String.format("&alloydbInstanceName=%s", INSTANCE_URI));
+              assertThat(dataSource.getUsername()).matches("postgres");
+              assertThat(dataSource.getPassword()).isNull();
+              assertThat(getSpringDatasourceDriverClassName(context))
+                  .matches("org.postgresql.Driver");
+            });
+  }
+
+  @Test
+  void testUserAndPassword() {
+    this.contextRunner
+        .withPropertyValues(
+            "spring.datasource.username=watchmaker",
+            "spring.datasource.password=pass",
+            String.format("spring.cloud.gcp.alloydb.instance-connection-uri=%s", INSTANCE_URI))
+        .run(
+            context -> {
+              HikariDataSource dataSource = (HikariDataSource) context.getBean(DataSource.class);
+              assertThat(getSpringDatasourceUrl(context))
+                  .isEqualTo(
+                      "jdbc:postgresql:///test-database?"
+                          + "socketFactory=com.google.cloud.alloydb.SocketFactory"
+                          + String.format("&alloydbInstanceName=%s", INSTANCE_URI));
+              assertThat(dataSource.getUsername()).matches("watchmaker");
+              assertThat(dataSource.getPassword()).matches("pass");
+              assertThat(getSpringDatasourceDriverClassName(context))
+                  .matches("org.postgresql.Driver");
             });
   }
 
@@ -211,6 +287,27 @@ class AlloyDbEnvironmentPostProcessorTests {
   }
 
   @Test
+  void testSecretManagerPlaceholdersNotResolved() {
+    this.contextRunner
+        .withPropertyValues(
+            String.format("spring.cloud.gcp.alloydb.instance-connection-uri=%s", INSTANCE_URI),
+            "spring.cloud.gcp.alloydb.database-name=${sm://my-db}")
+        .run(
+            context -> {
+              assertThat(
+                      context
+                          .getEnvironment()
+                          .getPropertySources()
+                          .get("ALLOYDB_DATA_SOURCE_URL")
+                          .getProperty("spring.datasource.url"))
+                  .isEqualTo(
+                      "jdbc:postgresql:///${sm://my-db}?"
+                          + "socketFactory=com.google.cloud.alloydb.SocketFactory"
+                          + String.format("&alloydbInstanceName=%s", INSTANCE_URI));
+            });
+  }
+
+  @Test
   void testEnvPlaceholdersResolved() {
     this.contextRunner
         .withPropertyValues(
@@ -229,6 +326,38 @@ class AlloyDbEnvironmentPostProcessorTests {
                       "jdbc:postgresql:///mydb?"
                           + "socketFactory=com.google.cloud.alloydb.SocketFactory"
                           + String.format("&alloydbInstanceName=%s", INSTANCE_URI));
+            });
+  }
+
+  @Test
+  void testSkipOnBootstrap() {
+    new ApplicationContextRunner()
+        .withPropertyValues("spring.cloud.gcp.alloydb.databaseName=test-database")
+        .withInitializer(
+            new ApplicationContextInitializer<ConfigurableApplicationContext>() {
+              @Override
+              public void initialize(
+                  ConfigurableApplicationContext configurableApplicationContext) {
+                // add a property source called "bootstrap" to mark it as the bootstrap phase
+                configurableApplicationContext
+                    .getEnvironment()
+                    .getPropertySources()
+                    .addFirst(
+                        new PropertySource<Object>("bootstrap") {
+                          @Override
+                          public Object getProperty(String name) {
+                            return null;
+                          }
+                        });
+              }
+            })
+        .withInitializer(
+            configurableApplicationContext ->
+                initializer.postProcessEnvironment(
+                    configurableApplicationContext.getEnvironment(), new SpringApplication()))
+        .run(
+            context -> {
+              assertThat(getSpringDatasourceUrl(context)).isNull();
             });
   }
 

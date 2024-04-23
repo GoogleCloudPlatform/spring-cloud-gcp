@@ -102,6 +102,11 @@ For example, `projects/PROJECT_ID/locations/REGION_ID/clusters/CLUSTER_ID/instan
 Used to authenticate and authorize new connections to a Google AlloyDB instance. | No
 |===
 
+NOTE: You need to run your application from a VM within the created VPC to connect to AlloyDB using its private IP. 
+To connect using Public IP, enable the AlloyDB instance's for external connections 
+following https://cloud.google.com/alloydb/docs/connect-public-ip[these instructions] and 
+add `spring.cloud.gcp.alloydb.ip-type=PUBLIC` to your `application.properties`.
+
 === Troubleshooting tips
 
 [#connection-issues]
@@ -135,7 +140,6 @@ For example, in Maven:
   <version>42.7.3</version>
 </dependency>
 ----
-
 
 === Samples
 
