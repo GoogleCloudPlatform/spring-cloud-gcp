@@ -1,11 +1,3 @@
----
-name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: waiting-for-triage
-assignees: ''
-
----
 We'd love to accept your patches and contributions to this project. There are just a few small
 guidelines you need to follow before opening an issue or a PR:
 
@@ -23,15 +15,3 @@ guidelines you need to follow before opening an issue or a PR:
 See
 also [CONTRIBUTING.md](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/blob/main/CONTRIBUTING.md)
 .
-
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is and what version of Spring Cloud you are using. Ex. I'm always frustrated when [...]
-
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
-
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Additional context**
-Add any other context or screenshots about the feature request here.
