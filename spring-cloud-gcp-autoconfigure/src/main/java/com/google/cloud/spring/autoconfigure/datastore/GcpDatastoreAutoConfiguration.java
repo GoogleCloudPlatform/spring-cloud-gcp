@@ -38,6 +38,7 @@ import com.google.cloud.spring.data.datastore.core.convert.TwoStepsConversions;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import org.apache.commons.logging.Log;
@@ -153,8 +154,11 @@ public class GcpDatastoreAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public DatastoreMappingContext datastoreMappingContext() {
-    return new DatastoreMappingContext();
+  public DatastoreMappingContext datastoreMappingContext(Optional<DatastoreCustomConversions> datastoreCustomConversions) {
+    DatastoreMappingContext datastoreMappingContext = new DatastoreMappingContext();
+    datastoreCustomConversions.ifPresent(a -> datastoreMappingContext.setDatastoreCustomConversions(a));
+
+    return datastoreMappingContext;
   }
 
   @Bean

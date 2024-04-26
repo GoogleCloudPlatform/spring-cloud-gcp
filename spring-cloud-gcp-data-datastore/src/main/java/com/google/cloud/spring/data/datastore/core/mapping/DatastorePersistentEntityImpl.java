@@ -166,7 +166,7 @@ public class DatastorePersistentEntityImpl<T>
   private void addEntityToDiscriminationFamily() {
     Class parentClass = getType().getSuperclass();
     DatastorePersistentEntity parentEntity =
-        parentClass != Object.class
+        parentClass != null && parentClass != Object.class
             ? this.datastoreMappingContext.getPersistentEntity(parentClass)
             : null;
     if (parentEntity != null && parentEntity.getDiscriminationFieldName() != null) {

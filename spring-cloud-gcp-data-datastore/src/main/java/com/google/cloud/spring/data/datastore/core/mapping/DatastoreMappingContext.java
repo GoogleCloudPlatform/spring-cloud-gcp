@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.data.datastore.core.mapping;
 
+import com.google.cloud.spring.data.datastore.core.convert.DatastoreCustomConversions;
 import com.google.cloud.spring.data.datastore.core.convert.DatastoreNativeTypes;
 import java.util.HashSet;
 import java.util.Map;
@@ -51,6 +52,8 @@ public class DatastoreMappingContext
   // Maps a given class to the set of other classes with which it shares the same Datastore
   // Kind and that are subclasses of the given class.
   private static final Map<Class, Set<Class>> discriminationFamilies = new ConcurrentHashMap<>();
+
+  private DatastoreCustomConversions datastoreCustomConversions;
 
   public DatastoreMappingContext() {
     this.setSimpleTypeHolder(DatastoreNativeTypes.HOLDER);
@@ -138,5 +141,17 @@ public class DatastoreMappingContext
       throw new DatastoreDataException(
           "Unable to find a DatastorePersistentEntity for: " + entityClass);
     }
+  }
+
+  public void setDatastoreCustomConversions(
+      DatastoreCustomConversions datastoreCustomConversions) {
+    this.datastoreCustomConversions = datastoreCustomConversions;
+  }
+
+  @Override
+  protected boolean shouldCreatePersistentEntityFor(TypeInformation<?> type) {
+    return (datastoreCustomConversions == null
+        || !datastoreCustomConversions.hasCustomWriteTarget(type.getType()))
+        && super.shouldCreatePersistentEntityFor(type);
   }
 }
