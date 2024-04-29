@@ -255,7 +255,7 @@ class DatastorePersistentEntityImplTests {
     String id;
   }
 
-  private static class EntityWithInterface{
+  private static class EntityWithInterface {
     @Id String id;
 
     Serializable text;
