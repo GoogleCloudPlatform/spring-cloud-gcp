@@ -1,0 +1,62 @@
+rebaseMergeAllowed: true
+squashMergeAllowed: true
+mergeCommitAllowed: false
+branchProtectionRules:
+  - pattern: main
+    isAdminEnforced: true
+    requiredStatusCheckContexts:
+      - 'cla/google'
+      - 'unitTests (17)'
+      - 'unitTests (19)'
+      - 'unitTests (21)'
+      - 'releaseCheck'
+      - 'conventionalcommits.org'
+      - 'SonarCloud Code Analysis'
+    requiredApprovingReviewCount: 1
+    requiresCodeOwnerReviews: true
+    requiresStrictStatusChecks: false
+  - pattern: 4.x
+    isAdminEnforced: true
+    requiredStatusCheckContexts:
+      - 'cla/google'
+      - 'unitTests (17)'
+      - 'unitTests (19)'
+      - 'unitTests (21)'
+      - 'releaseCheck'
+      - 'conventionalcommits.org'
+      - 'SonarCloud Code Analysis'
+    requiredApprovingReviewCount: 1
+    requiresCodeOwnerReviews: true
+    requiresStrictStatusChecks: false
+  - pattern: 3.x
+    isAdminEnforced: true
+    requiredStatusCheckContexts:
+      - 'cla/google'
+      - 'unitTests (8)'
+      - 'unitTests (11)'
+      - 'unitTests (17)'
+      - 'releaseCheck'
+      - 'conventionalcommits.org'
+      - 'SonarCloud Code Analysis'
+    requiredApprovingReviewCount: 1
+    requiresCodeOwnerReviews: true
+    requiresStrictStatusChecks: false
+  - pattern: 2.x
+    isAdminEnforced: true
+    requiredStatusCheckContexts:
+      - 'cla/google'
+      - 'unitTests (8)'
+      - 'unitTests (11)'
+      - 'unitTests (17)'
+      - 'releaseCheck'
+      - 'conventionalcommits.org'
+    requiredApprovingReviewCount: 1
+    requiresCodeOwnerReviews: true
+    requiresStrictStatusChecks: false
+permissionRules:
+  - team: yoshi-admins
+    permission: admin
+  - team: yoshi-java-admins
+    permission: admin
+  - team: yoshi-java
+    permission: push
