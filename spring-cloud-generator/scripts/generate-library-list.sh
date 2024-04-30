@@ -18,21 +18,10 @@ if [[ -z "$commitish" ]]; then
   exit 1
 fi
 
-# download the monorepo, need to loop through metadata there
-git clone https://github.com/googleapis/google-cloud-java.git
-
-# switch to the specified release commitish
-cd ./google-cloud-java
-git checkout $commitish
-
-# read googleapis committish used in hermetic build
-googleapis_committish=$(yq -r ".googleapis_commitish" generation_config.yaml)
-echo "googleapis_committish: ${googleapis_committish}"
-
 cd ${SPRING_GENERATOR_DIR}
 # start file, always override is present
 filename=${SPRING_GENERATOR_DIR}/scripts/resources/library_list.txt
-echo "# api_shortname, googleapis-folder, distribution_name:version, googleapis_committish, monorepo_folder" > "$filename"
+echo "# api_shortname, googleapis-folder, distribution_name:version, monorepo_folder" > "$filename"
 
 # loop through folders
 count=0
@@ -66,24 +55,13 @@ for d in ./google-cloud-java/*java-*/; do
     continue
   fi
 
-  # get monorepo-name as pattern ./google-cloud-java/<monorepo_name>/
-  monorepo_name=$(echo $d | sed 's#^./google-cloud-java/##' | sed 's#/$##')
+  # parse proto path from generation_config.yaml, find by api_shortname
+  # then sort and keep latest stable version
+  library=$(yq -r '.libraries[] | select(.api_shortname == "'"$api_shortname"'")' ./google-cloud-java/generation_config.yaml)
+  proto_paths_stable=$(echo "$library" | yq -r '.GAPICs[] | select(.proto_path | test("/v[0-9]+$")) | .proto_path')
+  proto_paths_latest=$(echo "$proto_paths_stable" | sort -d -r | head -n 1)
 
-  # get folder location source of truth from ".OwlBot.yaml"
-  # will only consider the first occurence
-  googleapis_path=$(grep -e 'java/gapic-google' $d/.OwlBot.yaml | head -n 1| sed 's#^.*"/##' | sed 's#/[^/]*/.\*-java.*$##')
-  repo_folder=$(grep 'java/gapic-google' $d/.OwlBot.yaml -A1| tail -n1 |  sed "s#^.*$monorepo_name/[^/]*/##"| sed 's#"$##')
-
-  # figure out path to look out changes for: v[1-9]
-  # taking the latest version that's not alpha/beta
-  version_folder=$(find "$d$repo_folder/main/java/com/google/" -type d -name 'v[0-9]' |sort -d -r | head -n 1 | sed "s#^$d##")
-  version_number=$(echo $version_folder | sed 's#.*/##')
-  googleapis_folder="$googleapis_path/$version_number"
-
-  echo "$api_shortname, $googleapis_folder, $distribution_name, $googleapis_committish, $monorepo_folder" >> $filename
+  echo "$api_shortname, $proto_paths_latest, $distribution_name, $monorepo_folder" >> $filename
   count=$((count+1))
 done
 echo "Total in-scope client libraries: $count"
-
-# clean up
-rm -rf google-cloud-java/
