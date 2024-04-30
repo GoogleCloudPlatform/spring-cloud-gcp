@@ -1,4 +1,4 @@
-rebaseMergeAllowed: true
+rebaseMergeAllowed: false
 squashMergeAllowed: true
 mergeCommitAllowed: false
 branchProtectionRules:
