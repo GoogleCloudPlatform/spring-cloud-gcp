@@ -44,7 +44,7 @@
 		<micrometer-tracing.verison>1.2.4</micrometer-tracing.verison>
 
 		<!-- Plugin versions -->
-		<maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 		<maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
 		<maven-flatten-plugin.version>1.6.0</maven-flatten-plugin.version>
