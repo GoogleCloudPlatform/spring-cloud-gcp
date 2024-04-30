@@ -54,9 +54,5 @@ branchProtectionRules:
     requiresCodeOwnerReviews: true
     requiresStrictStatusChecks: false
 permissionRules:
-  - team: yoshi-admins
+  - team: cloud-java-team-teamsync
     permission: admin
-  - team: yoshi-java-admins
-    permission: admin
-  - team: yoshi-java
-    permission: push
