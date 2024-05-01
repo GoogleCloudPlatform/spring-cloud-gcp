@@ -121,6 +121,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.instance-group-manager-resize-requests.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/InstanceGroupManagerResizeRequests components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.instance-group-managers.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/InstanceGroupManagers components.",
@@ -130,6 +136,12 @@
       "name": "com.google.cloud.compute.v1.instance-groups.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/InstanceGroups components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.instance-settings-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/InstanceSettingsService components.",
       "defaultValue": true
     },
     {
@@ -478,6 +490,18 @@
       "name": "com.google.cloud.compute.v1.ssl-policies.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/SslPolicies components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.storage-pool-types.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/StoragePoolTypes components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.storage-pools.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/StoragePools components.",
       "defaultValue": true
     },
     {

@@ -18,8 +18,10 @@ com.google.cloud.compute.v1.spring.GlobalPublicDelegatedPrefixesSpringAutoConfig
 com.google.cloud.compute.v1.spring.HealthChecksSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ImageFamilyViewsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ImagesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.InstanceGroupManagerResizeRequestsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InstanceGroupManagersSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InstanceGroupsSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.InstanceSettingsServiceSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InstanceTemplatesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InstancesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InstantSnapshotsSpringAutoConfiguration
@@ -78,6 +80,8 @@ com.google.cloud.compute.v1.spring.SnapshotSettingsServiceSpringAutoConfiguratio
 com.google.cloud.compute.v1.spring.SnapshotsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.SslCertificatesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.SslPoliciesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.StoragePoolTypesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.StoragePoolsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.SubnetworksSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.TargetGrpcProxiesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.TargetHttpProxiesSpringAutoConfiguration
