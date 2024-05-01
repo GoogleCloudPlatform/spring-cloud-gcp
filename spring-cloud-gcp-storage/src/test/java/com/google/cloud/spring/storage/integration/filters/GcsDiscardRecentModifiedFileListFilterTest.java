@@ -17,6 +17,7 @@
 package com.google.cloud.spring.storage.integration.filters;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +26,6 @@ import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 class GcsDiscardRecentModifiedFileListFilterTest {
@@ -51,7 +51,7 @@ class GcsDiscardRecentModifiedFileListFilterTest {
   void testFileOlderThanMinimumAgeIsReturned() {
     GcsDiscardRecentModifiedFileListFilter filter =
         new GcsDiscardRecentModifiedFileListFilter(Duration.ofSeconds(60));
-    filter.addDiscardCallback(blobInfo -> Assert.fail("Not expected"));
+    filter.addDiscardCallback(blobInfo -> fail("Not expected"));
 
     BlobInfo blobInfo = mock(BlobInfo.class);
     when(blobInfo.getUpdateTime())

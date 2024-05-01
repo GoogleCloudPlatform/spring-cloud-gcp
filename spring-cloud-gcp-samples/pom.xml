@@ -13,7 +13,7 @@
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>3.7.10-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>3.8.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
@@ -34,7 +34,7 @@
 		<app-engine-maven-plugin.version>2.8.0</app-engine-maven-plugin.version>
 
 		<!-- Deploy plugin is skipped for all samples but exists -->
-		<maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
+		<maven-deploy-plugin.version>3.1.2</maven-deploy-plugin.version>
 
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 		<integration-test.tags.include/>
