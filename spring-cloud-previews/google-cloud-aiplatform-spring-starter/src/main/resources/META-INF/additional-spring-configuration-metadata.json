@@ -49,6 +49,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.aiplatform.v1.gen-ai-tuning-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/GenAiTuningService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.aiplatform.v1.index-endpoint-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud aiplatform/IndexEndpointService components.",
@@ -100,6 +106,18 @@
       "name": "com.google.cloud.aiplatform.v1.model-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud aiplatform/ModelService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.notebook-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/NotebookService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.persistent-resource-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/PersistentResourceService components.",
       "defaultValue": true
     },
     {
