@@ -35,8 +35,9 @@ function compute_monorepo_version() {
 # $1 - Monorepo version tag (or committish)
 function generate_libraries_list(){
   monorepo_commitish=$1
-  git clone --depth=1 https://github.com/googleapis/google-cloud-java.git
+  git clone --no-single-branch --depth=1 https://github.com/googleapis/google-cloud-java.git
   pushd google-cloud-java || { echo "Failure: google-cloud-java folder does not exists."; exit 1; }
+  git checkout "${MONOREPO_TAG}"
   # read googleapis committish used in hermetic build
   GOOGLEAPIS_COMMITTISH=$(yq -r ".googleapis_commitish" generation_config.yaml)
   popd || { echo "Failure in popd."; exit 1; }
