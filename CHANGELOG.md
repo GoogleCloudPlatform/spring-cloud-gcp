@@ -14,6 +14,44 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.2.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.1.2...v5.2.0) (2024-05-02)
+
+
+### Features
+
+* Spring Cloud AlloyDB integration ([#2787](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2787)) ([#2788](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2788)) ([67d994e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/67d994e7f39372be7d0e9010e234f2fe46e68fd9))
+
+
+### Bug Fixes
+
+* BigQueryTemplate now closes its BigQueryJsonDataWriter ([#2765](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2765)) ([1e0c206](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1e0c206e941d39d0e490ac851c577422701dce02))
+* **datastore:** guard against "Type must not be Null" ([#2797](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2797)) ([9a2ee15](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9a2ee15973a58b5dd2ca57821a4df8791d99b2fe))
+* **deps:** update cloud-sql-socket-factory.version to v1.18.0 ([#2681](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2681)) ([65c528c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/65c528c8df1da9ec4296101ae4bb1f4f1c98a8e4))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.38.0 ([#2814](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2814)) ([bfd45b7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/bfd45b76927a70a9397116c2b44e43408d42ce5d))
+* **deps:** update dependency io.micrometer:micrometer-tracing-bom to v1.2.5 ([#2809](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2809)) ([e974214](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e974214ad80c98d0ac161e149f62e86ea17bf50b))
+* **deps:** update dependency org.postgresql:r2dbc-postgresql to v1.0.5.release ([#2810](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2810)) ([7eb0441](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7eb0441a334f4f921973cbffb4c21238b02c0c7e))
+* Use specified bigQueryWriteClient when creating JsonStreamWriter ([#2711](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2711)) ([21657a7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/21657a751aa487797780b3866a335fc24b256310))
+
+
+### Dependencies
+
+* bump com.google.errorprone:error_prone_core from 2.26.0 to 2.27.0 ([#2798](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2798)) ([507832a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/507832a811f246b363005a930978640ee47ee83d))
+* bump com.google.errorprone:error_prone_core from 2.27.0 to 2.27.1 ([#2835](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2835)) ([dcec57a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/dcec57a75df72b512b68fa5366a121acdb9bf14c))
+* bump commons-io:commons-io from 2.15.1 to 2.16.1 ([#2775](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2775)) ([2eb24aa](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2eb24aa1cdbe76c6873baa7dc75d092ddc30b731))
+* bump org.apache.maven.plugins:maven-compiler-plugin ([#2716](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2716)) ([8a0f03a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8a0f03a16e6394037600fc558d730b0283cf716d))
+* bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.0 to 3.2.4 ([#2792](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2792)) ([4a550e6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4a550e69579448dafd26edd7bae2e982fbc4a5b1))
+* bump org.awaitility:awaitility from 4.2.0 to 4.2.1 ([#2704](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2704)) ([072570b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/072570bc8089c296a92cc04a88632881236b0e48))
+* bump org.jacoco:jacoco-maven-plugin from 0.8.11 to 0.8.12 ([#2767](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2767)) ([0a4d36d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0a4d36d4809f730ea7ad4d0b0d969f273c381fa2))
+* bump org.springframework.boot:spring-boot-starter-parent ([#2789](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2789)) ([6b9c285](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6b9c2850862b759de042033c8f8ba9b8d4911a65))
+* bump spring-boot-dependencies.version from 3.2.3 to 3.2.4 ([#2729](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2729)) ([78b3a68](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/78b3a6851b6856679fa899bda51991b45dd66d97))
+
+
+### Documentation
+
+* Add contribution guidelines ([#2771](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2771)) ([add0da7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/add0da7af8a71962b6f06544eaf15007c3c11877))
+* Memorystore documentation improvements ([#2737](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2737)) ([b1e87b3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b1e87b32a636fd370fa30007dc7aa574539fac13))
+* publisher executor config properties ([#2746](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2746)) ([590ec21](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/590ec2110082280f4580b8d3462e110edffa22c3))
+
 ## [5.1.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.1.1...v5.1.2) (2024-03-29)
 
 
