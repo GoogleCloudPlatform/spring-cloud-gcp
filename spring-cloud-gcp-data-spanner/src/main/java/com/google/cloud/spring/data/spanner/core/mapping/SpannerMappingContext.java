@@ -18,7 +18,10 @@ package com.google.cloud.spring.data.spanner.core.mapping;
 
 import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
+import com.google.cloud.spring.data.spanner.core.mapping.typeadapter.InstantTypeAdapter;
 import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import java.time.Instant;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -50,12 +53,11 @@ public class SpannerMappingContext
 
   private Gson gson;
 
-  public SpannerMappingContext() {
-  }
+  public SpannerMappingContext() {}
 
   public SpannerMappingContext(Gson gson) {
     Assert.notNull(gson, "A non-null gson is required.");
-    this.gson = gson;
+    this.gson = addTypeAdapter(gson, new InstantTypeAdapter(), Instant.class);
   }
 
   @NonNull
@@ -96,7 +98,8 @@ public class SpannerMappingContext
   protected <T> SpannerPersistentEntityImpl<T> constructPersistentEntity(
       TypeInformation<T> typeInformation) {
     SpannerEntityProcessor processor;
-    if (this.applicationContext == null || !this.applicationContext.containsBean("spannerConverter")) {
+    if (this.applicationContext == null
+        || !this.applicationContext.containsBean("spannerConverter")) {
       processor = new ConverterAwareMappingSpannerEntityProcessor(this);
     } else {
       processor = this.applicationContext.getBean(SpannerEntityProcessor.class);
@@ -123,5 +126,10 @@ public class SpannerMappingContext
           "The provided entity class cannot be converted to a Spanner Entity: " + entityClass);
     }
     return entity;
+  }
+
+  private <T> Gson addTypeAdapter(Gson gson, TypeAdapter<T> typeAdapter, Class<T> type) {
+
+    return gson.newBuilder().registerTypeAdapter(type, typeAdapter).create();
   }
 }

@@ -41,6 +41,7 @@ import com.google.cloud.spring.data.spanner.core.convert.TestEntities.TestEntity
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.gson.Gson;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,8 +62,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
     this.spannerReadConverter = new SpannerReadConverter();
     SpannerMappingContext mappingContext = new SpannerMappingContext(new Gson());
     this.spannerEntityReader =
-        new ConverterAwareMappingSpannerEntityReader(
-            mappingContext, this.spannerReadConverter);
+        new ConverterAwareMappingSpannerEntityReader(mappingContext, this.spannerReadConverter);
   }
 
   @Test
@@ -132,8 +132,8 @@ class ConverterAwareMappingSpannerEntityReaderTests {
             .build();
 
     assertThatThrownBy(() -> this.spannerEntityReader.read(OuterTestEntity.class, rowStruct))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("Column is not an ARRAY type: innerTestEntities");
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("Column is not an ARRAY type: innerTestEntities");
   }
 
   @Test
@@ -148,19 +148,23 @@ class ConverterAwareMappingSpannerEntityReaderTests {
                 Type.struct(StructField.of("string_col", Type.string())), List.of(colStruct))
             .build();
 
-    ConverterAwareMappingSpannerEntityReader testReader = new ConverterAwareMappingSpannerEntityReader(new SpannerMappingContext(), new SpannerReadConverter(
-        List.of(
-            new Converter<Struct, Integer>() {
-              @Nullable
-              @Override
-              public Integer convert(Struct source) {
-                return source.getString("string_col").length();
-              }
-            })));
+    ConverterAwareMappingSpannerEntityReader testReader =
+        new ConverterAwareMappingSpannerEntityReader(
+            new SpannerMappingContext(),
+            new SpannerReadConverter(
+                List.of(
+                    new Converter<Struct, Integer>() {
+                      @Nullable
+                      @Override
+                      public Integer convert(Struct source) {
+                        return source.getString("string_col").length();
+                      }
+                    })));
     assertThatThrownBy(() -> testReader.read(OuterTestEntityFlatFaulty.class, rowStruct))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("The value in column with name innerLengths could not be converted to the corresponding"
-                    + " property in the entity. The property's type is class java.lang.Integer.");
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage(
+            "The value in column with name innerLengths could not be converted to the corresponding"
+                + " property in the entity. The property's type is class java.lang.Integer.");
   }
 
   @Test
@@ -218,8 +222,8 @@ class ConverterAwareMappingSpannerEntityReaderTests {
             .build();
 
     assertThatThrownBy(() -> this.spannerEntityReader.read(TestEntity.class, struct))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("Unable to read column from Cloud Spanner results: id4");
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("Unable to read column from Cloud Spanner results: id4");
   }
 
   @Test
@@ -255,11 +259,11 @@ class ConverterAwareMappingSpannerEntityReaderTests {
             .to(Value.bytes(ByteArray.copyFrom("string1")))
             .build();
 
-
     assertThatThrownBy(() -> this.spannerEntityReader.read(TestEntity.class, struct))
         .isInstanceOf(ConversionFailedException.class)
-        .hasMessage("Failed to convert from type [java.lang.String] to type "
-            + "[java.lang.Double] for value [UNCONVERTABLE VALUE]")
+        .hasMessage(
+            "Failed to convert from type [java.lang.String] to type "
+                + "[java.lang.Double] for value [UNCONVERTABLE VALUE]")
         .hasStackTraceContaining(
             "java.lang.NumberFormatException: For input string: \"UNCONVERTABLEVALUE\"");
   }
@@ -270,8 +274,8 @@ class ConverterAwareMappingSpannerEntityReaderTests {
         Struct.newBuilder().set("fieldWithUnsupportedType").to(Value.string("key1")).build();
 
     assertThatThrownBy(() -> this.spannerEntityReader.read(FaultyTestEntity.class, struct))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("Unable to read column from Cloud Spanner results: id");
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("Unable to read column from Cloud Spanner results: id");
   }
 
   @Test
@@ -329,8 +333,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
   void ensureConstructorArgsAreReadOnce() {
     Struct row = mock(Struct.class);
     when(row.getString("id")).thenReturn("1234");
-    when(row.getType())
-        .thenReturn(Type.struct(List.of(StructField.of("id", Type.string()))));
+    when(row.getType()).thenReturn(Type.struct(List.of(StructField.of("id", Type.string()))));
     when(row.getColumnType("id")).thenReturn(Type.string());
 
     TestEntities.SimpleConstructorTester result =
@@ -354,9 +357,10 @@ class ConverterAwareMappingSpannerEntityReaderTests {
             .to(Value.float64(3.14))
             .build();
 
-    assertThatThrownBy(() -> this.spannerEntityReader.read(TestEntities.PartialConstructor.class, struct))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("Column not found: custom_col");
+    assertThatThrownBy(
+            () -> this.spannerEntityReader.read(TestEntities.PartialConstructor.class, struct))
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("Column not found: custom_col");
   }
 
   @Test
@@ -367,11 +371,16 @@ class ConverterAwareMappingSpannerEntityReaderTests {
             .set("zeroArgsListOfObjects")
             .to(Value.stringArray(List.of("hello", "world")))
             .build();
-    // Starting from Spring 3.0, Collection types without generics can be resolved to type with wildcard
-    // generics (i.e., "?"). For example, "zeroArgsListOfObjects" will be resolved to List<?>, rather
+    // Starting from Spring 3.0, Collection types without generics can be resolved to type with
+    // wildcard
+    // generics (i.e., "?"). For example, "zeroArgsListOfObjects" will be resolved to List<?>,
+    // rather
     // than List.
     assertThatNoException()
-        .isThrownBy(() -> this.spannerEntityReader.read(TestEntities.TestEntityWithListWithZeroTypeArgs.class, struct));
+        .isThrownBy(
+            () ->
+                this.spannerEntityReader.read(
+                    TestEntities.TestEntityWithListWithZeroTypeArgs.class, struct));
   }
 
   @Test
@@ -398,6 +407,28 @@ class ConverterAwareMappingSpannerEntityReaderTests {
   }
 
   @Test
+  void readJsonInstantFieldTest() {
+    Struct row = mock(Struct.class);
+    when(row.getString("id")).thenReturn("1234");
+    when(row.getType())
+        .thenReturn(
+            Type.struct(
+                Arrays.asList(
+                    Type.StructField.of("id", Type.string()),
+                    Type.StructField.of("params", Type.json()))));
+    when(row.getColumnType("id")).thenReturn(Type.string());
+
+    when(row.getJson("params")).thenReturn("{\"instant\":\"1970-01-01T00:00:00Z\"}");
+
+    TestEntities.TestEntityInstantInJson result =
+        this.spannerEntityReader.read(TestEntities.TestEntityInstantInJson.class, row);
+
+    assertThat(result.id).isEqualTo("1234");
+
+    assertThat(result.params.instant).isEqualTo(Instant.ofEpochSecond(0));
+  }
+
+  @Test
   void readArrayJsonFieldTest() {
     Struct row = mock(Struct.class);
     when(row.getString("id")).thenReturn("1234");
@@ -410,9 +441,12 @@ class ConverterAwareMappingSpannerEntityReaderTests {
     when(row.getColumnType("id")).thenReturn(Type.string());
 
     when(row.getColumnType("paramsList")).thenReturn(Type.array(Type.json()));
-    when(row.getJsonList("paramsList")).thenReturn(
-        Arrays.asList("{\"p1\":\"address line\",\"p2\":\"5\"}",
-            "{\"p1\":\"address line 2\",\"p2\":\"6\"}", null));
+    when(row.getJsonList("paramsList"))
+        .thenReturn(
+            Arrays.asList(
+                "{\"p1\":\"address line\",\"p2\":\"5\"}",
+                "{\"p1\":\"address line 2\",\"p2\":\"6\"}",
+                null));
 
     TestEntities.TestEntityJsonArray result =
         this.spannerEntityReader.read(TestEntities.TestEntityJsonArray.class, row);
