@@ -47,12 +47,16 @@ updates:
     # Spring Cloud dependencies
     - dependency-name: "org.springframework.cloud:spring-cloud-dependencies"
       versions: ["2022.x", "2023.x"]
+    # spring-cloud-dependencies-parent should be eventually removed per #1294
+    - dependency-name: "org.springframework.cloud:spring-cloud-dependencies-parent"
+      versions: ["4.x"]
     - dependency-name: "org.springframework.cloud:spring-cloud-config"
+      versions: ["4.x"]
+    - dependency-name: "org.springframework.cloud:spring-cloud-config-dependencies"
       versions: ["4.x"]
     - dependency-name: "org.springframework.cloud:spring-cloud-function"
       versions: ["4.x"]
-    # spring-cloud-dependencies-parent should be eventually removed per #1294
-    - dependency-name: "org.springframework.cloud:spring-cloud-dependencies-parent"
+    - dependency-name: "org.springframework.cloud:spring-cloud-starter-bootstrap"
       versions: ["4.x"]
     # Spring Shell dependencies
     - dependency-name: "org.springframework.shell:spring-shell-starter"
@@ -89,7 +93,11 @@ updates:
       versions: ["2023.x"]
     - dependency-name: "org.springframework.cloud:spring-cloud-config"
       versions: [">=4.1.0"]
+    - dependency-name: "org.springframework.cloud:spring-cloud-config-dependencies"
+      versions: [">=4.1.0"]
     - dependency-name: "org.springframework.cloud:spring-cloud-function"
+      versions: [">=4.1.0"]
+    - dependency-name: "org.springframework.cloud:spring-cloud-starter-bootstrap"
       versions: [">=4.1.0"]
     # Spring Shell dependencies
     - dependency-name: "org.springframework.shell:spring-shell-starter"
