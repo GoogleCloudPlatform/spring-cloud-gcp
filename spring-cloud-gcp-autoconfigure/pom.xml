@@ -302,6 +302,7 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>alloydb-jdbc-connector</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Config -->

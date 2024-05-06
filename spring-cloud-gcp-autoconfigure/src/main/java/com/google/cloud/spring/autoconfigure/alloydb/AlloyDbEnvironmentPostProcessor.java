@@ -85,11 +85,11 @@ public class AlloyDbEnvironmentPostProcessor implements EnvironmentPostProcessor
       environment
           .getPropertySources()
           .addFirst(new MapPropertySource("ALLOYDB_DATA_SOURCE_URL", primaryMap));
-    }
 
-    // support usage metrics
-    ConnectorRegistry.addArtifactId(
-        "spring-cloud-gcp-alloydb/" + this.getClass().getPackage().getImplementationVersion());
+      // support usage metrics
+      ConnectorRegistry.addArtifactId(
+          "spring-cloud-gcp-alloydb/" + this.getClass().getPackage().getImplementationVersion());
+    }
   }
 
   private String getJdbcUrl(AlloyDbProperties properties) {

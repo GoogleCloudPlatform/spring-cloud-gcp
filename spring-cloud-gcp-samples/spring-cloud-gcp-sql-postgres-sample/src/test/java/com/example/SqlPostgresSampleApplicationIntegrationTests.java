@@ -32,6 +32,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.util.ClassUtils;
 
 /** Simple integration test to verify the SQL sample application with Postgres. */
 @EnabledIfSystemProperty(named = "it.cloudsql", matches = "true")
@@ -68,5 +69,11 @@ class SqlPostgresSampleApplicationIntegrationTests {
             "[luisao@example.com, Anderson, Silva]",
             "[jonas@example.com, Jonas, Goncalves]",
             "[fejsa@example.com, Ljubomir, Fejsa]");
+  }
+
+  @Test
+  void testNoAllyDbLoaded() {
+    assertThat(ClassUtils.isPresent("com.google.cloud.alloydb.SocketFactory", null))
+        .isFalse();
   }
 }
