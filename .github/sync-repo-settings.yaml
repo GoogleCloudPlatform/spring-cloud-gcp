@@ -11,7 +11,7 @@ branchProtectionRules:
       - 'unitTests (21)'
       - 'releaseCheck'
       - 'conventionalcommits.org'
-      - 'SonarCloud Code Analysis'
+      - 'Build with Sonar'
       - 'parallel-NativeTests (alloydb-sample)'
       - 'parallel-NativeTests (bigquery-sample)'
       - 'parallel-NativeTests (bigquery)'
@@ -50,7 +50,7 @@ branchProtectionRules:
       - 'unitTests (21)'
       - 'releaseCheck'
       - 'conventionalcommits.org'
-      - 'SonarCloud Code Analysis'
+      - 'Build with Sonar'
     requiredApprovingReviewCount: 1
     requiresCodeOwnerReviews: true
     requiresStrictStatusChecks: false
@@ -63,7 +63,7 @@ branchProtectionRules:
       - 'unitTests (17)'
       - 'releaseCheck'
       - 'conventionalcommits.org'
-      - 'SonarCloud Code Analysis'
+      - 'Build with Sonar'
     requiredApprovingReviewCount: 1
     requiresCodeOwnerReviews: true
     requiresStrictStatusChecks: false
