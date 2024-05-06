@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Spring Cloud Bus</title>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
+<li><a href="#_spring_cloud_bus">Spring Cloud Bus</a>
+<ul class="sectlevel2">
+<li><a href="#_configuration_management_with_spring_cloud_config_and_spring_cloud_bus">Configuration Management with Spring Cloud Config and Spring Cloud Bus</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_spring_cloud_bus"><a class="anchor" href="#_spring_cloud_bus"></a><a class="link" href="#_spring_cloud_bus">Spring Cloud Bus</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Using <a href="https://cloud.google.com/pubsub/">Cloud Pub/Sub</a> as the <a href="https://spring.io/projects/spring-cloud-bus">Spring Cloud Bus</a> implementation is as simple as importing the <code>spring-cloud-gcp-starter-bus-pubsub</code> starter.</p>
+</div>
+<div class="paragraph">
+<p>This starter brings in the <a href="spring-stream.html#spring-cloud-stream">Spring Cloud Stream binder for Cloud Pub/Sub</a>, which is used to both publish and subscribe to the bus.
+If the bus topic (named <code>springCloudBus</code> by default) does not exist, the binder automatically creates it.
+The binder also creates anonymous subscriptions for each project using the <code>spring-cloud-gcp-starter-bus-pubsub</code> starter.</p>
+</div>
+<div class="paragraph">
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-gcp-starter-bus-pubsub&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gradle coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+    implementation("com.google.cloud:spring-cloud-gcp-starter-bus-pubsub")
+}
+</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration_management_with_spring_cloud_config_and_spring_cloud_bus"><a class="anchor" href="#_configuration_management_with_spring_cloud_config_and_spring_cloud_bus"></a><a class="link" href="#_configuration_management_with_spring_cloud_config_and_spring_cloud_bus">Configuration Management with Spring Cloud Config and Spring Cloud Bus</a></h3>
+<div class="paragraph">
+<p>Spring Cloud Bus can be used to push configuration changes from a Spring Cloud Config server to the clients listening on the same bus.</p>
+</div>
+<div class="paragraph">
+<p>To use Spring Framework on Google Cloud Pub/Sub as the bus implementation, both the configuration server and the configuration client need the <code>spring-cloud-gcp-starter-bus-pubsub</code> dependency.</p>
+</div>
+<div class="paragraph">
+<p>All other configuration is standard to <a href="https://spring.io/projects/spring-cloud-config">Spring Cloud Config</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/spring_cloud_bus_over_pubsub.png" alt="spring cloud bus over pubsub">
+</div>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Config Server typically runs on port <code>8888</code>, and can read configuration from a <a href="https://cloud.spring.io/spring-cloud-config/spring-cloud-config.html#_environment_repository">variety of source control systems</a> such as GitHub, and even from the local filesystem.
+When the server is notified that new configuration is available, it fetches the updated configuration and sends a notification (<code>RefreshRemoteApplicationEvent</code>) out via Spring Cloud Bus.</p>
+</div>
+<div class="paragraph">
+<p>When configuration is stored locally, config server polls the parent directory for changes.
+With configuration stored in source control repository, such as GitHub, the config server needs to be notified that a new version of configuration is available.
+In a deployed server, this would be done automatically through a GitHub webhook, but in a local testing scenario, the <code>/monitor</code> HTTP endpoint needs to be invoked manually.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>curl -X POST http://localhost:8888/monitor -H "X-Github-Event: push" -H "Content-Type: application/json" -d '{"commits": [{"modified": ["application.properties"]}]}'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By adding the <code>spring-cloud-gcp-starter-bus-pubsub</code> dependency, you instruct Spring Cloud Bus to use Cloud Pub/Sub to broadcast configuration changes.
+Spring Cloud Bus will then create a topic named <code>springCloudBus</code>, as well as a subscription for each configuration client.</p>
+</div>
+<div class="paragraph">
+<p>The configuration server happens to also be a configuration client, subscribing to the configuration changes that it sends out.
+Thus, in a scenario with one configuration server and one configuration client, two anonymous subscriptions to the <code>springCloudBus</code> topic are created.
+However, a config server disables configuration refresh by default (see <a href="https://static.javadoc.io/org.springframework.cloud/spring-cloud-config-server/2.1.0.RELEASE/index.html">ConfigServerBootstrapApplicationListener</a> for more details).</p>
+</div>
+<div class="paragraph">
+<p>A <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-bus-config-sample">demo application</a> showing configuration management and distribution over a Cloud Pub/Sub-powered bus is available.
+The sample contains two examples of configuration management with Spring Cloud Bus: one monitoring a local file system, and the other retrieving configuration from a GitHub repository.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+</div>
+  </div>
+</div>
+</body>
+</html>
