@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.2.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.2.0...v5.2.1) (2024-05-06)
+
+
+### Bug Fixes
+
+* AlloyDB should not load when Postgres starter is used ([#2848](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2848)) ([2c8e5cb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2c8e5cbdd2d3ce75a01628c91efe2b28a9aa8776))
+
 ## [5.2.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.1.2...v5.2.0) (2024-05-02)
 
 
