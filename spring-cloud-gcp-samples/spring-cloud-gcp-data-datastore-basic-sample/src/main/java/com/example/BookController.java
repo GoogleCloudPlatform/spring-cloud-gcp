@@ -56,6 +56,16 @@ public class BookController {
     List<Book> books = this.bookRepository.findByAuthor(author);
     return books.toString();
   }
+  @GetMapping("/findByTitle")
+  public String findByTitle(@RequestParam("title") String title) {
+    List<Book> books = this.bookRepository.findByTitle(title);
+    return books.toString();
+  }
+  @GetMapping("/findById")
+  public String findById(@RequestParam("id") Long id) {
+    Optional<Book> book = this.bookRepository.findById(id);
+    return book.get().toString();
+  }
 
   @GetMapping("/findByYearGreaterThan")
   public String findByYearGreaterThan(@RequestParam("year") Optional<Integer> year) {
