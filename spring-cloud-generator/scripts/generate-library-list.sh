@@ -23,16 +23,21 @@ cd ${SPRING_GENERATOR_DIR}
 filename=${SPRING_GENERATOR_DIR}/scripts/resources/library_list.txt
 echo "# api_shortname, googleapis-folder, distribution_name:version, monorepo_folder" > "$filename"
 
-# loop through folders
+# loop through configs for the monorepo (google-cloud-java)
 count=0
-for d in ./google-cloud-java/*java-*/; do
-  # parse variables from .repo-metadata.json
-  language=$(cat $d/.repo-metadata.json | jq -r .language)
-  api_shortname=$(cat $d/.repo-metadata.json | jq -r .api_shortname)
-  distribution_name=$(cat $d/.repo-metadata.json | jq -r .distribution_name)
-  library_type=$(cat $d/.repo-metadata.json | jq -r .library_type)
-  release_level=$(cat $d/.repo-metadata.json | jq -r .release_level)
-  monorepo_folder=$(basename $d)
+configs=$(yq e '.libraries[]' ./google-cloud-java/generate_config.yaml)
+for config_str in $configs; do
+  # parse variables from generation_config.yaml
+  config=$(echo "$config_str" | yq e '.') # Parse config_str back to YAML format
+  unique_module_name=$(echo "$config" | jq -r '.library_name // .api_shortname')
+  # Determine distribution_name
+  distribution_name=$(echo "$config" | jq -r '.distribution_name' // "")
+  if [ -z "$distribution_name" ]; then
+    distribution_name="com.google.cloud:google-cloud-${unique_module_name}"
+  fi
+  library_type=$(echo "$config" | jq -r '.library_type // "GAPIC_AUTO"') # default to GAPIC_AUTO per https://github.com/googleapis/sdk-platform-java/blob/v2.40.0/library_generation/model/library_config.py#L57
+  release_level=$(echo "$config" | jq -r '.release_level // "preview"') # default to preview per https://github.com/googleapis/sdk-platform-java/blob/v2.40.0/library_generation/model/library_config.py#L58
+  monorepo_folder="java/${unique_module_name}"
 
   group_id=$(echo $distribution_name | cut -f1 -d:)
   artifact_id=$(echo $distribution_name | cut -f2 -d:)
@@ -55,9 +60,9 @@ for d in ./google-cloud-java/*java-*/; do
     continue
   fi
 
-  # parse proto path from generation_config.yaml, find by api_shortname
+  # parse proto path from generation_config.yaml, find by unique_module_name, which will match library_name if it exists, or api_shortname if library_name does not exist
   # then sort and keep latest stable version
-  library=$(yq -r '.libraries[] | select(.api_shortname == "'"$api_shortname"'")' ./google-cloud-java/generation_config.yaml)
+  library=$(yq -r '.libraries[] | select(.library_name == "'"$unique_module_name"'" or .api_shortname == "'"$unique_module_name"'" )' ./google-cloud-java/generation_config.yaml)
   proto_paths_stable=$(echo "$library" | yq -r '.GAPICs[] | select(.proto_path | test("/v[0-9]+$")) | .proto_path')
   proto_paths_latest=$(echo "$proto_paths_stable" | sort -d -r | head -n 1)
 
