@@ -24,6 +24,7 @@ filename=${SPRING_GENERATOR_DIR}/scripts/resources/library_list.txt
 echo "# api_shortname, googleapis-folder, distribution_name:version, monorepo_folder" > "$filename"
 
 # loop through configs for the monorepo (google-cloud-java)
+# Note that this logic will not work for non-cloud APIs
 count=0
 configs=$(yq e '.libraries[]' ./google-cloud-java/generate_config.yaml)
 for config_str in $configs; do
