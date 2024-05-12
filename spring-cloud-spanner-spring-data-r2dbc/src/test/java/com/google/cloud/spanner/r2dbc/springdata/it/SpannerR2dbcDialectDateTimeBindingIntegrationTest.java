@@ -34,16 +34,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -52,9 +46,6 @@ import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
 import org.springframework.data.r2dbc.convert.R2dbcCustomConversions;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 /**
@@ -62,77 +53,19 @@ import reactor.test.StepVerifier;
  * SpannerR2dbcDialect}.
  */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(
-    classes = SpannerR2dbcDialectDateTimeBindingIntegrationTest.TestConfiguration.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SpannerR2dbcDialectDateTimeBindingIntegrationTest {
-
-  private static final Logger log =
-      LoggerFactory.getLogger(SpannerR2dbcDialectDateTimeBindingIntegrationTest.class);
-
-  private static final String PROJECT_NAME =
-      System.getProperty("gcp.project", ServiceOptions.getDefaultProjectId());
-  private static final String DRIVER_NAME = "spanner";
-
-  private static final String TEST_INSTANCE =
-      System.getProperty("spanner.instance", "reactivetest");
-
-  private static final String TEST_DATABASE = System.getProperty("spanner.database", "testdb");
-
-  private static final ConnectionFactory connectionFactory =
-      ConnectionFactories.get(
-          ConnectionFactoryOptions.builder()
-              .option(Option.valueOf("project"), ServiceOptions.getDefaultProjectId())
-              .option(PROJECT, PROJECT_NAME)
-              .option(DRIVER, DRIVER_NAME)
-              .option(INSTANCE, TEST_INSTANCE)
-              .option(DATABASE, TEST_DATABASE)
-              .build());
-
-  @Autowired private R2dbcEntityTemplate r2dbcEntityTemplate;
-
+class SpannerR2dbcDialectDateTimeBindingIntegrationTest extends AbstractBaseSpannerR2dbcIntegrationTest {
   /** Initializes the integration test environment for the Spanner R2DBC dialect. */
-  @BeforeAll
-  static void initializeTestEnvironment() {
-    Mono.from(connectionFactory.create())
-        .flatMap(
-            c ->
-                Mono.from(c.createStatement("drop table card").execute())
-                    .doOnSuccess(x -> log.info("Table drop completed."))
-                    .doOnError(
-                        x -> {
-                          if (!x.getMessage().contains("Table not found")) {
-                            log.info("Table drop failed. {}", x.getMessage());
-                          }
-                        })
-                    .onErrorResume(x -> Mono.empty())
-                    .thenReturn(c))
-        .flatMap(
-            c ->
-                Mono.from(
-                        c.createStatement(
-                                "create table card ("
-                                    + "  id int64 not null,"
-                                    + "  expiry_year int64 not null,"
-                                    + "  expiry_month int64 not null,"
-                                    + "  issue_date date not null,"
-                                    + "  requested_at timestamp not null"
-                                    + ") primary key (id)")
-                            .execute())
-                    .doOnSuccess(x -> log.info("Table creation completed.")))
-        .block();
-  }
-
-  @AfterAll
-  static void cleanupTableAfterTest() {
-    Mono.from(connectionFactory.create())
-        .flatMap(
-            c ->
-                Mono.from(c.createStatement("drop table card").execute())
-                    .doOnSuccess(x -> log.info("Table drop completed."))
-                    .doOnError(x -> log.info("Table drop failed.")))
-        .block();
+  @BeforeEach
+  void initializeTestEnvironment() {
+    super.initializeTestEnvironment(
+        SpannerR2dbcDialectDateTimeBindingIntegrationTest.TestConfiguration.class,
+        "create table card ("
+            + "  id int64 not null,"
+            + "  expiry_year int64 not null,"
+            + "  expiry_month int64 not null,"
+            + "  issue_date date not null,"
+            + "  requested_at timestamp not null"
+            + ") primary key (id)");
   }
 
   @Test
@@ -145,36 +78,48 @@ class SpannerR2dbcDialectDateTimeBindingIntegrationTest {
             LocalDate.parse("2021-12-31"),
             LocalDateTime.parse("2021-12-15T21:30:10"));
 
-    this.r2dbcEntityTemplate
-        .insert(Card.class)
-        .using(card)
-        .then()
-        .as(StepVerifier::create)
-        .verifyComplete();
+    this.contextRunner.run(ctx -> {
+      R2dbcEntityTemplate r2dbcEntityTemplate = ctx.getBean(R2dbcEntityTemplate.class);
 
-    this.r2dbcEntityTemplate
-        .select(Card.class)
-        .first()
-        .as(StepVerifier::create)
-        .expectNextMatches(
-            c ->
-                c.getId() == 1L
-                    && c.getExpiryYear() == 2022
-                    && c.getExpiryMonth() == 12
-                    && c.getIssueDate().equals(LocalDate.parse("2021-12-31"))
-                    && c.getRequestedAt().equals(LocalDateTime.parse("2021-12-15T21:30:10")))
-        .verifyComplete();
+      r2dbcEntityTemplate
+          .insert(Card.class)
+          .using(card)
+          .then()
+          .as(StepVerifier::create)
+          .verifyComplete();
+
+      r2dbcEntityTemplate
+          .select(Card.class)
+          .first()
+          .as(StepVerifier::create)
+          .expectNextMatches(
+              c ->
+                  c.getId() == 1L
+                      && c.getExpiryYear() == 2022
+                      && c.getExpiryMonth() == 12
+                      && c.getIssueDate().equals(LocalDate.parse("2021-12-31"))
+                      && c.getRequestedAt().equals(LocalDateTime.parse("2021-12-15T21:30:10")))
+          .verifyComplete();
+    });
   }
 
   /** Register custom converters. */
   @Configuration
   static class TestConfiguration extends AbstractR2dbcConfiguration {
-
-    @Autowired ApplicationContext applicationContext;
+    @Value("${testDatabase}")
+    private String testDatabase;
 
     @Override
+    @Bean
     public ConnectionFactory connectionFactory() {
-      return connectionFactory;
+      return ConnectionFactories.get(
+          ConnectionFactoryOptions.builder()
+              .option(Option.valueOf("project"), ServiceOptions.getDefaultProjectId())
+              .option(PROJECT, PROJECT_NAME)
+              .option(DRIVER, DRIVER_NAME)
+              .option(INSTANCE, TEST_INSTANCE)
+              .option(DATABASE, testDatabase)
+              .build());
     }
 
     @Bean
