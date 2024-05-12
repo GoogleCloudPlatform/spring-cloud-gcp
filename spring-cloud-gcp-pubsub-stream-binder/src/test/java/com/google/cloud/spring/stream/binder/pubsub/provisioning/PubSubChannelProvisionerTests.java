@@ -26,6 +26,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.assertj.core.data.Offset;
+
 import com.google.api.gax.rpc.AlreadyExistsException;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
@@ -198,6 +200,75 @@ class PubSubChannelProvisionerTests {
     assertThat(policy.getDeadLetterTopic())
         .isEqualTo("projects/test-project/topics/deadLetterTopic");
     assertThat(policy.getMaxDeliveryAttempts()).isEqualTo(12);
+  }
+
+  @Test
+  void testProvisionConsumerDestination_expirationPolicyNoneSet() {
+    when(this.pubSubConsumerProperties.getExpirationPolicy()).thenReturn(null);
+
+    when(this.pubSubAdminMock.getTopic("topic_A")).thenReturn(null);
+    when(this.pubSubAdminMock.createTopic("topic_A"))
+        .thenReturn(Topic.newBuilder().setName("projects/test-project/topics/topic_A").build());
+
+    this.pubSubChannelProvisioner.provisionConsumerDestination("topic_A", "group_A",
+        this.extendedConsumerProperties);
+
+    ArgumentCaptor<Subscription.Builder> argCaptor =
+        ArgumentCaptor.forClass(Subscription.Builder.class);
+    verify(this.pubSubAdminMock).createSubscription(argCaptor.capture());
+    Subscription.Builder sb = argCaptor.getValue();
+    assertThat(sb.getName()).isEqualTo("topic_A.group_A");
+    assertThat(sb.getTopic()).isEqualTo("topic_A");
+    assertThat(sb.hasExpirationPolicy()).isFalse();
+  }
+
+  @Test
+  void testProvisionConsumerDestination_expirationPolicyNever() {
+    PubSubConsumerProperties.ExpirationPolicy expirationPolicy =
+        new PubSubConsumerProperties.ExpirationPolicy();
+    when(this.pubSubConsumerProperties.getExpirationPolicy()).thenReturn(expirationPolicy);
+
+    when(this.pubSubAdminMock.getTopic("topic_A")).thenReturn(null);
+    when(this.pubSubAdminMock.createTopic("topic_A"))
+        .thenReturn(Topic.newBuilder().setName("projects/test-project/topics/topic_A").build());
+
+    this.pubSubChannelProvisioner.provisionConsumerDestination("topic_A", "group_A",
+        this.extendedConsumerProperties);
+
+    ArgumentCaptor<Subscription.Builder> argCaptor =
+        ArgumentCaptor.forClass(Subscription.Builder.class);
+    verify(this.pubSubAdminMock).createSubscription(argCaptor.capture());
+    Subscription.Builder sb = argCaptor.getValue();
+    assertThat(sb.getName()).isEqualTo("topic_A.group_A");
+    assertThat(sb.getTopic()).isEqualTo("topic_A");
+    assertThat(sb.hasExpirationPolicy()).isTrue();
+    assertThat(sb.getExpirationPolicy().hasTtl()).isFalse();
+  }
+
+  @Test
+  void testProvisionConsumerDestination_expirationPolicy() {
+    PubSubConsumerProperties.ExpirationPolicy expirationPolicy =
+        new PubSubConsumerProperties.ExpirationPolicy();
+    java.time.Duration expctedDuration = java.time.Duration.ofDays(10);
+    expirationPolicy.setTtl(expctedDuration);
+    when(this.pubSubConsumerProperties.getExpirationPolicy()).thenReturn(expirationPolicy);
+
+    when(this.pubSubAdminMock.getTopic("topic_A")).thenReturn(null);
+    when(this.pubSubAdminMock.createTopic("topic_A"))
+        .thenReturn(Topic.newBuilder().setName("projects/test-project/topics/topic_A").build());
+
+    this.pubSubChannelProvisioner.provisionConsumerDestination("topic_A", "group_A",
+        this.extendedConsumerProperties);
+
+    ArgumentCaptor<Subscription.Builder> argCaptor =
+        ArgumentCaptor.forClass(Subscription.Builder.class);
+    verify(this.pubSubAdminMock).createSubscription(argCaptor.capture());
+    Subscription.Builder sb = argCaptor.getValue();
+    assertThat(sb.getName()).isEqualTo("topic_A.group_A");
+    assertThat(sb.getTopic()).isEqualTo("topic_A");
+    assertThat(sb.hasExpirationPolicy()).isTrue();
+    assertThat(sb.getExpirationPolicy().getTtl().getSeconds())
+        .isCloseTo(expctedDuration.toSeconds(), Offset.offset(5L));
   }
 
   @Test
