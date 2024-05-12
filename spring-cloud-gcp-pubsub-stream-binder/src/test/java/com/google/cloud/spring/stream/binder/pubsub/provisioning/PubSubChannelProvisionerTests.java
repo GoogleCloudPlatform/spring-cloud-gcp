@@ -226,6 +226,7 @@ class PubSubChannelProvisionerTests {
   void testProvisionConsumerDestination_expirationPolicyNever() {
     PubSubConsumerProperties.ExpirationPolicy expirationPolicy =
         new PubSubConsumerProperties.ExpirationPolicy();
+    // null TTL
     when(this.pubSubConsumerProperties.getExpirationPolicy()).thenReturn(expirationPolicy);
 
     when(this.pubSubAdminMock.getTopic("topic_A")).thenReturn(null);

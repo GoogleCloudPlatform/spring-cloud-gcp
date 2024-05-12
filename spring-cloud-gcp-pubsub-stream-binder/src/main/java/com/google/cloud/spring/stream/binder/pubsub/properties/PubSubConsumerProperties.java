@@ -34,7 +34,8 @@ public class PubSubConsumerProperties extends PubSubCommonProperties {
   /**
    * Policy for how soon the subscription should be deleted after no activity.
    * <p>
-   * Note, a null or unset {@code expirationPolicy} will use the Google-provided default of 31 days TTL. To set no expiration, provide an {@code expirationPolicy} with a null {@link ExpirationPolicy#ttl}.
+   * Note, a null or unset {@code expirationPolicy} will use the Google-provided default of 31 days TTL.
+   * To set no expiration, provide an {@code expirationPolicy} with a zero-duration (e.g. 0d) {@link ExpirationPolicy#ttl}.
    */
   private ExpirationPolicy expirationPolicy = null;
 
@@ -104,11 +105,15 @@ public class PubSubConsumerProperties extends PubSubCommonProperties {
     /**
      * How long the subscription can have no activity before it is automatically deleted.
      * <p>
-     * Provide a non-null Expiration Policy with a null {@code ttl} to never expire.
+     * Provide an Expiration Policy with a zero (e.g. 0d) {@code ttl} to never expire.
      */
     private Duration ttl;
 
     public Duration getTtl() {
+      if (ttl != null && (ttl.isZero() || ttl.isNegative())) {
+        // non-positive is treated as "never expire"
+        return null;
+      }
       return ttl;
     }
 
