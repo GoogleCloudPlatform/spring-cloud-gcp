@@ -20,27 +20,19 @@ import static com.google.cloud.spanner.r2dbc.SpannerConnectionFactoryProvider.IN
 import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.spanner.r2dbc.springdata.it.entities.President;
-import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Query;
-import org.springframework.r2dbc.core.DatabaseClient;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 /**
@@ -51,66 +43,28 @@ import reactor.test.StepVerifier;
  * `spanner.database` system properties.
  */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SpannerR2dbcDialectIntegrationTest {
-
-  private static final Logger logger =
-      LoggerFactory.getLogger(SpannerR2dbcDialectIntegrationTest.class);
-
-  private static final String DRIVER_NAME = "spanner";
-
-  private static final String TEST_INSTANCE =
-      System.getProperty("spanner.instance", "reactivetest");
-
-  private static final String TEST_DATABASE =
-      System.getProperty("spanner.database", "testdb");
-
-  private static final ConnectionFactory connectionFactory =
-      ConnectionFactories.get(ConnectionFactoryOptions.builder()
-          .option(Option.valueOf("project"), ServiceOptions.getDefaultProjectId())
-          .option(DRIVER, DRIVER_NAME)
-          .option(INSTANCE, TEST_INSTANCE)
-          .option(DATABASE, TEST_DATABASE)
-          .build());
-
-  private DatabaseClient databaseClient;
-
+class SpannerR2dbcDialectIntegrationTest extends AbstractBaseSpannerR2dbcIntegrationTest {
+  private ConnectionFactory connectionFactory;
   private R2dbcEntityTemplate r2dbcEntityTemplate;
 
   /**
    * Initializes the integration test environment for the Spanner R2DBC dialect.
    */
-  @BeforeAll
+  @BeforeEach
   public void initializeTestEnvironment() {
-    Connection connection = Mono.from(connectionFactory.create()).block();
+    initializeTestEnvironment("CREATE TABLE PRESIDENT ("
+        + "  NAME STRING(256) NOT NULL,"
+        + "  START_YEAR INT64 NOT NULL"
+        + ") PRIMARY KEY (NAME)");
+
+    this.connectionFactory = ConnectionFactories.get(ConnectionFactoryOptions.builder()
+        .option(Option.valueOf("project"), PROJECT_NAME)
+        .option(DRIVER, DRIVER_NAME)
+        .option(INSTANCE, TEST_INSTANCE)
+        .option(DATABASE, testDatabase)
+        .build());
 
     this.r2dbcEntityTemplate = new R2dbcEntityTemplate(connectionFactory);
-    this.databaseClient = this.r2dbcEntityTemplate.getDatabaseClient();
-
-    if (SpannerTestUtils.tableExists(connection, "PRESIDENT")) {
-      this.databaseClient.sql("DROP TABLE PRESIDENT")
-          .fetch()
-          .rowsUpdated()
-          .block();
-    }
-
-    this.databaseClient.sql(
-        "CREATE TABLE PRESIDENT ("
-            + "  NAME STRING(256) NOT NULL,"
-            + "  START_YEAR INT64 NOT NULL"
-            + ") PRIMARY KEY (NAME)")
-        .fetch()
-        .rowsUpdated()
-        .block();
-  }
-
-  @AfterEach
-  public void cleanupTableAfterTest() {
-    this.databaseClient
-            .sql("DELETE FROM PRESIDENT where NAME is not null")
-            .fetch()
-            .rowsUpdated()
-            .block();
   }
 
   @Test
