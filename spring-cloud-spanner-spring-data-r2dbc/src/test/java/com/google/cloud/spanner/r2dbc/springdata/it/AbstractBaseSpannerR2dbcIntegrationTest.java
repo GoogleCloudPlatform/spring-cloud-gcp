@@ -69,9 +69,10 @@ abstract class AbstractBaseSpannerR2dbcIntegrationTest {
   }
 
   @AfterEach
-  void cleanupTestInstanceAfterTest() {
+  void cleanupTestDatabaseAfterTest() {
     log.info("Deleting database {}", testDatabase);
     this.spanner.getDatabaseAdminClient().dropDatabase(TEST_INSTANCE, testDatabase);
     log.info("Done deleting database {}", testDatabase);
+    this.spanner.close();
   }
 }
