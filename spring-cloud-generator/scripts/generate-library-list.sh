@@ -26,7 +26,7 @@ echo "# api_shortname, googleapis-folder, distribution_name:version, monorepo_fo
 # loop through configs for the monorepo (google-cloud-java)
 # Note that this logic will not work for non-cloud APIs
 count=0
-configs=$(yq e '.libraries[]' ./google-cloud-java/generate_config.yaml)
+configs=$(jq '.libraries[]' ./google-cloud-java/generate_config.yaml)
 for config_str in $configs; do
   # parse variables from generation_config.yaml
   config=$(echo "$config_str" | yq e '.') # Parse config_str back to YAML format
