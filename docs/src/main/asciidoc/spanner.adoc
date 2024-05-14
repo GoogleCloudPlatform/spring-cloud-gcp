@@ -468,10 +468,12 @@ Natively supported types:
 * `com.google.cloud.Timestamp`
 * `java.lang.Boolean`, `boolean`
 * `java.lang.Double`, `double`
+* `java.lang.Float`, `float`
 * `java.lang.Long`, `long`
 * `java.lang.Integer`, `int`
 * `java.lang.String`
 * `double[]`
+* `float[]`
 * `long[]`
 * `boolean[]`
 * `java.util.Date`
@@ -557,9 +559,11 @@ Custom converters can be used to extend the type support for user defined types.
 * `com.google.cloud.Timestamp`
 * `java.lang.Boolean`, `boolean`
 * `java.lang.Double`, `double`
+* `java.lang.Float`, `flaot`
 * `java.lang.Long`, `long`
 * `java.lang.String`
 * `double[]`
+* `float[]`
 * `long[]`
 * `boolean[]`
 * `enum` types
