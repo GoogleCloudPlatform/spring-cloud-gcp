@@ -11,24 +11,31 @@ import java.time.Instant;
 import org.junit.Test;
 
 public class InstantTypeAdapterTest {
+  InstantTypeAdapter instantTypeAdapter = new InstantTypeAdapter();
+  StringWriter stringWriter = new StringWriter();
+  JsonWriter jsonWriter = new JsonWriter(stringWriter);
 
   @Test
-  public void writeInstantTest() throws IOException {
-    InstantTypeAdapter instantTypeAdapter = new InstantTypeAdapter();
-    StringWriter stringWriter = new StringWriter();
-    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+  public void writeInstantTest_epochSecond0() throws IOException {
     Instant instant = Instant.ofEpochSecond(0);
 
     instantTypeAdapter.write(jsonWriter, instant);
 
     assertThat(stringWriter.toString()).isEqualTo("\"1970-01-01T00:00:00Z\"");
+
+  }
+
+  @Test
+  public void writeInstantTest_epochSecond817() throws IOException {
+    Instant instant = Instant.ofEpochSecond(817);
+
+    instantTypeAdapter.write(jsonWriter, instant);
+
+    assertThat(stringWriter.toString()).isEqualTo("\"1970-01-01T00:13:37Z\"");
   }
 
   @Test
   public void writeNullInstantTest() throws IOException {
-    InstantTypeAdapter instantTypeAdapter = new InstantTypeAdapter();
-    StringWriter stringWriter = new StringWriter();
-    JsonWriter jsonWriter = new JsonWriter(stringWriter);
     Instant instant = null;
 
     instantTypeAdapter.write(jsonWriter, instant);
@@ -37,21 +44,27 @@ public class InstantTypeAdapterTest {
   }
 
   @Test
-  public void readInstantTest() throws IOException {
-    InstantTypeAdapter instantTypeAdapter = new InstantTypeAdapter();
-    String instantString = "\"1970-01-01T00:00:00Z\"";
-    Instant instant = Instant.ofEpochSecond(0);
-    StringReader stringReader = new StringReader(instantString);
+  public void readInstantTest_epochSecond0() throws IOException {
+    StringReader stringReader = new StringReader("\"1970-01-01T00:00:00Z\"");
+
     Instant readInstant = instantTypeAdapter.read(new JsonReader(stringReader));
 
-    assertThat(readInstant).isEqualTo(instant);
+    assertThat(readInstant).isEqualTo(Instant.ofEpochSecond(0));
+  }
+
+  @Test
+  public void readInstantTest_epochSecond42() throws IOException {
+    StringReader stringReader = new StringReader("\"1970-01-01T00:00:42Z\"");
+
+    Instant readInstant = instantTypeAdapter.read(new JsonReader(stringReader));
+
+    assertThat(readInstant).isEqualTo(Instant.ofEpochSecond(42));
   }
 
   @Test
   public void readNullInstantTest() throws IOException {
-    InstantTypeAdapter instantTypeAdapter = new InstantTypeAdapter();
-    String instantString = "null";
-    StringReader stringReader = new StringReader(instantString);
+    StringReader stringReader = new StringReader("null");
+
     Instant readInstant = instantTypeAdapter.read(new JsonReader(stringReader));
 
     assertThat(readInstant).isNull();
