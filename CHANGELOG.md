@@ -14,6 +14,25 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.3.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.2.1...v5.3.0) (2024-05-15)
+
+
+### Features
+
+* [#2576](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2576) Add spring-cloud-gcp-data-spanner support for Instant values ([@ablx](https://github.com/ablx)) ([#2881](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2881)) ([7d4bb44](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7d4bb4493423fb9c88c73125e96426ac71793a59))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.39.0 ([#2866](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2866)) ([c6d734b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c6d734bb87e3fc7e0b115c76ecadca2aa2e0c34f))
+* update generate-library-list.sh for duplicate api_shortnames ([#2873](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2873)) ([035f2c3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/035f2c307c7f5634342aa419613ffa5142b72dbf))
+* update sanity-checks.sh ([#2891](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2891)) ([2bd16e5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2bd16e55ee967c71196ffb8bba130358b5def969))
+
+
+### Documentation
+
+* spanner support for float32 type ([#2882](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2882)) ([4aca9e6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4aca9e6ef79d5777c51e0aab64c600e1d95186fd))
+
 ## [5.2.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.2.0...v5.2.1) (2024-05-06)
 
 
