@@ -243,9 +243,6 @@ So, take care not to configure a subscription that has a business impact, or ins
 If you are using Spring Boot Actuator, you can take advantage of the Cloud Pub/Sub subscription health indicator called `pubsub-subscriber`.
 The subscription health indicator will verify whether Pub/Sub subscriptions are actively processing messages from the subscription's backlog.
 To enable it, you need to add the https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready[Spring Boot Actuator] to your project and the https://cloud.google.com/monitoring/docs/reference/libraries[GCP Monitoring].
-Also, you need to set the following properties `spring.cloud.gcp.pubsub.health.lagThreshold`, `spring.cloud.gcp.pubsub.health.backlogThreshold`.
-
-The `pubsub-subscriber` indicator will then roll up to the overall application status visible at http://localhost:8080/actuator/health (use the `management.endpoint.health.show-details` property to view per-indicator details).
 
 [source,xml]
 ----
@@ -258,6 +255,12 @@ The `pubsub-subscriber` indicator will then roll up to the overall application s
   <artifactId>google-cloud-monitoring</artifactId>
 </dependency>
 ----
+
+Also, you need to set the following properties `spring.cloud.gcp.pubsub.health.lagThreshold`, `spring.cloud.gcp.pubsub.health.backlogThreshold`.
+
+The `pubsub-subscriber` indicator will then roll up to the overall application status visible at http://localhost:8080/actuator/health (use the `management.endpoint.health.show-details` property to view per-indicator details).
+
+If you use `PubSubInboundChannel` to integrate with Pub/Sub, make sure to call `.setHealthTrackerRegistry()` with the auto-configured `HealthTrackerRegistry` bean.
 
 The health indicator validates a subscriber's health by checking the subscription's message backlog and the last processed message.
 A subscription's backlog is retrieved using Google Cloud's Monitoring Metrics. The metric used is the `num_undelivered_messages` for a subscription.
