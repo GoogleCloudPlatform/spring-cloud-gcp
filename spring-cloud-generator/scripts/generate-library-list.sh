@@ -21,7 +21,7 @@ fi
 cd ${SPRING_GENERATOR_DIR}
 # start file, always override is present
 filename=${SPRING_GENERATOR_DIR}/scripts/resources/library_list.txt
-echo "# api_shortname, googleapis-folder, distribution_name:version, monorepo_folder" > "$filename"
+echo "# library_name, googleapis_location, coordinates_version, monorepo_folder" > "$filename"
 
 # loop through configs for the monorepo (google-cloud-java)
 # Note that this logic will not work for non-cloud APIs
@@ -49,8 +49,8 @@ while IFS= read -r config; do
     echo "release_level: $release_level"
     monorepo_folder="java/${unique_module_name}"
     echo "monorepo folder: $monorepo_folder"
-    group_id=$(echo $distribution_name | cut -f1 -d:)
-    artifact_id=$(echo $distribution_name | cut -f2 -d:)
+    group_id=$(echo $coordinates_version | cut -f1 -d:)
+    artifact_id=$(echo $coordinates_version | cut -f2 -d:)
     #  filter to in-scope libraries
     if [[ $library_type != *GAPIC_AUTO* ]] ; then
       echo "$d: non auto type: $library_type"

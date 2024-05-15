@@ -34,18 +34,17 @@ if [[ $(cat $LIBRARY_LIST_PATH | wc -l) -lt 2 ]]; then fail "library list is emp
 # checks that the contents of each entry in the library list is a string with
 # length >= 1
 libraries=$(cat $LIBRARY_LIST_PATH | tail -n+2)
-while IFS=, read -r library_name googleapis_location coordinates_version googleapis_commitish monorepo_folder; do
+while IFS=, read -r library_name googleapis_location coordinates_version monorepo_folder; do
 
   non_empty_check_items=(
     "$library_name"
     "$googleapis_location"
     "$coordinates_version"
-    "$googleapis_commitish"
     "$monorepo_folder"
   )
   for column in "${non_empty_check_items[@]}"; do
     if [[ -z $column ]]; then
-      echo "$library_name, $googleapis_location, $coordinates_version, $googleapis_commitish, $monorepo_folder"
+      echo "$library_name, $googleapis_location, $coordinates_version, $monorepo_folder"
       fail "the library list entry '$library_name' has an empty required cell - see $LIBRARY_LIST_PATH"
     fi
   done
