@@ -49,8 +49,8 @@ while IFS= read -r config; do
     echo "release_level: $release_level"
     monorepo_folder="java/${unique_module_name}"
     echo "monorepo folder: $monorepo_folder"
-    group_id=$(echo $coordinates_version | cut -f1 -d:)
-    artifact_id=$(echo $coordinates_version | cut -f2 -d:)
+    group_id=$(echo $distribution_name | cut -f1 -d:)
+    artifact_id=$(echo $distribution_name | cut -f2 -d:)
     #  filter to in-scope libraries
     if [[ $library_type != *GAPIC_AUTO* ]] ; then
       echo "$d: non auto type: $library_type"
