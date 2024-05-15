@@ -52,7 +52,7 @@ function generate_showcase_spring_starter(){
 
   # Compute the parent project version.
   cd ${SPRING_ROOT_DIR}
-  PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+  export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
   cd ${SPRING_GENERATOR_DIR}
   GAPIC_GENERATOR_JAVA_VERSION=$(mvn help:evaluate -Dexpression=gapic-generator-java-bom.version -q -DforceStdout)
 
@@ -74,6 +74,8 @@ function generate_showcase_spring_starter(){
 
   # Install showcase client libraries locally
   pushd showcase
+  # For local development, we cleanup any traces of previous runs
+  rm -rdf output
   # mvn clean install
   GAPIC_SHOWCASE_CLIENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
@@ -92,16 +94,15 @@ function generate_showcase_spring_starter(){
   os_architecture=$(detect_os_architecture)
   download_protoc "${protoc_version}" "${os_architecture}"
 
-  # We now copy the spring-cloud-generator jar into the output_folder the
+  # We now copy the spring-cloud-generator and gapic-generator-java jar into the output_folder the
   # sdk-platform-java generation scripts work with.
   spring_generator_jar_name="spring-cloud-generator-${PROJECT_VERSION}.jar"
   cp ~/.m2/repository/com/google/cloud/spring-cloud-generator/"${PROJECT_VERSION}/${spring_generator_jar_name}" \
     "${output_folder}"
+  chmod 555 ${output_folder}/*.jar
 
   # We download gapic-showcase and prepare the protos in output_folder
-  if [[ ! -d "./gapic-showcase" ]]; then
-    sparse_clone https://github.com/googleapis/gapic-showcase "schema/google/showcase/v1beta1"
-  fi
+  sparse_clone https://github.com/googleapis/gapic-showcase.git "schema/google/showcase/v1beta1"
   pushd gapic-showcase
   git checkout "v${GAPIC_SHOWCASE_SERVER_VERSION}"
   cp -r schema "${output_folder}"
@@ -109,7 +110,7 @@ function generate_showcase_spring_starter(){
 
   # We download googleapis and prepare the protos in output_folder
   if [[ ! -d "./googleapis" ]]; then
-    sparse_clone https://github.com/googleapis/googleapis "google/iam/v1 google/cloud/location"
+    sparse_clone https://github.com/googleapis/googleapis.git "google/iam/v1 google/cloud/location google/api google/longrunning google/rpc google/type"
   fi
   pushd googleapis
   cp -r google "${output_folder}"
@@ -132,7 +133,7 @@ function generate_showcase_spring_starter(){
 
   "${protoc_path}"/protoc \
     "--experimental_allow_proto3_optional" \
-    "--plugin=protoc-gen-java_gapic_spring=${output_folder}/${spring_generator_jar_name}" \
+    "--plugin=protoc-gen-java_gapic_spring=${SPRING_GENERATOR_DIR}/spring-cloud-generator-wrapper" \
     "--java_gapic_spring_out=${output_folder}/showcase_java_gapic_spring_raw.srcjar.zip" \
     "--java_gapic_spring_opt=$(get_gapic_opts  "${transport}" "${rest_numeric_enums}" "${gapic_yaml}" "${service_config}" "${service_yaml}")" \
     ${proto_files} ${gapic_additional_protos}
