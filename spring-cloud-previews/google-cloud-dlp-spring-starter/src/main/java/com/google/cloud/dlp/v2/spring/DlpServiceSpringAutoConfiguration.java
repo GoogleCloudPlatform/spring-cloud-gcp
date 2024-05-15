@@ -461,6 +461,14 @@ public class DlpServiceSpringAutoConfiguration {
           .getColumnDataProfileSettings()
           .setRetrySettings(getColumnDataProfileRetrySettings);
 
+      RetrySettings deleteTableDataProfileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteTableDataProfileSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .deleteTableDataProfileSettings()
+          .setRetrySettings(deleteTableDataProfileRetrySettings);
+
       RetrySettings hybridInspectDlpJobRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.hybridInspectDlpJobSettings().getRetrySettings(), serviceRetry);
@@ -472,6 +480,46 @@ public class DlpServiceSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.finishDlpJobSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.finishDlpJobSettings().setRetrySettings(finishDlpJobRetrySettings);
+
+      RetrySettings createConnectionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createConnectionSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .createConnectionSettings()
+          .setRetrySettings(createConnectionRetrySettings);
+
+      RetrySettings getConnectionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getConnectionSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getConnectionSettings().setRetrySettings(getConnectionRetrySettings);
+
+      RetrySettings listConnectionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listConnectionsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listConnectionsSettings()
+          .setRetrySettings(listConnectionsRetrySettings);
+
+      RetrySettings searchConnectionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.searchConnectionsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .searchConnectionsSettings()
+          .setRetrySettings(searchConnectionsRetrySettings);
+
+      RetrySettings deleteConnectionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteConnectionSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .deleteConnectionSettings()
+          .setRetrySettings(deleteConnectionRetrySettings);
+
+      RetrySettings updateConnectionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateConnectionSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .updateConnectionSettings()
+          .setRetrySettings(updateConnectionRetrySettings);
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
@@ -1043,6 +1091,20 @@ public class DlpServiceSpringAutoConfiguration {
             "Configured method-level retry settings for getColumnDataProfile from properties.");
       }
     }
+    Retry deleteTableDataProfileRetry = clientProperties.getDeleteTableDataProfileRetry();
+    if (deleteTableDataProfileRetry != null) {
+      RetrySettings deleteTableDataProfileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteTableDataProfileSettings().getRetrySettings(),
+              deleteTableDataProfileRetry);
+      clientSettingsBuilder
+          .deleteTableDataProfileSettings()
+          .setRetrySettings(deleteTableDataProfileRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteTableDataProfile from properties.");
+      }
+    }
     Retry hybridInspectDlpJobRetry = clientProperties.getHybridInspectDlpJobRetry();
     if (hybridInspectDlpJobRetry != null) {
       RetrySettings hybridInspectDlpJobRetrySettings =
@@ -1065,6 +1127,85 @@ public class DlpServiceSpringAutoConfiguration {
       clientSettingsBuilder.finishDlpJobSettings().setRetrySettings(finishDlpJobRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for finishDlpJob from properties.");
+      }
+    }
+    Retry createConnectionRetry = clientProperties.getCreateConnectionRetry();
+    if (createConnectionRetry != null) {
+      RetrySettings createConnectionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createConnectionSettings().getRetrySettings(),
+              createConnectionRetry);
+      clientSettingsBuilder
+          .createConnectionSettings()
+          .setRetrySettings(createConnectionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createConnection from properties.");
+      }
+    }
+    Retry getConnectionRetry = clientProperties.getGetConnectionRetry();
+    if (getConnectionRetry != null) {
+      RetrySettings getConnectionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getConnectionSettings().getRetrySettings(), getConnectionRetry);
+      clientSettingsBuilder.getConnectionSettings().setRetrySettings(getConnectionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getConnection from properties.");
+      }
+    }
+    Retry listConnectionsRetry = clientProperties.getListConnectionsRetry();
+    if (listConnectionsRetry != null) {
+      RetrySettings listConnectionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listConnectionsSettings().getRetrySettings(),
+              listConnectionsRetry);
+      clientSettingsBuilder
+          .listConnectionsSettings()
+          .setRetrySettings(listConnectionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listConnections from properties.");
+      }
+    }
+    Retry searchConnectionsRetry = clientProperties.getSearchConnectionsRetry();
+    if (searchConnectionsRetry != null) {
+      RetrySettings searchConnectionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.searchConnectionsSettings().getRetrySettings(),
+              searchConnectionsRetry);
+      clientSettingsBuilder
+          .searchConnectionsSettings()
+          .setRetrySettings(searchConnectionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for searchConnections from properties.");
+      }
+    }
+    Retry deleteConnectionRetry = clientProperties.getDeleteConnectionRetry();
+    if (deleteConnectionRetry != null) {
+      RetrySettings deleteConnectionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteConnectionSettings().getRetrySettings(),
+              deleteConnectionRetry);
+      clientSettingsBuilder
+          .deleteConnectionSettings()
+          .setRetrySettings(deleteConnectionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteConnection from properties.");
+      }
+    }
+    Retry updateConnectionRetry = clientProperties.getUpdateConnectionRetry();
+    if (updateConnectionRetry != null) {
+      RetrySettings updateConnectionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateConnectionSettings().getRetrySettings(),
+              updateConnectionRetry);
+      clientSettingsBuilder
+          .updateConnectionSettings()
+          .setRetrySettings(updateConnectionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateConnection from properties.");
       }
     }
     return clientSettingsBuilder.build();

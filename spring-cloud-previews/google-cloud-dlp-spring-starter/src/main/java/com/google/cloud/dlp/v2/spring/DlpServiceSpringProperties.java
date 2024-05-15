@@ -258,6 +258,11 @@ public class DlpServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getColumnDataProfileRetry;
   /**
+   * Allow override of retry settings at method-level for deleteTableDataProfile. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteTableDataProfileRetry;
+  /**
    * Allow override of retry settings at method-level for hybridInspectDlpJob. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -267,6 +272,36 @@ public class DlpServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry finishDlpJobRetry;
+  /**
+   * Allow override of retry settings at method-level for createConnection. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createConnectionRetry;
+  /**
+   * Allow override of retry settings at method-level for getConnection. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getConnectionRetry;
+  /**
+   * Allow override of retry settings at method-level for listConnections. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listConnectionsRetry;
+  /**
+   * Allow override of retry settings at method-level for searchConnections. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry searchConnectionsRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteConnection. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteConnectionRetry;
+  /**
+   * Allow override of retry settings at method-level for updateConnection. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateConnectionRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -649,6 +684,14 @@ public class DlpServiceSpringProperties implements CredentialsSupplier {
     this.getColumnDataProfileRetry = getColumnDataProfileRetry;
   }
 
+  public Retry getDeleteTableDataProfileRetry() {
+    return this.deleteTableDataProfileRetry;
+  }
+
+  public void setDeleteTableDataProfileRetry(Retry deleteTableDataProfileRetry) {
+    this.deleteTableDataProfileRetry = deleteTableDataProfileRetry;
+  }
+
   public Retry getHybridInspectDlpJobRetry() {
     return this.hybridInspectDlpJobRetry;
   }
@@ -663,5 +706,53 @@ public class DlpServiceSpringProperties implements CredentialsSupplier {
 
   public void setFinishDlpJobRetry(Retry finishDlpJobRetry) {
     this.finishDlpJobRetry = finishDlpJobRetry;
+  }
+
+  public Retry getCreateConnectionRetry() {
+    return this.createConnectionRetry;
+  }
+
+  public void setCreateConnectionRetry(Retry createConnectionRetry) {
+    this.createConnectionRetry = createConnectionRetry;
+  }
+
+  public Retry getGetConnectionRetry() {
+    return this.getConnectionRetry;
+  }
+
+  public void setGetConnectionRetry(Retry getConnectionRetry) {
+    this.getConnectionRetry = getConnectionRetry;
+  }
+
+  public Retry getListConnectionsRetry() {
+    return this.listConnectionsRetry;
+  }
+
+  public void setListConnectionsRetry(Retry listConnectionsRetry) {
+    this.listConnectionsRetry = listConnectionsRetry;
+  }
+
+  public Retry getSearchConnectionsRetry() {
+    return this.searchConnectionsRetry;
+  }
+
+  public void setSearchConnectionsRetry(Retry searchConnectionsRetry) {
+    this.searchConnectionsRetry = searchConnectionsRetry;
+  }
+
+  public Retry getDeleteConnectionRetry() {
+    return this.deleteConnectionRetry;
+  }
+
+  public void setDeleteConnectionRetry(Retry deleteConnectionRetry) {
+    this.deleteConnectionRetry = deleteConnectionRetry;
+  }
+
+  public Retry getUpdateConnectionRetry() {
+    return this.updateConnectionRetry;
+  }
+
+  public void setUpdateConnectionRetry(Retry updateConnectionRetry) {
+    this.updateConnectionRetry = updateConnectionRetry;
   }
 }
