@@ -9,39 +9,40 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.Instant;
 import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class InstantTypeAdapterTest {
 
-  @Test
-  public void writeInstantTest() throws IOException {
+  @ParameterizedTest
+  @ValueSource(ints = {Integer.MIN_VALUE, -1000, 0, 1000, 78796800, 1635642000, Integer.MAX_VALUE})
+  public void writeInstantTest(int epochSecond) throws IOException {
     InstantTypeAdapter instantTypeAdapter = new InstantTypeAdapter();
     StringWriter stringWriter = new StringWriter();
     JsonWriter jsonWriter = new JsonWriter(stringWriter);
-    Instant instant = Instant.ofEpochSecond(0);
+    Instant instant = Instant.ofEpochSecond(epochSecond);
 
     instantTypeAdapter.write(jsonWriter, instant);
 
-    assertThat(stringWriter.toString()).isEqualTo("\"1970-01-01T00:00:00Z\"");
+    assertThat(stringWriter.toString()).isEqualTo("\"" + instant.toString() + "\"");
   }
 
-  @Test
-  public void writeNullInstantTest() throws IOException {
+  @ParameterizedTest
+  @ValueSource(
+      strings = {
+        "1901-12-13T20:45:52Z",
+        "1969-12-31T23:43:20Z",
+        "1970-01-01T00:00:00Z",
+        "1970-01-01T00:16:40Z",
+        "1972-07-01T00:00:00Z",
+        "2021-10-31T01:00:00Z",
+        "2038-01-19T03:14:07Z"
+      })
+  public void readInstantTest(String instantString) throws IOException {
     InstantTypeAdapter instantTypeAdapter = new InstantTypeAdapter();
-    StringWriter stringWriter = new StringWriter();
-    JsonWriter jsonWriter = new JsonWriter(stringWriter);
-    Instant instant = null;
-
-    instantTypeAdapter.write(jsonWriter, instant);
-
-    assertThat(stringWriter.toString()).isEqualTo("null");
-  }
-
-  @Test
-  public void readInstantTest() throws IOException {
-    InstantTypeAdapter instantTypeAdapter = new InstantTypeAdapter();
-    String instantString = "\"1970-01-01T00:00:00Z\"";
-    Instant instant = Instant.ofEpochSecond(0);
-    StringReader stringReader = new StringReader(instantString);
+    Instant instant = Instant.parse(instantString);
+    StringReader stringReader = new StringReader("\"" + instantString + "\"");
     Instant readInstant = instantTypeAdapter.read(new JsonReader(stringReader));
 
     assertThat(readInstant).isEqualTo(instant);
@@ -55,5 +56,17 @@ public class InstantTypeAdapterTest {
     Instant readInstant = instantTypeAdapter.read(new JsonReader(stringReader));
 
     assertThat(readInstant).isNull();
+  }
+
+  @Test
+  public void writeNullInstantTest() throws IOException {
+    InstantTypeAdapter instantTypeAdapter = new InstantTypeAdapter();
+    StringWriter stringWriter = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(stringWriter);
+    Instant instant = null;
+
+    instantTypeAdapter.write(jsonWriter, instant);
+
+    assertThat(stringWriter.toString()).isEqualTo("null");
   }
 }
