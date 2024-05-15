@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -ex
+
+# Wrap spring-cloud-generator.jar because protoc requires the plugin to be executable.
+exec java -classpath "spring-cloud-generator-${PROJECT_VERSION}-jar-with-dependencies.jar" com.google.cloud.generator.spring.Main

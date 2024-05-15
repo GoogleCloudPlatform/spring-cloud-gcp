@@ -96,7 +96,7 @@ function generate_showcase_spring_starter(){
 
   # We now copy the spring-cloud-generator and gapic-generator-java jar into the output_folder the
   # sdk-platform-java generation scripts work with.
-  spring_generator_jar_name="spring-cloud-generator-${PROJECT_VERSION}.jar"
+  spring_generator_jar_name="spring-cloud-generator-${PROJECT_VERSION}-jar-with-dependencies.jar"
   cp ~/.m2/repository/com/google/cloud/spring-cloud-generator/"${PROJECT_VERSION}/${spring_generator_jar_name}" \
     "${output_folder}"
   chmod 555 ${output_folder}/*.jar
