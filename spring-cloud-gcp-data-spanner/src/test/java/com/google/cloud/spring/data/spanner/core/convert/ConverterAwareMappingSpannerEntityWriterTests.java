@@ -77,8 +77,7 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     this.writeConverter = new SpannerWriteConverter();
     SpannerMappingContext spannerMappingContext = new SpannerMappingContext(new Gson());
     this.spannerEntityWriter =
-        new ConverterAwareMappingSpannerEntityWriter(
-            spannerMappingContext, this.writeConverter);
+        new ConverterAwareMappingSpannerEntityWriter(spannerMappingContext, this.writeConverter);
   }
 
   @Test
@@ -368,6 +367,24 @@ class ConverterAwareMappingSpannerEntityWriterTests {
   }
 
   @Test
+  void writeJsonWithInstantTest() {
+    TestEntities.InstantParam parameters = new TestEntities.InstantParam(Instant.ofEpochSecond(0));
+    TestEntities.TestEntityInstantInJson testEntity =
+        new TestEntities.TestEntityInstantInJson("id1", parameters);
+
+    WriteBuilder writeBuilder = mock(WriteBuilder.class);
+    ValueBinder<WriteBuilder> valueBinder = mock(ValueBinder.class);
+
+    when(writeBuilder.set("id")).thenReturn(valueBinder);
+    when(writeBuilder.set("params")).thenReturn(valueBinder);
+
+    this.spannerEntityWriter.write(testEntity, writeBuilder::set);
+
+    verify(valueBinder).to(testEntity.id);
+    verify(valueBinder).to(Value.json("{\"instant\":\"1970-01-01T00:00:00Z\"}"));
+  }
+
+  @Test
   void writeNullJsonTest() {
     TestEntities.TestEntityJson testEntity = new TestEntities.TestEntityJson("id1", null);
 
@@ -386,7 +403,8 @@ class ConverterAwareMappingSpannerEntityWriterTests {
   @Test
   void writeJsonArrayTest() {
     TestEntities.Params parameters = new TestEntities.Params("some value", "some other value");
-    TestEntities.TestEntityJsonArray testEntity = new TestEntities.TestEntityJsonArray("id1", Arrays.asList(parameters, parameters));
+    TestEntities.TestEntityJsonArray testEntity =
+        new TestEntities.TestEntityJsonArray("id1", Arrays.asList(parameters, parameters));
 
     WriteBuilder writeBuilder = mock(WriteBuilder.class);
     ValueBinder<WriteBuilder> valueBinder = mock(ValueBinder.class);
@@ -407,7 +425,8 @@ class ConverterAwareMappingSpannerEntityWriterTests {
   @Test
   void writeNullEmptyJsonArrayTest() {
     TestEntities.TestEntityJsonArray testNull = new TestEntities.TestEntityJsonArray("id1", null);
-    TestEntities.TestEntityJsonArray testEmpty = new TestEntities.TestEntityJsonArray("id2", new ArrayList<>());
+    TestEntities.TestEntityJsonArray testEmpty =
+        new TestEntities.TestEntityJsonArray("id2", new ArrayList<>());
 
     WriteBuilder writeBuilder = mock(WriteBuilder.class);
     ValueBinder<WriteBuilder> valueBinder = mock(ValueBinder.class);
@@ -432,8 +451,8 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     WriteBuilder writeBuilder = Mutation.newInsertBuilder("faulty_test_table_2");
 
     assertThatThrownBy(() -> this.spannerEntityWriter.write(ft, writeBuilder::set))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("Unsupported mapping for type: interface java.util.List");
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("Unsupported mapping for type: interface java.util.List");
   }
 
   @Test
@@ -444,18 +463,18 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     WriteBuilder writeBuilder = Mutation.newInsertBuilder("faulty_test_table");
 
     assertThatThrownBy(() -> this.spannerEntityWriter.write(ft, writeBuilder::set))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("Unsupported mapping for type: "
-                    + "class com.google.cloud.spring.data.spanner.core.convert.TestEntities$TestEntity");
-
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage(
+            "Unsupported mapping for type: "
+                + "class com.google.cloud.spring.data.spanner.core.convert.TestEntities$TestEntity");
   }
 
   @Test
   void writingNullToKeyShouldThrowException() {
 
     assertThatThrownBy(() -> this.spannerEntityWriter.convertToKey(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Key of an entity to be written cannot be null!");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Key of an entity to be written cannot be null!");
   }
 
   @Test
@@ -471,9 +490,10 @@ class ConverterAwareMappingSpannerEntityWriterTests {
         new UserSetUnconvertableColumnType();
     WriteBuilder writeBuilder = Mutation.newInsertBuilder("faulty_test_table");
 
-    assertThatThrownBy(() -> this.spannerEntityWriter.write(userSetUnconvertableColumnType, writeBuilder::set))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("Unsupported mapping for type: boolean");
+    assertThatThrownBy(
+            () -> this.spannerEntityWriter.write(userSetUnconvertableColumnType, writeBuilder::set))
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("Unsupported mapping for type: boolean");
   }
 
   @Test
