@@ -1,5 +1,4 @@
-#!/bin/bash
-set -e
+set -ex
 
 # To VERIFY: ./scripts/generate-showcase.sh
 # To UPDATE: /scripts/generate-showcase.sh -u
@@ -63,28 +62,87 @@ function generate_showcase_spring_starter(){
   fi
 
   # Clone sdk-platform-java (with showcase library)
-  git clone https://github.com/googleapis/sdk-platform-java.git
+  if [[ ! -d "./sdk-platform-java" ]]; then
+    git clone https://github.com/googleapis/sdk-platform-java.git
+  fi
   cd sdk-platform-java && git checkout "v${GAPIC_GENERATOR_JAVA_VERSION}"
 
+  # We will use the generation tools from library_generation
+  pushd library_generation/utils
+  source utilities.sh
+  popd #library_generation/utils
+
   # Install showcase client libraries locally
-  cd showcase && mvn clean install
+  pushd showcase
+  # mvn clean install
   GAPIC_SHOWCASE_CLIENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+
+  pushd gapic-showcase
+  GAPIC_SHOWCASE_SERVER_VERSION=$(mvn help:evaluate -Dexpression=gapic-showcase.version -q -DforceStdout)
+  popd #showcase/gapic-showcase
 
   # Alternative: if showcase client library is available on Maven Central,
   # Instead of downloading sdk-platform-java/showcase (for client library, and generation setup),
   # Can instead download googleapis (for generation setup) and gapic-showcase (for protos)
 
-  # Modify sdk-platform-java/WORKSPACE
-  modify_workspace_file "../WORKSPACE" ".." "../../scripts/resources/googleapis_modification_string.txt"
-  # Modify sdk-platform-java/showcase/BUILD.bazel
-  buildozer 'new_load @spring_cloud_generator//:java_gapic_spring.bzl java_gapic_spring_library' BUILD.bazel:__pkg__
-  modify_build_file "BUILD.bazel"
+  output_folder=$(get_output_folder)
+  mkdir "${output_folder}"
+  pushd "${output_folder}"
+  protoc_version=$(get_protoc_version "${GAPIC_GENERATOR_JAVA_VERSION}")
+  os_architecture=$(detect_os_architecture)
+  download_protoc "${protoc_version}" "${os_architecture}"
 
-  # Invoke bazel target for generating showcase-spring-starter
-  bazelisk build --tool_java_language_version=17 --tool_java_runtime_version=remotejdk_17 //showcase:showcase_java_gapic_spring
+  # We now copy the spring-cloud-generator jar into the output_folder the
+  # sdk-platform-java generation scripts work with.
+  spring_generator_jar_name="spring-cloud-generator-${PROJECT_VERSION}.jar"
+  cp ~/.m2/repository/com/google/cloud/spring-cloud-generator/"${PROJECT_VERSION}/${spring_generator_jar_name}" \
+    "${output_folder}"
+
+  # We download gapic-showcase and prepare the protos in output_folder
+  if [[ ! -d "./gapic-showcase" ]]; then
+    sparse_clone https://github.com/googleapis/gapic-showcase "schema/google/showcase/v1beta1"
+  fi
+  pushd gapic-showcase
+  git checkout "v${GAPIC_SHOWCASE_SERVER_VERSION}"
+  cp -r schema "${output_folder}"
+  popd #gapic-showcase
+
+  # We download googleapis and prepare the protos in output_folder
+  if [[ ! -d "./googleapis" ]]; then
+    sparse_clone https://github.com/googleapis/googleapis "google/iam/v1 google/cloud/location"
+  fi
+  pushd googleapis
+  cp -r google "${output_folder}"
+  popd #gapic-showcase
+
+  # Now we call protoc with a series of arguments we obtain from
+  # sdk-platform-java's utilities.sh and others that are hardcoded (and stable).
+  # Note that --java_gapic_spring_opt uses `get_gapic_opts` which will work
+  # since the BUILD rules take similar arguments
+
+  proto_path="schema/google/showcase/v1beta1"
+  proto_files=$(find "${proto_path}" -type f  -name "*.proto" | LC_COLLATE=C sort)
+  gapic_additional_protos="google/iam/v1/iam_policy.proto google/cloud/location/locations.proto"
+  rest_numeric_enums="false"
+  transport="grpc+rest"
+  gapic_yaml=""
+  service_config="schema/google/showcase/v1beta1/showcase_grpc_service_config.json"
+  service_yaml="schema/google/showcase/v1beta1/showcase_v1beta1.yaml"
+  include_samples="false"
+
+  "${protoc_path}"/protoc \
+    "--experimental_allow_proto3_optional" \
+    "--plugin=protoc-gen-java_gapic_spring=${output_folder}/${spring_generator_jar_name}" \
+    "--java_gapic_spring_out=${output_folder}/showcase_java_gapic_spring_raw.srcjar.zip" \
+    "--java_gapic_spring_opt=$(get_gapic_opts  "${transport}" "${rest_numeric_enums}" "${gapic_yaml}" "${service_config}" "${service_yaml}")" \
+    ${proto_files} ${gapic_additional_protos}
+
+  popd #output_folder
+
+
 
   # Post-process generated modules
-  copy_and_unzip "../bazel-bin/showcase/showcase_java_gapic_spring-spring.srcjar" "showcase_java_gapic_spring-spring.srcjar" "${SPRING_GENERATOR_DIR}/showcase" ${SHOWCASE_STARTER_DIR}
+  copy_and_unzip "${output_folder}/showcase_java_gapic_spring-spring.srcjar" "showcase_java_gapic_spring-spring.srcjar" "${SPRING_GENERATOR_DIR}/showcase" ${SHOWCASE_STARTER_DIR}
   modify_starter_pom ${SHOWCASE_STARTER_DIR}/pom.xml "com.google.cloud" "gapic-showcase" $PROJECT_VERSION
 
   # Additional pom.xml modifications for showcase starter
@@ -98,7 +156,9 @@ function generate_showcase_spring_starter(){
   run_formatter ${SHOWCASE_STARTER_DIR}
 
   # Remove downloaded repos
-  rm -rf ${SPRING_GENERATOR_DIR}/sdk-platform-java
+  rm -rdf ${SPRING_GENERATOR_DIR}/sdk-platform-java
+  rm -rdf gapic-showcase
+  popd #showcase
 }
 
 if [[ UPDATE -ne 0 ]]; then
