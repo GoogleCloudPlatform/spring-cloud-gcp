@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,11 @@ public class RoutersSpringProperties implements CredentialsSupplier {
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRetry;
+  /**
+   * Allow override of retry settings at method-level for getNatIpInfo. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getNatIpInfoRetry;
   /**
    * Allow override of retry settings at method-level for getNatMappingInfo. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -116,6 +121,14 @@ public class RoutersSpringProperties implements CredentialsSupplier {
 
   public void setGetRetry(Retry getRetry) {
     this.getRetry = getRetry;
+  }
+
+  public Retry getGetNatIpInfoRetry() {
+    return this.getNatIpInfoRetry;
+  }
+
+  public void setGetNatIpInfoRetry(Retry getNatIpInfoRetry) {
+    this.getNatIpInfoRetry = getNatIpInfoRetry;
   }
 
   public Retry getGetNatMappingInfoRetry() {

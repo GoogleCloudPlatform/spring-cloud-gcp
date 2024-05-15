@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,6 +95,11 @@ public class CloudBillingSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry testIamPermissionsRetry;
+  /**
+   * Allow override of retry settings at method-level for moveBillingAccount. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry moveBillingAccountRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -211,5 +216,13 @@ public class CloudBillingSpringProperties implements CredentialsSupplier {
 
   public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
     this.testIamPermissionsRetry = testIamPermissionsRetry;
+  }
+
+  public Retry getMoveBillingAccountRetry() {
+    return this.moveBillingAccountRetry;
+  }
+
+  public void setMoveBillingAccountRetry(Retry moveBillingAccountRetry) {
+    this.moveBillingAccountRetry = moveBillingAccountRetry;
   }
 }

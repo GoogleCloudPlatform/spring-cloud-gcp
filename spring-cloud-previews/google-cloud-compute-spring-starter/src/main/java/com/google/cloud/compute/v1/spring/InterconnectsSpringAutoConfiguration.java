@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -158,6 +158,13 @@ public class InterconnectsSpringAutoConfiguration {
               clientSettingsBuilder.getDiagnosticsSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getDiagnosticsSettings().setRetrySettings(getDiagnosticsRetrySettings);
 
+      RetrySettings getMacsecConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMacsecConfigSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getMacsecConfigSettings()
+          .setRetrySettings(getMacsecConfigRetrySettings);
+
       RetrySettings listRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listSettings().getRetrySettings(), serviceRetry);
@@ -186,6 +193,19 @@ public class InterconnectsSpringAutoConfiguration {
       clientSettingsBuilder.getDiagnosticsSettings().setRetrySettings(getDiagnosticsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getDiagnostics from properties.");
+      }
+    }
+    Retry getMacsecConfigRetry = clientProperties.getGetMacsecConfigRetry();
+    if (getMacsecConfigRetry != null) {
+      RetrySettings getMacsecConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMacsecConfigSettings().getRetrySettings(),
+              getMacsecConfigRetry);
+      clientSettingsBuilder
+          .getMacsecConfigSettings()
+          .setRetrySettings(getMacsecConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getMacsecConfig from properties.");
       }
     }
     Retry listRetry = clientProperties.getListRetry();

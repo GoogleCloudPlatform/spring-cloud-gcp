@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.5</version>
+		<version>3.2.5</version>
 		<relativePath/>
 	</parent>
 
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>4.8.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>5.2.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -25,10 +25,10 @@
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 
 		<!-- App engine plugin version, used to deploy sample apps -->
-		<app-engine-maven-plugin.version>2.5.0</app-engine-maven-plugin.version>
+		<app-engine-maven-plugin.version>2.8.0</app-engine-maven-plugin.version>
 
 		<!-- Deploy plugin is skipped for all samples but exists -->
-		<maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
+		<maven-deploy-plugin.version>3.1.2</maven-deploy-plugin.version>
 
 		<integration-test.pattern>**/*IntegrationTest*</integration-test.pattern>
 		<integration-test.tags.include/>
@@ -85,6 +85,7 @@
 				<module>spring-cloud-gcp-metrics-sample</module>
 				<module>spring-cloud-gcp-kms-sample</module>
 				<module>spring-cloud-spanner-r2dbc-samples</module>
+				<module>spring-cloud-gcp-alloydb-sample</module>
 			</modules>
 		</profile>
 		<profile>
@@ -111,30 +112,11 @@
 				<module>spring-cloud-gcp-data-firestore-sample</module>
 				<module>spring-cloud-gcp-bigquery-sample</module>
 				<module>spring-cloud-gcp-metrics-sample</module>
+				<module>spring-cloud-gcp-sql-mysql-sample</module>
+				<module>spring-cloud-gcp-sql-postgres-sample</module>
+				<module>spring-cloud-gcp-sql-postgres-r2dbc-sample</module>
+				<module>spring-cloud-gcp-alloydb-sample</module>
 			</modules>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.graalvm.buildtools</groupId>
-						<artifactId>native-maven-plugin</artifactId>
-						<configuration>
-							<buildArgs>
-								<buildArg>--trace-class-initialization=org.apache.commons.logging.LogFactoryService</buildArg>
-								<buildArg>--initialize-at-build-time=org.apache.commons.logging.LogFactory</buildArg>
-							</buildArgs>
-						</configuration>
-						<executions>
-							<execution>
-								<id>build-native</id>
-								<goals>
-									<goal>compile-no-fork</goal>
-								</goals>
-								<phase>package</phase>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 		<profile>
 			<id>nativeTest</id>
@@ -164,12 +146,20 @@
 								<it.kms>true</it.kms>
 								<it.bigquery>true</it.bigquery>
 								<it.metrics>true</it.metrics>
+								<it.cloudsql>true</it.cloudsql>
+								<it.alloydb>true</it.alloydb>
 								<kms-test-project-id>spring-cloud-gcp-ci-native</kms-test-project-id>
 								<kms-test-encrypted-text>CiQA04Sv0lCnHhQQIwKI0XDU+XcU6q1ryy+VuQJ6oh6VF8eJRocSLgBVx+glEafbllCrwhS8utmM9RYAC80xizA/YYyjE/roXcRDj9AGpfTS3iDKg5E=</kms-test-encrypted-text>
 								<gcs-resource-test-bucket>gcp-storage-resource-bucket-sample</gcs-resource-test-bucket>
 								<gcs-read-bucket>gcp-storage-bucket-sample-input</gcs-read-bucket>
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
+								<spring.cloud.gcp.sql.instance-connection-name>spring-cloud-gcp-ci-native:us-central1:testmysql</spring.cloud.gcp.sql.instance-connection-name>
+								<spring.cloud.gcp.sql.database-name>code_samples_test_db</spring.cloud.gcp.sql.database-name>
+								<spring.datasource.password>${env.DB_PASSWORD}</spring.datasource.password>
+								<spring.r2dbc.password>${env.DB_PASSWORD}</spring.r2dbc.password>
+								<spring.cloud.gcp.alloydb.instance-connection-uri>projects/spring-cloud-gcp-ci-native/locations/us-central1/clusters/testcluster/instances/testpostgres</spring.cloud.gcp.alloydb.instance-connection-uri>
+								<spring.cloud.gcp.alloydb.database-name>code_samples_test_db</spring.cloud.gcp.alloydb.database-name>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
@@ -193,6 +183,8 @@
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
 								<spring.cloud.gcp.sql.instance-connection-name>spring-cloud-gcp-ci:us-central1:testmysql</spring.cloud.gcp.sql.instance-connection-name>
 								<spring.cloud.gcp.sql.database-name>code_samples_test_db</spring.cloud.gcp.sql.database-name>
+								<spring.cloud.gcp.alloydb.instance-connection-uri>projects/spring-cloud-gcp-ci-native/locations/us-central1/clusters/testcluster/instances/testpostgres</spring.cloud.gcp.alloydb.instance-connection-uri>
+								<spring.cloud.gcp.alloydb.database-name>code_samples_test_db</spring.cloud.gcp.alloydb.database-name>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>

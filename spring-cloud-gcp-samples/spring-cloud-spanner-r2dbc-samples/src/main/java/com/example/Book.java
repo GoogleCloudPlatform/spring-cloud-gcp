@@ -20,13 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 /** Book entity. */
 @Table
-public class Book implements Persistable {
+public class Book implements Persistable<String> {
 
   @Id
   @Column("ID")
@@ -44,11 +45,19 @@ public class Book implements Persistable {
   @Column("CATEGORIES")
   private List<String> categories;
 
+  @Column("COUNT")
+  private int count;
+
+  @Transient
+  private boolean isNew;
+
   public Book(String title, Map<String, String> extraDetails, Review review) {
     this.id = UUID.randomUUID().toString();
     this.title = title;
     this.extraDetails = extraDetails;
     this.review = review;
+    this.count = 0;
+    this.isNew = true;
   }
 
   public String getId() {
@@ -57,7 +66,7 @@ public class Book implements Persistable {
 
   @Override
   public boolean isNew() {
-    return true;
+    return this.isNew;
   }
 
   public String getTitle() {
@@ -78,6 +87,15 @@ public class Book implements Persistable {
 
   public void setCategories(List<String> categories) {
     this.categories = categories;
+  }
+
+  public int getCount() {
+    return count;
+  }
+
+  public void incrementCount() {
+    this.count++;
+    this.isNew = false;
   }
 
   @Override

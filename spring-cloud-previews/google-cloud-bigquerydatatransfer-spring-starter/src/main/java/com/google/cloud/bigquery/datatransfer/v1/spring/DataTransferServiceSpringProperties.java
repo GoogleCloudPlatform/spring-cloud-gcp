@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,6 +117,11 @@ public class DataTransferServiceSpringProperties implements CredentialsSupplier 
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry enrollDataSourcesRetry;
+  /**
+   * Allow override of retry settings at method-level for unenrollDataSources. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry unenrollDataSourcesRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -283,6 +288,14 @@ public class DataTransferServiceSpringProperties implements CredentialsSupplier 
 
   public void setEnrollDataSourcesRetry(Retry enrollDataSourcesRetry) {
     this.enrollDataSourcesRetry = enrollDataSourcesRetry;
+  }
+
+  public Retry getUnenrollDataSourcesRetry() {
+    return this.unenrollDataSourcesRetry;
+  }
+
+  public void setUnenrollDataSourcesRetry(Retry unenrollDataSourcesRetry) {
+    this.unenrollDataSourcesRetry = unenrollDataSourcesRetry;
   }
 
   public Retry getListLocationsRetry() {

@@ -16,12 +16,13 @@
 
 package com.google.cloud.generator.spring;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.api.generator.gapic.model.GapicContext;
 import com.google.api.generator.test.framework.Assert;
 import com.google.api.generator.test.framework.GoldenFileWriter;
 import com.google.api.generator.test.protoloader.TestProtoLoader;
+import com.google.showcase.v1beta1.EchoOuterClass;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.Before;
@@ -32,7 +33,7 @@ public class SpringWriterTest {
 
   @Before
   public void setUp() {
-    this.context = TestProtoLoader.instance().parseShowcaseEcho();
+    this.context = TestUtils.parseShowcaseEcho();
   }
 
   @Test

@@ -27,14 +27,23 @@ function compute_monorepo_version() {
 }
 
 # Generate list of in-scope libraries to use (as static data source to generate modules from)
-# Uses heuristic approach to parse googleapis commitish and other metadata from google-cloud-java
-# See generate-library-list.sh and https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/1390 for details
+# Get googleapis committish used for specified release and assign to global GOOGLEAPIS_COMMITTISH.
+# For each library in google-cloud-java, parse information from ".repo-metadata.json"
+# and hermetic build config file: generation_config.yaml
 # Assumes current working directory is spring-cloud-generator
 #
 # $1 - Monorepo version tag (or committish)
 function generate_libraries_list(){
   monorepo_commitish=$1
+  git clone --no-single-branch --depth=1 https://github.com/googleapis/google-cloud-java.git
+  pushd google-cloud-java || { echo "Failure: google-cloud-java folder does not exists."; exit 1; }
+  git checkout "${MONOREPO_TAG}"
+  # read googleapis committish used in hermetic build
+  GOOGLEAPIS_COMMITTISH=$(yq -r ".googleapis_commitish" generation_config.yaml)
+  popd || { echo "Failure in popd."; exit 1; }
+
   bash scripts/generate-library-list.sh -c $monorepo_commitish
+  rm -rf google-cloud-java/
 }
 
 # When bazel prepare, build, or post-processing step fails, stores the captured stdout and stderr to a file
@@ -49,10 +58,16 @@ function save_error_info () {
   cp tmp-output ${parent_directory}/failed-library-generations/${step_identifier}
 }
 
-# Clone googleapis repository, and makes bazel workspace modifications required for generation
+# Clone googleapis repository, checkout commitish
+# and makes bazel workspace modifications required for generation
+#
+# $1 - googleapis commitish
 function setup_googleapis(){
-  git clone https://github.com/googleapis/googleapis.git
+  googleapis_commitish=$1
+  git clone --depth=1 https://github.com/googleapis/googleapis.git
   cd googleapis
+  git fetch origin "${googleapis_commitish}"
+  git checkout "${googleapis_commitish}"
   modify_workspace_file "WORKSPACE" "../../spring-cloud-generator" "../scripts/resources/googleapis_modification_string.txt"
   # In repository_rules.bzl, add switch for new spring rule
   JAVA_SPRING_SWITCH="    rules[\\\"java_gapic_spring_library\\\"] = _switch(\n        java and grpc and gapic,\n        \\\"\@spring_cloud_generator\/\/:java_gapic_spring.bzl\\\",\n    )"
@@ -79,13 +94,11 @@ function modify_workspace_file(){
   perl -pi -e "s{(^_gapic_generator_java_version[^\n]*)}{\$1\n$(cat ${path_to_modification_string})}" ${path_to_workspace}
 }
 
-# For individual library, checkout versioned protos folder and set up bazel rules
+# For individual library, set up bazel rules
 #
-# $1 - googleapis commitish
-# $2 - googleapis folder (e.g. google/cloud/accessapproval/v1)
+# $1 - googleapis folder (e.g. google/cloud/accessapproval/v1)
 function prepare_bazel_build(){
-  googleapis_commitish=$1
-  googleapis_folder=$2
+  googleapis_folder=$1
 
   # If googleapis folder does not exist, exit
   if [ ! -d "$(pwd)/${googleapis_folder}" ]
@@ -93,8 +106,6 @@ function prepare_bazel_build(){
     echo "Directory $(pwd)/${googleapis_folder} does not exist."
     exit
   fi
-
-  git checkout ${googleapis_commitish} -- ${googleapis_folder}
 
   # Modify BUILD.bazel file for library
   # Additional rule to load
@@ -184,16 +195,14 @@ function add_line_to_readme() {
 # $3 - parent (spring-cloud-gcp-starters) version  (e.g. 4.5.0)
 # $4 - googleapis folder (e.g. google/cloud/accessapproval/v1)
 # $5 - monorepo folder (e.g. java-accessapproval)
-# $6 - googleapis commitish
-# $7 - monorepo commitish (e.g. v1.13.0)
+# $6 - monorepo commitish (e.g. v1.13.0)
 function postprocess_library() {
   client_lib_artifactid=$1
   client_lib_groupid=$2
   parent_version=$3
   googleapis_folder=$4
   monorepo_folder=$5
-  googleapis_commitish=$6
-  monorepo_commitish=$7
+  monorepo_commitish=$6
   starter_artifactid="${client_lib_artifactid}-spring-starter"
 
   # sometimes the rule name doesnt have the same prefix as $client_lib_name
@@ -201,7 +210,10 @@ function postprocess_library() {
   rule_prefix=$(cat googleapis/$googleapis_folder/BUILD.bazel | grep _java_gapic_spring | perl -lane 'print m/"(.*)_java_gapic_spring/')
 
   # copy generated code and unzip
-  cp googleapis/bazel-bin/$googleapis_folder/"$rule_prefix"_java_gapic_spring-spring.srcjar ../spring-cloud-previews
+  pushd googleapis
+  bazel_bin_location=$(bazelisk info bazel-bin)
+  popd
+  cp ${bazel_bin_location}/${googleapis_folder}/"${rule_prefix}"_java_gapic_spring-spring.srcjar ../spring-cloud-previews
   cd ../spring-cloud-previews
   unzip -o "$rule_prefix"_java_gapic_spring-spring.srcjar -d "$starter_artifactid"/
   rm -rf "$rule_prefix"_java_gapic_spring-spring.srcjar

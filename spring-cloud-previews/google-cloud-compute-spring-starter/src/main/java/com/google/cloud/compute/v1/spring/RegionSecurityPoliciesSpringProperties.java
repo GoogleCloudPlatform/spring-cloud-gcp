@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,11 @@ public class RegionSecurityPoliciesSpringProperties implements CredentialsSuppli
    */
   @NestedConfigurationProperty private Retry getRetry;
   /**
+   * Allow override of retry settings at method-level for getRule. If defined, this takes precedence
+   * over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getRuleRetry;
+  /**
    * Allow override of retry settings at method-level for list. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
@@ -88,6 +93,14 @@ public class RegionSecurityPoliciesSpringProperties implements CredentialsSuppli
 
   public void setGetRetry(Retry getRetry) {
     this.getRetry = getRetry;
+  }
+
+  public Retry getGetRuleRetry() {
+    return this.getRuleRetry;
+  }
+
+  public void setGetRuleRetry(Retry getRuleRetry) {
+    this.getRuleRetry = getRuleRetry;
   }
 
   public Retry getListRetry() {

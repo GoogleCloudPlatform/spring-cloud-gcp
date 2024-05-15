@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.translate.v3.translation-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud translate/TranslationService components.",
+      "defaultValue": true
+    }
+  ]
+}

@@ -5,7 +5,7 @@ set -ev
 # Set default props like MAVEN_PATH, ROOT_FOLDER etc.
 function set_default_props() {
     # The script should be run from the root folder
-    ROOT_FOLDER=`pwd`
+    ROOT_FOLDER=$(pwd)
     echo "Current folder is ${ROOT_FOLDER}"
 
     if [[ ! -e "${ROOT_FOLDER}/.git" ]]; then
@@ -25,7 +25,7 @@ function set_default_props() {
 
 # Check if gh-pages exists and docs have been built
 function check_if_anything_to_sync() {
-    git remote set-url --push origin `git config remote.origin.url | sed -e 's/^git:/https:/'`
+    git remote set-url --push origin "$(git config remote.origin.url | sed -e 's/^git:/https:/')"
 
     if ! (git remote set-branches --add origin gh-pages && git fetch -q); then
         echo "No gh-pages, so not syncing"
@@ -49,18 +49,24 @@ function retrieve_current_branch() {
       CURRENT_BRANCH=${CURRENT_BRANCH:-HEAD}
     fi
     echo "Current branch is [${CURRENT_BRANCH}]"
-    git checkout ${CURRENT_BRANCH} || echo "Failed to check the branch... continuing with the script"
+    git checkout "${CURRENT_BRANCH}" || echo "Failed to check the branch... continuing with the script"
 }
 
 # Switches to the provided value of the release version. We always prefix it with `v`
 function switch_to_tag() {
-    git checkout v${VERSION}
+    git checkout v"${VERSION}"
 }
 
 # Build the docs if switch is on
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
-        ./mvnw clean install -P docs -pl docs -DskipTests -q
+        # Disable profile CI (inherited from spring-cloud-build/pom.xml) so
+        # process-asciidoc can be executed in GH action runner.
+        # Profile CI will be activated in GH action runner because
+        # there's env.GITHUB_API_URL defined in the environment by
+        # default.
+        # See https://github.com/spring-cloud/spring-cloud-build/blob/v4.0.5/pom.xml#L1638-L1652.
+        ./mvnw clean install -P docs -P '!CI' -pl docs -DskipTests
     fi
 }
 
@@ -97,17 +103,17 @@ function add_docs_from_target() {
     if [[ -z "${DESTINATION}" && -z "${CLONE}" ]] ; then
         DESTINATION_REPO_FOLDER=${ROOT_FOLDER}
     elif [[ "${CLONE}" == "yes" ]]; then
-        mkdir -p ${ROOT_FOLDER}/target
+        mkdir -p "${ROOT_FOLDER}"/target
         local clonedStatic=${ROOT_FOLDER}/target/spring-cloud-static
         if [[ ! -e "${clonedStatic}/.git" ]]; then
             echo "Cloning Spring Cloud Static to target"
-            git clone ${SPRING_CLOUD_STATIC_REPO} ${clonedStatic} && git checkout gh-pages
+            git clone "${SPRING_CLOUD_STATIC_REPO}" "${clonedStatic}" && git checkout gh-pages
         else
             echo "Spring Cloud Static already cloned - will pull changes"
-            cd ${clonedStatic} && git checkout gh-pages && git pull origin gh-pages
+            cd "${clonedStatic}" && git checkout gh-pages && git pull origin gh-pages
         fi
         DESTINATION_REPO_FOLDER=${clonedStatic}/${REPO_NAME}
-        mkdir -p ${DESTINATION_REPO_FOLDER}
+        mkdir -p "${DESTINATION_REPO_FOLDER}"
     else
         if [[ ! -e "${DESTINATION}/.git" ]]; then
             echo "[${DESTINATION}] is not a git repository"
@@ -126,7 +132,12 @@ function add_docs_from_target() {
     else
         copy_docs_for_provided_version
     fi
-    commit_changes_if_applicable
+
+    if [[ -z "${VERSION}" ]] || [[ "${VERSION}" == *"SNAPSHOT" ]] ; then
+        echo -e "SNAPSHOT version, do not commit."
+    else
+        commit_changes_if_applicable
+    fi
 }
 
 
@@ -136,10 +147,10 @@ function copy_docs_for_current_version() {
         echo -e "Current branch is main - will copy the current docs only to the root folder"
         for f in docs/target/generated-docs/*; do
             file=${f#docs/target/generated-docs/*}
-            if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
+            if ! git ls-files -i -o --exclude-standard --directory | grep -q ^{$file}$; then
                 # Not ignored...
-                cp -rf $f ${ROOT_FOLDER}/
-                git add -A ${ROOT_FOLDER}/$file
+                cp -rf $f "${ROOT_FOLDER}"/
+                git add -A "${ROOT_FOLDER}/$file"
             fi
         done
         COMMIT_CHANGES="yes"
@@ -147,7 +158,7 @@ function copy_docs_for_current_version() {
         echo -e "Current branch is [${CURRENT_BRANCH}]"
         # https://stackoverflow.com/questions/29300806/a-bash-script-to-check-if-a-string-is-present-in-a-comma-separated-list-of-strin
         if [[ ",${ALLOWED_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
-            mkdir -p ${ROOT_FOLDER}/${CURRENT_BRANCH}
+            mkdir -p "${ROOT_FOLDER}/${CURRENT_BRANCH}"
             echo -e "Branch [${CURRENT_BRANCH}] is allowed! Will copy the current docs to the [${CURRENT_BRANCH}] folder"
             for f in docs/target/generated-docs/*; do
                 file=${f#docs/target/generated-docs/*}
@@ -157,11 +168,11 @@ function copy_docs_for_current_version() {
                     if [[ "${file}" == "${MAIN_ADOC_VALUE}.html" ]] ; then
                         # We don't want to copy the spring-cloud-sleuth.html
                         # we want it to be converted to index.html
-                        cp -rf $f ${ROOT_FOLDER}/${CURRENT_BRANCH}/index.html
-                        git add -A ${ROOT_FOLDER}/${CURRENT_BRANCH}/index.html
+                        cp -rf $f "${ROOT_FOLDER}/${CURRENT_BRANCH}"/index.html
+                        git add -A "${ROOT_FOLDER}/${CURRENT_BRANCH}"/index.html
                     else
-                        cp -rf $f ${ROOT_FOLDER}/${CURRENT_BRANCH}
-                        git add -A ${ROOT_FOLDER}/${CURRENT_BRANCH}/$file
+                        cp -rf $f "${ROOT_FOLDER}/${CURRENT_BRANCH}"
+                        git add -A "${ROOT_FOLDER}/${CURRENT_BRANCH}/$file"
                     fi
                 fi
             done
@@ -176,11 +187,11 @@ function copy_docs_for_current_version() {
 # Copies the docs by using the explicitly provided version
 function copy_docs_for_provided_version() {
     local FOLDER=${DESTINATION_REPO_FOLDER}/${VERSION}
-    mkdir -p ${FOLDER}
+    mkdir -p "${FOLDER}"
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
-    for f in ${ROOT_FOLDER}/docs/target/generated-docs/*; do
+    for f in "${ROOT_FOLDER}"/docs/target/generated-docs/*; do
         file=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
-        copy_docs_for_branch ${file} ${FOLDER}
+        copy_docs_for_branch "${file}" "${FOLDER}"
     done
     COMMIT_CHANGES="yes"
     CURRENT_BRANCH="v${VERSION}"
@@ -193,17 +204,17 @@ function copy_docs_for_provided_version() {
 function copy_docs_for_branch() {
     local file=$1
     local destination=$2
-    if ! git ls-files -i -o --exclude-standard --directory | grep -q ^${file}$; then
+    if ! git ls-files -i -o --exclude-standard --directory | grep -q ^"${file}"$; then
         # Not ignored...
         # We want users to access 1.0.0.RELEASE/ instead of 1.0.0.RELEASE/spring-cloud.sleuth.html
         if [[ ("${file}" == "${MAIN_ADOC_VALUE}.html") || ("${file}" == "${REPO_NAME}.html") ]] ; then
             # We don't want to copy the spring-cloud-sleuth.html
             # we want it to be converted to index.html
-            cp -rf $f ${destination}/index.html
-            git add -A ${destination}/index.html
+            cp -rf $f "${destination}"/index.html
+            git add -A "${destination}"/index.html
         else
-            cp -rf $f ${destination}
-            git add -A ${destination}/$file
+            cp -rf $f "${destination}"
+            git add -A "${destination}/$file"
         fi
     fi
 }
@@ -282,7 +293,7 @@ EOF
 #
 # ==========================================
 
-while [[ $# > 0 ]]
+while [[ $# -gt 0 ]]
 do
 key="$1"
 case ${key} in

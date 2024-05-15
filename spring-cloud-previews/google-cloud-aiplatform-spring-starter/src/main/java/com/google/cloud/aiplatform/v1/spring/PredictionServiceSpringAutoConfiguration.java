@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,10 +160,29 @@ public class PredictionServiceSpringAutoConfiguration {
               clientSettingsBuilder.rawPredictSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.rawPredictSettings().setRetrySettings(rawPredictRetrySettings);
 
+      RetrySettings directPredictRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.directPredictSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.directPredictSettings().setRetrySettings(directPredictRetrySettings);
+
+      RetrySettings directRawPredictRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.directRawPredictSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .directRawPredictSettings()
+          .setRetrySettings(directRawPredictRetrySettings);
+
       RetrySettings explainRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.explainSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.explainSettings().setRetrySettings(explainRetrySettings);
+
+      RetrySettings generateContentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateContentSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .generateContentSettings()
+          .setRetrySettings(generateContentRetrySettings);
 
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -216,6 +235,30 @@ public class PredictionServiceSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for rawPredict from properties.");
       }
     }
+    Retry directPredictRetry = clientProperties.getDirectPredictRetry();
+    if (directPredictRetry != null) {
+      RetrySettings directPredictRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.directPredictSettings().getRetrySettings(), directPredictRetry);
+      clientSettingsBuilder.directPredictSettings().setRetrySettings(directPredictRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for directPredict from properties.");
+      }
+    }
+    Retry directRawPredictRetry = clientProperties.getDirectRawPredictRetry();
+    if (directRawPredictRetry != null) {
+      RetrySettings directRawPredictRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.directRawPredictSettings().getRetrySettings(),
+              directRawPredictRetry);
+      clientSettingsBuilder
+          .directRawPredictSettings()
+          .setRetrySettings(directRawPredictRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for directRawPredict from properties.");
+      }
+    }
     Retry explainRetry = clientProperties.getExplainRetry();
     if (explainRetry != null) {
       RetrySettings explainRetrySettings =
@@ -224,6 +267,19 @@ public class PredictionServiceSpringAutoConfiguration {
       clientSettingsBuilder.explainSettings().setRetrySettings(explainRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for explain from properties.");
+      }
+    }
+    Retry generateContentRetry = clientProperties.getGenerateContentRetry();
+    if (generateContentRetry != null) {
+      RetrySettings generateContentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateContentSettings().getRetrySettings(),
+              generateContentRetry);
+      clientSettingsBuilder
+          .generateContentSettings()
+          .setRetrySettings(generateContentRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for generateContent from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

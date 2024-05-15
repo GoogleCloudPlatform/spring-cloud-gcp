@@ -543,6 +543,9 @@ class PubSubConfigurationTests {
     pubSubConfiguration.initialize("projectId");
 
     assertThat(publisher.getExecutorThreads()).isEqualTo(4);
+    assertThat(publisher.getExecutorAcceptTasksAfterContextClose()).isFalse();
+    assertThat(publisher.getExecutorWaitForTasksToCompleteOnShutdown()).isFalse();
+    assertThat(publisher.getExecutorAwaitTerminationMillis()).isEqualTo(0L);
     assertThat(publisher.getEnableMessageOrdering()).isNull();
     assertThat(publisher.getEndpoint()).isNull();
     assertThat(batching.getElementCountThreshold()).isNull();
@@ -565,12 +568,18 @@ class PubSubConfigurationTests {
   @Test
   void testPublisherProperties() {
     publisher.setExecutorThreads(5);
+    publisher.setExecutorAcceptTasksAfterContextClose(true);
+    publisher.setExecutorWaitForTasksToCompleteOnShutdown(true);
+    publisher.setExecutorAwaitTerminationMillis(30000);
     publisher.setEnableMessageOrdering(true);
     publisher.setEndpoint("fake-endpoint");
 
     pubSubConfiguration.initialize("projectId");
 
     assertThat(publisher.getExecutorThreads()).isEqualTo(5);
+    assertThat(publisher.getExecutorAcceptTasksAfterContextClose()).isTrue();
+    assertThat(publisher.getExecutorWaitForTasksToCompleteOnShutdown()).isTrue();
+    assertThat(publisher.getExecutorAwaitTerminationMillis()).isEqualTo(30000L);
     assertThat(publisher.getEnableMessageOrdering()).isTrue();
     assertThat(publisher.getEndpoint()).isEqualTo("fake-endpoint");
   }

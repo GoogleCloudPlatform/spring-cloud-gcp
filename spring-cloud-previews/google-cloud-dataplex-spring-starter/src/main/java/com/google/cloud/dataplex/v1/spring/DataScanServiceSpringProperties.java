@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,11 @@ public class DataScanServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDataScanJobsRetry;
+  /**
+   * Allow override of retry settings at method-level for generateDataQualityRules. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry generateDataQualityRulesRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -153,6 +158,14 @@ public class DataScanServiceSpringProperties implements CredentialsSupplier {
 
   public void setListDataScanJobsRetry(Retry listDataScanJobsRetry) {
     this.listDataScanJobsRetry = listDataScanJobsRetry;
+  }
+
+  public Retry getGenerateDataQualityRulesRetry() {
+    return this.generateDataQualityRulesRetry;
+  }
+
+  public void setGenerateDataQualityRulesRetry(Retry generateDataQualityRulesRetry) {
+    this.generateDataQualityRulesRetry = generateDataQualityRulesRetry;
   }
 
   public Retry getListLocationsRetry() {

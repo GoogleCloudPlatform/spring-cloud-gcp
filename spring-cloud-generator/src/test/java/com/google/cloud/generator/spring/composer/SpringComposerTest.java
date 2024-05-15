@@ -22,7 +22,7 @@ import com.google.api.generator.gapic.model.GapicContext;
 import com.google.api.generator.gapic.model.GapicPackageInfo;
 import com.google.api.generator.test.framework.Assert;
 import com.google.api.generator.test.framework.GoldenFileWriter;
-import com.google.api.generator.test.protoloader.TestProtoLoader;
+import com.google.cloud.generator.spring.TestUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -34,7 +34,7 @@ public class SpringComposerTest {
 
   @Before
   public void setUp() {
-    this.context = TestProtoLoader.instance().parseShowcaseEcho();
+    this.context = TestUtils.parseShowcaseEcho();
   }
 
   @Test

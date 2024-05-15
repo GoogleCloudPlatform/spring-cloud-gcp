@@ -5,6 +5,12 @@
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud cloudprofiler/ProfilerService components.",
       "defaultValue": true
+    },
+    {
+      "name": "com.google.devtools.cloudprofiler.v2.export-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud cloudprofiler/ExportService components.",
+      "defaultValue": true
     }
   ]
 }

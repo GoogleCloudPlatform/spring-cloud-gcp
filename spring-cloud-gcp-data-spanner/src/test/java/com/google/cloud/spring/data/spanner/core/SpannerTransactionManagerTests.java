@@ -17,6 +17,12 @@
 package com.google.cloud.spring.data.spanner.core;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -32,7 +38,6 @@ import com.google.cloud.spanner.SpannerExceptionFactory;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionManager;
 import com.google.cloud.spanner.TransactionManager.TransactionState;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -81,7 +86,7 @@ class SpannerTransactionManagerTests {
     tx.transactionManager = transactionManager;
     tx.transactionContext = transactionContext;
 
-    Assert.assertEquals(manager.doGetTransaction(), tx);
+    assertEquals(manager.doGetTransaction(), tx);
 
     verify(this.databaseClient, never()).transactionManager();
   }
@@ -92,7 +97,7 @@ class SpannerTransactionManagerTests {
     tx.transactionContext = transactionContext;
     tx.isReadOnly = true;
 
-    Assert.assertEquals(manager.doGetTransaction(), tx);
+    assertEquals(manager.doGetTransaction(), tx);
 
     verify(this.databaseClient, never()).transactionManager();
   }
@@ -109,8 +114,8 @@ class SpannerTransactionManagerTests {
 
     when(this.databaseClient.transactionManager()).thenReturn(transactionManagerNew);
 
-    Assert.assertNotEquals(
-        "expected a new transaction but got the same one", tx, manager.doGetTransaction());
+    assertNotEquals(
+        tx, manager.doGetTransaction(), "expected a new transaction but got the same one");
   }
 
   @Test
@@ -123,9 +128,9 @@ class SpannerTransactionManagerTests {
 
     manager.doBegin(tx, definition);
 
-    Assert.assertEquals(tx.getTransactionManager(), transactionManager);
-    Assert.assertEquals(tx.getTransactionContext(), transactionContext);
-    Assert.assertFalse(tx.isReadOnly());
+    assertEquals(tx.getTransactionManager(), transactionManager);
+    assertEquals(tx.getTransactionContext(), transactionContext);
+    assertFalse(tx.isReadOnly());
 
     verify(transactionManager, times(1)).begin();
   }
@@ -141,10 +146,10 @@ class SpannerTransactionManagerTests {
 
     manager.doBegin(tx, definition);
 
-    Assert.assertNull(tx.getTransactionManager());
-    Assert.assertNotNull(tx.getTransactionContext());
-    Assert.assertNotEquals(tx.getTransactionContext(), transactionContext);
-    Assert.assertTrue(tx.isReadOnly());
+    assertNull(tx.getTransactionManager());
+    assertNotNull(tx.getTransactionContext());
+    assertNotEquals(tx.getTransactionContext(), transactionContext);
+    assertTrue(tx.isReadOnly());
 
     verify(transactionManager, times(0)).begin();
     verify(transactionManager, times(0)).getState();

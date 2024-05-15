@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -227,6 +227,36 @@ public class DlpServiceSpringProperties implements CredentialsSupplier {
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteStoredInfoTypeRetry;
+  /**
+   * Allow override of retry settings at method-level for listProjectDataProfiles. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listProjectDataProfilesRetry;
+  /**
+   * Allow override of retry settings at method-level for listTableDataProfiles. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listTableDataProfilesRetry;
+  /**
+   * Allow override of retry settings at method-level for listColumnDataProfiles. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listColumnDataProfilesRetry;
+  /**
+   * Allow override of retry settings at method-level for getProjectDataProfile. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getProjectDataProfileRetry;
+  /**
+   * Allow override of retry settings at method-level for getTableDataProfile. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getTableDataProfileRetry;
+  /**
+   * Allow override of retry settings at method-level for getColumnDataProfile. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getColumnDataProfileRetry;
   /**
    * Allow override of retry settings at method-level for hybridInspectDlpJob. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
@@ -569,6 +599,54 @@ public class DlpServiceSpringProperties implements CredentialsSupplier {
 
   public void setDeleteStoredInfoTypeRetry(Retry deleteStoredInfoTypeRetry) {
     this.deleteStoredInfoTypeRetry = deleteStoredInfoTypeRetry;
+  }
+
+  public Retry getListProjectDataProfilesRetry() {
+    return this.listProjectDataProfilesRetry;
+  }
+
+  public void setListProjectDataProfilesRetry(Retry listProjectDataProfilesRetry) {
+    this.listProjectDataProfilesRetry = listProjectDataProfilesRetry;
+  }
+
+  public Retry getListTableDataProfilesRetry() {
+    return this.listTableDataProfilesRetry;
+  }
+
+  public void setListTableDataProfilesRetry(Retry listTableDataProfilesRetry) {
+    this.listTableDataProfilesRetry = listTableDataProfilesRetry;
+  }
+
+  public Retry getListColumnDataProfilesRetry() {
+    return this.listColumnDataProfilesRetry;
+  }
+
+  public void setListColumnDataProfilesRetry(Retry listColumnDataProfilesRetry) {
+    this.listColumnDataProfilesRetry = listColumnDataProfilesRetry;
+  }
+
+  public Retry getGetProjectDataProfileRetry() {
+    return this.getProjectDataProfileRetry;
+  }
+
+  public void setGetProjectDataProfileRetry(Retry getProjectDataProfileRetry) {
+    this.getProjectDataProfileRetry = getProjectDataProfileRetry;
+  }
+
+  public Retry getGetTableDataProfileRetry() {
+    return this.getTableDataProfileRetry;
+  }
+
+  public void setGetTableDataProfileRetry(Retry getTableDataProfileRetry) {
+    this.getTableDataProfileRetry = getTableDataProfileRetry;
+  }
+
+  public Retry getGetColumnDataProfileRetry() {
+    return this.getColumnDataProfileRetry;
+  }
+
+  public void setGetColumnDataProfileRetry(Retry getColumnDataProfileRetry) {
+    this.getColumnDataProfileRetry = getColumnDataProfileRetry;
   }
 
   public Retry getHybridInspectDlpJobRetry() {

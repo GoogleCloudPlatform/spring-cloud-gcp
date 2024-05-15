@@ -24,7 +24,7 @@ import com.google.api.generator.gapic.model.Service;
 import com.google.api.generator.gapic.model.Transport;
 import com.google.api.generator.test.framework.Assert;
 import com.google.api.generator.test.protoloader.GrpcRestTestProtoLoader;
-import com.google.api.generator.test.protoloader.TestProtoLoader;
+import com.google.cloud.generator.spring.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class SpringPropertiesClassComposerTest {
 
   @Before
   public void setUp() {
-    this.echoContext = TestProtoLoader.instance().parseShowcaseEcho();
+    this.echoContext = TestUtils.parseShowcaseEcho();
     this.echoProtoService = this.echoContext.services().get(0);
     this.echoGrpcRestContext = this.echoContext.toBuilder().setTransport(Transport.GRPC_REST).build();
     this.echoGrpcRestProtoService = this.echoGrpcRestContext.services().get(0);

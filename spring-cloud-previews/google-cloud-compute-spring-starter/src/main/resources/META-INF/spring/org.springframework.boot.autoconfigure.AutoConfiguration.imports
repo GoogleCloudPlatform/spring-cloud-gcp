@@ -22,6 +22,7 @@ com.google.cloud.compute.v1.spring.InstanceGroupManagersSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InstanceGroupsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InstanceTemplatesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InstancesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.InstantSnapshotsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InterconnectAttachmentsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InterconnectLocationsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.InterconnectRemoteLocationsSpringAutoConfiguration
@@ -53,6 +54,7 @@ com.google.cloud.compute.v1.spring.RegionInstanceGroupManagersSpringAutoConfigur
 com.google.cloud.compute.v1.spring.RegionInstanceGroupsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionInstanceTemplatesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionInstancesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.RegionInstantSnapshotsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionNetworkEndpointGroupsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionNetworkFirewallPoliciesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionNotificationEndpointsSpringAutoConfiguration
@@ -64,6 +66,7 @@ com.google.cloud.compute.v1.spring.RegionTargetHttpProxiesSpringAutoConfiguratio
 com.google.cloud.compute.v1.spring.RegionTargetHttpsProxiesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionTargetTcpProxiesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionUrlMapsSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.RegionZonesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ReservationsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ResourcePoliciesSpringAutoConfiguration
@@ -71,6 +74,7 @@ com.google.cloud.compute.v1.spring.RoutersSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RoutesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.SecurityPoliciesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ServiceAttachmentsSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.SnapshotSettingsServiceSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.SnapshotsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.SslCertificatesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.SslPoliciesSpringAutoConfiguration

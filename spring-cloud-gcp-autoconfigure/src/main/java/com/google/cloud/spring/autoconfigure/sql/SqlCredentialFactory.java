@@ -16,8 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.sql;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spring.core.GcpScope;
 import com.google.cloud.sql.CredentialFactory;
 import java.io.ByteArrayInputStream;
@@ -46,7 +47,12 @@ public class SqlCredentialFactory implements CredentialFactory {
   private static final Log LOGGER = LogFactory.getLog(SqlCredentialFactory.class);
 
   @Override
-  public Credential create() {
+  public HttpRequestInitializer create() {
+    return new HttpCredentialsAdapter(getCredentials());
+  }
+
+  @Override
+  public GoogleCredentials getCredentials() {
     String credentialResourceLocation = System.getProperty(CREDENTIAL_LOCATION_PROPERTY_NAME);
     String encodedCredential = System.getProperty(CREDENTIAL_ENCODED_KEY_PROPERTY_NAME);
 
@@ -72,7 +78,7 @@ public class SqlCredentialFactory implements CredentialFactory {
         credentialsInputStream = new FileInputStream(credentialResourceLocation);
       }
 
-      return GoogleCredential.fromStream(credentialsInputStream)
+      return GoogleCredentials.fromStream(credentialsInputStream)
           .createScoped(Collections.singleton(GcpScope.SQLADMIN.getUrl()));
     } catch (IOException ioe) {
       LOGGER.warn("There was an error loading Cloud SQL credential.", ioe);

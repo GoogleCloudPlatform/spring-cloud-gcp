@@ -338,6 +338,40 @@ public class PubSubConfiguration {
     /** Number of threads used by every publisher. */
     private int executorThreads = 4;
 
+    /**
+     * Default {@code false}. Passed on to the underlying `ThreadPoolTaskScheduler` property
+     * `acceptTasksAfterContextClose`. With this set to {@code true}, makes the
+     * `ThreadPoolTaskScheduler` to accept further tasks after the `ContextClosedEvent`, with the
+     * expense of a longer shutdown phase. The scheduler will not go through a coordinated lifecycle
+     * stop phase but rather only stop the remaining tasks(with a hard interrupt) on its own
+     * shutdown. The interrupt on the blocked threads before the JVM shuts down letting them close
+     * in an orderly fashion.
+     */
+    private Boolean executorAcceptTasksAfterContextClose = false;
+
+    /**
+     * Default {@code false}. Passed on to the underlying `ThreadPoolTaskScheduler` property
+     * `waitForTasksToCompleteOnShutdown`. With this set to {@code true},(the common
+     * pre-spring-6.1.x behaviour) makes the `ThreadPoolTaskScheduler` to wait for scheduled tasks
+     * to complete on shutdown, not interrupting running tasks and executing all tasks in the queue,
+     * with the expense of a longer shutdown phase. The scheduler will not go through a coordinated
+     * lifecycle stop phase but rather only stop the tasks and wait for task completion on its own
+     * shutdown. This will not interrupt the running tasks, letting the JVM end and hard-stopping
+     * any remaining threads.
+     */
+    private Boolean executorWaitForTasksToCompleteOnShutdown = false;
+
+    /**
+     * Default 0. Passed on to the underlying `ThreadPoolTaskScheduler` property
+     * `awaitTerminationMillis`. This property sets the maximum number of milliseconds that the
+     * `ThreadPoolTaskScheduler`is supposed to block on shutdown in order to wait for remaining
+     * tasks to complete their execution before the rest of the container continues to shut down.
+     * This is particularly useful if the remaining tasks are likely to need access to other
+     * resources that are also managed by the container. With this property, scheduler will wait for
+     * the given time (max) for the termination of tasks.
+     */
+    private Long executorAwaitTerminationMillis = 0L;
+
     /** Retry properties. */
     private final Retry retry = new Retry();
 
@@ -364,6 +398,32 @@ public class PubSubConfiguration {
 
     public void setExecutorThreads(int executorThreads) {
       this.executorThreads = executorThreads;
+    }
+
+    public Boolean getExecutorAcceptTasksAfterContextClose() {
+      return this.executorAcceptTasksAfterContextClose;
+    }
+
+    public void setExecutorAcceptTasksAfterContextClose(
+        Boolean executorAcceptTasksAfterContextClose) {
+      this.executorAcceptTasksAfterContextClose = executorAcceptTasksAfterContextClose;
+    }
+
+    public Boolean getExecutorWaitForTasksToCompleteOnShutdown() {
+      return this.executorWaitForTasksToCompleteOnShutdown;
+    }
+
+    public void setExecutorWaitForTasksToCompleteOnShutdown(
+        Boolean executorWaitForTasksToCompleteOnShutdown) {
+      this.executorWaitForTasksToCompleteOnShutdown = executorWaitForTasksToCompleteOnShutdown;
+    }
+
+    public long getExecutorAwaitTerminationMillis() {
+      return this.executorAwaitTerminationMillis;
+    }
+
+    public void setExecutorAwaitTerminationMillis(long executorAwaitTerminationMillis) {
+      this.executorAwaitTerminationMillis = executorAwaitTerminationMillis;
     }
 
     public Boolean getEnableMessageOrdering() {

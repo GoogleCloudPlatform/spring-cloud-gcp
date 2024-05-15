@@ -17,7 +17,9 @@
 package com.google.cloud.spring.autoconfigure.spanner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.retrying.RetrySettings;
@@ -31,6 +33,8 @@ import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTempl
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -45,6 +49,14 @@ class GcpSpannerAutoConfigurationTests {
 
   /** Mock Gson object for use in configuration. */
   public static Gson MOCK_GSON = mock(Gson.class);
+
+  @BeforeAll
+  static void beforeAll() {
+    GsonBuilder builderMock = mock(GsonBuilder.class);
+    when(builderMock.registerTypeAdapter(any(), any())).thenReturn(builderMock);
+    when(builderMock.create()).thenReturn(MOCK_GSON);
+    when(MOCK_GSON.newBuilder()).thenReturn(builderMock);
+  }
 
   private ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()

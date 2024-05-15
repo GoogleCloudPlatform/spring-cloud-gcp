@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -208,6 +208,53 @@ public class RecaptchaEnterpriseServiceSpringAutoConfiguration {
               clientSettingsBuilder.getMetricsSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getMetricsSettings().setRetrySettings(getMetricsRetrySettings);
 
+      RetrySettings createFirewallPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createFirewallPolicySettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .createFirewallPolicySettings()
+          .setRetrySettings(createFirewallPolicyRetrySettings);
+
+      RetrySettings listFirewallPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listFirewallPoliciesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listFirewallPoliciesSettings()
+          .setRetrySettings(listFirewallPoliciesRetrySettings);
+
+      RetrySettings getFirewallPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getFirewallPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getFirewallPolicySettings()
+          .setRetrySettings(getFirewallPolicyRetrySettings);
+
+      RetrySettings updateFirewallPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateFirewallPolicySettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .updateFirewallPolicySettings()
+          .setRetrySettings(updateFirewallPolicyRetrySettings);
+
+      RetrySettings deleteFirewallPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteFirewallPolicySettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .deleteFirewallPolicySettings()
+          .setRetrySettings(deleteFirewallPolicyRetrySettings);
+
+      RetrySettings reorderFirewallPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.reorderFirewallPoliciesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .reorderFirewallPoliciesSettings()
+          .setRetrySettings(reorderFirewallPoliciesRetrySettings);
+
       RetrySettings listRelatedAccountGroupsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listRelatedAccountGroupsSettings().getRetrySettings(),
@@ -348,6 +395,90 @@ public class RecaptchaEnterpriseServiceSpringAutoConfiguration {
       clientSettingsBuilder.getMetricsSettings().setRetrySettings(getMetricsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getMetrics from properties.");
+      }
+    }
+    Retry createFirewallPolicyRetry = clientProperties.getCreateFirewallPolicyRetry();
+    if (createFirewallPolicyRetry != null) {
+      RetrySettings createFirewallPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createFirewallPolicySettings().getRetrySettings(),
+              createFirewallPolicyRetry);
+      clientSettingsBuilder
+          .createFirewallPolicySettings()
+          .setRetrySettings(createFirewallPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createFirewallPolicy from properties.");
+      }
+    }
+    Retry listFirewallPoliciesRetry = clientProperties.getListFirewallPoliciesRetry();
+    if (listFirewallPoliciesRetry != null) {
+      RetrySettings listFirewallPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listFirewallPoliciesSettings().getRetrySettings(),
+              listFirewallPoliciesRetry);
+      clientSettingsBuilder
+          .listFirewallPoliciesSettings()
+          .setRetrySettings(listFirewallPoliciesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listFirewallPolicies from properties.");
+      }
+    }
+    Retry getFirewallPolicyRetry = clientProperties.getGetFirewallPolicyRetry();
+    if (getFirewallPolicyRetry != null) {
+      RetrySettings getFirewallPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getFirewallPolicySettings().getRetrySettings(),
+              getFirewallPolicyRetry);
+      clientSettingsBuilder
+          .getFirewallPolicySettings()
+          .setRetrySettings(getFirewallPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getFirewallPolicy from properties.");
+      }
+    }
+    Retry updateFirewallPolicyRetry = clientProperties.getUpdateFirewallPolicyRetry();
+    if (updateFirewallPolicyRetry != null) {
+      RetrySettings updateFirewallPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateFirewallPolicySettings().getRetrySettings(),
+              updateFirewallPolicyRetry);
+      clientSettingsBuilder
+          .updateFirewallPolicySettings()
+          .setRetrySettings(updateFirewallPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateFirewallPolicy from properties.");
+      }
+    }
+    Retry deleteFirewallPolicyRetry = clientProperties.getDeleteFirewallPolicyRetry();
+    if (deleteFirewallPolicyRetry != null) {
+      RetrySettings deleteFirewallPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteFirewallPolicySettings().getRetrySettings(),
+              deleteFirewallPolicyRetry);
+      clientSettingsBuilder
+          .deleteFirewallPolicySettings()
+          .setRetrySettings(deleteFirewallPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteFirewallPolicy from properties.");
+      }
+    }
+    Retry reorderFirewallPoliciesRetry = clientProperties.getReorderFirewallPoliciesRetry();
+    if (reorderFirewallPoliciesRetry != null) {
+      RetrySettings reorderFirewallPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.reorderFirewallPoliciesSettings().getRetrySettings(),
+              reorderFirewallPoliciesRetry);
+      clientSettingsBuilder
+          .reorderFirewallPoliciesSettings()
+          .setRetrySettings(reorderFirewallPoliciesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for reorderFirewallPolicies from properties.");
       }
     }
     Retry listRelatedAccountGroupsRetry = clientProperties.getListRelatedAccountGroupsRetry();

@@ -53,7 +53,8 @@ import com.google.cloud.spring.data.datastore.it.testdomains.PetRepository;
 import com.google.cloud.spring.data.datastore.it.testdomains.Product;
 import com.google.cloud.spring.data.datastore.it.testdomains.ProductRepository;
 import com.google.cloud.spring.data.datastore.it.testdomains.Pug;
-import com.google.cloud.spring.data.datastore.it.testdomains.ReferenceEntry;
+import com.google.cloud.spring.data.datastore.it.testdomains.ReferenceEntity;
+import com.google.cloud.spring.data.datastore.it.testdomains.ReferenceLazyEntity;
 import com.google.cloud.spring.data.datastore.it.testdomains.ServiceConfiguration;
 import com.google.cloud.spring.data.datastore.it.testdomains.Store;
 import com.google.cloud.spring.data.datastore.it.testdomains.SubEntity;
@@ -96,6 +97,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.transaction.TransactionSystemException;
@@ -105,6 +107,7 @@ import org.springframework.transaction.TransactionSystemException;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
 @ImportRuntimeHints({TestRuntimeHints.class})
+@DisabledInAotMode
 class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   // This value is multiplied against recorded actual times needed to wait for eventual
@@ -148,7 +151,8 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
     this.datastoreTemplate.deleteAll(AncestorEntity.class);
     this.datastoreTemplate.deleteAll(AncestorEntity.DescendantEntry.class);
     this.datastoreTemplate.deleteAll(TreeCollection.class);
-    this.datastoreTemplate.deleteAll(ReferenceEntry.class);
+    this.datastoreTemplate.deleteAll(ReferenceEntity.class);
+    this.datastoreTemplate.deleteAll(ReferenceLazyEntity.class);
     this.datastoreTemplate.deleteAll(ParentEntity.class);
     this.datastoreTemplate.deleteAll(SubEntity.class);
     this.datastoreTemplate.deleteAll(Pet.class);
@@ -686,11 +690,10 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void referenceTest() {
-    ReferenceEntry parent = saveEntitiesGraph();
+    ReferenceEntity parent = saveReferenceEntitiesGraph();
 
-    ReferenceEntry loadedParent = this.datastoreTemplate.findById(parent.id, ReferenceEntry.class);
+    ReferenceEntity loadedParent = this.datastoreTemplate.findById(parent.id, ReferenceEntity.class);
     assertThat(loadedParent).isEqualTo(parent);
 
     parent.name = "parent updated";
@@ -701,32 +704,34 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
     waitUntilTrue(
         () ->
-            this.datastoreTemplate.findAll(ReferenceEntry.class).stream()
+            this.datastoreTemplate.findAll(ReferenceEntity.class).stream()
                 .allMatch(entry -> entry.name.contains("updated")));
 
-    ReferenceEntry loadedParentAfterUpdate =
-        this.datastoreTemplate.findById(parent.id, ReferenceEntry.class);
+    ReferenceEntity loadedParentAfterUpdate =
+        this.datastoreTemplate.findById(parent.id, ReferenceEntity.class);
     assertThat(loadedParentAfterUpdate).isEqualTo(parent);
   }
 
   @Test
   @DisabledInNativeImage
+  @DisabledInAotMode
   void lazyReferenceCollectionTest() {
-    ReferenceEntry parent = saveEntitiesGraph();
+    ReferenceLazyEntity parent = saveEntitiesGraph();
 
-    ReferenceEntry lazyParent = this.datastoreTemplate.findById(parent.id, ReferenceEntry.class);
+    ReferenceLazyEntity lazyParent = this.datastoreTemplate.findById(parent.id, ReferenceLazyEntity.class);
 
     // Saving an entity with not loaded lazy field
     this.datastoreTemplate.save(lazyParent);
 
-    ReferenceEntry loadedParent =
-        this.datastoreTemplate.findById(lazyParent.id, ReferenceEntry.class);
+    ReferenceLazyEntity loadedParent =
+        this.datastoreTemplate.findById(lazyParent.id, ReferenceLazyEntity.class);
     assertThat(loadedParent.children)
-        .containsExactlyInAnyOrder(parent.children.toArray(new ReferenceEntry[0]));
+        .containsExactlyInAnyOrder(parent.children.toArray(new ReferenceLazyEntity[0]));
   }
 
   @Test
   @DisabledInNativeImage
+  @DisabledInAotMode
   void lazyReferenceTest() throws InterruptedException {
     LazyEntity lazyParentEntity = new LazyEntity(new LazyEntity(new LazyEntity()));
     this.datastoreTemplate.save(lazyParentEntity);
@@ -743,6 +748,7 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   @Test
   @DisabledInNativeImage
+  @DisabledInAotMode
   void singularLazyPropertyTest() {
     LazyEntity lazyParentEntity = new LazyEntity(new LazyEntity(new LazyEntity()));
     this.datastoreTemplate.save(lazyParentEntity);
@@ -754,30 +760,42 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
   @Test
   @DisabledInNativeImage
+  @DisabledInAotMode
   void lazyReferenceTransactionTest() {
-    ReferenceEntry parent = saveEntitiesGraph();
+    ReferenceLazyEntity parent = saveEntitiesGraph();
 
     // Exception should be produced if a lazy loaded property accessed outside of the initial
     // transaction
-    ReferenceEntry finalLoadedParent = this.transactionalTemplateService.findByIdLazy(parent.id);
+    ReferenceLazyEntity finalLoadedParent = this.transactionalTemplateService.findByIdLazy(parent.id);
     assertThatThrownBy(() -> finalLoadedParent.children.size())
         .isInstanceOf(DatastoreDataException.class)
         .hasMessage("Lazy load should be invoked within the same transaction");
 
     // No exception should be produced if a lazy loaded property accessed within the initial
     // transaction
-    ReferenceEntry finalLoadedParentLazyLoaded =
+    ReferenceLazyEntity finalLoadedParentLazyLoaded =
         this.transactionalTemplateService.findByIdLazyAndLoad(parent.id);
     assertThat(finalLoadedParentLazyLoaded).isEqualTo(parent);
   }
 
-  private ReferenceEntry saveEntitiesGraph() {
-    ReferenceEntry child1 = new ReferenceEntry("child1", null, null);
-    ReferenceEntry child2 = new ReferenceEntry("child2", null, null);
-    ReferenceEntry sibling = new ReferenceEntry("sibling", null, null);
-    ReferenceEntry parent = new ReferenceEntry("parent", sibling, Arrays.asList(child1, child2));
+  private ReferenceLazyEntity saveEntitiesGraph() {
+    ReferenceLazyEntity child1 = new ReferenceLazyEntity("child1", null, null);
+    ReferenceLazyEntity child2 = new ReferenceLazyEntity("child2", null, null);
+    ReferenceLazyEntity sibling = new ReferenceLazyEntity("sibling", null, null);
+    ReferenceLazyEntity parent =
+        new ReferenceLazyEntity("parent", sibling, Arrays.asList(child1, child2));
     this.datastoreTemplate.save(parent);
-    waitUntilTrue(() -> this.datastoreTemplate.findAll(ReferenceEntry.class).size() == 4);
+    waitUntilTrue(() -> this.datastoreTemplate.findAll(ReferenceLazyEntity.class).size() == 4);
+    return parent;
+  }
+
+  private ReferenceEntity saveReferenceEntitiesGraph() {
+    ReferenceEntity child1 = new ReferenceEntity("child1", null, null);
+    ReferenceEntity child2 = new ReferenceEntity("child2", null, null);
+    ReferenceEntity sibling = new ReferenceEntity("sibling", null, null);
+    ReferenceEntity parent = new ReferenceEntity("parent", sibling, Arrays.asList(child1, child2));
+    this.datastoreTemplate.save(parent);
+    waitUntilTrue(() -> this.datastoreTemplate.findAll(ReferenceEntity.class).size() == 4);
     return parent;
   }
 
@@ -874,7 +892,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void inheritanceTest() {
     PetOwner petOwner = new PetOwner();
     petOwner.pets = Arrays.asList(new Cat("Alice"), new Cat("Bob"), new Pug("Bob"), new Dog("Bob"));
@@ -904,7 +921,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void inheritanceTestFindAll() {
     this.datastoreTemplate.saveAll(
         Arrays.asList(new Cat("Cat1"), new Dog("Dog1"), new Pug("Dog2")));
@@ -983,7 +999,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
-  @DisabledInNativeImage
   void sameClassDescendantsTest() {
     Employee entity3 = new Employee(Collections.EMPTY_LIST);
     Employee entity2 = new Employee(Collections.EMPTY_LIST);

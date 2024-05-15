@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,11 @@ public class InterconnectsSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getDiagnosticsRetry;
   /**
+   * Allow override of retry settings at method-level for getMacsecConfig. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getMacsecConfigRetry;
+  /**
    * Allow override of retry settings at method-level for list. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
@@ -101,6 +106,14 @@ public class InterconnectsSpringProperties implements CredentialsSupplier {
 
   public void setGetDiagnosticsRetry(Retry getDiagnosticsRetry) {
     this.getDiagnosticsRetry = getDiagnosticsRetry;
+  }
+
+  public Retry getGetMacsecConfigRetry() {
+    return this.getMacsecConfigRetry;
+  }
+
+  public void setGetMacsecConfigRetry(Retry getMacsecConfigRetry) {
+    this.getMacsecConfigRetry = getMacsecConfigRetry;
   }
 
   public Retry getListRetry() {

@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - 3.x
+      - 4.x
   pull_request:
   workflow_dispatch:
   schedule:
@@ -19,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [17, 19]
+        java: [17, 19, 21]
     steps:
     - name: Get current date
       id: date

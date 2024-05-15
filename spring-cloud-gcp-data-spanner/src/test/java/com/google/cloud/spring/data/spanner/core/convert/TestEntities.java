@@ -56,15 +56,21 @@ class TestEntities {
     long longField;
 
     double doubleField;
+    float floatField;
 
     // This double array is forced to be stored as a String for testing
     @Column(spannerType = TypeCode.STRING)
     double[] doubleArray;
 
+    // This double array is forced to be stored as a String for testing
+    @Column(spannerType = TypeCode.STRING)
+    float[] floatArray;
+
     // int is not a native Cloud Spanner type, so this will utilize custom conversions.
     int intField;
 
     List<Double> doubleList;
+    List<Float> floatList;
 
     List<String> stringList;
 
@@ -270,6 +276,20 @@ class TestEntities {
     }
   }
 
+  /** A test class with Json field. */
+  @Table(name = "json_test_table")
+  static class TestEntityInstantInJson {
+    @PrimaryKey String id;
+
+    @Column(spannerType = TypeCode.JSON)
+    InstantParam params;
+
+    TestEntityInstantInJson(String id, InstantParam params) {
+      this.id = id;
+      this.params = params;
+    }
+  }
+
   static class Params {
     String p1;
 
@@ -278,6 +298,14 @@ class TestEntities {
     Params(String p1, String p2) {
       this.p1 = p1;
       this.p2 = p2;
+    }
+  }
+
+  static class InstantParam {
+    Instant instant;
+
+    InstantParam(Instant instant) {
+      this.instant = instant;
     }
   }
 }

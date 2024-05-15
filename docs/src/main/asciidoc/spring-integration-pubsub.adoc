@@ -75,6 +75,8 @@ Then, we declare a `PubSubInboundChannelAdapter` bean.
 It requires the channel we just created and a `SubscriberFactory`, which creates `Subscriber` objects from the Google Cloud Java Client for Pub/Sub.
 The Spring Boot starter for Spring Framework on Google Cloud Pub/Sub provides a configured `PubSubSubscriberOperations` object.
 
+If you want to take advantage of the Cloud Pub/Sub subscription health indicator called pubsub-subscriber, you also need to call `adapter.setHealthTrackerRegistry()` with the auto-configured `HealthTrackerRegistry` bean. Refer to link:pubsub.adoc[Cloud Pub/Sub Subscription Health Indicator] for how to enable Spring Boot Actuator.
+
 ===== Acknowledging messages and handling failures
 When working with Cloud Pub/Sub, it is important to understand the concept of `ackDeadline` -- the amount of time Cloud Pub/Sub will wait until attempting redelivery of an outstanding message.
 Each subscription has a default `ackDeadline` applied to all messages sent to it.

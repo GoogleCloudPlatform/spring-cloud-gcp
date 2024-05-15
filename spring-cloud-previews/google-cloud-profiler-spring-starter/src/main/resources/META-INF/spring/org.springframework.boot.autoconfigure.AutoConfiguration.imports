@@ -1,1 +1,2 @@
 com.google.devtools.cloudprofiler.v2.spring.ProfilerServiceSpringAutoConfiguration
+com.google.devtools.cloudprofiler.v2.spring.ExportServiceSpringAutoConfiguration

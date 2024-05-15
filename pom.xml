@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>4.8.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>5.2.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -36,31 +36,31 @@
 	<properties>
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
-		<spring-cloud-dependencies.version>2022.0.4</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>3.1.5</spring-boot-dependencies.version>
+		<spring-cloud-dependencies.version>2023.0.1</spring-cloud-dependencies.version>
+		<spring-boot-dependencies.version>3.2.5</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
-		<zipkin-gcp.version>1.0.4</zipkin-gcp.version>
+		<zipkin-gcp.version>1.1.1</zipkin-gcp.version>
 		<java-cfenv.version>2.5.0</java-cfenv.version>
-		<micrometer-tracing.verison>1.1.6</micrometer-tracing.verison>
+		<micrometer-tracing.verison>1.2.5</micrometer-tracing.verison>
 
 		<!-- Plugin versions -->
-		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-		<maven-failsafe-plugin.version>3.2.2</maven-failsafe-plugin.version>
-		<maven-flatten-plugin.version>1.5.0</maven-flatten-plugin.version>
-		<maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
-		<maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-		<maven-javadoc-plugin.version>3.6.2</maven-javadoc-plugin.version>
-		<maven-source-plugin.version>3.3.0</maven-source-plugin.version>
-		<maven-surefire-plugin.version>3.2.2</maven-surefire-plugin.version>
+		<maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
+		<maven-flatten-plugin.version>1.6.0</maven-flatten-plugin.version>
+		<maven-gpg-plugin.version>3.2.4</maven-gpg-plugin.version>
+		<maven-jar-plugin.version>3.4.1</maven-jar-plugin.version>
+		<maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
+		<maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+		<maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
 		<maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<errorprone.version>2.23.0</errorprone.version>
-		<native-maven-plugin.version>0.9.28</native-maven-plugin.version>
+		<errorprone.version>2.27.1</errorprone.version>
+		<native-maven-plugin.version>0.10.1</native-maven-plugin.version>
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
@@ -162,7 +162,7 @@
 		<dependency>
 			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
-			<version>4.2.0</version>
+			<version>4.2.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -361,6 +361,7 @@
 			<module>spring-cloud-gcp-data-datastore</module>
 			<module>spring-cloud-gcp-data-firestore</module>
 			<module>spring-cloud-gcp-core</module>
+			<module>spring-cloud-gcp-bigquery</module>
 		</modules>
 
 		<dependencies>
@@ -394,6 +395,7 @@
 							<it.kms>true</it.kms>
 							<it.datastore>true</it.datastore>
 							<it.firestore>true</it.firestore>
+							<it.bigquery>true</it.bigquery>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>
@@ -402,10 +404,6 @@
 					<artifactId>native-maven-plugin</artifactId>
 					<version>${native-maven-plugin.version}</version>
 					<configuration>
-						<buildArgs>
-							<buildArg>--trace-class-initialization=org.apache.commons.logging.LogFactoryService</buildArg>
-							<buildArg>--initialize-at-build-time=org.apache.commons.logging.LogFactory</buildArg>
-						</buildArgs>
 						<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 						<metadataRepository>
 							<enabled>true</enabled>
@@ -550,7 +548,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.11</version>
+						<version>0.8.12</version>
 						<executions>
 							<execution>
 								<goals>
@@ -852,7 +850,7 @@
 			<name>Apache License, Version 2.0</name>
 			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
 			<comments>
-				Copyright 2015-2022 the original author or authors.
+				Copyright 2015-2023 the original author or authors.
 
 				Licensed under the Apache License, Version 2.0 (the "License");
 				you may not use this file except in compliance with the License.

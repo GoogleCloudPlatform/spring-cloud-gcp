@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,16 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getTargetRetry;
+  /**
+   * Allow override of retry settings at method-level for listCustomTargetTypes. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listCustomTargetTypesRetry;
+  /**
+   * Allow override of retry settings at method-level for getCustomTargetType. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getCustomTargetTypeRetry;
   /**
    * Allow override of retry settings at method-level for listReleases. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -263,6 +273,22 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
 
   public void setGetTargetRetry(Retry getTargetRetry) {
     this.getTargetRetry = getTargetRetry;
+  }
+
+  public Retry getListCustomTargetTypesRetry() {
+    return this.listCustomTargetTypesRetry;
+  }
+
+  public void setListCustomTargetTypesRetry(Retry listCustomTargetTypesRetry) {
+    this.listCustomTargetTypesRetry = listCustomTargetTypesRetry;
+  }
+
+  public Retry getGetCustomTargetTypeRetry() {
+    return this.getCustomTargetTypeRetry;
+  }
+
+  public void setGetCustomTargetTypeRetry(Retry getCustomTargetTypeRetry) {
+    this.getCustomTargetTypeRetry = getCustomTargetTypeRetry;
   }
 
   public Retry getListReleasesRetry() {

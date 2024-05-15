@@ -80,6 +80,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
     map.put(Boolean.class, ValueBinder::toBoolArray);
     map.put(Long.class, ValueBinder::toInt64Array);
     map.put(Double.class, ValueBinder::toFloat64Array);
+    map.put(Float.class, ValueBinder::toFloat32Array);
     map.put(BigDecimal.class, ValueBinder::toNumericArray);
     map.put(Timestamp.class, ValueBinder::toTimestampArray);
     map.put(Date.class, ValueBinder::toDateArray);
@@ -97,12 +98,15 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
     map.put(long.class, (BiFunction<ValueBinder, Long, ?>) ValueBinder::to);
     map.put(Double.class, (BiFunction<ValueBinder, Double, ?>) ValueBinder::to);
     map.put(double.class, (BiFunction<ValueBinder, Double, ?>) ValueBinder::to);
+    map.put(Float.class, (BiFunction<ValueBinder, Float, ?>) ValueBinder::to);
+    map.put(float.class, (BiFunction<ValueBinder, Float, ?>) ValueBinder::to);
     map.put(BigDecimal.class, (BiFunction<ValueBinder, BigDecimal, ?>) ValueBinder::to);
     map.put(Timestamp.class, (BiFunction<ValueBinder, Timestamp, ?>) ValueBinder::to);
     map.put(Date.class, (BiFunction<ValueBinder, Date, ?>) ValueBinder::to);
     map.put(ByteArray.class, (BiFunction<ValueBinder, ByteArray, ?>) ValueBinder::to);
     map.put(String.class, (BiFunction<ValueBinder, String, ?>) ValueBinder::to);
     map.put(double[].class, (BiFunction<ValueBinder, double[], ?>) ValueBinder::toFloat64Array);
+    map.put(float[].class, (BiFunction<ValueBinder, float[], ?>) ValueBinder::toFloat32Array);
     map.put(boolean[].class, (BiFunction<ValueBinder, boolean[], ?>) ValueBinder::toBoolArray);
     map.put(long[].class, (BiFunction<ValueBinder, long[], ?>) ValueBinder::toInt64Array);
     map.put(Struct.class, (BiFunction<ValueBinder, Struct, ?>) ValueBinder::to);

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-cloud-gcp</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>4.8.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>5.2.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -219,6 +219,12 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-firestore</artifactId>
             <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -251,6 +257,12 @@
           <groupId>com.google.cloud</groupId>
           <artifactId>google-cloud-vision</artifactId>
           <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -277,6 +289,19 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-monitoring</artifactId>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- AlloyDB -->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>alloydb-jdbc-connector</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -334,7 +359,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.15.0</version>
+            <version>2.16.1</version>
             <scope>test</scope>
         </dependency>
 

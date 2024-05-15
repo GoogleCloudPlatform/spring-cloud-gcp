@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,6 +156,11 @@ public class RegionSecurityPoliciesSpringAutoConfiguration {
               clientSettingsBuilder.getSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getSettings().setRetrySettings(getRetrySettings);
 
+      RetrySettings getRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getRuleSettings().setRetrySettings(getRuleRetrySettings);
+
       RetrySettings listRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listSettings().getRetrySettings(), serviceRetry);
@@ -173,6 +178,16 @@ public class RegionSecurityPoliciesSpringAutoConfiguration {
       clientSettingsBuilder.getSettings().setRetrySettings(getRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for get from properties.");
+      }
+    }
+    Retry getRuleRetry = clientProperties.getGetRuleRetry();
+    if (getRuleRetry != null) {
+      RetrySettings getRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getRuleSettings().getRetrySettings(), getRuleRetry);
+      clientSettingsBuilder.getRuleSettings().setRetrySettings(getRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getRule from properties.");
       }
     }
     Retry listRetry = clientProperties.getListRetry();

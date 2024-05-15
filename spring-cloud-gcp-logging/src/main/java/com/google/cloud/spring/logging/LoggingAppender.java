@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.logging;
 
-import com.google.auth.Credentials;
 import com.google.cloud.logging.LoggingOptions;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 
@@ -38,13 +37,7 @@ public class LoggingAppender extends com.google.cloud.logging.logback.LoggingApp
   protected LoggingOptions getLoggingOptions() {
 
     if (loggingOptions == null) {
-      LoggingOptions.Builder loggingOptionsBuilder = LoggingOptions.newBuilder();
-
-      // only credentials are set in the options of the parent class
-      Credentials credentials = super.getLoggingOptions().getCredentials();
-      if (credentials != null) {
-        loggingOptionsBuilder.setCredentials(credentials);
-      }
+      LoggingOptions.Builder loggingOptionsBuilder = super.getLoggingOptions().toBuilder();
 
       // set User-Agent
       loggingOptionsBuilder.setHeaderProvider(new UserAgentHeaderProvider(this.getClass()));

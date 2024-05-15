@@ -50,6 +50,7 @@ class DefaultPublisherFactoryTests {
     ApiCallContext mockContext = mock(ApiCallContext.class);
     when(mockTransportChannel.getEmptyCallContext()).thenReturn(mockContext);
     when(mockContext.withTransportChannel(any())).thenReturn(mockContext);
+    when(mockContext.withEndpointContext(any())).thenReturn(mockContext);
     factory.setChannelProvider(mockChannelProvider);
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,10 +51,25 @@ public class PredictionServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry rawPredictRetry;
   /**
+   * Allow override of retry settings at method-level for directPredict. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry directPredictRetry;
+  /**
+   * Allow override of retry settings at method-level for directRawPredict. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry directRawPredictRetry;
+  /**
    * Allow override of retry settings at method-level for explain. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry explainRetry;
+  /**
+   * Allow override of retry settings at method-level for generateContent. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry generateContentRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -126,12 +141,36 @@ public class PredictionServiceSpringProperties implements CredentialsSupplier {
     this.rawPredictRetry = rawPredictRetry;
   }
 
+  public Retry getDirectPredictRetry() {
+    return this.directPredictRetry;
+  }
+
+  public void setDirectPredictRetry(Retry directPredictRetry) {
+    this.directPredictRetry = directPredictRetry;
+  }
+
+  public Retry getDirectRawPredictRetry() {
+    return this.directRawPredictRetry;
+  }
+
+  public void setDirectRawPredictRetry(Retry directRawPredictRetry) {
+    this.directRawPredictRetry = directRawPredictRetry;
+  }
+
   public Retry getExplainRetry() {
     return this.explainRetry;
   }
 
   public void setExplainRetry(Retry explainRetry) {
     this.explainRetry = explainRetry;
+  }
+
+  public Retry getGenerateContentRetry() {
+    return this.generateContentRetry;
+  }
+
+  public void setGenerateContentRetry(Retry generateContentRetry) {
+    this.generateContentRetry = generateContentRetry;
   }
 
   public Retry getListLocationsRetry() {

@@ -17,6 +17,7 @@
 package com.google.cloud.spring.kms;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,7 +33,6 @@ import com.google.cloud.kms.v1.KeyManagementServiceClient;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Int64Value;
 import java.util.Base64;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -61,7 +61,7 @@ class KmsTemplateTests {
     byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
     String decryptedText = kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes);
 
-    Assert.assertEquals("1234", decryptedText);
+    assertEquals("1234", decryptedText);
   }
 
   @Test

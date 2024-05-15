@@ -31,6 +31,18 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.dataproc.v1.session-template-controller.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dataproc/SessionTemplateController components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.dataproc.v1.session-controller.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dataproc/SessionController components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.dataproc.v1.workflow-template-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud dataproc/WorkflowTemplateService components.",

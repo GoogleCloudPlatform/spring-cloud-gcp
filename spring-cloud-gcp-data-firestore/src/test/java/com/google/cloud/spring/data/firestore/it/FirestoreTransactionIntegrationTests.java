@@ -39,6 +39,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -50,6 +51,7 @@ import reactor.test.StepVerifier;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = FirestoreTransactionIntegrationTestsConfiguration.class)
 @DisabledInNativeImage
+@DisabledInAotMode
 class FirestoreTransactionIntegrationTests {
 
   @Autowired FirestoreTemplate firestoreTemplate;

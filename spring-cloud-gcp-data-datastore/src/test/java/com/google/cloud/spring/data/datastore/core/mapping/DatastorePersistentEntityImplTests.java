@@ -21,13 +21,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.Serializable;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.data.mapping.SimplePropertyHandler;
-import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.data.util.TypeInformation;
 import org.springframework.expression.spel.SpelEvaluationException;
 
@@ -180,6 +180,13 @@ class DatastorePersistentEntityImplTests {
             .hasMessageContaining("This class expects a discrimination field but none are designated");
   }
 
+  @Test
+  void testInterfaceProperty() {
+    DatastorePersistentEntity<?> persistentEntity = new DatastoreMappingContext().getPersistentEntity(EntityWithInterface.class);
+    assertThat(persistentEntity).isNotNull();
+    assertThat(persistentEntity.getPersistentProperty("text")).isNotNull();
+  }
+
   @Entity
   @DiscriminatorField(field = "colA")
   @DiscriminatorValue("a")
@@ -246,5 +253,11 @@ class DatastorePersistentEntityImplTests {
 
   private static class EntityWithNoId {
     String id;
+  }
+
+  private static class EntityWithInterface {
+    @Id String id;
+
+    Serializable text;
   }
 }

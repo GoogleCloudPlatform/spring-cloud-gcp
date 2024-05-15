@@ -73,7 +73,8 @@ public class SpringDataR2dbcApp {
                   + "  TITLE STRING(MAX) NOT NULL,"
                   + "  EXTRADETAILS JSON,"
                   + "  REVIEWS JSON,"
-                  + "  CATEGORIES ARRAY<STRING(64)>"
+                  + "  CATEGORIES ARRAY<STRING(64)>,"
+                  + "  COUNT INT64 NOT NULL"
                   + ") PRIMARY KEY (ID)")
           .fetch()
           .rowsUpdated()

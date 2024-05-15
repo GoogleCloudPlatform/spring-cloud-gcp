@@ -1,6 +1,7 @@
 name: Update Docs
 
 on:
+  pull_request:
   push:
     branches:
     - main
@@ -22,16 +23,17 @@ jobs:
     - name: Get current date
       id: date
       run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
 
-    - uses: actions/setup-java@v1
+    - uses: actions/setup-java@v3
       with:
         java-version: 17
+        distribution: 'temurin'
 
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       id: mvn-cache
       with:
         path: ~/.m2/repository
@@ -61,5 +63,5 @@ jobs:
         elif [[ -n "${{ github.event.inputs.committish }}" ]] && [[ "${{ github.event.inputs.committish }}" != "main" ]] ; then
             ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.inputs.committish }} --destination . --build
         else
-          ./docs/src/main/asciidoc/ghpages.sh --build
+          ./mvnw install -P docs -P '!CI' -pl docs -DskipTests # Simplified PR check
         fi

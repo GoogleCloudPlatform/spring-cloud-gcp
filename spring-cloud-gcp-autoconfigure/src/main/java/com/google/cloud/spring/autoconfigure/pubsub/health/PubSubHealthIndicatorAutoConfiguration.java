@@ -49,11 +49,14 @@ import org.springframework.util.Assert;
 public class PubSubHealthIndicatorAutoConfiguration
     extends CompositeHealthContributorConfiguration<PubSubHealthIndicator, PubSubTemplate> {
 
-  private PubSubHealthIndicatorProperties pubSubHealthProperties;
-
   public PubSubHealthIndicatorAutoConfiguration(
       PubSubHealthIndicatorProperties pubSubHealthProperties) {
-    this.pubSubHealthProperties = pubSubHealthProperties;
+    super(pubSubTemplate ->
+        new PubSubHealthIndicator(
+            pubSubTemplate,
+            pubSubHealthProperties.getSubscription(),
+            pubSubHealthProperties.getTimeoutMillis(),
+            pubSubHealthProperties.isAcknowledgeMessages()));
   }
 
   @Bean
@@ -61,14 +64,5 @@ public class PubSubHealthIndicatorAutoConfiguration
   public HealthContributor pubSubHealthContributor(Map<String, PubSubTemplate> pubSubTemplates) {
     Assert.notNull(pubSubTemplates, "pubSubTemplates must be provided");
     return createContributor(pubSubTemplates);
-  }
-
-  @Override
-  protected PubSubHealthIndicator createIndicator(PubSubTemplate pubSubTemplate) {
-    return new PubSubHealthIndicator(
-            pubSubTemplate,
-            this.pubSubHealthProperties.getSubscription(),
-            this.pubSubHealthProperties.getTimeoutMillis(),
-            this.pubSubHealthProperties.isAcknowledgeMessages());
   }
 }

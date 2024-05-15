@@ -68,13 +68,15 @@ class SpannerSchemaUtilsTests {
   @Test
   void getCreateDdlTest() {
     String ddlResult =
-        "CREATE TABLE custom_test_table ( id STRING(MAX) , id3 INT64 , id_2 STRING(MAX) , bytes2"
-            + " BYTES(MAX) , custom_col FLOAT64 NOT NULL , other STRING(333) , primitiveDoubleField"
-            + " FLOAT64 , bigDoubleField FLOAT64 , bigLongField INT64 , primitiveIntField INT64 ,"
-            + " bigIntField INT64 , bytes BYTES(MAX) , bytesList ARRAY<BYTES(111)> , integerList"
-            + " ARRAY<INT64> , doubles ARRAY<FLOAT64> , commitTimestamp TIMESTAMP OPTIONS"
-            + " (allow_commit_timestamp=true) , bigDecimalField NUMERIC , bigDecimals"
-            + " ARRAY<NUMERIC> , jsonCol JSON ) PRIMARY KEY ( id , id_2 , id3 )";
+        "CREATE TABLE custom_test_table ( id STRING(MAX) , id3 INT64 , id_2 STRING(MAX) , "
+            + "bytes2 BYTES(MAX) , custom_col FLOAT64 NOT NULL , other STRING(333) , "
+            + "primitiveDoubleField FLOAT64 , bigDoubleField FLOAT64 , primitiveFloatField FLOAT32 , "
+            + "bigFloatField FLOAT32 , bigLongField INT64 , primitiveIntField INT64 , "
+            + "bigIntField INT64 , bytes BYTES(MAX) , bytesList ARRAY<BYTES(111)> , "
+            + "integerList ARRAY<INT64> , doubles ARRAY<FLOAT64> , floats ARRAY<FLOAT32> , "
+            + "commitTimestamp TIMESTAMP OPTIONS (allow_commit_timestamp=true) , "
+            + "bigDecimalField NUMERIC , bigDecimals ARRAY<NUMERIC> , jsonCol JSON ) "
+            + "PRIMARY KEY ( id , id_2 , id3 )";
 
     assertThat(this.spannerSchemaUtils.getCreateTableDdlString(TestEntity.class))
         .isEqualTo(ddlResult);
@@ -155,6 +157,17 @@ class SpannerSchemaUtilsTests {
         null,
         OptionalLong.empty(),
         "doubleList ARRAY<FLOAT64>");
+  }
+
+  @Test
+  void ddlForListOfListOfFloats() {
+    assertColumnDdl(
+        List.class,
+        Float.class,
+        "floatList",
+        null,
+        OptionalLong.empty(),
+        "floatList ARRAY<FLOAT32>");
   }
 
   @Test
@@ -260,6 +273,10 @@ class SpannerSchemaUtilsTests {
 
     Double bigDoubleField;
 
+    float primitiveFloatField;
+
+    Float bigFloatField;
+
     Long bigLongField;
 
     int primitiveIntField;
@@ -274,6 +291,8 @@ class SpannerSchemaUtilsTests {
     List<Integer> integerList;
 
     double[] doubles;
+
+    float[] floats;
 
     // this is intentionally a double to test that it is forced to be TIMESTAMP on Spanner
     // anyway

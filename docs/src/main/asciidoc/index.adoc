@@ -71,7 +71,10 @@ include::cloudfoundry.adoc[]
 
 include::kotlin.adoc[]
 
+include::alloydb.adoc[]
+
 include::native.adoc[]
+
 
 == Configuration properties
 

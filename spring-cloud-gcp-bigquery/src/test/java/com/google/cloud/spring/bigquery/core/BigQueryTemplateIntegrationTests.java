@@ -29,6 +29,7 @@ import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableResult;
+import com.google.cloud.spring.bigquery.TestRuntimeHints;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.UUID;
@@ -42,8 +43,9 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
@@ -54,8 +56,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 // Please create a table "test_dataset" in BigQuery to run the tests successfully
 @EnabledIfSystemProperty(named = "it.bigquery", matches = "true")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = BigQueryTestConfiguration.class)
+@ContextConfiguration(classes = BigQueryTestConfiguration.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ImportRuntimeHints(TestRuntimeHints.class)
 class BigQueryTemplateIntegrationTests {
 
   private static final String SELECT_FORMAT = "SELECT * FROM %s";
