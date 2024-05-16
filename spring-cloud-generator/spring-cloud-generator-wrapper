@@ -3,4 +3,4 @@
 set -ex
 
 # Wrap spring-cloud-generator.jar because protoc requires the plugin to be executable.
-exec java -classpath "spring-cloud-generator-${PROJECT_VERSION}-jar-with-dependencies.jar" com.google.cloud.generator.spring.Main
+exec java -classpath "spring-cloud-generator-${project_version}-jar-with-dependencies.jar" com.google.cloud.generator.spring.Main

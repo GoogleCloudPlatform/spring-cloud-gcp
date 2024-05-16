@@ -1,12 +1,12 @@
 set -ex
 
-# To VERIFY: ./scripts/generate-showcase.sh
-# To UPDATE: /scripts/generate-showcase.sh -u
-UPDATE=0
+# To verify: ./scripts/generate-showcase.sh
+# To update: /scripts/generate-showcase.sh -u
+update="false"
 while getopts u flag
 do
     case "${flag}" in
-        u) UPDATE=1;;
+        u) update="true";;
     esac
 done
 
@@ -14,33 +14,33 @@ done
 source ./scripts/generate-steps.sh
 
 # If not set, assume working directory is spring-cloud-generator
-if [[ -z "$SPRING_GENERATOR_DIR" ]]; then
-  SPRING_GENERATOR_DIR=`pwd`
+if [[ -z "${SPRING_GENERATOR_DIR}" ]]; then
+  SPRING_GENERATOR_DIR=$(pwd)
 fi
-SPRING_ROOT_DIR=${SPRING_GENERATOR_DIR}/..
-SHOWCASE_STARTER_OLD_DIR=${SPRING_GENERATOR_DIR}/showcase/showcase-spring-starter
-SHOWCASE_STARTER_NEW_DIR=${SPRING_GENERATOR_DIR}/showcase/showcase-spring-starter-generated
+spring_root_dir=${SPRING_GENERATOR_DIR}/..
+showcase_starter_old_dir=${SPRING_GENERATOR_DIR}/showcase/showcase-spring-starter
+showcase_starter_new_dir=${SPRING_GENERATOR_DIR}/showcase/showcase-spring-starter-generated
 
 # Verifies newly generated showcase-spring-starter against goldens
 #
 # $1 - directory containing existing showcase-spring-starter (golden)
 # $2 - directory containing newly generated showcase-spring-starter
 function verify(){
-  OLD_DIR=$1
-  NEW_DIR=$2
-  SHOWCASE_STARTER_DIFF=$(diff -r ${NEW_DIR}/src/main ${OLD_DIR}/src/main)
-  SHOWCASE_STARTER_POM_DIFF=$(diff -r ${NEW_DIR}/pom.xml ${OLD_DIR}/pom.xml)
-  if [ "$SHOWCASE_STARTER_DIFF" != "" ] || [ "$SHOWCASE_STARTER_POM_DIFF" != "" ]
+  old_dir=$1
+  new_dir=$2
+  showcase_starter_diff=$(diff -r ${new_dir}/src/main ${old_dir}/src/main)
+  showcase_starter_pom_diff=$(diff -r ${new_dir}/pom.xml ${old_dir}/pom.xml)
+  if [ "${showcase_starter_diff}" != "" ] || [ "${showcase_starter_pom_diff}" != "" ]
   then
       echo "Differences detected in generated showcase starter module: "
       echo "Diff from src/main: "
-      echo $SHOWCASE_STARTER_DIFF
+      echo "${showcase_starter_diff}"
       echo "Diff from pom.xml: "
-      echo $SHOWCASE_STARTER_POM_DIFF
+      echo "${showcase_starter_pom_diff}"
       exit 1;
   else
       echo "No differences found in showcase-spring-starter"
-      rm -r ${NEW_DIR}
+      rm -r "${new_dir}"
   fi
 }
 
@@ -48,15 +48,15 @@ function verify(){
 #
 # $1 - target directory for generated starter
 function generate_showcase_spring_starter(){
-  SHOWCASE_STARTER_DIR=$1
+  showcase_starter_dir=$1
 
   # Compute the parent project version.
-  cd ${SPRING_ROOT_DIR}
-  export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-  cd ${SPRING_GENERATOR_DIR}
-  GAPIC_GENERATOR_JAVA_VERSION=$(mvn help:evaluate -Dexpression=gapic-generator-java-bom.version -q -DforceStdout)
+  pushd "${spring_root_dir}"
+  export project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+  cd "${SPRING_GENERATOR_DIR}"
+  gapic_generator_java_version=$(mvn help:evaluate -Dexpression=gapic-generator-java-bom.version -q -DforceStdout)
 
-  if [[ -z "$GAPIC_GENERATOR_JAVA_VERSION" ]]; then
+  if [[ -z "${gapic_generator_java_version}" ]]; then
     echo "Missing sdk-platform-java commitish to checkout"
     exit 1
   fi
@@ -66,7 +66,7 @@ function generate_showcase_spring_starter(){
     git clone https://github.com/googleapis/sdk-platform-java.git
   fi
   pushd sdk-platform-java
-  git checkout "v${GAPIC_GENERATOR_JAVA_VERSION}"
+  git checkout "v${gapic_generator_java_version}"
 
   # We will use the generation tools from library_generation
   pushd library_generation/utils
@@ -78,10 +78,10 @@ function generate_showcase_spring_starter(){
   # For local development, we cleanup any traces of previous runs
   rm -rdf output
   # mvn clean install
-  GAPIC_SHOWCASE_CLIENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+  gapic_showcase_client_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
   pushd gapic-showcase
-  GAPIC_SHOWCASE_SERVER_VERSION=$(mvn help:evaluate -Dexpression=gapic-showcase.version -q -DforceStdout)
+  gapic_showcase_server_version=$(mvn help:evaluate -Dexpression=gapic-showcase.version -q -DforceStdout)
   popd #showcase/gapic-showcase
 
   # Alternative: if showcase client library is available on Maven Central,
@@ -91,21 +91,21 @@ function generate_showcase_spring_starter(){
   output_folder=$(get_output_folder)
   mkdir "${output_folder}"
   pushd "${output_folder}"
-  protoc_version=$(get_protoc_version "${GAPIC_GENERATOR_JAVA_VERSION}")
+  protoc_version=$(get_protoc_version "${gapic_generator_java_version}")
   os_architecture=$(detect_os_architecture)
   download_protoc "${protoc_version}" "${os_architecture}"
 
   # We now copy the spring-cloud-generator and gapic-generator-java jar into the output_folder the
   # sdk-platform-java generation scripts work with.
-  spring_generator_jar_name="spring-cloud-generator-${PROJECT_VERSION}-jar-with-dependencies.jar"
-  cp ~/.m2/repository/com/google/cloud/spring-cloud-generator/"${PROJECT_VERSION}/${spring_generator_jar_name}" \
+  spring_generator_jar_name="spring-cloud-generator-${project_version}-jar-with-dependencies.jar"
+  cp ~/.m2/repository/com/google/cloud/spring-cloud-generator/"${project_version}/${spring_generator_jar_name}" \
     "${output_folder}"
   chmod 555 ${output_folder}/*.jar
 
   # We download gapic-showcase and prepare the protos in output_folder
   sparse_clone https://github.com/googleapis/gapic-showcase.git "schema/google/showcase/v1beta1"
   pushd gapic-showcase
-  git checkout "v${GAPIC_SHOWCASE_SERVER_VERSION}"
+  git checkout "v${gapic_showcase_server_version}"
   cp -r schema "${output_folder}"
   popd #gapic-showcase
 
@@ -138,40 +138,41 @@ function generate_showcase_spring_starter(){
     "--plugin=protoc-gen-java_gapic_spring=${SPRING_GENERATOR_DIR}/spring-cloud-generator-wrapper" \
     "--java_gapic_spring_out=${output_folder}/${output_srcjar_zip_name}" \
     "--java_gapic_spring_opt=$(get_gapic_opts  "${transport}" "${rest_numeric_enums}" "${gapic_yaml}" "${service_config}" "${service_yaml}")" \
-    ${proto_files} ${gapic_additional_protos}
+    ${proto_files} ${gapic_additional_protos} # Do not quote because this variable should not be treated as one long string.
 
 
 
 
   # Post-process generated modules
-  unzip ${output_srcjar_zip_name}
-  copy_and_unzip "${output_folder}/temp-codegen-spring.srcjar" "temp-codegen-spring.srcjar" "${SPRING_GENERATOR_DIR}/showcase" ${SHOWCASE_STARTER_DIR}
-  modify_starter_pom ${SHOWCASE_STARTER_DIR}/pom.xml "com.google.cloud" "gapic-showcase" $PROJECT_VERSION
+  unzip "${output_srcjar_zip_name}"
+  copy_and_unzip "${output_folder}/temp-codegen-spring.srcjar" "temp-codegen-spring.srcjar" "${SPRING_GENERATOR_DIR}/showcase" ${showcase_starter_dir}
+  modify_starter_pom "${showcase_starter_dir}/pom.xml" "com.google.cloud" "gapic-showcase" "${project_version}"
 
   popd #output_folder
 
   # Additional pom.xml modifications for showcase starter
   # Add explicit gapic-showcase version
-  sed -i'' '/^ *<artifactId>gapic-showcase<\/artifactId>*/a \ \ \ \ \ \ <version>'"$GAPIC_SHOWCASE_CLIENT_VERSION"'</version>' ${SHOWCASE_STARTER_DIR}/pom.xml
+  sed -i'' '/^ *<artifactId>gapic-showcase<\/artifactId>*/a \ \ \ \ \ \ <version>'"${gapic_showcase_client_version}"'</version>' "${showcase_starter_dir}/pom.xml"
   # Update relative path to parent pom (different repo structure from starters)
-  RELATIVE_PATH="\ \ \ \ <relativePath>..\/..\/..\/spring-cloud-gcp-starters\/pom.xml<\/relativePath>"
-  sed -i'' 's/^ *<relativePath>.*/'"$RELATIVE_PATH"'/g' ${SHOWCASE_STARTER_DIR}/pom.xml
+  relative_path="\ \ \ \ <relativePath>..\/..\/..\/spring-cloud-gcp-starters\/pom.xml<\/relativePath>"
+  sed -i'' 's/^ *<relativePath>.*/'"${relative_path}"'/g' ${showcase_starter_dir}/pom.xml
 
   # Run google-java-format on generated code
-  run_formatter ${SHOWCASE_STARTER_DIR}
+  run_formatter "${showcase_starter_dir}"
 
   # Remove downloaded repos
   popd #showcase
   popd #sdk-platform-java
   rm -rdf ${SPRING_GENERATOR_DIR}/sdk-platform-java
   rm -rdf gapic-showcase
+  popd #spring_root_dir
 }
 
-if [[ UPDATE -ne 0 ]]; then
+if [[ "${update}" == "true" ]]; then
     echo "Running script to perform showcase-spring-starter update"
-    generate_showcase_spring_starter ${SHOWCASE_STARTER_OLD_DIR}
+    generate_showcase_spring_starter ${showcase_starter_old_dir}
   else
     echo "Running script to perform showcase-spring-starter verification"
-    generate_showcase_spring_starter ${SHOWCASE_STARTER_NEW_DIR}
-    verify ${SHOWCASE_STARTER_OLD_DIR} ${SHOWCASE_STARTER_NEW_DIR}
+    generate_showcase_spring_starter ${showcase_starter_new_dir}
+    verify ${showcase_starter_old_dir} ${showcase_starter_new_dir}
 fi
