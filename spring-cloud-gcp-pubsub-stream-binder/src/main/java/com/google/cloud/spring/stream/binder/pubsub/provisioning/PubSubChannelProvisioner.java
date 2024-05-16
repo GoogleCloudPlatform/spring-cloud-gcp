@@ -181,7 +181,8 @@ public class PubSubChannelProvisioner
 
       if (expirationPolicy.getTtl() != null) {
         long desiredSeconds = expirationPolicy.getTtl().getSeconds();
-        epBuilder.setTtl(com.google.protobuf.Duration.newBuilder().setSeconds(desiredSeconds).build());
+        epBuilder.setTtl(
+            com.google.protobuf.Duration.newBuilder().setSeconds(desiredSeconds).build());
       }
 
       builder.setExpirationPolicy(epBuilder);

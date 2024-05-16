@@ -16,9 +16,8 @@
 
 package com.google.cloud.spring.stream.binder.pubsub.properties;
 
-import java.time.Duration;
-
 import com.google.cloud.spring.pubsub.integration.AckMode;
+import java.time.Duration;
 
 /** Consumer properties for Pub/Sub. */
 public class PubSubConsumerProperties extends PubSubCommonProperties {
@@ -33,9 +32,10 @@ public class PubSubConsumerProperties extends PubSubCommonProperties {
 
   /**
    * Policy for how soon the subscription should be deleted after no activity.
-   * <p>
-   * Note, a null or unset {@code expirationPolicy} will use the Google-provided default of 31 days TTL.
-   * To set no expiration, provide an {@code expirationPolicy} with a zero-duration (e.g. 0d) {@link ExpirationPolicy#ttl}.
+   *
+   * <p>Note, a null or unset {@code expirationPolicy} will use the Google-provided default of 31
+   * days TTL. To set no expiration, provide an {@code expirationPolicy} with a zero-duration (e.g.
+   * 0d) {@link ExpirationPolicy#ttl}.
    */
   private ExpirationPolicy expirationPolicy = null;
 
@@ -104,8 +104,8 @@ public class PubSubConsumerProperties extends PubSubCommonProperties {
   public static class ExpirationPolicy {
     /**
      * How long the subscription can have no activity before it is automatically deleted.
-     * <p>
-     * Provide an Expiration Policy with a zero (e.g. 0d) {@code ttl} to never expire.
+     *
+     * <p>Provide an Expiration Policy with a zero (e.g. 0d) {@code ttl} to never expire.
      */
     private Duration ttl;
 

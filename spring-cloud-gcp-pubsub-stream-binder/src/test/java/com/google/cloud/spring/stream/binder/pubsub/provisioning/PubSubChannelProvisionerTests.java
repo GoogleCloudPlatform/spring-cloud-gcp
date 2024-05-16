@@ -26,8 +26,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.assertj.core.data.Offset;
-
 import com.google.api.gax.rpc.AlreadyExistsException;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
@@ -37,6 +35,7 @@ import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerPro
 import com.google.pubsub.v1.DeadLetterPolicy;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
+import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -210,8 +209,8 @@ class PubSubChannelProvisionerTests {
     when(this.pubSubAdminMock.createTopic("topic_A"))
         .thenReturn(Topic.newBuilder().setName("projects/test-project/topics/topic_A").build());
 
-    this.pubSubChannelProvisioner.provisionConsumerDestination("topic_A", "group_A",
-        this.extendedConsumerProperties);
+    this.pubSubChannelProvisioner.provisionConsumerDestination(
+        "topic_A", "group_A", this.extendedConsumerProperties);
 
     ArgumentCaptor<Subscription.Builder> argCaptor =
         ArgumentCaptor.forClass(Subscription.Builder.class);
@@ -233,8 +232,8 @@ class PubSubChannelProvisionerTests {
     when(this.pubSubAdminMock.createTopic("topic_A"))
         .thenReturn(Topic.newBuilder().setName("projects/test-project/topics/topic_A").build());
 
-    this.pubSubChannelProvisioner.provisionConsumerDestination("topic_A", "group_A",
-        this.extendedConsumerProperties);
+    this.pubSubChannelProvisioner.provisionConsumerDestination(
+        "topic_A", "group_A", this.extendedConsumerProperties);
 
     ArgumentCaptor<Subscription.Builder> argCaptor =
         ArgumentCaptor.forClass(Subscription.Builder.class);
@@ -258,8 +257,8 @@ class PubSubChannelProvisionerTests {
     when(this.pubSubAdminMock.createTopic("topic_A"))
         .thenReturn(Topic.newBuilder().setName("projects/test-project/topics/topic_A").build());
 
-    this.pubSubChannelProvisioner.provisionConsumerDestination("topic_A", "group_A",
-        this.extendedConsumerProperties);
+    this.pubSubChannelProvisioner.provisionConsumerDestination(
+        "topic_A", "group_A", this.extendedConsumerProperties);
 
     ArgumentCaptor<Subscription.Builder> argCaptor =
         ArgumentCaptor.forClass(Subscription.Builder.class);
@@ -313,14 +312,12 @@ class PubSubChannelProvisionerTests {
   void testProvisionConsumerDestination_concurrentTopicCreation() {
     when(this.pubSubAdminMock.createTopic(any())).thenThrow(AlreadyExistsException.class);
     when(this.pubSubAdminMock.getTopic("already_existing_topic"))
-            .thenReturn(null)
-            .thenReturn(Topic.newBuilder().setName("already_existing_topic").build());
+        .thenReturn(null)
+        .thenReturn(Topic.newBuilder().setName("already_existing_topic").build());
 
     // Ensure no exceptions occur if topic already exists on create call
-    assertThat(
-            this.pubSubChannelProvisioner.ensureTopicExists(
-                    "already_existing_topic", true))
-            .isNotNull();
+    assertThat(this.pubSubChannelProvisioner.ensureTopicExists("already_existing_topic", true))
+        .isNotNull();
   }
 
   @Test
@@ -359,7 +356,6 @@ class PubSubChannelProvisionerTests {
     assertThat(subscription.getTopic()).isEqualTo("topic_A");
   }
 
-
   @Test
   void testProvisionConsumerDestination_createTopic_whenAutoCreateResources_isTrue() {
     doReturn(null).when(this.pubSubAdminMock).getTopic("not_yet_created");
@@ -388,8 +384,9 @@ class PubSubChannelProvisionerTests {
 
   @Test
   void testProvisionProducerDestination_createTopic() {
-    ProducerDestination destination = this.pubSubChannelProvisioner.provisionProducerDestination(
-        "topic_A", extendedProducerProperties);
+    ProducerDestination destination =
+        this.pubSubChannelProvisioner.provisionProducerDestination(
+            "topic_A", extendedProducerProperties);
 
     assertThat(destination.getName()).isEqualTo("topic_A");
   }
@@ -400,8 +397,10 @@ class PubSubChannelProvisionerTests {
     when(this.pubSubAdminMock.getTopic(any())).thenReturn(null);
 
     assertThatExceptionOfType(ProvisioningException.class)
-        .isThrownBy(() -> this.pubSubChannelProvisioner.provisionProducerDestination(
-            "not_yet_created", extendedProducerProperties))
+        .isThrownBy(
+            () ->
+                this.pubSubChannelProvisioner.provisionProducerDestination(
+                    "not_yet_created", extendedProducerProperties))
         .withMessageContaining("Non-existing");
   }
 }
