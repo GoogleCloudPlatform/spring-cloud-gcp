@@ -100,7 +100,7 @@ public class PubSubChannelProvisioner
         subscriptionName = "anonymous." + topicShortName + "." + UUID.randomUUID();
         this.anonymousGroupSubscriptionNames.add(subscriptionName);
       }
-      ensureSubscriptionExists(subscriptionName, topicName, properties.getExtension(), autoCreate);
+      ensureSubscriptionExists(subscriptionName, topicName, properties.getExtension());
     }
 
     Assert.hasText(subscriptionName, "Subscription Name cannot be null or empty");
@@ -141,11 +141,10 @@ public class PubSubChannelProvisioner
   Subscription ensureSubscriptionExists(
       String subscriptionName,
       String topicName,
-      PubSubConsumerProperties properties,
-      boolean autoCreate) {
+      PubSubConsumerProperties properties) {
     Subscription subscription = this.pubSubAdmin.getSubscription(subscriptionName);
     if (subscription == null) {
-      return createSubscription(subscriptionName, topicName, properties, autoCreate);
+      return createSubscription(subscriptionName, topicName, properties);
     }
     return subscription;
   }
@@ -153,8 +152,7 @@ public class PubSubChannelProvisioner
   private Subscription createSubscription(
       String subscriptionName,
       String topicName,
-      PubSubConsumerProperties properties,
-      boolean autoCreate) {
+      PubSubConsumerProperties properties) {
     Subscription.Builder builder =
         Subscription.newBuilder().setName(subscriptionName).setTopic(topicName);
 
@@ -163,7 +161,7 @@ public class PubSubChannelProvisioner
       String dlTopicName = deadLetterPolicy.getDeadLetterTopic();
       Assert.hasText(dlTopicName, "Dead letter policy cannot have null or empty topic");
 
-      Topic dlTopic = ensureTopicExists(dlTopicName, autoCreate);
+      Topic dlTopic = ensureTopicExists(dlTopicName, properties.isAutoCreateResources());
 
       DeadLetterPolicy.Builder dlpBuilder =
           DeadLetterPolicy.newBuilder().setDeadLetterTopic(dlTopic.getName());
