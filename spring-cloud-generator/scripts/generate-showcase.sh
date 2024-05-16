@@ -65,7 +65,8 @@ function generate_showcase_spring_starter(){
   if [[ ! -d "./sdk-platform-java" ]]; then
     git clone https://github.com/googleapis/sdk-platform-java.git
   fi
-  cd sdk-platform-java && git checkout "v${GAPIC_GENERATOR_JAVA_VERSION}"
+  pushd sdk-platform-java
+  git checkout "v${GAPIC_GENERATOR_JAVA_VERSION}"
 
   # We will use the generation tools from library_generation
   pushd library_generation/utils
@@ -130,21 +131,24 @@ function generate_showcase_spring_starter(){
   service_config="schema/google/showcase/v1beta1/showcase_grpc_service_config.json"
   service_yaml="schema/google/showcase/v1beta1/showcase_v1beta1.yaml"
   include_samples="false"
+  output_srcjar_zip_name="showcase_java_gapic_spring_raw.srcjar.zip"
 
   "${protoc_path}"/protoc \
     "--experimental_allow_proto3_optional" \
     "--plugin=protoc-gen-java_gapic_spring=${SPRING_GENERATOR_DIR}/spring-cloud-generator-wrapper" \
-    "--java_gapic_spring_out=${output_folder}/showcase_java_gapic_spring_raw.srcjar.zip" \
+    "--java_gapic_spring_out=${output_folder}/${output_srcjar_zip_name}" \
     "--java_gapic_spring_opt=$(get_gapic_opts  "${transport}" "${rest_numeric_enums}" "${gapic_yaml}" "${service_config}" "${service_yaml}")" \
     ${proto_files} ${gapic_additional_protos}
 
-  popd #output_folder
 
 
 
   # Post-process generated modules
-  copy_and_unzip "${output_folder}/showcase_java_gapic_spring-spring.srcjar" "showcase_java_gapic_spring-spring.srcjar" "${SPRING_GENERATOR_DIR}/showcase" ${SHOWCASE_STARTER_DIR}
+  unzip ${output_srcjar_zip_name}
+  copy_and_unzip "${output_folder}/temp-codegen-spring.srcjar" "temp-codegen-spring.srcjar" "${SPRING_GENERATOR_DIR}/showcase" ${SHOWCASE_STARTER_DIR}
   modify_starter_pom ${SHOWCASE_STARTER_DIR}/pom.xml "com.google.cloud" "gapic-showcase" $PROJECT_VERSION
+
+  popd #output_folder
 
   # Additional pom.xml modifications for showcase starter
   # Add explicit gapic-showcase version
@@ -157,9 +161,10 @@ function generate_showcase_spring_starter(){
   run_formatter ${SHOWCASE_STARTER_DIR}
 
   # Remove downloaded repos
+  popd #showcase
+  popd #sdk-platform-java
   rm -rdf ${SPRING_GENERATOR_DIR}/sdk-platform-java
   rm -rdf gapic-showcase
-  popd #showcase
 }
 
 if [[ UPDATE -ne 0 ]]; then
