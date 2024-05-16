@@ -1,14 +1,12 @@
 name: Generator - Showcase Tests
 
 on:
-#  Disable auto-triggering until this issue is fixed
-#  https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2214
-#  push:
-#    branches:
-#      - main
-#  pull_request:
-#    paths:
-#      - 'spring-cloud-generator/**'
+ push:
+   branches:
+     - main
+ pull_request:
+   paths:
+     - 'spring-cloud-generator/**'
   workflow_dispatch:
 
 jobs:
