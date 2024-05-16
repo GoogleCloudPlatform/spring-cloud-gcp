@@ -1,16 +1,17 @@
 name: Generator - Showcase Tests
 
 on:
- push:
-   branches:
-     - main
- pull_request:
-   paths:
-     - 'spring-cloud-generator/**'
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'spring-cloud-generator/**'
   workflow_dispatch:
 
 jobs:
   showcaseTests:
+
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
