@@ -57,7 +57,7 @@ For example, for a consumer to allow only two headers, provide a comma separated
 
 .application.properties
 ----
-spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.allowedHeaders=allowed1, allowed2
+spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.allowedHeaders=allowed1,allowed2
 ----
 Where `CONSUMER_NAME` should be replaced by the method which is consuming/reading messages from Cloud Pub/Sub and allowed1, allowed2 is the comma separated list of headers that the user wants to keep.
 
