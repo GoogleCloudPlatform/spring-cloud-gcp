@@ -465,6 +465,12 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
                 .setName("defaultTransportChannelProvider")
                 .setType(STATIC_TYPES.get("TransportChannelProvider"))
                 .build());
+    MethodInvocationExpr defaultEnpointMethodInvocationExpr =
+            MethodInvocationExpr.builder()
+                    .setStaticReferenceType(types.get("ServiceSettings"))
+                    .setMethodName("getDefaultEndpoint")
+                    .setReturnType(TypeNode.STRING)
+                    .build();
 
     List<Statement> bodyStatements = new ArrayList<>();
 
@@ -577,6 +583,12 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setMethodName("setTransportChannelProvider")
             .setArguments(transportChannelProviderVariableExpr)
             .build();
+    settingsBuilderExpr =
+            MethodInvocationExpr.builder()
+                    .setExprReferenceExpr(settingsBuilderExpr)
+                    .setMethodName("setEndpoint")
+                    .setArguments(defaultEnpointMethodInvocationExpr)
+                    .build();
     MethodInvocationExpr userAgentHeaderProviderInvocation =
         MethodInvocationExpr.builder()
             .setExprReferenceExpr(thisExpr)
