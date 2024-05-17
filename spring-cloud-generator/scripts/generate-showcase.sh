@@ -111,7 +111,7 @@ function generate_showcase_spring_starter(){
   fi
   pushd googleapis
   cp -r google "${output_folder}"
-  popd #gapic-showcase
+  popd #googleapis
 
   # Now we call protoc with a series of arguments we obtain from
   # sdk-platform-java's utilities.sh and others that are hardcoded (and stable).
