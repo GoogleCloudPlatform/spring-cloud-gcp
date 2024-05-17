@@ -198,6 +198,7 @@ class EchoAutoConfigurationTests {
     when(mockApiCallContext.withTransportChannel(any())).thenReturn(mockApiCallContext);
     when(mockApiCallContext.withStreamWaitTimeout(any())).thenReturn(mockApiCallContext);
     when(mockApiCallContext.withStreamIdleTimeout(any())).thenReturn(mockApiCallContext);
+    when(mockApiCallContext.withEndpointContext(any())).thenReturn(mockApiCallContext);
 
     contextRunner
         .withBean(
@@ -218,6 +219,7 @@ class EchoAutoConfigurationTests {
         EchoSettings.newBuilder()
             .setCredentialsProvider(mockCredentialsProvider)
             .setQuotaProjectId(SERVICE_OVERRIDE_CLIENT_ID)
+            .setEndpoint(EchoSettings.getDefaultEndpoint())
             .build();
     contextRunner
         .withBean("echoSettings", EchoSettings.class, () -> customEchoSettings)
