@@ -69,7 +69,7 @@ A similar style is applicable for producers as well. For example:
 ----
 spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.allowedHeaders=allowed3,allowed4
 ----
-Where `PRODUCER_NAME` should be replaced by the method which is producing/sending messages to Cloud Pub/Sub and allowed3, allowed4 is the comma separated list of headers that user wants to map. All other headers will be removed before the message is sent to Cloud Pub/Sub.
+Where `PRODUCER_NAME` should be replaced by the method which is producing/sending messages to Cloud Pub/Sub and `allowed3,allowed4` is the comma separated list of headers that user wants to map. All other headers will be removed before the message is sent to Cloud Pub/Sub.
 
 
 ==== Producer-specific Configuration
