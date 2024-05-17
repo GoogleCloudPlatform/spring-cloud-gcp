@@ -434,8 +434,7 @@ property changes. A `null` or unset `ExpirationPolicy` will use the default.
 To create a subscription that never expires, provide an `ExpirationPolicy` without setting the TTL.
 
 See
-https://cloud.google.com/pubsub/docs/subscription-properties#expiration_period[Expiration Period]
-for more information.
+https://cloud.google.com/pubsub/docs/subscription-properties#expiration_period[Expiration Period] for more information.
 
 [source,java,indent=0]
 ----
