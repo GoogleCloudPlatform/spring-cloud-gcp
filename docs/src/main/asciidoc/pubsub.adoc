@@ -428,8 +428,8 @@ Dead letter topics are no different from any other topic, though some https://cl
 
 ===== Expiration Policy
 
-By default, subscriptions expire after 31 days without any subscriber activity or subscription
-property changes. A `null` or unset `ExpirationPolicy` will use the default.
+By default, subscriptions expire after 31 days without any subscriber activity or subscription property changes.
+A `null` or unset `ExpirationPolicy` will use the default.
 
 To create a subscription that never expires, provide an `ExpirationPolicy` without setting the TTL.
 
