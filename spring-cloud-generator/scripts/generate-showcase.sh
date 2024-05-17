@@ -84,10 +84,6 @@ function generate_showcase_spring_starter(){
   gapic_showcase_server_version=$(mvn help:evaluate -Dexpression=gapic-showcase.version -q -DforceStdout)
   popd #showcase/gapic-showcase
 
-  # Alternative: if showcase client library is available on Maven Central,
-  # Instead of downloading sdk-platform-java/showcase (for client library, and generation setup),
-  # Can instead download googleapis (for generation setup) and gapic-showcase (for protos)
-
   output_folder=$(get_output_folder)
   mkdir "${output_folder}"
   pushd "${output_folder}"
