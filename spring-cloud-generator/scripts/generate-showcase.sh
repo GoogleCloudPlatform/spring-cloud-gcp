@@ -91,8 +91,9 @@ function generate_showcase_spring_starter(){
   os_architecture=$(detect_os_architecture)
   download_protoc "${protoc_version}" "${os_architecture}"
 
-  # We now copy the spring-cloud-generator and gapic-generator-java jar into the output_folder the
-  # sdk-platform-java generation scripts work with.
+  # We now copy the spring-cloud-generator jar with dependencies
+  # into the output_folder the sdk-platform-java generation
+  # scripts work with.
   spring_generator_jar_name="spring-cloud-generator-${project_version}-jar-with-dependencies.jar"
   cp ~/.m2/repository/com/google/cloud/spring-cloud-generator/"${project_version}/${spring_generator_jar_name}" \
     "${output_folder}"
