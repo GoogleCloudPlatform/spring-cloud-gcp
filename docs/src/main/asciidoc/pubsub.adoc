@@ -431,7 +431,7 @@ Dead letter topics are no different from any other topic, though some https://cl
 By default, subscriptions expire after 31 days without any subscriber activity or subscription
 property changes. A `null` or unset `ExpirationPolicy` will use the default.
 
-To set the subscription to `never expire`, provide an `ExpirationPolicy` without setting the TTL.
+To create a subscription that never expires, provide an `ExpirationPolicy` without setting the TTL.
 
 See
 https://cloud.google.com/pubsub/docs/subscription-properties#expiration_period[Expiration Period]
