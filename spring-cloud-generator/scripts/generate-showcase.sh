@@ -68,11 +68,6 @@ function generate_showcase_spring_starter(){
   pushd sdk-platform-java
   git checkout "v${gapic_generator_java_version}"
 
-  # We will use the generation tools from library_generation
-  pushd library_generation/utils
-  source utilities.sh
-  popd #library_generation/utils
-
   # Install showcase client libraries locally
   pushd showcase
   # For local development, we cleanup any traces of previous runs
