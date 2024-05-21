@@ -11,15 +11,14 @@ do
 done
 
 # For reusing bazel setup modifications and post-processing steps
-source ./scripts/generate-steps.sh
+script_dir=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+source "${script_dir}/generate-showcase-utilities.sh"
+source "${script_dir}/generate-steps.sh"
 
-# If not set, assume working directory is spring-cloud-generator
-if [[ -z "${SPRING_GENERATOR_DIR}" ]]; then
-  SPRING_GENERATOR_DIR=$(pwd)
-fi
-spring_root_dir=${SPRING_GENERATOR_DIR}/..
-showcase_starter_old_dir=${SPRING_GENERATOR_DIR}/showcase/showcase-spring-starter
-showcase_starter_new_dir=${SPRING_GENERATOR_DIR}/showcase/showcase-spring-starter-generated
+spring_generator_dir="${script_dir}/.."
+spring_root_dir=${spring_generator_dir}/..
+showcase_starter_old_dir=${spring_generator_dir}/showcase/showcase-spring-starter
+showcase_starter_new_dir=${spring_generator_dir}/showcase/showcase-spring-starter-generated
 
 # Verifies newly generated showcase-spring-starter against goldens
 #
@@ -53,7 +52,7 @@ function generate_showcase_spring_starter(){
   # Compute the parent project version.
   pushd "${spring_root_dir}"
   export project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-  cd "${SPRING_GENERATOR_DIR}"
+  cd "${spring_generator_dir}"
   gapic_generator_java_version=$(mvn help:evaluate -Dexpression=gapic-generator-java-bom.version -q -DforceStdout)
 
   if [[ -z "${gapic_generator_java_version}" ]]; then
@@ -127,7 +126,7 @@ function generate_showcase_spring_starter(){
 
   "${protoc_path}"/protoc \
     "--experimental_allow_proto3_optional" \
-    "--plugin=protoc-gen-java_gapic_spring=${SPRING_GENERATOR_DIR}/spring-cloud-generator-wrapper" \
+    "--plugin=protoc-gen-java_gapic_spring=${spring_generator_dir}/spring-cloud-generator-wrapper" \
     "--java_gapic_spring_out=${output_folder}/${output_srcjar_zip_name}" \
     "--java_gapic_spring_opt=$(get_gapic_opts  "${transport}" "${rest_numeric_enums}" "${gapic_yaml}" "${service_config}" "${service_yaml}")" \
     ${proto_files} ${gapic_additional_protos} # Do not quote because this variable should not be treated as one long string.
@@ -137,7 +136,7 @@ function generate_showcase_spring_starter(){
 
   # Post-process generated modules
   unzip "${output_srcjar_zip_name}"
-  copy_and_unzip "${output_folder}/temp-codegen-spring.srcjar" "temp-codegen-spring.srcjar" "${SPRING_GENERATOR_DIR}/showcase" ${showcase_starter_dir}
+  copy_and_unzip "${output_folder}/temp-codegen-spring.srcjar" "temp-codegen-spring.srcjar" "${spring_generator_dir}/showcase" ${showcase_starter_dir}
   modify_starter_pom "${showcase_starter_dir}/pom.xml" "com.google.cloud" "gapic-showcase" "${project_version}"
 
   popd #output_folder
@@ -155,7 +154,7 @@ function generate_showcase_spring_starter(){
   # Remove downloaded repos
   popd #showcase
   popd #sdk-platform-java
-  rm -rdf ${SPRING_GENERATOR_DIR}/sdk-platform-java
+  rm -rdf "${spring_generator_dir}/sdk-platform-java"
   rm -rdf gapic-showcase
   popd #spring_root_dir
 }

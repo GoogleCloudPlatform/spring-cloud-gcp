@@ -34,6 +34,9 @@ detect_os_architecture() {
     *"Darwin x86_64"*)
       os_architecture="osx-x86_64"
       ;;
+    "MINGW64"*)
+      os_architecture="win64"
+      ;;
     *)
       os_architecture="osx-aarch_64"
       ;;
@@ -85,4 +88,56 @@ get_gapic_opts() {
     service_yaml=$(find "${proto_path}" -maxdepth 1 -type f \( -name "*.yaml" ! -name "*gapic*.yaml" \))
   fi
   echo "transport=${transport},${rest_numeric_enums},grpc-service-config=${service_config},gapic-config=${gapic_yaml},api-service-config=${service_yaml}"
+}
+
+download_from() {
+  local url=$1
+  local save_as=$2
+  local repo=$3
+  # fail-fast, 30 seconds at most, retry 2 times
+  curl -LJ -o "${save_as}" --fail -m 30 --retry 2 "$url" || download_fail "${save_as}" "${repo}"
+}
+
+download_gapic_generator_pom_parent() {
+  local gapic_generator_version=$1
+  download_generator_artifact "${gapic_generator_version}" "gapic-generator-java-pom-parent-${gapic_generator_version}.pom" "gapic-generator-java-pom-parent"
+}
+
+download_generator_artifact() {
+  local gapic_generator_version=$1
+  local artifact=$2
+  local project=${3:-"gapic-generator-java"}
+  if [ ! -f "${artifact}" ]; then
+    # first, try to fetch the generator locally
+    local local_fetch_successful
+    local_fetch_successful=$(copy_from "$HOME/.m2/repository/com/google/api/${project}/${gapic_generator_version}/${artifact}" \
+      "${artifact}")
+    if [[ "${local_fetch_successful}" == "false" ]];then 
+      # download gapic-generator-java artifact from Google maven central mirror if not
+      # found locally
+      >&2 echo "${artifact} not found locally. Attempting a download from Maven Central"
+      download_from \
+      "https://maven-central.storage-download.googleapis.com/maven2/com/google/api/${project}/${gapic_generator_version}/${artifact}" \
+      "${artifact}"
+      >&2 echo "${artifact} found and downloaded from Maven Central"
+    else
+      >&2 echo "${artifact} found copied from local repository (~/.m2)"
+    fi
+  fi
+}
+
+download_fail() {
+  local artifact=$1
+  local repo=${2:-"maven central mirror"}
+  >&2 echo "Fail to download ${artifact} from ${repo} repository. Please install ${artifact} first if you want to use a non-published artifact."
+  exit 1
+}
+
+# copies the specified file in $1 to $2
+# will return "true" if the copy was successful
+copy_from() {
+  local local_repo=$1
+  local save_as=$2
+  copy_successful=$(cp "${local_repo}" "${save_as}" && echo "true" || echo "false")
+  echo "${copy_successful}"
 }
