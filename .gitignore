@@ -19,6 +19,7 @@ mail.properties
 *.ipr
 *.iws
 *.swp
+*.swo
 .project
 .classpath
 .settings/
