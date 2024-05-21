@@ -426,6 +426,26 @@ public Subscription newSubscription() {
 
 Dead letter topics are no different from any other topic, though some https://cloud.google.com/pubsub/docs/dead-letter-topics#granting_forwarding_permissions[additional permissions] are necessary to ensure the Cloud Pub/Sub service can successfully `ack` the original message and re-`publish` on the dead letter topic.
 
+===== Expiration Policy
+
+By default, subscriptions expire after 31 days without any subscriber activity or subscription property changes.
+A `null` or unset `ExpirationPolicy` will use the default.
+
+To create a subscription that never expires, provide an `ExpirationPolicy` without setting the TTL.
+
+See
+https://cloud.google.com/pubsub/docs/subscription-properties#expiration_period[Expiration Period] for more information.
+
+[source,java,indent=0]
+----
+public Subscription newSubscription() {
+	return pubSubAdmin.createSubscription(Subscription.newBuilder()
+		.setName(SUBSCRIPTION_NAME)
+		.setTopic(TOPIC_NAME)
+		.setExpirationPolicy(ExpirationPolicy.newBuilder().build())); // Never expire
+}
+----
+
 ==== JSON support
 
 For serialization and deserialization of POJOs using Jackson JSON, configure a `PubSubMessageConverter` bean, and the Spring Boot starter for Spring Framework on Google Cloud Pub/Sub will automatically wire it into the `PubSubTemplate`.

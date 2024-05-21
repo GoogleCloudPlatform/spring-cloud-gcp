@@ -17,6 +17,7 @@
 package com.google.cloud.spring.stream.binder.pubsub.properties;
 
 import com.google.cloud.spring.pubsub.integration.AckMode;
+import java.time.Duration;
 
 /** Consumer properties for Pub/Sub. */
 public class PubSubConsumerProperties extends PubSubCommonProperties {
@@ -28,6 +29,15 @@ public class PubSubConsumerProperties extends PubSubCommonProperties {
   private String subscriptionName = null;
 
   private DeadLetterPolicy deadLetterPolicy = null;
+
+  /**
+   * Policy for how soon the subscription should be deleted after no activity.
+   *
+   * <p>Note, a null or unset {@code expirationPolicy} will use the Google-provided default of 31
+   * days TTL. To set no expiration, provide an {@code expirationPolicy} with a zero-duration (e.g.
+   * 0d) {@link ExpirationPolicy#ttl}.
+   */
+  private ExpirationPolicy expirationPolicy = null;
 
   public AckMode getAckMode() {
     return ackMode;
@@ -61,6 +71,14 @@ public class PubSubConsumerProperties extends PubSubCommonProperties {
     this.deadLetterPolicy = deadLetterPolicy;
   }
 
+  public ExpirationPolicy getExpirationPolicy() {
+    return expirationPolicy;
+  }
+
+  public void setExpirationPolicy(ExpirationPolicy expirationPolicy) {
+    this.expirationPolicy = expirationPolicy;
+  }
+
   public static class DeadLetterPolicy {
     private String deadLetterTopic;
 
@@ -80,6 +98,27 @@ public class PubSubConsumerProperties extends PubSubCommonProperties {
 
     public void setMaxDeliveryAttempts(Integer maxDeliveryAttempts) {
       this.maxDeliveryAttempts = maxDeliveryAttempts;
+    }
+  }
+
+  public static class ExpirationPolicy {
+    /**
+     * How long the subscription can have no activity before it is automatically deleted.
+     *
+     * <p>Provide an Expiration Policy with a zero (e.g. 0d) {@code ttl} to never expire.
+     */
+    private Duration ttl;
+
+    public Duration getTtl() {
+      if (ttl != null && (ttl.isZero() || ttl.isNegative())) {
+        // non-positive is treated as "never expire"
+        return null;
+      }
+      return ttl;
+    }
+
+    public void setTtl(Duration ttl) {
+      this.ttl = ttl;
     }
   }
 }
