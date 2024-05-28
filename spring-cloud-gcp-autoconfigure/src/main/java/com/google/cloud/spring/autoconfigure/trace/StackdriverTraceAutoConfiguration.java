@@ -49,18 +49,15 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import zipkin2.CheckResult;
-import zipkin2.Span;
-import zipkin2.codec.BytesEncoder;
-import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.reporter.AsyncReporter;
+import zipkin2.reporter.CheckResult;
 import zipkin2.reporter.Reporter;
 import zipkin2.reporter.ReporterMetrics;
-import zipkin2.reporter.Sender;
+import zipkin2.reporter.SpanBytesEncoder;
 import zipkin2.reporter.brave.ZipkinSpanHandler;
-import zipkin2.reporter.stackdriver.StackdriverEncoder;
 import zipkin2.reporter.stackdriver.StackdriverSender;
 import zipkin2.reporter.stackdriver.StackdriverSender.Builder;
+import zipkin2.reporter.stackdriver.zipkin.StackdriverEncoder;
 
 /** Config for Stackdriver Trace. */
 @AutoConfiguration
@@ -130,7 +127,7 @@ public class StackdriverTraceAutoConfiguration {
   @Bean(SPAN_HANDLER_BEAN_NAME)
   @ConditionalOnMissingBean(name = SPAN_HANDLER_BEAN_NAME)
   public SpanHandler stackdriverSpanHandler(
-      @Qualifier(REPORTER_BEAN_NAME) Reporter<Span> stackdriverReporter) {
+      @Qualifier(REPORTER_BEAN_NAME) Reporter<zipkin2.Span> stackdriverReporter) {
     return ZipkinSpanHandler.create(stackdriverReporter);
   }
 
@@ -169,12 +166,12 @@ public class StackdriverTraceAutoConfiguration {
 
   @Bean(REPORTER_BEAN_NAME)
   @ConditionalOnMissingBean(name = REPORTER_BEAN_NAME)
-  public AsyncReporter<Span> stackdriverReporter(
+  public AsyncReporter<zipkin2.Span> stackdriverReporter(
       ReporterMetrics reporterMetrics,
       GcpTraceProperties trace,
-      @Qualifier(SENDER_BEAN_NAME) Sender sender) {
+      @Qualifier(SENDER_BEAN_NAME) StackdriverSender sender) {
 
-    AsyncReporter<Span> asyncReporter =
+    AsyncReporter<zipkin2.Span> asyncReporter =
         AsyncReporter.builder(sender)
             // historical constraint. Note: AsyncReporter supports memory bounds
             .queuedMaxSpans(1000)
@@ -193,7 +190,7 @@ public class StackdriverTraceAutoConfiguration {
 
   @Bean(SENDER_BEAN_NAME)
   @ConditionalOnMissingBean(name = SENDER_BEAN_NAME)
-  public Sender stackdriverSender(
+  public StackdriverSender stackdriverSender(
       GcpTraceProperties traceProperties,
       @Qualifier("traceExecutorProvider") ExecutorProvider executorProvider,
       @Qualifier("stackdriverSenderChannel") ManagedChannel channel)
@@ -256,7 +253,7 @@ public class StackdriverTraceAutoConfiguration {
   // Add this bean to suppress other encoding schema, e.g., JSON.
   @Bean
   @ConditionalOnMissingBean
-  public BytesEncoder<Span> spanBytesEncoder() {
+  public SpanBytesEncoder spanBytesEncoder() {
     return SpanBytesEncoder.PROTO3;
   }
 

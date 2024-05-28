@@ -19,8 +19,6 @@ package com.google.cloud.spring.autoconfigure.trace;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import brave.Tracer;
@@ -36,6 +34,7 @@ import com.google.devtools.cloudtrace.v2.Span;
 import com.google.devtools.cloudtrace.v2.TraceServiceGrpc;
 import com.google.protobuf.Empty;
 import io.grpc.CallOptions;
+import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.Server;
 import io.grpc.inprocess.InProcessChannelBuilder;
@@ -57,13 +56,10 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import zipkin2.Call;
-import zipkin2.CheckResult;
-import zipkin2.codec.BytesEncoder;
-import zipkin2.codec.Encoding;
-import zipkin2.codec.SpanBytesEncoder;
-import zipkin2.reporter.AsyncReporter;
-import zipkin2.reporter.Sender;
+import zipkin2.reporter.BytesEncoder;
+import zipkin2.reporter.BytesMessageSender;
+import zipkin2.reporter.Encoding;
+import zipkin2.reporter.SpanBytesEncoder;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.stackdriver.StackdriverSender;
 
@@ -97,7 +93,7 @@ class StackdriverTraceAutoConfigurationTests {
             context -> {
               assertThat(
                       context.getBean(
-                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class))
+                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class))
                   .isNotNull();
               assertThat(context.getBean(ManagedChannel.class)).isNotNull();
             });
@@ -123,13 +119,13 @@ class StackdriverTraceAutoConfigurationTests {
             context -> {
               assertThat(
                       context.getBean(
-                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class))
+                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class))
                   .isNotNull()
                   .isInstanceOf(StackdriverSender.class);
               final StackdriverSender sender =
                   (StackdriverSender)
                       context.getBean(
-                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class);
+                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class);
               final CallOptions callOptions =
                   (CallOptions) FieldUtils.readField(sender, "callOptions", true);
               assertThat(callOptions).isNotNull();
@@ -155,13 +151,13 @@ class StackdriverTraceAutoConfigurationTests {
             context -> {
               assertThat(
                       context.getBean(
-                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class))
+                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class))
                   .isNotNull()
                   .isInstanceOf(StackdriverSender.class);
               final StackdriverSender sender =
                   (StackdriverSender)
                       context.getBean(
-                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class);
+                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class);
               assertThat(FieldUtils.readField(sender, "serverResponseTimeoutMs", true))
                   .isEqualTo(1000L);
             });
@@ -180,8 +176,8 @@ class StackdriverTraceAutoConfigurationTests {
         .run(
             context -> {
               assertThat(context.getBean(ManagedChannel.class)).isNotNull();
-              assertThat(context.getBeansOfType(Sender.class)).hasSize(2);
-              assertThat(context.getBeansOfType(Sender.class))
+              assertThat(context.getBeansOfType(BytesMessageSender.Base.class)).hasSize(2);
+              assertThat(context.getBeansOfType(BytesMessageSender.Base.class))
                   .containsKeys("stackdriverSender", "otherSender");
               assertThat(context.getBeansOfType(SpanHandler.class))
                   .containsKeys("stackdriverSpanHandler", "otherSpanHandler");
@@ -229,20 +225,18 @@ class StackdriverTraceAutoConfigurationTests {
 
   @Test
   void testAsyncReporterHealthCheck() {
-    Sender senderMock = mock(Sender.class);
-    when(senderMock.check()).thenReturn(CheckResult.OK);
-    when(senderMock.encoding()).thenReturn(SpanBytesEncoder.PROTO3.encoding());
+    StackdriverSender senderMock = StackdriverSender.newBuilder(mock(Channel.class))
+        .projectId("proj").build();
 
     this.contextRunner
         .withBean(
-            StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class, () -> senderMock)
+            StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class, () -> senderMock)
         .run(
             context -> {
               SpanHandler spanHandler =
                   context.getBean(
                       StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME, SpanHandler.class);
               assertThat(spanHandler).isNotNull();
-              verify(senderMock, times(1)).check();
             });
   }
 
@@ -316,8 +310,7 @@ class StackdriverTraceAutoConfigurationTests {
 
     @Bean
     SpanHandler otherSpanHandler(OtherSender otherSender) {
-      AsyncReporter<zipkin2.Span> reporter = AsyncReporter.create(otherSender);
-      return AsyncZipkinSpanHandler.create(reporter);
+      return AsyncZipkinSpanHandler.create(otherSender);
     }
 
     @Bean
@@ -326,17 +319,16 @@ class StackdriverTraceAutoConfigurationTests {
     }
 
     /** Custom sender for verification. */
-    static class OtherSender extends Sender {
+    static class OtherSender extends BytesMessageSender.Base {
 
       private boolean spanSent = false;
 
-      boolean isSpanSent() {
-        return this.spanSent;
+      protected OtherSender() {
+        super(Encoding.JSON);
       }
 
-      @Override
-      public Encoding encoding() {
-        return Encoding.JSON;
+      boolean isSpanSent() {
+        return this.spanSent;
       }
 
       @Override
@@ -350,9 +342,12 @@ class StackdriverTraceAutoConfigurationTests {
       }
 
       @Override
-      public Call<Void> sendSpans(List<byte[]> encodedSpans) {
+      public void send(List<byte[]> encodedSpans) {
         this.spanSent = true;
-        return Call.create(null);
+      }
+
+      @Override
+      public void close() throws IOException {
       }
     }
 
