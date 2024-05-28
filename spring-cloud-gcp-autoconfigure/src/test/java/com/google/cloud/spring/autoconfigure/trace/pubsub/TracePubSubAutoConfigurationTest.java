@@ -45,6 +45,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
 import zipkin2.reporter.Reporter;
 import zipkin2.reporter.Sender;
+import zipkin2.reporter.stackdriver.StackdriverSender;
 
 /** Tests for Trace Pub/Sub auto-config. */
 class TracePubSubAutoConfigurationTest {
@@ -78,7 +79,7 @@ class TracePubSubAutoConfigurationTest {
     this.contextRunner.run(
         context -> {
           assertThat(
-                  context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class))
+                  context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class))
               .isNotNull();
           assertThat(context.getBean(ManagedChannel.class)).isNotNull();
         });
