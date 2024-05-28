@@ -49,6 +49,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import zipkin2.Span;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.CheckResult;
 import zipkin2.reporter.Reporter;
@@ -127,7 +128,7 @@ public class StackdriverTraceAutoConfiguration {
   @Bean(SPAN_HANDLER_BEAN_NAME)
   @ConditionalOnMissingBean(name = SPAN_HANDLER_BEAN_NAME)
   public SpanHandler stackdriverSpanHandler(
-      @Qualifier(REPORTER_BEAN_NAME) Reporter<zipkin2.Span> stackdriverReporter) {
+      @Qualifier(REPORTER_BEAN_NAME) Reporter<Span> stackdriverReporter) {
     return ZipkinSpanHandler.create(stackdriverReporter);
   }
 
@@ -166,12 +167,12 @@ public class StackdriverTraceAutoConfiguration {
 
   @Bean(REPORTER_BEAN_NAME)
   @ConditionalOnMissingBean(name = REPORTER_BEAN_NAME)
-  public AsyncReporter<zipkin2.Span> stackdriverReporter(
+  public AsyncReporter<Span> stackdriverReporter(
       ReporterMetrics reporterMetrics,
       GcpTraceProperties trace,
       @Qualifier(SENDER_BEAN_NAME) StackdriverSender sender) {
 
-    AsyncReporter<zipkin2.Span> asyncReporter =
+    AsyncReporter<Span> asyncReporter =
         AsyncReporter.builder(sender)
             // historical constraint. Note: AsyncReporter supports memory bounds
             .queuedMaxSpans(1000)
