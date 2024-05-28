@@ -51,6 +51,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.repository.query.DefaultParameters;
+import org.springframework.data.repository.query.ParametersSource;
 
 /** Tests Spanner statement queries. */
 class SpannerStatementQueryTests {
@@ -173,7 +174,7 @@ class SpannerStatementQueryTests {
             List.class,
             BigDecimal.class);
     when(this.queryMethod.getQueryMethod()).thenReturn(method);
-    doReturn(new DefaultParameters(method)).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
 
     this.partTreeSpannerQuery.execute(params);
     verify(this.spannerTemplate, times(1)).query((Class<Object>) any(), any(), any());
@@ -221,7 +222,7 @@ class SpannerStatementQueryTests {
             Object.class,
             Object.class,
             Object.class);
-    doReturn(new DefaultParameters(method)).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
 
     when(this.spannerTemplate.query((Function<Struct, Object>) any(), any(), any()))
         .thenAnswer(
@@ -295,7 +296,7 @@ class SpannerStatementQueryTests {
     when(this.spannerTemplate.query((Function<Struct, Object>) any(), any(), any()))
         .thenReturn(Collections.singletonList(1L));
 
-    doReturn(new DefaultParameters(method)).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
 
     when(this.spannerTemplate.query((Class) any(), any(), any()))
         .thenAnswer(
@@ -340,7 +341,7 @@ class SpannerStatementQueryTests {
     when(this.spannerTemplate.query((Function<Struct, Object>) any(), any(), any()))
         .thenReturn(Collections.singletonList(1L));
 
-    doReturn(new DefaultParameters(method)).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
 
     when(this.spannerTemplate.query((Class) any(), any(), any()))
         .thenAnswer(
@@ -377,7 +378,7 @@ class SpannerStatementQueryTests {
     this.partTreeSpannerQuery = createQuery();
     Method method =
         QueryHolder.class.getMethod("repositoryMethod4", Object.class, Object.class, Object.class);
-    doReturn(new DefaultParameters(method)).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
 
     // There are too few params specified, so the exception will occur.
     Object[] params =
@@ -408,7 +409,7 @@ class SpannerStatementQueryTests {
             Trade.class,
             Object.class);
 
-    doReturn(new DefaultParameters(method)).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
 
     // This parameter is an unsupported type for Spanner SQL.
     Object[] params =
@@ -426,7 +427,7 @@ class SpannerStatementQueryTests {
   void unSupportedPredicateTest() throws NoSuchMethodException {
     when(this.queryMethod.getName()).thenReturn("countByTraderIdBetween");
     Method method = Object.class.getMethod("toString");
-    doReturn(new DefaultParameters(method)).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
 
     this.partTreeSpannerQuery = createQuery();
 

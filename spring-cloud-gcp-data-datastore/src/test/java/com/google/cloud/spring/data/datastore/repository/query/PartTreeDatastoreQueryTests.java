@@ -73,6 +73,7 @@ import org.springframework.data.projection.ProjectionInformation;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.data.repository.core.support.DefaultRepositoryMetadata;
 import org.springframework.data.repository.query.DefaultParameters;
+import org.springframework.data.repository.query.ParametersSource;
 import org.springframework.data.util.TypeInformation;
 import org.springframework.lang.Nullable;
 
@@ -1058,7 +1059,7 @@ class PartTreeDatastoreQueryTests {
           boolean mockOptionalNullable,
           ProjectionInformation projectionInformation) {
     when(this.queryMethod.getName()).thenReturn(queryName);
-    doReturn(new DefaultParameters(m)).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(m))).when(this.queryMethod).getParameters();
     if (mockOptionalNullable) {
       DefaultRepositoryMetadata mockMetadata = mock(DefaultRepositoryMetadata.class);
       doReturn(m.getReturnType()).when(mockMetadata).getReturnedDomainClass(m);
