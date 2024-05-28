@@ -74,6 +74,7 @@ class LoggingAppenderTests {
   @Test
   void testDisablingFlushLevel() {
     LoggingAppender loggingAppender = new TestLoggingAppender();
+    loggingAppender.setLogDestinationProjectId("my-log-destination-project");
     loggingAppender.setFlushLevel(Level.OFF);
 
     loggingAppender.start();
