@@ -71,14 +71,14 @@ public class StackdriverTraceAutoConfiguration {
   private static final Log LOGGER = LogFactory.getLog(StackdriverTraceAutoConfiguration.class);
 
   /**
-   * Stackdriver sender bean name. Name of the bean matters for supporting multiple tracing systems.
+   * Stackdriver encoder bean name. Name of the bean matters for supporting multiple tracing systems.
    */
-  public static final String SENDER_BEAN_NAME = "stackdriverSender";
+  public static final String ENCODER_BEAN_NAME = "stackdriverEncoder";
 
   /**
    * Stackdriver sender bean name. Name of the bean matters for supporting multiple tracing systems.
    */
-  public static final String ENCODER_BEAN_NAME = "stackdriverEncoder";
+  public static final String SENDER_BEAN_NAME = "stackdriverSender";
 
   /**
    * Stackdriver span handler bean name. Name of the bean matters for supporting multiple tracing
