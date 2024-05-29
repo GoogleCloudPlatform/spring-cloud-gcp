@@ -14,6 +14,15 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.3...v3.8.4) (2024-05-29)
+
+
+### Dependencies
+
+* bump org.codehaus.mojo:build-helper-maven-plugin ([#2902](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2902)) ([fba3422](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fba34220760c317d65eddbff7257372d0d31d27d))
+* bump org.sonatype.plugins:nexus-staging-maven-plugin ([#2919](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2919)) ([143b45a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/143b45a84402237118d0709348d936a576600d0f))
+* update libraries-bom ([#2930](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2930)) ([bdf8f41](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/bdf8f41249a78f84a222edacc35c9d83d0bfde97))
+
 ## [3.8.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.2...v3.8.3) (2024-05-10)
 
 
