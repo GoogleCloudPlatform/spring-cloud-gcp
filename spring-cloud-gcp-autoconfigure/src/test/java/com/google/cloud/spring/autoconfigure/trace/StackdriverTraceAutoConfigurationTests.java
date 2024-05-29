@@ -62,6 +62,7 @@ import zipkin2.reporter.Encoding;
 import zipkin2.reporter.SpanBytesEncoder;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.stackdriver.StackdriverSender;
+import zipkin2.reporter.stackdriver.brave.StackdriverV2Encoder;
 
 /** Tests for auto-config. */
 class StackdriverTraceAutoConfigurationTests {
@@ -105,7 +106,7 @@ class StackdriverTraceAutoConfigurationTests {
         .run(
             context -> assertThat(
                 context.getBean(BytesEncoder.class))
-                .isEqualTo(SpanBytesEncoder.PROTO3));
+                .isInstanceOf(StackdriverV2Encoder.class));
   }
 
   @Test

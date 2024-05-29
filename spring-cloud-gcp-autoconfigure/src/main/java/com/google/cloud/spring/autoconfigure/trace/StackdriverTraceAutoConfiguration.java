@@ -16,8 +16,10 @@
 
 package com.google.cloud.spring.autoconfigure.trace;
 
+import brave.Tags;
 import brave.TracingCustomizer;
 import brave.baggage.BaggagePropagation;
+import brave.handler.MutableSpan;
 import brave.handler.SpanHandler;
 import brave.propagation.B3Propagation;
 import brave.propagation.Propagation;
@@ -49,16 +51,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import zipkin2.Span;
-import zipkin2.reporter.AsyncReporter;
-import zipkin2.reporter.CheckResult;
-import zipkin2.reporter.Reporter;
+import zipkin2.reporter.BytesEncoder;
 import zipkin2.reporter.ReporterMetrics;
-import zipkin2.reporter.SpanBytesEncoder;
-import zipkin2.reporter.brave.ZipkinSpanHandler;
+import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.stackdriver.StackdriverSender;
 import zipkin2.reporter.stackdriver.StackdriverSender.Builder;
-import zipkin2.reporter.stackdriver.zipkin.StackdriverEncoder;
+import zipkin2.reporter.stackdriver.brave.StackdriverV2Encoder;
 
 /** Config for Stackdriver Trace. */
 @AutoConfiguration
@@ -73,15 +71,14 @@ public class StackdriverTraceAutoConfiguration {
   private static final Log LOGGER = LogFactory.getLog(StackdriverTraceAutoConfiguration.class);
 
   /**
-   * Stackdriver reporter bean name. Name of the bean matters for supporting multiple tracing
-   * systems.
+   * Stackdriver sender bean name. Name of the bean matters for supporting multiple tracing systems.
    */
-  public static final String REPORTER_BEAN_NAME = "stackdriverReporter";
+  public static final String SENDER_BEAN_NAME = "stackdriverSender";
 
   /**
    * Stackdriver sender bean name. Name of the bean matters for supporting multiple tracing systems.
    */
-  public static final String SENDER_BEAN_NAME = "stackdriverSender";
+  public static final String ENCODER_BEAN_NAME = "stackdriverEncoder";
 
   /**
    * Stackdriver span handler bean name. Name of the bean matters for supporting multiple tracing
@@ -127,9 +124,10 @@ public class StackdriverTraceAutoConfiguration {
 
   @Bean(SPAN_HANDLER_BEAN_NAME)
   @ConditionalOnMissingBean(name = SPAN_HANDLER_BEAN_NAME)
-  public SpanHandler stackdriverSpanHandler(
-      @Qualifier(REPORTER_BEAN_NAME) Reporter<Span> stackdriverReporter) {
-    return ZipkinSpanHandler.create(stackdriverReporter);
+  public AsyncZipkinSpanHandler stackdriverSpanHandler(
+      @Qualifier(SENDER_BEAN_NAME) StackdriverSender sender,
+      @Qualifier(ENCODER_BEAN_NAME) BytesEncoder<MutableSpan> encoder) {
+    return AsyncZipkinSpanHandler.newBuilder(sender).build(encoder);
   }
 
   @Bean
@@ -163,30 +161,6 @@ public class StackdriverTraceAutoConfiguration {
     return ManagedChannelBuilder.forTarget("dns:///cloudtrace.googleapis.com")
         .userAgent(this.headerProvider.getUserAgent())
         .build();
-  }
-
-  @Bean(REPORTER_BEAN_NAME)
-  @ConditionalOnMissingBean(name = REPORTER_BEAN_NAME)
-  public AsyncReporter<Span> stackdriverReporter(
-      ReporterMetrics reporterMetrics,
-      GcpTraceProperties trace,
-      @Qualifier(SENDER_BEAN_NAME) StackdriverSender sender) {
-
-    AsyncReporter<Span> asyncReporter =
-        AsyncReporter.builder(sender)
-            // historical constraint. Note: AsyncReporter supports memory bounds
-            .queuedMaxSpans(1000)
-            .messageTimeout(trace.getMessageTimeout(), TimeUnit.SECONDS)
-            .metrics(reporterMetrics)
-            .build(StackdriverEncoder.V2);
-
-    CheckResult checkResult = asyncReporter.check();
-    if (!checkResult.ok()) {
-      LOGGER.warn(
-          "Error when performing Stackdriver AsyncReporter health check.", checkResult.error());
-    }
-
-    return asyncReporter;
   }
 
   @Bean(SENDER_BEAN_NAME)
@@ -251,11 +225,10 @@ public class StackdriverTraceAutoConfiguration {
     return BaggagePropagation.newFactoryBuilder(StackdriverTracePropagation.newFactory(primary));
   }
 
-  // Add this bean to suppress other encoding schema, e.g., JSON.
-  @Bean
-  @ConditionalOnMissingBean
-  public SpanBytesEncoder spanBytesEncoder() {
-    return SpanBytesEncoder.PROTO3;
+  @Bean(ENCODER_BEAN_NAME)
+  @ConditionalOnMissingBean(name = ENCODER_BEAN_NAME)
+  public BytesEncoder<MutableSpan> spanBytesEncoder() {
+    return new StackdriverV2Encoder(Tags.ERROR);
   }
 
   @PreDestroy

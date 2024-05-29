@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
-import static com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration.REPORTER_BEAN_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -68,8 +67,6 @@ class TracePubSubAutoConfigurationTest {
                 StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
                 SpanHandler.class,
                 () -> SpanHandler.NOOP)
-            // Prevent health-check from triggering a real call to Trace.
-            .withBean(REPORTER_BEAN_NAME, Reporter.class, () -> mock(Reporter.class))
             .withPropertyValues(
                 "spring.cloud.gcp.project-id=proj");
   }

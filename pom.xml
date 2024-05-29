@@ -119,6 +119,12 @@
 
 			<dependency>
 				<groupId>io.zipkin.gcp</groupId>
+				<artifactId>brave-encoder-stackdriver</artifactId>
+				<version>${zipkin-gcp.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.zipkin.gcp</groupId>
 				<artifactId>zipkin-sender-stackdriver</artifactId>
 				<version>${zipkin-gcp.version}</version>
 				<exclusions>
@@ -156,7 +162,7 @@
 			<dependency>
 				<groupId>io.micrometer</groupId>
 				<artifactId>micrometer-tracing-bom</artifactId>
-				<version>${micrometer-tracing.verison}</version>
+				<version>${micrometer-tracing.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
