@@ -126,8 +126,14 @@ public class StackdriverTraceAutoConfiguration {
   @ConditionalOnMissingBean(name = SPAN_HANDLER_BEAN_NAME)
   public AsyncZipkinSpanHandler stackdriverSpanHandler(
       @Qualifier(SENDER_BEAN_NAME) StackdriverSender sender,
-      @Qualifier(ENCODER_BEAN_NAME) BytesEncoder<MutableSpan> encoder) {
-    return AsyncZipkinSpanHandler.newBuilder(sender).build(encoder);
+      @Qualifier(ENCODER_BEAN_NAME) BytesEncoder<MutableSpan> encoder,
+      ReporterMetrics reporterMetrics,
+      GcpTraceProperties trace) {
+    return AsyncZipkinSpanHandler.newBuilder(sender)
+        .metrics(reporterMetrics)
+        .queuedMaxSpans(1000)
+        .messageTimeout(trace.getMessageTimeout(), TimeUnit.SECONDS)
+        .build(encoder);
   }
 
   @Bean
