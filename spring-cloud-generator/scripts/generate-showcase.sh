@@ -67,7 +67,7 @@ function generate_showcase_spring_starter(){
   cd sdk-platform-java && git checkout "v${GAPIC_GENERATOR_JAVA_VERSION}"
 
   # Install showcase client libraries locally
-  cd showcase && mvn clean install --batch-mode --no-transfer-progress
+  cd showcase && mvn clean install
   GAPIC_SHOWCASE_CLIENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
   # Alternative: if showcase client library is available on Maven Central,
