@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.4.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.4.0...v5.4.1) (2024-05-31)
+
+
+### Dependencies
+
+* remove `micrometer-tracing-bom` from pom.xml because this dependency is managed by spring-boot. ([8ebc064](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8ebc0642d2277c19b75e84ed67c35bd962e493bf))
+
 ## [5.4.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.3.0...v5.4.0) (2024-05-29)
 
 
