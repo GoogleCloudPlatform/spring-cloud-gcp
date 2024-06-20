@@ -118,7 +118,6 @@ function generate_showcase_spring_starter(){
   gapic_additional_protos="google/iam/v1/iam_policy.proto google/cloud/location/locations.proto"
   rest_numeric_enums="false"
   transport="grpc+rest"
-  gapic_yaml=""
   service_config="schema/google/showcase/v1beta1/showcase_grpc_service_config.json"
   service_yaml="schema/google/showcase/v1beta1/showcase_v1beta1.yaml"
   include_samples="false"
