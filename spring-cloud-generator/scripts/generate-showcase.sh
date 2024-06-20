@@ -70,7 +70,7 @@ function generate_showcase_spring_starter(){
   # Install showcase client libraries locally
   pushd showcase
   # For local development, we cleanup any traces of previous runs
-  rm -rdf output
+  rm -rdf "${output_folder}"
   mvn clean install
   gapic_showcase_client_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
