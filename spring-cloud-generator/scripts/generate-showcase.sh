@@ -120,14 +120,13 @@ function generate_showcase_spring_starter(){
   transport="grpc+rest"
   service_config="schema/google/showcase/v1beta1/showcase_grpc_service_config.json"
   service_yaml="schema/google/showcase/v1beta1/showcase_v1beta1.yaml"
-  include_samples="false"
   output_srcjar_zip_name="showcase_java_gapic_spring_raw.srcjar.zip"
 
   "${protoc_path}"/protoc \
     "--experimental_allow_proto3_optional" \
     "--plugin=protoc-gen-java_gapic_spring=${spring_generator_dir}/spring-cloud-generator-wrapper" \
     "--java_gapic_spring_out=${output_folder}/${output_srcjar_zip_name}" \
-    "--java_gapic_spring_opt=$(get_gapic_opts  "${transport}" "${rest_numeric_enums}" "${gapic_yaml}" "${service_config}" "${service_yaml}")" \
+    "--java_gapic_spring_opt=$(get_gapic_opts  "${transport}" "${rest_numeric_enums}" "" "${service_config}" "${service_yaml}")" \
     ${proto_files} ${gapic_additional_protos} # Do not quote because this variable should not be treated as one long string.
 
 
