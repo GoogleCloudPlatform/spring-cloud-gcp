@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -130,6 +130,7 @@ public class EchoSpringAutoConfiguration {
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)
+        .setEndpoint(EchoSettings.getDefaultEndpoint())
         .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());
@@ -158,6 +159,13 @@ public class EchoSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.echoSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.echoSettings().setRetrySettings(echoRetrySettings);
+
+      RetrySettings echoErrorDetailsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.echoErrorDetailsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .echoErrorDetailsSettings()
+          .setRetrySettings(echoErrorDetailsRetrySettings);
 
       RetrySettings pagedExpandRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -223,6 +231,20 @@ public class EchoSpringAutoConfiguration {
       clientSettingsBuilder.echoSettings().setRetrySettings(echoRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for echo from properties.");
+      }
+    }
+    Retry echoErrorDetailsRetry = clientProperties.getEchoErrorDetailsRetry();
+    if (echoErrorDetailsRetry != null) {
+      RetrySettings echoErrorDetailsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.echoErrorDetailsSettings().getRetrySettings(),
+              echoErrorDetailsRetry);
+      clientSettingsBuilder
+          .echoErrorDetailsSettings()
+          .setRetrySettings(echoErrorDetailsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for echoErrorDetails from properties.");
       }
     }
     Retry pagedExpandRetry = clientProperties.getPagedExpandRetry();
