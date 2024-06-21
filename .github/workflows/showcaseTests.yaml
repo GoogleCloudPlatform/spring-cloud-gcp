@@ -1,18 +1,17 @@
 name: Generator - Showcase Tests
 
 on:
-#  Disable auto-triggering until this issue is fixed
-#  https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2214
-#  push:
-#    branches:
-#      - main
-#  pull_request:
-#    paths:
-#      - 'spring-cloud-generator/**'
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'spring-cloud-generator/**'
   workflow_dispatch:
 
 jobs:
   showcaseTests:
+
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -20,11 +19,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
-      - name: Install buildozer
-        run: |
-          go install github.com/bazelbuild/buildtools/buildozer@latest
-          export PATH=$PATH:$(go env GOPATH)/bin
-          buildozer --version
       - name: Install spring-cloud-gcp
         # Installs spring-cloud-gcp from root,
         # including spring-cloud-generator module
@@ -44,8 +38,6 @@ jobs:
         run: |
           set -x
           set -e
-          export PATH=$PATH:$(go env GOPATH)/bin
-          buildozer --version
           bash scripts/generate-showcase.sh
       - name: Unit tests for showcase-spring-starter
         # Runs showcase-spring-starter unit tests
