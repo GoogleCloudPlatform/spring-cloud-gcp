@@ -14,6 +14,17 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.10.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.3...v4.10.4) (2024-05-30)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.18.0 to 1.18.1 ([#2885](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2885)) ([0badb55](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0badb551f7ad42e6d69f5846d526887cc074d5c2))
+* bump com.google.cloud:libraries-bom from 26.39.0 to 26.40.0 ([#2934](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2934)) ([5b67fef](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5b67fef30307632a1d9f073cf3862e21a06d81b8))
+* bump io.micrometer:micrometer-tracing-bom from 1.2.5 to 1.3.0 ([#2878](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2878)) ([9abbe38](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9abbe385719d6452ed4148ca448feecd94f04346))
+* bump org.codehaus.mojo:build-helper-maven-plugin ([#2900](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2900)) ([9985111](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/99851117f81f1420aeb9463f89f624f50431b87c))
+* bump org.sonatype.plugins:nexus-staging-maven-plugin ([#2920](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2920)) ([123b1d4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/123b1d4fc64fe653036097971cd5855055c1f3b1))
+
 ## [4.10.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.2...v4.10.3) (2024-05-10)
 
 
