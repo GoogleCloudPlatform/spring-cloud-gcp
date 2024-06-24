@@ -14,6 +14,36 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.4.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.4.0...v5.4.1) (2024-05-31)
+
+
+### Dependencies
+
+* remove `micrometer-tracing-bom` from pom.xml because this dependency is managed by spring-boot. ([8ebc064](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8ebc0642d2277c19b75e84ed67c35bd962e493bf))
+
+## [5.4.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.3.0...v5.4.0) (2024-05-29)
+
+
+### Features
+
+* configurable expiration policy on auto-created subscriptions ([#2876](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2876)) ([@jmitash](https://github.com/jmitash)) ([#2897](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2897)) ([d8d7168](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d8d7168e57683adf76b1e56b1a3e7d87fb7d8bdf))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:alloydb-jdbc-connector to v1.1.2 ([#2883](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2883)) ([98fcfea](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/98fcfea7dbfc53fb04aa74e92253093b9b7d851d))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.40.0 ([#2924](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2924)) ([3fcd7e7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3fcd7e7586272df19469062aa39fb66dde5f6ec8))
+* stackdriver logback appender now defaults to flushlevel off ([#2906](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2906)) ([#2922](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2922)) ([b5bd5d4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b5bd5d430f0c0a7e9389d6eaac432e9c2898622a))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.18.0 to 1.18.1 ([#2886](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2886)) ([d72b0ed](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d72b0ede8e609185752e5dec9df8f8dd51df9dc0))
+* bump com.google.cloud:alloydb-jdbc-connector from 1.1.1 to 1.1.2 ([#2884](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2884)) ([f52dc7d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f52dc7d339d819e9e7bd0b7382ec6556a447187a))
+* bump io.micrometer:micrometer-tracing-bom from 1.2.5 to 1.3.0 ([#2879](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2879)) ([990c511](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/990c51170bef40a42355a40834489dc386850f69))
+* bump org.codehaus.mojo:build-helper-maven-plugin ([#2903](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2903)) ([6dde442](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6dde442f065841ec37a308b1d9d7640fc50f48e5))
+* bump org.sonatype.plugins:nexus-staging-maven-plugin ([#2918](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2918)) ([c6edc2e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c6edc2e01cd40c2ea46fc81c17e93ac9837001ec))
+
 ## [5.3.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.2.1...v5.3.0) (2024-05-15)
 
 

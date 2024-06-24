@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,11 @@ public class EchoSpringProperties implements CredentialsSupplier {
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry echoRetry;
+  /**
+   * Allow override of retry settings at method-level for echoErrorDetails. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry echoErrorDetailsRetry;
   /**
    * Allow override of retry settings at method-level for pagedExpand. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -134,6 +139,14 @@ public class EchoSpringProperties implements CredentialsSupplier {
 
   public void setEchoRetry(Retry echoRetry) {
     this.echoRetry = echoRetry;
+  }
+
+  public Retry getEchoErrorDetailsRetry() {
+    return this.echoErrorDetailsRetry;
+  }
+
+  public void setEchoErrorDetailsRetry(Retry echoErrorDetailsRetry) {
+    this.echoErrorDetailsRetry = echoErrorDetailsRetry;
   }
 
   public Retry getPagedExpandRetry() {

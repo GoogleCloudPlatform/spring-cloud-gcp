@@ -43,12 +43,46 @@ If you are using Pub/Sub autoconfiguration from the Spring Framework on Google C
 
 NOTE: To use this binder with a https://cloud.google.com/pubsub/docs/emulator[running emulator], configure its host and port via `spring.cloud.gcp.pubsub.emulator-host`.
 
-==== Producer Synchronous Sending Configuration
+==== Producer/Consumer Shared Configuration
+These properties can be applied to both producers and consumers.
+|===
+| Name | Description | Required | Default value
+| `spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME/PRODUCER_NAME}.[consumer/producer].allowedHeaders` | Filters incoming and outgoing messages to contain only the provided comma-delimited headers | No |
+| `spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME/PRODUCER_NAME}.[consumer/producer].auto-create-resources` | When enabled, topic/subscription will be created if they do not exist | No | true
+|===
+
+===== Header Mapping
+You can filter incoming and outgoing message headers with `allowHeaders` property.
+For example, for a consumer to allow only two headers, provide a comma separated list like this:
+
+.application.properties
+----
+spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.allowedHeaders=allowed1,allowed2
+----
+Where `CONSUMER_NAME` should be replaced by the method which is consuming/reading messages from Cloud Pub/Sub and `allowed1,allowed2` is the comma separated list of headers that the user wants to keep.
+
+
+
+A similar style is applicable for producers as well. For example:
+
+.application.properties
+----
+spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.allowedHeaders=allowed3,allowed4
+----
+Where `PRODUCER_NAME` should be replaced by the method which is producing/sending messages to Cloud Pub/Sub and `allowed3,allowed4` is the comma separated list of headers that user wants to map. All other headers will be removed before the message is sent to Cloud Pub/Sub.
+
+
+==== Producer-specific Configuration
+|===
+| Name | Description | Required | Default value
+| `spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.sync` | Enables synchronous sending | No | false
+|===
+
+===== Producer Synchronous Sending Configuration
 By default, this binder will send messages to Cloud Pub/Sub asynchronously.
 If synchronous sending is preferred (for example, to allow propagating errors back to the sender), set `spring.cloud.stream.gcp.pubsub.default.producer.sync` property to `true`.
 
-==== Producer Destination Configuration
-
+===== Producer Destination Configuration
 If automatic resource creation is turned ON and the topic corresponding to the destination name does not exist, it will be created.
 
 For example, for the following configuration, a topic called `myEvents` would be created.
@@ -60,8 +94,19 @@ spring.cloud.stream.bindings.{PRODUCER_NAME}.destination=myEvents
 spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.auto-create-resources=true
 ----
 
-==== Consumer Destination Configuration
 
+==== Consumer-specific Configuration
+|===
+| Name | Description | Required | Default value
+| `spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.ack-mode` | Controls how messages will be acknowledged when they are successfully received. Options: AUTO, AUTO_ACK, and MANUAL | No | AUTO
+| `spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.dead-letter-policy.dead-letter-topic` | Duration of no activity after which a subscription will expire. Use 0d to never expire. | No | 31d
+| `spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.dead-letter-policy.max-delivery-attempts` | Duration of no activity after which a subscription will expire. Use 0d to never expire. | No | 31d
+| `spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.expiration-policy.ttl` | Duration of no activity after which a subscription will expire. Use 0d to never expire. | No | 31d
+| `spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.max-fetch-size` | Limits the number of messages received per poll | No |
+| `spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.subscription-name` | When provided, uses the given subscription name | No |
+|===
+
+===== Consumer Destination Configuration
 A `PubSubInboundChannelAdapter` will be configured for your consumer endpoint.
 You may adjust the ack mode of the consumer endpoint using the `ack-mode` property.
 The ack mode controls how messages will be acknowledged when they are successfully received.
@@ -108,26 +153,6 @@ These resources will be created:
 
 * A topic named `myEvents`
 * A subscription named `myEvents.consumerGroup1`
-
-==== Header Mapping
-You can filter incoming and outgoing message headers with `allowHeaders` property.
-For example, for a consumer to allow only two headers, provide a comma separated list like this:
-
-.application.properties
-----
-spring.cloud.stream.gcp.pubsub.bindings.{CONSUMER_NAME}.consumer.allowedHeaders=allowed1, allowed2
-----
-Where `CONSUMER_NAME` should be replaced by the method which is consuming/reading messages from Cloud Pub/Sub and allowed1, allowed2 is the comma separated list of headers that the user wants to keep.
-
-
-
-A similar style is applicable for producers as well. For example:
-
-.application.properties
-----
-spring.cloud.stream.gcp.pubsub.bindings.{PRODUCER_NAME}.producer.allowedHeaders=allowed3,allowed4
-----
-Where `PRODUCER_NAME` should be replaced by the method which is producing/sending messages to Cloud Pub/Sub and allowed3, allowed4 is the comma separated list of headers that user wants to map. All other headers will be removed before the message is sent to Cloud Pub/Sub.
 
 
 

@@ -21,6 +21,7 @@ import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubConsumerProperties;
 import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerProperties;
 import com.google.pubsub.v1.DeadLetterPolicy;
+import com.google.pubsub.v1.ExpirationPolicy;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.TopicName;
@@ -71,8 +72,6 @@ public class PubSubChannelProvisioner
     String customName = properties.getExtension().getSubscriptionName();
 
     boolean autoCreate = properties.getExtension().isAutoCreateResources();
-    PubSubConsumerProperties.DeadLetterPolicy deadLetterPolicy =
-        properties.getExtension().getDeadLetterPolicy();
 
     // topicName may be either the short or fully-qualified version.
     String topicShortName =
@@ -101,7 +100,7 @@ public class PubSubChannelProvisioner
         subscriptionName = "anonymous." + topicShortName + "." + UUID.randomUUID();
         this.anonymousGroupSubscriptionNames.add(subscriptionName);
       }
-      ensureSubscriptionExists(subscriptionName, topicName, deadLetterPolicy, autoCreate);
+      ensureSubscriptionExists(subscriptionName, topicName, properties.getExtension());
     }
 
     Assert.hasText(subscriptionName, "Subscription Name cannot be null or empty");
@@ -142,11 +141,10 @@ public class PubSubChannelProvisioner
   Subscription ensureSubscriptionExists(
       String subscriptionName,
       String topicName,
-      PubSubConsumerProperties.DeadLetterPolicy deadLetterPolicy,
-      boolean autoCreate) {
+      PubSubConsumerProperties properties) {
     Subscription subscription = this.pubSubAdmin.getSubscription(subscriptionName);
     if (subscription == null) {
-      return createSubscription(subscriptionName, topicName, deadLetterPolicy, autoCreate);
+      return createSubscription(subscriptionName, topicName, properties);
     }
     return subscription;
   }
@@ -154,16 +152,16 @@ public class PubSubChannelProvisioner
   private Subscription createSubscription(
       String subscriptionName,
       String topicName,
-      PubSubConsumerProperties.DeadLetterPolicy deadLetterPolicy,
-      boolean autoCreate) {
+      PubSubConsumerProperties properties) {
     Subscription.Builder builder =
         Subscription.newBuilder().setName(subscriptionName).setTopic(topicName);
 
+    PubSubConsumerProperties.DeadLetterPolicy deadLetterPolicy = properties.getDeadLetterPolicy();
     if (deadLetterPolicy != null) {
       String dlTopicName = deadLetterPolicy.getDeadLetterTopic();
       Assert.hasText(dlTopicName, "Dead letter policy cannot have null or empty topic");
 
-      Topic dlTopic = ensureTopicExists(dlTopicName, autoCreate);
+      Topic dlTopic = ensureTopicExists(dlTopicName, properties.isAutoCreateResources());
 
       DeadLetterPolicy.Builder dlpBuilder =
           DeadLetterPolicy.newBuilder().setDeadLetterTopic(dlTopic.getName());
@@ -173,6 +171,19 @@ public class PubSubChannelProvisioner
         dlpBuilder.setMaxDeliveryAttempts(maxAttempts);
       }
       builder.setDeadLetterPolicy(dlpBuilder);
+    }
+
+    PubSubConsumerProperties.ExpirationPolicy expirationPolicy = properties.getExpirationPolicy();
+    if (expirationPolicy != null) {
+      ExpirationPolicy.Builder epBuilder = ExpirationPolicy.newBuilder();
+
+      if (expirationPolicy.getTtl() != null) {
+        long desiredSeconds = expirationPolicy.getTtl().getSeconds();
+        epBuilder.setTtl(
+            com.google.protobuf.Duration.newBuilder().setSeconds(desiredSeconds).build());
+      }
+
+      builder.setExpirationPolicy(epBuilder);
     }
 
     return this.pubSubAdmin.createSubscription(builder);
