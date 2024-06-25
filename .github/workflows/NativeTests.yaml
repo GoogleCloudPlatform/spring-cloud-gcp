@@ -81,7 +81,7 @@ jobs:
             install
       - uses: graalvm/setup-graalvm@v1
         with:
-          version: '22.3.2'
+          version: '23.1.1'
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
