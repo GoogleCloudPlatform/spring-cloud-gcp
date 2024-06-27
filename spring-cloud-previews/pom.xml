@@ -13,6 +13,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>google-cloud-workstations-spring-starter</module>
     <module>google-cloud-workflows-spring-starter</module>
     <module>google-cloud-workflow-executions-spring-starter</module>
     <module>google-cloud-websecurityscanner-spring-starter</module>
@@ -20,11 +21,13 @@
     <module>google-cloud-vpcaccess-spring-starter</module>
     <module>google-cloud-vmmigration-spring-starter</module>
     <module>google-cloud-video-transcoder-spring-starter</module>
+    <module>google-cloud-video-stitcher-spring-starter</module>
     <module>google-cloud-video-intelligence-spring-starter</module>
     <module>google-cloud-translate-spring-starter</module>
     <module>google-cloud-trace-spring-starter</module>
     <module>google-cloud-tpu-spring-starter</module>
     <module>google-cloud-texttospeech-spring-starter</module>
+    <module>google-cloud-telcoautomation-spring-starter</module>
     <module>google-cloud-tasks-spring-starter</module>
     <module>google-cloud-talent-spring-starter</module>
     <module>google-cloud-storage-transfer-spring-starter</module>
@@ -34,14 +37,18 @@
     <module>google-cloud-service-usage-spring-starter</module>
     <module>google-cloud-service-management-spring-starter</module>
     <module>google-cloud-service-control-spring-starter</module>
+    <module>google-cloud-securityposture-spring-starter</module>
+    <module>google-cloud-securitycentermanagement-spring-starter</module>
     <module>google-cloud-securitycenter-spring-starter</module>
     <module>google-cloud-security-private-ca-spring-starter</module>
+    <module>google-cloud-securesourcemanager-spring-starter</module>
     <module>google-cloud-scheduler-spring-starter</module>
     <module>google-cloud-retail-spring-starter</module>
     <module>google-cloud-resource-settings-spring-starter</module>
     <module>google-cloud-redis-spring-starter</module>
     <module>google-cloud-recommender-spring-starter</module>
     <module>google-cloud-recaptchaenterprise-spring-starter</module>
+    <module>google-cloud-publicca-spring-starter</module>
     <module>google-cloud-profiler-spring-starter</module>
     <module>google-cloud-policy-troubleshooter-spring-starter</module>
     <module>google-cloud-os-login-spring-starter</module>
@@ -51,13 +58,16 @@
     <module>google-cloud-optimization-spring-starter</module>
     <module>google-cloud-notebooks-spring-starter</module>
     <module>google-cloud-networkconnectivity-spring-starter</module>
+    <module>google-cloud-network-security-spring-starter</module>
     <module>google-cloud-network-management-spring-starter</module>
     <module>google-cloud-monitoring-dashboard-spring-starter</module>
     <module>google-cloud-memcache-spring-starter</module>
     <module>google-cloud-managed-identities-spring-starter</module>
     <module>google-cloud-language-spring-starter</module>
     <module>google-cloud-iot-spring-starter</module>
+    <module>google-cloud-infra-manager-spring-starter</module>
     <module>google-cloud-ids-spring-starter</module>
+    <module>google-cloud-iap-spring-starter</module>
     <module>google-cloud-iamcredentials-spring-starter</module>
     <module>google-iam-admin-spring-starter</module>
     <module>google-iam-policy-spring-starter</module>
@@ -67,10 +77,13 @@
     <module>google-cloud-filestore-spring-starter</module>
     <module>google-cloud-eventarc-spring-starter</module>
     <module>google-cloud-essential-contacts-spring-starter</module>
+    <module>google-cloud-edgenetwork-spring-starter</module>
     <module>google-cloud-domains-spring-starter</module>
     <module>google-cloud-document-ai-spring-starter</module>
     <module>google-cloud-dms-spring-starter</module>
     <module>google-cloud-dlp-spring-starter</module>
+    <module>google-cloud-distributedcloudedge-spring-starter</module>
+    <module>google-cloud-discoveryengine-spring-starter</module>
     <module>google-cloud-dialogflow-spring-starter</module>
     <module>google-cloud-deploy-spring-starter</module>
     <module>google-cloud-debugger-client-spring-starter</module>
@@ -78,12 +91,15 @@
     <module>google-cloud-dataproc-metastore-spring-starter</module>
     <module>google-cloud-dataproc-spring-starter</module>
     <module>google-cloud-dataplex-spring-starter</module>
+    <module>google-cloud-datalineage-spring-starter</module>
     <module>google-cloud-datacatalog-spring-starter</module>
     <module>google-cloud-data-fusion-spring-starter</module>
     <module>google-cloud-containeranalysis-spring-starter</module>
     <module>google-cloud-container-spring-starter</module>
     <module>google-cloud-contact-center-insights-spring-starter</module>
     <module>google-cloud-compute-spring-starter</module>
+    <module>google-cloud-cloudquotas-spring-starter</module>
+    <module>google-cloud-cloudcontrolspartner-spring-starter</module>
     <module>google-cloud-build-spring-starter</module>
     <module>google-cloud-channel-spring-starter</module>
     <module>google-cloud-binary-authorization-spring-starter</module>
@@ -92,14 +108,18 @@
     <module>google-cloud-bigqueryreservation-spring-starter</module>
     <module>google-cloud-bigquerydatatransfer-spring-starter</module>
     <module>google-cloud-bigqueryconnection-spring-starter</module>
+    <module>google-cloud-backupdr-spring-starter</module>
     <module>google-cloud-automl-spring-starter</module>
     <module>google-cloud-assured-workloads-spring-starter</module>
     <module>google-cloud-asset-spring-starter</module>
     <module>google-cloud-artifact-registry-spring-starter</module>
     <module>google-cloud-appengine-admin-spring-starter</module>
+    <module>google-cloud-apikeys-spring-starter</module>
     <module>google-cloud-apigee-connect-spring-starter</module>
     <module>google-cloud-api-gateway-spring-starter</module>
+    <module>google-cloud-analyticshub-spring-starter</module>
     <module>google-cloud-aiplatform-spring-starter</module>
+    <module>google-cloud-advisorynotifications-spring-starter</module>
     <module>google-identity-accesscontextmanager-spring-starter</module>
     <module>google-cloud-accessapproval-spring-starter</module>
     <!-- preview modules -->

@@ -1,4 +1,4 @@
-# this is a list of libraries that are already in the spring-cloud-gcp-starters folder and will be ignored by generate-library-list.sh
+# this is a list of libraries that are either already in the spring-cloud-gcp-starters folder or are proto only libraries and will be ignored by generate-library-list.sh
 google-cloud-bigquery
 google-cloud-pubsub
 google-cloud-datastore
@@ -11,3 +11,5 @@ google-cloud-secretmanager
 google-cloud-resourcemanager
 google-cloud-storage
 google-cloud-vision
+google-cloud-alloydb-connectors
+google-cloud-gke-connect-gateway

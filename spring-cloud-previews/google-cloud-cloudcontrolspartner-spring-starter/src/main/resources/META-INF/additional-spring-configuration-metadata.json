@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.cloudcontrolspartner.v1.cloud-controls-partner-core.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud cloudcontrolspartner/CloudControlsPartnerCore components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.cloudcontrolspartner.v1.cloud-controls-partner-monitoring.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud cloudcontrolspartner/CloudControlsPartnerMonitoring components.",
+      "defaultValue": true
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.edgecontainer.v1.edge-container.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud edgecontainer/EdgeContainer components.",
+      "defaultValue": true
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.security.publicca.v1.public-certificate-authority-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud publicca/PublicCertificateAuthorityService components.",
+      "defaultValue": true
+    }
+  ]
+}

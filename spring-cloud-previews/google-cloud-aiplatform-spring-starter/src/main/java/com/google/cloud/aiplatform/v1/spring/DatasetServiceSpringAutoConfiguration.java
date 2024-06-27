@@ -124,6 +124,7 @@ public class DatasetServiceSpringAutoConfiguration {
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)
+        .setEndpoint(DatasetServiceSettings.getDefaultEndpoint())
         .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());
@@ -162,6 +163,14 @@ public class DatasetServiceSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listDatasetsSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listDatasetsSettings().setRetrySettings(listDatasetsRetrySettings);
+
+      RetrySettings updateDatasetVersionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateDatasetVersionSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .updateDatasetVersionSettings()
+          .setRetrySettings(updateDatasetVersionRetrySettings);
 
       RetrySettings getDatasetVersionRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -269,6 +278,20 @@ public class DatasetServiceSpringAutoConfiguration {
       clientSettingsBuilder.listDatasetsSettings().setRetrySettings(listDatasetsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listDatasets from properties.");
+      }
+    }
+    Retry updateDatasetVersionRetry = clientProperties.getUpdateDatasetVersionRetry();
+    if (updateDatasetVersionRetry != null) {
+      RetrySettings updateDatasetVersionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateDatasetVersionSettings().getRetrySettings(),
+              updateDatasetVersionRetry);
+      clientSettingsBuilder
+          .updateDatasetVersionSettings()
+          .setRetrySettings(updateDatasetVersionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateDatasetVersion from properties.");
       }
     }
     Retry getDatasetVersionRetry = clientProperties.getGetDatasetVersionRetry();
