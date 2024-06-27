@@ -1,0 +1,88 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.discoveryengine.v1.completion-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/CompletionService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.control-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/ControlService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.conversational-search-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/ConversationalSearchService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.data-store-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/DataStoreService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.document-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/DocumentService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.engine-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/EngineService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.grounded-generation-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/GroundedGenerationService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.project-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/ProjectService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.rank-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/RankService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.recommendation-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/RecommendationService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.schema-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/SchemaService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.search-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/SearchService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.site-search-engine-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/SiteSearchEngineService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.user-event-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/UserEventService components.",
+      "defaultValue": true
+    }
+  ]
+}

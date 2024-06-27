@@ -124,6 +124,7 @@ public class NotebookServiceSpringAutoConfiguration {
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)
+        .setEndpoint(NotebookServiceSettings.getDefaultEndpoint())
         .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());
@@ -163,6 +164,14 @@ public class NotebookServiceSpringAutoConfiguration {
       clientSettingsBuilder
           .listNotebookRuntimeTemplatesSettings()
           .setRetrySettings(listNotebookRuntimeTemplatesRetrySettings);
+
+      RetrySettings updateNotebookRuntimeTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateNotebookRuntimeTemplateSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .updateNotebookRuntimeTemplateSettings()
+          .setRetrySettings(updateNotebookRuntimeTemplateRetrySettings);
 
       RetrySettings getNotebookRuntimeRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -237,6 +246,21 @@ public class NotebookServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listNotebookRuntimeTemplates from properties.");
+      }
+    }
+    Retry updateNotebookRuntimeTemplateRetry =
+        clientProperties.getUpdateNotebookRuntimeTemplateRetry();
+    if (updateNotebookRuntimeTemplateRetry != null) {
+      RetrySettings updateNotebookRuntimeTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateNotebookRuntimeTemplateSettings().getRetrySettings(),
+              updateNotebookRuntimeTemplateRetry);
+      clientSettingsBuilder
+          .updateNotebookRuntimeTemplateSettings()
+          .setRetrySettings(updateNotebookRuntimeTemplateRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateNotebookRuntimeTemplate from properties.");
       }
     }
     Retry getNotebookRuntimeRetry = clientProperties.getGetNotebookRuntimeRetry();

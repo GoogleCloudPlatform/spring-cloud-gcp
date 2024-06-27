@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.bigquery.analyticshub.v1.analytics-hub-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud analyticshub/AnalyticsHubService components.",
+      "defaultValue": true
+    }
+  ]
+}
