@@ -14,6 +14,19 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.4...v3.8.5) (2024-06-24)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.18.0 to 1.19.0 ([#2968](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2968)) ([6c09fe0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6c09fe0514b64c5d171e141974a4d0f4fb0f0122))
+* bump com.google.cloud:libraries-bom from 26.40.0 to 26.42.0 ([#2973](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2973)) ([b139323](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b139323f4b91ea092766c448a2f9b382519010f3))
+* bump com.google.errorprone:error_prone_core from 2.27.1 to 2.28.0 ([#2957](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2957)) ([e611602](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e611602227a3a6a612692b6e612db33f253e67ac))
+* bump org.apache.maven.plugins:maven-checkstyle-plugin ([#2965](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2965)) ([4cecb24](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4cecb24d73dea81b723a1744241155bab6cce1bd))
+* bump org.apache.maven.plugins:maven-enforcer-plugin ([#2941](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2941)) ([05fd497](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/05fd497327862eee7b3e33b103e84126f22c356b))
+* bump org.apache.maven.plugins:maven-jar-plugin from 3.4.1 to 3.4.2 ([#2974](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2974)) ([b59f775](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b59f77529016eee8386c3db4c0583f370b39b62b))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#2958](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2958)) ([b4371b9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b4371b92cbc73709c437b0ae556eb8e2ed31f0ff))
+
 ## [3.8.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.3...v3.8.4) (2024-05-29)
 
 
