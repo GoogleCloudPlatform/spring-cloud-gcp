@@ -208,6 +208,7 @@ jobs:
             --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
             --define "spring.datasource.password=${DB_PASSWORD}" \
             --define "spring.r2dbc.password=${DB_PASSWORD}" \
+            --define "spring.cloud.gcp.sql.database-name=code_samples_test_db2" \
             --define it.${{ matrix.it }}=true \
             verify
       - name: Aggregate Report
