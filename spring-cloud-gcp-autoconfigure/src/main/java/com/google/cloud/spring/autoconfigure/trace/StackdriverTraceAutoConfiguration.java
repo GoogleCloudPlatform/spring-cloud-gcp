@@ -52,6 +52,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import zipkin2.reporter.BytesEncoder;
+import zipkin2.reporter.BytesMessageSender;
 import zipkin2.reporter.ReporterMetrics;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.stackdriver.StackdriverSender;
@@ -124,8 +125,8 @@ public class StackdriverTraceAutoConfiguration {
 
   @Bean(SPAN_HANDLER_BEAN_NAME)
   @ConditionalOnMissingBean(name = SPAN_HANDLER_BEAN_NAME)
-  public AsyncZipkinSpanHandler stackdriverSpanHandler(
-      @Qualifier(SENDER_BEAN_NAME) StackdriverSender sender,
+  public SpanHandler stackdriverSpanHandler(
+      @Qualifier(SENDER_BEAN_NAME) BytesMessageSender sender,
       @Qualifier(ENCODER_BEAN_NAME) BytesEncoder<MutableSpan> encoder,
       ReporterMetrics reporterMetrics,
       GcpTraceProperties trace) {
@@ -171,7 +172,7 @@ public class StackdriverTraceAutoConfiguration {
 
   @Bean(SENDER_BEAN_NAME)
   @ConditionalOnMissingBean(name = SENDER_BEAN_NAME)
-  public StackdriverSender stackdriverSender(
+  public BytesMessageSender stackdriverSender(
       GcpTraceProperties traceProperties,
       @Qualifier("traceExecutorProvider") ExecutorProvider executorProvider,
       @Qualifier("stackdriverSenderChannel") ManagedChannel channel)
