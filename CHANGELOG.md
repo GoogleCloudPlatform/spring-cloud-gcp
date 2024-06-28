@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.4.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.4.2...v5.4.3) (2024-06-28)
+
+
+### Bug Fixes
+
+* use maven wrapper in release scripts ([#3015](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3015)) ([9bca063](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9bca063f5d4c78e3a9250badb5db3a8ad0026271))
+
 ## [5.4.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.4.1...v5.4.2) (2024-06-27)
 
 
