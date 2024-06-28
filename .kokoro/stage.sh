@@ -32,10 +32,10 @@ create_settings_xml_file $MAVEN_SETTINGS_FILE
 export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
 
 # run unit tests
-  mvn verify --show-version --batch-mode -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
+  ./mvnw verify --show-version --batch-mode -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
 
 # stage release
-  mvn deploy \
+  ./mvnw deploy \
   -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
   --batch-mode \
   --settings ${MAVEN_SETTINGS_FILE} \
@@ -49,7 +49,7 @@ export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.
 # promote release
 if [[ -n "${AUTORELEASE_PR}" ]]
 then
-    mvn nexus-staging:release \
+    ./mvnw nexus-staging:release \
     --batch-mode \
     --settings ${MAVEN_SETTINGS_FILE} \
     -Drelease=true \
