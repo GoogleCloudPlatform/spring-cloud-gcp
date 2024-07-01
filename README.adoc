@@ -56,7 +56,9 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 
 |5.x
 |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2023.0-Release-Notes[2023.0.x] (Leyton)
-|https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes[3.2.x], https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.3-Release-Notes[3.3.x]
+|https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes[3.2.x]*, https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.3-Release-Notes[3.3.x]
+
+* Except trace
 |https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x#whats-new-in-version-61[6.1.x]
 |Yes
 
@@ -78,6 +80,7 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 |https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-5.x#whats-new-in-version-53[5.3.x]
 |No
 |===
+&ast; The Spring Cloud GCP 5.x trace module only supports Spring Boot 3.3.x due to link:https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.3-Release-Notes#brave-and-zipkin[Boot's major version increment] of its Brave and Zipkin dependencies.
 
 == Spring Initializr
 
