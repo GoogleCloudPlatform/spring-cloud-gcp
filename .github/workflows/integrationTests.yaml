@@ -124,6 +124,7 @@ jobs:
       github.actor != 'dependabot[bot]' && ((
         github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
       ) || (github.event_name != 'pull_request'))
+      || ${{ matrix.it }} == 'trace'
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -148,7 +149,7 @@ jobs:
           - secretmanager
           - spanner
           - storage
-          # trace excluded
+          - trace
           - vision
     steps:
       - name: Get current date
