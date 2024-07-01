@@ -120,12 +120,6 @@ jobs:
             **/target/site
 
   spring-boot-3-2-compatibility:
-    if: |
-      github.actor != 'dependabot[bot]' && ((
-        github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
-      ) || (github.event_name != 'pull_request'))
-      || ${{ matrix.it }} == 'trace'
-    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
@@ -151,6 +145,12 @@ jobs:
           - storage
           - trace
           - vision
+    if: |
+      github.actor != 'dependabot[bot]' && ((
+        github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
+      ) || (github.event_name != 'pull_request'))
+      || ${{ matrix.it }} == 'trace'
+    runs-on: ubuntu-20.04
     steps:
       - name: Get current date
         id: date
