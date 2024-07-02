@@ -69,6 +69,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.query.Parameters;
+import org.springframework.data.repository.query.ParametersSource;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.ResultProcessor;
 import org.springframework.data.repository.query.ReturnedType;
@@ -174,7 +175,7 @@ class SqlSpannerQueryTests {
     Method method = QueryHolder.class.getMethod("dummyMethod2");
     when(this.queryMethod.getQueryMethod()).thenReturn(method);
     Mockito.<Parameters>when(this.queryMethod.getParameters())
-        .thenReturn(new DefaultParameters(method));
+        .thenReturn(new DefaultParameters(ParametersSource.of(method)));
 
     sqlSpannerQuery.execute(new Object[] {});
 
@@ -240,7 +241,7 @@ class SqlSpannerQueryTests {
         QueryHolder.class.getMethod("dummyMethod4", String.class, String.class, Pageable.class);
     when(this.queryMethod.getQueryMethod()).thenReturn(method);
     Mockito.<Parameters>when(this.queryMethod.getParameters())
-        .thenReturn(new DefaultParameters(method));
+        .thenReturn(new DefaultParameters(ParametersSource.of(method)));
 
     sqlSpannerQuery.execute(params);
 
@@ -303,7 +304,7 @@ class SqlSpannerQueryTests {
         QueryHolder.class.getMethod("dummyMethod5", String.class, String.class, Sort.class);
     when(this.queryMethod.getQueryMethod()).thenReturn(method);
     Mockito.<Parameters>when(this.queryMethod.getParameters())
-        .thenReturn(new DefaultParameters(method));
+        .thenReturn(new DefaultParameters(ParametersSource.of(method)));
 
     sqlSpannerQuery.execute(params);
 
@@ -367,7 +368,7 @@ class SqlSpannerQueryTests {
             "sortAndPageable", String.class, String.class, Sort.class, Pageable.class);
     when(this.queryMethod.getQueryMethod()).thenReturn(method);
     Mockito.<Parameters>when(this.queryMethod.getParameters())
-        .thenReturn(new DefaultParameters(method));
+        .thenReturn(new DefaultParameters(ParametersSource.of(method)));
 
     sqlSpannerQuery.execute(params);
 
@@ -499,7 +500,7 @@ class SqlSpannerQueryTests {
             List.class);
     when(this.queryMethod.getQueryMethod()).thenReturn(method);
     Mockito.<Parameters>when(this.queryMethod.getParameters())
-        .thenReturn(new DefaultParameters(method));
+        .thenReturn(new DefaultParameters(ParametersSource.of(method)));
     sqlSpannerQuery.execute(params);
 
     verify(this.spannerTemplate, times(1)).executeQuery(any(), any());
@@ -523,7 +524,7 @@ class SqlSpannerQueryTests {
     Method method = QueryHolder.class.getMethod("noParamMethod");
 
     Mockito.<Parameters>when(this.queryMethod.getParameters())
-        .thenReturn(new DefaultParameters(method));
+        .thenReturn(new DefaultParameters(ParametersSource.of(method)));
 
     SqlSpannerQuery sqlSpannerQuery = spy(createQuery(sql, Trade.class, true));
 
@@ -592,7 +593,7 @@ class SqlSpannerQueryTests {
     Method method = QueryHolder.class.getMethod("dummyMethod3", String.class, String.class);
     when(this.queryMethod.getQueryMethod()).thenReturn(method);
     Mockito.<Parameters>when(this.queryMethod.getParameters())
-        .thenReturn(new DefaultParameters(method));
+        .thenReturn(new DefaultParameters(ParametersSource.of(method)));
 
     when(sqlSpannerQuery.getReturnedSimpleConvertableItemType()).thenReturn(long.class);
 
@@ -642,7 +643,7 @@ class SqlSpannerQueryTests {
         QueryHolder.class.getMethod("dummyMethod6", String.class);
     when(this.queryMethod.getQueryMethod()).thenReturn(arrayParameterTriggeringMethod);
     Mockito.<Parameters>when(this.queryMethod.getParameters())
-        .thenReturn(new DefaultParameters(arrayParameterTriggeringMethod));
+        .thenReturn(new DefaultParameters(ParametersSource.of(arrayParameterTriggeringMethod)));
 
     sqlSpannerQuery.execute(params);
     // capturing the row function and verifying it's the correct one with mock data
@@ -705,7 +706,7 @@ class SqlSpannerQueryTests {
         QueryHolder.class.getMethod("dummyMethod6", String.class);
     when(this.queryMethod.getQueryMethod()).thenReturn(arrayParameterTriggeringMethod);
     Mockito.<Parameters>when(this.queryMethod.getParameters())
-        .thenReturn(new DefaultParameters(arrayParameterTriggeringMethod));
+        .thenReturn(new DefaultParameters(ParametersSource.of(arrayParameterTriggeringMethod)));
 
     sqlSpannerQuery.execute(params);
     // capturing the row function and verifying it's the correct one with mock data

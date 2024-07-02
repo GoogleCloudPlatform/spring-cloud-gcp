@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
-import static com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfiguration.REPORTER_BEAN_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -45,6 +44,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
 import zipkin2.reporter.Reporter;
 import zipkin2.reporter.Sender;
+import zipkin2.reporter.stackdriver.StackdriverSender;
 
 /** Tests for Trace Pub/Sub auto-config. */
 class TracePubSubAutoConfigurationTest {
@@ -67,8 +67,6 @@ class TracePubSubAutoConfigurationTest {
                 StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
                 SpanHandler.class,
                 () -> SpanHandler.NOOP)
-            // Prevent health-check from triggering a real call to Trace.
-            .withBean(REPORTER_BEAN_NAME, Reporter.class, () -> mock(Reporter.class))
             .withPropertyValues(
                 "spring.cloud.gcp.project-id=proj");
   }
@@ -78,7 +76,7 @@ class TracePubSubAutoConfigurationTest {
     this.contextRunner.run(
         context -> {
           assertThat(
-                  context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, Sender.class))
+                  context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class))
               .isNotNull();
           assertThat(context.getBean(ManagedChannel.class)).isNotNull();
         });

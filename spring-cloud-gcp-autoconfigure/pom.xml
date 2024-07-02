@@ -190,6 +190,18 @@
 
         <dependency>
             <groupId>io.zipkin.gcp</groupId>
+            <artifactId>zipkin-encoder-stackdriver</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.zipkin.gcp</groupId>
+            <artifactId>brave-encoder-stackdriver</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.zipkin.gcp</groupId>
             <artifactId>zipkin-sender-stackdriver</artifactId>
             <optional>true</optional>
             <exclusions>
