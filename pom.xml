@@ -37,10 +37,11 @@
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
 		<spring-cloud-dependencies.version>2023.0.2</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>3.2.5</spring-boot-dependencies.version>
+		<spring-boot-dependencies.version>3.3.1</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
-		<zipkin-gcp.version>1.1.1</zipkin-gcp.version>
+		<zipkin-gcp.version>2.2.4</zipkin-gcp.version>
 		<java-cfenv.version>2.5.0</java-cfenv.version>
+		<micrometer-tracing.version>1.2.5</micrometer-tracing.version>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
@@ -112,6 +113,18 @@
 
 			<dependency>
 				<groupId>io.zipkin.gcp</groupId>
+				<artifactId>zipkin-encoder-stackdriver</artifactId>
+				<version>${zipkin-gcp.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.zipkin.gcp</groupId>
+				<artifactId>brave-encoder-stackdriver</artifactId>
+				<version>${zipkin-gcp.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.zipkin.gcp</groupId>
 				<artifactId>zipkin-sender-stackdriver</artifactId>
 				<version>${zipkin-gcp.version}</version>
 				<exclusions>
@@ -144,6 +157,14 @@
 				<groupId>io.pivotal.cfenv</groupId>
 				<artifactId>java-cfenv-test-support</artifactId>
 				<version>${java-cfenv.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.micrometer</groupId>
+				<artifactId>micrometer-tracing-bom</artifactId>
+				<version>${micrometer-tracing.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 
 		</dependencies>

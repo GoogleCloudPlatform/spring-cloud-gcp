@@ -57,6 +57,10 @@
 			<artifactId>brave-propagation-stackdriver</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>io.zipkin.gcp</groupId>
+			<artifactId>brave-encoder-stackdriver</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-core-grpc</artifactId>
 			<exclusions>
