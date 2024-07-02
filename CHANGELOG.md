@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.5.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.4.3...v5.5.0) (2024-07-02)
+
+
+### Features
+
+* spring boot 3.3.1 ([#2990](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2990)) ([b9de319](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b9de319d1961a2fbb6927b65acd72d5b90d48c79))
+
 ## [5.4.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.4.2...v5.4.3) (2024-06-28)
 
 
