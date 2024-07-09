@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.10.6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.5...v4.10.6) (2024-07-09)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.18.1 to 1.19.0 ([#2994](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2994)) ([fb1603d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fb1603dfb40070003b6fd645f5290de5df90ba13))
+* bump com.google.cloud:libraries-bom from 26.42.0 to 26.43.0 ([#3034](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3034)) ([5ca3806](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5ca3806e816b9e674fa19b4841d407d54b270e53))
+* bump com.google.truth:truth from 1.4.0 to 1.4.3 ([#3010](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3010)) ([3f0a96c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3f0a96ca06a599ba1540c0c0cdff1fca87c31565))
+* bump io.micrometer:micrometer-tracing-bom from 1.3.0 to 1.3.1 ([#2996](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2996)) ([5eb4c29](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5eb4c295d09e28b92841b8957412f962492767a7))
+* bump io.micrometer:micrometer-tracing-bom from 1.3.1 to 1.3.2 ([#3040](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3040)) ([ce38e56](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ce38e5629f3f0126983f01dacf40da3b4faaaddb))
+* bump org.apache.maven.plugins:maven-jar-plugin from 3.4.1 to 3.4.2 ([#2997](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2997)) ([cae601e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cae601eb7a718251d9575b6081b7f84c52a3817e))
+
 ## [4.10.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.4...v4.10.5) (2024-06-24)
 
 
