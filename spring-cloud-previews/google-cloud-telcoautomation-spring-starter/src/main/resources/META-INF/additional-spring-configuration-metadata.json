@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.telcoautomation.v1.telco-automation.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud telcoautomation/TelcoAutomation components.",
+      "defaultValue": true
+    }
+  ]
+}

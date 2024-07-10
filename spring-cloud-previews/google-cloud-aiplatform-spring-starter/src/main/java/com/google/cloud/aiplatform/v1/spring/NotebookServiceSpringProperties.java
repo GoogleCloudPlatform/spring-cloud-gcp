@@ -51,6 +51,11 @@ public class NotebookServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry listNotebookRuntimeTemplatesRetry;
   /**
+   * Allow override of retry settings at method-level for updateNotebookRuntimeTemplate. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateNotebookRuntimeTemplateRetry;
+  /**
    * Allow override of retry settings at method-level for getNotebookRuntime. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -129,6 +134,14 @@ public class NotebookServiceSpringProperties implements CredentialsSupplier {
 
   public void setListNotebookRuntimeTemplatesRetry(Retry listNotebookRuntimeTemplatesRetry) {
     this.listNotebookRuntimeTemplatesRetry = listNotebookRuntimeTemplatesRetry;
+  }
+
+  public Retry getUpdateNotebookRuntimeTemplateRetry() {
+    return this.updateNotebookRuntimeTemplateRetry;
+  }
+
+  public void setUpdateNotebookRuntimeTemplateRetry(Retry updateNotebookRuntimeTemplateRetry) {
+    this.updateNotebookRuntimeTemplateRetry = updateNotebookRuntimeTemplateRetry;
   }
 
   public Retry getGetNotebookRuntimeRetry() {

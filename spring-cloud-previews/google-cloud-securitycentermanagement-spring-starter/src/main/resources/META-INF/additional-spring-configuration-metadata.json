@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.securitycentermanagement.v1.security-center-management.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud securitycentermanagement/SecurityCenterManagement components.",
+      "defaultValue": true
+    }
+  ]
+}

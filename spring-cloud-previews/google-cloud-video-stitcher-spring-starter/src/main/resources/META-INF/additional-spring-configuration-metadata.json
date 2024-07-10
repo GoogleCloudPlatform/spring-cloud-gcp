@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.video.stitcher.v1.video-stitcher-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud videostitcher/VideoStitcherService components.",
+      "defaultValue": true
+    }
+  ]
+}
