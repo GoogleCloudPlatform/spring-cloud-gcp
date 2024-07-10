@@ -1,0 +1,2 @@
+com.google.cloud.iap.v1.spring.IdentityAwareProxyAdminServiceSpringAutoConfiguration
+com.google.cloud.iap.v1.spring.IdentityAwareProxyOAuthServiceSpringAutoConfiguration

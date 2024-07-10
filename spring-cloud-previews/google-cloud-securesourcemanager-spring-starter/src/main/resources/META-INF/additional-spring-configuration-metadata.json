@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.securesourcemanager.v1.secure-source-manager.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud securesourcemanager/SecureSourceManager components.",
+      "defaultValue": true
+    }
+  ]
+}

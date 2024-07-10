@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.datacatalog.lineage.v1.lineage.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud datalineage/Lineage components.",
+      "defaultValue": true
+    }
+  ]
+}

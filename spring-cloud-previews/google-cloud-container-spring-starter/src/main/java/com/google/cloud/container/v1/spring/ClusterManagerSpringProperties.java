@@ -38,6 +38,8 @@ public class ClusterManagerSpringProperties implements CredentialsSupplier {
   private String quotaProjectId;
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+  /** Allow override of default transport channel provider to use REST instead of gRPC. */
+  private boolean useRest = false;
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
   /**
@@ -222,6 +224,14 @@ public class ClusterManagerSpringProperties implements CredentialsSupplier {
 
   public void setQuotaProjectId(String quotaProjectId) {
     this.quotaProjectId = quotaProjectId;
+  }
+
+  public boolean getUseRest() {
+    return this.useRest;
+  }
+
+  public void setUseRest(boolean useRest) {
+    this.useRest = useRest;
   }
 
   public Integer getExecutorThreadCount() {

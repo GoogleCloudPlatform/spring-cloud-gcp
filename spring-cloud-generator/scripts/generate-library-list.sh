@@ -29,7 +29,7 @@ echo "# library_name, googleapis_location, coordinates_version, monorepo_folder"
 # Note that this logic will not work for non-cloud APIs
 count=0
 
-configs=$(yq '.libraries[]' ./google-cloud-java/generation_config.yaml)
+configs=$(yq eval '.libraries[]' -o=json ./google-cloud-java/generation_config.yaml)
 # Properly format the configs as a JSON array
 # This includes adding commas between objects and wrapping everything in square brackets
 json_array="[ $(echo "$configs" | tr '\n' ' ' | sed 's/} {/}, {/g') ]"
