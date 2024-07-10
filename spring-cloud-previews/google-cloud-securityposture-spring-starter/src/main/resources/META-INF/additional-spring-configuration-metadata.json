@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.securityposture.v1.security-posture.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud securityposture/SecurityPosture components.",
+      "defaultValue": true
+    }
+  ]
+}

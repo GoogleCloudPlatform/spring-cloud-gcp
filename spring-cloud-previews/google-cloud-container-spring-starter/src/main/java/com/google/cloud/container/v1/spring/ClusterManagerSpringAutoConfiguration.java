@@ -96,6 +96,9 @@ public class ClusterManagerSpringAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean(name = "defaultClusterManagerTransportChannelProvider")
   public TransportChannelProvider defaultClusterManagerTransportChannelProvider() {
+    if (this.clientProperties.getUseRest()) {
+      return ClusterManagerSettings.defaultHttpJsonTransportProviderBuilder().build();
+    }
     return ClusterManagerSettings.defaultTransportChannelProvider();
   }
 
@@ -120,10 +123,19 @@ public class ClusterManagerSpringAutoConfiguration {
       @Qualifier("defaultClusterManagerTransportChannelProvider")
           TransportChannelProvider defaultTransportChannelProvider)
       throws IOException {
-    ClusterManagerSettings.Builder clientSettingsBuilder = ClusterManagerSettings.newBuilder();
+    ClusterManagerSettings.Builder clientSettingsBuilder;
+    if (this.clientProperties.getUseRest()) {
+      clientSettingsBuilder = ClusterManagerSettings.newHttpJsonBuilder();
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Using REST (HTTP/JSON) transport.");
+      }
+    } else {
+      clientSettingsBuilder = ClusterManagerSettings.newBuilder();
+    }
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)
+        .setEndpoint(ClusterManagerSettings.getDefaultEndpoint())
         .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());
