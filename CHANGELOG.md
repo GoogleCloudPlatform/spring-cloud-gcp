@@ -14,6 +14,31 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.5.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.4.3...v5.5.0) (2024-07-10)
+
+
+### Features
+
+* spring boot 3.3.1 ([#2990](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2990)) ([b9de319](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b9de319d1961a2fbb6927b65acd72d5b90d48c79))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.43.0 ([#3029](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3029)) ([a7e8117](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a7e811773fbdeec4c77f3b4d6983f923eab95e81))
+* **deps:** update dependency io.micrometer:micrometer-tracing-bom to v1.3.1 ([#3021](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3021)) ([ccfc0a1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ccfc0a13df0e513a8515767a65aeaaa3ed2c6ea2))
+
+
+### Dependencies
+
+* bump com.google.truth:truth from 1.4.2 to 1.4.3 ([#3007](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3007)) ([291123a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/291123a4ed26f850999851e949b5dc8cf6d657eb))
+* bump io.micrometer:micrometer-tracing-bom from 1.2.5 to 1.3.1 ([#3024](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3024)) ([c9479e3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c9479e343dbdbb154fa6b30cfcc819a00659fdc1))
+* bump io.micrometer:micrometer-tracing-bom from 1.3.1 to 1.3.2 ([#3042](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3042)) ([dbc696e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/dbc696e008e9a7022255e42c667be1d19cb92169))
+
+
+### Documentation
+
+* Update README links ([#3027](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3027)) ([f1e3b82](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f1e3b824e4952392f283a786996660fdeae4b2fc))
+
 ## [5.4.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.4.2...v5.4.3) (2024-06-28)
 
 
