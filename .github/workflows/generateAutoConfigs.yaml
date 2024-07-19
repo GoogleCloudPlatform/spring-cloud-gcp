@@ -134,8 +134,8 @@ jobs:
           git stash push -- spring-cloud-previews/
           
           # configure author
-          git config --global user.name "Cloud Java Bot"
-          git config --global user.email "cloud-java-bot@google.com"
+          # git config --global user.name "Cloud Java Bot"
+          # git config --global user.email "cloud-java-bot@google.com"
           
           # push changes to branch
           if [[ ${{ github.event.inputs.forked_repo }} != "none" ]]; then
@@ -158,4 +158,4 @@ jobs:
         env:
           GITHUB_ACTOR_EMAIL: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_EMAIL }}
           GITHUB_ACTOR_NAME: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_NAME }}
-          GITHUB_TOKEN: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
+          # GITHUB_TOKEN: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
