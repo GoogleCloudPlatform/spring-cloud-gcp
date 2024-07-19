@@ -21,21 +21,21 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: Get PR info
-        id: get_pr_info
-        continue-on-error: false
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          echo "Please trigger update workflow manually. The following information may be helpful: "
-          echo "PR head repo full name: $HEAD_REPO_NAME"
-          echo "PR base repo full name: $BASE_REPO_NAME"
-          echo "PR branch name: $PR_BRANCH_NAME"
-          echo "Actor from PR event: $GITHUB_ACTOR"
-          exit 1
-        env:
-          HEAD_REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
-          BASE_REPO_NAME: ${{ github.event.pull_request.base.repo.full_name }}
-          PR_BRANCH_NAME: ${{ github.head_ref }}
+      # - name: Get PR info
+        # id: get_pr_info
+        # continue-on-error: false
+        # if: ${{ github.event_name == 'pull_request' }}
+        # run: |
+        #  echo "Please trigger update workflow manually. The following information may be helpful: "
+        #  echo "PR head repo full name: $HEAD_REPO_NAME"
+        #  echo "PR base repo full name: $BASE_REPO_NAME"
+        #  echo "PR branch name: $PR_BRANCH_NAME"
+        #  echo "Actor from PR event: $GITHUB_ACTOR"
+        #  exit 1
+        # env:
+        #  HEAD_REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
+        #  BASE_REPO_NAME: ${{ github.event.pull_request.base.repo.full_name }}
+        #  PR_BRANCH_NAME: ${{ github.head_ref }}
       - name: Get libraries bom version
         id: get_libraries_bom_version
         continue-on-error: false
