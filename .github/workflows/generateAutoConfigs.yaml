@@ -42,7 +42,7 @@ jobs:
         # Fetch updated pom file with the new libraries-bom version.
         # This step differs slightly depending on whether the workflow is triggered for a forked repo.
         run: |
-          set -x
+          set -ex
           sudo apt-get update
           sudo apt-get install libxml2-utils
           if [[ ${{ github.event.inputs.forked_repo }} != "none" ]]; then
