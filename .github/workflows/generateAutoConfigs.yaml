@@ -134,8 +134,9 @@ jobs:
           git stash push -- spring-cloud-previews/
           
           # configure author
-          # git config --global user.name "Cloud Java Bot"
-          # git config --global user.email "cloud-java-bot@google.com"
+          # diegomarquezp: we need to commit with an account (these lines don't depend on any token, they can be arbitrary)
+          git config --global user.name "Cloud Java Bot"
+          git config --global user.email "cloud-java-bot@google.com"
           
           # push changes to branch
           if [[ ${{ github.event.inputs.forked_repo }} != "none" ]]; then
