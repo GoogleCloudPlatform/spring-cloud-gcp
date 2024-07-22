@@ -6,6 +6,10 @@ labels: waiting-for-triage
 assignees: ''
 
 ---
+**PLEASE READ**: If you have a support contract with Google, please create an issue in the 
+[support console](https://cloud.google.com/support/) instead of filing on GitHub. This will ensure 
+a timely response.
+
 We'd love to accept your patches and contributions to this project. There are just a few small
 guidelines you need to follow before opening an issue or a PR:
 
