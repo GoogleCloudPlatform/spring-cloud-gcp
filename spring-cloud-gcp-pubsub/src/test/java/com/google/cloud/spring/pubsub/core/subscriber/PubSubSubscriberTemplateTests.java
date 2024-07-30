@@ -17,6 +17,7 @@
 package com.google.cloud.spring.pubsub.core.subscriber;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.doAnswer;
@@ -59,8 +60,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -528,6 +531,17 @@ class PubSubSubscriberTemplateTests {
     assertThat(result.get(0).getPubsubMessage()).isSameAs(this.pubsubMessage);
     assertThat(result.get(0).getProjectSubscriptionName().getProject()).isEqualTo("testProject");
     assertThat(result.get(0).getProjectSubscriptionName().getSubscription()).isEqualTo("sub2");
+  }
+
+  @Test
+  @Timeout(value = 5, unit = TimeUnit.SECONDS)
+  void testPullAndConvertAsync_publishesConvertException() {
+    when(this.messageConverter.fromPubSubMessage(this.pubsubMessage, BigInteger.class)).thenThrow(new NullPointerException());
+    CompletableFuture<List<ConvertedAcknowledgeablePubsubMessage<BigInteger>>> asyncResult =
+            this.pubSubSubscriberTemplate.pullAndConvertAsync("sub2", 1, true, BigInteger.class);
+
+    ExecutionException e = assertThrows(ExecutionException.class, asyncResult::get);
+    assertThat(e.getCause()).isInstanceOf(NullPointerException.class);
   }
 
   @Test
