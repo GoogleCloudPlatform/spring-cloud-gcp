@@ -281,8 +281,12 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
                   completableFuture.completeExceptionally(exception);
                   return;
                 }
-                completableFuture.complete(
-                    this.toConvertedAcknowledgeablePubsubMessages(payloadType, ackableMessages));
+                try {
+                  completableFuture.complete(this.toConvertedAcknowledgeablePubsubMessages(payloadType, ackableMessages));
+                } catch (Exception e) {
+                  completableFuture.completeExceptionally(e);
+                }
+
             });
 
     return completableFuture;
