@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.5.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.5.0...v5.5.1) (2024-08-05)
+
+
+### Bug Fixes
+
+* pubsub template hanging if exception is thrown when paring response ([#2696](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2696)) ([#3091](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3091)) ([d605691](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d60569132be80f664cfb205da15701925a2d3bee))
+
+
+### Documentation
+
+* add Google Cloud Support link to new issues templates and choices ([#3087](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3087)) ([a0d3094](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a0d30941fcd10b7f33fee58db624f7847e753441))
+
 ## [5.5.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.4.3...v5.5.0) (2024-07-10)
 
 
