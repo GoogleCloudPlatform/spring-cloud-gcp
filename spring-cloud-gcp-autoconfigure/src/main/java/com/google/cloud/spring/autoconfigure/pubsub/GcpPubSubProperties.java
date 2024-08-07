@@ -27,6 +27,10 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties("spring.cloud.gcp.pubsub")
 public class GcpPubSubProperties extends PubSubConfiguration implements CredentialsSupplier {
 
+  private String universeDomain;
+
+  private String endpoint;
+
   /** Overrides the GCP project ID specified in the Core module. */
   private String projectId;
 
@@ -42,6 +46,21 @@ public class GcpPubSubProperties extends PubSubConfiguration implements Credenti
   /** Overrides the GCP OAuth2 credentials specified in the Core module. */
   @NestedConfigurationProperty
   private final Credentials credentials = new Credentials(GcpScope.PUBSUB.getUrl());
+
+  public String getUniverseDomain() {
+    return this.universeDomain;
+  }
+  public String getEndpoint() {
+    return this.endpoint;
+  }
+
+  public void setUniverseDomain(String universeDomain) {
+    this.universeDomain = universeDomain;
+  }
+
+  public void setEndpoint(String endpoint) {
+    this.endpoint = endpoint;
+  }
 
   public String getProjectId() {
     return this.projectId;

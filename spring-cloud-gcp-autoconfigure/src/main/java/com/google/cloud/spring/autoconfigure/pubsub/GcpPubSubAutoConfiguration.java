@@ -400,6 +400,8 @@ public class GcpPubSubAutoConfiguration {
           TransportChannelProvider publisherTransportChannelProvider) {
     try {
       return TopicAdminSettings.newBuilder()
+          .setUniverseDomain(gcpPubSubProperties.getUniverseDomain())
+          .setEndpoint(gcpPubSubProperties.getEndpoint())
           .setCredentialsProvider(this.finalCredentialsProvider)
           .setHeaderProvider(this.headerProvider)
           .setTransportChannelProvider(publisherTransportChannelProvider)
