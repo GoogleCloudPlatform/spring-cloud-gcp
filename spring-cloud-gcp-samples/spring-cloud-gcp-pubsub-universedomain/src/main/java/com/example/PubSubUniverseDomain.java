@@ -29,7 +29,7 @@ public class PubSubUniverseDomain {
 
   public void outputTopicNames() {
     for (Topic topic : topicAdminClient
-        .listTopics(ProjectName.of("google-tpc-testing-environment:cloudsdk-test-project")).iterateAll()) {
+        .listTopics(ProjectName.of("[project-id]")).iterateAll()) {
       System.out.println(topic.getName());
     }
   }
