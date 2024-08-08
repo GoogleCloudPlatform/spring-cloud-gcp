@@ -31,6 +31,9 @@ public class GcpKmsProperties implements CredentialsSupplier {
 
   /** Overrides the GCP Project ID specified in the Core module. */
   private String projectId;
+  private String universeDomain;
+
+  private String endpoint;
 
   @Override
   public Credentials getCredentials() {
@@ -43,5 +46,21 @@ public class GcpKmsProperties implements CredentialsSupplier {
 
   public void setProjectId(String projectId) {
     this.projectId = projectId;
+  }
+
+  public String getUniverseDomain() {
+    return universeDomain;
+  }
+
+  public void setUniverseDomain(String universeDomain) {
+    this.universeDomain = universeDomain;
+  }
+
+  public String getEndpoint() {
+    return endpoint;
+  }
+
+  public void setEndpoint(String endpoint) {
+    this.endpoint = endpoint;
   }
 }

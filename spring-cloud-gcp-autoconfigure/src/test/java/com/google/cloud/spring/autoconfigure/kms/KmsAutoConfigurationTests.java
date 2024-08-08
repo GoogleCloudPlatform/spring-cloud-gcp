@@ -118,6 +118,27 @@ class KmsAutoConfigurationTests {
         });
   }
 
+  @Test
+  void testShouldSetUniverseDomain() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.kms.universe-domain=myUniverseDomain")
+        .run(ctx -> {
+          KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
+          assertThat(client.getSettings().getUniverseDomain()).isEqualTo("myUniverseDomain");
+          assertThat(client.getSettings().getEndpoint()).isEqualTo("cloudkms.myUniverseDomain:443");
+        });
+  }
+
+  @Test
+  void testShouldSetEndpoint() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.kms.endpoint=kms.example.com:123")
+        .run(ctx -> {
+          KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
+          assertThat(client.getSettings().getEndpoint()).isEqualTo("kms.example.com:123");
+        });
+  }
+
   @Configuration
   static class TestConfiguration {
 

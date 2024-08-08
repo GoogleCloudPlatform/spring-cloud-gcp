@@ -41,11 +41,14 @@ public class GcpKmsAutoConfiguration {
   private final GcpProjectIdProvider gcpProjectIdProvider;
   private final CredentialsProvider credentialsProvider;
 
+  private final GcpKmsProperties gcpKmsProperties;
+
   public GcpKmsAutoConfiguration(
       GcpProjectIdProvider coreProjectIdProvider,
       GcpKmsProperties properties,
       CredentialsProvider credentialsProvider)
       throws IOException {
+    this.gcpKmsProperties = properties;
     this.gcpProjectIdProvider =
         properties.getProjectId() != null
             ? properties::getProjectId
@@ -65,13 +68,17 @@ public class GcpKmsAutoConfiguration {
   @ConditionalOnMissingBean
   public KeyManagementServiceClient keyManagementClient(CredentialsProvider googleCredentials)
       throws IOException {
-    KeyManagementServiceSettings settings =
+    KeyManagementServiceSettings.Builder settings =
         KeyManagementServiceSettings.newBuilder()
             .setCredentialsProvider(this.credentialsProvider)
-            .setHeaderProvider(new UserAgentHeaderProvider(GcpKmsAutoConfiguration.class))
-            .build();
-
-    return KeyManagementServiceClient.create(settings);
+            .setHeaderProvider(new UserAgentHeaderProvider(GcpKmsAutoConfiguration.class));
+    if (this.gcpKmsProperties.getUniverseDomain() != null) {
+      settings.setUniverseDomain(this.gcpKmsProperties.getUniverseDomain());
+    }
+    if (this.gcpKmsProperties.getEndpoint() != null) {
+      settings.setEndpoint(this.gcpKmsProperties.getEndpoint());
+    }
+    return KeyManagementServiceClient.create(settings.build());
   }
 
   @Bean
