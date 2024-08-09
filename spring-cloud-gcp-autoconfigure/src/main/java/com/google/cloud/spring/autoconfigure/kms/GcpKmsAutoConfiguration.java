@@ -31,9 +31,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-/**
- * Autoconfiguration for GCP KMS which enables data encryption and decryption.
- */
+/** Autoconfiguration for GCP KMS which enables data encryption and decryption. */
 @AutoConfiguration
 @EnableConfigurationProperties(GcpKmsProperties.class)
 @ConditionalOnClass({KeyManagementServiceClient.class, KmsTemplate.class})
@@ -54,9 +52,7 @@ public class GcpKmsAutoConfiguration {
     this.universeDomain = properties.getUniverseDomain();
     this.endpoint = properties.getEndpoint();
     this.gcpProjectIdProvider =
-        properties.getProjectId() != null
-            ? properties::getProjectId
-            : coreProjectIdProvider;
+        properties.getProjectId() != null ? properties::getProjectId : coreProjectIdProvider;
 
     this.credentialsProvider =
         properties.getCredentials().hasKey()

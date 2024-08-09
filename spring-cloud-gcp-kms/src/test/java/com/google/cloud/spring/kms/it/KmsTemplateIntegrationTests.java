@@ -28,14 +28,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/** Integration tests for {@link KmsTemplate}. */
+/**
+ * Integration tests for {@link KmsTemplate}.
+ */
 //Please create two keys on cloud-console, both having key-ring as "integration-test-key-ring" and region "us-east1", first named as "test-key" and second as "other-key"
 @EnabledIfSystemProperty(named = "it.kms", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {KmsTestConfiguration.class})
 class KmsTemplateIntegrationTests {
 
-  @Autowired KmsTemplate kmsTemplate;
+  @Autowired
+  KmsTemplate kmsTemplate;
 
   @Test
   void testEncryptDecryptText() {
@@ -64,6 +67,6 @@ class KmsTemplateIntegrationTests {
     String kmsStr2 = "us-east1/integration-test-key-ring/other-key";
 
     assertThatThrownBy(() -> kmsTemplate.decryptText(kmsStr2, encryptedBytes))
-            .isInstanceOf(com.google.api.gax.rpc.InvalidArgumentException.class);
+        .isInstanceOf(com.google.api.gax.rpc.InvalidArgumentException.class);
   }
 }
