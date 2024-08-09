@@ -41,18 +41,18 @@ public class GcpKmsAutoConfiguration {
   private final GcpProjectIdProvider gcpProjectIdProvider;
   private final CredentialsProvider credentialsProvider;
 
-  private final GcpKmsProperties gcpKmsProperties;
+  private final String universeDomain;
+  private final String endpoint;
 
   public GcpKmsAutoConfiguration(
       GcpProjectIdProvider coreProjectIdProvider,
       GcpKmsProperties properties,
       CredentialsProvider credentialsProvider)
       throws IOException {
-    this.gcpKmsProperties = properties;
+    this.universeDomain = properties.getUniverseDomain();
+    this.endpoint = properties.getEndpoint();
     this.gcpProjectIdProvider =
-        properties.getProjectId() != null
-            ? properties::getProjectId
-            : coreProjectIdProvider;
+        properties.getProjectId() != null ? properties::getProjectId : coreProjectIdProvider;
 
     this.credentialsProvider =
         properties.getCredentials().hasKey()
@@ -72,11 +72,11 @@ public class GcpKmsAutoConfiguration {
         KeyManagementServiceSettings.newBuilder()
             .setCredentialsProvider(this.credentialsProvider)
             .setHeaderProvider(new UserAgentHeaderProvider(GcpKmsAutoConfiguration.class));
-    if (this.gcpKmsProperties.getUniverseDomain() != null) {
-      settings.setUniverseDomain(this.gcpKmsProperties.getUniverseDomain());
+    if (this.universeDomain != null) {
+      settings.setUniverseDomain(this.universeDomain);
     }
-    if (this.gcpKmsProperties.getEndpoint() != null) {
-      settings.setEndpoint(this.gcpKmsProperties.getEndpoint());
+    if (this.endpoint != null) {
+      settings.setEndpoint(this.endpoint);
     }
     return KeyManagementServiceClient.create(settings.build());
   }
