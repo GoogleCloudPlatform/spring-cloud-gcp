@@ -190,8 +190,6 @@ class EchoAutoConfigurationTests {
   void testCustomTransportChannelProviderUsedWhenProvided() throws IOException {
     InstantiatingGrpcChannelProvider channelProvider =
         InstantiatingGrpcChannelProvider.newBuilder()
-            .setEndpoint("localhost:7469")
-            .setMaxInboundMessageSize(Integer.MAX_VALUE)
             .build();
     contextRunner
         .withBean(
