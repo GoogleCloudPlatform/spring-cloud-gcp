@@ -196,8 +196,8 @@ class EchoAutoConfigurationTests {
     // TransportChannelProvider bean
     when(mockApiCallContext.withCredentials(any())).thenReturn(mockApiCallContext);
     when(mockApiCallContext.withTransportChannel(any())).thenReturn(mockApiCallContext);
-    when(mockApiCallContext.withStreamWaitTimeout(any())).thenReturn(mockApiCallContext);
-    when(mockApiCallContext.withStreamIdleTimeout(any())).thenReturn(mockApiCallContext);
+    when(mockApiCallContext.withStreamWaitTimeoutDuration(any())).thenReturn(mockApiCallContext);
+    when(mockApiCallContext.withStreamIdleTimeoutDuration(any())).thenReturn(mockApiCallContext);
     when(mockApiCallContext.withEndpointContext(any())).thenReturn(mockApiCallContext);
 
     contextRunner
