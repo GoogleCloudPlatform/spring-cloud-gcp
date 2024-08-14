@@ -91,7 +91,7 @@ function modify_workspace_file(){
   # delete existing maven_install rules
   buildozer 'delete' ${path_to_workspace}:%maven_install
   # add custom maven_install rules
-  perl -pi -e "s{(^_gapic_generator_java_version[^\n]*)}{\$1\n$(cat ${path_to_modification_string})}" ${path_to_workspace}
+  perl -pi -e "s{(^api_dependencies()[^\n]*)}{\$1\n$(cat ${path_to_modification_string})}" ${path_to_workspace}
 }
 
 # For individual library, set up bazel rules
