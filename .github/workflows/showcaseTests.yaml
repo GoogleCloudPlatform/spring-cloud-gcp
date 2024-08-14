@@ -43,6 +43,6 @@ jobs:
           bash scripts/generate-showcase.sh
       - name: Unit tests for showcase-spring-starter
         # Runs showcase-spring-starter unit tests
-        working-directory: spring-cloud-generator
+        working-directory: spring-cloud-generator/showcase/showcase-spring-starter
         run: |
-          cd showcase/showcase-spring-starter && mvn verify
+          ../../../mvnw verify
