@@ -2,8 +2,11 @@ _spring_cloud_generator_version = "5.5.1-SNAPSHOT" # {x-version-update:spring-cl
 
 maven_install(
     artifacts = [
-        "com.google.cloud:spring-cloud-generator:" + _spring_cloud_generator_version,
-    ],
+      "com.google.cloud:spring-cloud-generator:" + _spring_cloud_generator_version,
+      ] +
+      IO_GRPC_GRPC_JAVA_ARTIFACTS,
+    generate_compat_repositories = True,
+    override_targets = IO_GRPC_GRPC_JAVA_OVERRIDE_TARGETS,
     #Update this False for local development
     fail_on_missing_checksum = False,
     repositories = [

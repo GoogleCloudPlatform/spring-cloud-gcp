@@ -17,11 +17,10 @@
 package com.google.showcase.v1beta1.spring;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.TransportChannel;
@@ -189,27 +188,19 @@ class EchoAutoConfigurationTests {
 
   @Test
   void testCustomTransportChannelProviderUsedWhenProvided() throws IOException {
-    when(mockTransportChannelProvider.getTransportName()).thenReturn("grpc");
-    when(mockTransportChannelProvider.getTransportChannel()).thenReturn(mockTransportChannel);
-    when(mockTransportChannel.getEmptyCallContext()).thenReturn(mockApiCallContext);
-    // Mock no-ops for ApiCallContext since this test only intends to verify override of
-    // TransportChannelProvider bean
-    when(mockApiCallContext.withCredentials(any())).thenReturn(mockApiCallContext);
-    when(mockApiCallContext.withTransportChannel(any())).thenReturn(mockApiCallContext);
-    when(mockApiCallContext.withStreamWaitTimeout(any())).thenReturn(mockApiCallContext);
-    when(mockApiCallContext.withStreamIdleTimeout(any())).thenReturn(mockApiCallContext);
-    when(mockApiCallContext.withEndpointContext(any())).thenReturn(mockApiCallContext);
-
+    InstantiatingGrpcChannelProvider channelProvider =
+        InstantiatingGrpcChannelProvider.newBuilder()
+            .build();
     contextRunner
         .withBean(
             TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME,
             TransportChannelProvider.class,
-            () -> mockTransportChannelProvider)
+            () -> channelProvider)
         .run(
             ctx -> {
               EchoClient client = ctx.getBean(EchoClient.class);
               assertThat(client.getSettings().getTransportChannelProvider())
-                  .isSameAs(mockTransportChannelProvider);
+                  .isSameAs(channelProvider);
             });
   }
 
