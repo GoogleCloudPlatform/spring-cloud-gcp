@@ -447,6 +447,30 @@ public class DlpServiceSpringAutoConfiguration {
           .getProjectDataProfileSettings()
           .setRetrySettings(getProjectDataProfileRetrySettings);
 
+      RetrySettings listFileStoreDataProfilesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listFileStoreDataProfilesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listFileStoreDataProfilesSettings()
+          .setRetrySettings(listFileStoreDataProfilesRetrySettings);
+
+      RetrySettings getFileStoreDataProfileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getFileStoreDataProfileSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getFileStoreDataProfileSettings()
+          .setRetrySettings(getFileStoreDataProfileRetrySettings);
+
+      RetrySettings deleteFileStoreDataProfileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteFileStoreDataProfileSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .deleteFileStoreDataProfileSettings()
+          .setRetrySettings(deleteFileStoreDataProfileRetrySettings);
+
       RetrySettings getTableDataProfileRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getTableDataProfileSettings().getRetrySettings(), serviceRetry);
@@ -1062,6 +1086,48 @@ public class DlpServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getProjectDataProfile from properties.");
+      }
+    }
+    Retry listFileStoreDataProfilesRetry = clientProperties.getListFileStoreDataProfilesRetry();
+    if (listFileStoreDataProfilesRetry != null) {
+      RetrySettings listFileStoreDataProfilesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listFileStoreDataProfilesSettings().getRetrySettings(),
+              listFileStoreDataProfilesRetry);
+      clientSettingsBuilder
+          .listFileStoreDataProfilesSettings()
+          .setRetrySettings(listFileStoreDataProfilesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listFileStoreDataProfiles from properties.");
+      }
+    }
+    Retry getFileStoreDataProfileRetry = clientProperties.getGetFileStoreDataProfileRetry();
+    if (getFileStoreDataProfileRetry != null) {
+      RetrySettings getFileStoreDataProfileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getFileStoreDataProfileSettings().getRetrySettings(),
+              getFileStoreDataProfileRetry);
+      clientSettingsBuilder
+          .getFileStoreDataProfileSettings()
+          .setRetrySettings(getFileStoreDataProfileRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getFileStoreDataProfile from properties.");
+      }
+    }
+    Retry deleteFileStoreDataProfileRetry = clientProperties.getDeleteFileStoreDataProfileRetry();
+    if (deleteFileStoreDataProfileRetry != null) {
+      RetrySettings deleteFileStoreDataProfileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteFileStoreDataProfileSettings().getRetrySettings(),
+              deleteFileStoreDataProfileRetry);
+      clientSettingsBuilder
+          .deleteFileStoreDataProfileSettings()
+          .setRetrySettings(deleteFileStoreDataProfileRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteFileStoreDataProfile from properties.");
       }
     }
     Retry getTableDataProfileRetry = clientProperties.getGetTableDataProfileRetry();
