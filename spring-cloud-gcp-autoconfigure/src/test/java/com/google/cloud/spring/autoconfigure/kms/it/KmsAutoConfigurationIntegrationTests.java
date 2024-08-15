@@ -31,6 +31,8 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
+import java.net.UnknownHostException;
+
 @EnabledIfSystemProperty(named = "it.kms", matches = "true")
 public class KmsAutoConfigurationIntegrationTests {
 
@@ -53,12 +55,6 @@ public class KmsAutoConfigurationIntegrationTests {
   private final ApplicationContextRunner contextRunnerWithValidEndpoint =
       new ApplicationContextRunner()
           .withPropertyValues("spring.cloud.gcp.kms.endpoint=cloudkms.googleapis.com:443")
-          .withConfiguration(
-              AutoConfigurations.of(
-                  GcpContextAutoConfiguration.class, GcpKmsAutoConfiguration.class));
-  private final ApplicationContextRunner contextRunnerWithInvalidEndpoint =
-      new ApplicationContextRunner()
-          .withPropertyValues("spring.cloud.gcp.kms.endpoint=kms.example.com:123")
           .withConfiguration(
               AutoConfigurations.of(
                   GcpContextAutoConfiguration.class, GcpKmsAutoConfiguration.class));
