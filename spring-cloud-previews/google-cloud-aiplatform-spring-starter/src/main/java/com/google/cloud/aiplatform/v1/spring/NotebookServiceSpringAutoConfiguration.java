@@ -188,6 +188,22 @@ public class NotebookServiceSpringAutoConfiguration {
           .listNotebookRuntimesSettings()
           .setRetrySettings(listNotebookRuntimesRetrySettings);
 
+      RetrySettings getNotebookExecutionJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getNotebookExecutionJobSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getNotebookExecutionJobSettings()
+          .setRetrySettings(getNotebookExecutionJobRetrySettings);
+
+      RetrySettings listNotebookExecutionJobsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listNotebookExecutionJobsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listNotebookExecutionJobsSettings()
+          .setRetrySettings(listNotebookExecutionJobsRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -289,6 +305,34 @@ public class NotebookServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listNotebookRuntimes from properties.");
+      }
+    }
+    Retry getNotebookExecutionJobRetry = clientProperties.getGetNotebookExecutionJobRetry();
+    if (getNotebookExecutionJobRetry != null) {
+      RetrySettings getNotebookExecutionJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getNotebookExecutionJobSettings().getRetrySettings(),
+              getNotebookExecutionJobRetry);
+      clientSettingsBuilder
+          .getNotebookExecutionJobSettings()
+          .setRetrySettings(getNotebookExecutionJobRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getNotebookExecutionJob from properties.");
+      }
+    }
+    Retry listNotebookExecutionJobsRetry = clientProperties.getListNotebookExecutionJobsRetry();
+    if (listNotebookExecutionJobsRetry != null) {
+      RetrySettings listNotebookExecutionJobsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listNotebookExecutionJobsSettings().getRetrySettings(),
+              listNotebookExecutionJobsRetry);
+      clientSettingsBuilder
+          .listNotebookExecutionJobsSettings()
+          .setRetrySettings(listNotebookExecutionJobsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listNotebookExecutionJobs from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
