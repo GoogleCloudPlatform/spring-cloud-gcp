@@ -14,6 +14,21 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.6...v3.8.7) (2024-08-15)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.19.0 to 1.19.1 ([#3059](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3059)) ([a04be0b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a04be0bec285a3b0fe66d2f24391158b5a9fc73f))
+* bump cloud-sql-socket-factory.version from 1.19.1 to 1.20.0 ([#3123](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3123)) ([1519d0a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1519d0a01c686c3042d53c264e0b38806d8ada52))
+* bump com.google.cloud:libraries-bom from 26.43.0 to 26.44.0 ([#3097](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3097)) ([09d8297](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/09d8297192a41d87a658d2342e70c9f9bffc09d8))
+* bump com.google.cloud.tools:appengine-maven-plugin ([#3084](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3084)) ([1f7bc8f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1f7bc8f5aae0b09a9c1e1456fde554fcaa07eef9))
+* bump com.google.errorprone:error_prone_core from 2.28.0 to 2.30.0 ([#3099](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3099)) ([dbc01c7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/dbc01c7cda8e0eacf658150935c50f8a314dd03a))
+* bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.4 to 3.2.5 ([#3107](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3107)) ([46470d9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/46470d9ce3d198b1df5d115db991c028cb2b4cb3))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#3083](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3083)) ([064c2f5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/064c2f581126e29f4cfe267a6d37c96ec17e3d2c))
+* bump org.awaitility:awaitility from 4.2.1 to 4.2.2 ([#3095](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3095)) ([17ad3cc](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/17ad3cccbc31c2a281fb074b10c5355e81ab808e))
+* bump org.testcontainers:testcontainers-bom from 1.19.8 to 1.20.1 ([#3092](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3092)) ([fa57ff1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fa57ff1d3b8d9a4d8746d3887f89c1bccadd21d5))
+
 ## [3.8.6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.5...v3.8.6) (2024-07-08)
 
 
