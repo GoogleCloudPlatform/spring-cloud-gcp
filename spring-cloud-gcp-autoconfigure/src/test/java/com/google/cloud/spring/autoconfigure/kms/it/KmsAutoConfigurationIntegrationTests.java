@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.kms.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertThrows;
 
 import com.google.api.gax.rpc.UnauthenticatedException;
@@ -32,12 +33,18 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 
 @EnabledIfSystemProperty(named = "it.kms", matches = "true")
 public class KmsAutoConfigurationIntegrationTests {
 
   private static GcpProjectIdProvider projectIdProvider;
 
+  private final ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(
+              AutoConfigurations.of(
+                  GcpContextAutoConfiguration.class, GcpKmsAutoConfiguration.class));
   private final ApplicationContextRunner contextRunnerWithValidUniverse =
       new ApplicationContextRunner()
           .withPropertyValues("spring.cloud.gcp.kms.universe-domain=googleapis.com")
@@ -62,6 +69,48 @@ public class KmsAutoConfigurationIntegrationTests {
   @BeforeAll
   static void setUp() {
     projectIdProvider = new DefaultGcpProjectIdProvider();
+  }
+
+  @Test
+  void testDefault_encryptDecryptText() {
+    this.contextRunner.run(
+        context -> {
+          String kmsStr = "us-east1/integration-test-key-ring/test-key";
+          KmsTemplate kmsTemplate = context.getBean(KmsTemplate.class);
+          byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
+          String decryptedText = kmsTemplate.decryptText(kmsStr, encryptedBytes);
+          assertThat(decryptedText).isEqualTo("1234");
+        });
+  }
+
+  @Test
+  void testDefault_encryptDecryptBytes() {
+    this.contextRunner.run(
+        context -> {
+          String kmsStr = "us-east1/integration-test-key-ring/test-key";
+          KmsTemplate kmsTemplate = context.getBean(KmsTemplate.class);
+          String originalText = "1234";
+          byte[] bytesToEncrypt = originalText.getBytes(StandardCharsets.UTF_8);
+          byte[] encryptedBytes = kmsTemplate.encryptBytes(kmsStr, bytesToEncrypt);
+          byte[] decryptedBytes = kmsTemplate.decryptBytes(kmsStr, encryptedBytes);
+          String resultText = new String(decryptedBytes, StandardCharsets.UTF_8);
+          assertThat(resultText).isEqualTo(originalText);
+        });
+  }
+
+  @Test
+  void testDefault_encryptDecryptMissMatch() {
+    this.contextRunner.run(
+        context -> {
+          String kmsStr = "us-east1/integration-test-key-ring/test-key";
+          KmsTemplate kmsTemplate = context.getBean(KmsTemplate.class);
+          byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
+
+          String kmsStr2 = "us-east1/integration-test-key-ring/other-key";
+
+          assertThatThrownBy(() -> kmsTemplate.decryptText(kmsStr2, encryptedBytes))
+              .isInstanceOf(com.google.api.gax.rpc.InvalidArgumentException.class);
+        });
   }
 
   @Test
