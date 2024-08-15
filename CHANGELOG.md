@@ -14,6 +14,40 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.5.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.5.0...v5.5.1) (2024-08-15)
+
+
+### Bug Fixes
+
+* change to generation script in manipulating googleapis/WORKSPACE. ([#3120](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3120)) ([48e0681](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/48e06810e803ba497f84c6f0de4d04318d8da2f1))
+* **deps:** update cloud-sql-socket-factory.version to v1.19.1 ([#3049](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3049)) ([87c3b54](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/87c3b54c00ec4bfd1dbba7faf0648d7c692375a9))
+* **deps:** update cloud-sql-socket-factory.version to v1.20.0 ([#3121](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3121)) ([c03e305](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c03e305ad975f5e874dd1b37b31cef61121fdf30))
+* **deps:** update dependency com.google.cloud:alloydb-jdbc-connector to v1.1.4 ([#3052](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3052)) ([5090efe](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5090efe0164985e13dd526d6e002b7b7a7cc5747))
+* pubsub template hanging if exception is thrown when paring response ([#2696](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2696)) ([#3091](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3091)) ([d605691](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d60569132be80f664cfb205da15701925a2d3bee))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.19.0 to 1.19.1 ([#3055](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3055)) ([d07f699](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d07f699620801dec7db1953874f9dfbee5cd3869))
+* bump com.google.cloud:alloydb-jdbc-connector from 1.1.3 to 1.1.4 ([#3056](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3056)) ([212522b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/212522b80e0aad8ededbbfa97864f45c9186eb13))
+* bump com.google.cloud:libraries-bom from 26.43.0 to 26.44.0 ([#3108](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3108)) ([17e237e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/17e237ee26d83b35069885e8c9fdb1dd07c9bd30))
+* bump com.google.cloud.tools:appengine-maven-plugin ([#3086](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3086)) ([85b27f2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/85b27f2419d80b94b65b557c11af63a30555be38))
+* bump com.google.errorprone:error_prone_core from 2.28.0 to 2.30.0 ([#3101](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3101)) ([8b62250](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8b6225055cf0a3aa1ada51477b3d455101278557))
+* bump com.google.truth:truth from 1.4.3 to 1.4.4 ([#3061](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3061)) ([abb85f5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/abb85f50695a8641dfea437b875e9874349df54b))
+* bump io.micrometer:micrometer-tracing-bom from 1.3.2 to 1.3.3 ([#3109](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3109)) ([5533192](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/55331927b83bcb6325e5fb4f087caa12d15ce77e))
+* bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.4 to 3.2.5 ([#3110](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3110)) ([7a6f478](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7a6f4784fd7874d35a44c4edd61e8f851c3737f3))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#3085](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3085)) ([fd1b37e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fd1b37e952aedb7f835d940158c27ad72b261f23))
+* bump org.awaitility:awaitility from 4.2.1 to 4.2.2 ([#3111](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3111)) ([88607bb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/88607bbf4d2fa12a99a895065cbf3c9dcfa32ad2))
+* bump org.springframework.boot:spring-boot-starter-parent ([#3076](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3076)) ([f635a58](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f635a58b22de6b08c977b6db38e8bb5b2ad483aa))
+* bump org.springframework.cloud:spring-cloud-dependencies ([#3058](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3058)) ([ab3103f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ab3103fe6ed5d8bc7ca9704cef466c8ba82f451a))
+* bump spring-boot-dependencies.version from 3.3.1 to 3.3.2 ([#3075](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3075)) ([e32d6a9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e32d6a90bac4497a5dda008eabcbf683df85211b))
+* bump spring-cloud-config.version from 4.1.2 to 4.1.3 ([#3057](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3057)) ([69ecd96](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/69ecd96be8523da7c34b92b387e5233d7ed84b89))
+
+
+### Documentation
+
+* add Google Cloud Support link to new issues templates and choices ([#3087](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3087)) ([a0d3094](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a0d30941fcd10b7f33fee58db624f7847e753441))
+
 ## [5.5.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.4.3...v5.5.0) (2024-07-10)
 
 
