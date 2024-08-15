@@ -248,6 +248,21 @@ public class DlpServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getProjectDataProfileRetry;
   /**
+   * Allow override of retry settings at method-level for listFileStoreDataProfiles. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listFileStoreDataProfilesRetry;
+  /**
+   * Allow override of retry settings at method-level for getFileStoreDataProfile. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getFileStoreDataProfileRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteFileStoreDataProfile. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteFileStoreDataProfileRetry;
+  /**
    * Allow override of retry settings at method-level for getTableDataProfile. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -666,6 +681,30 @@ public class DlpServiceSpringProperties implements CredentialsSupplier {
 
   public void setGetProjectDataProfileRetry(Retry getProjectDataProfileRetry) {
     this.getProjectDataProfileRetry = getProjectDataProfileRetry;
+  }
+
+  public Retry getListFileStoreDataProfilesRetry() {
+    return this.listFileStoreDataProfilesRetry;
+  }
+
+  public void setListFileStoreDataProfilesRetry(Retry listFileStoreDataProfilesRetry) {
+    this.listFileStoreDataProfilesRetry = listFileStoreDataProfilesRetry;
+  }
+
+  public Retry getGetFileStoreDataProfileRetry() {
+    return this.getFileStoreDataProfileRetry;
+  }
+
+  public void setGetFileStoreDataProfileRetry(Retry getFileStoreDataProfileRetry) {
+    this.getFileStoreDataProfileRetry = getFileStoreDataProfileRetry;
+  }
+
+  public Retry getDeleteFileStoreDataProfileRetry() {
+    return this.deleteFileStoreDataProfileRetry;
+  }
+
+  public void setDeleteFileStoreDataProfileRetry(Retry deleteFileStoreDataProfileRetry) {
+    this.deleteFileStoreDataProfileRetry = deleteFileStoreDataProfileRetry;
   }
 
   public Retry getGetTableDataProfileRetry() {
