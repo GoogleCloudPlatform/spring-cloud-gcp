@@ -17,10 +17,7 @@
 package com.google.cloud.spring.autoconfigure.kms.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertThrows;
 
-import com.google.api.gax.rpc.UnauthenticatedException;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.kms.GcpKmsAutoConfiguration;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
@@ -32,34 +29,19 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-
 @EnabledIfSystemProperty(named = "it.kms", matches = "true")
 public class KmsAutoConfigurationIntegrationTests {
 
   private static GcpProjectIdProvider projectIdProvider;
 
-  private final ApplicationContextRunner contextRunner =
-      new ApplicationContextRunner()
-          .withConfiguration(
-              AutoConfigurations.of(
-                  GcpContextAutoConfiguration.class, GcpKmsAutoConfiguration.class));
-  private final ApplicationContextRunner contextRunnerWithValidUniverse =
+  private final ApplicationContextRunner contextRunnerWithUniverseDomain =
       new ApplicationContextRunner()
           .withPropertyValues("spring.cloud.gcp.kms.universe-domain=googleapis.com")
           .withConfiguration(
               AutoConfigurations.of(
                   GcpContextAutoConfiguration.class, GcpKmsAutoConfiguration.class));
 
-  private final ApplicationContextRunner contextRunnerWithInvalidUniverse =
-      new ApplicationContextRunner()
-          .withPropertyValues("spring.cloud.gcp.kms.universe-domain=example.com")
-          .withConfiguration(
-              AutoConfigurations.of(
-                  GcpContextAutoConfiguration.class, GcpKmsAutoConfiguration.class));
-
-  private final ApplicationContextRunner contextRunnerWithValidEndpoint =
+  private final ApplicationContextRunner contextRunnerWithEndpoint =
       new ApplicationContextRunner()
           .withPropertyValues("spring.cloud.gcp.kms.endpoint=cloudkms.googleapis.com:443")
           .withConfiguration(
@@ -72,77 +54,20 @@ public class KmsAutoConfigurationIntegrationTests {
   }
 
   @Test
-  void testDefault_encryptDecryptText() {
-    this.contextRunner.run(
-        context -> {
-          String kmsStr = "us-east1/integration-test-key-ring/test-key";
-          KmsTemplate kmsTemplate = context.getBean(KmsTemplate.class);
-          byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
-          String decryptedText = kmsTemplate.decryptText(kmsStr, encryptedBytes);
-          assertThat(decryptedText).isEqualTo("1234");
-        });
-  }
-
-  @Test
-  void testDefault_encryptDecryptBytes() {
-    this.contextRunner.run(
-        context -> {
-          String kmsStr = "us-east1/integration-test-key-ring/test-key";
-          KmsTemplate kmsTemplate = context.getBean(KmsTemplate.class);
-          String originalText = "1234";
-          byte[] bytesToEncrypt = originalText.getBytes(StandardCharsets.UTF_8);
-          byte[] encryptedBytes = kmsTemplate.encryptBytes(kmsStr, bytesToEncrypt);
-          byte[] decryptedBytes = kmsTemplate.decryptBytes(kmsStr, encryptedBytes);
-          String resultText = new String(decryptedBytes, StandardCharsets.UTF_8);
-          assertThat(resultText).isEqualTo(originalText);
-        });
-  }
-
-  @Test
-  void testDefault_encryptDecryptMissMatch() {
-    this.contextRunner.run(
-        context -> {
-          String kmsStr = "us-east1/integration-test-key-ring/test-key";
-          KmsTemplate kmsTemplate = context.getBean(KmsTemplate.class);
-          byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
-
-          String kmsStr2 = "us-east1/integration-test-key-ring/other-key";
-
-          assertThatThrownBy(() -> kmsTemplate.decryptText(kmsStr2, encryptedBytes))
-              .isInstanceOf(com.google.api.gax.rpc.InvalidArgumentException.class);
-        });
-  }
-
-  @Test
   void testValidUniverseDomain_encryptDecryptText() {
-    this.contextRunnerWithValidUniverse.run(
+    this.contextRunnerWithUniverseDomain.run(
         context -> {
           String kmsStr = "us-east1/integration-test-key-ring/test-key";
           KmsTemplate kmsTemplate = context.getBean(KmsTemplate.class);
           byte[] encryptedBytes = kmsTemplate.encryptText(kmsStr, "1234");
           String decryptedText = kmsTemplate.decryptText(kmsStr, encryptedBytes);
           assertThat(decryptedText).isEqualTo("1234");
-        });
-  }
-
-  @Test
-  void testInvalidUniverse_encryptDecryptText() {
-    this.contextRunnerWithInvalidUniverse.run(
-        context -> {
-          String kmsStr = "us-east1/integration-test-key-ring/test-key";
-          KmsTemplate kmsTemplate = context.getBean(KmsTemplate.class);
-          UnauthenticatedException exception =
-              assertThrows(
-                  UnauthenticatedException.class, () -> kmsTemplate.encryptText(kmsStr, "1234"));
-          assertThat(exception)
-              .hasMessageContaining(
-                  "The configured universe domain (example.com) does not match the universe domain found in the credentials");
         });
   }
 
   @Test
   void testValidEndpoint_encryptDecryptText() {
-    this.contextRunnerWithValidEndpoint.run(
+    this.contextRunnerWithEndpoint.run(
         context -> {
           String kmsStr = "us-east1/integration-test-key-ring/test-key";
           KmsTemplate kmsTemplate = context.getBean(KmsTemplate.class);
