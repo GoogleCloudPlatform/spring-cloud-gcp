@@ -72,8 +72,13 @@ public interface CredentialsProvider {
 }
 ----
 
-The Spring Framework on Google Cloud starter auto-configures a `CredentialsProvider`.
-It uses the `spring.cloud.gcp.credentials.location` property to locate the OAuth2 private key of a Google service account.
+The Spring Framework on Google Cloud starter auto-configures a `CredentialsProvider`. This defaults to use Application Default Credentials (ADC) to authenticate the application, which tries to discover credentials from a https://github.com/googleapis/google-auth-library-java/blob/main/README.md#getting-application-default-credentials[number of places]. Refer to this guide to set up https://cloud.google.com/docs/authentication/provide-credentials-adc[Application Default Credentials].
+
+If you cannot use ADC to authenticate, `spring.cloud.gcp.credentials.location` and `spring.cloud.gcp.credentials.encoded-key` properties are provided to use with a service account key.
+
+NOTE: Service account keys can become a security risk if not managed carefully. You should choose a more secure alternative for authentication whenever possible. Refer to https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys[this guide] to learn more.
+
+You can use the `spring.cloud.gcp.credentials.location` property to locate the OAuth2 private key of a Google service account.
 Keep in mind this property is a Spring Resource, so the credentials file can be obtained from a number of https://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html#resources-implementations[different locations] such as the file system, classpath, URL, etc.
 The next example specifies the credentials location property in the file system.
 
@@ -84,14 +89,6 @@ spring.cloud.gcp.credentials.location=file:/usr/local/key.json
 
 Alternatively, you can set the credentials by directly specifying the `spring.cloud.gcp.credentials.encoded-key` property.
 The value should be the base64-encoded account private key in JSON format.
-
-If that credentials aren't specified through properties, the starter tries to discover credentials from a https://github.com/GoogleCloudPlatform/google-cloud-java#authentication[number of places]:
-
-1. Credentials file pointed to by the `GOOGLE_APPLICATION_CREDENTIALS` environment variable
-2. Credentials provided by the Google Cloud SDK `gcloud auth application-default login` command
-3. Google App Engine built-in credentials
-4. Google Cloud Shell built-in credentials
-5. Google Compute Engine built-in credentials
 
 If your app is running on Google App Engine or Google Compute Engine, in most cases, you should omit the `spring.cloud.gcp.credentials.location` property and, instead, let the Spring Framework on Google Cloud Starter get the correct credentials for those environments.
 On App Engine Standard, the https://cloud.google.com/appengine/docs/standard/java/appidentity/[App Identity service account credentials] are used, on App Engine Flexible, the https://cloud.google.com/appengine/docs/flexible/java/service-account[Flexible service account credential] are used and on Google Compute Engine, the https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#using_the_compute_engine_default_service_account[Compute Engine Default Service Account] is used.
