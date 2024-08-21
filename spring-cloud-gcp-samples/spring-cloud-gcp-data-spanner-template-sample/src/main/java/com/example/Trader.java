@@ -20,16 +20,18 @@ import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerAuditing;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /** A sample entity. */
 @Table(name = "traders_template")
 public class Trader {
   @PrimaryKey
   @Column(name = "trader_id")
-  private String traderId;
+  private UUID traderId;
 
   @Column(name = "first_name")
   private String firstName;
@@ -48,14 +50,14 @@ public class Trader {
 
   public Trader() {}
 
-  public Trader(String traderId, String firstName, String lastName) {
+  public Trader(UUID traderId, String firstName, String lastName) {
     this.traderId = traderId;
     this.firstName = firstName;
     this.lastName = lastName;
   }
 
   public Trader(
-      String traderId,
+      UUID traderId,
       String firstName,
       String lastName,
       Timestamp createdOn,
@@ -67,11 +69,11 @@ public class Trader {
     this.modifiedOn = modifiedOn;
   }
 
-  public String getTraderId() {
+  public UUID getTraderId() {
     return this.traderId;
   }
 
-  public void setTraderId(String traderId) {
+  public void setTraderId(UUID traderId) {
     this.traderId = traderId;
   }
 

@@ -23,6 +23,7 @@ import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ import org.springframework.context.annotation.ImportRuntimeHints;
 public class SpannerTemplateExample {
   private static final Log LOGGER = LogFactory.getLog(SpannerTemplateExample.class);
 
-  private static final String TEMPLATE_TRADER_1 = "template_trader1";
+  private static final UUID TEMPLATE_TRADER_1 = UUID.randomUUID();
 
   @Autowired private SpannerTemplate spannerTemplate;
 
@@ -67,7 +68,7 @@ public class SpannerTemplateExample {
     this.spannerTemplate.insert(t);
 
     t.setTradeId("1");
-    t.setTraderId("template_trader2");
+    t.setTraderId(UUID.randomUUID());
     this.spannerTemplate.insert(t);
 
     List<Trade> tradesByAction = this.spannerTemplate.readAll(Trade.class);

@@ -19,7 +19,12 @@ package com.example;
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerAuditing;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import java.util.List;
+import java.util.UUID;
 
 /** A sample entity. */
 @Table(name = "trades_template")
@@ -31,7 +36,7 @@ public class Trade {
 
   @PrimaryKey(keyOrder = 1)
   @Column(name = "trader_id")
-  private String traderId;
+  private UUID traderId;
 
   private String action;
 
@@ -43,6 +48,10 @@ public class Trade {
 
   private List<Double> curve;
 
+  @LastModifiedBy
+  String lastUser;
+
+
   public Trade() {}
 
   public Trade(
@@ -51,7 +60,7 @@ public class Trade {
       Double price,
       Double shares,
       String symbol,
-      String traderId,
+      UUID traderId,
       List<Double> curve) {
     this.tradeId = tradeId;
     this.action = action;
@@ -70,11 +79,11 @@ public class Trade {
     this.tradeId = tradeId;
   }
 
-  public String getTraderId() {
+  public UUID getTraderId() {
     return this.traderId;
   }
 
-  public void setTraderId(String traderId) {
+  public void setTraderId(UUID traderId) {
     this.traderId = traderId;
   }
 
