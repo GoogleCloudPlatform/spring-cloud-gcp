@@ -16,12 +16,15 @@
 
 package com.example;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.function.context.config.JsonMessageConverter;
+import org.springframework.cloud.function.json.JacksonMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
@@ -62,5 +65,10 @@ public class SinkExample {
             "Received message on dead letter topic from {}: {}",
             userMessage.getUsername(),
             userMessage.getBody());
+  }
+
+  @Bean
+  public JsonMessageConverter customJsonMessageConverter(ObjectMapper objectMapper) {
+    return new JsonMessageConverter(new JacksonMapper(objectMapper));
   }
 }
