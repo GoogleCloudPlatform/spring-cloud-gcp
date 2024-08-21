@@ -67,6 +67,9 @@ public class SinkExample {
             userMessage.getBody());
   }
 
+  // This is workaround for https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3139
+  // and should be removed once fix https://github.com/spring-cloud/spring-cloud-function/pull/1162
+  // is deployed
   @Bean
   public JsonMessageConverter customJsonMessageConverter(ObjectMapper objectMapper) {
     return new JsonMessageConverter(new JacksonMapper(objectMapper));
