@@ -70,17 +70,17 @@ public class GcpKmsAutoConfiguration {
   @ConditionalOnMissingBean
   public KeyManagementServiceClient keyManagementClient(CredentialsProvider googleCredentials)
       throws IOException {
-    KeyManagementServiceSettings.Builder settings =
+    KeyManagementServiceSettings.Builder settingsBuilder =
         KeyManagementServiceSettings.newBuilder()
             .setCredentialsProvider(this.credentialsProvider)
             .setHeaderProvider(new UserAgentHeaderProvider(GcpKmsAutoConfiguration.class));
     if (this.universeDomain != null) {
-      settings.setUniverseDomain(this.universeDomain);
+      settingsBuilder.setUniverseDomain(this.universeDomain);
     }
     if (this.endpoint != null) {
-      settings.setEndpoint(this.endpoint);
+      settingsBuilder.setEndpoint(this.endpoint);
     }
-    return KeyManagementServiceClient.create(settings.build());
+    return KeyManagementServiceClient.create(settingsBuilder.build());
   }
 
   @Bean
