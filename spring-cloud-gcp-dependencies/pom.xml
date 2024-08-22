@@ -298,6 +298,13 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<!-- spring dependency overrides -->
+			<dependency>
+				<groupId>io.opentelemetry</groupId>
+				<artifactId>opentelemetry-api</artifactId>
+				<version>1.32.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
