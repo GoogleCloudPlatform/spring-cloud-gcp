@@ -17,9 +17,12 @@
 package com.example;
 
 import com.example.model.UserMessage;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.function.Consumer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.cloud.function.context.config.JsonMessageConverter;
+import org.springframework.cloud.function.json.JacksonMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -41,5 +44,13 @@ public class Sink {
               "New message received from %s: %s at %s",
               userMessage.getUsername(), userMessage.getBody(), userMessage.getCreatedAt()));
     };
+  }
+
+  // This is workaround for https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3139
+  // and should be removed once fix https://github.com/spring-cloud/spring-cloud-function/pull/1162
+  // is deployed
+  @Bean
+  public JsonMessageConverter customJsonMessageConverter(ObjectMapper objectMapper) {
+    return new JsonMessageConverter(new JacksonMapper(objectMapper));
   }
 }
