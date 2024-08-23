@@ -47,4 +47,28 @@ class KeyUtilTest {
     Key processedKey = KeyUtil.getKeyWithoutAncestors(idKey);
     assertThat(processedKey.getAncestors()).isEmpty();
   }
+
+  @Test
+  void testAncestorKeys_containsAllDataStoreMetaData() {
+    String projectId = "project-id";
+    String kind = "kind";
+    Long id = 13L;
+    String databaseId = "database-id";
+    String namespace = "namespace";
+
+    Key idKey =
+            Key.newBuilder(projectId, kind, id, databaseId).setNamespace(namespace)
+                    .addAncestor(PathElement.of("person", 22L))
+                    .addAncestor(PathElement.of("person", 18L))
+                    .build();
+
+    Key processedKey = KeyUtil.getKeyWithoutAncestors(idKey);
+
+    assertThat(processedKey.getAncestors()).isEmpty();
+    assertThat(processedKey.getId()).isEqualTo(id);
+    assertThat(processedKey.getKind()).isEqualTo(kind);
+    assertThat(processedKey.getDatabaseId()).isEqualTo(databaseId);
+    assertThat(processedKey.getNamespace()).isEqualTo(namespace);
+    assertThat(processedKey.getProjectId()).isEqualTo(projectId);
+  }
 }
