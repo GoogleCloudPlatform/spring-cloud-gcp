@@ -57,10 +57,11 @@ class KeyUtilTest {
     String namespace = "namespace";
 
     Key idKey =
-            Key.newBuilder(projectId, kind, id, databaseId).setNamespace(namespace)
-                    .addAncestor(PathElement.of("person", 22L))
-                    .addAncestor(PathElement.of("person", 18L))
-                    .build();
+        Key.newBuilder(projectId, kind, id, databaseId)
+            .setNamespace(namespace)
+            .addAncestor(PathElement.of("person", 22L))
+            .addAncestor(PathElement.of("person", 18L))
+            .build();
 
     Key processedKey = KeyUtil.getKeyWithoutAncestors(idKey);
 
