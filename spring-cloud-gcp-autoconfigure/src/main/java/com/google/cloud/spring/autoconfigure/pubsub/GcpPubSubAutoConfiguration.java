@@ -436,6 +436,7 @@ public class GcpPubSubAutoConfiguration {
   @ConditionalOnMissingBean(name = "subscriberTransportChannelProvider")
   public TransportChannelProvider subscriberTransportChannelProvider() {
     return SubscriberStubSettings.defaultGrpcTransportProviderBuilder()
+        .setMaxInboundMetadataSize(4 * 1024 * 1024)
         .setKeepAliveTime(
             Duration.ofMinutes(this.gcpPubSubProperties.getKeepAliveIntervalMinutes()))
         .build();
