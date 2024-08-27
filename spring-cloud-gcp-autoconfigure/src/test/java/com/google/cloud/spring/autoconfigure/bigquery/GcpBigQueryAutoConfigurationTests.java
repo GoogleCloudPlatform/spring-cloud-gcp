@@ -68,7 +68,7 @@ class GcpBigQueryAutoConfigurationTests {
         .run(
             ctx -> {
               BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
-              assertThat(options.getUniverseDomain()).isNull();
+              assertThat(options.getUniverseDomain()).isEqualTo("myUniverseDomain");
             });
   }
 
@@ -77,7 +77,7 @@ class GcpBigQueryAutoConfigurationTests {
     this.contextRunner.run(
         ctx -> {
           BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
-          assertThat(options.getUniverseDomain()).isEqualTo("googleapis.com");
+          assertThat(options.getUniverseDomain()).isNull();
         });
   }
 
