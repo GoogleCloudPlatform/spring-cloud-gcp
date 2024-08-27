@@ -57,6 +57,9 @@ public class GcpBigQueryAutoConfiguration {
 
   private int threadPoolSize;
 
+  private String universeDomain;
+  private String endpoint;
+
   GcpBigQueryAutoConfiguration(
       GcpBigQueryProperties gcpBigQueryProperties,
       GcpProjectIdProvider projectIdProvider,
@@ -78,6 +81,9 @@ public class GcpBigQueryAutoConfiguration {
     this.jsonWriterBatchSize = gcpBigQueryProperties.getJsonWriterBatchSize();
 
     this.threadPoolSize = getThreadPoolSize(gcpBigQueryProperties.getThreadPoolSize());
+
+    this.universeDomain = gcpBigQueryProperties.getUniverseDomain();
+    this.endpoint = gcpBigQueryProperties.getEndpoint();
   }
 
   /**
@@ -97,25 +103,32 @@ public class GcpBigQueryAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean
   public BigQuery bigQuery() throws IOException {
-    BigQueryOptions bigQueryOptions =
+    BigQueryOptions.Builder bigQueryOptionsBuilder =
         BigQueryOptions.newBuilder()
             .setProjectId(this.projectId)
             .setCredentials(this.credentialsProvider.getCredentials())
-            .setHeaderProvider(new UserAgentHeaderProvider(GcpBigQueryAutoConfiguration.class))
-            .build();
-    return bigQueryOptions.getService();
+            .setHeaderProvider(new UserAgentHeaderProvider(GcpBigQueryAutoConfiguration.class));
+    if (this.universeDomain != null) {
+      bigQueryOptionsBuilder.setUniverseDomain(this.universeDomain);
+    }
+    return bigQueryOptionsBuilder.build().getService();
   }
 
   @Bean
   @ConditionalOnMissingBean
   public BigQueryWriteClient bigQueryWriteClient() throws IOException {
-    BigQueryWriteSettings bigQueryWriteSettings =
+    BigQueryWriteSettings.Builder bigQueryWriteSettingsBuilder =
         BigQueryWriteSettings.newBuilder()
             .setCredentialsProvider(this.credentialsProvider)
             .setQuotaProjectId(this.projectId)
-            .setHeaderProvider(new UserAgentHeaderProvider(GcpBigQueryAutoConfiguration.class))
-            .build();
-    return BigQueryWriteClient.create(bigQueryWriteSettings);
+            .setHeaderProvider(new UserAgentHeaderProvider(GcpBigQueryAutoConfiguration.class));
+    if (this.universeDomain != null) {
+      bigQueryWriteSettingsBuilder.setUniverseDomain(this.universeDomain);
+    }
+    if (this.endpoint != null) {
+      bigQueryWriteSettingsBuilder.setEndpoint(this.endpoint);
+    }
+    return BigQueryWriteClient.create(bigQueryWriteSettingsBuilder.build());
   }
 
   @Bean
