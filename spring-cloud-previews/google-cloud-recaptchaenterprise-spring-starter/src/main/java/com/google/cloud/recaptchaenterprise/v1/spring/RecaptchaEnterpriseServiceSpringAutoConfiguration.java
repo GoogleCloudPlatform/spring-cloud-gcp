@@ -204,6 +204,11 @@ public class RecaptchaEnterpriseServiceSpringAutoConfiguration {
               clientSettingsBuilder.migrateKeySettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.migrateKeySettings().setRetrySettings(migrateKeyRetrySettings);
 
+      RetrySettings addIpOverrideRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.addIpOverrideSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.addIpOverrideSettings().setRetrySettings(addIpOverrideRetrySettings);
+
       RetrySettings getMetricsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getMetricsSettings().getRetrySettings(), serviceRetry);
@@ -386,6 +391,16 @@ public class RecaptchaEnterpriseServiceSpringAutoConfiguration {
       clientSettingsBuilder.migrateKeySettings().setRetrySettings(migrateKeyRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for migrateKey from properties.");
+      }
+    }
+    Retry addIpOverrideRetry = clientProperties.getAddIpOverrideRetry();
+    if (addIpOverrideRetry != null) {
+      RetrySettings addIpOverrideRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.addIpOverrideSettings().getRetrySettings(), addIpOverrideRetry);
+      clientSettingsBuilder.addIpOverrideSettings().setRetrySettings(addIpOverrideRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for addIpOverride from properties.");
       }
     }
     Retry getMetricsRetry = clientProperties.getGetMetricsRetry();
