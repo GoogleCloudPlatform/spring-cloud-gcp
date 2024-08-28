@@ -166,6 +166,11 @@ public class TranslationServiceSpringAutoConfiguration {
               clientSettingsBuilder.translateTextSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.translateTextSettings().setRetrySettings(translateTextRetrySettings);
 
+      RetrySettings romanizeTextRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.romanizeTextSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.romanizeTextSettings().setRetrySettings(romanizeTextRetrySettings);
+
       RetrySettings detectLanguageRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.detectLanguageSettings().getRetrySettings(), serviceRetry);
@@ -195,6 +200,51 @@ public class TranslationServiceSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getGlossarySettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getGlossarySettings().setRetrySettings(getGlossaryRetrySettings);
+
+      RetrySettings getGlossaryEntryRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getGlossaryEntrySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getGlossaryEntrySettings()
+          .setRetrySettings(getGlossaryEntryRetrySettings);
+
+      RetrySettings listGlossaryEntriesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listGlossaryEntriesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listGlossaryEntriesSettings()
+          .setRetrySettings(listGlossaryEntriesRetrySettings);
+
+      RetrySettings createGlossaryEntryRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createGlossaryEntrySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .createGlossaryEntrySettings()
+          .setRetrySettings(createGlossaryEntryRetrySettings);
+
+      RetrySettings updateGlossaryEntryRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateGlossaryEntrySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .updateGlossaryEntrySettings()
+          .setRetrySettings(updateGlossaryEntryRetrySettings);
+
+      RetrySettings deleteGlossaryEntryRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteGlossaryEntrySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .deleteGlossaryEntrySettings()
+          .setRetrySettings(deleteGlossaryEntryRetrySettings);
+
+      RetrySettings getDatasetRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDatasetSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getDatasetSettings().setRetrySettings(getDatasetRetrySettings);
+
+      RetrySettings listDatasetsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDatasetsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listDatasetsSettings().setRetrySettings(listDatasetsRetrySettings);
 
       RetrySettings createAdaptiveMtDatasetRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -273,6 +323,21 @@ public class TranslationServiceSpringAutoConfiguration {
           .listAdaptiveMtSentencesSettings()
           .setRetrySettings(listAdaptiveMtSentencesRetrySettings);
 
+      RetrySettings listExamplesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listExamplesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listExamplesSettings().setRetrySettings(listExamplesRetrySettings);
+
+      RetrySettings listModelsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listModelsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listModelsSettings().setRetrySettings(listModelsRetrySettings);
+
+      RetrySettings getModelRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getModelSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getModelSettings().setRetrySettings(getModelRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -285,6 +350,16 @@ public class TranslationServiceSpringAutoConfiguration {
       clientSettingsBuilder.translateTextSettings().setRetrySettings(translateTextRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for translateText from properties.");
+      }
+    }
+    Retry romanizeTextRetry = clientProperties.getRomanizeTextRetry();
+    if (romanizeTextRetry != null) {
+      RetrySettings romanizeTextRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.romanizeTextSettings().getRetrySettings(), romanizeTextRetry);
+      clientSettingsBuilder.romanizeTextSettings().setRetrySettings(romanizeTextRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for romanizeText from properties.");
       }
     }
     Retry detectLanguageRetry = clientProperties.getDetectLanguageRetry();
@@ -345,6 +420,96 @@ public class TranslationServiceSpringAutoConfiguration {
       clientSettingsBuilder.getGlossarySettings().setRetrySettings(getGlossaryRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getGlossary from properties.");
+      }
+    }
+    Retry getGlossaryEntryRetry = clientProperties.getGetGlossaryEntryRetry();
+    if (getGlossaryEntryRetry != null) {
+      RetrySettings getGlossaryEntryRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getGlossaryEntrySettings().getRetrySettings(),
+              getGlossaryEntryRetry);
+      clientSettingsBuilder
+          .getGlossaryEntrySettings()
+          .setRetrySettings(getGlossaryEntryRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getGlossaryEntry from properties.");
+      }
+    }
+    Retry listGlossaryEntriesRetry = clientProperties.getListGlossaryEntriesRetry();
+    if (listGlossaryEntriesRetry != null) {
+      RetrySettings listGlossaryEntriesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listGlossaryEntriesSettings().getRetrySettings(),
+              listGlossaryEntriesRetry);
+      clientSettingsBuilder
+          .listGlossaryEntriesSettings()
+          .setRetrySettings(listGlossaryEntriesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listGlossaryEntries from properties.");
+      }
+    }
+    Retry createGlossaryEntryRetry = clientProperties.getCreateGlossaryEntryRetry();
+    if (createGlossaryEntryRetry != null) {
+      RetrySettings createGlossaryEntryRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createGlossaryEntrySettings().getRetrySettings(),
+              createGlossaryEntryRetry);
+      clientSettingsBuilder
+          .createGlossaryEntrySettings()
+          .setRetrySettings(createGlossaryEntryRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createGlossaryEntry from properties.");
+      }
+    }
+    Retry updateGlossaryEntryRetry = clientProperties.getUpdateGlossaryEntryRetry();
+    if (updateGlossaryEntryRetry != null) {
+      RetrySettings updateGlossaryEntryRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateGlossaryEntrySettings().getRetrySettings(),
+              updateGlossaryEntryRetry);
+      clientSettingsBuilder
+          .updateGlossaryEntrySettings()
+          .setRetrySettings(updateGlossaryEntryRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateGlossaryEntry from properties.");
+      }
+    }
+    Retry deleteGlossaryEntryRetry = clientProperties.getDeleteGlossaryEntryRetry();
+    if (deleteGlossaryEntryRetry != null) {
+      RetrySettings deleteGlossaryEntryRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteGlossaryEntrySettings().getRetrySettings(),
+              deleteGlossaryEntryRetry);
+      clientSettingsBuilder
+          .deleteGlossaryEntrySettings()
+          .setRetrySettings(deleteGlossaryEntryRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteGlossaryEntry from properties.");
+      }
+    }
+    Retry getDatasetRetry = clientProperties.getGetDatasetRetry();
+    if (getDatasetRetry != null) {
+      RetrySettings getDatasetRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDatasetSettings().getRetrySettings(), getDatasetRetry);
+      clientSettingsBuilder.getDatasetSettings().setRetrySettings(getDatasetRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getDataset from properties.");
+      }
+    }
+    Retry listDatasetsRetry = clientProperties.getListDatasetsRetry();
+    if (listDatasetsRetry != null) {
+      RetrySettings listDatasetsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDatasetsSettings().getRetrySettings(), listDatasetsRetry);
+      clientSettingsBuilder.listDatasetsSettings().setRetrySettings(listDatasetsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listDatasets from properties.");
       }
     }
     Retry createAdaptiveMtDatasetRetry = clientProperties.getCreateAdaptiveMtDatasetRetry();
@@ -485,6 +650,36 @@ public class TranslationServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listAdaptiveMtSentences from properties.");
+      }
+    }
+    Retry listExamplesRetry = clientProperties.getListExamplesRetry();
+    if (listExamplesRetry != null) {
+      RetrySettings listExamplesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listExamplesSettings().getRetrySettings(), listExamplesRetry);
+      clientSettingsBuilder.listExamplesSettings().setRetrySettings(listExamplesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listExamples from properties.");
+      }
+    }
+    Retry listModelsRetry = clientProperties.getListModelsRetry();
+    if (listModelsRetry != null) {
+      RetrySettings listModelsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listModelsSettings().getRetrySettings(), listModelsRetry);
+      clientSettingsBuilder.listModelsSettings().setRetrySettings(listModelsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listModels from properties.");
+      }
+    }
+    Retry getModelRetry = clientProperties.getGetModelRetry();
+    if (getModelRetry != null) {
+      RetrySettings getModelRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getModelSettings().getRetrySettings(), getModelRetry);
+      clientSettingsBuilder.getModelSettings().setRetrySettings(getModelRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getModel from properties.");
       }
     }
     return clientSettingsBuilder.build();

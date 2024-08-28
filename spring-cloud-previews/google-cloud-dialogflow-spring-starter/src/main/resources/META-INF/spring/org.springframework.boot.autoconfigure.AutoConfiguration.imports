@@ -6,9 +6,11 @@ com.google.cloud.dialogflow.v2.spring.ConversationDatasetsSpringAutoConfiguratio
 com.google.cloud.dialogflow.v2.spring.ConversationModelsSpringAutoConfiguration
 com.google.cloud.dialogflow.v2.spring.ConversationProfilesSpringAutoConfiguration
 com.google.cloud.dialogflow.v2.spring.DocumentsSpringAutoConfiguration
+com.google.cloud.dialogflow.v2.spring.EncryptionSpecServiceSpringAutoConfiguration
 com.google.cloud.dialogflow.v2.spring.EntityTypesSpringAutoConfiguration
 com.google.cloud.dialogflow.v2.spring.EnvironmentsSpringAutoConfiguration
 com.google.cloud.dialogflow.v2.spring.FulfillmentsSpringAutoConfiguration
+com.google.cloud.dialogflow.v2.spring.GeneratorsSpringAutoConfiguration
 com.google.cloud.dialogflow.v2.spring.IntentsSpringAutoConfiguration
 com.google.cloud.dialogflow.v2.spring.KnowledgeBasesSpringAutoConfiguration
 com.google.cloud.dialogflow.v2.spring.ParticipantsSpringAutoConfiguration

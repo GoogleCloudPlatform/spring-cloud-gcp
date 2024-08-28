@@ -85,6 +85,11 @@ public class ParticipantsSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry suggestSmartRepliesRetry;
   /**
+   * Allow override of retry settings at method-level for suggestKnowledgeAssist. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry suggestKnowledgeAssistRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -194,6 +199,14 @@ public class ParticipantsSpringProperties implements CredentialsSupplier {
 
   public void setSuggestSmartRepliesRetry(Retry suggestSmartRepliesRetry) {
     this.suggestSmartRepliesRetry = suggestSmartRepliesRetry;
+  }
+
+  public Retry getSuggestKnowledgeAssistRetry() {
+    return this.suggestKnowledgeAssistRetry;
+  }
+
+  public void setSuggestKnowledgeAssistRetry(Retry suggestKnowledgeAssistRetry) {
+    this.suggestKnowledgeAssistRetry = suggestKnowledgeAssistRetry;
   }
 
   public Retry getListLocationsRetry() {
