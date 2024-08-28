@@ -14,6 +14,16 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.7...v3.8.8) (2024-08-28)
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.44.0 to 26.45.0 ([#3159](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3159)) ([ba22214](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ba22214c046c57ad7495c2c3e63955e83948f191))
+* bump org.apache.maven.plugins:maven-checkstyle-plugin ([#3154](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3154)) ([8498bc8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8498bc8a1a0d5784d420a3ea71f4007ac92cb496))
+* bump org.apache.maven.plugins:maven-deploy-plugin ([#3141](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3141)) ([fe82805](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fe82805faf330fef83740029fc2d8e316f8615a2))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#3160](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3160)) ([c5ed718](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c5ed718f36d149f4d021d34085a20ab797e2e3ca))
+
 ## [3.8.7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.6...v3.8.7) (2024-08-15)
 
 
