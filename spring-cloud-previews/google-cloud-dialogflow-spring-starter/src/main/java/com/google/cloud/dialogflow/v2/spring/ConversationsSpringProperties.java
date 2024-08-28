@@ -80,6 +80,11 @@ public class ConversationsSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry generateStatelessSummaryRetry;
   /**
+   * Allow override of retry settings at method-level for generateStatelessSuggestion. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry generateStatelessSuggestionRetry;
+  /**
    * Allow override of retry settings at method-level for searchKnowledge. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -186,6 +191,14 @@ public class ConversationsSpringProperties implements CredentialsSupplier {
 
   public void setGenerateStatelessSummaryRetry(Retry generateStatelessSummaryRetry) {
     this.generateStatelessSummaryRetry = generateStatelessSummaryRetry;
+  }
+
+  public Retry getGenerateStatelessSuggestionRetry() {
+    return this.generateStatelessSuggestionRetry;
+  }
+
+  public void setGenerateStatelessSuggestionRetry(Retry generateStatelessSuggestionRetry) {
+    this.generateStatelessSuggestionRetry = generateStatelessSuggestionRetry;
   }
 
   public Retry getSearchKnowledgeRetry() {
