@@ -14,6 +14,38 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.6.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.5.1...v5.6.0) (2024-08-29)
+
+
+### Features
+
+* add properties to customize universeDomain and endpoint in KMS module ([#3104](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3104)) ([1de0e36](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1de0e36f1264864c6616fe3a499e615089da950f))
+
+
+### Bug Fixes
+
+* CastClassException in PubSubDeadLetterTopicSampleAppIntegrationTest [#3139](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3139) ([#3145](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3145)) ([ae3626a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ae3626a34c350fc504f8065f2093cfb09865703f))
+* noSuchMethodError in BigQuerySampleApplicationIntegrationTests ([#3146](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3146)) ([a891693](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a891693d59c481af23dc2ca44e6b16f200b197fb))
+* update compatibility statement for doc ([#3136](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3136)) ([f3591b8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f3591b8f72d711392d8ae927a282c51f7611f93f))
+
+
+### Dependencies
+
+* bump com.google.cloud:alloydb-jdbc-connector from 1.1.4 to 1.1.5 ([#3129](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3129)) ([fb375f6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fb375f64de411b971b997dec27960e49011df865))
+* bump com.google.cloud:libraries-bom from 26.44.0 to 26.45.0 ([#3163](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3163)) ([2ed4f55](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2ed4f556cf21364b39da66c97d410958e7075f6e))
+* bump io.opentelemetry:opentelemetry-api from 1.32.0 to 1.41.0 ([#3153](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3153)) ([0ef3aa6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0ef3aa69a04351d214bdc0567ca5f270aa1bbf1d))
+* bump org.apache.maven.plugins:maven-checkstyle-plugin ([#3151](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3151)) ([cd77242](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cd77242c61efdaf877107454acaa6129c48f60f5))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#3164](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3164)) ([237e9fd](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/237e9fd0ce20693af75d715659ae35d245ef8756))
+* bump org.springframework.boot:spring-boot-starter-parent ([#3152](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3152)) ([7c8e434](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7c8e434933e1f093c7699d54f3799b9c2ad70189))
+* bump spring-boot-dependencies.version from 3.3.2 to 3.3.3 ([#3150](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3150)) ([f264ea2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f264ea240c16bad43797ec01557931b6fb26c6ec))
+
+
+### Documentation
+
+* add documentation for kms universe domain and endpoint properties ([#3173](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3173)) ([acf58a0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/acf58a052c6f8997dca9a8c9393b0d7d230d069d))
+* adjust spring-cloud-gcp-core documentation auth guides. ([#3144](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3144)) ([20b3393](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/20b339380d4a069795f1656e9f68501c3dbef3dd))
+* Update README post releases ([#3137](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3137)) ([7733fe5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7733fe54158ea14af5e27952de0d3efcd0a79004))
+
 ## [5.5.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.5.0...v5.5.1) (2024-08-15)
 
 
