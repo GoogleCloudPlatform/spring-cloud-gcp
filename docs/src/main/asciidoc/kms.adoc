@@ -36,6 +36,8 @@ The following options may be configured with Spring Framework on Google Cloud KM
 | `spring.cloud.gcp.kms.enabled` | Enables or disables Google Cloud KMS autoconfiguration | No | `true`
 | `spring.cloud.gcp.kms.project-id` | Google Cloud project ID of the project using Cloud KMS APIs, if different from the one in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>>. | No | Project ID is typically inferred from https://cloud.google.com/sdk/gcloud/reference/config/set[`gcloud`] configuration.
 | `spring.cloud.gcp.kms.credentials.location` | Credentials file location for authenticating with the Cloud KMS APIs, if different from the ones in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>> | No | Inferred from https://cloud.google.com/docs/authentication/production[Application Default Credentials], typically set by https://cloud.google.com/sdk/gcloud/reference/auth/application-default[`gcloud`].
+| `spring.cloud.gcp.kms.endpoint` | Endpoint of the KMS service | No | Relies on client library's default endpoint which is `cloudkms.googleapis.com:443`.
+| `spring.cloud.gcp.kms.universe-domain` | Universe domain of the KMS service. The universe domain is a part of the endpoint which is formatted as ${service}.${universeDomain}:${port} | No | Relies on client library's default universe domain which is `googleapis.com`
 |===========================================================================
 
 
