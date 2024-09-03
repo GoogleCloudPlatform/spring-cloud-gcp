@@ -19,7 +19,7 @@ python3 -m pip install --require-hashes -r .kokoro/requirements.txt
 mvn clean javadoc:aggregate -Drelease=true
 
 # Move into generated docs directory
-pushd target/site/apidocs/
+pushd target/reports/apidocs/
 
 python3 -m docuploader create-metadata \
      --name spring-cloud-gcp \
