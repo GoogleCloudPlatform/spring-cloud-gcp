@@ -26,7 +26,7 @@ python3 -m pip install gcp-docuploader
 ./mvnw clean javadoc:aggregate -Drelease=true
 
 # Move into generated docs directory
-pushd target/reports/apidocs/
+pushd target/site/apidocs/
 
 python3 -m docuploader create-metadata \
     --name spring-cloud-gcp \
