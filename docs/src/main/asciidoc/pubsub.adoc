@@ -129,9 +129,6 @@ This can be customized, by registering a `SelectiveSchedulerThreadNameProvider` 
 
 NOTE: By default, subscription-specific `maxInboundMetadataSize` is set to 4MB.
 This can be customized, by registering a `TransportChannelProvider` bean.
-====
-
-====
 
 ==== GRPC Connection Settings
 
