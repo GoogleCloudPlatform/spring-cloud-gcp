@@ -46,6 +46,7 @@ public final class KeyUtil {
           Key.newBuilder(entityKey.getProjectId(), entityKey.getKind(), entityKey.getId());
     }
     ancestorLookupKey.setNamespace(entityKey.getNamespace());
+    ancestorLookupKey.setDatabaseId(entityKey.getDatabaseId());
 
     return ancestorLookupKey.build();
   }

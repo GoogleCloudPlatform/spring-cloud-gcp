@@ -50,6 +50,11 @@ public class TranslationServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry translateTextRetry;
   /**
+   * Allow override of retry settings at method-level for romanizeText. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry romanizeTextRetry;
+  /**
    * Allow override of retry settings at method-level for detectLanguage. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -74,6 +79,41 @@ public class TranslationServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getGlossaryRetry;
+  /**
+   * Allow override of retry settings at method-level for getGlossaryEntry. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getGlossaryEntryRetry;
+  /**
+   * Allow override of retry settings at method-level for listGlossaryEntries. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listGlossaryEntriesRetry;
+  /**
+   * Allow override of retry settings at method-level for createGlossaryEntry. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createGlossaryEntryRetry;
+  /**
+   * Allow override of retry settings at method-level for updateGlossaryEntry. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateGlossaryEntryRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteGlossaryEntry. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteGlossaryEntryRetry;
+  /**
+   * Allow override of retry settings at method-level for getDataset. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getDatasetRetry;
+  /**
+   * Allow override of retry settings at method-level for listDatasets. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listDatasetsRetry;
   /**
    * Allow override of retry settings at method-level for createAdaptiveMtDataset. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
@@ -124,6 +164,21 @@ public class TranslationServiceSpringProperties implements CredentialsSupplier {
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAdaptiveMtSentencesRetry;
+  /**
+   * Allow override of retry settings at method-level for listExamples. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listExamplesRetry;
+  /**
+   * Allow override of retry settings at method-level for listModels. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listModelsRetry;
+  /**
+   * Allow override of retry settings at method-level for getModel. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getModelRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -170,6 +225,14 @@ public class TranslationServiceSpringProperties implements CredentialsSupplier {
     this.translateTextRetry = translateTextRetry;
   }
 
+  public Retry getRomanizeTextRetry() {
+    return this.romanizeTextRetry;
+  }
+
+  public void setRomanizeTextRetry(Retry romanizeTextRetry) {
+    this.romanizeTextRetry = romanizeTextRetry;
+  }
+
   public Retry getDetectLanguageRetry() {
     return this.detectLanguageRetry;
   }
@@ -208,6 +271,62 @@ public class TranslationServiceSpringProperties implements CredentialsSupplier {
 
   public void setGetGlossaryRetry(Retry getGlossaryRetry) {
     this.getGlossaryRetry = getGlossaryRetry;
+  }
+
+  public Retry getGetGlossaryEntryRetry() {
+    return this.getGlossaryEntryRetry;
+  }
+
+  public void setGetGlossaryEntryRetry(Retry getGlossaryEntryRetry) {
+    this.getGlossaryEntryRetry = getGlossaryEntryRetry;
+  }
+
+  public Retry getListGlossaryEntriesRetry() {
+    return this.listGlossaryEntriesRetry;
+  }
+
+  public void setListGlossaryEntriesRetry(Retry listGlossaryEntriesRetry) {
+    this.listGlossaryEntriesRetry = listGlossaryEntriesRetry;
+  }
+
+  public Retry getCreateGlossaryEntryRetry() {
+    return this.createGlossaryEntryRetry;
+  }
+
+  public void setCreateGlossaryEntryRetry(Retry createGlossaryEntryRetry) {
+    this.createGlossaryEntryRetry = createGlossaryEntryRetry;
+  }
+
+  public Retry getUpdateGlossaryEntryRetry() {
+    return this.updateGlossaryEntryRetry;
+  }
+
+  public void setUpdateGlossaryEntryRetry(Retry updateGlossaryEntryRetry) {
+    this.updateGlossaryEntryRetry = updateGlossaryEntryRetry;
+  }
+
+  public Retry getDeleteGlossaryEntryRetry() {
+    return this.deleteGlossaryEntryRetry;
+  }
+
+  public void setDeleteGlossaryEntryRetry(Retry deleteGlossaryEntryRetry) {
+    this.deleteGlossaryEntryRetry = deleteGlossaryEntryRetry;
+  }
+
+  public Retry getGetDatasetRetry() {
+    return this.getDatasetRetry;
+  }
+
+  public void setGetDatasetRetry(Retry getDatasetRetry) {
+    this.getDatasetRetry = getDatasetRetry;
+  }
+
+  public Retry getListDatasetsRetry() {
+    return this.listDatasetsRetry;
+  }
+
+  public void setListDatasetsRetry(Retry listDatasetsRetry) {
+    this.listDatasetsRetry = listDatasetsRetry;
   }
 
   public Retry getCreateAdaptiveMtDatasetRetry() {
@@ -288,5 +407,29 @@ public class TranslationServiceSpringProperties implements CredentialsSupplier {
 
   public void setListAdaptiveMtSentencesRetry(Retry listAdaptiveMtSentencesRetry) {
     this.listAdaptiveMtSentencesRetry = listAdaptiveMtSentencesRetry;
+  }
+
+  public Retry getListExamplesRetry() {
+    return this.listExamplesRetry;
+  }
+
+  public void setListExamplesRetry(Retry listExamplesRetry) {
+    this.listExamplesRetry = listExamplesRetry;
+  }
+
+  public Retry getListModelsRetry() {
+    return this.listModelsRetry;
+  }
+
+  public void setListModelsRetry(Retry listModelsRetry) {
+    this.listModelsRetry = listModelsRetry;
+  }
+
+  public Retry getGetModelRetry() {
+    return this.getModelRetry;
+  }
+
+  public void setGetModelRetry(Retry getModelRetry) {
+    this.getModelRetry = getModelRetry;
   }
 }

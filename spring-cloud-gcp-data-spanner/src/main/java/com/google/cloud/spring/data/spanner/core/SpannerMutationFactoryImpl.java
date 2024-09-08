@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
@@ -163,7 +164,7 @@ public class SpannerMutationFactoryImpl implements SpannerMutationFactory {
     Iterator childKeyParts = this.spannerSchemaUtils.getKey(childObject).getParts().iterator();
     int partNum = 1;
     while (parentKeyParts.hasNext()) {
-      if (!childKeyParts.hasNext() || !parentKeyParts.next().equals(childKeyParts.next())) {
+      if (!childKeyParts.hasNext() || !Objects.equals(parentKeyParts.next(), childKeyParts.next())) {
         throw new SpannerDataException(
             "A child entity's common primary key parts with its parent must "
                 + "have the same values. Primary key component "

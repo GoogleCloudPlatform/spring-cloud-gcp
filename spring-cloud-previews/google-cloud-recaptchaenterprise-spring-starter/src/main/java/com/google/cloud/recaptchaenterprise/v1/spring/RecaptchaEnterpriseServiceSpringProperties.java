@@ -86,6 +86,11 @@ public class RecaptchaEnterpriseServiceSpringProperties implements CredentialsSu
    */
   @NestedConfigurationProperty private Retry migrateKeyRetry;
   /**
+   * Allow override of retry settings at method-level for addIpOverride. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry addIpOverrideRetry;
+  /**
    * Allow override of retry settings at method-level for getMetrics. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -235,6 +240,14 @@ public class RecaptchaEnterpriseServiceSpringProperties implements CredentialsSu
 
   public void setMigrateKeyRetry(Retry migrateKeyRetry) {
     this.migrateKeyRetry = migrateKeyRetry;
+  }
+
+  public Retry getAddIpOverrideRetry() {
+    return this.addIpOverrideRetry;
+  }
+
+  public void setAddIpOverrideRetry(Retry addIpOverrideRetry) {
+    this.addIpOverrideRetry = addIpOverrideRetry;
   }
 
   public Retry getGetMetricsRetry() {
