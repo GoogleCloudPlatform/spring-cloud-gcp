@@ -86,6 +86,10 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
+      - name: Setup env for test
+        run: echo "SPRING_CLOUD_GCP_CI_NATIVE_SA_KEY_BASE64=$(echo -n $SA_KEY | base64 -w 0)" >> "$GITHUB_ENV"
+        env:
+          SA_KEY: ${{ secrets.SPRING_CLOUD_GCP_CI_NATIVE_SA_KEY }}
       - name: Native Tests in Modules
         id: intTest
         env:
