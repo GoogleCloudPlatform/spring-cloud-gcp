@@ -49,6 +49,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.dialogflow.v2.encryption-spec-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dialogflow/EncryptionSpecService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.dialogflow.v2.entity-types.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud dialogflow/EntityTypes components.",
@@ -64,6 +70,12 @@
       "name": "com.google.cloud.dialogflow.v2.fulfillments.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud dialogflow/Fulfillments components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.dialogflow.v2.generators.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dialogflow/Generators components.",
       "defaultValue": true
     },
     {

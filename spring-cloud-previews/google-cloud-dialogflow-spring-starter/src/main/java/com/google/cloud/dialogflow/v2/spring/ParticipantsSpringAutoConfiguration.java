@@ -212,6 +212,14 @@ public class ParticipantsSpringAutoConfiguration {
           .suggestSmartRepliesSettings()
           .setRetrySettings(suggestSmartRepliesRetrySettings);
 
+      RetrySettings suggestKnowledgeAssistRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.suggestKnowledgeAssistSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .suggestKnowledgeAssistSettings()
+          .setRetrySettings(suggestKnowledgeAssistRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -329,6 +337,20 @@ public class ParticipantsSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for suggestSmartReplies from properties.");
+      }
+    }
+    Retry suggestKnowledgeAssistRetry = clientProperties.getSuggestKnowledgeAssistRetry();
+    if (suggestKnowledgeAssistRetry != null) {
+      RetrySettings suggestKnowledgeAssistRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.suggestKnowledgeAssistSettings().getRetrySettings(),
+              suggestKnowledgeAssistRetry);
+      clientSettingsBuilder
+          .suggestKnowledgeAssistSettings()
+          .setRetrySettings(suggestKnowledgeAssistRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for suggestKnowledgeAssist from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

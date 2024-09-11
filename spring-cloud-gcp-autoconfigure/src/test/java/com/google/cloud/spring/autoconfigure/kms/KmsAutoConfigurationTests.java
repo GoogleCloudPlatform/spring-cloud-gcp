@@ -110,11 +110,58 @@ class KmsAutoConfigurationTests {
 
   @Test
   void testShouldTakeCoreProjectId() {
-    this.contextRunner
-        .run(ctx -> {
+    this.contextRunner.run(
+        ctx -> {
           GcpKmsAutoConfiguration autoConfiguration = ctx.getBean(GcpKmsAutoConfiguration.class);
-          assertThat(autoConfiguration.getGcpProjectIdProvider().getProjectId()).isEqualTo(
-              CORE_PROJECT_NAME);
+          assertThat(autoConfiguration.getGcpProjectIdProvider().getProjectId())
+              .isEqualTo(CORE_PROJECT_NAME);
+        });
+  }
+
+  @Test
+  void testUniverseDomain() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.kms.universe-domain=myUniverseDomain")
+        .run(
+            ctx -> {
+              KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
+              assertThat(client.getSettings().getUniverseDomain()).isEqualTo("myUniverseDomain");
+              assertThat(client.getSettings().getEndpoint())
+                  .isEqualTo("cloudkms.myUniverseDomain:443");
+            });
+  }
+
+  @Test
+  void testEndpoint() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.kms.endpoint=kms.example.com:123")
+        .run(
+            ctx -> {
+              KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
+              assertThat(client.getSettings().getEndpoint()).isEqualTo("kms.example.com:123");
+            });
+  }
+
+  @Test
+  void testBothUniverseDomainAndEndpointSet() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.kms.universe-domain=myUniverseDomain")
+        .withPropertyValues("spring.cloud.gcp.kms.endpoint=kms.example.com:123")
+        .run(
+            ctx -> {
+              KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
+              assertThat(client.getSettings().getUniverseDomain()).isEqualTo("myUniverseDomain");
+              assertThat(client.getSettings().getEndpoint()).isEqualTo("kms.example.com:123");
+            });
+  }
+
+  @Test
+  void testNoUniverseDomainOrEndpointSet_useClientDefault() {
+    this.contextRunner.run(
+        ctx -> {
+          KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
+          assertThat(client.getSettings().getUniverseDomain()).isEqualTo("googleapis.com");
+          assertThat(client.getSettings().getEndpoint()).isEqualTo("cloudkms.googleapis.com:443");
         });
   }
 

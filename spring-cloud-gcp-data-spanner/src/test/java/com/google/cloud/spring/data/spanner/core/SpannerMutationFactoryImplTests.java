@@ -159,6 +159,19 @@ class SpannerMutationFactoryImplTests {
   }
 
   @Test
+  void insertChildrenNullIdTest() {
+    Parent parent = new Parent();
+    parent.keyOne = "a";
+    Child child = new Child();
+    child.keyOne = "a";
+    child.keyThree = 3L;
+    parent.children = Collections.singletonList(child);
+
+    List<Mutation> mutations = this.spannerMutationFactory.insert(parent);
+    assertThat(mutations).hasSize(2);
+  }
+
+  @Test
   void updateTest() {
     executeWriteTest(t -> this.spannerMutationFactory.update(t, null), Op.UPDATE);
   }
@@ -269,5 +282,34 @@ class SpannerMutationFactoryImplTests {
 
     @PrimaryKey(keyOrder = 2)
     String id2;
+  }
+
+  @Table
+  private static class Parent {
+    @PrimaryKey
+    @Column
+    String keyOne;
+
+    @PrimaryKey(keyOrder = 2)
+    @Column
+    Long keyTwo;
+
+    @Interleaved
+    List<Child> children;
+  }
+
+  @Table
+  private static class Child {
+    @PrimaryKey
+    @Column
+    String keyOne;
+
+    @PrimaryKey(keyOrder = 2)
+    @Column
+    Long keyTwo;
+
+    @PrimaryKey(keyOrder = 3)
+    @Column
+    Long keyThree;
   }
 }
