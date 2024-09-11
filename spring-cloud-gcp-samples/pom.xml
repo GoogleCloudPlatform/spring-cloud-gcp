@@ -143,6 +143,7 @@
 								<it.secretmanager>true</it.secretmanager>
 								<it.datastore>true</it.datastore>
 								<it.firestore>true</it.firestore>
+								<it.firestore.native>true</it.firestore.native>
 								<it.kms>true</it.kms>
 								<it.bigquery>true</it.bigquery>
 								<it.metrics>true</it.metrics>

@@ -25,20 +25,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@EnabledIfSystemProperty(named = "it.firestore", matches = "true")
+@EnabledIfSystemProperty(named = "it.firestore.native", matches = "true")
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
-@SpringBootTest
+@SpringBootTest(properties = "run.commandline.runner=off")
 public class FirestoreSampleAppNativeIntegrationTests {
-
-  @Value("${spring.cloud.gcp.firestore.credentials.encoded-key:default}")
-  private String encodedKeyFromValue;
 
   private final Logger logger =
       LoggerFactory.getLogger(FirestoreSampleAppNativeIntegrationTests.class);
@@ -46,16 +42,12 @@ public class FirestoreSampleAppNativeIntegrationTests {
 
   @Test
   void credentialsPropertiesAreAccessibleTest() {
+    logger.info(
+        "This test is only needed for graalvm compilation test"
+            + " to verify the encoded-key property is accessible."
+            + " Turn on by it.firestore.native=true");
     String encodedKeyFromAutoConfig =
         applicationContext.getBean(GcpFirestoreProperties.class).getCredentials().getEncodedKey();
-
-    if (encodedKeyFromValue.equals("default")) {
-      // nothing to assert if not set.
-      logger.info("firestore.credentials.encoded-key is not set.");
-    } else {
-      // set this property only for graalvm test, verify it is correctly loaded in autoconfig
-      logger.info("encodedKey is read in. This should be the graalvm test.");
-      assertNotNull(encodedKeyFromAutoConfig);
-    }
+    assertNotNull(encodedKeyFromAutoConfig);
   }
 }

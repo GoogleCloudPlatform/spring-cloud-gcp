@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportRuntimeHints;
 
@@ -53,6 +54,7 @@ public class FirestoreSampleApp {
   }
 
   @Bean
+  @ConditionalOnProperty(name = "run.commandline.runner", havingValue = "true", matchIfMissing = true)
   public CommandLineRunner commandLineRunner() {
     return args -> {
       writeDocumentFromMap();
