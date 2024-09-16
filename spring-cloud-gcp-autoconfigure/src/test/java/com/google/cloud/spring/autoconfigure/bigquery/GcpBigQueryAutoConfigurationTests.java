@@ -69,16 +69,42 @@ class GcpBigQueryAutoConfigurationTests {
             ctx -> {
               BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
               assertThat(options.getUniverseDomain()).isEqualTo("myUniverseDomain");
+              assertThat(options.getHost()).isEqualTo("https://www.googleapis.com");
             });
   }
 
   @Test
-  void testBigQuery_noUniverseDomainSet_useClientDefault() {
+  void testBigQuery_noUniverseDomainAndHostSet_useClientDefault() {
     this.contextRunner.run(
         ctx -> {
           BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
           assertThat(options.getUniverseDomain()).isNull();
+          assertThat(options.getHost()).isEqualTo("https://www.googleapis.com");
         });
+  }
+
+  @Test
+  void testBigQuery_host() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.bigquery.host=bigquery.example.com")
+        .run(
+            ctx -> {
+              BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
+              assertThat(options.getHost()).isEqualTo("bigquery.example.com");
+            });
+  }
+
+  @Test
+  void testBigQuery_bothHostAndUniverseDomainSet() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.bigquery.host=bigquery.example.com")
+        .withPropertyValues("spring.cloud.gcp.bigquery.universe-domain=myUniverseDomain")
+        .run(
+            ctx -> {
+              BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
+              assertThat(options.getHost()).isEqualTo("bigquery.example.com");
+              assertThat(options.getUniverseDomain()).isEqualTo("myUniverseDomain");
+            });
   }
 
   @Test
@@ -96,11 +122,13 @@ class GcpBigQueryAutoConfigurationTests {
   @Test
   void testBigQueryWrite_endpoint() {
     this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.bigquery.endpoint=kms.example.com:123")
+        .withPropertyValues(
+            "spring.cloud.gcp.bigquery.jsonWriterEndpoint=bigquerystorage.example.com:123")
         .run(
             ctx -> {
               BigQueryWriteClient client = ctx.getBean(BigQueryWriteClient.class);
-              assertThat(client.getSettings().getEndpoint()).isEqualTo("kms.example.com:123");
+              assertThat(client.getSettings().getEndpoint())
+                  .isEqualTo("bigquerystorage.example.com:123");
             });
   }
 
@@ -108,12 +136,14 @@ class GcpBigQueryAutoConfigurationTests {
   void testBigQueryWrite_bothUniverseDomainAndEndpointSet() {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.bigquery.universe-domain=myUniverseDomain")
-        .withPropertyValues("spring.cloud.gcp.bigquery.endpoint=kms.example.com:123")
+        .withPropertyValues(
+            "spring.cloud.gcp.bigquery.jsonWriterEndpoint=bigquerystorage.example.com:123")
         .run(
             ctx -> {
               BigQueryWriteClient client = ctx.getBean(BigQueryWriteClient.class);
               assertThat(client.getSettings().getUniverseDomain()).isEqualTo("myUniverseDomain");
-              assertThat(client.getSettings().getEndpoint()).isEqualTo("kms.example.com:123");
+              assertThat(client.getSettings().getEndpoint())
+                  .isEqualTo("bigquerystorage.example.com:123");
             });
   }
 

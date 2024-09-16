@@ -46,7 +46,12 @@ public class GcpBigQueryProperties implements CredentialsSupplier {
   private int threadPoolSize;
 
   private String universeDomain;
-  private String endpoint;
+
+  /** Endpoint that will be used by BigQueryJsonDataWriter. */
+  private String jsonWriterEndpoint;
+
+  /** Host (endpoint without the port) that will be used by BigQueryOptions. */
+  private String host;
 
   public int getJsonWriterBatchSize() {
     return jsonWriterBatchSize;
@@ -92,11 +97,20 @@ public class GcpBigQueryProperties implements CredentialsSupplier {
     this.universeDomain = universeDomain;
   }
 
-  public String getEndpoint() {
-    return endpoint;
+  public String getJsonWriterEndpoint() {
+    return jsonWriterEndpoint;
   }
 
-  public void setEndpoint(String endpoint) {
-    this.endpoint = endpoint;
+  public void setJsonWriterEndpoint(String jsonWriterEndpoint) {
+    this.jsonWriterEndpoint = jsonWriterEndpoint;
   }
+
+  public String getHost() {
+    return host;
+  }
+
+  public void setHost(String host) {
+    this.host = host;
+  }
+
 }

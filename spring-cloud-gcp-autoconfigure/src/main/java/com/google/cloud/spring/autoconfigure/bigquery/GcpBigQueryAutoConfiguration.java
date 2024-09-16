@@ -58,7 +58,9 @@ public class GcpBigQueryAutoConfiguration {
   private int threadPoolSize;
 
   private String universeDomain;
-  private String endpoint;
+  private String jsonWriterEndpoint;
+
+  private String host;
 
   GcpBigQueryAutoConfiguration(
       GcpBigQueryProperties gcpBigQueryProperties,
@@ -83,7 +85,8 @@ public class GcpBigQueryAutoConfiguration {
     this.threadPoolSize = getThreadPoolSize(gcpBigQueryProperties.getThreadPoolSize());
 
     this.universeDomain = gcpBigQueryProperties.getUniverseDomain();
-    this.endpoint = gcpBigQueryProperties.getEndpoint();
+    this.jsonWriterEndpoint = gcpBigQueryProperties.getJsonWriterEndpoint();
+    this.host = gcpBigQueryProperties.getHost();
   }
 
   /**
@@ -111,6 +114,9 @@ public class GcpBigQueryAutoConfiguration {
     if (this.universeDomain != null) {
       bigQueryOptionsBuilder.setUniverseDomain(this.universeDomain);
     }
+    if (this.host != null) {
+      bigQueryOptionsBuilder.setHost(this.host);
+    }
     return bigQueryOptionsBuilder.build().getService();
   }
 
@@ -125,8 +131,8 @@ public class GcpBigQueryAutoConfiguration {
     if (this.universeDomain != null) {
       bigQueryWriteSettingsBuilder.setUniverseDomain(this.universeDomain);
     }
-    if (this.endpoint != null) {
-      bigQueryWriteSettingsBuilder.setEndpoint(this.endpoint);
+    if (this.jsonWriterEndpoint != null) {
+      bigQueryWriteSettingsBuilder.setEndpoint(this.jsonWriterEndpoint);
     }
     return BigQueryWriteClient.create(bigQueryWriteSettingsBuilder.build());
   }
