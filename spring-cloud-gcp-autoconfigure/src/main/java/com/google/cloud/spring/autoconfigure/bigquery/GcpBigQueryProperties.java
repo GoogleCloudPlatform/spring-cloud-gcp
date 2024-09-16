@@ -47,10 +47,15 @@ public class GcpBigQueryProperties implements CredentialsSupplier {
 
   private String universeDomain;
 
-  /** Endpoint that will be used by BigQueryJsonDataWriter. */
+  /**
+   * Endpoint (formatted as `${service}.${universeDomain}:${port}`) that will be used by
+   * BigQueryJsonDataWriter.
+   */
   private String jsonWriterEndpoint;
 
-  /** Host (endpoint without the port) that will be used by BigQueryOptions. */
+  /**
+   * Host (formatted as `https://{service}.{universeDomain}`) that will be used by BigQueryOptions.
+   */
   private String host;
 
   public int getJsonWriterBatchSize() {
