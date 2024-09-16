@@ -69,7 +69,8 @@ class GcpBigQueryAutoConfigurationTests {
             ctx -> {
               BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
               assertThat(options.getUniverseDomain()).isEqualTo("myUniverseDomain");
-              assertThat(options.getHost()).isEqualTo("https://www.googleapis.com");
+              assertThat(options.getResolvedApiaryHost("bigquery"))
+                  .isEqualTo("https://bigquery.myUniverseDomain/");
             });
   }
 
@@ -79,7 +80,8 @@ class GcpBigQueryAutoConfigurationTests {
         ctx -> {
           BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
           assertThat(options.getUniverseDomain()).isNull();
-          assertThat(options.getHost()).isEqualTo("https://www.googleapis.com");
+          assertThat(options.getResolvedApiaryHost("bigquery"))
+              .isEqualTo("https://bigquery.googleapis.com/");
         });
   }
 
@@ -90,7 +92,8 @@ class GcpBigQueryAutoConfigurationTests {
         .run(
             ctx -> {
               BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
-              assertThat(options.getHost()).isEqualTo("bigquery.example.com");
+              assertThat(options.getResolvedApiaryHost("bigquery"))
+                  .isEqualTo("bigquery.example.com");
             });
   }
 
@@ -102,7 +105,8 @@ class GcpBigQueryAutoConfigurationTests {
         .run(
             ctx -> {
               BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
-              assertThat(options.getHost()).isEqualTo("bigquery.example.com");
+              assertThat(options.getResolvedApiaryHost("bigquery"))
+                  .isEqualTo("bigquery.example.com");
               assertThat(options.getUniverseDomain()).isEqualTo("myUniverseDomain");
             });
   }
