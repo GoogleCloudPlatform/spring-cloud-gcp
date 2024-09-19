@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.8...v3.8.9) (2024-09-19)
+
+
+### Bug Fixes
+
+* **dep:** update all actions/upload-artifact to v4 as v2 was deprecated and now fails work flows ([#3204](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3204)) ([#3219](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3219)) ([75ca84c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/75ca84c38b89af88c57217f23ee1972f14dce5eb))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.45.0 to 26.47.0 ([#3226](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3226)) ([39d7180](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/39d7180883e3b645c843cb03920a0cc39843df0d))
+
 ## [3.8.8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.7...v3.8.8) (2024-08-28)
 
 
