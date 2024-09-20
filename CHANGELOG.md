@@ -14,6 +14,27 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.6.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.6.0...v5.6.1) (2024-09-20)
+
+
+### Bug Fixes
+
+* add credential runtime hint for graalvm compilation ([#3200](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3200)) ([f7fc095](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f7fc095a55966a910693718deaa74d9bd2a0d2f8))
+* added native image class initialization workaround to storage samples ([#3195](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3195)) ([84e4fc4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/84e4fc413af018e9c707c1b65e6f6619ac44d731))
+* **dep:** update all actions/upload-artifact to v4 as v2 was deprecated and now fails work flows ([#3204](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3204)) ([2f0f275](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2f0f275253c0c596cfa1c09b1b4db5d5626aa6d2))
+* Descendants entities losing database ID from parent ([#3142](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3142)) ([#3156](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3156)) ([02a1e65](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/02a1e65a4bd5c33039d4ee438591fc3632bb0c1f))
+* handle null primary keys between parent and child objects ([#3179](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3179)) ([42c69b6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/42c69b6298ea06b8043811b4048eaf9a6b9cba19))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.45.0 to 26.47.0 ([#3225](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3225)) ([c56409f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c56409f5d02e99534bddd21b80b8dd9f8608b40d))
+
+
+### Documentation
+
+* Update README.adoc for v5.6.0, v4.10.8 and v3.8.8 ([#3194](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3194)) ([96709b2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/96709b292ccd383475365c9f1d780a1cd654eea2))
+
 ## [5.6.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.5.1...v5.6.0) (2024-08-29)
 
 
