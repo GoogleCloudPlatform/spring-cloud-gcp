@@ -193,7 +193,7 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<!-- varags handling in mockito 5.x currently breaks tests -->
-			<version>4.11.0</version>
+			<version>5.0.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
