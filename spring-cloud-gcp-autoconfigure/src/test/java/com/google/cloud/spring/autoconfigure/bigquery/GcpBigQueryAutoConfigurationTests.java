@@ -75,7 +75,7 @@ class GcpBigQueryAutoConfigurationTests {
   }
 
   @Test
-  void testBigQuery_noUniverseDomainAndHostSet_useClientDefault() {
+  void testBigQuery_noUniverseDomainAndEndpointSet_useClientDefault() {
     this.contextRunner.run(
         ctx -> {
           BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
@@ -86,7 +86,7 @@ class GcpBigQueryAutoConfigurationTests {
   }
 
   @Test
-  void testBigQuery_host() {
+  void testBigQuery_endpoint() {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.bigquery.endpoint=bigquery.example.com:443")
         .run(
@@ -98,7 +98,7 @@ class GcpBigQueryAutoConfigurationTests {
   }
 
   @Test
-  void testBigQuery_bothHostAndUniverseDomainSet() {
+  void testBigQuery_bothEndpointAndUniverseDomainSet() {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.bigquery.endpoint=bigquery.example.com:123")
         .withPropertyValues("spring.cloud.gcp.bigquery.universe-domain=myUniverseDomain")
