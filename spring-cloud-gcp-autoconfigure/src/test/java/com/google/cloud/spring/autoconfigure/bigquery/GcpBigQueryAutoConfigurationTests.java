@@ -88,25 +88,25 @@ class GcpBigQueryAutoConfigurationTests {
   @Test
   void testBigQuery_host() {
     this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.bigquery.host=bigquery.example.com")
+        .withPropertyValues("spring.cloud.gcp.bigquery.endpoint=bigquery.example.com:443")
         .run(
             ctx -> {
               BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
               assertThat(options.getResolvedApiaryHost("bigquery"))
-                  .isEqualTo("bigquery.example.com");
+                  .isEqualTo("https://bigquery.example.com");
             });
   }
 
   @Test
   void testBigQuery_bothHostAndUniverseDomainSet() {
     this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.bigquery.host=bigquery.example.com")
+        .withPropertyValues("spring.cloud.gcp.bigquery.endpoint=bigquery.example.com:123")
         .withPropertyValues("spring.cloud.gcp.bigquery.universe-domain=myUniverseDomain")
         .run(
             ctx -> {
               BigQueryOptions options = ctx.getBean(BigQuery.class).getOptions();
               assertThat(options.getResolvedApiaryHost("bigquery"))
-                  .isEqualTo("bigquery.example.com");
+                  .isEqualTo("https://bigquery.example.com");
               assertThat(options.getUniverseDomain()).isEqualTo("myUniverseDomain");
             });
   }
@@ -127,7 +127,7 @@ class GcpBigQueryAutoConfigurationTests {
   void testBigQueryWrite_endpoint() {
     this.contextRunner
         .withPropertyValues(
-            "spring.cloud.gcp.bigquery.jsonWriterEndpoint=bigquerystorage.example.com:123")
+            "spring.cloud.gcp.bigquery.endpoint=bigquerystorage.example.com:123")
         .run(
             ctx -> {
               BigQueryWriteClient client = ctx.getBean(BigQueryWriteClient.class);
@@ -141,7 +141,7 @@ class GcpBigQueryAutoConfigurationTests {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.bigquery.universe-domain=myUniverseDomain")
         .withPropertyValues(
-            "spring.cloud.gcp.bigquery.jsonWriterEndpoint=bigquerystorage.example.com:123")
+            "spring.cloud.gcp.bigquery.endpoint=bigquerystorage.example.com:123")
         .run(
             ctx -> {
               BigQueryWriteClient client = ctx.getBean(BigQueryWriteClient.class);

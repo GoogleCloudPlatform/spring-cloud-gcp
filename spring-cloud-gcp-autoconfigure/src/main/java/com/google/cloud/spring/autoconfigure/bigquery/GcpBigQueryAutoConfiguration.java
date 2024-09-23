@@ -26,7 +26,10 @@ import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -58,9 +61,7 @@ public class GcpBigQueryAutoConfiguration {
   private int threadPoolSize;
 
   private String universeDomain;
-  private String jsonWriterEndpoint;
-
-  private String host;
+  private String endpoint;
 
   GcpBigQueryAutoConfiguration(
       GcpBigQueryProperties gcpBigQueryProperties,
@@ -85,8 +86,8 @@ public class GcpBigQueryAutoConfiguration {
     this.threadPoolSize = getThreadPoolSize(gcpBigQueryProperties.getThreadPoolSize());
 
     this.universeDomain = gcpBigQueryProperties.getUniverseDomain();
-    this.jsonWriterEndpoint = gcpBigQueryProperties.getJsonWriterEndpoint();
-    this.host = gcpBigQueryProperties.getHost();
+
+    this.endpoint = gcpBigQueryProperties.getEndpoint();
   }
 
   /**
@@ -105,7 +106,7 @@ public class GcpBigQueryAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public BigQuery bigQuery() throws IOException {
+  public BigQuery bigQuery() throws IOException, URISyntaxException {
     BigQueryOptions.Builder bigQueryOptionsBuilder =
         BigQueryOptions.newBuilder()
             .setProjectId(this.projectId)
@@ -114,8 +115,8 @@ public class GcpBigQueryAutoConfiguration {
     if (this.universeDomain != null) {
       bigQueryOptionsBuilder.setUniverseDomain(this.universeDomain);
     }
-    if (this.host != null) {
-      bigQueryOptionsBuilder.setHost(this.host);
+    if (this.endpoint != null) {
+      bigQueryOptionsBuilder.setHost(resolveToHost(this.endpoint));
     }
     return bigQueryOptionsBuilder.build().getService();
   }
@@ -131,8 +132,8 @@ public class GcpBigQueryAutoConfiguration {
     if (this.universeDomain != null) {
       bigQueryWriteSettingsBuilder.setUniverseDomain(this.universeDomain);
     }
-    if (this.jsonWriterEndpoint != null) {
-      bigQueryWriteSettingsBuilder.setEndpoint(this.jsonWriterEndpoint);
+    if (this.endpoint != null) {
+      bigQueryWriteSettingsBuilder.setEndpoint(this.endpoint);
     }
     return BigQueryWriteClient.create(bigQueryWriteSettingsBuilder.build());
   }
@@ -159,5 +160,17 @@ public class GcpBigQueryAutoConfiguration {
     bqInitSettings.put("JSON_WRITER_BATCH_SIZE", this.jsonWriterBatchSize);
     return new BigQueryTemplate(
         bigQuery, bigQueryWriteClient, bqInitSettings, bigQueryThreadPoolTaskScheduler);
+  }
+
+  private String resolveToHost(String endpoint) throws URISyntaxException {
+    if (!endpoint.contains("://")) {
+      endpoint = "https://" + endpoint;
+    }
+    URI uri = new URI(endpoint);
+
+    // Construct the new URL with https and no port
+    String newUrl = new URI("https", uri.getUserInfo(), uri.getHost(), -1,
+        uri.getPath(), uri.getQuery(), uri.getFragment()).toString();
+    return newUrl;
   }
 }
