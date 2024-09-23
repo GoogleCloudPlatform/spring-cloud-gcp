@@ -167,7 +167,7 @@ public class GcpBigQueryAutoConfiguration {
     }
     URI uri = new URI(endpoint);
 
-    // Construct the new URL with https and no port
+    // Construct the new URL with https:// and no port
     String newUrl = new URI("https", uri.getUserInfo(), uri.getHost(), -1,
         uri.getPath(), uri.getQuery(), uri.getFragment()).toString();
     return newUrl;
