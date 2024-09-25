@@ -162,14 +162,10 @@ public class GcpBigQueryAutoConfiguration {
   }
 
   private String resolveToHost(String endpoint) throws URISyntaxException {
-    if (!endpoint.contains("://")) {
-      endpoint = "https://" + endpoint;
+    int portIndex = endpoint.indexOf(":");
+    if (portIndex != -1){
+      return "https://" + endpoint.substring(0,portIndex) + "/";
     }
-    URI uri = new URI(endpoint);
-
-    // Construct the new URL with https:// and no port
-    String newUrl = new URI("https", uri.getUserInfo(), uri.getHost(), -1,
-        uri.getPath(), uri.getQuery(), uri.getFragment()).toString();
-    return newUrl;
+    return "https://" + endpoint + "/";
   }
 }
