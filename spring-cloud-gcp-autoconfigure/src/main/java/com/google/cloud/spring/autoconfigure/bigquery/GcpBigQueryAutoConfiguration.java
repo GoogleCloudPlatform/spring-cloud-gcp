@@ -27,7 +27,6 @@ import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -163,8 +162,8 @@ public class GcpBigQueryAutoConfiguration {
 
   private String resolveToHost(String endpoint) throws URISyntaxException {
     int portIndex = endpoint.indexOf(":");
-    if (portIndex != -1){
-      return "https://" + endpoint.substring(0,portIndex) + "/";
+    if (portIndex != -1) {
+      return "https://" + endpoint.substring(0, portIndex) + "/";
     }
     return "https://" + endpoint + "/";
   }
