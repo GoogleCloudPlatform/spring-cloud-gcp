@@ -45,6 +45,13 @@ public class GcpBigQueryProperties implements CredentialsSupplier {
   /** The size of thread pool of ThreadPoolTaskScheduler used by GcpBigQueryAutoConfiguration */
   private int threadPoolSize;
 
+  private String universeDomain;
+
+  /**
+   * Endpoint (formatted as `{service}.{universeDomain}:${port}`)
+   */
+  private String endpoint;
+
   public int getJsonWriterBatchSize() {
     return jsonWriterBatchSize;
   }
@@ -80,4 +87,21 @@ public class GcpBigQueryProperties implements CredentialsSupplier {
   public void setDatasetName(String datasetName) {
     this.datasetName = datasetName;
   }
+
+  public String getUniverseDomain() {
+    return universeDomain;
+  }
+
+  public void setUniverseDomain(String universeDomain) {
+    this.universeDomain = universeDomain;
+  }
+
+  public String getEndpoint() {
+    return endpoint;
+  }
+
+  public void setEndpoint(String endpoint) {
+    this.endpoint = endpoint;
+  }
+
 }
