@@ -41,7 +41,7 @@
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>2.2.5</zipkin-gcp.version>
 		<java-cfenv.version>2.5.0</java-cfenv.version>
-		<micrometer-tracing.version>1.3.3</micrometer-tracing.version>
+		<micrometer-tracing.version>1.3.4</micrometer-tracing.version>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
