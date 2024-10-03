@@ -14,6 +14,21 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.10](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.9...v3.8.10) (2024-10-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.48.0 ([#3272](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3272)) ([aee8dff](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/aee8dffa8689112e57246df19e4c95a1b4b2e0ef))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.20.0 to 1.20.1 ([#3193](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3193)) ([b3a24b7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b3a24b7dac39fe52c17785c2436e5846dfe614e1))
+* bump commons-io:commons-io from 2.16.1 to 2.17.0 ([#3243](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3243)) ([44edaf3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/44edaf3fe0976a5939df600cb00d380f9e9c7378))
+* bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.5 to 3.2.7 ([#3262](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3262)) ([78172ca](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/78172caaa2cc7f198143879302263dc7280d64cb))
+* bump spring-cloud-config.version from 3.1.8 to 3.1.9 ([#3254](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3254)) ([8a67c4c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8a67c4c809b1b121cbd66f149453c3f44275429d))
+
 ## [3.8.9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.8...v3.8.9) (2024-09-19)
 
 
