@@ -13,7 +13,7 @@
 	<name>Spring Framework on Google Cloud Code Samples</name>
 	<artifactId>spring-cloud-gcp-samples</artifactId>
 	<groupId>com.google.cloud</groupId>
-	<version>5.6.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>5.6.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -143,6 +143,7 @@
 								<it.secretmanager>true</it.secretmanager>
 								<it.datastore>true</it.datastore>
 								<it.firestore>true</it.firestore>
+								<it.firestore.native>true</it.firestore.native>
 								<it.kms>true</it.kms>
 								<it.bigquery>true</it.bigquery>
 								<it.metrics>true</it.metrics>
@@ -160,6 +161,7 @@
 								<spring.r2dbc.password>${env.DB_PASSWORD}</spring.r2dbc.password>
 								<spring.cloud.gcp.alloydb.instance-connection-uri>projects/spring-cloud-gcp-ci-native/locations/us-central1/clusters/testcluster/instances/testpostgres</spring.cloud.gcp.alloydb.instance-connection-uri>
 								<spring.cloud.gcp.alloydb.database-name>code_samples_test_db</spring.cloud.gcp.alloydb.database-name>
+								<spring.cloud.gcp.firestore.credentials.encoded-key>${env.SPRING_CLOUD_GCP_CI_NATIVE_SA_KEY_BASE64}</spring.cloud.gcp.firestore.credentials.encoded-key>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>

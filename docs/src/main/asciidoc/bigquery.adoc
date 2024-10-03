@@ -38,6 +38,8 @@ The following application properties may be configured with Spring Framework on 
 | `spring.cloud.gcp.bigquery.credentials.location` | Credentials file location for authenticating with the Google Cloud BigQuery APIs, if different from the ones in the <<spring-cloud-gcp-core,Spring Framework on Google Cloud Core Module>> | No | Inferred from https://cloud.google.com/docs/authentication/production[Application Default Credentials], typically set by https://cloud.google.com/sdk/gcloud/reference/auth/application-default[`gcloud`].
 | `spring.cloud.gcp.bigquery.jsonWriterBatchSize` | Batch size which will be used by `BigQueryJsonDataWriter` while using https://cloud.google.com/bigquery/docs/write-api[BigQuery Storage Write API]. Note too large or too low values might impact performance. | No | 1000
 | `spring.cloud.gcp.bigquery.threadPoolSize` | The size of thread pool of `ThreadPoolTaskScheduler` which is used by `BigQueryTemplate` | No | 4
+| `spring.cloud.gcp.bigquery.universe-domain` | Universe domain of the Bigquery service. The universe domain is a part of the endpoint which is formatted as ${service}.${universeDomain}:${port} | Relies on client library’s default universe domain which is googleapis.com
+| `spring.cloud.gcp.bigquery.endpoint` | Endpoint of the Bigquery service. Follows the ${service}.${universeDomain}:${port} format for the BigqueryWriteClient otherwise reformats it to `https://${service}.${universeDomain}/` when setting it to Bigquery client. 
 |===========================================================================
 
 ==== BigQuery Client Object
