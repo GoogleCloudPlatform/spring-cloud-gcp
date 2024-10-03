@@ -185,6 +185,14 @@ public class DocumentServiceSpringAutoConfiguration {
               clientSettingsBuilder.deleteDocumentSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.deleteDocumentSettings().setRetrySettings(deleteDocumentRetrySettings);
 
+      RetrySettings batchGetDocumentsMetadataRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.batchGetDocumentsMetadataSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .batchGetDocumentsMetadataSettings()
+          .setRetrySettings(batchGetDocumentsMetadataRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -240,6 +248,20 @@ public class DocumentServiceSpringAutoConfiguration {
       clientSettingsBuilder.deleteDocumentSettings().setRetrySettings(deleteDocumentRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for deleteDocument from properties.");
+      }
+    }
+    Retry batchGetDocumentsMetadataRetry = clientProperties.getBatchGetDocumentsMetadataRetry();
+    if (batchGetDocumentsMetadataRetry != null) {
+      RetrySettings batchGetDocumentsMetadataRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.batchGetDocumentsMetadataSettings().getRetrySettings(),
+              batchGetDocumentsMetadataRetry);
+      clientSettingsBuilder
+          .batchGetDocumentsMetadataSettings()
+          .setRetrySettings(batchGetDocumentsMetadataRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for batchGetDocumentsMetadata from properties.");
       }
     }
     return clientSettingsBuilder.build();
