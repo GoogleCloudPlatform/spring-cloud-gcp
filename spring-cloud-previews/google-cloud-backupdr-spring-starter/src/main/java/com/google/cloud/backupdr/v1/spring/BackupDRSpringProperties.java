@@ -53,6 +53,76 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getManagementServerRetry;
   /**
+   * Allow override of retry settings at method-level for listBackupVaults. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listBackupVaultsRetry;
+  /**
+   * Allow override of retry settings at method-level for fetchUsableBackupVaults. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchUsableBackupVaultsRetry;
+  /**
+   * Allow override of retry settings at method-level for getBackupVault. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getBackupVaultRetry;
+  /**
+   * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry testIamPermissionsRetry;
+  /**
+   * Allow override of retry settings at method-level for listDataSources. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listDataSourcesRetry;
+  /**
+   * Allow override of retry settings at method-level for getDataSource. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getDataSourceRetry;
+  /**
+   * Allow override of retry settings at method-level for initiateBackup. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry initiateBackupRetry;
+  /**
+   * Allow override of retry settings at method-level for fetchAccessToken. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchAccessTokenRetry;
+  /**
+   * Allow override of retry settings at method-level for listBackups. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listBackupsRetry;
+  /**
+   * Allow override of retry settings at method-level for getBackup. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getBackupRetry;
+  /**
+   * Allow override of retry settings at method-level for getBackupPlan. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getBackupPlanRetry;
+  /**
+   * Allow override of retry settings at method-level for listBackupPlans. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listBackupPlansRetry;
+  /**
+   * Allow override of retry settings at method-level for getBackupPlanAssociation. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getBackupPlanAssociationRetry;
+  /**
+   * Allow override of retry settings at method-level for listBackupPlanAssociations. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listBackupPlanAssociationsRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -72,11 +142,6 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
-  /**
-   * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry testIamPermissionsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -131,6 +196,118 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
     this.getManagementServerRetry = getManagementServerRetry;
   }
 
+  public Retry getListBackupVaultsRetry() {
+    return this.listBackupVaultsRetry;
+  }
+
+  public void setListBackupVaultsRetry(Retry listBackupVaultsRetry) {
+    this.listBackupVaultsRetry = listBackupVaultsRetry;
+  }
+
+  public Retry getFetchUsableBackupVaultsRetry() {
+    return this.fetchUsableBackupVaultsRetry;
+  }
+
+  public void setFetchUsableBackupVaultsRetry(Retry fetchUsableBackupVaultsRetry) {
+    this.fetchUsableBackupVaultsRetry = fetchUsableBackupVaultsRetry;
+  }
+
+  public Retry getGetBackupVaultRetry() {
+    return this.getBackupVaultRetry;
+  }
+
+  public void setGetBackupVaultRetry(Retry getBackupVaultRetry) {
+    this.getBackupVaultRetry = getBackupVaultRetry;
+  }
+
+  public Retry getTestIamPermissionsRetry() {
+    return this.testIamPermissionsRetry;
+  }
+
+  public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
+    this.testIamPermissionsRetry = testIamPermissionsRetry;
+  }
+
+  public Retry getListDataSourcesRetry() {
+    return this.listDataSourcesRetry;
+  }
+
+  public void setListDataSourcesRetry(Retry listDataSourcesRetry) {
+    this.listDataSourcesRetry = listDataSourcesRetry;
+  }
+
+  public Retry getGetDataSourceRetry() {
+    return this.getDataSourceRetry;
+  }
+
+  public void setGetDataSourceRetry(Retry getDataSourceRetry) {
+    this.getDataSourceRetry = getDataSourceRetry;
+  }
+
+  public Retry getInitiateBackupRetry() {
+    return this.initiateBackupRetry;
+  }
+
+  public void setInitiateBackupRetry(Retry initiateBackupRetry) {
+    this.initiateBackupRetry = initiateBackupRetry;
+  }
+
+  public Retry getFetchAccessTokenRetry() {
+    return this.fetchAccessTokenRetry;
+  }
+
+  public void setFetchAccessTokenRetry(Retry fetchAccessTokenRetry) {
+    this.fetchAccessTokenRetry = fetchAccessTokenRetry;
+  }
+
+  public Retry getListBackupsRetry() {
+    return this.listBackupsRetry;
+  }
+
+  public void setListBackupsRetry(Retry listBackupsRetry) {
+    this.listBackupsRetry = listBackupsRetry;
+  }
+
+  public Retry getGetBackupRetry() {
+    return this.getBackupRetry;
+  }
+
+  public void setGetBackupRetry(Retry getBackupRetry) {
+    this.getBackupRetry = getBackupRetry;
+  }
+
+  public Retry getGetBackupPlanRetry() {
+    return this.getBackupPlanRetry;
+  }
+
+  public void setGetBackupPlanRetry(Retry getBackupPlanRetry) {
+    this.getBackupPlanRetry = getBackupPlanRetry;
+  }
+
+  public Retry getListBackupPlansRetry() {
+    return this.listBackupPlansRetry;
+  }
+
+  public void setListBackupPlansRetry(Retry listBackupPlansRetry) {
+    this.listBackupPlansRetry = listBackupPlansRetry;
+  }
+
+  public Retry getGetBackupPlanAssociationRetry() {
+    return this.getBackupPlanAssociationRetry;
+  }
+
+  public void setGetBackupPlanAssociationRetry(Retry getBackupPlanAssociationRetry) {
+    this.getBackupPlanAssociationRetry = getBackupPlanAssociationRetry;
+  }
+
+  public Retry getListBackupPlanAssociationsRetry() {
+    return this.listBackupPlanAssociationsRetry;
+  }
+
+  public void setListBackupPlanAssociationsRetry(Retry listBackupPlanAssociationsRetry) {
+    this.listBackupPlanAssociationsRetry = listBackupPlanAssociationsRetry;
+  }
+
   public Retry getListLocationsRetry() {
     return this.listLocationsRetry;
   }
@@ -161,13 +338,5 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
 
   public void setGetIamPolicyRetry(Retry getIamPolicyRetry) {
     this.getIamPolicyRetry = getIamPolicyRetry;
-  }
-
-  public Retry getTestIamPermissionsRetry() {
-    return this.testIamPermissionsRetry;
-  }
-
-  public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
-    this.testIamPermissionsRetry = testIamPermissionsRetry;
   }
 }

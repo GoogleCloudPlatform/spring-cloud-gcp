@@ -172,6 +172,95 @@ public class BackupDRSpringAutoConfiguration {
           .getManagementServerSettings()
           .setRetrySettings(getManagementServerRetrySettings);
 
+      RetrySettings listBackupVaultsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackupVaultsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listBackupVaultsSettings()
+          .setRetrySettings(listBackupVaultsRetrySettings);
+
+      RetrySettings fetchUsableBackupVaultsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchUsableBackupVaultsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .fetchUsableBackupVaultsSettings()
+          .setRetrySettings(fetchUsableBackupVaultsRetrySettings);
+
+      RetrySettings getBackupVaultRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackupVaultSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getBackupVaultSettings().setRetrySettings(getBackupVaultRetrySettings);
+
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
+
+      RetrySettings listDataSourcesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDataSourcesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listDataSourcesSettings()
+          .setRetrySettings(listDataSourcesRetrySettings);
+
+      RetrySettings getDataSourceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDataSourceSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getDataSourceSettings().setRetrySettings(getDataSourceRetrySettings);
+
+      RetrySettings initiateBackupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.initiateBackupSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.initiateBackupSettings().setRetrySettings(initiateBackupRetrySettings);
+
+      RetrySettings fetchAccessTokenRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchAccessTokenSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .fetchAccessTokenSettings()
+          .setRetrySettings(fetchAccessTokenRetrySettings);
+
+      RetrySettings listBackupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackupsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listBackupsSettings().setRetrySettings(listBackupsRetrySettings);
+
+      RetrySettings getBackupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackupSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getBackupSettings().setRetrySettings(getBackupRetrySettings);
+
+      RetrySettings getBackupPlanRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackupPlanSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getBackupPlanSettings().setRetrySettings(getBackupPlanRetrySettings);
+
+      RetrySettings listBackupPlansRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackupPlansSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listBackupPlansSettings()
+          .setRetrySettings(listBackupPlansRetrySettings);
+
+      RetrySettings getBackupPlanAssociationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackupPlanAssociationSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getBackupPlanAssociationSettings()
+          .setRetrySettings(getBackupPlanAssociationRetrySettings);
+
+      RetrySettings listBackupPlanAssociationsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackupPlanAssociationsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listBackupPlanAssociationsSettings()
+          .setRetrySettings(listBackupPlanAssociationsRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -191,13 +280,6 @@ public class BackupDRSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getIamPolicySettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
-
-      RetrySettings testIamPermissionsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .testIamPermissionsSettings()
-          .setRetrySettings(testIamPermissionsRetrySettings);
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
@@ -229,6 +311,178 @@ public class BackupDRSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getManagementServer from properties.");
+      }
+    }
+    Retry listBackupVaultsRetry = clientProperties.getListBackupVaultsRetry();
+    if (listBackupVaultsRetry != null) {
+      RetrySettings listBackupVaultsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackupVaultsSettings().getRetrySettings(),
+              listBackupVaultsRetry);
+      clientSettingsBuilder
+          .listBackupVaultsSettings()
+          .setRetrySettings(listBackupVaultsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listBackupVaults from properties.");
+      }
+    }
+    Retry fetchUsableBackupVaultsRetry = clientProperties.getFetchUsableBackupVaultsRetry();
+    if (fetchUsableBackupVaultsRetry != null) {
+      RetrySettings fetchUsableBackupVaultsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchUsableBackupVaultsSettings().getRetrySettings(),
+              fetchUsableBackupVaultsRetry);
+      clientSettingsBuilder
+          .fetchUsableBackupVaultsSettings()
+          .setRetrySettings(fetchUsableBackupVaultsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for fetchUsableBackupVaults from properties.");
+      }
+    }
+    Retry getBackupVaultRetry = clientProperties.getGetBackupVaultRetry();
+    if (getBackupVaultRetry != null) {
+      RetrySettings getBackupVaultRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackupVaultSettings().getRetrySettings(),
+              getBackupVaultRetry);
+      clientSettingsBuilder.getBackupVaultSettings().setRetrySettings(getBackupVaultRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getBackupVault from properties.");
+      }
+    }
+    Retry testIamPermissionsRetry = clientProperties.getTestIamPermissionsRetry();
+    if (testIamPermissionsRetry != null) {
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(),
+              testIamPermissionsRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for testIamPermissions from properties.");
+      }
+    }
+    Retry listDataSourcesRetry = clientProperties.getListDataSourcesRetry();
+    if (listDataSourcesRetry != null) {
+      RetrySettings listDataSourcesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDataSourcesSettings().getRetrySettings(),
+              listDataSourcesRetry);
+      clientSettingsBuilder
+          .listDataSourcesSettings()
+          .setRetrySettings(listDataSourcesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listDataSources from properties.");
+      }
+    }
+    Retry getDataSourceRetry = clientProperties.getGetDataSourceRetry();
+    if (getDataSourceRetry != null) {
+      RetrySettings getDataSourceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDataSourceSettings().getRetrySettings(), getDataSourceRetry);
+      clientSettingsBuilder.getDataSourceSettings().setRetrySettings(getDataSourceRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getDataSource from properties.");
+      }
+    }
+    Retry initiateBackupRetry = clientProperties.getInitiateBackupRetry();
+    if (initiateBackupRetry != null) {
+      RetrySettings initiateBackupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.initiateBackupSettings().getRetrySettings(),
+              initiateBackupRetry);
+      clientSettingsBuilder.initiateBackupSettings().setRetrySettings(initiateBackupRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for initiateBackup from properties.");
+      }
+    }
+    Retry fetchAccessTokenRetry = clientProperties.getFetchAccessTokenRetry();
+    if (fetchAccessTokenRetry != null) {
+      RetrySettings fetchAccessTokenRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchAccessTokenSettings().getRetrySettings(),
+              fetchAccessTokenRetry);
+      clientSettingsBuilder
+          .fetchAccessTokenSettings()
+          .setRetrySettings(fetchAccessTokenRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for fetchAccessToken from properties.");
+      }
+    }
+    Retry listBackupsRetry = clientProperties.getListBackupsRetry();
+    if (listBackupsRetry != null) {
+      RetrySettings listBackupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackupsSettings().getRetrySettings(), listBackupsRetry);
+      clientSettingsBuilder.listBackupsSettings().setRetrySettings(listBackupsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listBackups from properties.");
+      }
+    }
+    Retry getBackupRetry = clientProperties.getGetBackupRetry();
+    if (getBackupRetry != null) {
+      RetrySettings getBackupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackupSettings().getRetrySettings(), getBackupRetry);
+      clientSettingsBuilder.getBackupSettings().setRetrySettings(getBackupRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getBackup from properties.");
+      }
+    }
+    Retry getBackupPlanRetry = clientProperties.getGetBackupPlanRetry();
+    if (getBackupPlanRetry != null) {
+      RetrySettings getBackupPlanRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackupPlanSettings().getRetrySettings(), getBackupPlanRetry);
+      clientSettingsBuilder.getBackupPlanSettings().setRetrySettings(getBackupPlanRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getBackupPlan from properties.");
+      }
+    }
+    Retry listBackupPlansRetry = clientProperties.getListBackupPlansRetry();
+    if (listBackupPlansRetry != null) {
+      RetrySettings listBackupPlansRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackupPlansSettings().getRetrySettings(),
+              listBackupPlansRetry);
+      clientSettingsBuilder
+          .listBackupPlansSettings()
+          .setRetrySettings(listBackupPlansRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listBackupPlans from properties.");
+      }
+    }
+    Retry getBackupPlanAssociationRetry = clientProperties.getGetBackupPlanAssociationRetry();
+    if (getBackupPlanAssociationRetry != null) {
+      RetrySettings getBackupPlanAssociationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackupPlanAssociationSettings().getRetrySettings(),
+              getBackupPlanAssociationRetry);
+      clientSettingsBuilder
+          .getBackupPlanAssociationSettings()
+          .setRetrySettings(getBackupPlanAssociationRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getBackupPlanAssociation from properties.");
+      }
+    }
+    Retry listBackupPlanAssociationsRetry = clientProperties.getListBackupPlanAssociationsRetry();
+    if (listBackupPlanAssociationsRetry != null) {
+      RetrySettings listBackupPlanAssociationsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackupPlanAssociationsSettings().getRetrySettings(),
+              listBackupPlanAssociationsRetry);
+      clientSettingsBuilder
+          .listBackupPlanAssociationsSettings()
+          .setRetrySettings(listBackupPlanAssociationsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listBackupPlanAssociations from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
@@ -269,20 +523,6 @@ public class BackupDRSpringAutoConfiguration {
       clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getIamPolicy from properties.");
-      }
-    }
-    Retry testIamPermissionsRetry = clientProperties.getTestIamPermissionsRetry();
-    if (testIamPermissionsRetry != null) {
-      RetrySettings testIamPermissionsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(),
-              testIamPermissionsRetry);
-      clientSettingsBuilder
-          .testIamPermissionsSettings()
-          .setRetrySettings(testIamPermissionsRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for testIamPermissions from properties.");
       }
     }
     return clientSettingsBuilder.build();

@@ -67,6 +67,11 @@ public class DocumentServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteDocumentRetry;
+  /**
+   * Allow override of retry settings at method-level for batchGetDocumentsMetadata. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry batchGetDocumentsMetadataRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -143,5 +148,13 @@ public class DocumentServiceSpringProperties implements CredentialsSupplier {
 
   public void setDeleteDocumentRetry(Retry deleteDocumentRetry) {
     this.deleteDocumentRetry = deleteDocumentRetry;
+  }
+
+  public Retry getBatchGetDocumentsMetadataRetry() {
+    return this.batchGetDocumentsMetadataRetry;
+  }
+
+  public void setBatchGetDocumentsMetadataRetry(Retry batchGetDocumentsMetadataRetry) {
+    this.batchGetDocumentsMetadataRetry = batchGetDocumentsMetadataRetry;
   }
 }

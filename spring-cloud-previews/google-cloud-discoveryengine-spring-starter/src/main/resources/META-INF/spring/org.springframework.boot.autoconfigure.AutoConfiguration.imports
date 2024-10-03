@@ -10,5 +10,6 @@ com.google.cloud.discoveryengine.v1.spring.RankServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.RecommendationServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.SchemaServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.SearchServiceSpringAutoConfiguration
+com.google.cloud.discoveryengine.v1.spring.SearchTuningServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.SiteSearchEngineServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.UserEventServiceSpringAutoConfiguration
