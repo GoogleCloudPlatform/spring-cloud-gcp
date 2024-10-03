@@ -134,6 +134,17 @@ class GcpPubSubAutoConfigurationTests {
   }
 
   @Test
+  void maxInboundMetadataSize_default() {
+    contextRunner.run(
+        ctx -> {
+          TransportChannelProvider subscriberTcp =
+              ctx.getBean("subscriberTransportChannelProvider", TransportChannelProvider.class);
+          assertThat(FieldUtils.readField(subscriberTcp, "maxInboundMetadataSize", true))
+              .isEqualTo(4 * 1024 * 1024);
+        });
+  }
+
+  @Test
   void retryableCodes_default() {
     contextRunner.run(
         ctx -> {

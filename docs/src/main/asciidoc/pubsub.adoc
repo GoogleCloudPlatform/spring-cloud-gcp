@@ -127,6 +127,9 @@ The behavior when the specified limits are exceeded. | No | Block
 NOTE: By default, subscription-specific threads are named after fully-qualified subscription name, ex: `gcp-pubsub-subscriber-projects/project-id/subscriptions/subscription-name`.
 This can be customized, by registering a `SelectiveSchedulerThreadNameProvider` bean.
 
+NOTE: By default, subscription-specific `maxInboundMetadataSize` is set to 4MB.
+This can be customized, by registering a `TransportChannelProvider` bean.
+
 ==== GRPC Connection Settings
 
 The Pub/Sub API uses the https://cloud.google.com/pubsub/docs/reference/service_apis_overview#grpc_api[GRPC] protocol to send API requests to the Pub/Sub service.

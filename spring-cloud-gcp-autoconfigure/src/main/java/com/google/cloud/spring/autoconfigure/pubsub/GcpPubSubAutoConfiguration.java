@@ -436,6 +436,9 @@ public class GcpPubSubAutoConfiguration {
   @ConditionalOnMissingBean(name = "subscriberTransportChannelProvider")
   public TransportChannelProvider subscriberTransportChannelProvider() {
     return SubscriberStubSettings.defaultGrpcTransportProviderBuilder()
+        // default value specified by pubsub client library,
+        // see https://github.com/googleapis/java-pubsub/blob/main/google-cloud-pubsub/src/main/java/com/google/cloud/pubsub/v1/Subscriber.java#L487.
+        .setMaxInboundMetadataSize(4 * 1024 * 1024)
         .setKeepAliveTime(
             Duration.ofMinutes(this.gcpPubSubProperties.getKeepAliveIntervalMinutes()))
         .build();
