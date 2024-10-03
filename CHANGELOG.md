@@ -14,6 +14,40 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.7.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.6.1...v5.7.0) (2024-10-03)
+
+
+### Features
+
+* add properties to set universe domain and endpoint in bigquery ([#3158](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3158)) ([9b3c780](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9b3c780b45f5b5d6317a30e62ff7ec028982578e))
+
+
+### Bug Fixes
+
+* **deps:** update cloud-sql-socket-factory.version to v1.21.0 ([#3270](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3270)) ([fdd8957](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fdd8957bcad3281ed86468af9a4df2fc1aeedf78))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.48.0 ([#3271](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3271)) ([2d65a64](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2d65a6403080e1cb853b8fe0c4b2ac4c507ae048))
+* set `maxInboundMetadataSize` in pubsub  ([#3157](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3157)) ([f333e41](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f333e41987a8db51ba35ad0728216b0adbffbdc9))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.20.0 to 1.20.1 ([#3191](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3191)) ([16518c6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/16518c6529400bacf6f8e256257fd50b5b9481ae))
+* bump com.google.cloud:alloydb-jdbc-connector from 1.1.5 to 1.1.6 ([#3206](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3206)) ([6e2b0e3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6e2b0e357a07c39e54b51515ca15122733f68ace))
+* bump com.google.errorprone:error_prone_core from 2.30.0 to 2.33.0 ([#3265](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3265)) ([e462698](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e4626989b49b99247fb147c9d3e067f9c6f1f2cb))
+* bump commons-io:commons-io from 2.16.1 to 2.17.0 ([#3253](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3253)) ([97af1d0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/97af1d083943a8cdafdd57d19858580ab9ce38be))
+* bump io.micrometer:micrometer-tracing-bom from 1.3.3 to 1.3.4 ([#3201](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3201)) ([4437d65](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4437d65801c252ea97eba634a91d7fc983a44e0c))
+* bump io.opentelemetry:opentelemetry-api from 1.41.0 to 1.42.1 ([#3207](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3207)) ([b43e8e7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b43e8e7c531252d2f520f0f192e67ced917112af))
+* bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.5 to 3.2.7 ([#3261](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3261)) ([e3da8fe](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e3da8fe3d8458e37a87af0ba8219922400b4c426))
+* bump org.graalvm.buildtools:native-maven-plugin ([#3208](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3208)) ([faa4ef5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/faa4ef5cd3f921e9a8943f0971c44a2ec4f7f0b2))
+* bump org.springframework.boot:spring-boot-starter-parent ([#3259](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3259)) ([b8ae0f0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b8ae0f03d29cbdbbb944679df42ff99fd2233ad8))
+* bump spring-boot-dependencies.version from 3.3.3 to 3.3.4 ([#3242](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3242)) ([af60cab](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/af60cab5adcc42aa4fa1d2bb72cfaee2c9718e73))
+* bump zipkin-gcp.version from 2.2.4 to 2.2.5 ([#3189](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3189)) ([4718eaf](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4718eaf0f09e979a460daf3988fae26b90632b4d))
+
+
+### Documentation
+
+* Update README links ([#3246](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3246)) ([bfc0fbd](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/bfc0fbd57e4e65dbf933f72aee01f6e82d7b800c))
+
 ## [5.6.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.6.0...v5.6.1) (2024-09-20)
 
 
