@@ -177,6 +177,13 @@ Used to authenticate and authorize new connections to a Google Cloud SQL instanc
 Used to authenticate and authorize new connections to a Google Cloud SQL instance. | No
 | Default credentials provided by the Spring Framework on Google Cloud Core Starter
 | `spring.cloud.gcp.sql.enableIamAuth` | Specifies whether to enable IAM database authentication (PostgreSQL only). | No | `False`
+| `spring.cloud.gcp.sql.refreshStrategy` | The strategy used to refresh the Google Cloud SQL authentication tokens. Valid values: `background` - refresh credentials using a background thread, `lazy` - refresh credentials during connection attempts. | No | "background"
+| `spring.cloud.gcp.sql.targetPrincipal` | The service account to impersonate when connecting to the database and database admin API. | No | (empty)
+| `spring.cloud.gcp.sql.delegates` | A comma-separated list of service accounts delegates. | No | (empty)
+| `spring.cloud.gcp.sql.universeDomain` | A universe domain for the TPC environment. | No | "googleapis.com"
+| `spring.cloud.gcp.sql.adminRootUrl` | An alternate root url for the Cloud SQL admin API. | No | (empty)
+| `spring.cloud.gcp.sql.adminServicePath` | An alternate path to the SQL Admin API endpoint. | No | (empty)
+| `spring.cloud.gcp.sql.adminQuotaProject` | A project ID for quota and billing. | No | (empty)
 |===
 
 === Troubleshooting tips
