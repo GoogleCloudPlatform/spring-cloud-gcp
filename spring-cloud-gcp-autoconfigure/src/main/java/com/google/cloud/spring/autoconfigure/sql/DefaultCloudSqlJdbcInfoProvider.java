@@ -16,6 +16,10 @@
 
 package com.google.cloud.spring.autoconfigure.sql;
 
+import java.net.URLEncoder;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -54,12 +58,49 @@ public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider
             this.properties.getDatabaseName(),
             this.properties.getInstanceConnectionName());
 
+    // Build additional JDBC url parameters from the configuration.
+    Map<String, String> urlParams = new LinkedHashMap<>();
     if (StringUtils.hasText(properties.getIpTypes())) {
-      jdbcUrl += "&ipTypes=" + properties.getIpTypes();
+      urlParams.put("ipTypes", properties.getIpTypes());
     }
 
     if (properties.isEnableIamAuth()) {
-      jdbcUrl += "&enableIamAuth=true&sslmode=disable";
+      urlParams.put("enableIamAuth", "true");
+      urlParams.put("sslmode", "disable");
+    }
+    if (StringUtils.hasText(properties.getTargetPrincipal())) {
+      urlParams.put("cloudSqlTargetPrincipal", properties.getTargetPrincipal());
+    }
+    if (StringUtils.hasText(properties.getDelegates())) {
+      urlParams.put("cloudSqlDelegates", properties.getDelegates());
+    }
+    if (StringUtils.hasText(properties.getAdminRootUrl())) {
+      urlParams.put("cloudSqlAdminRootUrl", properties.getAdminRootUrl());
+    }
+    if (StringUtils.hasText(properties.getAdminServicePath())) {
+      urlParams.put("cloudSqlAdminServicePath", properties.getAdminServicePath());
+    }
+    if (StringUtils.hasText(properties.getAdminQuotaProject())) {
+      urlParams.put("cloudSqlAdminQuotaProject", properties.getAdminQuotaProject());
+    }
+    if (StringUtils.hasText(properties.getUniverseDomain())) {
+      urlParams.put("cloudSqlUniverseDomain", properties.getUniverseDomain());
+    }
+    if (StringUtils.hasText(properties.getRefreshStrategy())) {
+      urlParams.put("cloudSqlRefreshStrategy", properties.getRefreshStrategy());
+    }
+
+    // Convert map to a string of url parameters
+    String urlParamsString =
+        urlParams.entrySet().stream()
+            .map(
+                entry ->
+                    URLEncoder.encode(entry.getKey()) + "=" + URLEncoder.encode(entry.getValue()))
+            .collect(Collectors.joining("&"));
+
+    // Append url parameters to the JDBC URL.
+    if (StringUtils.hasText(urlParamsString)) {
+      jdbcUrl = jdbcUrl + "&" + urlParamsString;
     }
 
     return jdbcUrl;
