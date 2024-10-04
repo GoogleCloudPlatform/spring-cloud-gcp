@@ -48,28 +48,29 @@ class GcpStorageAutoConfigurationTests {
           .withUserConfiguration(TestConfiguration.class);
 
   @Test
-  void testValidObject() throws Exception {
+  void testValidObject() {
     this.contextRunner
-        .withUserConfiguration(TestStorageConfiguration.class).run(
-        context -> {
-          Resource resource = context.getBean("mockResource", Resource.class);
-          assertThat(resource.contentLength()).isEqualTo(4096);
-        });
+        .withUserConfiguration(TestStorageConfiguration.class)
+        .run(
+            context -> {
+              Resource resource = context.getBean("mockResource", Resource.class);
+              assertThat(resource.contentLength()).isEqualTo(4096);
+            });
   }
 
   @Test
-  void testAutoCreateFilesTrueByDefault() throws IOException {
+  void testAutoCreateFilesTrueByDefault() {
     this.contextRunner
-        .withUserConfiguration(TestStorageConfiguration.class).run(
-        context -> {
-          Resource resource = context.getBean("mockResource", Resource.class);
-          assertThat(((GoogleStorageResource) resource).isAutoCreateFiles()).isTrue();
-        });
+        .withUserConfiguration(TestStorageConfiguration.class)
+        .run(
+            context -> {
+              Resource resource = context.getBean("mockResource", Resource.class);
+              assertThat(((GoogleStorageResource) resource).isAutoCreateFiles()).isTrue();
+            });
   }
 
   @Test
   void testAutoCreateFilesRespectsProperty() {
-
     this.contextRunner
         .withUserConfiguration(TestStorageConfiguration.class)
         .withPropertyValues("spring.cloud.gcp.storage.auto-create-files=false")
@@ -93,9 +94,9 @@ class GcpStorageAutoConfigurationTests {
   }
 
   @Test
-  void testEndpoint() {
+  void testHost() {
     this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.storage.endpoint=storage.example.com")
+        .withPropertyValues("spring.cloud.gcp.storage.host=https://storage.example.com/")
         .run(
             context -> {
               Storage storage = context.getBean("storage", Storage.class);
@@ -104,10 +105,11 @@ class GcpStorageAutoConfigurationTests {
   }
 
   @Test
-  void testUniverseDomainAndEndpointSet() {
+  void testUniverseDomainAndHostSet() {
     this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.storage.universe-domain=example.com",
-            "spring.cloud.gcp.storage.endpoint=storage.example.com")
+        .withPropertyValues(
+            "spring.cloud.gcp.storage.universe-domain=example.com",
+            "spring.cloud.gcp.storage.host=https://storage.example.com/")
         .run(
             context -> {
               Storage storage = context.getBean("storage", Storage.class);
@@ -117,16 +119,14 @@ class GcpStorageAutoConfigurationTests {
   }
 
   @Test
-  void testNoUniverseDomainAndEndpointSet_useDefaults() {
-    this.contextRunner
-        .run(
-            context -> {
-              Storage storage = context.getBean("storage", Storage.class);
-              assertThat(storage.getOptions().getUniverseDomain()).isNull();
-              assertThat(storage.getOptions().getHost()).isEqualTo("https://storage.googleapis.com/");
-            });
+  void testNoUniverseDomainOrHostSet_useDefaults() {
+    this.contextRunner.run(
+        context -> {
+          Storage storage = context.getBean("storage", Storage.class);
+          assertThat(storage.getOptions().getUniverseDomain()).isNull();
+          assertThat(storage.getOptions().getHost()).isEqualTo("https://storage.googleapis.com/");
+        });
   }
-
 
   @Configuration
   static class TestConfiguration {

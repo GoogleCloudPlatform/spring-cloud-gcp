@@ -54,7 +54,7 @@ public class GcpStorageAutoConfiguration { // NOSONAR squid:S1610 must be a clas
 
   private final String universeDomain;
 
-  private final String endpoint;
+  private final String host;
 
   public GcpStorageAutoConfiguration(
       GcpProjectIdProvider coreProjectIdProvider,
@@ -73,31 +73,24 @@ public class GcpStorageAutoConfiguration { // NOSONAR squid:S1610 must be a clas
             : credentialsProvider;
 
     this.universeDomain = gcpStorageProperties.getUniverseDomain();
-    this.endpoint = gcpStorageProperties.getEndpoint();
+    this.host = gcpStorageProperties.getHost();
   }
 
   @Bean
   @ConditionalOnMissingBean
   public Storage storage() throws IOException {
-    StorageOptions.Builder storageOptionsBuilder = StorageOptions.newBuilder()
-        .setHeaderProvider(new UserAgentHeaderProvider(GcpStorageAutoConfiguration.class))
-        .setProjectId(this.gcpProjectIdProvider.getProjectId())
-        .setCredentials(this.credentialsProvider.getCredentials());
+    StorageOptions.Builder storageOptionsBuilder =
+        StorageOptions.newBuilder()
+            .setHeaderProvider(new UserAgentHeaderProvider(GcpStorageAutoConfiguration.class))
+            .setProjectId(this.gcpProjectIdProvider.getProjectId())
+            .setCredentials(this.credentialsProvider.getCredentials());
 
-    if (this.universeDomain != null){
+    if (this.universeDomain != null) {
       storageOptionsBuilder.setUniverseDomain(this.universeDomain);
     }
-    if (this.endpoint != null){
-      storageOptionsBuilder.setHost(resolveToHost(this.endpoint));
+    if (this.host != null) {
+      storageOptionsBuilder.setHost(this.host);
     }
     return storageOptionsBuilder.build().getService();
-  }
-
-  private String resolveToHost(String endpoint) {
-    int portIndex = endpoint.indexOf(":");
-    if (portIndex != -1) {
-      return "https://" + endpoint.substring(0, portIndex) + "/";
-    }
-    return "https://" + endpoint + "/";
   }
 }

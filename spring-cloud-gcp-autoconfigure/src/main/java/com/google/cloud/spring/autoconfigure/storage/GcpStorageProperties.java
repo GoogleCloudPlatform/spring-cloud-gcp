@@ -37,11 +37,15 @@ public class GcpStorageProperties extends GoogleStorageProtocolResolverSettings
   }
 
   private String projectId;
-  
+
+  /**
+   * Universe domain of the client which is part of the host that is formatted as
+   * `https://${service}.${universeDomain}.
+   */
   private String universeDomain;
-  
-  private String endpoint;
-  
+
+  /** Host of the Storage client that is formatted as `https://${service}.${universeDomain}. */
+  private String host;
 
   public String getProjectId() {
     return projectId;
@@ -59,11 +63,11 @@ public class GcpStorageProperties extends GoogleStorageProtocolResolverSettings
     this.universeDomain = universeDomain;
   }
 
-  public String getEndpoint() {
-    return endpoint;
+  public String getHost() {
+    return host;
   }
 
-  public void setEndpoint(String endpoint) {
-    this.endpoint = endpoint;
+  public void setHost(String host) {
+    this.host = host;
   }
 }
