@@ -49,7 +49,8 @@ class GcpStorageAutoConfigurationTests {
 
   @Test
   void testValidObject() throws Exception {
-    this.contextRunner.run(
+    this.contextRunner
+        .withUserConfiguration(TestStorageConfiguration.class).run(
         context -> {
           Resource resource = context.getBean("mockResource", Resource.class);
           assertThat(resource.contentLength()).isEqualTo(4096);
@@ -58,7 +59,8 @@ class GcpStorageAutoConfigurationTests {
 
   @Test
   void testAutoCreateFilesTrueByDefault() throws IOException {
-    this.contextRunner.run(
+    this.contextRunner
+        .withUserConfiguration(TestStorageConfiguration.class).run(
         context -> {
           Resource resource = context.getBean("mockResource", Resource.class);
           assertThat(((GoogleStorageResource) resource).isAutoCreateFiles()).isTrue();
@@ -66,9 +68,10 @@ class GcpStorageAutoConfigurationTests {
   }
 
   @Test
-  void testAutoCreateFilesRespectsProperty() throws IOException {
+  void testAutoCreateFilesRespectsProperty() {
 
     this.contextRunner
+        .withUserConfiguration(TestStorageConfiguration.class)
         .withPropertyValues("spring.cloud.gcp.storage.auto-create-files=false")
         .run(
             context -> {
@@ -77,8 +80,70 @@ class GcpStorageAutoConfigurationTests {
             });
   }
 
+  @Test
+  void testUniverseDomain() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.storage.universe-domain=example.com")
+        .run(
+            context -> {
+              Storage storage = context.getBean("storage", Storage.class);
+              assertThat(storage.getOptions().getUniverseDomain()).isEqualTo("example.com");
+              assertThat(storage.getOptions().getHost()).isEqualTo("https://storage.example.com/");
+            });
+  }
+
+  @Test
+  void testEndpoint() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.storage.endpoint=storage.example.com")
+        .run(
+            context -> {
+              Storage storage = context.getBean("storage", Storage.class);
+              assertThat(storage.getOptions().getHost()).isEqualTo("https://storage.example.com/");
+            });
+  }
+
+  @Test
+  void testUniverseDomainAndEndpointSet() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.storage.universe-domain=example.com",
+            "spring.cloud.gcp.storage.endpoint=storage.example.com")
+        .run(
+            context -> {
+              Storage storage = context.getBean("storage", Storage.class);
+              assertThat(storage.getOptions().getUniverseDomain()).isEqualTo("example.com");
+              assertThat(storage.getOptions().getHost()).isEqualTo("https://storage.example.com/");
+            });
+  }
+
+  @Test
+  void testNoUniverseDomainAndEndpointSet_useDefaults() {
+    this.contextRunner
+        .run(
+            context -> {
+              Storage storage = context.getBean("storage", Storage.class);
+              assertThat(storage.getOptions().getUniverseDomain()).isNull();
+              assertThat(storage.getOptions().getHost()).isEqualTo("https://storage.googleapis.com/");
+            });
+  }
+
+
   @Configuration
   static class TestConfiguration {
+
+    @Bean
+    public static CredentialsProvider googleCredentials() {
+      return () -> mock(Credentials.class);
+    }
+
+    @Bean
+    public static GcpProjectIdProvider gcpProjectIdProvider() {
+      return () -> "default-project";
+    }
+  }
+
+  @Configuration
+  static class TestStorageConfiguration {
 
     @Value("gs://test-spring/images/spring.png")
     private Resource remoteResource;
@@ -97,16 +162,6 @@ class GcpStorageAutoConfigurationTests {
       when(mockedBlob.getSize()).thenReturn(4096L);
       when(storage.get(validBlob)).thenReturn(mockedBlob);
       return storage;
-    }
-
-    @Bean
-    public static CredentialsProvider googleCredentials() {
-      return () -> mock(Credentials.class);
-    }
-
-    @Bean
-    public static GcpProjectIdProvider gcpProjectIdProvider() {
-      return () -> "default-project";
     }
   }
 }

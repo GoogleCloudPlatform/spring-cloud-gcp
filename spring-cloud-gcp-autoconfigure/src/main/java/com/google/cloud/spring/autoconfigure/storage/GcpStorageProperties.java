@@ -37,6 +37,11 @@ public class GcpStorageProperties extends GoogleStorageProtocolResolverSettings
   }
 
   private String projectId;
+  
+  private String universeDomain;
+  
+  private String endpoint;
+  
 
   public String getProjectId() {
     return projectId;
@@ -45,4 +50,26 @@ public class GcpStorageProperties extends GoogleStorageProtocolResolverSettings
   public void setProjectId(String projectId) {
     this.projectId = projectId;
   }
+  
+  public String getUniverseDomain() {
+    return universeDomain;
+  }
+
+  public void setUniverseDomain(String universeDomain) {
+    this.universeDomain = universeDomain;
+  }
+
+  public String getEndpoint() {
+    return endpoint;
+  }
+
+  public void setEndpoint(String endpoint) {
+    this.endpoint = endpoint;
+  }
 }
+
+
+
+
+
+
