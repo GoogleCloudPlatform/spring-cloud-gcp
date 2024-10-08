@@ -31,8 +31,14 @@ public class GcpKmsProperties implements CredentialsSupplier {
 
   /** Overrides the GCP Project ID specified in the Core module. */
   private String projectId;
+
+  /**
+   * Universe domain of the client which is part of the endpoint that is formatted as
+   * `${service}.${universeDomain}:${port}`
+   */
   private String universeDomain;
 
+  /** Enspoint of the KMS client which is formatted as`${service}.${universeDomain}:${port}` */
   private String endpoint;
 
   @Override

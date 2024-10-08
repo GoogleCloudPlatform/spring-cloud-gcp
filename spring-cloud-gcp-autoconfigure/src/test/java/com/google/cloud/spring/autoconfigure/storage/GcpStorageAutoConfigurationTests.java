@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +30,8 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Storage;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.BeanInstantiationException;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -126,6 +129,21 @@ class GcpStorageAutoConfigurationTests {
           assertThat(storage.getOptions().getUniverseDomain()).isNull();
           assertThat(storage.getOptions().getHost()).isEqualTo("https://storage.googleapis.com/");
         });
+  }
+
+  @Test
+  void testInvalidHost_throwsException() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.storage.host=storage.example.com")
+        .run(
+            context -> {
+              Exception exception =
+                  assertThrows(Exception.class, () -> context.getBean("storage", Storage.class));
+              assertThat(exception).hasRootCauseInstanceOf(IllegalArgumentException.class);
+              assertThat(exception)
+                  .hasRootCauseMessage(
+                      "Invalid host format: storage.example.com. Please verify that the specified host follows the 'https://${service}.${universeDomain}' format");
+            });
   }
 
   @Configuration
