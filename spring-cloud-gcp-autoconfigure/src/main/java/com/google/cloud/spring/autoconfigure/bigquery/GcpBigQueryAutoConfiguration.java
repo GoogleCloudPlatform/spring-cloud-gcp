@@ -160,7 +160,7 @@ public class GcpBigQueryAutoConfiguration {
         bigQuery, bigQueryWriteClient, bqInitSettings, bigQueryThreadPoolTaskScheduler);
   }
 
-  private String resolveToHost(String endpoint) throws URISyntaxException {
+  private String resolveToHost(String endpoint) {
     int portIndex = endpoint.indexOf(":");
     if (portIndex != -1) {
       return "https://" + endpoint.substring(0, portIndex) + "/";
