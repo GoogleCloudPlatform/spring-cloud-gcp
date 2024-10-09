@@ -38,7 +38,7 @@ public class GcpKmsProperties implements CredentialsSupplier {
    */
   private String universeDomain;
 
-  /** Enspoint of the KMS client which is formatted as`${service}.${universeDomain}:${port}` */
+  /** Endpoint of the KMS client which is formatted as`${service}.${universeDomain}:${port}` */
   private String endpoint;
 
   @Override
