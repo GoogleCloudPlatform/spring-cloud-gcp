@@ -120,7 +120,7 @@ Base64-encoded contents of OAuth2 account private key for authenticating with th
 | `spring.cloud.gcp.storage.credentials.scopes` |
 https://developers.google.com/identity/protocols/googlescopes[OAuth2 scope] for Spring Framework on Google Cloud Storage credentials | No | https://www.googleapis.com/auth/devstorage.read_write
 | `spring.cloud.gcp.storage.universe-domain` | Universe domain of the Storage service. The universe domain is a part of the host that is formatted as `https://${service}.${universeDomain}` | No | Relies on client library’s default universe domain which is `googleapis.com`
-| `spring.cloud.gcp.storage.host` | Host of the Storage service which expects https://${service}.${universeDomain} as the format. | No | Relies on client library’s default host which is `https://storage.googleapis.com`
+| `spring.cloud.gcp.storage.host` | Host of the Storage service which expects `https://${service}.${universeDomain}` as the format. | No | Relies on client library’s default host which is `https://storage.googleapis.com`
 |===
 
 
