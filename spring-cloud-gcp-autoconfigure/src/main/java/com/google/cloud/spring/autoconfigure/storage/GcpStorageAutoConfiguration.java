@@ -100,7 +100,7 @@ public class GcpStorageAutoConfiguration { // NOSONAR squid:S1610 must be a clas
    * Verifies and returns host in the `https://${service}.${universeDomain}/` format, following
    * convention in com.google.cloud.ServiceOptions#getResolvedApiaryHost().
    *
-   * @param host
+   * @param host host provided through `spring.cloud.gcp.storage.host` property
    * @return host formatted as `https://${service}.${universeDomain}/`
    */
   private String verifyAndFetchHost(String host) {
