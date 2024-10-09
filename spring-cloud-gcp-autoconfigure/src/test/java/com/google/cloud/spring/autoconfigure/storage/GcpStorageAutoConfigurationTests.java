@@ -110,7 +110,7 @@ class GcpStorageAutoConfigurationTests {
     this.contextRunner
         .withPropertyValues(
             "spring.cloud.gcp.storage.universe-domain=example.com",
-            "spring.cloud.gcp.storage.host=https://storage.example.com/")
+            "spring.cloud.gcp.storage.host=https://storage.example.com")
         .run(
             context -> {
               Storage storage = context.getBean("storage", Storage.class);

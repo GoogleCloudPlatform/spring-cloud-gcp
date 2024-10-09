@@ -26,6 +26,8 @@ import com.google.cloud.spring.storage.GoogleStorageProtocolResolverSettings;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -95,12 +97,15 @@ public class GcpStorageAutoConfiguration { // NOSONAR squid:S1610 must be a clas
   }
 
   private String verifyAndFetchHost(String host) {
-    if (!host.startsWith("https://")) {
+    URL url;
+    try {
+      url = new URL(host);
+    } catch (MalformedURLException e) {
       throw new IllegalArgumentException(
           "Invalid host format: "
               + host
               + ". Please verify that the specified host follows the 'https://${service}.${universeDomain}' format");
     }
-    return host;
+    return url.getProtocol() + "://" + url.getHost() + "/";
   }
 }
