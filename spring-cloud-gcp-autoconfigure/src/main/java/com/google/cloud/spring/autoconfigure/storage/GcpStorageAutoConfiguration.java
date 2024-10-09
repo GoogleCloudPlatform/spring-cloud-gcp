@@ -96,6 +96,13 @@ public class GcpStorageAutoConfiguration { // NOSONAR squid:S1610 must be a clas
     return storageOptionsBuilder.build().getService();
   }
 
+  /**
+   * Verifies and returns host in the `https://${service}.${universeDomain}/` format, following
+   * convention in com.google.cloud.ServiceOptions#getResolvedApiaryHost().
+   *
+   * @param host
+   * @return host formatted as `https://${service}.${universeDomain}/`
+   */
   private String verifyAndFetchHost(String host) {
     URL url;
     try {
@@ -104,7 +111,7 @@ public class GcpStorageAutoConfiguration { // NOSONAR squid:S1610 must be a clas
       throw new IllegalArgumentException(
           "Invalid host format: "
               + host
-              + ". Please verify that the specified host follows the 'https://${service}.${universeDomain}' format");
+              + ". Please verify that the specified host follows the 'https://${service}.${universeDomain}/' format");
     }
     return url.getProtocol() + "://" + url.getHost() + "/";
   }

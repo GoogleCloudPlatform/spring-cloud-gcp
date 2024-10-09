@@ -140,7 +140,7 @@ class GcpStorageAutoConfigurationTests {
               assertThat(exception).hasRootCauseInstanceOf(IllegalArgumentException.class);
               assertThat(exception)
                   .hasRootCauseMessage(
-                      "Invalid host format: storage.example.com. Please verify that the specified host follows the 'https://${service}.${universeDomain}' format");
+                      "Invalid host format: storage.example.com. Please verify that the specified host follows the 'https://${service}.${universeDomain}/' format");
             });
   }
 

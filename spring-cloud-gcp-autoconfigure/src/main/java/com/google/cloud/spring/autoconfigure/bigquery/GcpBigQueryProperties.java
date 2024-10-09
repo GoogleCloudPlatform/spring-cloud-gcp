@@ -46,16 +46,16 @@ public class GcpBigQueryProperties implements CredentialsSupplier {
   private int threadPoolSize;
 
   /**
-   * Universe domain of the Bigquery and BigQueryWriteClient which is part of the endpoint that is
+   * Universe domain of the BigQuery and BigQueryWriteClient which is part of the endpoint that is
    * formatted as `{service}.{universeDomain}:${port}`.
    */
   private String universeDomain;
 
   /**
-   * Endpoint of the Bigquery and BigQueryWriteClient. Formatted as
+   * Endpoint of the BigQuery and BigQueryWriteClient. Formatted as
    * `{service}.{universeDomain}:${port}`. Note that endpoint will be reformatted in {@link
    * GcpBigQueryAutoConfiguration} to follow the `https://${service}.${universeDomain}/` pattern
-   * before being applied to the Bigquery client.
+   * before being applied to the BigQuery client.
    */
   private String endpoint;
 
