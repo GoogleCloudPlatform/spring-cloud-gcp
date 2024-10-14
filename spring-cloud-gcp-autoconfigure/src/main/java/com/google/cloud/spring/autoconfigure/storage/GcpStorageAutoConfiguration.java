@@ -26,6 +26,8 @@ import com.google.cloud.spring.storage.GoogleStorageProtocolResolverSettings;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -52,6 +54,10 @@ public class GcpStorageAutoConfiguration { // NOSONAR squid:S1610 must be a clas
 
   private final CredentialsProvider credentialsProvider;
 
+  private final String universeDomain;
+
+  private final String host;
+
   public GcpStorageAutoConfiguration(
       GcpProjectIdProvider coreProjectIdProvider,
       CredentialsProvider credentialsProvider,
@@ -67,16 +73,46 @@ public class GcpStorageAutoConfiguration { // NOSONAR squid:S1610 must be a clas
         gcpStorageProperties.getCredentials().hasKey()
             ? new DefaultCredentialsProvider(gcpStorageProperties)
             : credentialsProvider;
+
+    this.universeDomain = gcpStorageProperties.getUniverseDomain();
+    this.host = gcpStorageProperties.getHost();
   }
 
   @Bean
   @ConditionalOnMissingBean
   public Storage storage() throws IOException {
-    return StorageOptions.newBuilder()
-        .setHeaderProvider(new UserAgentHeaderProvider(GcpStorageAutoConfiguration.class))
-        .setProjectId(this.gcpProjectIdProvider.getProjectId())
-        .setCredentials(this.credentialsProvider.getCredentials())
-        .build()
-        .getService();
+    StorageOptions.Builder storageOptionsBuilder =
+        StorageOptions.newBuilder()
+            .setHeaderProvider(new UserAgentHeaderProvider(GcpStorageAutoConfiguration.class))
+            .setProjectId(this.gcpProjectIdProvider.getProjectId())
+            .setCredentials(this.credentialsProvider.getCredentials());
+
+    if (this.universeDomain != null) {
+      storageOptionsBuilder.setUniverseDomain(this.universeDomain);
+    }
+    if (this.host != null) {
+      storageOptionsBuilder.setHost(verifyAndFetchHost(this.host));
+    }
+    return storageOptionsBuilder.build().getService();
+  }
+
+  /**
+   * Verifies and returns host in the `https://${service}.${universeDomain}/` format, following
+   * convention in com.google.cloud.ServiceOptions#getResolvedApiaryHost().
+   *
+   * @param host host provided through `spring.cloud.gcp.storage.host` property
+   * @return host formatted as `https://${service}.${universeDomain}/`
+   */
+  private String verifyAndFetchHost(String host) {
+    URL url;
+    try {
+      url = new URL(host);
+    } catch (MalformedURLException e) {
+      throw new IllegalArgumentException(
+          "Invalid host format: "
+              + host
+              + ". Please verify that the specified host follows the 'https://${service}.${universeDomain}/' format");
+    }
+    return url.getProtocol() + "://" + url.getHost() + "/";
   }
 }
