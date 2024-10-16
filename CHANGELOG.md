@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.8.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.7.0...v5.8.0) (2024-10-16)
+
+
+### Features
+
+* add properties to customize universe-domain and host in Storage ([#3287](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3287)) ([f5879d9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f5879d92d81d5b480d2c402bd2e9e792832ebca3))
+
 ## [5.7.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.6.1...v5.7.0) (2024-10-03)
 
 
