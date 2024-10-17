@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.10.11](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.10...v4.10.11) (2024-10-17)
+
+
+### Dependencies
+
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#3279](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3279)) ([31eaf2d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/31eaf2d0ef24a42fd4e9ecbe504f71ba8dfe8a67))
+
 ## [4.10.10](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.9...v4.10.10) (2024-10-03)
 
 
