@@ -320,10 +320,12 @@ public class GoogleStorageResource implements WritableResource {
           "Cannot open an output stream to a bucket: '" + getURI() + "'");
     }
 
-    Blob blob = getBlob();
+    if (!this.autoCreateFiles) {
+      Blob blob = getBlob();
 
-    if ((blob == null || !blob.exists()) && !this.autoCreateFiles) {
-      throw new FileNotFoundException("The blob was not found: " + getURI());
+      if (blob == null || !blob.exists()) {
+        throw new FileNotFoundException("The blob was not found: " + getURI());
+      }
     }
 
     return Channels.newOutputStream(this.storage.writer(BlobInfo.newBuilder(getBlobId()).build()));
