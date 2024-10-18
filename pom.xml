@@ -487,6 +487,38 @@
 			</modules>
 		</profile>
 		<profile>
+			<id>non-previews</id>
+			<modules>
+				<!-- POM Modules-->
+				<module>spring-cloud-gcp-starters</module>
+				<module>spring-cloud-gcp-dependencies</module>
+
+				<!-- Code Modules -->
+				<module>spring-cloud-gcp-autoconfigure</module>
+				<module>spring-cloud-gcp-bigquery</module>
+				<module>spring-cloud-gcp-cloudfoundry</module>
+				<module>spring-cloud-gcp-core</module>
+				<module>spring-cloud-gcp-data-datastore</module>
+				<module>spring-cloud-gcp-data-firestore</module>
+				<module>spring-cloud-gcp-data-spanner</module>
+				<module>spring-cloud-gcp-logging</module>
+				<module>spring-cloud-gcp-pubsub</module>
+				<module>spring-cloud-gcp-pubsub-stream-binder</module>
+				<module>spring-cloud-gcp-security-iap</module>
+				<module>spring-cloud-gcp-storage</module>
+				<module>spring-cloud-gcp-secretmanager</module>
+				<module>spring-cloud-gcp-security-firebase</module>
+				<module>spring-cloud-gcp-vision</module>
+				<module>spring-cloud-gcp-kms</module>
+
+				<module>spring-cloud-generator</module>
+				<module>spring-cloud-spanner-spring-data-r2dbc</module>
+				<!-- Docs and Samples -->
+				<module>docs</module>
+				<module>spring-cloud-gcp-samples</module>
+			</modules>
+		</profile>
+		<profile>
 			<!-- cloud RAD generation -->
 			<id>docFX</id>
 			<activation>
