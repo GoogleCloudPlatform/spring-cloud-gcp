@@ -18,12 +18,11 @@ package com.google.cloud.spring.autoconfigure.firestore;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
+import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.ClientInterceptor;
@@ -136,7 +135,7 @@ class GcpFirestoreAutoConfigurationTests {
 
     @Bean
     public CredentialsProvider credentialsProvider() {
-      return () -> mock(GoogleCredentials.class);
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }

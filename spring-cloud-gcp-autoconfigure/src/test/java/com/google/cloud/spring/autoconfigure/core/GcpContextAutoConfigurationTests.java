@@ -17,10 +17,9 @@
 package com.google.cloud.spring.autoconfigure.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
+import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.core.DefaultGcpEnvironmentProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpEnvironmentProvider;
@@ -99,7 +98,7 @@ class GcpContextAutoConfigurationTests {
 
     @Bean
     public CredentialsProvider googleCredentials() {
-      return () -> mock(Credentials.class);
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }

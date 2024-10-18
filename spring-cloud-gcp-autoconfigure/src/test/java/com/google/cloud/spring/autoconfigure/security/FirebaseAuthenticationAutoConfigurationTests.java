@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.security.firebase.FirebaseJwtTokenDecoder;
 import org.junit.jupiter.api.Test;
@@ -72,7 +73,7 @@ class FirebaseAuthenticationAutoConfigurationTests {
 
     @Bean
     public CredentialsProvider googleCredentials() {
-      return () -> mock(Credentials.class);
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }

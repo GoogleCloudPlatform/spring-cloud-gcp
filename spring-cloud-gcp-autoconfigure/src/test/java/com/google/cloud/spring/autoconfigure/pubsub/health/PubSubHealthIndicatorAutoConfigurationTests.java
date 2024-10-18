@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
@@ -55,7 +56,7 @@ class PubSubHealthIndicatorAutoConfigurationTests {
               AutoConfigurations.of(
                   PubSubHealthIndicatorAutoConfiguration.class, GcpPubSubAutoConfiguration.class))
           .withBean(GcpProjectIdProvider.class, () -> () -> "fake project")
-          .withBean(CredentialsProvider.class, () -> () -> mock(Credentials.class));
+          .withBean(CredentialsProvider.class, () -> () -> TestUtils.MOCK_CREDENTIALS);
 
   @SuppressWarnings("unchecked")
   @Test

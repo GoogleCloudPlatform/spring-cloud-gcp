@@ -28,6 +28,7 @@ import com.google.api.gax.rpc.FixedTransportChannelProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.pubsub.v1.TopicAdminSettings;
+import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import org.assertj.core.data.Offset;
@@ -187,7 +188,7 @@ class GcpPubSubEmulatorAutoConfigurationTests {
   private static class TestConfiguration {
     @Bean
     public CredentialsProvider googleCredentials() {
-      return () -> mock(Credentials.class);
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }

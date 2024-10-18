@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,7 +78,7 @@ class GcpSecretManagerAutoConfigurationUnitTests {
 
     @Bean
     public CredentialsProvider googleCredentials() {
-      return () -> mock(Credentials.class);
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }
