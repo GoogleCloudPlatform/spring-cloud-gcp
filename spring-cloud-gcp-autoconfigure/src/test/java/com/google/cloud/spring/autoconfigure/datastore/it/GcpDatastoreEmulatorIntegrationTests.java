@@ -18,16 +18,15 @@ package com.google.cloud.spring.autoconfigure.datastore.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreException;
 import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.EntityQuery;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.StructuredQuery;
+import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.datastore.DatastoreRepositoriesAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.datastore.DatastoreTransactionManagerAutoConfiguration;
@@ -118,7 +117,7 @@ class GcpDatastoreEmulatorIntegrationTests {
 
     @Bean
     public CredentialsProvider credentialsProvider() {
-      return () -> mock(Credentials.class);
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 
