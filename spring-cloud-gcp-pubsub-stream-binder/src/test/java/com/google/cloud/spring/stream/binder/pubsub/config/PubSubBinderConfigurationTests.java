@@ -18,8 +18,10 @@ package com.google.cloud.spring.stream.binder.pubsub.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.auth.CredentialTypeForMetrics;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
@@ -165,7 +167,10 @@ class PubSubBinderConfigurationTests {
   private static class TestConfiguration {
     @Bean
     public CredentialsProvider googleCredentials() {
-      return () -> mock(Credentials.class);
+      Credentials mockCredential = mock(Credentials.class);
+      when(mockCredential.getMetricsCredentialType())
+          .thenReturn(CredentialTypeForMetrics.DO_NOT_SEND);
+      return () -> mockCredential;
     }
 
     @Bean

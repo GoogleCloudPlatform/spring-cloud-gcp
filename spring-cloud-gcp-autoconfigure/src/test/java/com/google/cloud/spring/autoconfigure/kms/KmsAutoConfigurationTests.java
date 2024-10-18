@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.auth.CredentialTypeForMetrics;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.auth.oauth2.UserCredentials;
@@ -172,6 +173,7 @@ class KmsAutoConfigurationTests {
     public static CredentialsProvider googleCredentials() {
       UserCredentials mockUserCredential = mock(UserCredentials.class);
       when(mockUserCredential.getClientId()).thenReturn(CORE_CREDENTIAL_CLIENT_ID);
+      when(mockUserCredential.getMetricsCredentialType()).thenReturn(CredentialTypeForMetrics.DO_NOT_SEND);
       return () -> mockUserCredential;
     }
 
