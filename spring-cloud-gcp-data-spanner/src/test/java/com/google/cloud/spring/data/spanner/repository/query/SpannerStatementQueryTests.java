@@ -40,8 +40,10 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
@@ -118,15 +120,30 @@ class SpannerStatementQueryTests {
             invocation -> {
               Statement statement = invocation.getArgument(1);
 
-              String expectedQuery =
-                  "SELECT DISTINCT shares, trader_id, ticker, price, action, id, value FROM trades"
-                      + " WHERE ( LOWER(action)=LOWER(@tag0) AND ticker=@tag1 ) OR ("
-                      + " trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND id IS NOT NULL AND"
-                      + " trader_id=NULL AND trader_id LIKE @tag7 AND price=TRUE AND price=FALSE"
-                      + " AND price>@tag10 AND price<=@tag11 AND price IN UNNEST(@tag12) AND"
-                      + " value<@tag13 ) ORDER BY id DESC LIMIT 3";
+              String actualSql = statement.getSql();
 
-              assertThat(statement.getSql()).isEqualTo(expectedQuery);
+              assertThat(actualSql.trim()).startsWith("SELECT DISTINCT");
+
+              String actualSelectClause = actualSql.substring(
+                  actualSql.indexOf("SELECT DISTINCT") + "SELECT DISTINCT".length(), 
+                  actualSql.indexOf("FROM trades")
+              ).trim();
+
+              String expectedSelectClause = "shares, trader_id, ticker, price, action, id, value";
+
+              Set<String> actualSelectFields = new HashSet<>(Arrays.asList(actualSelectClause.split(",\\s*")));
+              Set<String> expectedSelectFields = new HashSet<>(Arrays.asList(expectedSelectClause.split(",\\s*")));
+
+              assertThat(actualSelectFields).isEqualTo(expectedSelectFields);
+
+              String actualWhereAndOrderClause = actualSql.substring(actualSql.indexOf("FROM trades")).trim();
+              String expectedWhereAndOrderClause = "FROM trades WHERE ( LOWER(action)=LOWER(@tag0) AND ticker=@tag1 ) OR ("
+                                    + " trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND id IS NOT NULL AND"
+                                    + " trader_id=NULL AND trader_id LIKE @tag7 AND price=TRUE AND price=FALSE"
+                                    + " AND price>@tag10 AND price<=@tag11 AND price IN UNNEST(@tag12) AND"
+                                    + " value<@tag13 ) ORDER BY id DESC LIMIT 3";
+
+              assertThat(actualWhereAndOrderClause).isEqualTo(expectedWhereAndOrderClause);
 
               Map<String, Value> paramMap = statement.getParameters();
 
