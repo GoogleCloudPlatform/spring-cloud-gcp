@@ -30,6 +30,7 @@ import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.stream.binder.pubsub.PubSubMessageChannelBinder;
+import com.google.cloud.spring.stream.binder.pubsub.TestUtils;
 import com.google.cloud.spring.stream.binder.pubsub.provisioning.PubSubChannelProvisioner;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -167,10 +168,7 @@ class PubSubBinderConfigurationTests {
   private static class TestConfiguration {
     @Bean
     public CredentialsProvider googleCredentials() {
-      Credentials mockCredential = mock(Credentials.class);
-      when(mockCredential.getMetricsCredentialType())
-          .thenReturn(CredentialTypeForMetrics.DO_NOT_SEND);
-      return () -> mockCredential;
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
 
     @Bean
