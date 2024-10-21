@@ -395,10 +395,7 @@ class PubSubMessageChannelBinderTests {
 
     @Bean
     public CredentialsProvider googleCredentials() {
-      Credentials mockCredential = mock(Credentials.class);
-      when(mockCredential.getMetricsCredentialType())
-          .thenReturn(CredentialTypeForMetrics.DO_NOT_SEND);
-      return () -> mockCredential;
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }
