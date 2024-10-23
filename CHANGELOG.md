@@ -14,6 +14,24 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.10.11](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.10...v4.10.11) (2024-10-23)
+
+
+### Bug Fixes
+
+* **test:** add mock method to mock credentials. ([b03e810](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b03e81037993bbc12458f2462b71071277fd715d))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.20.1 to 1.21.0 ([#3281](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3281)) ([0ca209c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0ca209cbd9cbc769f15618450dd14474cef2d0f5))
+* bump com.google.cloud:libraries-bom from 26.48.0 to 26.49.0 ([b03e810](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b03e81037993bbc12458f2462b71071277fd715d))
+* bump com.google.errorprone:error_prone_core from 2.33.0 to 2.34.0 ([#3317](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3317)) ([be326ba](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/be326ba89320a9c884e14f9851395d3b6ef890d2))
+* bump io.micrometer:micrometer-tracing-bom from 1.3.4 to 1.3.5 ([#3303](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3303)) ([e623d29](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e623d29538bd103e962f829fe49760aecff2e1b8))
+* bump org.apache.maven.plugins:maven-deploy-plugin ([#3282](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3282)) ([3a0d085](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3a0d0850dd3ef7b622bbfb40b64a33e9b6c93ef7))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#3279](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3279)) ([31eaf2d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/31eaf2d0ef24a42fd4e9ecbe504f71ba8dfe8a67))
+* bump org.postgresql:r2dbc-postgresql ([#3311](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3311)) ([2637893](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/263789386072bb9d8d8b7ddb4973a4f2f31bd1fc))
+
 ## [4.10.10](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.9...v4.10.10) (2024-10-03)
 
 
