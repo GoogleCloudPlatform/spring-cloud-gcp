@@ -31,8 +31,4 @@ public class TestUtils {
         .thenReturn(CredentialTypeForMetrics.DO_NOT_SEND);
     return mockCredential;
   }
-
-  public static Credentials getMockCredentials() {
-    return MOCK_CREDENTIALS;
-  }
 }
