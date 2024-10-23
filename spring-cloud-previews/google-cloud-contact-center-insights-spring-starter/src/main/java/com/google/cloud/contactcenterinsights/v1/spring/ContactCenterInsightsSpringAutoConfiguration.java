@@ -309,6 +309,13 @@ public class ContactCenterInsightsSpringAutoConfiguration {
               clientSettingsBuilder.updateSettingsSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.updateSettingsSettings().setRetrySettings(updateSettingsRetrySettings);
 
+      RetrySettings getEncryptionSpecRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getEncryptionSpecSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getEncryptionSpecSettings()
+          .setRetrySettings(getEncryptionSpecRetrySettings);
+
       RetrySettings createViewRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.createViewSettings().getRetrySettings(), serviceRetry);
@@ -629,6 +636,20 @@ public class ContactCenterInsightsSpringAutoConfiguration {
       clientSettingsBuilder.updateSettingsSettings().setRetrySettings(updateSettingsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for updateSettings from properties.");
+      }
+    }
+    Retry getEncryptionSpecRetry = clientProperties.getGetEncryptionSpecRetry();
+    if (getEncryptionSpecRetry != null) {
+      RetrySettings getEncryptionSpecRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getEncryptionSpecSettings().getRetrySettings(),
+              getEncryptionSpecRetry);
+      clientSettingsBuilder
+          .getEncryptionSpecSettings()
+          .setRetrySettings(getEncryptionSpecRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getEncryptionSpec from properties.");
       }
     }
     Retry createViewRetry = clientProperties.getCreateViewRetry();

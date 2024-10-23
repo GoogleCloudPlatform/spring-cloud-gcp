@@ -163,6 +163,11 @@ public class ContactCenterInsightsSpringProperties implements CredentialsSupplie
    */
   @NestedConfigurationProperty private Retry updateSettingsRetry;
   /**
+   * Allow override of retry settings at method-level for getEncryptionSpec. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getEncryptionSpecRetry;
+  /**
    * Allow override of retry settings at method-level for createView. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -415,6 +420,14 @@ public class ContactCenterInsightsSpringProperties implements CredentialsSupplie
 
   public void setUpdateSettingsRetry(Retry updateSettingsRetry) {
     this.updateSettingsRetry = updateSettingsRetry;
+  }
+
+  public Retry getGetEncryptionSpecRetry() {
+    return this.getEncryptionSpecRetry;
+  }
+
+  public void setGetEncryptionSpecRetry(Retry getEncryptionSpecRetry) {
+    this.getEncryptionSpecRetry = getEncryptionSpecRetry;
   }
 
   public Retry getCreateViewRetry() {
