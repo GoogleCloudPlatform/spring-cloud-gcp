@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
+import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
@@ -165,7 +166,7 @@ class GcpPubSubReactiveAutoConfigurationTest {
 
     @Bean
     public CredentialsProvider googleCredentials() {
-      return () -> mock(Credentials.class);
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }

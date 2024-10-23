@@ -17,12 +17,11 @@
 package com.google.cloud.spring.autoconfigure.bigquery;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.bigquery.core.BigQueryTemplate;
 import org.junit.jupiter.api.Test;
@@ -32,8 +31,6 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 
 class GcpBigQueryAutoConfigurationTests {
-
-  private static final GoogleCredentials MOCK_CREDENTIALS = mock(GoogleCredentials.class);
 
   private ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
@@ -51,7 +48,7 @@ class GcpBigQueryAutoConfigurationTests {
         context -> {
           BigQueryOptions bigQueryOptions = context.getBean(BigQuery.class).getOptions();
           assertThat(bigQueryOptions.getProjectId()).isEqualTo("test-project");
-          assertThat(bigQueryOptions.getCredentials()).isEqualTo(MOCK_CREDENTIALS);
+          assertThat(bigQueryOptions.getCredentials()).isEqualTo(TestUtils.MOCK_CREDENTIALS);
 
           BigQueryTemplate bigQueryTemplate = context.getBean(BigQueryTemplate.class);
           assertThat(bigQueryTemplate.getDatasetName()).isEqualTo("test-dataset");
@@ -66,7 +63,7 @@ class GcpBigQueryAutoConfigurationTests {
 
     @Bean
     public CredentialsProvider credentialsProvider() {
-      return () -> MOCK_CREDENTIALS;
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }
