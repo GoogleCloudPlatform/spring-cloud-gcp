@@ -14,6 +14,19 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.11](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.10...v3.8.11) (2024-10-23)
+
+
+### Bug Fixes
+
+* **test:** add mock method to mock credentials. ([d271404](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d271404ef06ead391e9711402e99607bb91b9a2d))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.48.0 to 26.49.0 ([d271404](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d271404ef06ead391e9711402e99607bb91b9a2d))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#3284](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3284)) ([8d9657b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8d9657bfaf9e80113a4de9c8acd446217f5a94e3))
+
 ## [3.8.10](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.9...v3.8.10) (2024-10-03)
 
 
