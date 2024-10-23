@@ -22,6 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.auth.CredentialTypeForMetrics;
 import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
@@ -394,7 +395,7 @@ class PubSubMessageChannelBinderTests {
 
     @Bean
     public CredentialsProvider googleCredentials() {
-      return () -> mock(Credentials.class);
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }
