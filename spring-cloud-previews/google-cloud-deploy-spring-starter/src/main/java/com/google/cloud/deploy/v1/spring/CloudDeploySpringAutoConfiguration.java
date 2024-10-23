@@ -219,6 +219,20 @@ public class CloudDeploySpringAutoConfiguration {
               clientSettingsBuilder.abandonReleaseSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.abandonReleaseSettings().setRetrySettings(abandonReleaseRetrySettings);
 
+      RetrySettings listDeployPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDeployPoliciesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listDeployPoliciesSettings()
+          .setRetrySettings(listDeployPoliciesRetrySettings);
+
+      RetrySettings getDeployPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDeployPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getDeployPolicySettings()
+          .setRetrySettings(getDeployPolicyRetrySettings);
+
       RetrySettings approveRolloutRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.approveRolloutSettings().getRetrySettings(), serviceRetry);
@@ -456,6 +470,33 @@ public class CloudDeploySpringAutoConfiguration {
       clientSettingsBuilder.abandonReleaseSettings().setRetrySettings(abandonReleaseRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for abandonRelease from properties.");
+      }
+    }
+    Retry listDeployPoliciesRetry = clientProperties.getListDeployPoliciesRetry();
+    if (listDeployPoliciesRetry != null) {
+      RetrySettings listDeployPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDeployPoliciesSettings().getRetrySettings(),
+              listDeployPoliciesRetry);
+      clientSettingsBuilder
+          .listDeployPoliciesSettings()
+          .setRetrySettings(listDeployPoliciesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listDeployPolicies from properties.");
+      }
+    }
+    Retry getDeployPolicyRetry = clientProperties.getGetDeployPolicyRetry();
+    if (getDeployPolicyRetry != null) {
+      RetrySettings getDeployPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDeployPolicySettings().getRetrySettings(),
+              getDeployPolicyRetry);
+      clientSettingsBuilder
+          .getDeployPolicySettings()
+          .setRetrySettings(getDeployPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getDeployPolicy from properties.");
       }
     }
     Retry approveRolloutRetry = clientProperties.getApproveRolloutRetry();

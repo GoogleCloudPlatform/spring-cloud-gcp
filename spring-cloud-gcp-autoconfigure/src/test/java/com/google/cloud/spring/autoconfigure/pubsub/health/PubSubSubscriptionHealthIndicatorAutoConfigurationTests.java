@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
+import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ class PubSubSubscriptionHealthIndicatorAutoConfigurationTests {
                   PubSubSubscriptionHealthIndicatorAutoConfiguration.class,
                   GcpPubSubAutoConfiguration.class))
           .withBean(GcpProjectIdProvider.class, () -> () -> "fake project")
-          .withBean(CredentialsProvider.class, () -> () -> mock(Credentials.class))
+          .withBean(CredentialsProvider.class, () -> () -> TestUtils.MOCK_CREDENTIALS)
           .withBean(MetricServiceClient.class, () -> mock(MetricServiceClient.class));
 
   @Test
