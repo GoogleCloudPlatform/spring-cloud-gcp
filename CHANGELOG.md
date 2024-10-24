@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.10.12](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.11...v4.10.12) (2024-10-24)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.20.1 to 1.21.0 ([#3330](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3330)) ([ff8e297](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ff8e297bd75b8e92a834857c4cd72b887250f166))
+
 ## [4.10.11](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.10...v4.10.11) (2024-10-23)
 
 
