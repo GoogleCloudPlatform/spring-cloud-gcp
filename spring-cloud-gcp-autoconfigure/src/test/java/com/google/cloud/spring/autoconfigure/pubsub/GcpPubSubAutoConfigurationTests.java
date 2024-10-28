@@ -1413,7 +1413,7 @@ class GcpPubSubAutoConfigurationTests {
   }
 
   @Test
-  void universeDomain_selectiveConfigurationSet() {
+  void subscriberUniverseDomain_selectiveConfigurationSet() {
     contextRunner
         .withPropertyValues(
             "spring.cloud.gcp.pubsub.subscription.subscription-name.universe-domain=example.com")
@@ -1430,7 +1430,7 @@ class GcpPubSubAutoConfigurationTests {
   }
 
   @Test
-  void universeDomain_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+  void subscriberUniverseDomain_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
     contextRunner
         .withPropertyValues(
             "spring.cloud.gcp.pubsub.subscriber.universe-domain=example1.com",
@@ -1444,6 +1444,20 @@ class GcpPubSubAutoConfigurationTests {
                       gcpPubSubProperties.computeSubscriberUniverseDomain(
                           "subscription-name", projectIdProvider.getProjectId()))
                   .isEqualTo("example2.com");
+            });
+  }
+
+  @Test
+  void publisherUniverseDomain() {
+    contextRunner
+        .withPropertyValues("spring.cloud.gcp.pubsub.publisher.universe-domain=example.com")
+        .run(
+            ctx -> {
+              GcpPubSubProperties gcpPubSubProperties = ctx.getBean(GcpPubSubProperties.class);
+              CachingPublisherFactory publisherFactory =
+                  ctx.getBean("defaultPublisherFactory", CachingPublisherFactory.class);
+              assertThat(gcpPubSubProperties.getPublisher().getUniverseDomain())
+                  .isEqualTo("example.com");
             });
   }
 

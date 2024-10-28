@@ -56,7 +56,6 @@ class DefaultPublisherFactoryTests {
 
   @Test
   void testGetPublisher() {
-
     Publisher publisher = factory.createPublisher("testTopic");
 
     assertThat(((ProjectTopicName) publisher.getTopicName()).getTopic()).isEqualTo("testTopic");
