@@ -597,7 +597,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     this.retrySettingsMap = retrySettingsMap;
   }
 
-  public void setUniverseDomain(String universeDomain){
+  public void setUniverseDomain(String universeDomain) {
     this.universeDomain = universeDomain;
   }
 
