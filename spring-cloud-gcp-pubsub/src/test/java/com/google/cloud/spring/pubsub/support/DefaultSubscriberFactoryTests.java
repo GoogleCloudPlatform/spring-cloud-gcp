@@ -363,17 +363,20 @@ class DefaultSubscriberFactoryTests {
             "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(2L);
     when(mockPubSubConfiguration.computeMinDurationPerAckExtension(
-        "defaultSubscription", projectIdProvider.getProjectId()))
+            "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(3L);
     when(mockPubSubConfiguration.computeMaxDurationPerAckExtension(
-        "defaultSubscription", projectIdProvider.getProjectId()))
+            "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(4L);
     when(mockPubSubConfiguration.computeParallelPullCount(
             "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(2);
     when(mockPubSubConfiguration.computePullEndpoint(
-        "defaultSubscription", projectIdProvider.getProjectId()))
+            "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn("test.endpoint");
+    when(mockPubSubConfiguration.computeSubscriberUniverseDomain(
+            "defaultSubscription", projectIdProvider.getProjectId()))
+        .thenReturn("example.com");
 
     Subscriber expectedSubscriber =
         factory.createSubscriber("defaultSubscription", (message, consumer) -> {});
@@ -385,7 +388,8 @@ class DefaultSubscriberFactoryTests {
         .hasFieldOrPropertyWithValue("minDurationPerAckExtension", Duration.ofSeconds(3L))
         .hasFieldOrPropertyWithValue("maxDurationPerAckExtension", Duration.ofSeconds(4L))
         .hasFieldOrPropertyWithValue("numPullers", 2)
-        .hasFieldOrPropertyWithValue("subStubSettings.endpoint", "test.endpoint");
+        .hasFieldOrPropertyWithValue("subStubSettings.endpoint", "test.endpoint")
+        .hasFieldOrPropertyWithValue("universeDomain", "example.com");
   }
 
   @Test

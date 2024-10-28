@@ -1412,6 +1412,40 @@ class GcpPubSubAutoConfigurationTests {
             });
   }
 
+  @Test
+  void universeDomain_selectiveConfigurationSet() {
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.pubsub.subscription.subscription-name.universe-domain=example.com")
+        .run(
+            ctx -> {
+              GcpPubSubProperties gcpPubSubProperties = ctx.getBean(GcpPubSubProperties.class);
+              GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+
+              assertThat(
+                      gcpPubSubProperties.computeSubscriberUniverseDomain(
+                          "subscription-name", projectIdProvider.getProjectId()))
+                  .isEqualTo("example.com");
+            });
+  }
+
+  @Test
+  void universeDomain_globalAndSelectiveConfigurationSet_selectiveTakesPrecedence() {
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.pubsub.subscriber.universe-domain=example1.com",
+            "spring.cloud.gcp.pubsub.subscription.subscription-name.universe-domain=example2.com")
+        .run(
+            ctx -> {
+              GcpPubSubProperties gcpPubSubProperties = ctx.getBean(GcpPubSubProperties.class);
+              GcpProjectIdProvider projectIdProvider = ctx.getBean(GcpProjectIdProvider.class);
+
+              assertThat(
+                      gcpPubSubProperties.computeSubscriberUniverseDomain(
+                          "subscription-name", projectIdProvider.getProjectId()))
+                  .isEqualTo("example2.com");
+            });
+  }
 
   @Configuration
   static class CustomizerConfig {

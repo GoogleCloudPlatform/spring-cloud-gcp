@@ -292,6 +292,22 @@ public class PubSubConfiguration {
   }
 
   /**
+   * Returns the universe domain. The subscription-specific property takes precedence if both global
+   * and subscription-specific properties are set. If subscription-specific configuration is not set
+   * then the global configuration is picked.
+   *
+   * @param subscriptionName subscription name
+   * @param projectId project id
+   * @return pull endpoint
+   */
+  public String computeSubscriberUniverseDomain(String subscriptionName, String projectId) {
+    String universeDomain =
+            getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
+                    .getUniverseDomain();
+    return universeDomain != null ? universeDomain : this.globalSubscriber.getUniverseDomain();
+  }
+
+  /**
    * Computes the retry settings. The subscription-specific property takes precedence if both global
    * and subscription-specific properties are set. If subscription-specific settings are not set
    * then the global settings are picked.
@@ -384,6 +400,8 @@ public class PubSubConfiguration {
     /** Set publisher endpoint. Example: "us-east1-pubsub.googleapis.com:443". */
     private String endpoint;
 
+    private String universeDomain;
+
     public Batching getBatching() {
       return this.batching;
     }
@@ -441,6 +459,14 @@ public class PubSubConfiguration {
     public void setEndpoint(String endpoint) {
       this.endpoint = endpoint;
     }
+
+    public String getUniverseDomain() {
+      return universeDomain;
+    }
+
+    public void setUniverseDomain(String universeDomain) {
+      this.universeDomain = universeDomain;
+    }
   }
 
   /** Subscriber settings. */
@@ -486,6 +512,12 @@ public class PubSubConfiguration {
 
     /** RPC status codes that should be retried when pulling messages. */
     private Code[] retryableCodes = null;
+
+    /**
+     * Universe domain of the client which is part of the endpoint that is formatted as
+     * `${service}.${universeDomain}:${port}`.
+     */
+    private String universeDomain;
 
     public String getFullyQualifiedName() {
       return fullyQualifiedName;
@@ -570,6 +602,14 @@ public class PubSubConfiguration {
 
     public void setMaxAcknowledgementThreads(int maxAcknowledgementThreads) {
       this.maxAcknowledgementThreads = maxAcknowledgementThreads;
+    }
+
+    public String getUniverseDomain() {
+      return universeDomain;
+    }
+
+    public void setUniverseDomain(String universeDomain) {
+      this.universeDomain = universeDomain;
     }
   }
 

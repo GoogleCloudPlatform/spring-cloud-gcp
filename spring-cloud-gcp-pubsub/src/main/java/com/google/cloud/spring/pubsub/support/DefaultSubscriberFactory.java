@@ -70,6 +70,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
   private String pullEndpoint;
 
+  private String universeDomain;
+
   private ApiClock apiClock;
 
   private RetrySettings subscriberStubRetrySettings;
@@ -299,6 +301,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (pullCount != null) {
       subscriberBuilder.setParallelPullCount(pullCount);
     }
+
+    String universeDomain = getUniverseDomain(subscriptionName);
+    if (universeDomain != null) {
+      subscriberBuilder.setUniverseDomain(universeDomain);
+    }
+
 
     Subscriber subscriber = subscriberBuilder.build();
 
@@ -557,6 +565,13 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     return this.pubSubConfiguration.computeRetryableCodes(subscriptionName, projectId);
   }
 
+  String getUniverseDomain(String subscriptionName) {
+    if (this.universeDomain != null) {
+      return this.universeDomain;
+    }
+    return this.pubSubConfiguration.computeSubscriberUniverseDomain(subscriptionName, projectId);
+  }
+
   public void setExecutorProviderMap(Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
     this.executorProviderMap = executorProviderMap;
   }
@@ -580,6 +595,10 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
   public void setRetrySettingsMap(Map<ProjectSubscriptionName, RetrySettings> retrySettingsMap) {
     this.retrySettingsMap = retrySettingsMap;
+  }
+
+  public void setUniverseDomain(String universeDomain){
+    this.universeDomain = universeDomain;
   }
 
   public void setGlobalRetrySettings(RetrySettings retrySettings) {
