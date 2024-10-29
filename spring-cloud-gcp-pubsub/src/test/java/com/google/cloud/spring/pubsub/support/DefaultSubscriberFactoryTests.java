@@ -84,8 +84,7 @@ class DefaultSubscriberFactoryTests {
 
   @Test
   void testNewSubscriber() {
-    DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
 
     Subscriber subscriber = factory.createSubscriber("midnight cowboy", (message, consumer) -> {});
@@ -111,24 +110,25 @@ class DefaultSubscriberFactoryTests {
   void testNewSubscriber_constructorWithPubSubConfiguration_nullPubSubConfiguration() {
 
     assertThatThrownBy(() -> new DefaultSubscriberFactory(() -> "angeldust", null))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("The pub/sub configuration can't be null.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("The pub/sub configuration can't be null.");
   }
 
   @Test
   void testNewDefaultSubscriberFactory_nullProjectProvider() {
 
     assertThatThrownBy(() -> new DefaultSubscriberFactory(null, pubSubConfig))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("The project ID provider can't be null.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("The project ID provider can't be null.");
   }
 
   @Test
   void testNewDefaultSubscriberFactory_nullProject() {
 
     assertThatThrownBy(() -> new DefaultSubscriberFactory(() -> null, pubSubConfig))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("The project ID can't be null or empty.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("The project ID can't be null or empty.");
+
   }
 
   @Test
@@ -137,8 +137,8 @@ class DefaultSubscriberFactoryTests {
     factory.setCredentialsProvider(this.credentialsProvider);
 
     assertThatThrownBy(() -> factory.createPullRequest("test", -1, true))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("The maxMessages must be greater than 0.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("The maxMessages must be greater than 0.");
   }
 
   @Test
@@ -163,11 +163,9 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 
-    ConcurrentHashMap<ProjectSubscriptionName, ExecutorProvider> executorProviderMap =
-        new ConcurrentHashMap<>();
+    ConcurrentHashMap<ProjectSubscriptionName, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
     executorProviderMap.put(
-        ProjectSubscriptionName.parse("projects/project/subscriptions/subscription-name"),
-        mockExecutorProvider);
+        ProjectSubscriptionName.parse("projects/project/subscriptions/subscription-name"), mockExecutorProvider);
     factory.setExecutorProviderMap(executorProviderMap);
 
     assertThat(factory.getExecutorProvider("subscription-name")).isSameAs(mockExecutorProvider);
@@ -178,11 +176,9 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 
-    ConcurrentHashMap<ProjectSubscriptionName, ExecutorProvider> executorProviderMap =
-        new ConcurrentHashMap<>();
+    ConcurrentHashMap<ProjectSubscriptionName, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
     executorProviderMap.put(
-        ProjectSubscriptionName.parse("projects/project/subscriptions/subscription-name"),
-        mockExecutorProvider);
+        ProjectSubscriptionName.parse("projects/project/subscriptions/subscription-name"), mockExecutorProvider);
     factory.setExecutorProviderMap(executorProviderMap);
     factory.setExecutorProvider(mockGlobalExecutorProvider);
 
@@ -244,11 +240,8 @@ class DefaultSubscriberFactoryTests {
             .setRpcTimeoutMultiplier(10)
             .setMaxRpcTimeout(Duration.ofSeconds(10))
             .build();
-    ConcurrentHashMap<ProjectSubscriptionName, RetrySettings> settingsMap =
-        new ConcurrentHashMap<>();
-    settingsMap.put(
-        ProjectSubscriptionName.parse("projects/project/subscriptions/mySubscription"),
-        expectedRetrySettings);
+    ConcurrentHashMap<ProjectSubscriptionName, RetrySettings> settingsMap = new ConcurrentHashMap<>();
+    settingsMap.put(ProjectSubscriptionName.parse("projects/project/subscriptions/mySubscription"), expectedRetrySettings);
     factory.setRetrySettingsMap(settingsMap);
 
     RetrySettings actualRetrySettings = factory.getRetrySettings("mySubscription");
@@ -324,7 +317,8 @@ class DefaultSubscriberFactoryTests {
   }
 
   @Test
-  void testBuildGlobalSubscriberStubSettings_retry_pickGlobalConfiguration() throws IOException {
+  void testBuildGlobalSubscriberStubSettings_retry_pickGlobalConfiguration()
+      throws IOException {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
     when(mockPubSubConfiguration.getSubscriber()).thenReturn(mockSubscriber);
@@ -369,16 +363,16 @@ class DefaultSubscriberFactoryTests {
             "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(2L);
     when(mockPubSubConfiguration.computeMinDurationPerAckExtension(
-            "defaultSubscription", projectIdProvider.getProjectId()))
+        "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(3L);
     when(mockPubSubConfiguration.computeMaxDurationPerAckExtension(
-            "defaultSubscription", projectIdProvider.getProjectId()))
+        "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(4L);
     when(mockPubSubConfiguration.computeParallelPullCount(
             "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(2);
     when(mockPubSubConfiguration.computePullEndpoint(
-            "defaultSubscription", projectIdProvider.getProjectId()))
+        "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn("test.endpoint");
     when(mockPubSubConfiguration.computeSubscriberUniverseDomain(
             "defaultSubscription", projectIdProvider.getProjectId()))
@@ -405,11 +399,14 @@ class DefaultSubscriberFactoryTests {
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
     factory.setCredentialsProvider(this.credentialsProvider);
     when(mockPubSubConfiguration.computeMinDurationPerAckExtension(
-            "defaultSubscription", projectIdProvider.getProjectId()))
+        "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(-4L);
 
     assertThatThrownBy(
-            () -> factory.createSubscriber("defaultSubscription", (message, consumer) -> {}))
+        () -> factory.createSubscriber(
+            "defaultSubscription",
+            (message, consumer) -> { }
+        ))
         .isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
@@ -420,11 +417,14 @@ class DefaultSubscriberFactoryTests {
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
     factory.setCredentialsProvider(this.credentialsProvider);
     when(mockPubSubConfiguration.computeMaxDurationPerAckExtension(
-            "defaultSubscription", projectIdProvider.getProjectId()))
+        "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(-2L);
 
     assertThatThrownBy(
-            () -> factory.createSubscriber("defaultSubscription", (message, consumer) -> {}))
+        () -> factory.createSubscriber(
+            "defaultSubscription",
+            (message, consumer) -> { }
+        ))
         .isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
@@ -435,14 +435,17 @@ class DefaultSubscriberFactoryTests {
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
     factory.setCredentialsProvider(this.credentialsProvider);
     when(mockPubSubConfiguration.computeMinDurationPerAckExtension(
-            "defaultSubscription", projectIdProvider.getProjectId()))
+        "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(4L);
     when(mockPubSubConfiguration.computeMaxDurationPerAckExtension(
-            "defaultSubscription", projectIdProvider.getProjectId()))
+        "defaultSubscription", projectIdProvider.getProjectId()))
         .thenReturn(3L);
 
     assertThatThrownBy(
-            () -> factory.createSubscriber("defaultSubscription", (message, consumer) -> {}))
+        () -> factory.createSubscriber(
+            "defaultSubscription",
+            (message, consumer) -> { }
+        ))
         .isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
@@ -471,13 +474,10 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(() -> "project", mockPubSubConfiguration);
 
-    ConcurrentHashMap<ProjectSubscriptionName, FlowControlSettings> settingsMap =
-        new ConcurrentHashMap<>();
+    ConcurrentHashMap<ProjectSubscriptionName, FlowControlSettings> settingsMap = new ConcurrentHashMap<>();
     FlowControlSettings expectedFlowSettings =
         FlowControlSettings.newBuilder().setMaxOutstandingRequestBytes(10L).build();
-    settingsMap.put(
-        ProjectSubscriptionName.parse("projects/project/subscriptions/defaultSubscription1"),
-        expectedFlowSettings);
+    settingsMap.put(ProjectSubscriptionName.parse("projects/project/subscriptions/defaultSubscription1"), expectedFlowSettings);
     factory.setFlowControlSettingsMap(settingsMap);
 
     FlowControlSettings actualFlowSettings = factory.getFlowControlSettings("defaultSubscription1");
@@ -543,7 +543,7 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
     when(mockPubSubConfiguration.computeMinDurationPerAckExtension(
-            "subscription-name", projectIdProvider.getProjectId()))
+        "subscription-name", projectIdProvider.getProjectId()))
         .thenReturn(1L);
 
     assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
@@ -556,9 +556,8 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
 
-    when(mockPubSubConfiguration.computeMinDurationPerAckExtension(
-            "subscription-name", projectIdProvider.getProjectId()))
-        .thenReturn(3L);
+    when(mockPubSubConfiguration.computeMinDurationPerAckExtension("subscription-name",
+        projectIdProvider.getProjectId())).thenReturn(3L);
 
     // subscription level setting is used when factory-level one is not provided
     assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
@@ -578,9 +577,8 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
 
-    when(mockPubSubConfiguration.computeMaxDurationPerAckExtension(
-            "subscription-name", projectIdProvider.getProjectId()))
-        .thenReturn(3L);
+    when(mockPubSubConfiguration.computeMaxDurationPerAckExtension("subscription-name",
+        projectIdProvider.getProjectId())).thenReturn(3L);
 
     // subscription level setting is used when factory-level one is not provided
     assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
@@ -600,7 +598,8 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
 
-    assertThat(factory.getMinDurationPerAckExtension("subscription-name")).isNull();
+    assertThat(factory.getMinDurationPerAckExtension("subscription-name"))
+        .isNull();
   }
 
   @Test
@@ -609,7 +608,7 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
     when(mockPubSubConfiguration.computeMaxDurationPerAckExtension(
-            "subscription-name", projectIdProvider.getProjectId()))
+        "subscription-name", projectIdProvider.getProjectId()))
         .thenReturn(2L);
 
     assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
@@ -622,7 +621,8 @@ class DefaultSubscriberFactoryTests {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
 
-    assertThat(factory.getMaxDurationPerAckExtension("subscription-name")).isNull();
+    assertThat(factory.getMaxDurationPerAckExtension("subscription-name"))
+        .isNull();
   }
 
   @Test
@@ -755,7 +755,8 @@ class DefaultSubscriberFactoryTests {
   }
 
   @Test
-  void testBuildGlobalSubscriberStubSettings_retryableCodes_pickConfiguration() throws IOException {
+  void testBuildGlobalSubscriberStubSettings_retryableCodes_pickConfiguration()
+      throws IOException {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(projectIdProvider, mockPubSubConfiguration);
@@ -808,8 +809,7 @@ class DefaultSubscriberFactoryTests {
 
     when(healthTrackerRegistry.isTracked(subscriptionName)).thenReturn(true);
 
-    DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
     factory.setHealthTrackerRegistry(healthTrackerRegistry);
 
@@ -828,8 +828,7 @@ class DefaultSubscriberFactoryTests {
 
     when(healthTrackerRegistry.isTracked(subscriptionName)).thenReturn(false);
 
-    DefaultSubscriberFactory factory =
-        new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
     factory.setCredentialsProvider(this.credentialsProvider);
     factory.setHealthTrackerRegistry(healthTrackerRegistry);
 
