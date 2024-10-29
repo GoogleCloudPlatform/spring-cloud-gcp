@@ -1458,6 +1458,8 @@ class GcpPubSubAutoConfigurationTests {
                   ctx.getBean("defaultPublisherFactory", CachingPublisherFactory.class);
               assertThat(gcpPubSubProperties.getPublisher().getUniverseDomain())
                   .isEqualTo("example.com");
+              assertThat(publisherFactory)
+                  .hasFieldOrPropertyWithValue("delegate.universeDomain", "example.com");
             });
   }
 
