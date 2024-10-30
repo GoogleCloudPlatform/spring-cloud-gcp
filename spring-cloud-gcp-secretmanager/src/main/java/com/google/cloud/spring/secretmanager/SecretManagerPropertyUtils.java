@@ -29,6 +29,11 @@ final class SecretManagerPropertyUtils {
 
   static SecretVersionName getSecretVersionName(
       String input, GcpProjectIdProvider projectIdProvider) {
+    return getSecretVersionName(input, projectIdProvider, null);
+  }
+
+  static SecretVersionName getSecretVersionName(
+          String input, GcpProjectIdProvider projectIdProvider, String location) {
     if (!input.startsWith(GCP_SECRET_PREFIX)) {
       return null;
     }
@@ -75,10 +80,15 @@ final class SecretManagerPropertyUtils {
 
     Assert.hasText(version, "The GCP Secret Manager secret version must not be empty: " + input);
 
-    return SecretVersionName.newBuilder()
-        .setProject(projectId)
-        .setSecret(secretId)
-        .setSecretVersion(version)
-        .build();
+    return getSecretVersionName(projectId, secretId, version, location);
+  }
+
+  static SecretVersionName getSecretVersionName(
+          String projectId, String secretId, String version, String location) {
+    if (location != null) {
+      return SecretVersionName.newProjectLocationSecretSecretVersionBuilder().setLocation(location).setProject(projectId).setSecret(secretId).setSecretVersion(version).build();
+    } else {
+      return SecretVersionName.newBuilder().setProject(projectId).setSecret(secretId).setSecretVersion(version).build();
+    }
   }
 }

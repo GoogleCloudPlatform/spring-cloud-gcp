@@ -80,6 +80,7 @@
 				<module>spring-cloud-gcp-data-firestore-sample</module>
 				<module>spring-cloud-gcp-bigquery-sample</module>
 				<module>spring-cloud-gcp-security-firebase-sample</module>
+				<module>spring-cloud-gcp-secretmanager-regional-sample</module>
 				<module>spring-cloud-gcp-secretmanager-sample</module>
 				<module>spring-cloud-gcp-kotlin-samples</module>
 				<module>spring-cloud-gcp-metrics-sample</module>
