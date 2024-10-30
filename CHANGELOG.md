@@ -14,6 +14,28 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.8.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.7.0...v5.8.0) (2024-10-23)
+
+
+### Features
+
+* add properties to customize universe-domain and host in Storage ([#3287](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3287)) ([f5879d9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f5879d92d81d5b480d2c402bd2e9e792832ebca3))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.49.0 ([e838c64](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e838c646af98792dfaa48374b3d4c76156c695d7))
+* **deps:** update dependency io.opentelemetry:opentelemetry-api to v1.43.0 ([#3298](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3298)) ([964756c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/964756c23fabda0f0cc52e03c52ef615b7bf48fb))
+* **test:** add mock method to mock credentials. ([e838c64](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e838c646af98792dfaa48374b3d4c76156c695d7))
+
+
+### Dependencies
+
+* bump com.google.errorprone:error_prone_core from 2.33.0 to 2.34.0 ([#3319](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3319)) ([6a91c0d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6a91c0d9fc7a52b9f1c8eb460a21bac09727cc8f))
+* bump io.micrometer:micrometer-tracing-bom from 1.3.4 to 1.3.5 ([#3302](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3302)) ([8ab63c8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8ab63c8d72f4f30c2e378eb38f0001074f441e2f))
+* bump io.opentelemetry:opentelemetry-api from 1.42.1 to 1.43.0 ([#3299](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3299)) ([eea8e28](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/eea8e2814dc73dbd8d7cca17f531c2632cfcc269))
+* bump org.postgresql:r2dbc-postgresql ([#3310](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3310)) ([40b8b2a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/40b8b2adad2e957216d95a409c0a4a5fb838f452))
+
 ## [5.7.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.6.1...v5.7.0) (2024-10-03)
 
 

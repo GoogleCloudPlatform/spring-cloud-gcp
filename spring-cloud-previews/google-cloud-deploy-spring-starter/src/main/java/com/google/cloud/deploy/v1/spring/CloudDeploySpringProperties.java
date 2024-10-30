@@ -93,6 +93,16 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry abandonReleaseRetry;
   /**
+   * Allow override of retry settings at method-level for listDeployPolicies. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listDeployPoliciesRetry;
+  /**
+   * Allow override of retry settings at method-level for getDeployPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getDeployPolicyRetry;
+  /**
    * Allow override of retry settings at method-level for approveRollout. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -313,6 +323,22 @@ public class CloudDeploySpringProperties implements CredentialsSupplier {
 
   public void setAbandonReleaseRetry(Retry abandonReleaseRetry) {
     this.abandonReleaseRetry = abandonReleaseRetry;
+  }
+
+  public Retry getListDeployPoliciesRetry() {
+    return this.listDeployPoliciesRetry;
+  }
+
+  public void setListDeployPoliciesRetry(Retry listDeployPoliciesRetry) {
+    this.listDeployPoliciesRetry = listDeployPoliciesRetry;
+  }
+
+  public Retry getGetDeployPolicyRetry() {
+    return this.getDeployPolicyRetry;
+  }
+
+  public void setGetDeployPolicyRetry(Retry getDeployPolicyRetry) {
+    this.getDeployPolicyRetry = getDeployPolicyRetry;
   }
 
   public Retry getApproveRolloutRetry() {

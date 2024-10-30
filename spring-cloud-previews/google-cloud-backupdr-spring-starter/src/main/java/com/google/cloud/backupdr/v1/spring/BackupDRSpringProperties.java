@@ -68,11 +68,6 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getBackupVaultRetry;
   /**
-   * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry testIamPermissionsRetry;
-  /**
    * Allow override of retry settings at method-level for listDataSources. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -82,16 +77,6 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDataSourceRetry;
-  /**
-   * Allow override of retry settings at method-level for initiateBackup. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry initiateBackupRetry;
-  /**
-   * Allow override of retry settings at method-level for fetchAccessToken. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry fetchAccessTokenRetry;
   /**
    * Allow override of retry settings at method-level for listBackups. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -142,6 +127,11 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry testIamPermissionsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -220,14 +210,6 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
     this.getBackupVaultRetry = getBackupVaultRetry;
   }
 
-  public Retry getTestIamPermissionsRetry() {
-    return this.testIamPermissionsRetry;
-  }
-
-  public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
-    this.testIamPermissionsRetry = testIamPermissionsRetry;
-  }
-
   public Retry getListDataSourcesRetry() {
     return this.listDataSourcesRetry;
   }
@@ -242,22 +224,6 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
 
   public void setGetDataSourceRetry(Retry getDataSourceRetry) {
     this.getDataSourceRetry = getDataSourceRetry;
-  }
-
-  public Retry getInitiateBackupRetry() {
-    return this.initiateBackupRetry;
-  }
-
-  public void setInitiateBackupRetry(Retry initiateBackupRetry) {
-    this.initiateBackupRetry = initiateBackupRetry;
-  }
-
-  public Retry getFetchAccessTokenRetry() {
-    return this.fetchAccessTokenRetry;
-  }
-
-  public void setFetchAccessTokenRetry(Retry fetchAccessTokenRetry) {
-    this.fetchAccessTokenRetry = fetchAccessTokenRetry;
   }
 
   public Retry getListBackupsRetry() {
@@ -338,5 +304,13 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
 
   public void setGetIamPolicyRetry(Retry getIamPolicyRetry) {
     this.getIamPolicyRetry = getIamPolicyRetry;
+  }
+
+  public Retry getTestIamPermissionsRetry() {
+    return this.testIamPermissionsRetry;
+  }
+
+  public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
+    this.testIamPermissionsRetry = testIamPermissionsRetry;
   }
 }
