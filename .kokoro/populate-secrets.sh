@@ -20,8 +20,7 @@ function msg { println "$*" >&2 ;}
 function println { printf '%s\n' "$(now) $*" ;}
 
 
-# Populates requested secrets set in SECRET_MANAGER_KEYS from service account:
-# kokoro-trampoline@cloud-devrel-kokoro-resources.iam.gserviceaccount.com
+# Populates requested secrets set in SECRET_MANAGER_KEYS:
 SECRET_LOCATION="${KOKORO_GFILE_DIR}/secret_manager"
 msg "Creating folder on disk for secrets: ${SECRET_LOCATION}"
 mkdir -p ${SECRET_LOCATION}
@@ -32,7 +31,7 @@ do
     --volume=${KOKORO_GFILE_DIR}:${KOKORO_GFILE_DIR} \
     gcr.io/google.com/cloudsdktool/cloud-sdk \
     secrets versions access latest \
-    --project cloud-devrel-kokoro-resources \
+    --project cloud-sdk-release-custom-pool \
     --secret ${key} > \
     "${SECRET_LOCATION}/${key}"
   if [[ $? == 0 ]]; then
