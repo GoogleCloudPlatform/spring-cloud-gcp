@@ -22,6 +22,7 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -117,6 +118,54 @@ class CloudSqlEnvironmentPostProcessorTests {
                           + "&cloudSqlInstance=tubular-bells:singapore:test-instance");
               assertThat(dataSource.getUsername()).matches("root");
               assertThat(dataSource.getPassword()).isNull();
+              assertThat(getSpringDatasourceDriverClassName(context))
+                  .matches("com.mysql.cj.jdbc.Driver");
+            });
+  }
+
+  void testCloudSqlSpringDatasourceWithAllOptions() {
+    this.contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.sql.admin-quota-project=someAdminQuotaProjectValue",
+            "spring.cloud.gcp.sql.admin-root-url=someAdminRootUrlValue",
+            "spring.cloud.gcp.sql.admin-service-path=someAdminServicePathValue",
+            "spring.cloud.gcp.sql.database-name=test-database",
+            "spring.cloud.gcp.sql.delegates=delegate1,delegate2",
+            "spring.cloud.gcp.sql.enable-iam-auth=true",
+            "spring.cloud.gcp.sql.instance-connection-name=tubular-bells:singapore:test-instance",
+            "spring.cloud.gcp.sql.ip-types=PRIVATE",
+            "spring.cloud.gcp.sql.refresh-strategy=lazy",
+            "spring.cloud.gcp.sql.target-principal=target-principal",
+            "spring.cloud.gcp.sql.universe-domain=someUniverseDomainValue",
+            "spring.datasource.username=foo",
+            "spring.datasource.password=bar")
+        .run(
+            context -> {
+              HikariDataSource dataSource = (HikariDataSource) context.getBean(DataSource.class);
+              assertThat(dataSource)
+                  .returns("com.mysql.cj.jdbc.Driver", HikariDataSource::getDriverClassName)
+                  .returns("foo", HikariDataSource::getUsername)
+                  .returns("bar", HikariDataSource::getPassword)
+                  .extracting(HikariDataSource::getJdbcUrl)
+                  .asInstanceOf(InstanceOfAssertFactories.STRING)
+                  .startsWith(
+                      "jdbc:mysql://google/test-database?"
+                          + "socketFactory=com.google.cloud.sql.mysql.SocketFactory")
+                  .satisfies(
+                      jdbcUrl ->
+                          assertThat(jdbcUrl.substring(jdbcUrl.indexOf('&') + 1).split("&"))
+                              .containsExactlyInAnyOrder(
+                                  "cloudSqlAdminQuotaProject=someAdminQuotaProjectValue",
+                                  "cloudSqlAdminRootUrl=someAdminRootUrlValue",
+                                  "cloudSqlAdminServicePath=someAdminServicePathValue",
+                                  "cloudSqlDelegates=delegate1%2Cdelegate2",
+                                  "cloudSqlInstance=tubular-bells:singapore:test-instance",
+                                  "cloudSqlRefreshStrategy=lazy",
+                                  "cloudSqlTargetPrincipal=target-principal",
+                                  "cloudSqlUniverseDomain=someUniverseDomainValue",
+                                  "enableIamAuth=true",
+                                  "ipTypes=PRIVATE",
+                                  "sslmode=disable"));
               assertThat(getSpringDatasourceDriverClassName(context))
                   .matches("com.mysql.cj.jdbc.Driver");
             });
