@@ -36,6 +36,44 @@ public class GcpCloudSqlProperties {
 
   /** Specifies whether to enable IAM database authentication (PostgreSQL only). */
   private boolean enableIamAuth;
+  /**
+   * The target principal to use for service account impersonation. Corresponds to
+   * Cloud SQL Java Connector JDBC property cloudSqlTargetPrincipal
+   */
+  private String targetPrincipal;
+
+  /**
+   * The chain of delegated service accounts to use for service account impersonation.
+   * Corresponds to Cloud SQL Java Connector JDBC property cloudSqlDelegates
+   */
+  private String delegates;
+
+  /**
+   * The alternate admin root url for the Cloud SQL Admin API.
+   * Corresponds to Cloud SQL Java Connector JDBC property cloudSqlAdminRootUrl.
+   */
+  private String adminRootUrl;
+  /**
+   * The alternate service path for the Cloud SQL Admin API
+   * Corresponds to Cloud SQL Java Connector JDBC property cloudSqlAdminServicePath.
+   */
+  private String adminServicePath;
+  /**
+   * The quota project to use for API requests.
+   * Corresponds to Cloud SQL Java Connector JDBC property cloudSqlAdminQuotaProject
+   */
+  private String adminQuotaProject;
+  /**
+   * The universe domain to use for API requests
+   * Corresponds to Cloud SQL Java Connector JDBC property cloudSqlUniverseDomain
+   */
+  private String universeDomain;
+  /**
+   * The refresh strategy to use for API requests
+   * Corresponds to Cloud SQL Java Connector JDBC property cloudSqlRefreshStrategy
+   */
+  private String refreshStrategy;
+
 
   public String getDatabaseName() {
     return this.databaseName;
@@ -75,5 +113,61 @@ public class GcpCloudSqlProperties {
 
   public void setEnableIamAuth(boolean enableIamAuth) {
     this.enableIamAuth = enableIamAuth;
+  }
+
+  public String getTargetPrincipal() {
+    return targetPrincipal;
+  }
+
+  public void setTargetPrincipal(String targetPrincipal) {
+    this.targetPrincipal = targetPrincipal;
+  }
+
+  public String getDelegates() {
+    return delegates;
+  }
+
+  public void setDelegates(String delegates) {
+    this.delegates = delegates;
+  }
+
+  public String getAdminRootUrl() {
+    return adminRootUrl;
+  }
+
+  public void setAdminRootUrl(String adminRootUrl) {
+    this.adminRootUrl = adminRootUrl;
+  }
+
+  public String getAdminServicePath() {
+    return adminServicePath;
+  }
+
+  public void setAdminServicePath(String adminServicePath) {
+    this.adminServicePath = adminServicePath;
+  }
+
+  public String getAdminQuotaProject() {
+    return adminQuotaProject;
+  }
+
+  public void setAdminQuotaProject(String adminQuotaProject) {
+    this.adminQuotaProject = adminQuotaProject;
+  }
+
+  public String getUniverseDomain() {
+    return universeDomain;
+  }
+
+  public void setUniverseDomain(String universeDomain) {
+    this.universeDomain = universeDomain;
+  }
+
+  public String getRefreshStrategy() {
+    return refreshStrategy;
+  }
+
+  public void setRefreshStrategy(String refreshStrategy) {
+    this.refreshStrategy = refreshStrategy;
   }
 }
