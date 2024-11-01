@@ -25,7 +25,9 @@ trap cleanup EXIT
 $(dirname $0)/populate-secrets.sh # Secret Manager secrets.
 TRAMPOLINE_HOST=$(echo "${TRAMPOLINE_IMAGE}" | cut -d/ -f1)
 if [[ ! "${TRAMPOLINE_HOST}" =~ "gcr.io" ]]; then
-  # If you need to specify a host other than gcr.io, you have to run on an update version of gcloud.
+  # You have to run on an update version of gcloud, in order to pass in the host name in configure-docker command.
+  # This is not necessary for gcr.io because that is a default repository name
+  # and is not required to specify the repo when running configure-docker.
   echo "TRAMPOLINE_HOST: ${TRAMPOLINE_HOST}"
   gcloud components update
   gcloud auth configure-docker "${TRAMPOLINE_HOST}"
