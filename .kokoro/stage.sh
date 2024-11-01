@@ -34,5 +34,26 @@ export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.
 # run unit tests
   ./mvnw verify --show-version --batch-mode -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
 
+# stage release
+  ./mvnw deploy \
+  -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
+  --batch-mode \
+  --settings ${MAVEN_SETTINGS_FILE} \
+  -DskipTests=true \
+  -Dgpg.executable=gpg \
+  -Dgpg.passphrase=${GPG_PASSPHRASE} \
+  -Dgpg.homedir=${GPG_HOMEDIR} \
+  -Drelease=true \
+  --activate-profiles skip-unreleased-modules
+
+# promote release
+if [[ -n "${AUTORELEASE_PR}" ]]
+then
+    ./mvnw nexus-staging:release \
+    --batch-mode \
+    --settings ${MAVEN_SETTINGS_FILE} \
+    -Drelease=true \
+    --activate-profiles skip-unreleased-modules
+fi
 
 popd
