@@ -373,6 +373,7 @@ public class GcpPubSubAutoConfiguration {
     batchingSettings.ifAvailable(factory::setBatchingSettings);
     factory.setEnableMessageOrdering(gcpPubSubProperties.getPublisher().getEnableMessageOrdering());
     factory.setEndpoint(gcpPubSubProperties.getPublisher().getEndpoint());
+    factory.setUniverseDomain(gcpPubSubProperties.getPublisher().getUniverseDomain());
 
     List<PublisherCustomizer> customizers = customizersProvider.orderedStream()
         .collect(Collectors.toList());

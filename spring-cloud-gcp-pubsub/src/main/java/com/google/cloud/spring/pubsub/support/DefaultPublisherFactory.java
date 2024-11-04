@@ -56,6 +56,8 @@ public class DefaultPublisherFactory implements PublisherFactory {
 
   private String endpoint;
 
+  private String universeDomain;
+
   private List<PublisherCustomizer> customizers;
 
   /**
@@ -151,6 +153,10 @@ public class DefaultPublisherFactory implements PublisherFactory {
     this.endpoint = endpoint;
   }
 
+  public void setUniverseDomain(String universeDomain) {
+    this.universeDomain = universeDomain;
+  }
+
   /**
    * Accepts a list of {@link Publisher.Builder} customizers.
    * The customizers are applied in the order provided, so the later customizers can override
@@ -221,6 +227,10 @@ public class DefaultPublisherFactory implements PublisherFactory {
 
     if (this.endpoint != null) {
       publisherBuilder.setEndpoint(this.endpoint);
+    }
+
+    if (this.universeDomain != null) {
+      publisherBuilder.setUniverseDomain(this.universeDomain);
     }
   }
 
