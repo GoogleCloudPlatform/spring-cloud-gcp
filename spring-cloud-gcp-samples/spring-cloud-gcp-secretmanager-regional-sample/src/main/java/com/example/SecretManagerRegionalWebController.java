@@ -44,7 +44,7 @@ public class SecretManagerRegionalWebController {
   @Value("${${sm://application-fake}:DEFAULT}")
   private String defaultSecret;
   // Application secrets can be accessed using @Value syntax.
-  @Value("${sm://application-regional-secret}")
+  @Value("${sm://application-secret}")
   private String appSecretFromValue;
 
   public SecretManagerRegionalWebController(SecretManagerTemplate secretManagerTemplate,
