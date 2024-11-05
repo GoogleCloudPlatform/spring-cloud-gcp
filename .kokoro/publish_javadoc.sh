@@ -13,7 +13,6 @@ pushd $dir/../
 PROJECT_VERSION=$(grep "^spring-cloud-gcp:" "./versions.txt" | cut -d: -f3)
 
 # install docuploader package
-pip3 --version
 python3 -m ensurepip --upgrade
 python3 -m pip install --require-hashes -r .kokoro/requirements.txt
 
