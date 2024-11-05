@@ -21,7 +21,8 @@ set -eov pipefail
 setup_environment_secrets() {
   export GPG_PASSPHRASE=$(cat ${KOKORO_KEYSTORE_DIR}/70247_maven-gpg-passphrase)
   export GPG_TTY=$(tty)
-  export GPG_HOMEDIR=/tmpfs/src/gpg
+  export TMPDIR=$(mktemp -d)
+  export GPG_HOMEDIR=${TMPDIR}/gpg
   mkdir $GPG_HOMEDIR
   mv ${KOKORO_KEYSTORE_DIR}/70247_maven-gpg-pubkeyring $GPG_HOMEDIR/pubring.gpg
   mv ${KOKORO_KEYSTORE_DIR}/70247_maven-gpg-keyring $GPG_HOMEDIR/secring.gpg
