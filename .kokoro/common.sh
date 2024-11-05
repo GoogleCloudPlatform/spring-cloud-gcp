@@ -23,6 +23,8 @@ setup_environment_secrets() {
   export GPG_TTY=$(tty)
   export GPG_HOMEDIR=${TMPDIR}/gpg
   mkdir $GPG_HOMEDIR
+  echo "content of '$KOKORO_KEYSTORE_DIR'"
+  ls -l "${KOKORO_KEYSTORE_DIR}"
   mv ${KOKORO_KEYSTORE_DIR}/70247_maven-gpg-pubkeyring $GPG_HOMEDIR/pubring.gpg
   mv ${KOKORO_KEYSTORE_DIR}/70247_maven-gpg-keyring $GPG_HOMEDIR/secring.gpg
   export SONATYPE_USERNAME=$(cat ${KOKORO_KEYSTORE_DIR}/70247_sonatype-credentials | cut -f1 -d'|')
