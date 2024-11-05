@@ -13,7 +13,7 @@ pushd $dir/../
 PROJECT_VERSION=$(grep "^spring-cloud-gcp:" "./versions.txt" | cut -d: -f3)
 
 # install docuploader package
-sudo python3 -m pip install --require-hashes -r .kokoro/requirements.txt
+su python3 -m pip install --require-hashes -r .kokoro/requirements.txt
 
 # Build the javadocs
 mvn clean javadoc:aggregate -Drelease=true
