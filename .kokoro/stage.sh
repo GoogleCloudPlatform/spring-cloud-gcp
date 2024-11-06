@@ -24,9 +24,7 @@ source $dir/common.sh
 pushd $dir/../
 
 MAVEN_SETTINGS_FILE=$(realpath .)/settings.xml
-echo "test ${KOKORO_PIPER_DIR}"
-
-more /tmpfs/kokoro-env_vars.sh
+printenv
 setup_environment_secrets
 create_settings_xml_file $MAVEN_SETTINGS_FILE
 
