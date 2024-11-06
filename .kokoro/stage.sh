@@ -24,7 +24,9 @@ source $dir/common.sh
 pushd $dir/../
 
 MAVEN_SETTINGS_FILE=$(realpath .)/settings.xml
-
+echo "test"
+ls "${KOKORO_PIPER_DIR}"
+ls ${KOKORO_PIPER_DIR}
 setup_environment_secrets
 create_settings_xml_file $MAVEN_SETTINGS_FILE
 
