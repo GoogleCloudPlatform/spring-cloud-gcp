@@ -1,7 +1,7 @@
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -49,7 +49,7 @@ class SecretManagerConfigDataLoaderUnitTests {
       ConfigData configData = loader.load(loaderContext, resource);
       SecretManagerPropertySource propertySource =
           (SecretManagerPropertySource) configData.getPropertySources().get(0);
-      assertEquals(Optional.ofNullable(location), propertySource.getLocation());
+      assertThat(Optional.ofNullable(location)).isEqualTo(propertySource.getLocation());
     }).doesNotThrowAnyException();
   }
 }
