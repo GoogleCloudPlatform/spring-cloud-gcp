@@ -31,9 +31,8 @@ import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMappe
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.firestore.v1.StructuredQuery;
 import com.google.firestore.v1.Value;
-import java.util.function.Consumer;
-
 import com.google.protobuf.Int32Value;
+import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.springframework.data.repository.query.Parameters;
