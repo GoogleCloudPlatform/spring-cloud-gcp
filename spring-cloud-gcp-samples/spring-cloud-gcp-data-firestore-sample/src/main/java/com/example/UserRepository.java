@@ -25,4 +25,6 @@ import reactor.core.publisher.Flux;
 public interface UserRepository extends FirestoreReactiveRepository<User> {
 
   Flux<User> findByAge(int age);
+
+  Flux<User> findFirstByAge(Integer age);
 }

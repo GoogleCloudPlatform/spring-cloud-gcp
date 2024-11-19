@@ -343,4 +343,34 @@ class FirestoreRepositoryIntegrationTests {
     userRepository.save(user).block();
     // no optimistic locking exception expected
   }
+
+  @Test
+  public void testFirstByAge() {
+    User alice = new User("Alice", 99);
+    User bob = new User("Bob", 99);
+    User zelda = new User("Zelda", 23);
+    this.userRepository
+        .save(alice)
+        .then(this.userRepository.save(bob))
+        .then(this.userRepository.save(zelda))
+        .block();
+
+    Mono<User> testUser = this.userRepository.findFirstByAge(99);
+    assertThat(testUser.block().getName()).isEqualTo("Alice");
+  }
+
+  @Test
+  public void testTopByAge() {
+    User alice = new User("Alice", 99);
+    User bob = new User("Bob", 99);
+    User zelda = new User("Zelda", 23);
+    this.userRepository
+            .save(alice)
+            .then(this.userRepository.save(bob))
+            .then(this.userRepository.save(zelda))
+            .block();
+
+    Mono<User> testUser = this.userRepository.findTopByAge(99);
+    assertThat(testUser.block().getName()).isEqualTo("Alice");
+  }
 }

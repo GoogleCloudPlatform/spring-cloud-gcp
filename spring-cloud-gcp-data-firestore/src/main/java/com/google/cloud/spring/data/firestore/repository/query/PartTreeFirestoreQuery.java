@@ -156,6 +156,11 @@ public class PartTreeFirestoreQuery implements RepositoryQuery {
       sort = paramAccessor.getSort();
     }
 
+    if (getQueryMethod().getName().startsWith("findFirst") ||
+            getQueryMethod().getName().startsWith("findTop")) {
+      builder.setLimit(Int32Value.newBuilder().setValue(1));
+    }
+
     if (sort == null || sort.isUnsorted()) {
       sort = this.tree.getSort();
     }
