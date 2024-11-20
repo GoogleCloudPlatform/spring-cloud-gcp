@@ -31,6 +31,7 @@ import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMappe
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext;
 import com.google.firestore.v1.StructuredQuery;
 import com.google.firestore.v1.Value;
+import com.google.protobuf.Int32Value;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -221,6 +222,66 @@ class PartTreeFirestoreQueryTests {
     assertThatThrownBy(() -> createPartTreeQuery("findByAgeOrName"))
         .isInstanceOf(FirestoreDataException.class)
         .hasMessage("Cloud Firestore doesn't support 'OR' (method name: findByAgeOrName)");
+  }
+
+  @Test
+  void testPartTreeQuery_findFirst_limitIsSet() {
+    PartTreeFirestoreQuery partTreeFirestoreQuery =
+        createPartTreeQuery(
+            "findFirstByAge",
+            invocation -> {
+              StructuredQuery.Builder actualBuilder = invocation.getArgument(0);
+              Class clazz = invocation.getArgument(1);
+
+              StructuredQuery.Builder expectedBuilder = StructuredQuery.newBuilder();
+              StructuredQuery.CompositeFilter.Builder compositeFilter =
+                  StructuredQuery.CompositeFilter.newBuilder();
+              compositeFilter.setOp(StructuredQuery.CompositeFilter.Operator.AND);
+              StructuredQuery.Filter.Builder filterAge = StructuredQuery.Filter.newBuilder();
+              filterAge
+                  .getFieldFilterBuilder()
+                  .setField(StructuredQuery.FieldReference.newBuilder().setFieldPath("age").build())
+                  .setOp(StructuredQuery.FieldFilter.Operator.EQUAL)
+                  .setValue(this.classMapper.toFirestoreValue(22));
+              compositeFilter.addFilters(filterAge.build());
+              expectedBuilder.setWhere(
+                  StructuredQuery.Filter.newBuilder().setCompositeFilter(compositeFilter.build()));
+              expectedBuilder.setLimit(Int32Value.of(1));
+              assertThat(actualBuilder.build()).isEqualTo(expectedBuilder.build());
+              assertThat(clazz).isEqualTo(User.class);
+            });
+
+    partTreeFirestoreQuery.execute(new Object[] {22});
+  }
+
+  @Test
+  void testPartTreeQuery_findTop_limitIsSet() {
+    PartTreeFirestoreQuery partTreeFirestoreQuery =
+        createPartTreeQuery(
+            "findTopByAge",
+            invocation -> {
+              StructuredQuery.Builder actualBuilder = invocation.getArgument(0);
+              Class clazz = invocation.getArgument(1);
+
+              StructuredQuery.Builder expectedBuilder = StructuredQuery.newBuilder();
+              StructuredQuery.CompositeFilter.Builder compositeFilter =
+                  StructuredQuery.CompositeFilter.newBuilder();
+              compositeFilter.setOp(StructuredQuery.CompositeFilter.Operator.AND);
+              StructuredQuery.Filter.Builder filterAge = StructuredQuery.Filter.newBuilder();
+              filterAge
+                  .getFieldFilterBuilder()
+                  .setField(StructuredQuery.FieldReference.newBuilder().setFieldPath("age").build())
+                  .setOp(StructuredQuery.FieldFilter.Operator.EQUAL)
+                  .setValue(this.classMapper.toFirestoreValue(22));
+              compositeFilter.addFilters(filterAge.build());
+              expectedBuilder.setWhere(
+                  StructuredQuery.Filter.newBuilder().setCompositeFilter(compositeFilter.build()));
+              expectedBuilder.setLimit(Int32Value.of(1));
+              assertThat(actualBuilder.build()).isEqualTo(expectedBuilder.build());
+              assertThat(clazz).isEqualTo(User.class);
+            });
+
+    partTreeFirestoreQuery.execute(new Object[] {22});
   }
 
   private PartTreeFirestoreQuery createPartTreeQuery(String methodName) {
