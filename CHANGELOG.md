@@ -14,6 +14,19 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.12](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.11...v3.8.12) (2024-12-05)
+
+
+### Bug Fixes
+
+* migrate logic to create tmpdir to build script ([#3367](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3367)) ([#3369](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3369)) ([25a1a15](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/25a1a15b5c35da9d7a30985e62976c699f6e5d3c))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.49.0 to 26.51.0 ([#3395](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3395)) ([fb570b3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fb570b35e05a52e351f82e73ded73eae0ce9b1af))
+* bump org.testcontainers:testcontainers-bom from 1.20.1 to 1.20.3 ([#3326](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3326)) ([d9d5daa](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d9d5daa8a5834826b7525fb39afae69304208de5))
+
 ## [3.8.11](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.10...v3.8.11) (2024-10-23)
 
 
