@@ -219,6 +219,63 @@ public class EventarcSpringAutoConfiguration {
           .updateGoogleChannelConfigSettings()
           .setRetrySettings(updateGoogleChannelConfigRetrySettings);
 
+      RetrySettings getMessageBusRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMessageBusSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getMessageBusSettings().setRetrySettings(getMessageBusRetrySettings);
+
+      RetrySettings listMessageBusesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMessageBusesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listMessageBusesSettings()
+          .setRetrySettings(listMessageBusesRetrySettings);
+
+      RetrySettings listMessageBusEnrollmentsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMessageBusEnrollmentsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listMessageBusEnrollmentsSettings()
+          .setRetrySettings(listMessageBusEnrollmentsRetrySettings);
+
+      RetrySettings getEnrollmentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getEnrollmentSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getEnrollmentSettings().setRetrySettings(getEnrollmentRetrySettings);
+
+      RetrySettings listEnrollmentsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listEnrollmentsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listEnrollmentsSettings()
+          .setRetrySettings(listEnrollmentsRetrySettings);
+
+      RetrySettings getPipelineRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPipelineSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getPipelineSettings().setRetrySettings(getPipelineRetrySettings);
+
+      RetrySettings listPipelinesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPipelinesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listPipelinesSettings().setRetrySettings(listPipelinesRetrySettings);
+
+      RetrySettings getGoogleApiSourceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getGoogleApiSourceSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getGoogleApiSourceSettings()
+          .setRetrySettings(getGoogleApiSourceRetrySettings);
+
+      RetrySettings listGoogleApiSourcesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listGoogleApiSourcesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listGoogleApiSourcesSettings()
+          .setRetrySettings(listGoogleApiSourcesRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -364,6 +421,115 @@ public class EventarcSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for updateGoogleChannelConfig from properties.");
+      }
+    }
+    Retry getMessageBusRetry = clientProperties.getGetMessageBusRetry();
+    if (getMessageBusRetry != null) {
+      RetrySettings getMessageBusRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMessageBusSettings().getRetrySettings(), getMessageBusRetry);
+      clientSettingsBuilder.getMessageBusSettings().setRetrySettings(getMessageBusRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getMessageBus from properties.");
+      }
+    }
+    Retry listMessageBusesRetry = clientProperties.getListMessageBusesRetry();
+    if (listMessageBusesRetry != null) {
+      RetrySettings listMessageBusesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMessageBusesSettings().getRetrySettings(),
+              listMessageBusesRetry);
+      clientSettingsBuilder
+          .listMessageBusesSettings()
+          .setRetrySettings(listMessageBusesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listMessageBuses from properties.");
+      }
+    }
+    Retry listMessageBusEnrollmentsRetry = clientProperties.getListMessageBusEnrollmentsRetry();
+    if (listMessageBusEnrollmentsRetry != null) {
+      RetrySettings listMessageBusEnrollmentsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMessageBusEnrollmentsSettings().getRetrySettings(),
+              listMessageBusEnrollmentsRetry);
+      clientSettingsBuilder
+          .listMessageBusEnrollmentsSettings()
+          .setRetrySettings(listMessageBusEnrollmentsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listMessageBusEnrollments from properties.");
+      }
+    }
+    Retry getEnrollmentRetry = clientProperties.getGetEnrollmentRetry();
+    if (getEnrollmentRetry != null) {
+      RetrySettings getEnrollmentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getEnrollmentSettings().getRetrySettings(), getEnrollmentRetry);
+      clientSettingsBuilder.getEnrollmentSettings().setRetrySettings(getEnrollmentRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getEnrollment from properties.");
+      }
+    }
+    Retry listEnrollmentsRetry = clientProperties.getListEnrollmentsRetry();
+    if (listEnrollmentsRetry != null) {
+      RetrySettings listEnrollmentsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listEnrollmentsSettings().getRetrySettings(),
+              listEnrollmentsRetry);
+      clientSettingsBuilder
+          .listEnrollmentsSettings()
+          .setRetrySettings(listEnrollmentsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listEnrollments from properties.");
+      }
+    }
+    Retry getPipelineRetry = clientProperties.getGetPipelineRetry();
+    if (getPipelineRetry != null) {
+      RetrySettings getPipelineRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPipelineSettings().getRetrySettings(), getPipelineRetry);
+      clientSettingsBuilder.getPipelineSettings().setRetrySettings(getPipelineRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getPipeline from properties.");
+      }
+    }
+    Retry listPipelinesRetry = clientProperties.getListPipelinesRetry();
+    if (listPipelinesRetry != null) {
+      RetrySettings listPipelinesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPipelinesSettings().getRetrySettings(), listPipelinesRetry);
+      clientSettingsBuilder.listPipelinesSettings().setRetrySettings(listPipelinesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listPipelines from properties.");
+      }
+    }
+    Retry getGoogleApiSourceRetry = clientProperties.getGetGoogleApiSourceRetry();
+    if (getGoogleApiSourceRetry != null) {
+      RetrySettings getGoogleApiSourceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getGoogleApiSourceSettings().getRetrySettings(),
+              getGoogleApiSourceRetry);
+      clientSettingsBuilder
+          .getGoogleApiSourceSettings()
+          .setRetrySettings(getGoogleApiSourceRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getGoogleApiSource from properties.");
+      }
+    }
+    Retry listGoogleApiSourcesRetry = clientProperties.getListGoogleApiSourcesRetry();
+    if (listGoogleApiSourcesRetry != null) {
+      RetrySettings listGoogleApiSourcesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listGoogleApiSourcesSettings().getRetrySettings(),
+              listGoogleApiSourcesRetry);
+      clientSettingsBuilder
+          .listGoogleApiSourcesSettings()
+          .setRetrySettings(listGoogleApiSourcesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listGoogleApiSources from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
