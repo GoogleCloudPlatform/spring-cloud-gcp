@@ -14,6 +14,23 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.9.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.8.0...v5.9.0) (2024-12-06)
+
+
+### Features
+
+* Add all additional Cloud SQL Java Connector parameters to the spring configuration. ([#3286](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3286)) ([f2212d3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f2212d3944f13a46a6eea496c16e922a0c8fab56))
+* add property to customize universe domain in Pub/Sub ([#3348](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3348)) ([9cf2145](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9cf214507a7ce47613443e55ae7f010d7f0e5ed9))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.51.0 ([#3350](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3350)) ([a270a7d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a270a7de48a5214cd61c10e7915b4bd46ba1b050))
+* include limit in query for findFirst and findTop support in Firestore ([#3387](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3387)) ([9fe8e91](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9fe8e9128c89d22755f648fd185c9140f1de3a2d))
+* migrate logic to create tmpdir to build script ([#3367](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3367)) ([a12638c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a12638ce18725fb91319581571affd378d7241ad))
+* need to update to use new trampoline_release.py script as well as update to configure docker auth with new image ([#3356](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3356)) ([b5ace26](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b5ace263651d8ccfd9078da1fa792ab54931f8a4))
+* sonar build 401 issue ([#3381](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3381)) ([fa53707](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fa53707893c40c413fc23c30f0391d03fb4e45fa))
+
 ## [5.8.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.7.0...v5.8.0) (2024-10-23)
 
 
