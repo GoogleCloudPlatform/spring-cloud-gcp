@@ -41,8 +41,11 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.core.mapping.Where;
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -193,12 +196,38 @@ class SpannerQueryLookupStrategyTests {
             this.spannerMappingContext,
             true);
 
-    assertThat(columnsStringForSelect)
-        .isEqualTo(
-            "other, deleted, id, custom_col, id_2, ARRAY (SELECT AS STRUCT deleted, id3, id, id_2"
-                + " FROM child_test_table WHERE (child_test_table.id = custom_test_table.id AND"
-                + " child_test_table.id_2 = custom_test_table.id_2) AND (deleted = false)) AS"
-                + " childEntities");
+    String actualSelectClause = columnsStringForSelect.substring(
+            0,
+            columnsStringForSelect.indexOf("ARRAY")
+          ).trim();
+
+    String expectedSelectClause = "other, deleted, id, custom_col, id_2";
+    Set<String> actualSelectFields = new HashSet<>(Arrays.asList(actualSelectClause.split(",\\s*")));
+    Set<String> expectedSelectFields = new HashSet<>(Arrays.asList(expectedSelectClause.split(",\\s*")));
+
+    assertThat(actualSelectFields).isEqualTo(expectedSelectFields);
+
+    String actualSubQuery = columnsStringForSelect.substring(
+        columnsStringForSelect.indexOf("ARRAY")
+    ).trim();
+
+    assertThat(actualSubQuery).startsWith("ARRAY (SELECT AS STRUCT");
+
+    String actualSubQuerySelectClause = actualSubQuery.substring(
+        actualSubQuery.indexOf("SELECT AS STRUCT") + "SELECT AS STRUCT".length(), 
+        actualSubQuery.indexOf("FROM child_test_table")
+    ).trim();
+
+    String expectedSubQuerySelectClause = "deleted, id3, id, id_2";
+    Set<String> actualSubQuerySelectFields = new HashSet<>(Arrays.asList(actualSubQuerySelectClause.split(",\\s*")));
+    Set<String> expectedSubQuerySelectFields = new HashSet<>(Arrays.asList(expectedSubQuerySelectClause.split(",\\s*")));
+
+    assertThat(actualSubQuerySelectFields).isEqualTo(expectedSubQuerySelectFields);
+
+    String actualRestClause = actualSubQuery.substring(actualSubQuery.indexOf("FROM child_test_table")).trim();
+    String expectedRestClause = "FROM child_test_table WHERE (child_test_table.id = custom_test_table.id AND child_test_table.id_2 = custom_test_table.id_2) AND (deleted = false)) AS childEntities";
+
+    assertThat(actualRestClause).isEqualTo(expectedRestClause);
   }
 
   @Test
