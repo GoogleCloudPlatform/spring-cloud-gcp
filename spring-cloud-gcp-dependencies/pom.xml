@@ -289,7 +289,14 @@
 				<artifactId>cloud-spanner-r2dbc</artifactId>
 				<version>${cloud-spanner-r2dbc.version}</version>
 			</dependency>
-
+			<!-- spring dependency overrides -->
+			<dependency>
+				<groupId>io.opentelemetry</groupId>
+				<artifactId>opentelemetry-bom</artifactId>
+				<version>${opentelemetry.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<!--Google Cloud Libraries BOM -->
 			<dependency>
 				<groupId>com.google.cloud</groupId>
