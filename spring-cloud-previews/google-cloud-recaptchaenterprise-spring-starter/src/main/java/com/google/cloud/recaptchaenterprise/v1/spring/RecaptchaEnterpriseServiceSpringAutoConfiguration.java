@@ -209,6 +209,20 @@ public class RecaptchaEnterpriseServiceSpringAutoConfiguration {
               clientSettingsBuilder.addIpOverrideSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.addIpOverrideSettings().setRetrySettings(addIpOverrideRetrySettings);
 
+      RetrySettings removeIpOverrideRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.removeIpOverrideSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .removeIpOverrideSettings()
+          .setRetrySettings(removeIpOverrideRetrySettings);
+
+      RetrySettings listIpOverridesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listIpOverridesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listIpOverridesSettings()
+          .setRetrySettings(listIpOverridesRetrySettings);
+
       RetrySettings getMetricsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getMetricsSettings().getRetrySettings(), serviceRetry);
@@ -401,6 +415,33 @@ public class RecaptchaEnterpriseServiceSpringAutoConfiguration {
       clientSettingsBuilder.addIpOverrideSettings().setRetrySettings(addIpOverrideRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for addIpOverride from properties.");
+      }
+    }
+    Retry removeIpOverrideRetry = clientProperties.getRemoveIpOverrideRetry();
+    if (removeIpOverrideRetry != null) {
+      RetrySettings removeIpOverrideRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.removeIpOverrideSettings().getRetrySettings(),
+              removeIpOverrideRetry);
+      clientSettingsBuilder
+          .removeIpOverrideSettings()
+          .setRetrySettings(removeIpOverrideRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for removeIpOverride from properties.");
+      }
+    }
+    Retry listIpOverridesRetry = clientProperties.getListIpOverridesRetry();
+    if (listIpOverridesRetry != null) {
+      RetrySettings listIpOverridesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listIpOverridesSettings().getRetrySettings(),
+              listIpOverridesRetry);
+      clientSettingsBuilder
+          .listIpOverridesSettings()
+          .setRetrySettings(listIpOverridesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listIpOverrides from properties.");
       }
     }
     Retry getMetricsRetry = clientProperties.getGetMetricsRetry();

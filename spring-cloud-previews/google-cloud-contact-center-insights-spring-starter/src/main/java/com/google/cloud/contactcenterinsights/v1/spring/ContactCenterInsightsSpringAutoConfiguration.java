@@ -309,6 +309,41 @@ public class ContactCenterInsightsSpringAutoConfiguration {
               clientSettingsBuilder.updateSettingsSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.updateSettingsSettings().setRetrySettings(updateSettingsRetrySettings);
 
+      RetrySettings createAnalysisRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createAnalysisRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .createAnalysisRuleSettings()
+          .setRetrySettings(createAnalysisRuleRetrySettings);
+
+      RetrySettings getAnalysisRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getAnalysisRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getAnalysisRuleSettings()
+          .setRetrySettings(getAnalysisRuleRetrySettings);
+
+      RetrySettings listAnalysisRulesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAnalysisRulesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listAnalysisRulesSettings()
+          .setRetrySettings(listAnalysisRulesRetrySettings);
+
+      RetrySettings updateAnalysisRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateAnalysisRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .updateAnalysisRuleSettings()
+          .setRetrySettings(updateAnalysisRuleRetrySettings);
+
+      RetrySettings deleteAnalysisRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteAnalysisRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .deleteAnalysisRuleSettings()
+          .setRetrySettings(deleteAnalysisRuleRetrySettings);
+
       RetrySettings getEncryptionSpecRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getEncryptionSpecSettings().getRetrySettings(), serviceRetry);
@@ -340,6 +375,163 @@ public class ContactCenterInsightsSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.deleteViewSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.deleteViewSettings().setRetrySettings(deleteViewRetrySettings);
+
+      RetrySettings createQaQuestionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createQaQuestionSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .createQaQuestionSettings()
+          .setRetrySettings(createQaQuestionRetrySettings);
+
+      RetrySettings getQaQuestionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getQaQuestionSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getQaQuestionSettings().setRetrySettings(getQaQuestionRetrySettings);
+
+      RetrySettings updateQaQuestionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateQaQuestionSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .updateQaQuestionSettings()
+          .setRetrySettings(updateQaQuestionRetrySettings);
+
+      RetrySettings deleteQaQuestionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteQaQuestionSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .deleteQaQuestionSettings()
+          .setRetrySettings(deleteQaQuestionRetrySettings);
+
+      RetrySettings listQaQuestionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listQaQuestionsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listQaQuestionsSettings()
+          .setRetrySettings(listQaQuestionsRetrySettings);
+
+      RetrySettings createQaScorecardRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createQaScorecardSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .createQaScorecardSettings()
+          .setRetrySettings(createQaScorecardRetrySettings);
+
+      RetrySettings getQaScorecardRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getQaScorecardSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getQaScorecardSettings().setRetrySettings(getQaScorecardRetrySettings);
+
+      RetrySettings updateQaScorecardRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateQaScorecardSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .updateQaScorecardSettings()
+          .setRetrySettings(updateQaScorecardRetrySettings);
+
+      RetrySettings deleteQaScorecardRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteQaScorecardSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .deleteQaScorecardSettings()
+          .setRetrySettings(deleteQaScorecardRetrySettings);
+
+      RetrySettings listQaScorecardsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listQaScorecardsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listQaScorecardsSettings()
+          .setRetrySettings(listQaScorecardsRetrySettings);
+
+      RetrySettings createQaScorecardRevisionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createQaScorecardRevisionSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .createQaScorecardRevisionSettings()
+          .setRetrySettings(createQaScorecardRevisionRetrySettings);
+
+      RetrySettings getQaScorecardRevisionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getQaScorecardRevisionSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getQaScorecardRevisionSettings()
+          .setRetrySettings(getQaScorecardRevisionRetrySettings);
+
+      RetrySettings deployQaScorecardRevisionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deployQaScorecardRevisionSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .deployQaScorecardRevisionSettings()
+          .setRetrySettings(deployQaScorecardRevisionRetrySettings);
+
+      RetrySettings undeployQaScorecardRevisionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.undeployQaScorecardRevisionSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .undeployQaScorecardRevisionSettings()
+          .setRetrySettings(undeployQaScorecardRevisionRetrySettings);
+
+      RetrySettings deleteQaScorecardRevisionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteQaScorecardRevisionSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .deleteQaScorecardRevisionSettings()
+          .setRetrySettings(deleteQaScorecardRevisionRetrySettings);
+
+      RetrySettings listQaScorecardRevisionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listQaScorecardRevisionsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listQaScorecardRevisionsSettings()
+          .setRetrySettings(listQaScorecardRevisionsRetrySettings);
+
+      RetrySettings createFeedbackLabelRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createFeedbackLabelSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .createFeedbackLabelSettings()
+          .setRetrySettings(createFeedbackLabelRetrySettings);
+
+      RetrySettings listFeedbackLabelsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listFeedbackLabelsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listFeedbackLabelsSettings()
+          .setRetrySettings(listFeedbackLabelsRetrySettings);
+
+      RetrySettings getFeedbackLabelRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getFeedbackLabelSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getFeedbackLabelSettings()
+          .setRetrySettings(getFeedbackLabelRetrySettings);
+
+      RetrySettings updateFeedbackLabelRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateFeedbackLabelSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .updateFeedbackLabelSettings()
+          .setRetrySettings(updateFeedbackLabelRetrySettings);
+
+      RetrySettings deleteFeedbackLabelRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteFeedbackLabelSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .deleteFeedbackLabelSettings()
+          .setRetrySettings(deleteFeedbackLabelRetrySettings);
+
+      RetrySettings listAllFeedbackLabelsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAllFeedbackLabelsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listAllFeedbackLabelsSettings()
+          .setRetrySettings(listAllFeedbackLabelsRetrySettings);
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
@@ -638,6 +830,75 @@ public class ContactCenterInsightsSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for updateSettings from properties.");
       }
     }
+    Retry createAnalysisRuleRetry = clientProperties.getCreateAnalysisRuleRetry();
+    if (createAnalysisRuleRetry != null) {
+      RetrySettings createAnalysisRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createAnalysisRuleSettings().getRetrySettings(),
+              createAnalysisRuleRetry);
+      clientSettingsBuilder
+          .createAnalysisRuleSettings()
+          .setRetrySettings(createAnalysisRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createAnalysisRule from properties.");
+      }
+    }
+    Retry getAnalysisRuleRetry = clientProperties.getGetAnalysisRuleRetry();
+    if (getAnalysisRuleRetry != null) {
+      RetrySettings getAnalysisRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getAnalysisRuleSettings().getRetrySettings(),
+              getAnalysisRuleRetry);
+      clientSettingsBuilder
+          .getAnalysisRuleSettings()
+          .setRetrySettings(getAnalysisRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getAnalysisRule from properties.");
+      }
+    }
+    Retry listAnalysisRulesRetry = clientProperties.getListAnalysisRulesRetry();
+    if (listAnalysisRulesRetry != null) {
+      RetrySettings listAnalysisRulesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAnalysisRulesSettings().getRetrySettings(),
+              listAnalysisRulesRetry);
+      clientSettingsBuilder
+          .listAnalysisRulesSettings()
+          .setRetrySettings(listAnalysisRulesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listAnalysisRules from properties.");
+      }
+    }
+    Retry updateAnalysisRuleRetry = clientProperties.getUpdateAnalysisRuleRetry();
+    if (updateAnalysisRuleRetry != null) {
+      RetrySettings updateAnalysisRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateAnalysisRuleSettings().getRetrySettings(),
+              updateAnalysisRuleRetry);
+      clientSettingsBuilder
+          .updateAnalysisRuleSettings()
+          .setRetrySettings(updateAnalysisRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateAnalysisRule from properties.");
+      }
+    }
+    Retry deleteAnalysisRuleRetry = clientProperties.getDeleteAnalysisRuleRetry();
+    if (deleteAnalysisRuleRetry != null) {
+      RetrySettings deleteAnalysisRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteAnalysisRuleSettings().getRetrySettings(),
+              deleteAnalysisRuleRetry);
+      clientSettingsBuilder
+          .deleteAnalysisRuleSettings()
+          .setRetrySettings(deleteAnalysisRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteAnalysisRule from properties.");
+      }
+    }
     Retry getEncryptionSpecRetry = clientProperties.getGetEncryptionSpecRetry();
     if (getEncryptionSpecRetry != null) {
       RetrySettings getEncryptionSpecRetrySettings =
@@ -700,6 +961,306 @@ public class ContactCenterInsightsSpringAutoConfiguration {
       clientSettingsBuilder.deleteViewSettings().setRetrySettings(deleteViewRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for deleteView from properties.");
+      }
+    }
+    Retry createQaQuestionRetry = clientProperties.getCreateQaQuestionRetry();
+    if (createQaQuestionRetry != null) {
+      RetrySettings createQaQuestionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createQaQuestionSettings().getRetrySettings(),
+              createQaQuestionRetry);
+      clientSettingsBuilder
+          .createQaQuestionSettings()
+          .setRetrySettings(createQaQuestionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createQaQuestion from properties.");
+      }
+    }
+    Retry getQaQuestionRetry = clientProperties.getGetQaQuestionRetry();
+    if (getQaQuestionRetry != null) {
+      RetrySettings getQaQuestionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getQaQuestionSettings().getRetrySettings(), getQaQuestionRetry);
+      clientSettingsBuilder.getQaQuestionSettings().setRetrySettings(getQaQuestionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getQaQuestion from properties.");
+      }
+    }
+    Retry updateQaQuestionRetry = clientProperties.getUpdateQaQuestionRetry();
+    if (updateQaQuestionRetry != null) {
+      RetrySettings updateQaQuestionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateQaQuestionSettings().getRetrySettings(),
+              updateQaQuestionRetry);
+      clientSettingsBuilder
+          .updateQaQuestionSettings()
+          .setRetrySettings(updateQaQuestionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateQaQuestion from properties.");
+      }
+    }
+    Retry deleteQaQuestionRetry = clientProperties.getDeleteQaQuestionRetry();
+    if (deleteQaQuestionRetry != null) {
+      RetrySettings deleteQaQuestionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteQaQuestionSettings().getRetrySettings(),
+              deleteQaQuestionRetry);
+      clientSettingsBuilder
+          .deleteQaQuestionSettings()
+          .setRetrySettings(deleteQaQuestionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteQaQuestion from properties.");
+      }
+    }
+    Retry listQaQuestionsRetry = clientProperties.getListQaQuestionsRetry();
+    if (listQaQuestionsRetry != null) {
+      RetrySettings listQaQuestionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listQaQuestionsSettings().getRetrySettings(),
+              listQaQuestionsRetry);
+      clientSettingsBuilder
+          .listQaQuestionsSettings()
+          .setRetrySettings(listQaQuestionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listQaQuestions from properties.");
+      }
+    }
+    Retry createQaScorecardRetry = clientProperties.getCreateQaScorecardRetry();
+    if (createQaScorecardRetry != null) {
+      RetrySettings createQaScorecardRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createQaScorecardSettings().getRetrySettings(),
+              createQaScorecardRetry);
+      clientSettingsBuilder
+          .createQaScorecardSettings()
+          .setRetrySettings(createQaScorecardRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createQaScorecard from properties.");
+      }
+    }
+    Retry getQaScorecardRetry = clientProperties.getGetQaScorecardRetry();
+    if (getQaScorecardRetry != null) {
+      RetrySettings getQaScorecardRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getQaScorecardSettings().getRetrySettings(),
+              getQaScorecardRetry);
+      clientSettingsBuilder.getQaScorecardSettings().setRetrySettings(getQaScorecardRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getQaScorecard from properties.");
+      }
+    }
+    Retry updateQaScorecardRetry = clientProperties.getUpdateQaScorecardRetry();
+    if (updateQaScorecardRetry != null) {
+      RetrySettings updateQaScorecardRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateQaScorecardSettings().getRetrySettings(),
+              updateQaScorecardRetry);
+      clientSettingsBuilder
+          .updateQaScorecardSettings()
+          .setRetrySettings(updateQaScorecardRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateQaScorecard from properties.");
+      }
+    }
+    Retry deleteQaScorecardRetry = clientProperties.getDeleteQaScorecardRetry();
+    if (deleteQaScorecardRetry != null) {
+      RetrySettings deleteQaScorecardRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteQaScorecardSettings().getRetrySettings(),
+              deleteQaScorecardRetry);
+      clientSettingsBuilder
+          .deleteQaScorecardSettings()
+          .setRetrySettings(deleteQaScorecardRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteQaScorecard from properties.");
+      }
+    }
+    Retry listQaScorecardsRetry = clientProperties.getListQaScorecardsRetry();
+    if (listQaScorecardsRetry != null) {
+      RetrySettings listQaScorecardsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listQaScorecardsSettings().getRetrySettings(),
+              listQaScorecardsRetry);
+      clientSettingsBuilder
+          .listQaScorecardsSettings()
+          .setRetrySettings(listQaScorecardsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listQaScorecards from properties.");
+      }
+    }
+    Retry createQaScorecardRevisionRetry = clientProperties.getCreateQaScorecardRevisionRetry();
+    if (createQaScorecardRevisionRetry != null) {
+      RetrySettings createQaScorecardRevisionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createQaScorecardRevisionSettings().getRetrySettings(),
+              createQaScorecardRevisionRetry);
+      clientSettingsBuilder
+          .createQaScorecardRevisionSettings()
+          .setRetrySettings(createQaScorecardRevisionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createQaScorecardRevision from properties.");
+      }
+    }
+    Retry getQaScorecardRevisionRetry = clientProperties.getGetQaScorecardRevisionRetry();
+    if (getQaScorecardRevisionRetry != null) {
+      RetrySettings getQaScorecardRevisionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getQaScorecardRevisionSettings().getRetrySettings(),
+              getQaScorecardRevisionRetry);
+      clientSettingsBuilder
+          .getQaScorecardRevisionSettings()
+          .setRetrySettings(getQaScorecardRevisionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getQaScorecardRevision from properties.");
+      }
+    }
+    Retry deployQaScorecardRevisionRetry = clientProperties.getDeployQaScorecardRevisionRetry();
+    if (deployQaScorecardRevisionRetry != null) {
+      RetrySettings deployQaScorecardRevisionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deployQaScorecardRevisionSettings().getRetrySettings(),
+              deployQaScorecardRevisionRetry);
+      clientSettingsBuilder
+          .deployQaScorecardRevisionSettings()
+          .setRetrySettings(deployQaScorecardRevisionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deployQaScorecardRevision from properties.");
+      }
+    }
+    Retry undeployQaScorecardRevisionRetry = clientProperties.getUndeployQaScorecardRevisionRetry();
+    if (undeployQaScorecardRevisionRetry != null) {
+      RetrySettings undeployQaScorecardRevisionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.undeployQaScorecardRevisionSettings().getRetrySettings(),
+              undeployQaScorecardRevisionRetry);
+      clientSettingsBuilder
+          .undeployQaScorecardRevisionSettings()
+          .setRetrySettings(undeployQaScorecardRevisionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for undeployQaScorecardRevision from properties.");
+      }
+    }
+    Retry deleteQaScorecardRevisionRetry = clientProperties.getDeleteQaScorecardRevisionRetry();
+    if (deleteQaScorecardRevisionRetry != null) {
+      RetrySettings deleteQaScorecardRevisionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteQaScorecardRevisionSettings().getRetrySettings(),
+              deleteQaScorecardRevisionRetry);
+      clientSettingsBuilder
+          .deleteQaScorecardRevisionSettings()
+          .setRetrySettings(deleteQaScorecardRevisionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteQaScorecardRevision from properties.");
+      }
+    }
+    Retry listQaScorecardRevisionsRetry = clientProperties.getListQaScorecardRevisionsRetry();
+    if (listQaScorecardRevisionsRetry != null) {
+      RetrySettings listQaScorecardRevisionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listQaScorecardRevisionsSettings().getRetrySettings(),
+              listQaScorecardRevisionsRetry);
+      clientSettingsBuilder
+          .listQaScorecardRevisionsSettings()
+          .setRetrySettings(listQaScorecardRevisionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listQaScorecardRevisions from properties.");
+      }
+    }
+    Retry createFeedbackLabelRetry = clientProperties.getCreateFeedbackLabelRetry();
+    if (createFeedbackLabelRetry != null) {
+      RetrySettings createFeedbackLabelRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createFeedbackLabelSettings().getRetrySettings(),
+              createFeedbackLabelRetry);
+      clientSettingsBuilder
+          .createFeedbackLabelSettings()
+          .setRetrySettings(createFeedbackLabelRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createFeedbackLabel from properties.");
+      }
+    }
+    Retry listFeedbackLabelsRetry = clientProperties.getListFeedbackLabelsRetry();
+    if (listFeedbackLabelsRetry != null) {
+      RetrySettings listFeedbackLabelsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listFeedbackLabelsSettings().getRetrySettings(),
+              listFeedbackLabelsRetry);
+      clientSettingsBuilder
+          .listFeedbackLabelsSettings()
+          .setRetrySettings(listFeedbackLabelsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listFeedbackLabels from properties.");
+      }
+    }
+    Retry getFeedbackLabelRetry = clientProperties.getGetFeedbackLabelRetry();
+    if (getFeedbackLabelRetry != null) {
+      RetrySettings getFeedbackLabelRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getFeedbackLabelSettings().getRetrySettings(),
+              getFeedbackLabelRetry);
+      clientSettingsBuilder
+          .getFeedbackLabelSettings()
+          .setRetrySettings(getFeedbackLabelRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getFeedbackLabel from properties.");
+      }
+    }
+    Retry updateFeedbackLabelRetry = clientProperties.getUpdateFeedbackLabelRetry();
+    if (updateFeedbackLabelRetry != null) {
+      RetrySettings updateFeedbackLabelRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateFeedbackLabelSettings().getRetrySettings(),
+              updateFeedbackLabelRetry);
+      clientSettingsBuilder
+          .updateFeedbackLabelSettings()
+          .setRetrySettings(updateFeedbackLabelRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateFeedbackLabel from properties.");
+      }
+    }
+    Retry deleteFeedbackLabelRetry = clientProperties.getDeleteFeedbackLabelRetry();
+    if (deleteFeedbackLabelRetry != null) {
+      RetrySettings deleteFeedbackLabelRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteFeedbackLabelSettings().getRetrySettings(),
+              deleteFeedbackLabelRetry);
+      clientSettingsBuilder
+          .deleteFeedbackLabelSettings()
+          .setRetrySettings(deleteFeedbackLabelRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteFeedbackLabel from properties.");
+      }
+    }
+    Retry listAllFeedbackLabelsRetry = clientProperties.getListAllFeedbackLabelsRetry();
+    if (listAllFeedbackLabelsRetry != null) {
+      RetrySettings listAllFeedbackLabelsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAllFeedbackLabelsSettings().getRetrySettings(),
+              listAllFeedbackLabelsRetry);
+      clientSettingsBuilder
+          .listAllFeedbackLabelsSettings()
+          .setRetrySettings(listAllFeedbackLabelsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listAllFeedbackLabels from properties.");
       }
     }
     return clientSettingsBuilder.build();
