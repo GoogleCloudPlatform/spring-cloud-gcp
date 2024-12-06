@@ -120,6 +120,11 @@ public class ArtifactRegistrySpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getVersionRetry;
   /**
+   * Allow override of retry settings at method-level for updateVersion. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateVersionRetry;
+  /**
    * Allow override of retry settings at method-level for listFiles. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -129,6 +134,11 @@ public class ArtifactRegistrySpringProperties implements CredentialsSupplier {
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getFileRetry;
+  /**
+   * Allow override of retry settings at method-level for updateFile. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateFileRetry;
   /**
    * Allow override of retry settings at method-level for listTags. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -154,6 +164,31 @@ public class ArtifactRegistrySpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteTagRetry;
+  /**
+   * Allow override of retry settings at method-level for createRule. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createRuleRetry;
+  /**
+   * Allow override of retry settings at method-level for listRules. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listRulesRetry;
+  /**
+   * Allow override of retry settings at method-level for getRule. If defined, this takes precedence
+   * over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getRuleRetry;
+  /**
+   * Allow override of retry settings at method-level for updateRule. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateRuleRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteRule. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteRuleRetry;
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -189,6 +224,21 @@ public class ArtifactRegistrySpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateVPCSCConfigRetry;
+  /**
+   * Allow override of retry settings at method-level for updatePackage. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updatePackageRetry;
+  /**
+   * Allow override of retry settings at method-level for listAttachments. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listAttachmentsRetry;
+  /**
+   * Allow override of retry settings at method-level for getAttachment. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getAttachmentRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -357,6 +407,14 @@ public class ArtifactRegistrySpringProperties implements CredentialsSupplier {
     this.getVersionRetry = getVersionRetry;
   }
 
+  public Retry getUpdateVersionRetry() {
+    return this.updateVersionRetry;
+  }
+
+  public void setUpdateVersionRetry(Retry updateVersionRetry) {
+    this.updateVersionRetry = updateVersionRetry;
+  }
+
   public Retry getListFilesRetry() {
     return this.listFilesRetry;
   }
@@ -371,6 +429,14 @@ public class ArtifactRegistrySpringProperties implements CredentialsSupplier {
 
   public void setGetFileRetry(Retry getFileRetry) {
     this.getFileRetry = getFileRetry;
+  }
+
+  public Retry getUpdateFileRetry() {
+    return this.updateFileRetry;
+  }
+
+  public void setUpdateFileRetry(Retry updateFileRetry) {
+    this.updateFileRetry = updateFileRetry;
   }
 
   public Retry getListTagsRetry() {
@@ -411,6 +477,46 @@ public class ArtifactRegistrySpringProperties implements CredentialsSupplier {
 
   public void setDeleteTagRetry(Retry deleteTagRetry) {
     this.deleteTagRetry = deleteTagRetry;
+  }
+
+  public Retry getCreateRuleRetry() {
+    return this.createRuleRetry;
+  }
+
+  public void setCreateRuleRetry(Retry createRuleRetry) {
+    this.createRuleRetry = createRuleRetry;
+  }
+
+  public Retry getListRulesRetry() {
+    return this.listRulesRetry;
+  }
+
+  public void setListRulesRetry(Retry listRulesRetry) {
+    this.listRulesRetry = listRulesRetry;
+  }
+
+  public Retry getGetRuleRetry() {
+    return this.getRuleRetry;
+  }
+
+  public void setGetRuleRetry(Retry getRuleRetry) {
+    this.getRuleRetry = getRuleRetry;
+  }
+
+  public Retry getUpdateRuleRetry() {
+    return this.updateRuleRetry;
+  }
+
+  public void setUpdateRuleRetry(Retry updateRuleRetry) {
+    this.updateRuleRetry = updateRuleRetry;
+  }
+
+  public Retry getDeleteRuleRetry() {
+    return this.deleteRuleRetry;
+  }
+
+  public void setDeleteRuleRetry(Retry deleteRuleRetry) {
+    this.deleteRuleRetry = deleteRuleRetry;
   }
 
   public Retry getSetIamPolicyRetry() {
@@ -467,6 +573,30 @@ public class ArtifactRegistrySpringProperties implements CredentialsSupplier {
 
   public void setUpdateVPCSCConfigRetry(Retry updateVPCSCConfigRetry) {
     this.updateVPCSCConfigRetry = updateVPCSCConfigRetry;
+  }
+
+  public Retry getUpdatePackageRetry() {
+    return this.updatePackageRetry;
+  }
+
+  public void setUpdatePackageRetry(Retry updatePackageRetry) {
+    this.updatePackageRetry = updatePackageRetry;
+  }
+
+  public Retry getListAttachmentsRetry() {
+    return this.listAttachmentsRetry;
+  }
+
+  public void setListAttachmentsRetry(Retry listAttachmentsRetry) {
+    this.listAttachmentsRetry = listAttachmentsRetry;
+  }
+
+  public Retry getGetAttachmentRetry() {
+    return this.getAttachmentRetry;
+  }
+
+  public void setGetAttachmentRetry(Retry getAttachmentRetry) {
+    this.getAttachmentRetry = getAttachmentRetry;
   }
 
   public Retry getListLocationsRetry() {

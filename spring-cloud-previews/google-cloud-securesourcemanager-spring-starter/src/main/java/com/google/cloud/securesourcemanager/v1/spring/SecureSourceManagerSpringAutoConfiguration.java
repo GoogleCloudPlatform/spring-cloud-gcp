@@ -205,6 +205,18 @@ public class SecureSourceManagerSpringAutoConfiguration {
           .testIamPermissionsRepoSettings()
           .setRetrySettings(testIamPermissionsRepoRetrySettings);
 
+      RetrySettings listBranchRulesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBranchRulesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listBranchRulesSettings()
+          .setRetrySettings(listBranchRulesRetrySettings);
+
+      RetrySettings getBranchRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBranchRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getBranchRuleSettings().setRetrySettings(getBranchRuleRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -320,6 +332,29 @@ public class SecureSourceManagerSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for testIamPermissionsRepo from properties.");
+      }
+    }
+    Retry listBranchRulesRetry = clientProperties.getListBranchRulesRetry();
+    if (listBranchRulesRetry != null) {
+      RetrySettings listBranchRulesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBranchRulesSettings().getRetrySettings(),
+              listBranchRulesRetry);
+      clientSettingsBuilder
+          .listBranchRulesSettings()
+          .setRetrySettings(listBranchRulesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listBranchRules from properties.");
+      }
+    }
+    Retry getBranchRuleRetry = clientProperties.getGetBranchRuleRetry();
+    if (getBranchRuleRetry != null) {
+      RetrySettings getBranchRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBranchRuleSettings().getRetrySettings(), getBranchRuleRetry);
+      clientSettingsBuilder.getBranchRuleSettings().setRetrySettings(getBranchRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getBranchRule from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

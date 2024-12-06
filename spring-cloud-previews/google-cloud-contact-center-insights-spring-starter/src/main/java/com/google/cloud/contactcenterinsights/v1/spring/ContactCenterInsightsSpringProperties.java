@@ -163,6 +163,31 @@ public class ContactCenterInsightsSpringProperties implements CredentialsSupplie
    */
   @NestedConfigurationProperty private Retry updateSettingsRetry;
   /**
+   * Allow override of retry settings at method-level for createAnalysisRule. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createAnalysisRuleRetry;
+  /**
+   * Allow override of retry settings at method-level for getAnalysisRule. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getAnalysisRuleRetry;
+  /**
+   * Allow override of retry settings at method-level for listAnalysisRules. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listAnalysisRulesRetry;
+  /**
+   * Allow override of retry settings at method-level for updateAnalysisRule. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateAnalysisRuleRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteAnalysisRule. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteAnalysisRuleRetry;
+  /**
    * Allow override of retry settings at method-level for getEncryptionSpec. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -192,6 +217,116 @@ public class ContactCenterInsightsSpringProperties implements CredentialsSupplie
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteViewRetry;
+  /**
+   * Allow override of retry settings at method-level for createQaQuestion. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createQaQuestionRetry;
+  /**
+   * Allow override of retry settings at method-level for getQaQuestion. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getQaQuestionRetry;
+  /**
+   * Allow override of retry settings at method-level for updateQaQuestion. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateQaQuestionRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteQaQuestion. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteQaQuestionRetry;
+  /**
+   * Allow override of retry settings at method-level for listQaQuestions. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listQaQuestionsRetry;
+  /**
+   * Allow override of retry settings at method-level for createQaScorecard. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createQaScorecardRetry;
+  /**
+   * Allow override of retry settings at method-level for getQaScorecard. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getQaScorecardRetry;
+  /**
+   * Allow override of retry settings at method-level for updateQaScorecard. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateQaScorecardRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteQaScorecard. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteQaScorecardRetry;
+  /**
+   * Allow override of retry settings at method-level for listQaScorecards. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listQaScorecardsRetry;
+  /**
+   * Allow override of retry settings at method-level for createQaScorecardRevision. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createQaScorecardRevisionRetry;
+  /**
+   * Allow override of retry settings at method-level for getQaScorecardRevision. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getQaScorecardRevisionRetry;
+  /**
+   * Allow override of retry settings at method-level for deployQaScorecardRevision. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deployQaScorecardRevisionRetry;
+  /**
+   * Allow override of retry settings at method-level for undeployQaScorecardRevision. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry undeployQaScorecardRevisionRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteQaScorecardRevision. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteQaScorecardRevisionRetry;
+  /**
+   * Allow override of retry settings at method-level for listQaScorecardRevisions. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listQaScorecardRevisionsRetry;
+  /**
+   * Allow override of retry settings at method-level for createFeedbackLabel. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createFeedbackLabelRetry;
+  /**
+   * Allow override of retry settings at method-level for listFeedbackLabels. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listFeedbackLabelsRetry;
+  /**
+   * Allow override of retry settings at method-level for getFeedbackLabel. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getFeedbackLabelRetry;
+  /**
+   * Allow override of retry settings at method-level for updateFeedbackLabel. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateFeedbackLabelRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteFeedbackLabel. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteFeedbackLabelRetry;
+  /**
+   * Allow override of retry settings at method-level for listAllFeedbackLabels. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listAllFeedbackLabelsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -422,6 +557,46 @@ public class ContactCenterInsightsSpringProperties implements CredentialsSupplie
     this.updateSettingsRetry = updateSettingsRetry;
   }
 
+  public Retry getCreateAnalysisRuleRetry() {
+    return this.createAnalysisRuleRetry;
+  }
+
+  public void setCreateAnalysisRuleRetry(Retry createAnalysisRuleRetry) {
+    this.createAnalysisRuleRetry = createAnalysisRuleRetry;
+  }
+
+  public Retry getGetAnalysisRuleRetry() {
+    return this.getAnalysisRuleRetry;
+  }
+
+  public void setGetAnalysisRuleRetry(Retry getAnalysisRuleRetry) {
+    this.getAnalysisRuleRetry = getAnalysisRuleRetry;
+  }
+
+  public Retry getListAnalysisRulesRetry() {
+    return this.listAnalysisRulesRetry;
+  }
+
+  public void setListAnalysisRulesRetry(Retry listAnalysisRulesRetry) {
+    this.listAnalysisRulesRetry = listAnalysisRulesRetry;
+  }
+
+  public Retry getUpdateAnalysisRuleRetry() {
+    return this.updateAnalysisRuleRetry;
+  }
+
+  public void setUpdateAnalysisRuleRetry(Retry updateAnalysisRuleRetry) {
+    this.updateAnalysisRuleRetry = updateAnalysisRuleRetry;
+  }
+
+  public Retry getDeleteAnalysisRuleRetry() {
+    return this.deleteAnalysisRuleRetry;
+  }
+
+  public void setDeleteAnalysisRuleRetry(Retry deleteAnalysisRuleRetry) {
+    this.deleteAnalysisRuleRetry = deleteAnalysisRuleRetry;
+  }
+
   public Retry getGetEncryptionSpecRetry() {
     return this.getEncryptionSpecRetry;
   }
@@ -468,5 +643,181 @@ public class ContactCenterInsightsSpringProperties implements CredentialsSupplie
 
   public void setDeleteViewRetry(Retry deleteViewRetry) {
     this.deleteViewRetry = deleteViewRetry;
+  }
+
+  public Retry getCreateQaQuestionRetry() {
+    return this.createQaQuestionRetry;
+  }
+
+  public void setCreateQaQuestionRetry(Retry createQaQuestionRetry) {
+    this.createQaQuestionRetry = createQaQuestionRetry;
+  }
+
+  public Retry getGetQaQuestionRetry() {
+    return this.getQaQuestionRetry;
+  }
+
+  public void setGetQaQuestionRetry(Retry getQaQuestionRetry) {
+    this.getQaQuestionRetry = getQaQuestionRetry;
+  }
+
+  public Retry getUpdateQaQuestionRetry() {
+    return this.updateQaQuestionRetry;
+  }
+
+  public void setUpdateQaQuestionRetry(Retry updateQaQuestionRetry) {
+    this.updateQaQuestionRetry = updateQaQuestionRetry;
+  }
+
+  public Retry getDeleteQaQuestionRetry() {
+    return this.deleteQaQuestionRetry;
+  }
+
+  public void setDeleteQaQuestionRetry(Retry deleteQaQuestionRetry) {
+    this.deleteQaQuestionRetry = deleteQaQuestionRetry;
+  }
+
+  public Retry getListQaQuestionsRetry() {
+    return this.listQaQuestionsRetry;
+  }
+
+  public void setListQaQuestionsRetry(Retry listQaQuestionsRetry) {
+    this.listQaQuestionsRetry = listQaQuestionsRetry;
+  }
+
+  public Retry getCreateQaScorecardRetry() {
+    return this.createQaScorecardRetry;
+  }
+
+  public void setCreateQaScorecardRetry(Retry createQaScorecardRetry) {
+    this.createQaScorecardRetry = createQaScorecardRetry;
+  }
+
+  public Retry getGetQaScorecardRetry() {
+    return this.getQaScorecardRetry;
+  }
+
+  public void setGetQaScorecardRetry(Retry getQaScorecardRetry) {
+    this.getQaScorecardRetry = getQaScorecardRetry;
+  }
+
+  public Retry getUpdateQaScorecardRetry() {
+    return this.updateQaScorecardRetry;
+  }
+
+  public void setUpdateQaScorecardRetry(Retry updateQaScorecardRetry) {
+    this.updateQaScorecardRetry = updateQaScorecardRetry;
+  }
+
+  public Retry getDeleteQaScorecardRetry() {
+    return this.deleteQaScorecardRetry;
+  }
+
+  public void setDeleteQaScorecardRetry(Retry deleteQaScorecardRetry) {
+    this.deleteQaScorecardRetry = deleteQaScorecardRetry;
+  }
+
+  public Retry getListQaScorecardsRetry() {
+    return this.listQaScorecardsRetry;
+  }
+
+  public void setListQaScorecardsRetry(Retry listQaScorecardsRetry) {
+    this.listQaScorecardsRetry = listQaScorecardsRetry;
+  }
+
+  public Retry getCreateQaScorecardRevisionRetry() {
+    return this.createQaScorecardRevisionRetry;
+  }
+
+  public void setCreateQaScorecardRevisionRetry(Retry createQaScorecardRevisionRetry) {
+    this.createQaScorecardRevisionRetry = createQaScorecardRevisionRetry;
+  }
+
+  public Retry getGetQaScorecardRevisionRetry() {
+    return this.getQaScorecardRevisionRetry;
+  }
+
+  public void setGetQaScorecardRevisionRetry(Retry getQaScorecardRevisionRetry) {
+    this.getQaScorecardRevisionRetry = getQaScorecardRevisionRetry;
+  }
+
+  public Retry getDeployQaScorecardRevisionRetry() {
+    return this.deployQaScorecardRevisionRetry;
+  }
+
+  public void setDeployQaScorecardRevisionRetry(Retry deployQaScorecardRevisionRetry) {
+    this.deployQaScorecardRevisionRetry = deployQaScorecardRevisionRetry;
+  }
+
+  public Retry getUndeployQaScorecardRevisionRetry() {
+    return this.undeployQaScorecardRevisionRetry;
+  }
+
+  public void setUndeployQaScorecardRevisionRetry(Retry undeployQaScorecardRevisionRetry) {
+    this.undeployQaScorecardRevisionRetry = undeployQaScorecardRevisionRetry;
+  }
+
+  public Retry getDeleteQaScorecardRevisionRetry() {
+    return this.deleteQaScorecardRevisionRetry;
+  }
+
+  public void setDeleteQaScorecardRevisionRetry(Retry deleteQaScorecardRevisionRetry) {
+    this.deleteQaScorecardRevisionRetry = deleteQaScorecardRevisionRetry;
+  }
+
+  public Retry getListQaScorecardRevisionsRetry() {
+    return this.listQaScorecardRevisionsRetry;
+  }
+
+  public void setListQaScorecardRevisionsRetry(Retry listQaScorecardRevisionsRetry) {
+    this.listQaScorecardRevisionsRetry = listQaScorecardRevisionsRetry;
+  }
+
+  public Retry getCreateFeedbackLabelRetry() {
+    return this.createFeedbackLabelRetry;
+  }
+
+  public void setCreateFeedbackLabelRetry(Retry createFeedbackLabelRetry) {
+    this.createFeedbackLabelRetry = createFeedbackLabelRetry;
+  }
+
+  public Retry getListFeedbackLabelsRetry() {
+    return this.listFeedbackLabelsRetry;
+  }
+
+  public void setListFeedbackLabelsRetry(Retry listFeedbackLabelsRetry) {
+    this.listFeedbackLabelsRetry = listFeedbackLabelsRetry;
+  }
+
+  public Retry getGetFeedbackLabelRetry() {
+    return this.getFeedbackLabelRetry;
+  }
+
+  public void setGetFeedbackLabelRetry(Retry getFeedbackLabelRetry) {
+    this.getFeedbackLabelRetry = getFeedbackLabelRetry;
+  }
+
+  public Retry getUpdateFeedbackLabelRetry() {
+    return this.updateFeedbackLabelRetry;
+  }
+
+  public void setUpdateFeedbackLabelRetry(Retry updateFeedbackLabelRetry) {
+    this.updateFeedbackLabelRetry = updateFeedbackLabelRetry;
+  }
+
+  public Retry getDeleteFeedbackLabelRetry() {
+    return this.deleteFeedbackLabelRetry;
+  }
+
+  public void setDeleteFeedbackLabelRetry(Retry deleteFeedbackLabelRetry) {
+    this.deleteFeedbackLabelRetry = deleteFeedbackLabelRetry;
+  }
+
+  public Retry getListAllFeedbackLabelsRetry() {
+    return this.listAllFeedbackLabelsRetry;
+  }
+
+  public void setListAllFeedbackLabelsRetry(Retry listAllFeedbackLabelsRetry) {
+    this.listAllFeedbackLabelsRetry = listAllFeedbackLabelsRetry;
   }
 }
