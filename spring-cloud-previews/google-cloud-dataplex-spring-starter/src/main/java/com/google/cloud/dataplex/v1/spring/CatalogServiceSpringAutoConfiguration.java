@@ -229,6 +229,25 @@ public class CatalogServiceSpringAutoConfiguration {
               clientSettingsBuilder.searchEntriesSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.searchEntriesSettings().setRetrySettings(searchEntriesRetrySettings);
 
+      RetrySettings getMetadataJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMetadataJobSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getMetadataJobSettings().setRetrySettings(getMetadataJobRetrySettings);
+
+      RetrySettings listMetadataJobsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMetadataJobsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listMetadataJobsSettings()
+          .setRetrySettings(listMetadataJobsRetrySettings);
+
+      RetrySettings cancelMetadataJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.cancelMetadataJobSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .cancelMetadataJobSettings()
+          .setRetrySettings(cancelMetadataJobRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -378,6 +397,45 @@ public class CatalogServiceSpringAutoConfiguration {
       clientSettingsBuilder.searchEntriesSettings().setRetrySettings(searchEntriesRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for searchEntries from properties.");
+      }
+    }
+    Retry getMetadataJobRetry = clientProperties.getGetMetadataJobRetry();
+    if (getMetadataJobRetry != null) {
+      RetrySettings getMetadataJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMetadataJobSettings().getRetrySettings(),
+              getMetadataJobRetry);
+      clientSettingsBuilder.getMetadataJobSettings().setRetrySettings(getMetadataJobRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getMetadataJob from properties.");
+      }
+    }
+    Retry listMetadataJobsRetry = clientProperties.getListMetadataJobsRetry();
+    if (listMetadataJobsRetry != null) {
+      RetrySettings listMetadataJobsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMetadataJobsSettings().getRetrySettings(),
+              listMetadataJobsRetry);
+      clientSettingsBuilder
+          .listMetadataJobsSettings()
+          .setRetrySettings(listMetadataJobsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listMetadataJobs from properties.");
+      }
+    }
+    Retry cancelMetadataJobRetry = clientProperties.getCancelMetadataJobRetry();
+    if (cancelMetadataJobRetry != null) {
+      RetrySettings cancelMetadataJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.cancelMetadataJobSettings().getRetrySettings(),
+              cancelMetadataJobRetry);
+      clientSettingsBuilder
+          .cancelMetadataJobSettings()
+          .setRetrySettings(cancelMetadataJobRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for cancelMetadataJob from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

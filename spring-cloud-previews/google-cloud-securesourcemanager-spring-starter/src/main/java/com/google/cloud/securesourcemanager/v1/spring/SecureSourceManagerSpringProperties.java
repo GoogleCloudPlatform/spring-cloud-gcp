@@ -78,6 +78,16 @@ public class SecureSourceManagerSpringProperties implements CredentialsSupplier 
    */
   @NestedConfigurationProperty private Retry testIamPermissionsRepoRetry;
   /**
+   * Allow override of retry settings at method-level for listBranchRules. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listBranchRulesRetry;
+  /**
+   * Allow override of retry settings at method-level for getBranchRule. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getBranchRuleRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -194,6 +204,22 @@ public class SecureSourceManagerSpringProperties implements CredentialsSupplier 
 
   public void setTestIamPermissionsRepoRetry(Retry testIamPermissionsRepoRetry) {
     this.testIamPermissionsRepoRetry = testIamPermissionsRepoRetry;
+  }
+
+  public Retry getListBranchRulesRetry() {
+    return this.listBranchRulesRetry;
+  }
+
+  public void setListBranchRulesRetry(Retry listBranchRulesRetry) {
+    this.listBranchRulesRetry = listBranchRulesRetry;
+  }
+
+  public Retry getGetBranchRuleRetry() {
+    return this.getBranchRuleRetry;
+  }
+
+  public void setGetBranchRuleRetry(Retry getBranchRuleRetry) {
+    this.getBranchRuleRetry = getBranchRuleRetry;
   }
 
   public Retry getListLocationsRetry() {
