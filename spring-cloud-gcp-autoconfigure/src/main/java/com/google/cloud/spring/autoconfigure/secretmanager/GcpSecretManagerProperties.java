@@ -21,6 +21,7 @@ import static com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManag
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.GcpScope;
+import java.util.Optional;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -42,6 +43,13 @@ public class GcpSecretManagerProperties implements CredentialsSupplier {
    * Overrides the GCP Project ID specified in the Core module.
    */
   private String projectId;
+
+  /**
+   * Defines the region of the secrets when Regional Stack is used.
+   *
+   * <p>When not specified, the secret manager will use the Global Stack.
+   */
+  private Optional<String> location = Optional.empty();
 
   /**
    * Whether the secret manager will allow a default secret value when accessing a non-existing
@@ -70,5 +78,13 @@ public class GcpSecretManagerProperties implements CredentialsSupplier {
 
   public void setAllowDefaultSecret(boolean allowDefaultSecret) {
     this.allowDefaultSecret = allowDefaultSecret;
+  }
+
+  public Optional<String> getLocation() {
+    return location;
+  }
+
+  public void setLocation(String location) {
+    this.location = Optional.ofNullable(location).filter(loc -> !loc.isEmpty());
   }
 }
