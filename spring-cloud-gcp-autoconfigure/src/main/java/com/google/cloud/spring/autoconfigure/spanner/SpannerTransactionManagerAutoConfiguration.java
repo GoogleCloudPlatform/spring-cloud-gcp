@@ -28,6 +28,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.TransactionManager;
 
 /**
  * Auto-configuration for {@link SpannerTransactionManager}.
@@ -65,7 +66,7 @@ public class SpannerTransactionManagerAutoConfiguration {
       SpannerTransactionManager transactionManager =
           new SpannerTransactionManager(this.databaseClientProvider);
       if (this.transactionManagerCustomizers != null) {
-        this.transactionManagerCustomizers.customize(transactionManager);
+        this.transactionManagerCustomizers.customize((TransactionManager) transactionManager);
       }
       return transactionManager;
     }
