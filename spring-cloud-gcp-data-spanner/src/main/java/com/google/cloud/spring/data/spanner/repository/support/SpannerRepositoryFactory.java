@@ -27,6 +27,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.expression.BeanFactoryAccessor;
 import org.springframework.context.expression.BeanFactoryResolver;
+import org.springframework.data.expression.ValueEvaluationContextProvider;
 import org.springframework.data.mapping.MappingException;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.RepositoryInformation;
@@ -36,6 +37,8 @@ import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryLookupStrategy.Key;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.repository.query.QueryMethodValueEvaluationContextAccessor;
+import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.data.spel.ExpressionDependencies;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -101,47 +104,48 @@ public class SpannerRepositoryFactory extends RepositoryFactorySupport
 
   @Override
   protected Optional<QueryLookupStrategy> getQueryLookupStrategy(
-      @Nullable Key key, QueryMethodEvaluationContextProvider evaluationContextProvider) {
+      @Nullable Key key, ValueExpressionDelegate valueExpressionDelegate) {
 
     return Optional.of(
         new SpannerQueryLookupStrategy(
             this.spannerMappingContext,
             this.spannerTemplate,
-            delegateContextProvider(evaluationContextProvider),
+            valueExpressionDelegate,
             EXPRESSION_PARSER));
   }
 
   private QueryMethodEvaluationContextProvider delegateContextProvider(
-      QueryMethodEvaluationContextProvider evaluationContextProvider) {
-    return new QueryMethodEvaluationContextProvider() {
-      @Override
-      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
-          T parameters, Object[] parameterValues) {
-        StandardEvaluationContext evaluationContext =
-            (StandardEvaluationContext)
-                evaluationContextProvider.getEvaluationContext(parameters, parameterValues);
-        evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
-        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
-        evaluationContext.setBeanResolver(
-            new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
-        return evaluationContext;
-      }
-
-      @Override
-      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
-          T parameters, Object[] parameterValues, ExpressionDependencies expressionDependencies) {
-        StandardEvaluationContext evaluationContext =
-            (StandardEvaluationContext)
-                evaluationContextProvider.getEvaluationContext(
-                    parameters, parameterValues, expressionDependencies);
-
-        evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
-        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
-        evaluationContext.setBeanResolver(
-            new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
-        return evaluationContext;
-      }
-    };
+      ValueExpressionDelegate evaluationContextProvider) {
+    return null;
+//    return new QueryMethodEvaluationContextProvider() {
+//      @Override
+//      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
+//          T parameters, Object[] parameterValues) {
+//        StandardEvaluationContext evaluationContext =
+//            (StandardEvaluationContext)
+//                evaluationContextProvider.getEvaluationContext(parameters, parameterValues);
+//        evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
+//        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
+//        evaluationContext.setBeanResolver(
+//            new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
+//        return evaluationContext;
+//      }
+//
+//      @Override
+//      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
+//          T parameters, Object[] parameterValues, ExpressionDependencies expressionDependencies) {
+//        StandardEvaluationContext evaluationContext =
+//            (StandardEvaluationContext)
+//                evaluationContextProvider.getEvaluationContext(
+//                    parameters, parameterValues, expressionDependencies);
+//
+//        evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
+//        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
+//        evaluationContext.setBeanResolver(
+//            new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
+//        return evaluationContext;
+//      }
+//    };
   }
 
   @Override

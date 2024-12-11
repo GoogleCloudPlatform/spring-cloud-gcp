@@ -50,6 +50,7 @@ import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /** Tests Spanner Query Method lookups. */
@@ -63,7 +64,7 @@ class SpannerQueryLookupStrategyTests {
 
   private SpannerQueryLookupStrategy spannerQueryLookupStrategy;
 
-  private QueryMethodEvaluationContextProvider evaluationContextProvider;
+  private ValueExpressionDelegate valueExpressionDelegate;
 
   private SpelExpressionParser spelExpressionParser;
 
@@ -73,7 +74,7 @@ class SpannerQueryLookupStrategyTests {
     this.spannerMappingContext = new SpannerMappingContext();
     this.spannerTemplate = mock(SpannerTemplate.class);
     this.queryMethod = mock(SpannerQueryMethod.class);
-    this.evaluationContextProvider = mock(QueryMethodEvaluationContextProvider.class);
+    this.valueExpressionDelegate = mock(ValueExpressionDelegate.class);
     this.spelExpressionParser = new SpelExpressionParser();
     this.spannerQueryLookupStrategy = getSpannerQueryLookupStrategy();
 
@@ -150,7 +151,7 @@ class SpannerQueryLookupStrategyTests {
             new SpannerQueryLookupStrategy(
                 this.spannerMappingContext,
                 this.spannerTemplate,
-                this.evaluationContextProvider,
+                this.valueExpressionDelegate,
                 this.spelExpressionParser));
     doReturn(Object.class).when(spannerQueryLookupStrategy).getEntityType(any());
     doReturn(null).when(spannerQueryLookupStrategy).createPartTreeSpannerQuery(any(), any());
