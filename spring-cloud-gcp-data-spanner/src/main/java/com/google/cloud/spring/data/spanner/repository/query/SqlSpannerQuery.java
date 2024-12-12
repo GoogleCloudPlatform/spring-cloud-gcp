@@ -159,9 +159,8 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     StringBuilder sb = new StringBuilder();
     Map<Object, String> valueToTag = new HashMap<>();
     int tagNum = 0;
-    EvaluationContext evaluationContext =
-        this.valueExpressionDelegate.createValueContextProvider(
-            this.queryMethod.getParameters()).getEvaluationContext(this).getEvaluationContext();
+    EvaluationContext evaluationContext = this.valueExpressionDelegate.getEvaluationContextAccessor().create(this.queryMethod.getParameters())
+            .getEvaluationContext(queryTagValue.rawParams).getEvaluationContext();
     for (Expression expression : expressions) {
       if (expression instanceof LiteralExpression) {
         sb.append(expression.getValue(String.class));
