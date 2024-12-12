@@ -54,7 +54,7 @@ public class SpannerQueryLookupStrategy implements QueryLookupStrategy {
       SpelExpressionParser expressionParser) {
     Assert.notNull(spannerMappingContext, "A valid SpannerMappingContext is required.");
     Assert.notNull(spannerTemplate, "A valid SpannerTemplate is required.");
-    Assert.notNull(valueExpressionDelegate, "A valid EvaluationContextProvider is required.");
+    Assert.notNull(valueExpressionDelegate, "A valid ValueExpressionDelegate is required.");
     Assert.notNull(expressionParser, "A valid SpelExpressionParser is required.");
     this.spannerMappingContext = spannerMappingContext;
     this.valueExpressionDelegate = valueExpressionDelegate;

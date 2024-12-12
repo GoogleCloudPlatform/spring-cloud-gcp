@@ -66,7 +66,7 @@ public class SpannerTransactionManagerAutoConfiguration {
       SpannerTransactionManager transactionManager =
           new SpannerTransactionManager(this.databaseClientProvider);
       if (this.transactionManagerCustomizers != null) {
-        this.transactionManagerCustomizers.customize((TransactionManager) transactionManager);
+        this.transactionManagerCustomizers.customize(transactionManager);
       }
       return transactionManager;
     }
