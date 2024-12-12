@@ -64,6 +64,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -83,7 +84,7 @@ class GqlDatastoreQueryTests {
 
   private DatastoreQueryMethod queryMethod;
 
-  private QueryMethodEvaluationContextProvider evaluationContextProvider;
+  private ValueExpressionDelegate valueExpressionDelegate;
 
   @BeforeEach
   void initMocks() {
@@ -96,7 +97,7 @@ class GqlDatastoreQueryTests {
     when(this.datastoreTemplate.getDatastoreEntityConverter())
         .thenReturn(this.datastoreEntityConverter);
     when(this.datastoreEntityConverter.getConversions()).thenReturn(this.readWriteConversions);
-    this.evaluationContextProvider = mock(QueryMethodEvaluationContextProvider.class);
+    this.valueExpressionDelegate = mock(ValueExpressionDelegate.class);
   }
 
   private GqlDatastoreQuery<Trade> createQuery(
@@ -108,7 +109,7 @@ class GqlDatastoreQueryTests {
                 this.queryMethod,
                 this.datastoreTemplate,
                 gql,
-                this.evaluationContextProvider,
+                this.valueExpressionDelegate,
                 this.datastoreMappingContext));
     doReturn(isPageQuery).when(spy).isPageQuery();
     doReturn(isSliceQuery).when(spy).isSliceQuery();
@@ -170,10 +171,10 @@ class GqlDatastoreQueryTests {
     for (int i = 0; i < paramVals.length; i++) {
       evaluationContext.setVariable(paramNames[i], paramVals[i]);
     }
-    when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
-        .thenReturn(evaluationContext);
-    when(this.evaluationContextProvider.getEvaluationContext(any(), any(), any()))
-        .thenReturn(evaluationContext);
+//    when(this.valueExpressionDelegate.getEvaluationContext(any(), any()))
+//        .thenReturn(evaluationContext);
+//    when(this.valueExpressionDelegate.getEvaluationContext(any(), any(), any()))
+//        .thenReturn(evaluationContext);
 
     GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, false, false);
 

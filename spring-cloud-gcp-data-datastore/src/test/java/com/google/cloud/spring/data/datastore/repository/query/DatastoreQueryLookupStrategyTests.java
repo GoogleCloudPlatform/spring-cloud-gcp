@@ -37,6 +37,7 @@ import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.repository.query.ValueExpressionDelegate;
 
 /** Tests for the Query Method lookup class. */
 class DatastoreQueryLookupStrategyTests {
@@ -49,14 +50,14 @@ class DatastoreQueryLookupStrategyTests {
 
   private DatastoreQueryLookupStrategy datastoreQueryLookupStrategy;
 
-  private QueryMethodEvaluationContextProvider evaluationContextProvider;
+  private ValueExpressionDelegate valueExpressionDelegate;
 
   @BeforeEach
   void initMocks() {
     this.datastoreTemplate = mock(DatastoreTemplate.class);
     this.datastoreMappingContext = new DatastoreMappingContext();
     this.queryMethod = mock(DatastoreQueryMethod.class);
-    this.evaluationContextProvider = mock(QueryMethodEvaluationContextProvider.class);
+    this.valueExpressionDelegate = mock(ValueExpressionDelegate.class);
     this.datastoreQueryLookupStrategy = getDatastoreQueryLookupStrategy();
   }
 
@@ -98,7 +99,7 @@ class DatastoreQueryLookupStrategyTests {
             new DatastoreQueryLookupStrategy(
                 this.datastoreMappingContext,
                 this.datastoreTemplate,
-                this.evaluationContextProvider));
+                this.valueExpressionDelegate));
     doReturn(Object.class).when(spannerQueryLookupStrategy).getEntityType(any());
     doReturn(this.queryMethod)
         .when(spannerQueryLookupStrategy)

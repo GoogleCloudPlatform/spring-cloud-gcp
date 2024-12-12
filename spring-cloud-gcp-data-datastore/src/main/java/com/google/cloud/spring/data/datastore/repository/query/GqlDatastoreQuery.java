@@ -56,9 +56,11 @@ import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.ParameterAccessor;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ParametersParameterAccessor;
-import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.SpelEvaluator;
 import org.springframework.data.repository.query.SpelQueryContext;
+import org.springframework.data.repository.query.ValueExpressionDelegate;
+import org.springframework.data.repository.query.ValueExpressionQueryRewriter;
+import org.springframework.expression.spel.standard.SpelCompiler;
 import org.springframework.util.StringUtils;
 
 /**
@@ -82,9 +84,9 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 
   private List<String> originalParamTags;
 
-  private QueryMethodEvaluationContextProvider evaluationContextProvider;
+  private final ValueExpressionDelegate valueExpressionDelegate;
 
-  private SpelQueryContext.EvaluatingSpelQueryContext evaluatingSpelQueryContext;
+  private ValueExpressionQueryRewriter.EvaluatingValueExpressionQueryRewriter valueExpressionQueryRewriter;
 
   /**
    * Constructor.
@@ -93,7 +95,7 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
    * @param queryMethod the underlying query method to support.
    * @param datastoreTemplate used for executing queries.
    * @param gql the query text.
-   * @param evaluationContextProvider the provider used to evaluate SpEL expressions in queries.
+   * @param valueExpressionDelegate the provider used to evaluate SpEL expressions in queries.
    * @param datastoreMappingContext used for getting metadata about entities.
    */
   public GqlDatastoreQuery(
@@ -101,10 +103,10 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
       DatastoreQueryMethod queryMethod,
       DatastoreOperations datastoreTemplate,
       String gql,
-      QueryMethodEvaluationContextProvider evaluationContextProvider,
+      ValueExpressionDelegate valueExpressionDelegate,
       DatastoreMappingContext datastoreMappingContext) {
     super(queryMethod, datastoreTemplate, datastoreMappingContext, type);
-    this.evaluationContextProvider = evaluationContextProvider;
+    this.valueExpressionDelegate = valueExpressionDelegate;
     this.originalGql = StringUtils.trimTrailingCharacter(gql.trim(), ';');
     setOriginalParamTags();
     setEvaluatingSpelQueryContext();
@@ -314,20 +316,17 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 
   private void setEvaluatingSpelQueryContext() {
     Set<String> originalTags = new HashSet<>(GqlDatastoreQuery.this.originalParamTags);
-
-    GqlDatastoreQuery.this.evaluatingSpelQueryContext =
-        SpelQueryContext.of(
-                (counter, spelExpression) -> {
-                  String newTag;
-                  do {
-                    counter++;
-                    newTag = "@SpELtag" + counter;
-                  } while (originalTags.contains(newTag));
-                  originalTags.add(newTag);
-                  return newTag;
-                },
-                (prefix, newTag) -> newTag)
-            .withEvaluationContextProvider(GqlDatastoreQuery.this.evaluationContextProvider);
+    GqlDatastoreQuery.this.valueExpressionQueryRewriter = ValueExpressionQueryRewriter.of(valueExpressionDelegate,
+            (counter, spelExpression) -> {
+              String newTag;
+              do {
+                counter++;
+                newTag = "@SpELtag" + counter;
+              } while (originalTags.contains(newTag));
+              originalTags.add(newTag);
+              return newTag;
+            }, String::concat)
+            .withEvaluationContextAccessor(valueExpressionDelegate.getEvaluationContextAccessor());
   }
 
   // Convenience class to hold a grouping of GQL, tags, and parameter values.
@@ -360,8 +359,8 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
       this.rawParams = rawParams;
       this.tagsOrdered = new ArrayList<>(initialTags);
 
-      SpelEvaluator spelEvaluator =
-          GqlDatastoreQuery.this.evaluatingSpelQueryContext.parse(
+      ValueExpressionQueryRewriter.QueryExpressionEvaluator spelEvaluator =
+          GqlDatastoreQuery.this.valueExpressionQueryRewriter.parse(
               GqlDatastoreQuery.this.gqlResolvedEntityClassName,
               GqlDatastoreQuery.this.queryMethod.getParameters());
       Map<String, Object> results = spelEvaluator.evaluate(this.rawParams);

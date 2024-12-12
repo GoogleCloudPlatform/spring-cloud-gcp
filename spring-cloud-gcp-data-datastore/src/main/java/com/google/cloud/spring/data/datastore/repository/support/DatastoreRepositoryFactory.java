@@ -36,6 +36,7 @@ import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryLookupStrategy.Key;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.data.spel.ExpressionDependencies;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -98,51 +99,17 @@ public class DatastoreRepositoryFactory extends RepositoryFactorySupport
 
   @Override
   protected Optional<QueryLookupStrategy> getQueryLookupStrategy(
-      @Nullable Key key, QueryMethodEvaluationContextProvider evaluationContextProvider) {
+      @Nullable Key key, ValueExpressionDelegate valueExpressionDelegate) {
 
     return Optional.of(
         new DatastoreQueryLookupStrategy(
             this.datastoreMappingContext,
             this.datastoreOperations,
-            delegateContextProvider(evaluationContextProvider)));
+            valueExpressionDelegate));
   }
 
   @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
-  }
-
-  private QueryMethodEvaluationContextProvider delegateContextProvider(
-      QueryMethodEvaluationContextProvider evaluationContextProvider) {
-
-    return new QueryMethodEvaluationContextProvider() {
-      @Override
-      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
-          T parameters, Object[] parameterValues) {
-        StandardEvaluationContext evaluationContext =
-            (StandardEvaluationContext)
-                evaluationContextProvider.getEvaluationContext(parameters, parameterValues);
-        evaluationContext.setRootObject(DatastoreRepositoryFactory.this.applicationContext);
-        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
-        evaluationContext.setBeanResolver(
-            new BeanFactoryResolver(DatastoreRepositoryFactory.this.applicationContext));
-        return evaluationContext;
-      }
-
-      @Override
-      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
-          T parameters, Object[] parameterValues, ExpressionDependencies expressionDependencies) {
-        StandardEvaluationContext evaluationContext =
-            (StandardEvaluationContext)
-                evaluationContextProvider.getEvaluationContext(
-                    parameters, parameterValues, expressionDependencies);
-
-        evaluationContext.setRootObject(DatastoreRepositoryFactory.this.applicationContext);
-        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
-        evaluationContext.setBeanResolver(
-            new BeanFactoryResolver(DatastoreRepositoryFactory.this.applicationContext));
-        return evaluationContext;
-      }
-    };
   }
 }
