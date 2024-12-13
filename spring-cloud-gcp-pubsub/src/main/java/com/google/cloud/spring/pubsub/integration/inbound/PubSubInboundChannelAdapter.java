@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.pubsub.integration.inbound;
 
-import com.fasterxml.jackson.databind.util.ExceptionUtil;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
