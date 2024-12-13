@@ -114,7 +114,8 @@ public final class SpannerStatementQueryExecutor {
       // query.
       // They are processed separately in applySort and buildLimit methods.
       if (param.getType() != Pageable.class && param.getType() != Sort.class) {
-        paramMetadataMap.put(sqlStringAndPlaceholders.getPlaceholders().get(nextPlaceholderIdx++), param);
+        paramMetadataMap.put(
+            sqlStringAndPlaceholders.getPlaceholders().get(nextPlaceholderIdx++), param);
       }
     }
     return paramMetadataMap;

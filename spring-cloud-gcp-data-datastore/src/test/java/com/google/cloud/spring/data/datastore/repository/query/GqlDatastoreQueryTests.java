@@ -105,7 +105,8 @@ class GqlDatastoreQueryTests {
         .thenReturn(this.datastoreEntityConverter);
     when(this.datastoreEntityConverter.getConversions()).thenReturn(this.readWriteConversions);
     this.valueExpressionDelegate = mock(ValueExpressionDelegate.class);
-    when(valueExpressionDelegate.getEvaluationContextAccessor()).thenReturn(mock(QueryMethodValueEvaluationContextAccessor.class));
+    when(valueExpressionDelegate.getEvaluationContextAccessor())
+        .thenReturn(mock(QueryMethodValueEvaluationContextAccessor.class));
   }
 
   private GqlDatastoreQuery<Trade> createQuery(

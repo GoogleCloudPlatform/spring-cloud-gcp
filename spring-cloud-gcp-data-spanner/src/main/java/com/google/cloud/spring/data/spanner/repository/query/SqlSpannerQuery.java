@@ -159,8 +159,12 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     StringBuilder sb = new StringBuilder();
     Map<Object, String> valueToTag = new HashMap<>();
     int tagNum = 0;
-    EvaluationContext evaluationContext = this.valueExpressionDelegate.getEvaluationContextAccessor().create(this.queryMethod.getParameters())
-            .getEvaluationContext(queryTagValue.rawParams).getEvaluationContext();
+    EvaluationContext evaluationContext =
+        this.valueExpressionDelegate
+            .getEvaluationContextAccessor()
+            .create(this.queryMethod.getParameters())
+            .getEvaluationContext(queryTagValue.rawParams)
+            .getEvaluationContext();
     for (Expression expression : expressions) {
       if (expression instanceof LiteralExpression) {
         sb.append(expression.getValue(String.class));
@@ -240,11 +244,13 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
       return this.spannerTemplate.query(
           struct -> new StructAccessor(struct).getSingleValue(0), statement, spannerQueryOptions);
     }
-    // check if returnedType is a field annotated as json or is inner-type of a field annotated as json
+    // check if returnedType is a field annotated as json or is inner-type of a field annotated as
+    // json
     if (isJsonFieldType(returnedType)) {
       return this.spannerTemplate.query(
-          struct -> new StructAccessor(struct,
-              this.spannerMappingContext.getGson()).getJsonValue(0, returnedType),
+          struct ->
+              new StructAccessor(struct, this.spannerMappingContext.getGson())
+                  .getJsonValue(0, returnedType),
           statement,
           spannerQueryOptions);
     }

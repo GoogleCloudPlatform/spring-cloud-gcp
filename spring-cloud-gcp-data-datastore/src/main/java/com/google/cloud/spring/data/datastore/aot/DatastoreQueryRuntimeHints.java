@@ -30,8 +30,7 @@ public class DatastoreQueryRuntimeHints implements RuntimeHintsRegistrar {
     hints
         .reflection()
         .registerTypes(
-            Arrays.asList(
-                TypeReference.of(DatastorePageable.class)),
+            Arrays.asList(TypeReference.of(DatastorePageable.class)),
             hint ->
                 hint.withMembers(
                     MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,

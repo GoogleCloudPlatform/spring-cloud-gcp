@@ -175,7 +175,11 @@ class SpannerSchemaUtilsTests {
     assertColumnDdl(
         JsonColumn.class, null, "jsonCol", Type.Code.JSON, OptionalLong.empty(), "jsonCol JSON");
     assertColumnDdl(
-        List.class, JsonColumn.class, "arrayJsonCol", Type.Code.JSON, OptionalLong.empty(),
+        List.class,
+        JsonColumn.class,
+        "arrayJsonCol",
+        Type.Code.JSON,
+        OptionalLong.empty(),
         "arrayJsonCol ARRAY<JSON>");
   }
 

@@ -176,7 +176,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
     return entities;
   }
 
-  private <T> void insertOrSaveEntities(Iterable<T> iterable, Key[] ancestors, Consumer<FullEntity<?>[]> consumer) {
+  private <T> void insertOrSaveEntities(
+      Iterable<T> iterable, Key[] ancestors, Consumer<FullEntity<?>[]> consumer) {
     List<T> instances;
     if (iterable instanceof List) {
       instances = (List<T>) iterable;
@@ -255,16 +256,17 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
   @Override
   public long count(Class<?> entityClass) {
-    KeyQuery baseQuery = Query.newKeyQueryBuilder()
-        .setKind(getPersistentEntity(entityClass).kindName())
-        .build();
+    KeyQuery baseQuery =
+        Query.newKeyQueryBuilder().setKind(getPersistentEntity(entityClass).kindName()).build();
 
-    AggregationQuery countAggregationQuery = Query.newAggregationQueryBuilder()
-        .over(baseQuery)
-        .addAggregation(Aggregation.count().as("total_count"))
-        .build();
+    AggregationQuery countAggregationQuery =
+        Query.newAggregationQueryBuilder()
+            .over(baseQuery)
+            .addAggregation(Aggregation.count().as("total_count"))
+            .build();
 
-    AggregationResults aggregationResults = getDatastoreReadWriter().runAggregation(countAggregationQuery);
+    AggregationResults aggregationResults =
+        getDatastoreReadWriter().runAggregation(countAggregationQuery);
     maybeEmitEvent(new AfterQueryEvent(aggregationResults, countAggregationQuery));
     AggregationResult aggregationResult = Iterables.getOnlyElement(aggregationResults);
     return aggregationResult.get("total_count");

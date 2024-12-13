@@ -28,8 +28,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  * @param <I> the id type of the entity
  * @since 1.1
  */
-public interface SpannerRepository<T, I> extends PagingAndSortingRepository<T, I>,
-    CrudRepository<T, I> {
+public interface SpannerRepository<T, I>
+    extends PagingAndSortingRepository<T, I>, CrudRepository<T, I> {
 
   /**
    * Gets a {@link SpannerOperations}, which allows more-direct access to Google Cloud Spanner

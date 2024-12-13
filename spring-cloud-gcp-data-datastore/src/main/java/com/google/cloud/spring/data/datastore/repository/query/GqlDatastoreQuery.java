@@ -56,11 +56,8 @@ import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.ParameterAccessor;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ParametersParameterAccessor;
-import org.springframework.data.repository.query.SpelEvaluator;
-import org.springframework.data.repository.query.SpelQueryContext;
 import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.data.repository.query.ValueExpressionQueryRewriter;
-import org.springframework.expression.spel.standard.SpelCompiler;
 import org.springframework.util.StringUtils;
 
 /**
@@ -86,7 +83,8 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 
   private final ValueExpressionDelegate valueExpressionDelegate;
 
-  private ValueExpressionQueryRewriter.EvaluatingValueExpressionQueryRewriter valueExpressionQueryRewriter;
+  private ValueExpressionQueryRewriter.EvaluatingValueExpressionQueryRewriter
+      valueExpressionQueryRewriter;
 
   /**
    * Constructor.
@@ -316,16 +314,19 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 
   private void setEvaluatingSpelQueryContext() {
     Set<String> originalTags = new HashSet<>(GqlDatastoreQuery.this.originalParamTags);
-    GqlDatastoreQuery.this.valueExpressionQueryRewriter = ValueExpressionQueryRewriter.of(valueExpressionDelegate,
-            (counter, spelExpression) -> {
-              String newTag;
-              do {
-                counter++;
-                newTag = "@SpELtag" + counter;
-              } while (originalTags.contains(newTag));
-              originalTags.add(newTag);
-              return newTag;
-            }, String::concat)
+    GqlDatastoreQuery.this.valueExpressionQueryRewriter =
+        ValueExpressionQueryRewriter.of(
+                valueExpressionDelegate,
+                (counter, spelExpression) -> {
+                  String newTag;
+                  do {
+                    counter++;
+                    newTag = "@SpELtag" + counter;
+                  } while (originalTags.contains(newTag));
+                  originalTags.add(newTag);
+                  return newTag;
+                },
+                String::concat)
             .withEvaluationContextAccessor(valueExpressionDelegate.getEvaluationContextAccessor());
   }
 

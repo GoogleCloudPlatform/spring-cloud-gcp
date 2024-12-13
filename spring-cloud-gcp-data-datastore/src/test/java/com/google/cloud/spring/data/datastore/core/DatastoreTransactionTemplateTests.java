@@ -144,18 +144,20 @@ class DatastoreTransactionTemplateTests {
   void unsupportedIsolationTest() {
 
     assertThatThrownBy(() -> this.transactionalService.doNothingUnsupportedIsolation())
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("DatastoreTransactionManager supports only "
-                    + "isolation level TransactionDefinition.ISOLATION_DEFAULT or ISOLATION_SERIALIZABLE");
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage(
+            "DatastoreTransactionManager supports only "
+                + "isolation level TransactionDefinition.ISOLATION_DEFAULT or ISOLATION_SERIALIZABLE");
   }
 
   @Test
   void unsupportedPropagationTest() {
 
     assertThatThrownBy(() -> this.transactionalService.doNothingUnsupportedPropagation())
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("DatastoreTransactionManager supports only "
-                    + "propagation behavior TransactionDefinition.PROPAGATION_REQUIRED");
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage(
+            "DatastoreTransactionManager supports only "
+                + "propagation behavior TransactionDefinition.PROPAGATION_REQUIRED");
   }
 
   /** Spring config for the tests. */

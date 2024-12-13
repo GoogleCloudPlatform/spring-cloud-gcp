@@ -210,25 +210,25 @@ class SpannerTemplateTransactionManagerTests {
   @Test
   void readOnlySaveTest() {
     assertThatThrownBy(() -> this.transactionalService.writingInReadOnly(new TestEntity()))
-            .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
+        .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
   }
 
   @Test
   void readOnlyDeleteTest() {
     assertThatThrownBy(() -> this.transactionalService.deleteInReadOnly(new TestEntity()))
-            .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
+        .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
   }
 
   @Test
   void readOnlyDmlTest() {
     assertThatThrownBy(() -> this.transactionalService.dmlInReadOnly())
-            .hasMessage("Spanner transaction cannot execute DML because it is in readonly mode");
+        .hasMessage("Spanner transaction cannot execute DML because it is in readonly mode");
   }
 
   @Test
   void partitionedDmlInTransactionTest() {
     assertThatThrownBy(() -> this.transactionalService.partitionedDmlInTransaction())
-            .hasMessage("Cannot execute partitioned DML in a transaction.");
+        .hasMessage("Cannot execute partitioned DML in a transaction.");
   }
 
   /** Spring config for the tests. */

@@ -152,6 +152,7 @@ public interface TradeRepository extends SpannerRepository<Trade, Key> {
   @NonNull
   Trade getByAction(String s);
 
-  @Query("SELECT symbol from :com.google.cloud.spring.data.spanner.test.domain.Trade: where id = @id")
+  @Query(
+      "SELECT symbol from :com.google.cloud.spring.data.spanner.test.domain.Trade: where id = @id")
   Optional<String> getSymbolById(@Param("id") String id);
 }

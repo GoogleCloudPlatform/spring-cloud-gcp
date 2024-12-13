@@ -59,7 +59,7 @@ public class DatastoreAuditingRegistrar extends AuditingBeanDefinitionRegistrarS
       AuditingConfiguration configuration) {
     return configureDefaultAuditHandlerAttributes(
             configuration, BeanDefinitionBuilder.rootBeanDefinition(AuditingHandler.class))
-            .addConstructorArgValue(PersistentEntities.of(new DatastoreMappingContext()));
+        .addConstructorArgValue(PersistentEntities.of(new DatastoreMappingContext()));
   }
 
   @Override

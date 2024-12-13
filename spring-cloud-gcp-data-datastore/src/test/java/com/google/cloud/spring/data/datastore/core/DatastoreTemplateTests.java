@@ -584,8 +584,7 @@ class DatastoreTemplateTests {
             datastorePutOrAddAll(method, ArgumentMatchers.<FullEntity[]>any()),
             Collections.singletonList(this.e1));
 
-    assertThat(saveOrInsert(method, referenceTestEntity))
-        .isInstanceOf(ReferenceTestEntity.class);
+    assertThat(saveOrInsert(method, referenceTestEntity)).isInstanceOf(ReferenceTestEntity.class);
 
     Entity writtenEntity = Entity.newBuilder(this.key1).set("sibling", this.key1).build();
 
@@ -642,23 +641,24 @@ class DatastoreTemplateTests {
     Entity writtenChildEntity7 = Entity.newBuilder(this.childKey7).build();
 
     when(datastorePutOrAddAll(method, ArgumentMatchers.<FullEntity[]>any()))
-        .thenAnswer(invocation -> {
-          Object[] arguments = invocation.getArguments();
-          assertThat(arguments).contains(writtenEntity);
-          assertThat(arguments).contains(writtenChildEntity2);
-          assertThat(arguments).contains(writtenChildEntity3);
-          assertThat(arguments).contains(writtenChildEntity4);
-          assertThat(arguments).contains(writtenChildEntity5);
-          assertThat(arguments).contains(writtenChildEntity6);
-          if (lazy) {
-            assertThat(arguments).hasSize(6);
-          } else {
-            assertThat(arguments).contains(writtenChildEntity7);
-            assertThat(arguments).hasSize(7);
-          }
+        .thenAnswer(
+            invocation -> {
+              Object[] arguments = invocation.getArguments();
+              assertThat(arguments).contains(writtenEntity);
+              assertThat(arguments).contains(writtenChildEntity2);
+              assertThat(arguments).contains(writtenChildEntity3);
+              assertThat(arguments).contains(writtenChildEntity4);
+              assertThat(arguments).contains(writtenChildEntity5);
+              assertThat(arguments).contains(writtenChildEntity6);
+              if (lazy) {
+                assertThat(arguments).hasSize(6);
+              } else {
+                assertThat(arguments).contains(writtenChildEntity7);
+                assertThat(arguments).hasSize(7);
+              }
 
-          return null;
-        });
+              return null;
+            });
 
     assertThat(saveOrInsert(method, parent)).isInstanceOf(TestEntity.class);
     verifyPutOrAdd(method, times(1));
@@ -702,7 +702,6 @@ class DatastoreTemplateTests {
     assertThatThrownBy(() -> saveOrInsert(method, this.ob1, testKey))
         .isInstanceOf(DatastoreDataException.class)
         .hasMessage("Only Key types are allowed for descendants id");
-
   }
 
   @ParameterizedTest
@@ -787,18 +786,19 @@ class DatastoreTemplateTests {
     Entity writtenChildEntity7 = Entity.newBuilder(this.childKey7).build();
 
     when(datastorePutOrAddAll(method, ArgumentMatchers.<FullEntity[]>any()))
-        .thenAnswer(invocation -> {
-          assertThat(invocation.getArguments())
-              .containsExactlyInAnyOrder(
-                  writtenChildEntity2,
-                  writtenChildEntity3,
-                  writtenChildEntity4,
-                  writtenChildEntity5,
-                  writtenChildEntity6,
-                  writtenEntity1,
-                  writtenChildEntity7);
-          return null;
-        });
+        .thenAnswer(
+            invocation -> {
+              assertThat(invocation.getArguments())
+                  .containsExactlyInAnyOrder(
+                      writtenChildEntity2,
+                      writtenChildEntity3,
+                      writtenChildEntity4,
+                      writtenChildEntity5,
+                      writtenChildEntity6,
+                      writtenEntity1,
+                      writtenChildEntity7);
+              return null;
+            });
 
     assertThat(saveOrInsert(method, this.ob1)).isInstanceOf(TestEntity.class);
     verifyPutOrAdd(method, times(1));
@@ -828,19 +828,20 @@ class DatastoreTemplateTests {
     Entity writtenChildEntity7 = Entity.newBuilder(this.childKey7).build();
 
     when(datastorePutOrAddAll(method, ArgumentMatchers.<FullEntity[]>any()))
-        .thenAnswer(invocation -> {
-          assertThat(invocation.getArguments())
-              .containsExactlyInAnyOrder(
-                  writtenChildEntity2,
-                  writtenChildEntity3,
-                  writtenChildEntity4,
-                  writtenChildEntity5,
-                  writtenChildEntity6,
-                  writtenEntity1,
-                  writtenEntity2,
-                  writtenChildEntity7);
-          return null;
-        });
+        .thenAnswer(
+            invocation -> {
+              assertThat(invocation.getArguments())
+                  .containsExactlyInAnyOrder(
+                      writtenChildEntity2,
+                      writtenChildEntity3,
+                      writtenChildEntity4,
+                      writtenChildEntity5,
+                      writtenChildEntity6,
+                      writtenEntity1,
+                      writtenEntity2,
+                      writtenChildEntity7);
+              return null;
+            });
 
     List<Entity> expected =
         Arrays.asList(
@@ -902,12 +903,13 @@ class DatastoreTemplateTests {
             writtenEntity1,
             writtenEntity2));
     when(datastorePutOrAddAll(method, ArgumentMatchers.<FullEntity[]>any()))
-        .thenAnswer(invocation -> {
-          assertThat(invocation.getArguments()).hasSize(1);
-          assertThat(entities).contains((Entity) invocation.getArguments()[0]);
-          entities.remove(invocation.getArguments()[0]);
-          return null;
-        });
+        .thenAnswer(
+            invocation -> {
+              assertThat(invocation.getArguments()).hasSize(1);
+              assertThat(entities).contains((Entity) invocation.getArguments()[0]);
+              entities.remove(invocation.getArguments()[0]);
+              return null;
+            });
 
     List<Entity> expected =
         Arrays.asList(
@@ -949,8 +951,8 @@ class DatastoreTemplateTests {
     }
   }
 
-  private <T> Iterable<T> saveOrInsertAll(SaveOrInsertMethod method, Iterable<T> entities,
-      Key... ancestors) {
+  private <T> Iterable<T> saveOrInsertAll(
+      SaveOrInsertMethod method, Iterable<T> entities, Key... ancestors) {
     if (SaveOrInsertMethod.SAVE == method) {
       return this.datastoreTemplate.saveAll(entities, ancestors);
     } else {
@@ -975,7 +977,8 @@ class DatastoreTemplateTests {
   }
 
   private enum SaveOrInsertMethod {
-    SAVE, INSERT;
+    SAVE,
+    INSERT;
   }
 
   @Test
@@ -1055,10 +1058,11 @@ class DatastoreTemplateTests {
     when(aggregationResults.iterator()).thenReturn(List.of(aggregationResult).iterator());
 
     KeyQuery baseQuery = Query.newKeyQueryBuilder().setKind("custom_test_kind").build();
-    AggregationQuery countAggregationQuery = Query.newAggregationQueryBuilder()
-        .over(baseQuery)
-        .addAggregation(Aggregation.count().as("total_count"))
-        .build();
+    AggregationQuery countAggregationQuery =
+        Query.newAggregationQueryBuilder()
+            .over(baseQuery)
+            .addAggregation(Aggregation.count().as("total_count"))
+            .build();
 
     when(this.datastore.runAggregation(argThat(equalsTo(countAggregationQuery))))
         .thenReturn(aggregationResults);
@@ -1068,7 +1072,9 @@ class DatastoreTemplateTests {
   private ArgumentMatcher<AggregationQuery> equalsTo(AggregationQuery expectedAggregationQuery) {
     return actualAggregationQuery ->
         expectedAggregationQuery.getAggregations().equals(actualAggregationQuery.getAggregations())
-            && expectedAggregationQuery.getNestedStructuredQuery().equals(actualAggregationQuery.getNestedStructuredQuery());
+            && expectedAggregationQuery
+                .getNestedStructuredQuery()
+                .equals(actualAggregationQuery.getNestedStructuredQuery());
   }
 
   @Test
@@ -1318,10 +1324,11 @@ class DatastoreTemplateTests {
   @Test
   void queryByExampleDeepPathTest() {
 
-    Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnorePaths("intField.a"));
+    Example testExample =
+        Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnorePaths("intField.a"));
     assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-            .hasMessage("Ignored paths deeper than 1 are not supported")
-            .isInstanceOf(DatastoreDataException.class);
+        .hasMessage("Ignored paths deeper than 1 are not supported")
+        .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
@@ -1354,19 +1361,23 @@ class DatastoreTemplateTests {
   @Test
   void queryByExampleExactMatchTest() {
 
-    Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withStringMatcher(ExampleMatcher.StringMatcher.REGEX));
+    Example testExample =
+        Example.of(
+            new SimpleTestEntity(),
+            ExampleMatcher.matching().withStringMatcher(ExampleMatcher.StringMatcher.REGEX));
     assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-            .hasMessage("Unsupported StringMatcher. Only EXACT and DEFAULT are supported")
-            .isInstanceOf(DatastoreDataException.class);
+        .hasMessage("Unsupported StringMatcher. Only EXACT and DEFAULT are supported")
+        .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
   void queryByExampleIgnoreCaseTest() {
 
-    Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnoreCase());
+    Example testExample =
+        Example.of(new SimpleTestEntity(), ExampleMatcher.matching().withIgnoreCase());
     assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-            .hasMessage("Ignore case matching is not supported")
-            .isInstanceOf(DatastoreDataException.class);
+        .hasMessage("Ignore case matching is not supported")
+        .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
@@ -1374,42 +1385,44 @@ class DatastoreTemplateTests {
 
     Example testExample = Example.of(new SimpleTestEntity(), ExampleMatcher.matchingAny());
     assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-            .hasMessage("Unsupported MatchMode. Only MatchMode.ALL is supported")
-            .isInstanceOf(DatastoreDataException.class);
+        .hasMessage("Unsupported MatchMode. Only MatchMode.ALL is supported")
+        .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
   void queryByExamplePropertyMatchersTest() {
 
-    Example testExample = Example.of(
+    Example testExample =
+        Example.of(
             new SimpleTestEntity(),
             ExampleMatcher.matching()
-                    .withMatcher(
-                            "id",
-                            ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.REGEX)));
-    assertThatThrownBy(() ->   this.datastoreTemplate.queryByExample(testExample, null))
-            .hasMessage("Property matchers are not supported")
-            .isInstanceOf(DatastoreDataException.class);
+                .withMatcher(
+                    "id",
+                    ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.REGEX)));
+    assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
+        .hasMessage("Property matchers are not supported")
+        .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
   void queryByExampleCaseSensitiveTest() {
 
-    Example testExample =  Example.of(
+    Example testExample =
+        Example.of(
             new SimpleTestEntity(),
             ExampleMatcher.matching()
-                    .withMatcher("id", ExampleMatcher.GenericPropertyMatcher::caseSensitive));
+                .withMatcher("id", ExampleMatcher.GenericPropertyMatcher::caseSensitive));
     assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(testExample, null))
-            .hasMessage("Property matchers are not supported")
-            .isInstanceOf(DatastoreDataException.class);
+        .hasMessage("Property matchers are not supported")
+        .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
   void queryByExampleNullTest() {
 
     assertThatThrownBy(() -> this.datastoreTemplate.queryByExample(null, null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("A non-null example is expected");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A non-null example is expected");
   }
 
   @Test
@@ -1481,8 +1494,7 @@ class DatastoreTemplateTests {
 
     @Reference LinkedList<ChildEntity> multipleReference;
 
-    @LazyReference
-    List lazyMultipleReference;
+    @LazyReference List lazyMultipleReference;
 
     @Override
     public boolean equals(Object o) {

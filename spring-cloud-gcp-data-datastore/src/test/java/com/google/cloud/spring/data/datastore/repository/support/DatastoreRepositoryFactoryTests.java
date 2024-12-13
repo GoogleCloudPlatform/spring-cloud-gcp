@@ -66,9 +66,10 @@ class DatastoreRepositoryFactoryTests {
         new DatastoreRepositoryFactory(mock(DatastoreMappingContext.class), this.datastoreTemplate);
 
     assertThatThrownBy(() -> factory.getEntityInformation(TestEntity.class))
-            .isInstanceOf(MappingException.class)
-            .hasMessage("Could not lookup mapping metadata for domain class: com.google.cloud.spring.data.datastore.repository.support."
-                    + "DatastoreRepositoryFactoryTests$TestEntity");
+        .isInstanceOf(MappingException.class)
+        .hasMessage(
+            "Could not lookup mapping metadata for domain class: com.google.cloud.spring.data.datastore.repository.support."
+                + "DatastoreRepositoryFactoryTests$TestEntity");
   }
 
   @Test

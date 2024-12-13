@@ -35,8 +35,8 @@ class SpannerReadOptionsTests {
   void addNullReadOptionTest() {
     SpannerReadOptions testSpannerReadOptions = new SpannerReadOptions();
     assertThatThrownBy(() -> testSpannerReadOptions.addReadOption(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Valid read option is required!");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Valid read option is required!");
   }
 
   @Test
@@ -64,8 +64,8 @@ class SpannerReadOptionsTests {
     ReadOption r1 = mock(ReadOption.class);
     spannerReadOptions.addReadOption(r1);
     assertThatThrownBy(spannerReadOptions::toQueryOptions)
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("Can't convert");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Can't convert");
   }
 
   @Test

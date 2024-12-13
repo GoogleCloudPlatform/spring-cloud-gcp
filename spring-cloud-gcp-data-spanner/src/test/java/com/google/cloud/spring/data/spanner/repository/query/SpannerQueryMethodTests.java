@@ -39,7 +39,8 @@ class SpannerQueryMethodTests {
     this.mockMetadata = mock(RepositoryMetadata.class);
     this.mockProjectionFactory = mock(ProjectionFactory.class);
     doReturn(TypeInformation.fromReturnTypeOf(Example.class.getMethod("someAnnotatedMethod")))
-        .when(mockMetadata).getReturnType(any());
+        .when(mockMetadata)
+        .getReturnType(any());
     doAnswer(a -> String.class).when(mockMetadata).getReturnedDomainClass(any());
   }
 
