@@ -41,7 +41,6 @@ import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.expression.ValueEvaluationContext;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.ParameterAccessor;
