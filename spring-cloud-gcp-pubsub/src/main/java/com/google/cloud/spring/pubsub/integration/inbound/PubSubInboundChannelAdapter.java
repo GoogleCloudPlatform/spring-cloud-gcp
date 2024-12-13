@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.pubsub.integration.inbound;
 
+import com.fasterxml.jackson.databind.util.ExceptionUtil;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
@@ -24,6 +25,8 @@ import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
 import com.google.pubsub.v1.ProjectSubscriptionName;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -179,7 +182,10 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
     } else {
       LOGGER.warn(re.getMessage());
     }
-    LOGGER.warn(re.getStackTrace());
+
+    StringWriter stringWriter = new StringWriter();
+    re.printStackTrace(new PrintWriter(stringWriter));
+    LOGGER.warn(stringWriter.toString());
   }
 
   private void addToHealthRegistry() {
