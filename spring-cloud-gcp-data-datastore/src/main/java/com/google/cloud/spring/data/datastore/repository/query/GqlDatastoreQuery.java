@@ -56,11 +56,8 @@ import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.ParameterAccessor;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ParametersParameterAccessor;
-import org.springframework.data.repository.query.SpelEvaluator;
-import org.springframework.data.repository.query.SpelQueryContext;
 import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.data.repository.query.ValueExpressionQueryRewriter;
-import org.springframework.expression.spel.standard.SpelCompiler;
 import org.springframework.util.StringUtils;
 
 /**

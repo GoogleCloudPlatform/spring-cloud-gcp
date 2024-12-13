@@ -19,8 +19,6 @@ package com.google.cloud.spring.data.spanner.repository.query;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import java.lang.reflect.Method;
-
-import org.springframework.data.expression.ValueEvaluationContextProvider;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryMetadata;
