@@ -34,8 +34,8 @@ class SpannerSortPageQueryOptionsTests {
 
     SpannerQueryOptions testSpannerQueryOptions = new SpannerQueryOptions();
     assertThatThrownBy(() -> testSpannerQueryOptions.addQueryOption(null))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Valid query option is required!");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Valid query option is required!");
   }
 
   @Test

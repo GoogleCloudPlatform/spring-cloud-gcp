@@ -24,7 +24,8 @@ import org.springframework.data.annotation.Id;
 @Entity(name = "A")
 @DiscriminatorField(field = "type")
 public abstract class EntityA {
-  @Id private Key id;
+  @Id
+  private Key id;
 
   public Key getId() {
     return id;

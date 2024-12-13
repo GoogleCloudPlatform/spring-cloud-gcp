@@ -150,13 +150,12 @@ class SpannerMutationFactoryImplTests {
     // throws exception because child entity's id column does not match that of its
     // parent.
     assertThatThrownBy(() -> this.spannerMutationFactory.insert(t))
-        .isInstanceOf(SpannerDataException.class)
-        .hasMessage(
-            "A child entity's common primary key parts with its parent must have the same values."
-                + " Primary key component 1 does not match for entities: class"
-                + " com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$TestEntity"
-                + " class"
-                + " com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$ChildEntity");
+            .isInstanceOf(SpannerDataException.class)
+            .hasMessage("A child entity's common primary key parts with its parent must have the same values."
+                    + " Primary key component 1 does not match for entities: class"
+                    + " com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$TestEntity"
+                    + " class"
+                    + " com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$ChildEntity");
   }
 
   @Test
@@ -287,18 +286,23 @@ class SpannerMutationFactoryImplTests {
 
   @Table
   private static class Parent {
-    @PrimaryKey @Column String keyOne;
+    @PrimaryKey
+    @Column
+    String keyOne;
 
     @PrimaryKey(keyOrder = 2)
     @Column
     Long keyTwo;
 
-    @Interleaved List<Child> children;
+    @Interleaved
+    List<Child> children;
   }
 
   @Table
   private static class Child {
-    @PrimaryKey @Column String keyOne;
+    @PrimaryKey
+    @Column
+    String keyOne;
 
     @PrimaryKey(keyOrder = 2)
     @Column

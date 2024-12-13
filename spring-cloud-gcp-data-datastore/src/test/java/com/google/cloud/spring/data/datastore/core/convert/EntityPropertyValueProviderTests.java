@@ -126,9 +126,8 @@ class EntityPropertyValueProviderTests {
     DatastorePersistentProperty testDpe = this.persistentEntity.getPersistentProperty("boolField");
 
     assertThatThrownBy(() -> provider.getPropertyValue(testDpe))
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessageContaining("Unable to read property boolField")
-        .hasStackTraceContaining(
-            "Unable to convert class java.lang.Long to class java.lang.Boolean");
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessageContaining("Unable to read property boolField")
+            .hasStackTraceContaining("Unable to convert class java.lang.Long to class java.lang.Boolean");
   }
 }

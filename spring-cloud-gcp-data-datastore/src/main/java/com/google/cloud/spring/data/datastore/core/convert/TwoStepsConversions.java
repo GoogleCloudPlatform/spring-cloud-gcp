@@ -138,18 +138,16 @@ public class TwoStepsConversions implements ReadWriteConversions {
     if (val == null) {
       return null;
     }
-    BiFunction<Object, TypeInformation<?>, ?> readConverter =
-        switch (embeddedType) {
-          case EMBEDDED_MAP ->
-              (x, typeInformation) ->
-                  convertOnReadSingleEmbeddedMap(
-                      x,
-                      Objects.requireNonNull(typeInformation.getComponentType()).getType(),
-                      typeInformation.getMapValueType(),
-                      targetComponentType);
-          case EMBEDDED_ENTITY -> this::convertOnReadSingleEmbedded;
-          case NOT_EMBEDDED -> this::convertOnReadSingle;
-        };
+    BiFunction<Object, TypeInformation<?>, ?> readConverter = switch (embeddedType) {
+      case EMBEDDED_MAP -> (x, typeInformation) ->
+          convertOnReadSingleEmbeddedMap(
+              x,
+              Objects.requireNonNull(typeInformation.getComponentType()).getType(),
+              typeInformation.getMapValueType(),
+              targetComponentType);
+      case EMBEDDED_ENTITY -> this::convertOnReadSingleEmbedded;
+      case NOT_EMBEDDED -> this::convertOnReadSingle;
+    };
 
     if (ValueUtil.isCollectionLike(val.getClass())
         && targetCollectionType != null
@@ -193,7 +191,8 @@ public class TwoStepsConversions implements ReadWriteConversions {
       Object value, TypeInformation<?> targetTypeInformation) {
     Assert.notNull(value, "Cannot convert a null value.");
     if (value instanceof BaseEntity<?> baseEntity) {
-      return (T) this.datastoreEntityConverter.read(targetTypeInformation.getType(), baseEntity);
+      return (T)
+          this.datastoreEntityConverter.read(targetTypeInformation.getType(), baseEntity);
     }
     throw new DatastoreDataException(
         "Embedded entity was expected, but " + value.getClass() + " found");
@@ -262,15 +261,12 @@ public class TwoStepsConversions implements ReadWriteConversions {
 
     Function<Object, Value> writeConverter = this::convertOnWriteSingle;
     if (proppertyVal != null) {
-      writeConverter =
-          switch (embeddedType) {
-            case EMBEDDED_MAP ->
-                x ->
-                    convertOnWriteSingleEmbeddedMap(
-                        x, fieldName, typeInformation.getMapValueType());
-            case EMBEDDED_ENTITY -> x -> convertOnWriteSingleEmbedded(x, fieldName);
-            case NOT_EMBEDDED -> this::convertOnWriteSingle;
-          };
+      writeConverter = switch (embeddedType) {
+        case EMBEDDED_MAP -> x -> convertOnWriteSingleEmbeddedMap(x, fieldName,
+            typeInformation.getMapValueType());
+        case EMBEDDED_ENTITY -> x -> convertOnWriteSingleEmbedded(x, fieldName);
+        case NOT_EMBEDDED -> this::convertOnWriteSingle;
+      };
     }
 
     val = ValueUtil.toListIfArray(val);
@@ -293,16 +289,16 @@ public class TwoStepsConversions implements ReadWriteConversions {
       builder = FullEntity.newBuilder();
     } else {
       /* The following does 3 sequential null checks. We only want an ID value if the object isn't null,
-       has an ID property, and the ID property isn't null.
-      */
+        has an ID property, and the ID property isn't null.
+       */
       Optional idProp =
           Optional.ofNullable(val)
               .map(v -> this.datastoreMappingContext.getPersistentEntity(v.getClass()))
               .map(PersistentEntity::getIdProperty)
               .map(
                   id ->
-                      Objects.requireNonNull(
-                              this.datastoreMappingContext.getPersistentEntity(val.getClass()))
+                      Objects.requireNonNull(this.datastoreMappingContext
+                              .getPersistentEntity(val.getClass()))
                           .getPropertyAccessor(val)
                           .getProperty(id));
 
@@ -325,7 +321,8 @@ public class TwoStepsConversions implements ReadWriteConversions {
           for (Map.Entry<?, ?> e : ((Map<?, ?>) val).entrySet()) {
             String field =
                 convertOnReadSingle(
-                    convertOnWriteSingle(e.getKey()).get(), TypeInformation.of(String.class));
+                    convertOnWriteSingle(e.getKey()).get(),
+                    TypeInformation.of(String.class));
             builder.set(
                 field,
                 convertOnWrite(
@@ -415,7 +412,8 @@ public class TwoStepsConversions implements ReadWriteConversions {
     this.datastoreEntityConverter = datastoreEntityConverter;
   }
 
-  private record TypeTargets(Class<?> firstStepTarget, Class<?> secondStepTarget) {
+  private record TypeTargets(Class<?> firstStepTarget,
+                             Class<?> secondStepTarget) {
 
     Class<?> getFirstStepTarget() {
       return this.firstStepTarget;

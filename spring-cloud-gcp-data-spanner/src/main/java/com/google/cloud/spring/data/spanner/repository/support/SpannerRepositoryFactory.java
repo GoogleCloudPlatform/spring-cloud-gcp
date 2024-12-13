@@ -117,36 +117,35 @@ public class SpannerRepositoryFactory extends RepositoryFactorySupport
   private QueryMethodEvaluationContextProvider delegateContextProvider(
       ValueExpressionDelegate evaluationContextProvider) {
     return null;
-    //    return new QueryMethodEvaluationContextProvider() {
-    //      @Override
-    //      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
-    //          T parameters, Object[] parameterValues) {
-    //        StandardEvaluationContext evaluationContext =
-    //            (StandardEvaluationContext)
-    //                evaluationContextProvider.getEvaluationContext(parameters, parameterValues);
-    //        evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
-    //        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
-    //        evaluationContext.setBeanResolver(
-    //            new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
-    //        return evaluationContext;
-    //      }
-    //
-    //      @Override
-    //      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
-    //          T parameters, Object[] parameterValues, ExpressionDependencies
-    // expressionDependencies) {
-    //        StandardEvaluationContext evaluationContext =
-    //            (StandardEvaluationContext)
-    //                evaluationContextProvider.getEvaluationContext(
-    //                    parameters, parameterValues, expressionDependencies);
-    //
-    //        evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
-    //        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
-    //        evaluationContext.setBeanResolver(
-    //            new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
-    //        return evaluationContext;
-    //      }
-    //    };
+//    return new QueryMethodEvaluationContextProvider() {
+//      @Override
+//      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
+//          T parameters, Object[] parameterValues) {
+//        StandardEvaluationContext evaluationContext =
+//            (StandardEvaluationContext)
+//                evaluationContextProvider.getEvaluationContext(parameters, parameterValues);
+//        evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
+//        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
+//        evaluationContext.setBeanResolver(
+//            new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
+//        return evaluationContext;
+//      }
+//
+//      @Override
+//      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
+//          T parameters, Object[] parameterValues, ExpressionDependencies expressionDependencies) {
+//        StandardEvaluationContext evaluationContext =
+//            (StandardEvaluationContext)
+//                evaluationContextProvider.getEvaluationContext(
+//                    parameters, parameterValues, expressionDependencies);
+//
+//        evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
+//        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
+//        evaluationContext.setBeanResolver(
+//            new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
+//        return evaluationContext;
+//      }
+//    };
   }
 
   @Override

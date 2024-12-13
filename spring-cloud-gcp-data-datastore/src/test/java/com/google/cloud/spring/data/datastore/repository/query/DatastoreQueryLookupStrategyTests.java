@@ -87,8 +87,7 @@ class DatastoreQueryLookupStrategyTests {
 
     when(namedQueries.hasQuery(queryName)).thenReturn(true);
     when(namedQueries.getQuery(queryName)).thenReturn(query);
-    when(valueExpressionDelegate.getEvaluationContextAccessor())
-        .thenReturn(mock(QueryMethodValueEvaluationContextAccessor.class));
+    when(valueExpressionDelegate.getEvaluationContextAccessor()).thenReturn(mock(QueryMethodValueEvaluationContextAccessor.class));
 
     this.datastoreQueryLookupStrategy.resolveQuery(null, null, null, namedQueries);
 

@@ -32,6 +32,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /** Tests for converting Spanner keys. */
+
 class KeyConversionTests {
   private final SpannerWriteConverter writeConverter;
 

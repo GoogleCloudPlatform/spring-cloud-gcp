@@ -22,6 +22,7 @@ public class InstantTypeAdapterTest {
     instantTypeAdapter.write(jsonWriter, instant);
 
     assertThat(stringWriter.toString()).isEqualTo("\"1970-01-01T00:00:00Z\"");
+
   }
 
   @Test

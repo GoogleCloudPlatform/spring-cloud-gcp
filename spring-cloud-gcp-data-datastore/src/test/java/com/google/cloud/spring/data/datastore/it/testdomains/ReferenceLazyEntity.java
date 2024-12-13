@@ -34,8 +34,7 @@ public class ReferenceLazyEntity {
 
   @LazyReference public List<ReferenceLazyEntity> children;
 
-  public ReferenceLazyEntity(
-      String name, ReferenceLazyEntity sibling, List<ReferenceLazyEntity> children) {
+  public ReferenceLazyEntity(String name, ReferenceLazyEntity sibling, List<ReferenceLazyEntity> children) {
     this.name = name;
     this.sibling = sibling;
     this.children = children;

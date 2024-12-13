@@ -37,9 +37,9 @@ class SpannerWriteMethodCoverageTests {
       // TODO: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2574
       // Until this is implemented, ignore the new column types by ignoring the methods
       // that have the new column types as a parameter
-      if (Arrays.stream(method.getParameterTypes())
-          .map(Class::getName)
-          .anyMatch(x -> x.contains("ProtocolMessageEnum") || x.contains("AbstractMessage"))) {
+      if (Arrays.stream(method.getParameterTypes()).map(Class::getName)
+              .anyMatch(x -> x.contains("ProtocolMessageEnum")
+                      || x.contains("AbstractMessage"))) {
         continue;
       }
 

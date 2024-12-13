@@ -171,24 +171,26 @@ public class StructAccessor {
     }
     List<String> jsonStringList = this.struct.getJsonList(colName);
     List<T> result = new ArrayList<>();
-    jsonStringList.forEach(item -> result.add(gson.fromJson(item, colType)));
+    jsonStringList.forEach(item ->
+        result.add(gson.fromJson(item, colType)));
     return result;
   }
 
-  public <T> Object getJsonValue(int colIndex, Class<T> colType) {
+  public  <T> Object getJsonValue(int colIndex, Class<T> colType) {
     if (this.struct.getColumnType(colIndex).getCode() != Code.ARRAY) {
       return getSingleJsonValue(colIndex, colType);
     }
     return getListJsonValue(colIndex, colType);
   }
 
-  private <T> List<T> getListJsonValue(int colIndex, Class<T> colType) {
+  private  <T> List<T> getListJsonValue(int colIndex, Class<T> colType) {
     if (this.struct.getColumnType(colIndex).getCode() != Code.ARRAY) {
       throw new SpannerDataException(EXCEPTION_COL_NOT_ARRAY + colIndex);
     }
     List<String> jsonStringList = this.struct.getJsonList(colIndex);
     List<T> result = new ArrayList<>();
-    jsonStringList.forEach(item -> result.add(gson.fromJson(item, colType)));
+    jsonStringList.forEach(item ->
+        result.add(gson.fromJson(item, colType)));
     return result;
   }
 
@@ -223,8 +225,8 @@ public class StructAccessor {
     return gson.fromJson(jsonString, colType);
   }
 
-  // TODO: change this to private in next major release
-  public <T> T getSingleJsonValue(int colIndex, Class<T> colType) {
+  //TODO: change this to private in next major release
+  public  <T> T getSingleJsonValue(int colIndex, Class<T> colType) {
     if (this.struct.getColumnType(colIndex).getCode() != Code.JSON) {
       throw new SpannerDataException("Column of index " + colIndex + " not an JSON type.");
     }

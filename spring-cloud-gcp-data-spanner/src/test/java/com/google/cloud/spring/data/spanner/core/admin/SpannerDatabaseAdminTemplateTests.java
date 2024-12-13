@@ -77,7 +77,8 @@ class SpannerDatabaseAdminTemplateTests {
   @Test
   void getTableRelationshipsTest() {
     when(this.mockDatabasePage.getValues())
-        .thenReturn(List.of(new Database(this.databaseId, State.READY, this.databaseAdminClient)));
+        .thenReturn(
+            List.of(new Database(this.databaseId, State.READY, this.databaseAdminClient)));
     ReadContext readContext = mock(ReadContext.class);
 
     Struct s1 =
@@ -222,16 +223,17 @@ class SpannerDatabaseAdminTemplateTests {
     assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("parent_b", "child"))
         .as("verify not parent-child relationship")
         .isFalse();
-
-    assertThat(
-            this.spannerDatabaseAdminTemplate.isInterleaved("my_schema.grandpa", "my_schema.dad"))
+    
+    assertThat(this.spannerDatabaseAdminTemplate
+        .isInterleaved("my_schema.grandpa", "my_schema.dad"))
         .as("verify my-schema grand-child relationship")
         .isTrue();
-    assertThat(
-            this.spannerDatabaseAdminTemplate.isInterleaved("my_schema.grandpa", "my_schema.child"))
+    assertThat(this.spannerDatabaseAdminTemplate
+        .isInterleaved("my_schema.grandpa", "my_schema.child"))
         .as("verify my-schema grand-child relationship")
         .isTrue();
-    assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("my_schema.grandpa", "child"))
+    assertThat(this.spannerDatabaseAdminTemplate
+        .isInterleaved("my_schema.grandpa", "child"))
         .as("verify not my-schema grand-child relationship")
         .isFalse();
   }

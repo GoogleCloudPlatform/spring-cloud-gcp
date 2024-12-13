@@ -28,6 +28,8 @@ class SpannerSchemaUtilsRuntimeHintsTests {
     RuntimeHints runtimeHints = new RuntimeHints();
     SpannerSchemaUtilsRuntimeHints registrar = new SpannerSchemaUtilsRuntimeHints();
     registrar.registerHints(runtimeHints, null);
-    assertThat(runtimeHints).matches(reflection().onType(String.class));
+    assertThat(runtimeHints)
+        .matches(
+            reflection().onType(String.class));
   }
 }

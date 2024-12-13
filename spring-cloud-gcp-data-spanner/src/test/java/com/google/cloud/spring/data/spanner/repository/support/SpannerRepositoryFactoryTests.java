@@ -73,11 +73,10 @@ class SpannerRepositoryFactoryTests {
         new SpannerRepositoryFactory(mock(SpannerMappingContext.class), this.spannerTemplate);
 
     assertThatThrownBy(() -> factory.getEntityInformation(TestEntity.class))
-        .isInstanceOf(MappingException.class)
-        .hasMessage(
-            "Could not lookup mapping metadata for domain "
-                + "class com.google.cloud.spring.data.spanner.repository.support."
-                + "SpannerRepositoryFactoryTests$TestEntity!");
+            .isInstanceOf(MappingException.class)
+            .hasMessage("Could not lookup mapping metadata for domain "
+                    + "class com.google.cloud.spring.data.spanner.repository.support."
+                    + "SpannerRepositoryFactoryTests$TestEntity!");
   }
 
   @Test

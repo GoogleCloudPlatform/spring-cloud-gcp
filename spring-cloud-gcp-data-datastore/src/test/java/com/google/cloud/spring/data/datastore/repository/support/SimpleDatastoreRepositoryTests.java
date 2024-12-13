@@ -304,11 +304,12 @@ class SimpleDatastoreRepositoryTests {
   @Test
   void findAllByExamplePageNull() {
 
-    Example<Object> example = Example.of(new Object());
+    Example<Object> example =  Example.of(new Object());
 
-    assertThatThrownBy(() -> this.simpleDatastoreRepository.findAll(example, (Pageable) null))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("A non-null pageable is required.");
+    assertThatThrownBy(() ->  this.simpleDatastoreRepository.findAll(example, (Pageable) null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A non-null pageable is required.");
+
   }
 
   @Test
@@ -495,19 +496,15 @@ class SimpleDatastoreRepositoryTests {
 
     Example<Object> example = Example.of(new Object());
 
-    assertThatThrownBy(
-            () -> this.simpleDatastoreRepository.findBy(example, q -> q.as(Object.class).all()))
-        .isInstanceOf(UnsupportedOperationException.class);
+    assertThatThrownBy(() -> this.simpleDatastoreRepository.findBy(example, q -> q.as(Object.class).all()))
+            .isInstanceOf(UnsupportedOperationException.class);
   }
 
   @Test
   void findByExampleFluentQueryProjectUnsupported() {
     Example<Object> example = Example.of(new Object());
 
-    assertThatThrownBy(
-            () ->
-                this.simpleDatastoreRepository.findBy(
-                    example, q -> q.project("firstProperty").all()))
-        .isInstanceOf(UnsupportedOperationException.class);
+    assertThatThrownBy(() -> this.simpleDatastoreRepository.findBy(example, q -> q.project("firstProperty").all()))
+            .isInstanceOf(UnsupportedOperationException.class);
   }
 }

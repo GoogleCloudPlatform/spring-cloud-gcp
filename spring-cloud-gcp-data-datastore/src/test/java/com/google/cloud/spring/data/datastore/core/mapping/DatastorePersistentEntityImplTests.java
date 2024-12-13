@@ -46,7 +46,8 @@ class DatastorePersistentEntityImplTests {
   @Test
   void testRawTableName() {
     DatastorePersistentEntityImpl<EntityNoCustomName> entity =
-        new DatastorePersistentEntityImpl<>(TypeInformation.of(EntityNoCustomName.class), null);
+        new DatastorePersistentEntityImpl<>(
+            TypeInformation.of(EntityNoCustomName.class), null);
 
     assertThat(entity.kindName()).isEqualTo("entityNoCustomName");
   }
@@ -54,7 +55,8 @@ class DatastorePersistentEntityImplTests {
   @Test
   void testEmptyCustomTableName() {
     DatastorePersistentEntityImpl<EntityEmptyCustomName> entity =
-        new DatastorePersistentEntityImpl<>(TypeInformation.of(EntityEmptyCustomName.class), null);
+        new DatastorePersistentEntityImpl<>(
+            TypeInformation.of(EntityEmptyCustomName.class), null);
 
     assertThat(entity.kindName()).isEqualTo("entityEmptyCustomName");
   }
@@ -62,17 +64,19 @@ class DatastorePersistentEntityImplTests {
   @Test
   void testExpressionResolutionWithoutApplicationContext() {
     DatastorePersistentEntityImpl<EntityWithExpression> entity =
-        new DatastorePersistentEntityImpl<>(TypeInformation.of(EntityWithExpression.class), null);
+        new DatastorePersistentEntityImpl<>(
+            TypeInformation.of(EntityWithExpression.class), null);
 
     assertThatThrownBy(entity::kindName)
-        .isInstanceOf(SpelEvaluationException.class)
-        .hasMessageContaining("Property or field 'kindPostfix' cannot be found on null");
+            .isInstanceOf(SpelEvaluationException.class)
+            .hasMessageContaining("Property or field 'kindPostfix' cannot be found on null");
   }
 
   @Test
   void testExpressionResolutionFromApplicationContext() {
     DatastorePersistentEntityImpl<EntityWithExpression> entity =
-        new DatastorePersistentEntityImpl<>(TypeInformation.of(EntityWithExpression.class), null);
+        new DatastorePersistentEntityImpl<>(
+            TypeInformation.of(EntityWithExpression.class), null);
 
     ApplicationContext applicationContext = mock(ApplicationContext.class);
     when(applicationContext.getBean("kindPostfix")).thenReturn("something");
@@ -98,15 +102,15 @@ class DatastorePersistentEntityImplTests {
   @Test
   void testGetIdPropertyOrFail() {
 
-    DatastorePersistentEntity testEntity =
-        new DatastoreMappingContext().getPersistentEntity(EntityWithNoId.class);
+    DatastorePersistentEntity testEntity = new DatastoreMappingContext().getPersistentEntity(EntityWithNoId.class);
 
     assertThatThrownBy(testEntity::getIdPropertyOrFail)
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessage(
-            "An ID property was required but does not exist for the type: "
-                + "class com.google.cloud.spring.data.datastore.core.mapping."
-                + "DatastorePersistentEntityImplTests$EntityWithNoId");
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("An ID property was required but does not exist for the type: "
+                    + "class com.google.cloud.spring.data.datastore.core.mapping."
+                    + "DatastorePersistentEntityImplTests$EntityWithNoId");
+
+
   }
 
   @Test
@@ -160,27 +164,25 @@ class DatastorePersistentEntityImplTests {
   void testConflictingDiscriminationFieldNames() {
 
     assertThatThrownBy(() -> this.datastoreMappingContext.getPersistentEntity(DiscrimEntityB.class))
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessageContaining(
-            "This class and its super class both have "
-                + "discrimination fields but they are different fields: ");
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessageContaining("This class and its super class both have "
+                    + "discrimination fields but they are different fields: ");
+
   }
 
   @Test
   void testEntityMissingDiscriminationSuperclass() {
 
-    DatastorePersistentEntity dpe =
-        this.datastoreMappingContext.getPersistentEntity(TestEntityNoSuperclass.class);
+    DatastorePersistentEntity dpe = this.datastoreMappingContext.getPersistentEntity(TestEntityNoSuperclass.class);
 
     assertThatThrownBy(() -> dpe.kindName())
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessageContaining("This class expects a discrimination field but none are designated");
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessageContaining("This class expects a discrimination field but none are designated");
   }
 
   @Test
   void testInterfaceProperty() {
-    DatastorePersistentEntity<?> persistentEntity =
-        new DatastoreMappingContext().getPersistentEntity(EntityWithInterface.class);
+    DatastorePersistentEntity<?> persistentEntity = new DatastoreMappingContext().getPersistentEntity(EntityWithInterface.class);
     assertThat(persistentEntity).isNotNull();
     assertThat(persistentEntity.getPersistentProperty("text")).isNotNull();
   }

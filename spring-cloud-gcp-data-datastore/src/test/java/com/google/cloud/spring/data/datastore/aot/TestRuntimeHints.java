@@ -38,7 +38,9 @@ import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
 
-/** Runtime hints for integration test. */
+/**
+ * Runtime hints for integration test.
+ */
 public class TestRuntimeHints implements RuntimeHintsRegistrar {
 
   @Override
@@ -63,24 +65,12 @@ public class TestRuntimeHints implements RuntimeHintsRegistrar {
                 TypeReference.of(ServiceConfiguration.class),
                 TypeReference.of(SubEntity.class),
                 TypeReference.of(TreeCollection.class),
-                TypeReference.of(
-                    com.google.cloud.spring.data.datastore.it.subclasses.references.testdomains
-                        .EntityA.class),
-                TypeReference.of(
-                    com.google.cloud.spring.data.datastore.it.subclasses.references.testdomains
-                        .EntityB.class),
-                TypeReference.of(
-                    com.google.cloud.spring.data.datastore.it.subclasses.references.testdomains
-                        .EntityC.class),
-                TypeReference.of(
-                    com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains
-                        .EntityA.class),
-                TypeReference.of(
-                    com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains
-                        .EntityB.class),
-                TypeReference.of(
-                    com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains
-                        .EntityC.class)),
+                TypeReference.of(com.google.cloud.spring.data.datastore.it.subclasses.references.testdomains.EntityA.class),
+                TypeReference.of(com.google.cloud.spring.data.datastore.it.subclasses.references.testdomains.EntityB.class),
+                TypeReference.of(com.google.cloud.spring.data.datastore.it.subclasses.references.testdomains.EntityC.class),
+                TypeReference.of(com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains.EntityA.class),
+                TypeReference.of(com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains.EntityB.class),
+                TypeReference.of(com.google.cloud.spring.data.datastore.it.subclasses.descendants.testdomains.EntityC.class)),
             hint ->
                 hint.withMembers(
                     MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,

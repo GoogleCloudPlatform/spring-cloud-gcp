@@ -68,10 +68,9 @@ class DatastoreServiceObjectToKeyFactoryTests {
   @Test
   void getKeyFromIdExceptionTest() {
     when(this.datastore.newKeyFactory()).thenReturn(new KeyFactory("p").setKind("k"));
-    assertThatThrownBy(
-            () -> this.datastoreServiceObjectToKeyFactory.getKeyFromId(true, "custom_test_kind"))
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessage("Keys can only be created using String or long values.");
+    assertThatThrownBy(() -> this.datastoreServiceObjectToKeyFactory.getKeyFromId(true, "custom_test_kind"))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("Keys can only be created using String or long values.");
   }
 
   @Test
@@ -91,17 +90,14 @@ class DatastoreServiceObjectToKeyFactoryTests {
   @Test
   void getKeyNoIdTest() {
 
-    DatastorePersistentEntity dpeTest =
-        this.datastoreMappingContext.getPersistentEntity(TestEntityNoId.class);
+    DatastorePersistentEntity dpeTest = this.datastoreMappingContext.getPersistentEntity(TestEntityNoId.class);
     Object entity = new TestEntityNoId();
 
-    assertThatThrownBy(
-            () -> this.datastoreServiceObjectToKeyFactory.getKeyFromObject(entity, dpeTest))
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessage(
-            "An ID property was required but does not exist for the type: "
-                + "class com.google.cloud.spring.data.datastore.core.convert."
-                + "DatastoreServiceObjectToKeyFactoryTests$TestEntityNoId");
+    assertThatThrownBy(() -> this.datastoreServiceObjectToKeyFactory.getKeyFromObject(entity, dpeTest))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("An ID property was required but does not exist for the type: "
+                    + "class com.google.cloud.spring.data.datastore.core.convert."
+                    + "DatastoreServiceObjectToKeyFactoryTests$TestEntityNoId");
   }
 
   @Test
@@ -159,17 +155,13 @@ class DatastoreServiceObjectToKeyFactoryTests {
     KeyFactory keyFactory = new KeyFactory("project").setKind("kind");
     Key testKey = keyFactory.newKey("ancestor");
 
-    DatastorePersistentEntity dpeTest =
-        this.datastoreMappingContext.getPersistentEntity(testEntityWithId.getClass());
+    DatastorePersistentEntity dpeTest = this.datastoreMappingContext.getPersistentEntity(testEntityWithId.getClass());
 
     when(this.datastore.newKeyFactory()).thenReturn(keyFactory);
 
-    assertThatThrownBy(
-            () ->
-                this.datastoreServiceObjectToKeyFactory.allocateKeyForObject(
-                    testEntityWithId, dpeTest, testKey))
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessage("Only Key types are allowed for descendants id");
+    assertThatThrownBy(() -> this.datastoreServiceObjectToKeyFactory.allocateKeyForObject(testEntityWithId, dpeTest, testKey))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("Only Key types are allowed for descendants id");
   }
 
   @Test
@@ -179,17 +171,12 @@ class DatastoreServiceObjectToKeyFactoryTests {
     KeyFactory keyFactory = new KeyFactory("project").setKind("kind");
     Key testKey = keyFactory.newKey("key");
     when(this.datastore.newKeyFactory()).thenReturn(keyFactory);
-    DatastorePersistentEntity dpeTest =
-        this.datastoreMappingContext.getPersistentEntity(testEntityWithStringId.getClass());
+    DatastorePersistentEntity dpeTest = this.datastoreMappingContext.getPersistentEntity(testEntityWithStringId.getClass());
 
-    assertThatThrownBy(
-            () ->
-                this.datastoreServiceObjectToKeyFactory.allocateKeyForObject(
-                    testEntityWithStringId, dpeTest, testKey))
-        .isInstanceOf(DatastoreDataException.class)
-        .hasMessage(
-            "Cloud Datastore can only allocate IDs for Long and Key properties. "
-                + "Cannot allocate for type: class java.lang.String");
+    assertThatThrownBy(() -> this.datastoreServiceObjectToKeyFactory.allocateKeyForObject(testEntityWithStringId, dpeTest, testKey))
+            .isInstanceOf(DatastoreDataException.class)
+            .hasMessage("Cloud Datastore can only allocate IDs for Long and Key properties. "
+                    + "Cannot allocate for type: class java.lang.String");
   }
 
   @com.google.cloud.spring.data.datastore.core.mapping.Entity(name = "custom_test_kind")

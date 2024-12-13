@@ -71,8 +71,7 @@ public class SpannerPersistentPropertyImpl
   @Override
   @NonNull
   public Iterable<? extends TypeInformation<?>> getPersistentEntityTypeInformation() {
-    return StreamUtils.createStreamFromIterator(
-            super.getPersistentEntityTypeInformation().iterator())
+    return StreamUtils.createStreamFromIterator(super.getPersistentEntityTypeInformation().iterator())
         .filter(typeInfo -> typeInfo.getType().isAnnotationPresent(Table.class))
         .toList();
   }

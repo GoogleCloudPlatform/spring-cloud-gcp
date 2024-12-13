@@ -155,6 +155,7 @@ class DatastoreTemplateAuditingTests {
 
     @LastModifiedBy String lastUser;
 
-    @LastModifiedDate Instant lastTouched;
+    @LastModifiedDate
+    Instant lastTouched;
   }
 }

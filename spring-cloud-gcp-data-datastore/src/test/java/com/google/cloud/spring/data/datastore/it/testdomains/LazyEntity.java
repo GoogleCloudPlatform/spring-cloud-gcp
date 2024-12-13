@@ -23,7 +23,8 @@ import org.springframework.data.annotation.Id;
 
 @Entity
 public class LazyEntity {
-  @Id public Long id;
+  @Id
+  public Long id;
 
   @LazyReference LazyEntity lazyChild;
 

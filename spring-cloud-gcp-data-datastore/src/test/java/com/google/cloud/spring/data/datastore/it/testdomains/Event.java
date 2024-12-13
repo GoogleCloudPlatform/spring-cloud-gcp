@@ -23,7 +23,8 @@ import org.springframework.data.annotation.Id;
 
 @Entity
 public class Event {
-  @Id private String eventName;
+  @Id
+  private String eventName;
 
   private Map<CommunicationChannels, String> preferences;
 

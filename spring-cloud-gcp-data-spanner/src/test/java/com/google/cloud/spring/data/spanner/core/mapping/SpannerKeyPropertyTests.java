@@ -44,18 +44,18 @@ class SpannerKeyPropertyTests {
   @Test
   void nullSpannerPersistentEntityTest() {
 
-    assertThatThrownBy(
-            () -> new SpannerCompositeKeyProperty(null, new SpannerPersistentProperty[] {}))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("A valid Cloud Spanner persistent entity is required.");
+    assertThatThrownBy(() -> new SpannerCompositeKeyProperty(null, new SpannerPersistentProperty[] {}))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid Cloud Spanner persistent entity is required.");
   }
 
   @Test
   void nullPropertiesTest() {
 
     assertThatThrownBy(() -> new SpannerCompositeKeyProperty(this.spannerPersistentEntity, null))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("A valid array of primary key properties is required.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid array of primary key properties is required.");
+
   }
 
   @Test
