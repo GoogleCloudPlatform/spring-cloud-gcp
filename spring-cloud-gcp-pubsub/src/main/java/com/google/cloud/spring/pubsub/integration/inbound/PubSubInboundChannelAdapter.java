@@ -179,6 +179,7 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
     } else {
       LOGGER.warn(re.getMessage());
     }
+    LOGGER.warn(re.getStackTrace());
   }
 
   private void addToHealthRegistry() {
