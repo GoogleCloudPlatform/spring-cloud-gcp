@@ -37,6 +37,7 @@ import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.repository.query.QueryMethodValueEvaluationContextAccessor;
 import org.springframework.data.repository.query.ValueExpressionDelegate;
 
 /** Tests for the Query Method lookup class. */
@@ -86,6 +87,7 @@ class DatastoreQueryLookupStrategyTests {
 
     when(namedQueries.hasQuery(queryName)).thenReturn(true);
     when(namedQueries.getQuery(queryName)).thenReturn(query);
+    when(valueExpressionDelegate.getEvaluationContextAccessor()).thenReturn(mock(QueryMethodValueEvaluationContextAccessor.class));
 
     this.datastoreQueryLookupStrategy.resolveQuery(null, null, null, namedQueries);
 
