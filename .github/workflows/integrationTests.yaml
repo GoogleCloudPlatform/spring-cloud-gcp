@@ -30,7 +30,6 @@ jobs:
           - alloydb
           - bigquery
           - cloudsql
-          - config
           - datastore
           - firestore
           - kms
