@@ -52,7 +52,6 @@
 				</property>
 			</activation>
 			<modules>
-				<module>spring-cloud-gcp-config-sample</module>
 				<module>spring-cloud-gcp-trace-sample</module>
 				<module>spring-cloud-gcp-logging-sample</module>
 				<module>spring-cloud-gcp-sql-mysql-sample</module>
