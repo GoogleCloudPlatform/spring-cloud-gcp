@@ -167,6 +167,7 @@ class PubSubInboundChannelAdapterTests {
 
     // original message handling exception
     assertThat(capturedOutput).contains("failed; message nacked automatically").contains(EXCEPTION_MESSAGE);
+    assertThat(capturedOutput).contains("Caused by");
   }
 
   @Test

@@ -181,7 +181,7 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
     } else {
       LOGGER.warn(re.getMessage());
     }
-
+    // Log the stacktrace for troubleshoot.
     StringWriter stringWriter = new StringWriter();
     re.printStackTrace(new PrintWriter(stringWriter));
     LOGGER.warn(stringWriter.toString());
