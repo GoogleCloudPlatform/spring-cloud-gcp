@@ -529,35 +529,14 @@ class GqlDatastoreQueryTests {
       when(parameters.getParameter(eq(index))).thenAnswer(invocation -> param);
     }
     when(parameters.getNumberOfParameters()).thenReturn(paramNames.length);
-
-    Supplier<Iterator> iteratorSupplier =
-        () -> {
-          Iterator<Parameter> parameterIterator = mock(Iterator.class);
-          if (paramNames.length == 0) {
-            when(parameterIterator.hasNext()).thenReturn(false);
-          } else {
-            // every hasNext() call will return true except for the last one
-            Boolean[] hasNextResponses = new Boolean[paramNames.length];
-            Arrays.fill(hasNextResponses, true);
-            hasNextResponses[hasNextResponses.length - 1] = false;
-            when(parameterIterator.hasNext()).thenReturn(true, hasNextResponses);
-
-            // Then we set up the sequence of returned values for the params
-            Parameter[] restOfParameters = new Parameter[parameterList.size() - 1];
-            parameterList.subList(1, parameterList.size()).toArray(restOfParameters);
-            when(parameterIterator.next()).thenReturn(parameterList.getFirst(), restOfParameters);
-          }
-          return parameterIterator;
-        };
     // we return a new iterator each time. This is because foreach loops call iterable.iterator()
-    // once and parameters
-    // is iterated over several times.
+    // once per foreach loop.
     when(parameters.iterator())
         .thenAnswer(
             new Answer<Iterator>() {
               @Override
               public Iterator answer(InvocationOnMock invocation) throws Throwable {
-                return iteratorSupplier.get();
+                return parameterList.iterator();
               }
             });
     return parameters;

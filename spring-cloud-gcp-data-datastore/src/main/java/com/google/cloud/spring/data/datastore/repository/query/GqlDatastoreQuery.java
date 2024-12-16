@@ -314,7 +314,7 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
   private void setEvaluatingSpelQueryContext() {
     Set<String> originalTags = new HashSet<>(GqlDatastoreQuery.this.originalParamTags);
     GqlDatastoreQuery.this.valueExpressionQueryRewriter = ValueExpressionQueryRewriter.of(valueExpressionDelegate,
-            (counter, spelExpression) -> {
+            (Integer counter, String spelExpression) -> {
               String newTag;
               do {
                 counter++;
@@ -322,7 +322,7 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
               } while (originalTags.contains(newTag));
               originalTags.add(newTag);
               return newTag;
-            }, String::concat)
+            }, (left, right) -> right)
             .withEvaluationContextAccessor(valueExpressionDelegate.getEvaluationContextAccessor());
   }
 
