@@ -24,8 +24,6 @@ import com.google.cloud.spring.pubsub.integration.PubSubHeaderMapper;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import com.google.cloud.spring.pubsub.support.converter.ConvertedBasicAcknowledgeablePubsubMessage;
 import com.google.pubsub.v1.ProjectSubscriptionName;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -177,14 +175,10 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
     // so we explicitly log failure messages.
     // See https://github.com/spring-projects/spring-framework/issues/25162 for more info.
     if (re instanceof MessageDeliveryException messageDeliveryException) {
-      LOGGER.warn(messageDeliveryException.getFailedMessage());
+      LOGGER.warn(messageDeliveryException.getFailedMessage(), messageDeliveryException);
     } else {
-      LOGGER.warn(re.getMessage());
+      LOGGER.warn(re.getMessage(), re);
     }
-    // Log the stacktrace for troubleshoot.
-    StringWriter stringWriter = new StringWriter();
-    re.printStackTrace(new PrintWriter(stringWriter));
-    LOGGER.warn(stringWriter.toString());
   }
 
   private void addToHealthRegistry() {

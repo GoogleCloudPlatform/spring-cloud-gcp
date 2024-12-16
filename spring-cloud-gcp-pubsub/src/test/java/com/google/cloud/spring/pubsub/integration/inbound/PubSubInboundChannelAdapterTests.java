@@ -166,8 +166,10 @@ class PubSubInboundChannelAdapterTests {
     verify(mockAcknowledgeableMessage, times(0)).ack();
 
     // original message handling exception
-    assertThat(capturedOutput).contains("failed; message nacked automatically").contains(EXCEPTION_MESSAGE);
-    assertThat(capturedOutput).contains("Caused by");
+    assertThat(capturedOutput)
+        .contains("failed; message nacked automatically")
+        .contains(EXCEPTION_MESSAGE)
+        .contains("Caused by");
   }
 
   @Test
