@@ -72,6 +72,7 @@ import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ParametersSource;
+import org.springframework.data.repository.query.QueryMethodValueEvaluationContextAccessor;
 import org.springframework.data.repository.query.ResultProcessor;
 import org.springframework.data.repository.query.ReturnedType;
 import org.springframework.data.repository.query.ValueExpressionDelegate;
@@ -94,6 +95,8 @@ class SqlSpannerQueryTests {
 
   private SpannerMappingContext spannerMappingContext = new SpannerMappingContext(new Gson());
 
+  private ValueEvaluationContext valueEvaluationContext;
+
   private final Sort sort = Sort.by(Order.asc("COLA"), Order.desc("COLB"));
 
   private final Pageable pageable = PageRequest.of(3, 10, this.sort);
@@ -101,6 +104,7 @@ class SqlSpannerQueryTests {
   private final SpannerEntityProcessor spannerEntityProcessor = mock(SpannerEntityProcessor.class);
 
   private final DatabaseClient databaseClient = mock(DatabaseClient.class);
+
 
   @BeforeEach
   void initMocks() throws NoSuchMethodException {
@@ -121,6 +125,15 @@ class SqlSpannerQueryTests {
                     this.spannerMappingContext, this.spannerEntityProcessor, true)));
     this.expressionParser = new SpelExpressionParser();
     this.valueExpressionDelegate = mock(ValueExpressionDelegate.class);
+    QueryMethodValueEvaluationContextAccessor evaluationContextAccessor = mock(QueryMethodValueEvaluationContextAccessor.class);
+    ValueEvaluationContextProvider evaluationContextProvider =
+        mock(ValueEvaluationContextProvider.class);
+    this.valueEvaluationContext = mock(ValueEvaluationContext.class);
+    when(this.valueExpressionDelegate.getEvaluationContextAccessor())
+        .thenReturn(evaluationContextAccessor);
+    when(evaluationContextAccessor.create(any())).thenReturn(evaluationContextProvider);
+    when(evaluationContextProvider.getEvaluationContext(any())).thenReturn(valueEvaluationContext);
+    when(valueEvaluationContext.getEvaluationContext()).thenReturn(mock(EvaluationContext.class));
   }
 
   private <T> SqlSpannerQuery<T> createQuery(String sql, Class<T> theClass, boolean isDml) {
@@ -152,14 +165,6 @@ class SqlSpannerQueryTests {
     final Class toReturn = Trade.class;
     when(queryMethod.isCollectionQuery()).thenReturn(false);
     when(queryMethod.getReturnedObjectType()).thenReturn(toReturn);
-
-    ValueEvaluationContextProvider evaluationContextProvider =
-        mock(ValueEvaluationContextProvider.class);
-    ValueEvaluationContext valueEvaluationContext = mock(ValueEvaluationContext.class);
-    when(this.valueExpressionDelegate.createValueContextProvider(any()))
-        .thenReturn(evaluationContextProvider);
-    when(evaluationContextProvider.getEvaluationContext(any())).thenReturn(valueEvaluationContext);
-    when(valueEvaluationContext.getEvaluationContext()).thenReturn(mock(EvaluationContext.class));
 
     SqlSpannerQuery sqlSpannerQuery = createQuery(sql, toReturn, false);
 
@@ -217,13 +222,6 @@ class SqlSpannerQueryTests {
     for (int i = 0; i < params.length; i++) {
       evaluationContext.setVariable(paramNames[i], params[i]);
     }
-    ValueEvaluationContextProvider evaluationContextProvider =
-        mock(ValueEvaluationContextProvider.class);
-    ValueEvaluationContext valueEvaluationContext = mock(ValueEvaluationContext.class);
-    when(this.valueExpressionDelegate.createValueContextProvider(any()))
-        .thenReturn(evaluationContextProvider);
-    when(evaluationContextProvider.getEvaluationContext(any())).thenReturn(valueEvaluationContext);
-    when(valueEvaluationContext.getEvaluationContext()).thenReturn(evaluationContext);
 
     SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false);
 
@@ -281,18 +279,6 @@ class SqlSpannerQueryTests {
     when(queryMethod.isCollectionQuery()).thenReturn(false);
     when(queryMethod.getReturnedObjectType()).thenReturn((Class) Child.class);
 
-    EvaluationContext evaluationContext = new StandardEvaluationContext();
-    for (int i = 0; i < params.length; i++) {
-      evaluationContext.setVariable(paramNames[i], params[i]);
-    }
-    ValueEvaluationContextProvider evaluationContextProvider =
-        mock(ValueEvaluationContextProvider.class);
-    ValueEvaluationContext valueEvaluationContext = mock(ValueEvaluationContext.class);
-    when(this.valueExpressionDelegate.createValueContextProvider(any()))
-        .thenReturn(evaluationContextProvider);
-    when(evaluationContextProvider.getEvaluationContext(any())).thenReturn(valueEvaluationContext);
-    when(valueEvaluationContext.getEvaluationContext()).thenReturn(evaluationContext);
-
     SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false);
 
     doAnswer(
@@ -349,18 +335,6 @@ class SqlSpannerQueryTests {
 
     when(queryMethod.isCollectionQuery()).thenReturn(false);
     when(queryMethod.getReturnedObjectType()).thenReturn((Class) Child.class);
-
-    EvaluationContext evaluationContext = new StandardEvaluationContext();
-    for (int i = 0; i < params.length; i++) {
-      evaluationContext.setVariable(paramNames[i], params[i]);
-    }
-    ValueEvaluationContextProvider evaluationContextProvider =
-        mock(ValueEvaluationContextProvider.class);
-    ValueEvaluationContext valueEvaluationContext = mock(ValueEvaluationContext.class);
-    when(this.valueExpressionDelegate.createValueContextProvider(any()))
-        .thenReturn(evaluationContextProvider);
-    when(evaluationContextProvider.getEvaluationContext(any())).thenReturn(valueEvaluationContext);
-    when(valueEvaluationContext.getEvaluationContext()).thenReturn(evaluationContext);
 
     SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false);
 
@@ -465,12 +439,6 @@ class SqlSpannerQueryTests {
     for (int i = 0; i < params.length; i++) {
       evaluationContext.setVariable(paramNames[i], params[i]);
     }
-    ValueEvaluationContextProvider evaluationContextProvider =
-        mock(ValueEvaluationContextProvider.class);
-    ValueEvaluationContext valueEvaluationContext = mock(ValueEvaluationContext.class);
-    when(this.valueExpressionDelegate.createValueContextProvider(any()))
-        .thenReturn(evaluationContextProvider);
-    when(evaluationContextProvider.getEvaluationContext(any())).thenReturn(valueEvaluationContext);
     when(valueEvaluationContext.getEvaluationContext()).thenReturn(evaluationContext);
 
     SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Trade.class, false);
@@ -540,12 +508,6 @@ class SqlSpannerQueryTests {
     TransactionRunner transactionRunner = mock(TransactionRunner.class);
     when(this.databaseClient.readWriteTransaction()).thenReturn(transactionRunner);
 
-    ValueEvaluationContextProvider evaluationContextProvider =
-        mock(ValueEvaluationContextProvider.class);
-    ValueEvaluationContext valueEvaluationContext = mock(ValueEvaluationContext.class);
-    when(this.valueExpressionDelegate.createValueContextProvider(any()))
-        .thenReturn(evaluationContextProvider);
-    when(evaluationContextProvider.getEvaluationContext(any())).thenReturn(valueEvaluationContext);
     when(valueEvaluationContext.getEvaluationContext()).thenReturn(mock(EvaluationContext.class));
 
     when(transactionRunner.run(any()))
@@ -585,18 +547,6 @@ class SqlSpannerQueryTests {
 
     when(queryMethod.isCollectionQuery()).thenReturn(false);
     when(queryMethod.getReturnedObjectType()).thenReturn((Class) long.class);
-
-    EvaluationContext evaluationContext = new StandardEvaluationContext();
-    for (int i = 0; i < params.length; i++) {
-      evaluationContext.setVariable(paramNames[i], params[i]);
-    }
-    ValueEvaluationContextProvider evaluationContextProvider =
-        mock(ValueEvaluationContextProvider.class);
-    ValueEvaluationContext valueEvaluationContext = mock(ValueEvaluationContext.class);
-    when(this.valueExpressionDelegate.createValueContextProvider(any()))
-        .thenReturn(evaluationContextProvider);
-    when(evaluationContextProvider.getEvaluationContext(any())).thenReturn(valueEvaluationContext);
-    when(valueEvaluationContext.getEvaluationContext()).thenReturn(evaluationContext);
 
     SqlSpannerQuery sqlSpannerQuery = createQuery(sql, long.class, false);
 
@@ -656,17 +606,6 @@ class SqlSpannerQueryTests {
     when(resultProcessor.getReturnedType()).thenReturn(returnedType);
     when(returnedType.getReturnedType()).thenReturn((Class) Detail.class);
 
-    EvaluationContext evaluationContext = new StandardEvaluationContext();
-
-    evaluationContext.setVariable(paramNames[0], params[0]);
-    ValueEvaluationContextProvider evaluationContextProvider =
-        mock(ValueEvaluationContextProvider.class);
-    ValueEvaluationContext valueEvaluationContext = mock(ValueEvaluationContext.class);
-    when(this.valueExpressionDelegate.createValueContextProvider(any()))
-        .thenReturn(evaluationContextProvider);
-    when(evaluationContextProvider.getEvaluationContext(any())).thenReturn(valueEvaluationContext);
-    when(valueEvaluationContext.getEvaluationContext()).thenReturn(evaluationContext);
-
     SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false);
 
     doAnswer(
@@ -723,17 +662,6 @@ class SqlSpannerQueryTests {
     when(this.queryMethod.getResultProcessor()).thenReturn(resultProcessor);
     when(resultProcessor.getReturnedType()).thenReturn(returnedType);
     when(returnedType.getReturnedType()).thenReturn((Class) Detail.class);
-
-    EvaluationContext evaluationContext = new StandardEvaluationContext();
-
-    evaluationContext.setVariable(paramNames[0], params[0]);
-    ValueEvaluationContextProvider evaluationContextProvider =
-        mock(ValueEvaluationContextProvider.class);
-    ValueEvaluationContext valueEvaluationContext = mock(ValueEvaluationContext.class);
-    when(this.valueExpressionDelegate.createValueContextProvider(any()))
-        .thenReturn(evaluationContextProvider);
-    when(evaluationContextProvider.getEvaluationContext(any())).thenReturn(valueEvaluationContext);
-    when(valueEvaluationContext.getEvaluationContext()).thenReturn(evaluationContext);
 
     SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false);
 
