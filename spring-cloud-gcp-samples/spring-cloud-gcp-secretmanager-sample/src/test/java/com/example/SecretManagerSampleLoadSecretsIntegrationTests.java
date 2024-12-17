@@ -51,7 +51,7 @@ class SecretManagerSampleLoadSecretsIntegrationTests {
     ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
     assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
     assertThat(response.getBody())
-        .contains("<b>Default Application secret if not found:</b> <i>"+ DEFAULT_SECRET_CONTENT +"</i><br/>");
+        .contains("<b>Default Application secret if not found:</b> <i>" + DEFAULT_SECRET_CONTENT + "</i><br/>");
     assertThat(response.getBody())
         .contains("<b>Application secret from @Value:</b> <i>" + SECRET_CONTENT + "</i>");
     assertThat(response.getBody())
