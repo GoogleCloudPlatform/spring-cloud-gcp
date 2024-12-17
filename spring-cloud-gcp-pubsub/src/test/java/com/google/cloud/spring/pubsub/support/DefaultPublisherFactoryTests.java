@@ -47,7 +47,6 @@ class DefaultPublisherFactoryTests {
     factory.setCredentialsProvider(NoCredentialsProvider.create());
     TransportChannelProvider mockChannelProvider = mock(TransportChannelProvider.class);
     TransportChannel mockTransportChannel = mock(TransportChannel.class);
-    when(mockChannelProvider.withUseS2A(anyBoolean())).thenReturn(mockChannelProvider);
     when(mockChannelProvider.getTransportChannel()).thenReturn(mockTransportChannel);
     ApiCallContext mockContext = mock(ApiCallContext.class);
     when(mockTransportChannel.getEmptyCallContext()).thenReturn(mockContext);
