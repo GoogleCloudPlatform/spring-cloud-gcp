@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -31,10 +32,12 @@ public class SecretManagerPlaceholderConfigurer extends
   protected ConfigurablePropertyResolver createPropertyResolver(
       MutablePropertySources propertySources) {
     return new PropertySourcesPropertyResolver(propertySources) {
+
       private String getEscapedKey(String key) {
         String escapedKey = key.replaceAll("sm:\\/\\/", "sm\\\\://");
         return escapedKey;
       }
+
       @Override
       public String resolvePlaceholders(String key) {
         return super.resolvePlaceholders(getEscapedKey(key));
