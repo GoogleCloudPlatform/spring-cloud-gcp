@@ -24,9 +24,13 @@ import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.io.IOException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration;
+import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -37,13 +41,21 @@ import org.springframework.context.annotation.Bean;
  */
 @AutoConfiguration
 @EnableConfigurationProperties(GcpSecretManagerProperties.class)
-@ConditionalOnClass(SecretManagerTemplate.class)
+@ConditionalOnClass({SecretManagerTemplate.class, SecretManagerPlaceholderConfigurer.class})
 @ConditionalOnProperty(value = "spring.cloud.gcp.secretmanager.enabled", matchIfMissing = true)
+@AutoConfigureBefore(PropertyPlaceholderAutoConfiguration.class)
+@AutoConfigureAfter(ConfigurationPropertiesAutoConfiguration.class)
 public class GcpSecretManagerAutoConfiguration {
 
   private final GcpProjectIdProvider gcpProjectIdProvider;
   private final GcpSecretManagerProperties properties;
   private final CredentialsProvider credentialsProvider;
+
+  public GcpSecretManagerAutoConfiguration() {
+    this.credentialsProvider = null;
+    this.properties = null;
+    this.gcpProjectIdProvider = null;
+  }
 
   public GcpSecretManagerAutoConfiguration(
       CredentialsProvider credentialsProvider,
@@ -77,5 +89,11 @@ public class GcpSecretManagerAutoConfiguration {
   public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
     return new SecretManagerTemplate(client, this.gcpProjectIdProvider)
         .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public SecretManagerPlaceholderConfigurer secretManagerPlaceholderConfigurer() {
+    return new SecretManagerPlaceholderConfigurer();
   }
 }

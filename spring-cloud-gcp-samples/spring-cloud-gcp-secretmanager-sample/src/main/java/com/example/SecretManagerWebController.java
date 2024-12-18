@@ -43,15 +43,16 @@ public class SecretManagerWebController {
   // in property files.
   // Note that the colon symbol must be escaped with a backslash. See
   // https://github.com/spring-projects/spring-framework/commit/00e05e603d4423d33c99dadeb52fef26be71dfb8
-  @Value("${sm\\://application-fake:DEFAULT}")
+  @Value("${sm://application-fake:DEFAULT}")
   private String defaultSecret;
   // Application secrets can be accessed using @Value syntax.
   // Note that the colon symbol must be escaped with a backslash. See
   // https://github.com/spring-projects/spring-framework/commit/00e05e603d4423d33c99dadeb52fef26be71dfb8
-  @Value("${sm\\://application-secret}")
+  @Value("${sm://application-secret:value}")
   private String appSecretFromValue;
 
-  public SecretManagerWebController(SecretManagerTemplate secretManagerTemplate,
+  public SecretManagerWebController(
+      SecretManagerTemplate secretManagerTemplate,
       SecretConfiguration configuration
   ) {
     this.secretManagerTemplate = secretManagerTemplate;
