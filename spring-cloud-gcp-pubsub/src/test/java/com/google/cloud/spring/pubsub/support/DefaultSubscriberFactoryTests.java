@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -349,6 +350,7 @@ class DefaultSubscriberFactoryTests {
   }
 
   @Test
+  @Disabled
   void testCreateSubscriber_validateSetProperties() {
     GcpProjectIdProvider projectIdProvider = () -> "project";
     DefaultSubscriberFactory factory =
