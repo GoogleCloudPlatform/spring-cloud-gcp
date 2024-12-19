@@ -24,15 +24,17 @@ import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.io.IOException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 /**
  *  Autoconfiguration for GCP Secret Manager.
@@ -44,7 +46,6 @@ import org.springframework.context.annotation.Bean;
 @ConditionalOnClass({SecretManagerTemplate.class, SecretManagerPlaceholderConfigurer.class})
 @ConditionalOnProperty(value = "spring.cloud.gcp.secretmanager.enabled", matchIfMissing = true)
 @AutoConfigureBefore(PropertyPlaceholderAutoConfiguration.class)
-@AutoConfigureAfter(ConfigurationPropertiesAutoConfiguration.class)
 public class GcpSecretManagerAutoConfiguration {
 
   private final GcpProjectIdProvider gcpProjectIdProvider;
@@ -92,8 +93,9 @@ public class GcpSecretManagerAutoConfiguration {
   }
 
   @Bean
-  @ConditionalOnMissingBean
-  public SecretManagerPlaceholderConfigurer secretManagerPlaceholderConfigurer() {
+  @Order(Ordered.HIGHEST_PRECEDENCE)
+  @ConditionalOnMissingBean(value = SecretManagerPlaceholderConfigurer.class, search = SearchStrategy.ALL)
+  public static PropertySourcesPlaceholderConfigurer secretManagerPropertySourcesPlaceholderConfigurer() {
     return new SecretManagerPlaceholderConfigurer();
   }
 }
