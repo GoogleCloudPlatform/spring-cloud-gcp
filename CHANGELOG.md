@@ -14,6 +14,14 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.13](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.12...v3.8.13) (2024-12-19)
+
+
+### Dependencies
+
+* bump org.apache.maven.plugins:maven-checkstyle-plugin ([#3342](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3342)) ([b5b425e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b5b425ef54a1088fb3eabe86369a7e65f811db6c))
+* bump org.apache.maven.plugins:maven-javadoc-plugin ([#3406](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3406)) ([a8ff495](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a8ff49558fa68c9768e02020209a9c5ac13d9f2b))
+
 ## [3.8.12](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.11...v3.8.12) (2024-12-05)
 
 
