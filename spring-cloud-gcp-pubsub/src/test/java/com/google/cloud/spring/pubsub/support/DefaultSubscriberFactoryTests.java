@@ -381,9 +381,9 @@ class DefaultSubscriberFactoryTests {
     assertThat(expectedSubscriber.getFlowControlSettings().getLimitExceededBehavior())
         .isEqualTo(FlowController.LimitExceededBehavior.Ignore);
     assertThat(expectedSubscriber)
-        .hasFieldOrPropertyWithValue("maxAckExtensionPeriod", Duration.ofSeconds(2L))
-        .hasFieldOrPropertyWithValue("minDurationPerAckExtension", Duration.ofSeconds(3L))
-        .hasFieldOrPropertyWithValue("maxDurationPerAckExtension", Duration.ofSeconds(4L))
+        .hasFieldOrPropertyWithValue("maxAckExtensionPeriod", java.time.Duration.ofSeconds(2L))
+        .hasFieldOrPropertyWithValue("minDurationPerAckExtension", java.time.Duration.ofSeconds(3L))
+        .hasFieldOrPropertyWithValue("maxDurationPerAckExtension",java.time.Duration.ofSeconds(4L))
         .hasFieldOrPropertyWithValue("numPullers", 2)
         .hasFieldOrPropertyWithValue("subStubSettings.endpoint", "test.endpoint");
   }
