@@ -24,8 +24,8 @@ import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryMethod;
-import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
+import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.Assert;
 
@@ -41,21 +41,21 @@ public class SpannerQueryLookupStrategy implements QueryLookupStrategy {
 
   private final SpannerMappingContext spannerMappingContext;
 
-  private QueryMethodEvaluationContextProvider evaluationContextProvider;
+  private ValueExpressionDelegate valueExpressionDelegate;
 
   private SpelExpressionParser expressionParser;
 
   public SpannerQueryLookupStrategy(
       SpannerMappingContext spannerMappingContext,
       SpannerTemplate spannerTemplate,
-      QueryMethodEvaluationContextProvider evaluationContextProvider,
+      ValueExpressionDelegate valueExpressionDelegate,
       SpelExpressionParser expressionParser) {
     Assert.notNull(spannerMappingContext, "A valid SpannerMappingContext is required.");
     Assert.notNull(spannerTemplate, "A valid SpannerTemplate is required.");
-    Assert.notNull(evaluationContextProvider, "A valid EvaluationContextProvider is required.");
+    Assert.notNull(valueExpressionDelegate, "A valid ValueExpressionDelegate is required.");
     Assert.notNull(expressionParser, "A valid SpelExpressionParser is required.");
     this.spannerMappingContext = spannerMappingContext;
-    this.evaluationContextProvider = evaluationContextProvider;
+    this.valueExpressionDelegate = valueExpressionDelegate;
     this.spannerTemplate = spannerTemplate;
     this.expressionParser = expressionParser;
   }
@@ -97,7 +97,7 @@ public class SpannerQueryLookupStrategy implements QueryLookupStrategy {
         queryMethod,
         this.spannerTemplate,
         sql,
-        this.evaluationContextProvider,
+        this.valueExpressionDelegate,
         this.expressionParser,
         this.spannerMappingContext,
         isDml);
