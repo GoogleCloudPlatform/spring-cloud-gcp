@@ -167,7 +167,7 @@ class GcpPubSubAutoConfigurationTests {
   }
 
   @Test
-  void retryableCodes_Internal() {
+  void retryableCodesInternal() {
     contextRunner
         .withPropertyValues("spring.cloud.gcp.pubsub.subscriber.retryableCodes=INTERNAL")
         .run(

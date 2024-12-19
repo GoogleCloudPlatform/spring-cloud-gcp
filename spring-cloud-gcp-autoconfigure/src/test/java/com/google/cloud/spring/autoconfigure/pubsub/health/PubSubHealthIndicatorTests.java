@@ -115,14 +115,14 @@ class PubSubHealthIndicatorTests {
   }
 
   @Test
-  void randomSubscription_NotApiExcpetion() throws Exception {
+  void randomSubscriptionNotApiExcpetion() throws Exception {
     ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
     testHealth(e, null, Status.DOWN);
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"NOT_FOUND", "PERMISSION_DENIED"})
-  void customSubscription_ApiException(String code) throws Exception {
+  void customSubscriptionApiException(String code) throws Exception {
     Exception e =
         new ExecutionException(
             new ApiException(null, GrpcStatusCode.of(io.grpc.Status.Code.valueOf(code)), false));
@@ -130,25 +130,25 @@ class PubSubHealthIndicatorTests {
   }
 
   @Test
-  void customSubscription_ExecutionException_NotApiException() throws Exception {
+  void customSubscriptionExecutionExceptionNotApiException() throws Exception {
     ExecutionException e = new ExecutionException("Exception", new IllegalArgumentException());
     testHealth(e, "testSubscription", Status.DOWN);
   }
 
   @Test
-  void customSubscription_InterruptedException() throws Exception {
+  void customSubscriptionInterruptedException() throws Exception {
     Exception e = new InterruptedException("Interrupted");
     testHealth(e, "testSubscription", Status.UNKNOWN);
   }
 
   @Test
-  void customSubscription_TimeoutException() throws Exception {
+  void customSubscriptionTimeoutException() throws Exception {
     Exception e = new TimeoutException("Timed out waiting for result");
     testHealth(e, "testSubscription", Status.UNKNOWN);
   }
 
   @Test
-  void customSubscription_RuntimeException() throws Exception {
+  void customSubscriptionRuntimeException() throws Exception {
     Exception e = new RuntimeException("Runtime error");
     testHealth(e, "testSubscription", Status.DOWN);
   }

@@ -187,7 +187,7 @@ class PubSubInboundChannelAdapterTests {
   }
 
   @Test
-  void testSetHealthRegistry_Success() {
+  void testSetHealthRegistrySuccess() {
 
     setupSubscribeAndConvert();
     HealthTrackerRegistry healthTrackerRegistry = mock(HealthTrackerRegistry.class);

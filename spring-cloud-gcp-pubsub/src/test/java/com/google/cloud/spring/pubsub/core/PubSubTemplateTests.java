@@ -103,7 +103,7 @@ class PubSubTemplateTests {
   }
 
   @Test
-  void testPublish_String() {
+  void testPublishString() {
     when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
     when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
     this.pubSubTemplate.publish("testTopic", "testPayload");
@@ -112,7 +112,7 @@ class PubSubTemplateTests {
   }
 
   @Test
-  void testPublish_Bytes() {
+  void testPublishBytes() {
     when(this.mockPublisherFactory.createPublisher("testTopic")).thenReturn(this.mockPublisher);
     when(this.mockPublisher.publish(isA(PubsubMessage.class))).thenReturn(this.settableApiFuture);
     this.pubSubTemplate.publish("testTopic", "testPayload".getBytes());
@@ -121,7 +121,7 @@ class PubSubTemplateTests {
   }
 
   @Test
-  void testPublish_Object() throws IOException {
+  void testPublishObject() {
     AllowedPayload allowedPayload = new AllowedPayload();
     allowedPayload.name = "allowed";
     allowedPayload.value = 12345;

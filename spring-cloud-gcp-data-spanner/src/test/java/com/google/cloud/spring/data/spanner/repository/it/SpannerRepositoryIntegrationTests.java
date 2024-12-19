@@ -148,7 +148,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  void queryMethodsTest_BoundParameters() {
+  void queryMethodsTestBoundParameters() {
     insertTrades("trader1", "BUY", 3);
     insertTrades("trader1", "SELL", 2);
     insertTrades("trader2", "SELL", 3);
@@ -251,7 +251,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  void queryMethodsTest_Trader2() {
+  void queryMethodsTestTrader2() {
     List<Trade> trader2Trades = insertTrades("trader2", "SELL", 3);
 
     List<Trade> trader2TradesRetrieved = this.tradeRepository.findByTraderId("trader2");
@@ -340,7 +340,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  void queryMethodsTest_CustomSort() {
+  void queryMethodsTestCustomSort() {
     insertTrades("trader1", "BUY", 3);
     insertTrades("trader1", "SELL", 2);
     insertTrades("trader2", "SELL", 3);
@@ -354,7 +354,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  void queryMethodsTest_Wildcards() {
+  void queryMethodsTestWildcards() {
     insertTrades("trader1", "BUY", 3);
 
     this.tradeRepository
@@ -376,7 +376,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  void queryMethodsTest_NullColumns() {
+  void queryMethodsTestNullColumns() {
     insertTrades("trader1", "BUY", 3);
 
     Trade someTrade = this.tradeRepository.findBySymbolContains("ABCD").get(0);
@@ -394,7 +394,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  void queryMethodsTest_ParentChildOperations() {
+  void queryMethodsTestParentChildOperations() {
     insertTrades("trader1", "BUY", 3);
 
     Trade someTrade = this.tradeRepository.findBySymbolContains("ABCD").get(0);
@@ -464,7 +464,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  void queryMethodsTest_EagerFetch() {
+  void queryMethodsTestEagerFetch() {
     final Trade aTrade = Trade.makeTrade("trader1", 0, 0);
     aTrade.setAction("BUY");
     aTrade.setSymbol("ABCD");
@@ -480,7 +480,7 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
   }
 
   @Test
-  void queryMethodsTest_SoftDelete() {
+  void queryMethodsTestSoftDelete() {
     Trade someTrade = insertTrade("trader1", "BUY", 1);
     SubTrade subTrade1 =
         new SubTrade(someTrade.getTradeDetail().getId(), someTrade.getTraderId(), "subTrade1");
