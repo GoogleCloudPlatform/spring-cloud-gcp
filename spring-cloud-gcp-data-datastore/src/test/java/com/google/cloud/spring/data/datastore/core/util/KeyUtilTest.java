@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 class KeyUtilTest {
 
   @Test
-  void testRemoveAncestors_NamedKeys() {
+  void testRemoveAncestorsNamedKeys() {
     Key namedKey =
         Key.newBuilder("project", "person", "Smith")
             .addAncestor(PathElement.of("person", "GrandParent"))
@@ -37,7 +37,7 @@ class KeyUtilTest {
   }
 
   @Test
-  void testRemoveAncestors_IdKeys() {
+  void testRemoveAncestorsIdKeys() {
     Key idKey =
         Key.newBuilder("project", "person", 46L)
             .addAncestor(PathElement.of("person", 22L))

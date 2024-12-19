@@ -199,7 +199,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testSubscribe_AndManualAck()
+  void testSubscribeAndManualAck()
       throws InterruptedException, ExecutionException, TimeoutException {
     this.pubSubSubscriberTemplate.subscribe("sub1", this.consumer);
 
@@ -223,7 +223,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testSubscribe_AndManualNack()
+  void testSubscribeAndManualNack()
       throws InterruptedException, ExecutionException, TimeoutException {
     this.pubSubSubscriberTemplate.subscribe("sub1", this.consumer);
 
@@ -247,7 +247,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testSubscribeAndConvert_AndManualAck()
+  void testSubscribeAndConvertAndManualAck()
       throws InterruptedException, ExecutionException, TimeoutException {
     this.pubSubSubscriberTemplate.subscribeAndConvert(
         "sub1", this.convertedConsumer, Boolean.class);
@@ -279,7 +279,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testSubscribeAndConvert_AndManualNack()
+  void testSubscribeAndConvertAndManualNack()
       throws InterruptedException, ExecutionException, TimeoutException {
     this.pubSubSubscriberTemplate.subscribeAndConvert(
         "sub1", this.convertedConsumer, Boolean.class);
@@ -325,7 +325,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPull_AndManualAck()
+  void testPullAndManualAck()
       throws InterruptedException, ExecutionException, TimeoutException {
 
     List<AcknowledgeablePubsubMessage> result = this.pubSubSubscriberTemplate.pull("sub2", 1, true);
@@ -353,7 +353,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPull_AndManualNack()
+  void testPullAndManualNack()
       throws InterruptedException, ExecutionException, TimeoutException {
     List<AcknowledgeablePubsubMessage> result = this.pubSubSubscriberTemplate.pull("sub2", 1, true);
 
@@ -380,7 +380,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPull_AndManualMultiSubscriptionAck()
+  void testPullAndManualMultiSubscriptionAck()
       throws InterruptedException, ExecutionException, TimeoutException {
     ExecutorService mockExecutor = Mockito.mock(ExecutorService.class);
     this.pubSubSubscriberTemplate.setAckExecutor(mockExecutor);
@@ -409,7 +409,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPullAsync_AndManualAck()
+  void testPullAsyncAndManualAck()
       throws InterruptedException, ExecutionException, TimeoutException {
 
     CompletableFuture<List<AcknowledgeablePubsubMessage>> asyncResult =
@@ -455,7 +455,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPullAndAck_NoMessages() {
+  void testPullAndAckNoMessages() {
     when(this.pullCallable.call(any(PullRequest.class)))
         .thenReturn(PullResponse.newBuilder().build());
 
@@ -484,7 +484,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPullAndAckAsync_NoMessages()
+  void testPullAndAckAsyncNoMessages()
       throws InterruptedException, ExecutionException, TimeoutException {
     when(this.pullApiFuture.get()).thenReturn(PullResponse.newBuilder().build());
 
@@ -542,7 +542,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPullNext_NoMessages() {
+  void testPullNextNoMessages() {
     when(this.pullCallable.call(any(PullRequest.class)))
         .thenReturn(PullResponse.newBuilder().build());
 
@@ -570,7 +570,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPullNextAsync_NoMessages()
+  void testPullNextAsyncNoMessages()
       throws InterruptedException, ExecutionException, TimeoutException {
     when(this.pullApiFuture.get()).thenReturn(PullResponse.newBuilder().build());
 

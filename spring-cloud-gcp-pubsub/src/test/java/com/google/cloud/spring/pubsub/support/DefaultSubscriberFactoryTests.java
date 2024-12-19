@@ -401,7 +401,7 @@ class DefaultSubscriberFactoryTests {
     assertThatThrownBy(
         () -> factory.createSubscriber(
             "defaultSubscription",
-            (message, consumer) -> { }
+            (message, consumer) -> {}
         ))
         .isExactlyInstanceOf(IllegalArgumentException.class);
   }
@@ -419,7 +419,7 @@ class DefaultSubscriberFactoryTests {
     assertThatThrownBy(
         () -> factory.createSubscriber(
             "defaultSubscription",
-            (message, consumer) -> { }
+            (message, consumer) -> {}
         ))
         .isExactlyInstanceOf(IllegalArgumentException.class);
   }
@@ -440,7 +440,7 @@ class DefaultSubscriberFactoryTests {
     assertThatThrownBy(
         () -> factory.createSubscriber(
             "defaultSubscription",
-            (message, consumer) -> { }
+            (message, consumer) -> {}
         ))
         .isExactlyInstanceOf(IllegalArgumentException.class);
   }

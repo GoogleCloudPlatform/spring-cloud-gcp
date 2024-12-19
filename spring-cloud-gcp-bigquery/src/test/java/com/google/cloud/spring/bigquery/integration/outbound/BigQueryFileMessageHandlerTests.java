@@ -122,7 +122,7 @@ class BigQueryFileMessageHandlerTests {
   }
 
   @Test
-  void testHandleMessage_ThrowsExecutionExceptionTest()
+  void testHandleMessageThrowsExecutionExceptionTest()
       throws ExecutionException, InterruptedException, TimeoutException {
     CompletableFuture<Job> mockCompletableFuture = mock(CompletableFuture.class);
     when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any())).thenReturn(
@@ -142,7 +142,7 @@ class BigQueryFileMessageHandlerTests {
   }
 
   @Test
-  void testHandleMessage_ThrowsInterruptedExceptionTest()
+  void testHandleMessageThrowsInterruptedExceptionTest()
       throws ExecutionException, InterruptedException, TimeoutException {
     CompletableFuture<Job> mockCompletableFuture = mock(CompletableFuture.class);
     when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any())).thenReturn(

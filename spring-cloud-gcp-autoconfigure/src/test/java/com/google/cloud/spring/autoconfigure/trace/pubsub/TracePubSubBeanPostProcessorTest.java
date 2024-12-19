@@ -37,7 +37,7 @@ final class TracePubSubBeanPostProcessorTest {
       new TracePubSubBeanPostProcessor(mockBeanFactory);
 
   @Test
-  void test_postProcessBeforeInitialization_SubscriberFactory() {
+  void test_postProcessBeforeInitializationSubscriberFactory() {
     SubscriberFactory mockSubscriberFactory = mock(SubscriberFactory.class);
 
     Object result =
@@ -48,7 +48,7 @@ final class TracePubSubBeanPostProcessorTest {
   }
 
   @Test
-  void test_postProcessBeforeInitialization_Other() {
+  void test_postProcessBeforeInitializationOther() {
     PubSubTemplate mockOther = mock(PubSubTemplate.class);
 
     Object result =
