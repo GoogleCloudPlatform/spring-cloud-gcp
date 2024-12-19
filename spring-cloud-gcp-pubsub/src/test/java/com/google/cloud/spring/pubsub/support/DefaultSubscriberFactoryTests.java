@@ -383,7 +383,7 @@ class DefaultSubscriberFactoryTests {
     assertThat(expectedSubscriber)
         .hasFieldOrPropertyWithValue("maxAckExtensionPeriod", java.time.Duration.ofSeconds(2L))
         .hasFieldOrPropertyWithValue("minDurationPerAckExtension", java.time.Duration.ofSeconds(3L))
-        .hasFieldOrPropertyWithValue("maxDurationPerAckExtension",java.time.Duration.ofSeconds(4L))
+        .hasFieldOrPropertyWithValue("maxDurationPerAckExtension", java.time.Duration.ofSeconds(4L))
         .hasFieldOrPropertyWithValue("numPullers", 2)
         .hasFieldOrPropertyWithValue("subStubSettings.endpoint", "test.endpoint");
   }
