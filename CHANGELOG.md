@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.10.14](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.13...v4.10.14) (2024-12-19)
+
+
+### Dependencies
+
+* bump com.puppycrawl.tools:checkstyle from 10.0 to 10.21.0 ([#3417](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3417)) ([073a30f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/073a30f2faad28de16430efe2c8d4aee2f378747))
+
 ## [4.10.13](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.12...v4.10.13) (2024-12-06)
 
 
