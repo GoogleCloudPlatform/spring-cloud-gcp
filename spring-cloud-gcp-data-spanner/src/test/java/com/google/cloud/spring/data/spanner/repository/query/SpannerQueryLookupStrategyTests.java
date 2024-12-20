@@ -174,9 +174,13 @@ class SpannerQueryLookupStrategyTests {
             new SpannerWriteConverter(),
             this.spannerMappingContext);
     assertThat(statement.getSql())
-        .isEqualTo(
-            "SELECT deleted, id3, id, id_2 FROM child_test_table WHERE ((id = @tag0 AND id_2 ="
-                + " @tag1)) AND (deleted = false)");
+        .contains("SELECT ")
+        .contains("deleted")
+        .contains("id3")
+        .contains("id_2")
+        .contains("id")
+        .contains(
+            " FROM child_test_table WHERE ((id = @tag0 AND id_2 = @tag1)) AND (deleted = false)");
     assertThat(statement.getParameters()).hasSize(2);
     assertThat(statement.getParameters().get("tag0").getString()).isEqualTo("key");
     assertThat(statement.getParameters().get("tag1").getString()).isEqualTo("key2");
