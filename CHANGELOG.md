@@ -14,6 +14,20 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.10.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.9.0...v5.10.0) (2024-12-20)
+
+
+### Features
+
+* log stacktrace ([#3418](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3418)) ([cebcbed](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cebcbed7d98f3965f0283b04663e11411cec53b4))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.52.0 ([#3421](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3421)) ([5c74e41](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5c74e410a92b40ebf51f76ad9e3bea4091af3f20))
+* **deps:** update gapic-generator-java-bom.version to v2.51.0 ([#3422](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3422)) ([aae9f99](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/aae9f994697dd4ef22064c50d2461be9bb5dd5be))
+* increase default pubsub health indicator timeout from 2000ms to 5000ms ([#3400](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3400)) ([b67caa9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b67caa9953e574cee3d99909047dc4ac9ac8d518))
+
 ## [5.9.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.8.0...v5.9.0) (2024-12-06)
 
 
