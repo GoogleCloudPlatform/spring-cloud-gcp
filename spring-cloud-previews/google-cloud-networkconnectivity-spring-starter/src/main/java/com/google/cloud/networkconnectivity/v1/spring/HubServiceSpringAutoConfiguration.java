@@ -163,6 +163,11 @@ public class HubServiceSpringAutoConfiguration {
               clientSettingsBuilder.listHubSpokesSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listHubSpokesSettings().setRetrySettings(listHubSpokesRetrySettings);
 
+      RetrySettings queryHubStatusRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.queryHubStatusSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.queryHubStatusSettings().setRetrySettings(queryHubStatusRetrySettings);
+
       RetrySettings listSpokesRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listSpokesSettings().getRetrySettings(), serviceRetry);
@@ -264,6 +269,17 @@ public class HubServiceSpringAutoConfiguration {
       clientSettingsBuilder.listHubSpokesSettings().setRetrySettings(listHubSpokesRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listHubSpokes from properties.");
+      }
+    }
+    Retry queryHubStatusRetry = clientProperties.getQueryHubStatusRetry();
+    if (queryHubStatusRetry != null) {
+      RetrySettings queryHubStatusRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.queryHubStatusSettings().getRetrySettings(),
+              queryHubStatusRetry);
+      clientSettingsBuilder.queryHubStatusSettings().setRetrySettings(queryHubStatusRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for queryHubStatus from properties.");
       }
     }
     Retry listSpokesRetry = clientProperties.getListSpokesRetry();

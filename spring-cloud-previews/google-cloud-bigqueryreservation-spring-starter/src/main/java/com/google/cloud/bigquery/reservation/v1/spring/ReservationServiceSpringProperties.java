@@ -70,6 +70,11 @@ public class ReservationServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry updateReservationRetry;
   /**
+   * Allow override of retry settings at method-level for failoverReservation. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry failoverReservationRetry;
+  /**
    * Allow override of retry settings at method-level for createCapacityCommitment. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -225,6 +230,14 @@ public class ReservationServiceSpringProperties implements CredentialsSupplier {
 
   public void setUpdateReservationRetry(Retry updateReservationRetry) {
     this.updateReservationRetry = updateReservationRetry;
+  }
+
+  public Retry getFailoverReservationRetry() {
+    return this.failoverReservationRetry;
+  }
+
+  public void setFailoverReservationRetry(Retry failoverReservationRetry) {
+    this.failoverReservationRetry = failoverReservationRetry;
   }
 
   public Retry getCreateCapacityCommitmentRetry() {

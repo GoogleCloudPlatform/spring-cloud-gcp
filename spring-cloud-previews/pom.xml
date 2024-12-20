@@ -61,6 +61,7 @@
     <module>google-cloud-network-security-spring-starter</module>
     <module>google-cloud-network-management-spring-starter</module>
     <module>google-cloud-monitoring-dashboard-spring-starter</module>
+    <module>google-cloud-valkey-spring-starter</module>
     <module>google-cloud-memcache-spring-starter</module>
     <module>google-cloud-managed-identities-spring-starter</module>
     <module>google-cloud-language-spring-starter</module>
