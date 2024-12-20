@@ -354,6 +354,24 @@ public class DataCatalogSpringAutoConfiguration {
           .testIamPermissionsSettings()
           .setRetrySettings(testIamPermissionsRetrySettings);
 
+      RetrySettings setConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setConfigSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.setConfigSettings().setRetrySettings(setConfigRetrySettings);
+
+      RetrySettings retrieveConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.retrieveConfigSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.retrieveConfigSettings().setRetrySettings(retrieveConfigRetrySettings);
+
+      RetrySettings retrieveEffectiveConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.retrieveEffectiveConfigSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .retrieveEffectiveConfigSettings()
+          .setRetrySettings(retrieveEffectiveConfigRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -737,6 +755,41 @@ public class DataCatalogSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for testIamPermissions from properties.");
+      }
+    }
+    Retry setConfigRetry = clientProperties.getSetConfigRetry();
+    if (setConfigRetry != null) {
+      RetrySettings setConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setConfigSettings().getRetrySettings(), setConfigRetry);
+      clientSettingsBuilder.setConfigSettings().setRetrySettings(setConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for setConfig from properties.");
+      }
+    }
+    Retry retrieveConfigRetry = clientProperties.getRetrieveConfigRetry();
+    if (retrieveConfigRetry != null) {
+      RetrySettings retrieveConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.retrieveConfigSettings().getRetrySettings(),
+              retrieveConfigRetry);
+      clientSettingsBuilder.retrieveConfigSettings().setRetrySettings(retrieveConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for retrieveConfig from properties.");
+      }
+    }
+    Retry retrieveEffectiveConfigRetry = clientProperties.getRetrieveEffectiveConfigRetry();
+    if (retrieveEffectiveConfigRetry != null) {
+      RetrySettings retrieveEffectiveConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.retrieveEffectiveConfigSettings().getRetrySettings(),
+              retrieveEffectiveConfigRetry);
+      clientSettingsBuilder
+          .retrieveEffectiveConfigSettings()
+          .setRetrySettings(retrieveEffectiveConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for retrieveEffectiveConfig from properties.");
       }
     }
     return clientSettingsBuilder.build();

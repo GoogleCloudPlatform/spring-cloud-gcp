@@ -235,6 +235,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.network-profiles.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/NetworkProfiles components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.networks.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/Networks components.",

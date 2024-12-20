@@ -157,6 +157,18 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.aiplatform.v1.vertex-rag-data-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/VertexRagDataService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.vertex-rag-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/VertexRagService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.aiplatform.v1.vizier-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud aiplatform/VizierService components.",
