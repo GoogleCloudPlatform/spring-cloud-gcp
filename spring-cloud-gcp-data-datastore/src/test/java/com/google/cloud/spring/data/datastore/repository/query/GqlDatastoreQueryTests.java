@@ -18,7 +18,6 @@ package com.google.cloud.spring.data.datastore.repository.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -48,14 +47,18 @@ import com.google.cloud.spring.data.datastore.core.mapping.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -63,9 +66,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;
-import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.data.repository.query.QueryMethodValueEvaluationContextAccessor;
+import org.springframework.data.repository.query.ValueExpressionDelegate;
 
 /** Tests for the GQL Query Method. */
 class GqlDatastoreQueryTests {
@@ -83,7 +85,7 @@ class GqlDatastoreQueryTests {
 
   private DatastoreQueryMethod queryMethod;
 
-  private QueryMethodEvaluationContextProvider evaluationContextProvider;
+  private ValueExpressionDelegate valueExpressionDelegate;
 
   @BeforeEach
   void initMocks() {
@@ -96,7 +98,8 @@ class GqlDatastoreQueryTests {
     when(this.datastoreTemplate.getDatastoreEntityConverter())
         .thenReturn(this.datastoreEntityConverter);
     when(this.datastoreEntityConverter.getConversions()).thenReturn(this.readWriteConversions);
-    this.evaluationContextProvider = mock(QueryMethodEvaluationContextProvider.class);
+    this.valueExpressionDelegate = mock(ValueExpressionDelegate.class);
+    when(valueExpressionDelegate.getEvaluationContextAccessor()).thenReturn(mock(QueryMethodValueEvaluationContextAccessor.class));
   }
 
   private GqlDatastoreQuery<Trade> createQuery(
@@ -108,7 +111,7 @@ class GqlDatastoreQueryTests {
                 this.queryMethod,
                 this.datastoreTemplate,
                 gql,
-                this.evaluationContextProvider,
+                this.valueExpressionDelegate,
                 this.datastoreMappingContext));
     doReturn(isPageQuery).when(spy).isPageQuery();
     doReturn(isSliceQuery).when(spy).isSliceQuery();
@@ -166,14 +169,7 @@ class GqlDatastoreQueryTests {
 
     doReturn(key).when(this.datastoreTemplate).getKey(any());
 
-    EvaluationContext evaluationContext = new StandardEvaluationContext();
-    for (int i = 0; i < paramVals.length; i++) {
-      evaluationContext.setVariable(paramNames[i], paramVals[i]);
-    }
-    when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
-        .thenReturn(evaluationContext);
-    when(this.evaluationContextProvider.getEvaluationContext(any(), any(), any()))
-        .thenReturn(evaluationContext);
+    this.valueExpressionDelegate = ValueExpressionDelegate.create();
 
     GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, false, false);
 
@@ -516,21 +512,32 @@ class GqlDatastoreQueryTests {
 
     Mockito.<Parameters>when(this.queryMethod.getParameters()).thenReturn(parameters);
 
+    final List<Parameter> parameterList = new ArrayList<>();
+    for (int index = 0; index < params.length; index++) {
+
+      Parameter param = mock(Parameter.class);
+      parameterList.add(param);
+      when(param.getName())
+          .thenReturn(
+              paramNames[index] == null ? Optional.empty() : Optional.of(paramNames[index]));
+
+      Mockito.<Class>when(param.getType()).thenReturn(params[index].getClass());
+      when(param.isNamedParameter()).thenReturn(true);
+      when(param.getRequiredName()).thenReturn(paramNames[index]);
+      when(param.getIndex()).thenReturn(index);
+
+      when(parameters.getParameter(eq(index))).thenAnswer(invocation -> param);
+    }
     when(parameters.getNumberOfParameters()).thenReturn(paramNames.length);
-    when(parameters.getParameter(anyInt()))
+    // we return a new iterator each time. This is because foreach loops call iterable.iterator()
+    // once per foreach loop.
+    when(parameters.iterator())
         .thenAnswer(
-            invocation -> {
-              int index = invocation.getArgument(0);
-              Parameter param = mock(Parameter.class);
-              when(param.getName())
-                  .thenReturn(
-                      paramNames[index] == null
-                          ? Optional.empty()
-                          : Optional.of(paramNames[index]));
-
-              Mockito.<Class>when(param.getType()).thenReturn(params[index].getClass());
-
-              return param;
+            new Answer<Iterator>() {
+              @Override
+              public Iterator answer(InvocationOnMock invocation) throws Throwable {
+                return parameterList.iterator();
+              }
             });
     return parameters;
   }
