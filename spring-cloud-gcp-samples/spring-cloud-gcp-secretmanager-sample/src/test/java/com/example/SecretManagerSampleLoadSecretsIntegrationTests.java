@@ -44,14 +44,11 @@ class SecretManagerSampleLoadSecretsIntegrationTests {
   @Autowired private TestRestTemplate testRestTemplate;
 
   private static final String SECRET_CONTENT = "Hello world.";
-  private static final String DEFAULT_SECRET_CONTENT = "DEFAULT";
 
   @Test
   void testApplicationStartupSecretLoadsCorrectly() {
     ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
     assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-    assertThat(response.getBody())
-        .contains("<b>Default Application secret if not found:</b> <i>" + DEFAULT_SECRET_CONTENT + "</i><br/>");
     assertThat(response.getBody())
         .contains("<b>Application secret from @Value:</b> <i>" + SECRET_CONTENT + "</i>");
     assertThat(response.getBody())

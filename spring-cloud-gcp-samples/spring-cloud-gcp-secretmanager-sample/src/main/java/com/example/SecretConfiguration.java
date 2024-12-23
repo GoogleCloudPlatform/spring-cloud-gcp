@@ -30,6 +30,6 @@ public class SecretConfiguration {
   }
 
   public String getSecret() {
-    return this.secret;
+    return secret;
   }
 }
