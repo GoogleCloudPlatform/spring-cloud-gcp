@@ -39,15 +39,20 @@ public class SecretManagerWebController {
   // secret can be refreshed when decorated with @RefreshScope on the class.
   private final SecretConfiguration configuration;
 
-  // For the default value takes place, there should be no property called `application-fake`
+  // For the default value to take place, there should be no property called `application-fake`
   // in property files.
-  @Value("${${sm://application-fake}:DEFAULT}")
+  // Note that the colon symbol must be escaped with a backslash. See
+  // https://github.com/spring-projects/spring-framework/commit/00e05e603d4423d33c99dadeb52fef26be71dfb8
+  @Value("${sm://application-fake:DEFAULT}")
   private String defaultSecret;
   // Application secrets can be accessed using @Value syntax.
-  @Value("${sm://application-secret}")
+  // Note that the colon symbol must be escaped with a backslash. See
+  // https://github.com/spring-projects/spring-framework/commit/00e05e603d4423d33c99dadeb52fef26be71dfb8
+  @Value("${sm://application-secret:value}")
   private String appSecretFromValue;
 
-  public SecretManagerWebController(SecretManagerTemplate secretManagerTemplate,
+  public SecretManagerWebController(
+      SecretManagerTemplate secretManagerTemplate,
       SecretConfiguration configuration
   ) {
     this.secretManagerTemplate = secretManagerTemplate;

@@ -46,7 +46,7 @@ import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.ParameterAccessor;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ParametersParameterAccessor;
-import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ParserContext;
@@ -80,7 +80,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
         return builder.build();
       };
 
-  private QueryMethodEvaluationContextProvider evaluationContextProvider;
+  private ValueExpressionDelegate valueExpressionDelegate;
 
   private SpelExpressionParser expressionParser;
 
@@ -89,12 +89,12 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
       SpannerQueryMethod queryMethod,
       SpannerTemplate spannerTemplate,
       String sql,
-      QueryMethodEvaluationContextProvider evaluationContextProvider,
+      ValueExpressionDelegate valueExpressionDelegate,
       SpelExpressionParser expressionParser,
       SpannerMappingContext spannerMappingContext,
       boolean isDml) {
     super(type, queryMethod, spannerTemplate, spannerMappingContext);
-    this.evaluationContextProvider = evaluationContextProvider;
+    this.valueExpressionDelegate = valueExpressionDelegate;
     this.expressionParser = expressionParser;
     this.sql = StringUtils.trimTrailingCharacter(sql.trim(), ';');
     this.isDml = isDml;
@@ -158,9 +158,8 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     StringBuilder sb = new StringBuilder();
     Map<Object, String> valueToTag = new HashMap<>();
     int tagNum = 0;
-    EvaluationContext evaluationContext =
-        this.evaluationContextProvider.getEvaluationContext(
-            this.queryMethod.getParameters(), queryTagValue.rawParams);
+    EvaluationContext evaluationContext = this.valueExpressionDelegate.getEvaluationContextAccessor().create(this.queryMethod.getParameters())
+            .getEvaluationContext(queryTagValue.rawParams).getEvaluationContext();
     for (Expression expression : expressions) {
       if (expression instanceof LiteralExpression) {
         sb.append(expression.getValue(String.class));

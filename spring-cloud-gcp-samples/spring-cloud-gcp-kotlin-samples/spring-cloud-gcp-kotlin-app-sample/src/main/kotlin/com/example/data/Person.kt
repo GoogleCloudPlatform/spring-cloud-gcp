@@ -34,5 +34,5 @@ data class Person(
 		val email: String,
 
 		@Id @GeneratedValue
-		var id: Long? = 0
+		var id: Long? = null
 )
