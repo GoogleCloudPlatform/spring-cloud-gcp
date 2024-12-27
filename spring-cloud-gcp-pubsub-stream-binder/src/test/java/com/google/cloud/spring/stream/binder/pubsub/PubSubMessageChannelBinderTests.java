@@ -104,11 +104,13 @@ class PubSubMessageChannelBinderTests {
         new ApplicationContextRunner()
             .withBean(PubSubTemplate.class, () -> pubSubTemplate)
             .withBean(PubSubAdmin.class, () -> pubSubAdmin)
+            .withPropertyValues("logging.level.root=DEBUG", "debug=true")
+            .withUserConfiguration(BaseTestConfiguration.class)
             .withConfiguration(
                 AutoConfigurations.of(
-                    PubSubBinderConfiguration.class,
-                    PubSubExtendedBindingProperties.class));
-    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
+                    PubSubBinderConfiguration.class
+                ));
+    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, null);
   }
 
   @Test
@@ -362,6 +364,14 @@ class PubSubMessageChannelBinderTests {
                           String [] headersToCheck = (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true);
                           Assertions.assertArrayEquals(new String[]{"foo2", "foo3"}, headersToCheck);
                         });
+  }
+
+  @EnableAutoConfiguration
+  public static class BaseTestConfiguration {
+    @Bean
+    public PubSubExtendedBindingProperties pubSubExtendedBindingProperties() {
+      return new PubSubExtendedBindingProperties();
+    }
   }
 
   @EnableAutoConfiguration
