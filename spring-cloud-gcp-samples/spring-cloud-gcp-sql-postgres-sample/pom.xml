@@ -60,5 +60,19 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
+	<build>
+		<plugins>
+			<plugin>
+				<!--This is not needed when upgrading directly to Spring Boot 3.4.1 or later.-->
+				<!--See https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.4-Release-Notes#netty-in-native-image-->
+				<groupId>org.graalvm.buildtools</groupId>
+				<artifactId>native-maven-plugin</artifactId>
+				<configuration>
+					<metadataRepository>
+						<version>0.3.14</version>
+					</metadataRepository>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
