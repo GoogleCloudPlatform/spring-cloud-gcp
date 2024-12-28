@@ -26,14 +26,13 @@ public class GcsSpringIntegrationTestConfiguration {
 
   private String uniqueDirectory;
 
-  @Value("${gcs-local-directory}")
-  String localDirectory;
+  public GcsSpringIntegrationTestConfiguration(
+      @Value("${gcs-local-directory}") String localDirectory) {
+    uniqueDirectory = String.format("%s-%s", localDirectory, UUID.randomUUID());
+  }
 
   @Bean("localDirectoryName")
   public String uniqueDirectory() {
-    if (uniqueDirectory == null) {
-      uniqueDirectory = String.format("%s-%s", localDirectory, UUID.randomUUID());
-    }
     return uniqueDirectory;
   }
 }
