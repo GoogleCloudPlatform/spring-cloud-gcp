@@ -17,14 +17,10 @@
 package com.google.cloud.spring.stream.binder.pubsub;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.CredentialTypeForMetrics;
-import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
@@ -110,7 +106,7 @@ class PubSubMessageChannelBinderTests {
                 AutoConfigurations.of(
                     PubSubBinderConfiguration.class
                 ));
-    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, null);
+    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
   }
 
   @Test
