@@ -24,6 +24,7 @@ import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryMethod;
+import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.util.Assert;
@@ -41,6 +42,9 @@ public class DatastoreQueryLookupStrategy implements QueryLookupStrategy {
 
   private final ValueExpressionDelegate valueExpressionDelegate;
 
+  @SuppressWarnings("deprecation")
+  private final QueryMethodEvaluationContextProvider queryEvaluationContextProvider;
+
   public DatastoreQueryLookupStrategy(
       DatastoreMappingContext datastoreMappingContext,
       DatastoreOperations datastoreOperations,
@@ -50,6 +54,19 @@ public class DatastoreQueryLookupStrategy implements QueryLookupStrategy {
     Assert.notNull(valueExpressionDelegate, "A non-null ValueExpressionDelegate is required.");
     this.datastoreMappingContext = datastoreMappingContext;
     this.valueExpressionDelegate = valueExpressionDelegate;
+    this.queryEvaluationContextProvider = null;
+    this.datastoreOperations = datastoreOperations;
+  }
+  public DatastoreQueryLookupStrategy(
+      DatastoreMappingContext datastoreMappingContext,
+      DatastoreOperations datastoreOperations,
+      @SuppressWarnings("deprecation") QueryMethodEvaluationContextProvider queryEvaluationContextProvider) {
+    Assert.notNull(datastoreMappingContext, "A non-null DatastoreMappingContext is required.");
+    Assert.notNull(datastoreOperations, "A non-null DatastoreOperations is required.");
+    Assert.notNull(queryEvaluationContextProvider, "A non-null EvaluationContextProvider is required.");
+    this.datastoreMappingContext = datastoreMappingContext;
+    this.valueExpressionDelegate = null;
+    this.queryEvaluationContextProvider = queryEvaluationContextProvider;
     this.datastoreOperations = datastoreOperations;
   }
 
@@ -80,12 +97,21 @@ public class DatastoreQueryLookupStrategy implements QueryLookupStrategy {
 
   <T> GqlDatastoreQuery<T> createGqlDatastoreQuery(
       Class<T> entityType, DatastoreQueryMethod queryMethod, String gql) {
+    if (valueExpressionDelegate != null) {
+      return new GqlDatastoreQuery<>(
+          entityType,
+          queryMethod,
+          this.datastoreOperations,
+          gql,
+          this.valueExpressionDelegate,
+          this.datastoreMappingContext);
+    }
     return new GqlDatastoreQuery<>(
         entityType,
         queryMethod,
         this.datastoreOperations,
         gql,
-        this.valueExpressionDelegate,
+        this.queryEvaluationContextProvider,
         this.datastoreMappingContext);
   }
 
