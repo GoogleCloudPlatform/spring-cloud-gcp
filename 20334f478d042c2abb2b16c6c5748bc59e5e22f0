@@ -1,0 +1,1 @@
+This fix is meant to adapt to the Hibernate upgrade. See [commit](https://github.com/hibernate/hibernate-orm/commit/522269e9a93f71af593f1d94039df5ade4f93617), see [upgrade](https://github.com/spring-projects/spring-boot/issues/43100), see [SO](https://stackoverflow.com/questions/79228209/spring-boot-3-4-0-lets-integration-tests-with-jpa-hibernate-fail)
