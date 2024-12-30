@@ -80,3 +80,33 @@ updates:
     # Spring Shell dependencies
     - dependency-name: "org.springframework.shell:spring-shell-starter"
       versions: [">=3.2.0"]
+
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  commit-message:
+    # Prefix all commit messages with "deps: "
+    prefix: "deps"
+  open-pull-requests-limit: 10
+  target-branch: "5.x"
+  labels:
+    - "5.x dependencies"
+  ignore:
+    # Ignore major version updates - these should be made manually
+    - dependency-name: "*"
+      update-types: [ "version-update:semver-major" ]
+    # Ignore formatter dependency versions used in codegen modules, since they are fixed for Java 8 support
+    - dependency-name: "com.coveo:fmt-maven-plugin"
+    - dependency-name: "com.google.googlejavaformat:google-java-format"
+    # Ignore dependencies corresponding to Spring Boot 3.4+, Spring Cloud 2024.x:
+    # Spring Boot dependencies
+    - dependency-name: "org.springframework.boot:spring-boot-*"
+      versions: [">=3.4.0"]
+    # Spring Cloud dependencies
+    - dependency-name: "org.springframework.cloud:spring-cloud-*"
+      versions: ["2024.x"]
+    # Spring Shell dependencies 3.4+ is meant to be used with Spring boot 3.4, which is part of
+    # the non-supported (by 5.x branch) Spring Cloud 2024
+    - dependency-name: "org.springframework.shell:spring-shell-starter"
+      versions: [">=3.4.0"]
