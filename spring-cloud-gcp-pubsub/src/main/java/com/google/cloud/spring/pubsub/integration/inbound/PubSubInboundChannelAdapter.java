@@ -175,9 +175,9 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
     // so we explicitly log failure messages.
     // See https://github.com/spring-projects/spring-framework/issues/25162 for more info.
     if (re instanceof MessageDeliveryException messageDeliveryException) {
-      LOGGER.warn(messageDeliveryException.getFailedMessage());
+      LOGGER.warn(messageDeliveryException.getFailedMessage(), messageDeliveryException);
     } else {
-      LOGGER.warn(re.getMessage());
+      LOGGER.warn(re.getMessage(), re);
     }
   }
 

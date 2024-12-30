@@ -202,6 +202,21 @@ public class DataCatalogSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry testIamPermissionsRetry;
+  /**
+   * Allow override of retry settings at method-level for setConfig. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry setConfigRetry;
+  /**
+   * Allow override of retry settings at method-level for retrieveConfig. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry retrieveConfigRetry;
+  /**
+   * Allow override of retry settings at method-level for retrieveEffectiveConfig. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry retrieveEffectiveConfigRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -494,5 +509,29 @@ public class DataCatalogSpringProperties implements CredentialsSupplier {
 
   public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
     this.testIamPermissionsRetry = testIamPermissionsRetry;
+  }
+
+  public Retry getSetConfigRetry() {
+    return this.setConfigRetry;
+  }
+
+  public void setSetConfigRetry(Retry setConfigRetry) {
+    this.setConfigRetry = setConfigRetry;
+  }
+
+  public Retry getRetrieveConfigRetry() {
+    return this.retrieveConfigRetry;
+  }
+
+  public void setRetrieveConfigRetry(Retry retrieveConfigRetry) {
+    this.retrieveConfigRetry = retrieveConfigRetry;
+  }
+
+  public Retry getRetrieveEffectiveConfigRetry() {
+    return this.retrieveEffectiveConfigRetry;
+  }
+
+  public void setRetrieveEffectiveConfigRetry(Retry retrieveEffectiveConfigRetry) {
+    this.retrieveEffectiveConfigRetry = retrieveEffectiveConfigRetry;
   }
 }

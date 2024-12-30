@@ -24,4 +24,6 @@ com.google.cloud.aiplatform.v1.spring.PredictionServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.ScheduleServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.SpecialistPoolServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.TensorboardServiceSpringAutoConfiguration
+com.google.cloud.aiplatform.v1.spring.VertexRagDataServiceSpringAutoConfiguration
+com.google.cloud.aiplatform.v1.spring.VertexRagServiceSpringAutoConfiguration
 com.google.cloud.aiplatform.v1.spring.VizierServiceSpringAutoConfiguration
