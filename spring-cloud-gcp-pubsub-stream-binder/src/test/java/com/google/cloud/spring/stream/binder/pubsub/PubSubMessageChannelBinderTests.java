@@ -101,7 +101,6 @@ class PubSubMessageChannelBinderTests {
         new ApplicationContextRunner()
             .withBean(PubSubTemplate.class, () -> pubSubTemplate)
             .withBean(PubSubAdmin.class, () -> pubSubAdmin)
-            .withPropertyValues("logging.level.root=DEBUG", "debug=true")
             .withUserConfiguration(BaseTestConfiguration.class)
             .withConfiguration(
                 AutoConfigurations.of(
@@ -369,6 +368,16 @@ class PubSubMessageChannelBinderTests {
     public PubSubExtendedBindingProperties pubSubExtendedBindingProperties() {
       return new PubSubExtendedBindingProperties();
     }
+
+    @Bean
+    public CredentialsProvider googleCredentials() {
+      return () -> TestUtils.MOCK_CREDENTIALS;
+    }
+
+    @Bean
+    public GcpProjectIdProvider projectIdProvider() {
+      return () -> "fake project";
+    }
   }
 
   @EnableAutoConfiguration
@@ -393,16 +402,6 @@ class PubSubMessageChannelBinderTests {
     @Bean
     public Consumer<String> consumer() {
       return str -> LOGGER.info("received " + str);
-    }
-
-    @Bean
-    public GcpProjectIdProvider projectIdProvider() {
-      return () -> "fake project";
-    }
-
-    @Bean
-    public CredentialsProvider googleCredentials() {
-      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }
