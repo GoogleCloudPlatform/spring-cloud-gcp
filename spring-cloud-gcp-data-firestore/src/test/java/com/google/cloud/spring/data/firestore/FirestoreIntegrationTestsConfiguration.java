@@ -51,24 +51,21 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableReactiveFirestoreRepositories(basePackageClasses = UserRepository.class)
 @EnableTransactionManagement
 public class FirestoreIntegrationTestsConfiguration {
+  String defaultParent;
+
   String uuid = UUID.randomUUID().toString();
 
   String projectId;
 
-  @Value("${test.integration.firestore.database-id:(default)}")
   String databaseId;
 
-  String defaultParent = null;
-
-  public FirestoreIntegrationTestsConfiguration() {
+  @Autowired
+  public FirestoreIntegrationTestsConfiguration(
+      @Value("${test.integration.firestore.database-id:(default)}") String databaseId) {
     this.projectId = new DefaultGcpProjectIdProvider().getProjectId();
-  }
-
-  private String getDefaultParent() {
-    if (defaultParent == null) {
-      defaultParent = String.format("projects/%s/databases/%s/documents", this.projectId, databaseId);
-    }
-    return defaultParent;
+    this.databaseId = databaseId;
+    this.defaultParent =
+        String.format("projects/%s/databases/%s/documents", this.projectId, databaseId);
   }
 
   private static final PercentEscaper PERCENT_ESCAPER = new PercentEscaper("._-~");
@@ -98,7 +95,7 @@ public class FirestoreIntegrationTestsConfiguration {
       FirestoreClassMapper classMapper,
       FirestoreMappingContext firestoreMappingContext) {
     return new FirestoreTemplate(
-        firestoreStub, this.getDefaultParent(), classMapper, firestoreMappingContext, uuid);
+        firestoreStub, this.defaultParent, classMapper, firestoreMappingContext, uuid);
   }
 
   @Bean
@@ -137,6 +134,6 @@ public class FirestoreIntegrationTestsConfiguration {
   @ConditionalOnMissingBean
   public ReactiveFirestoreTransactionManager firestoreTransactionManager(
       FirestoreGrpc.FirestoreStub firestoreStub, FirestoreClassMapper classMapper) {
-    return new ReactiveFirestoreTransactionManager(firestoreStub, this.getDefaultParent(), classMapper);
+    return new ReactiveFirestoreTransactionManager(firestoreStub, this.defaultParent, classMapper);
   }
 }
