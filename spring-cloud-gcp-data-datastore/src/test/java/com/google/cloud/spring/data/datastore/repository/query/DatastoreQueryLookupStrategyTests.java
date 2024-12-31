@@ -32,6 +32,8 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingConte
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.query.Parameter;
@@ -49,9 +51,11 @@ class DatastoreQueryLookupStrategyTests {
 
   private DatastoreQueryMethod queryMethod;
 
-  private DatastoreQueryLookupStrategy datastoreQueryLookupStrategy;
+  private DatastoreQueryLookupStrategy[] lookupStrategies;
 
   private ValueExpressionDelegate valueExpressionDelegate;
+
+  private QueryMethodEvaluationContextProvider evaluationContextProvider;
 
   @BeforeEach
   void initMocks() {
@@ -59,11 +63,20 @@ class DatastoreQueryLookupStrategyTests {
     this.datastoreMappingContext = new DatastoreMappingContext();
     this.queryMethod = mock(DatastoreQueryMethod.class);
     this.valueExpressionDelegate = mock(ValueExpressionDelegate.class);
-    this.datastoreQueryLookupStrategy = getDatastoreQueryLookupStrategy();
+    this.evaluationContextProvider = mock(QueryMethodEvaluationContextProvider.class);
+    this.lookupStrategies = new DatastoreQueryLookupStrategy[] {
+      getDatastoreQueryLookupStrategy(this.valueExpressionDelegate),
+      getDatastoreQueryLookupStrategy(this.evaluationContextProvider),
+    };
   }
 
-  @Test
-  void resolveSqlQueryTest() {
+  /**
+   * int parameters are used as indexes of the two lookup strategies we use
+   */
+  @ParameterizedTest
+  @ValueSource(ints = {0, 1})
+  void resolveSqlQueryTest(int lookupStrategyIndex) {
+    DatastoreQueryLookupStrategy lookupStrategy = this.lookupStrategies[lookupStrategyIndex];
     String queryName = "fakeNamedQueryName";
     String query = "fake query";
     when(this.queryMethod.getNamedQueryName()).thenReturn(queryName);
@@ -89,23 +102,37 @@ class DatastoreQueryLookupStrategyTests {
     when(namedQueries.getQuery(queryName)).thenReturn(query);
     when(valueExpressionDelegate.getEvaluationContextAccessor()).thenReturn(mock(QueryMethodValueEvaluationContextAccessor.class));
 
-    this.datastoreQueryLookupStrategy.resolveQuery(null, null, null, namedQueries);
+    lookupStrategy.resolveQuery(null, null, null, namedQueries);
 
-    verify(this.datastoreQueryLookupStrategy, times(1))
+    verify(lookupStrategy, times(1))
         .createGqlDatastoreQuery(eq(Object.class), same(this.queryMethod), eq(query));
   }
 
-  private DatastoreQueryLookupStrategy getDatastoreQueryLookupStrategy() {
-    DatastoreQueryLookupStrategy spannerQueryLookupStrategy =
+  private DatastoreQueryLookupStrategy getDatastoreQueryLookupStrategy(ValueExpressionDelegate valueExpressionDelegate) {
+    DatastoreQueryLookupStrategy lookupStrategy =
         spy(
             new DatastoreQueryLookupStrategy(
                 this.datastoreMappingContext,
                 this.datastoreTemplate,
-                this.valueExpressionDelegate));
-    doReturn(Object.class).when(spannerQueryLookupStrategy).getEntityType(any());
+                valueExpressionDelegate));
+    return prepareDatastoreQueryLookupStrategy(lookupStrategy);
+  }
+
+  private DatastoreQueryLookupStrategy getDatastoreQueryLookupStrategy(QueryMethodEvaluationContextProvider evaluationContextProvider) {
+    DatastoreQueryLookupStrategy lookupStrategy =
+        spy(
+            new DatastoreQueryLookupStrategy(
+                this.datastoreMappingContext,
+                this.datastoreTemplate,
+                evaluationContextProvider));
+    return prepareDatastoreQueryLookupStrategy(lookupStrategy);
+  }
+
+  private DatastoreQueryLookupStrategy prepareDatastoreQueryLookupStrategy(DatastoreQueryLookupStrategy base) {
+    doReturn(Object.class).when(base).getEntityType(any());
     doReturn(this.queryMethod)
-        .when(spannerQueryLookupStrategy)
+        .when(base)
         .createQueryMethod(any(), any(), any());
-    return spannerQueryLookupStrategy;
+    return base;
   }
 }

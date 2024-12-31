@@ -56,6 +56,8 @@ import java.util.stream.Stream;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -66,8 +68,11 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;
+import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.QueryMethodValueEvaluationContextAccessor;
 import org.springframework.data.repository.query.ValueExpressionDelegate;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 /** Tests for the GQL Query Method. */
 class GqlDatastoreQueryTests {
@@ -87,6 +92,8 @@ class GqlDatastoreQueryTests {
 
   private ValueExpressionDelegate valueExpressionDelegate;
 
+  private QueryMethodEvaluationContextProvider evaluationContextProvider;
+
   @BeforeEach
   void initMocks() {
     this.queryMethod = mock(DatastoreQueryMethod.class);
@@ -100,26 +107,45 @@ class GqlDatastoreQueryTests {
     when(this.datastoreEntityConverter.getConversions()).thenReturn(this.readWriteConversions);
     this.valueExpressionDelegate = mock(ValueExpressionDelegate.class);
     when(valueExpressionDelegate.getEvaluationContextAccessor()).thenReturn(mock(QueryMethodValueEvaluationContextAccessor.class));
+    this.evaluationContextProvider = mock(QueryMethodEvaluationContextProvider.class);
+  }
+
+  private GqlDatastoreQuery<Trade> createQuerySpy(
+      String gql, boolean isPageQuery, boolean isSliceQuery, boolean useValueExpressionDelegate) {
+    GqlDatastoreQuery<Trade> spy;
+    if (useValueExpressionDelegate) {
+      spy =
+          spy(
+              new GqlDatastoreQuery<>(
+                  Trade.class,
+                  this.queryMethod,
+                  this.datastoreTemplate,
+                  gql,
+                  this.valueExpressionDelegate,
+                  this.datastoreMappingContext));
+    } else {
+      spy = spy(new GqlDatastoreQuery<>(
+          Trade.class,
+          this.queryMethod,
+          this.datastoreTemplate,
+          gql,
+          this.evaluationContextProvider,
+          this.datastoreMappingContext));
+    }
+    return spy;
   }
 
   private GqlDatastoreQuery<Trade> createQuery(
-      String gql, boolean isPageQuery, boolean isSliceQuery) {
-    GqlDatastoreQuery<Trade> spy =
-        spy(
-            new GqlDatastoreQuery<>(
-                Trade.class,
-                this.queryMethod,
-                this.datastoreTemplate,
-                gql,
-                this.valueExpressionDelegate,
-                this.datastoreMappingContext));
+      String gql, boolean isPageQuery, boolean isSliceQuery, boolean useValueExpressionDelegate) {
+    GqlDatastoreQuery<Trade> spy = createQuerySpy(gql, isPageQuery, isSliceQuery, useValueExpressionDelegate);
     doReturn(isPageQuery).when(spy).isPageQuery();
     doReturn(isSliceQuery).when(spy).isSliceQuery();
     return spy;
   }
 
-  @Test
-  void compoundNameConventionTest() {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void compoundNameConventionTest(boolean useValueExpressionDelegate) {
 
     String gql =
         "SELECT * FROM "
@@ -169,9 +195,20 @@ class GqlDatastoreQueryTests {
 
     doReturn(key).when(this.datastoreTemplate).getKey(any());
 
+    // to be used when using a query method evaluation context
+    EvaluationContext evaluationContext = new StandardEvaluationContext();
+    for (int i = 0; i < paramVals.length; i++) {
+      evaluationContext.setVariable(paramNames[i], paramVals[i]);
+    }
+    when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
+        .thenReturn(evaluationContext);
+    when(this.evaluationContextProvider.getEvaluationContext(any(), any(), any()))
+        .thenReturn(evaluationContext);
+
+    // to be used when testing with a value expression delegate
     this.valueExpressionDelegate = ValueExpressionDelegate.create();
 
-    GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, false, false);
+    GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, false, false, useValueExpressionDelegate);
 
     doAnswer(
             invocation -> {
@@ -223,8 +260,9 @@ class GqlDatastoreQueryTests {
     verify(this.datastoreTemplate, times(1)).queryKeysOrEntities(any(), eq(Trade.class));
   }
 
-  @Test
-  void pageableTest() {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void pageableTest(boolean useValueExpressionDelegate) {
 
     String gql = "SELECT * FROM trades WHERE price=@price";
 
@@ -237,7 +275,7 @@ class GqlDatastoreQueryTests {
     when(parameters.hasPageableParameter()).thenReturn(true);
     when(parameters.getPageableIndex()).thenReturn(1);
 
-    GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, false, false);
+    GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, false, false, useValueExpressionDelegate);
 
     doAnswer(
             invocation -> {
@@ -264,8 +302,9 @@ class GqlDatastoreQueryTests {
     verify(this.datastoreTemplate, times(1)).queryKeysOrEntities(any(), eq(Trade.class));
   }
 
-  @Test
-  void pageableTestSort() {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void pageableTestSort(boolean useValueExpressionDelegate) {
 
     String gql = "SELECT * FROM trades WHERE price=@price";
 
@@ -278,7 +317,7 @@ class GqlDatastoreQueryTests {
     when(parameters.hasSortParameter()).thenReturn(true);
     when(parameters.getSortIndex()).thenReturn(1);
 
-    GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, false, false);
+    GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, false, false, useValueExpressionDelegate);
 
     doAnswer(
             invocation -> {
@@ -303,8 +342,9 @@ class GqlDatastoreQueryTests {
     verify(this.datastoreTemplate, times(1)).queryKeysOrEntities(any(), eq(Trade.class));
   }
 
-  @Test
-  void pageableTestSlice() {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void pageableTestSlice(boolean useValueExpressionDelegate) {
 
     String gql = "SELECT * FROM trades WHERE price=@price";
 
@@ -318,7 +358,7 @@ class GqlDatastoreQueryTests {
     when(parameters.hasPageableParameter()).thenReturn(true);
     when(parameters.getPageableIndex()).thenReturn(1);
 
-    GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, false, true);
+    GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, false, true, useValueExpressionDelegate);
 
     Cursor cursor = Cursor.copyFrom("abc".getBytes());
     List<Map> params = new ArrayList<>();
@@ -358,8 +398,9 @@ class GqlDatastoreQueryTests {
     assertThat(params.get(1)).containsEntry("offset", cursor);
   }
 
-  @Test
-  void pageableTestPage() {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void pageableTestPage(boolean useValueExpressionDelegate) {
 
     String gql = "SELECT * FROM trades WHERE price=@price";
     String expected = "SELECT * FROM trades WHERE price=@price LIMIT @limit OFFSET @offset";
@@ -374,7 +415,7 @@ class GqlDatastoreQueryTests {
     when(parameters.hasPageableParameter()).thenReturn(true);
     when(parameters.getPageableIndex()).thenReturn(1);
 
-    GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, true, true);
+    GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, true, true, useValueExpressionDelegate);
 
     Cursor cursor = Cursor.copyFrom("abc".getBytes());
 
@@ -419,8 +460,9 @@ class GqlDatastoreQueryTests {
     verify(this.datastoreTemplate, times(2)).queryKeysOrEntities(any(), eq(Trade.class));
   }
 
-  @Test
-  void pageableTestPageCursor() {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void pageableTestPageCursor(boolean useValueExpressionDelegate) {
     String gql = "SELECT * FROM trades WHERE price=@price";
     String expected = "SELECT * FROM trades WHERE price=@price LIMIT @limit OFFSET @offset";
 
@@ -439,7 +481,7 @@ class GqlDatastoreQueryTests {
     when(parameters.hasPageableParameter()).thenReturn(true);
     when(parameters.getPageableIndex()).thenReturn(1);
 
-    GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, true, true);
+    GqlDatastoreQuery gqlDatastoreQuery = createQuery(gql, true, true, useValueExpressionDelegate);
 
     Cursor cursor = Cursor.copyFrom("abc".getBytes());
 
@@ -475,8 +517,9 @@ class GqlDatastoreQueryTests {
     verify(this.datastoreTemplate, times(1)).queryKeysOrEntities(any(), eq(Trade.class));
   }
 
-  @Test
-  void streamResultTest() {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void streamResultTest(boolean useValueExpressionDelegate) {
     Mockito.<Class>when(this.queryMethod.getReturnedObjectType()).thenReturn(Trade.class);
     Parameters parameters = mock(Parameters.class);
     when(this.queryMethod.getParameters()).thenReturn(parameters);
@@ -500,7 +543,7 @@ class GqlDatastoreQueryTests {
         .when(this.datastoreTemplate)
         .queryKeysOrEntities(any(), eq(Trade.class));
 
-    GqlDatastoreQuery gqlDatastoreQuery = createQuery("unusedGqlString", false, false);
+    GqlDatastoreQuery gqlDatastoreQuery = createQuery("unusedGqlString", false, false, useValueExpressionDelegate);
 
     Object result = gqlDatastoreQuery.execute(new Parameters[0]);
     assertThat(result).isInstanceOf(Stream.class);
