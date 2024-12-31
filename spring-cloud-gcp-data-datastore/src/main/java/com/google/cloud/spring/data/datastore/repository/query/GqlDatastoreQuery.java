@@ -118,6 +118,7 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
     setEvaluatingSpelQueryContext();
     setGqlResolvedEntityClassName();
   }
+
   /**
    * Constructor.
    *
@@ -404,9 +405,9 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
     private void evaluateGql() {
       if (GqlDatastoreQuery.this.valueExpressionDelegate != null) {
         ValueExpressionQueryRewriter.QueryExpressionEvaluator spelEvaluator =
-          GqlDatastoreQuery.this.valueExpressionQueryRewriter.parse(
-              GqlDatastoreQuery.this.gqlResolvedEntityClassName,
-              GqlDatastoreQuery.this.queryMethod.getParameters());
+              GqlDatastoreQuery.this.valueExpressionQueryRewriter.parse(
+                  GqlDatastoreQuery.this.gqlResolvedEntityClassName,
+                  GqlDatastoreQuery.this.queryMethod.getParameters());
         this.evaluationResults = spelEvaluator.evaluate(this.rawParams);
         this.finalGql = spelEvaluator.getQueryString();
       } else {
