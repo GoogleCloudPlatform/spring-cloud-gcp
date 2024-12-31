@@ -57,6 +57,7 @@ public class DatastoreQueryLookupStrategy implements QueryLookupStrategy {
     this.queryEvaluationContextProvider = null;
     this.datastoreOperations = datastoreOperations;
   }
+
   public DatastoreQueryLookupStrategy(
       DatastoreMappingContext datastoreMappingContext,
       DatastoreOperations datastoreOperations,
