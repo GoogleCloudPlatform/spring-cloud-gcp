@@ -59,7 +59,8 @@ import java.util.Map;
 import java.util.function.Function;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.data.domain.PageRequest;
@@ -72,6 +73,7 @@ import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ParametersSource;
+import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.QueryMethodValueEvaluationContextAccessor;
 import org.springframework.data.repository.query.ResultProcessor;
 import org.springframework.data.repository.query.ReturnedType;
@@ -90,6 +92,8 @@ class SqlSpannerQueryTests {
   private SpannerQueryMethod queryMethod;
 
   private ValueExpressionDelegate valueExpressionDelegate;
+
+  private QueryMethodEvaluationContextProvider evaluationContextProvider;
 
   private SpelExpressionParser expressionParser;
 
@@ -124,6 +128,8 @@ class SqlSpannerQueryTests {
                 new SpannerSchemaUtils(
                     this.spannerMappingContext, this.spannerEntityProcessor, true)));
     this.expressionParser = new SpelExpressionParser();
+    this.evaluationContextProvider = mock(QueryMethodEvaluationContextProvider.class);
+
     this.valueExpressionDelegate = mock(ValueExpressionDelegate.class);
     QueryMethodValueEvaluationContextAccessor evaluationContextAccessor = mock(QueryMethodValueEvaluationContextAccessor.class);
     ValueEvaluationContextProvider evaluationContextProvider =
@@ -134,22 +140,36 @@ class SqlSpannerQueryTests {
     when(evaluationContextAccessor.create(any())).thenReturn(evaluationContextProvider);
     when(evaluationContextProvider.getEvaluationContext(any())).thenReturn(valueEvaluationContext);
     when(valueEvaluationContext.getEvaluationContext()).thenReturn(mock(EvaluationContext.class));
+
   }
 
-  private <T> SqlSpannerQuery<T> createQuery(String sql, Class<T> theClass, boolean isDml) {
+  @SuppressWarnings("deprecation")
+  private <T> SqlSpannerQuery<T> createQuery(String sql, Class<T> theClass, boolean isDml,boolean useValueExpressionDelegate) {
+    if (useValueExpressionDelegate) {
+      return new SqlSpannerQuery<T>(
+          theClass,
+          this.queryMethod,
+          this.spannerTemplate,
+          sql,
+          this.valueExpressionDelegate,
+          this.expressionParser,
+          this.spannerMappingContext,
+          isDml);
+    }
     return new SqlSpannerQuery<T>(
         theClass,
         this.queryMethod,
         this.spannerTemplate,
         sql,
-        this.valueExpressionDelegate,
+        this.evaluationContextProvider,
         this.expressionParser,
         this.spannerMappingContext,
         isDml);
   }
 
-  @Test
-  void noPageableParamQueryTest() throws NoSuchMethodException {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void noPageableParamQueryTest(boolean useValueExpressionDelegate) throws NoSuchMethodException {
     String sql =
         "SELECT DISTINCT * FROM "
             + ":com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Trade:";
@@ -166,7 +186,11 @@ class SqlSpannerQueryTests {
     when(queryMethod.isCollectionQuery()).thenReturn(false);
     when(queryMethod.getReturnedObjectType()).thenReturn(toReturn);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, toReturn, false);
+    EvaluationContext evaluationContext = new StandardEvaluationContext();
+    when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
+        .thenReturn(evaluationContext);
+
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, toReturn, false, useValueExpressionDelegate);
 
     doAnswer(
             invocation -> {
@@ -195,8 +219,9 @@ class SqlSpannerQueryTests {
         .query(eq(Trade.class), any(Statement.class), any(SpannerQueryOptions.class));
   }
 
-  @Test
-  void pageableParamQueryTest() throws NoSuchMethodException {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void pageableParamQueryTest(boolean useValueExpressionDelegate) throws NoSuchMethodException {
 
     String sql =
         "SELECT * FROM"
@@ -222,8 +247,10 @@ class SqlSpannerQueryTests {
     for (int i = 0; i < params.length; i++) {
       evaluationContext.setVariable(paramNames[i], params[i]);
     }
+    when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
+        .thenReturn(evaluationContext);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false);
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false, useValueExpressionDelegate);
 
     doAnswer(
             invocation -> {
@@ -257,8 +284,9 @@ class SqlSpannerQueryTests {
     verify(this.spannerTemplate, times(1)).executeQuery(any(), any());
   }
 
-  @Test
-  void sortParamQueryTest() throws NoSuchMethodException {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void sortParamQueryTest(boolean useValueExpressionDelegate) throws NoSuchMethodException {
 
     String sql =
         "SELECT * FROM"
@@ -279,7 +307,14 @@ class SqlSpannerQueryTests {
     when(queryMethod.isCollectionQuery()).thenReturn(false);
     when(queryMethod.getReturnedObjectType()).thenReturn((Class) Child.class);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false);
+    EvaluationContext evaluationContext = new StandardEvaluationContext();
+    for (int i = 0; i < params.length; i++) {
+      evaluationContext.setVariable(paramNames[i], params[i]);
+    }
+    when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
+        .thenReturn(evaluationContext);
+
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false, useValueExpressionDelegate);
 
     doAnswer(
             invocation -> {
@@ -313,8 +348,9 @@ class SqlSpannerQueryTests {
     verify(this.spannerTemplate, times(1)).executeQuery(any(), any());
   }
 
-  @Test
-  void sortAndPageableQueryTest() throws NoSuchMethodException {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void sortAndPageableQueryTest(boolean useValueExpressionDelegate) throws NoSuchMethodException {
 
     String sql =
         "SELECT * FROM"
@@ -336,7 +372,14 @@ class SqlSpannerQueryTests {
     when(queryMethod.isCollectionQuery()).thenReturn(false);
     when(queryMethod.getReturnedObjectType()).thenReturn((Class) Child.class);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false);
+    EvaluationContext evaluationContext = new StandardEvaluationContext();
+    for (int i = 0; i < params.length; i++) {
+      evaluationContext.setVariable(paramNames[i], params[i]);
+    }
+    when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
+        .thenReturn(evaluationContext);
+
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false, useValueExpressionDelegate);
 
     doAnswer(
             invocation -> {
@@ -370,8 +413,9 @@ class SqlSpannerQueryTests {
     verify(this.spannerTemplate, times(1)).executeQuery(any(), any());
   }
 
-  @Test
-  void compoundNameConventionTest() throws NoSuchMethodException {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void compoundNameConventionTest(boolean useValueExpressionDelegate) throws NoSuchMethodException {
 
     String sql =
         "SELECT DISTINCT * FROM "
@@ -440,8 +484,10 @@ class SqlSpannerQueryTests {
       evaluationContext.setVariable(paramNames[i], params[i]);
     }
     when(valueEvaluationContext.getEvaluationContext()).thenReturn(evaluationContext);
+    when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
+        .thenReturn(evaluationContext);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Trade.class, false);
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Trade.class, false, useValueExpressionDelegate);
 
     doAnswer(
             invocation -> {
@@ -500,8 +546,9 @@ class SqlSpannerQueryTests {
     verify(this.spannerTemplate, times(1)).executeQuery(any(), any());
   }
 
-  @Test
-  void dmlTest() throws NoSuchMethodException {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void dmlTest(boolean useValueExpressionDelegate) throws NoSuchMethodException {
     String sql = "dml statement here";
 
     TransactionContext context = mock(TransactionContext.class);
@@ -522,7 +569,7 @@ class SqlSpannerQueryTests {
     Mockito.<Parameters>when(this.queryMethod.getParameters())
         .thenReturn(new DefaultParameters(ParametersSource.of(method)));
 
-    SqlSpannerQuery sqlSpannerQuery = spy(createQuery(sql, Trade.class, true));
+    SqlSpannerQuery sqlSpannerQuery = spy(createQuery(sql, Trade.class, true, useValueExpressionDelegate));
 
     doReturn(long.class).when(sqlSpannerQuery).getReturnedSimpleConvertableItemType();
     doReturn(null).when(sqlSpannerQuery).convertToSimpleReturnType(any(), any());
@@ -532,8 +579,9 @@ class SqlSpannerQueryTests {
     verify(this.spannerTemplate, times(1)).executeDmlStatement(any());
   }
 
-  @Test
-  void sqlCountWithWhereTest() throws NoSuchMethodException {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void sqlCountWithWhereTest(boolean useValueExpressionDelegate) throws NoSuchMethodException {
     String sql =
         "SELECT count(1) FROM"
             + " :com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Child:"
@@ -548,7 +596,7 @@ class SqlSpannerQueryTests {
     when(queryMethod.isCollectionQuery()).thenReturn(false);
     when(queryMethod.getReturnedObjectType()).thenReturn((Class) long.class);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, long.class, false);
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, long.class, false, useValueExpressionDelegate);
 
     Struct row = mock(Struct.class);
     when(row.getType())
@@ -592,8 +640,9 @@ class SqlSpannerQueryTests {
     verify(this.spannerTemplate).executeQuery(any(), any());
   }
 
-  @Test
-  void sqlReturnTypeIsJsonFieldTest() throws NoSuchMethodException {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void sqlReturnTypeIsJsonFieldTest(boolean useValueExpressionDelegate) throws NoSuchMethodException {
     String sql = "SELECT details from singer where stageName = @stageName";
 
     Object[] params = new Object[] {"STAGENAME"};
@@ -606,7 +655,7 @@ class SqlSpannerQueryTests {
     when(resultProcessor.getReturnedType()).thenReturn(returnedType);
     when(returnedType.getReturnedType()).thenReturn((Class) Detail.class);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false);
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false, useValueExpressionDelegate);
 
     doAnswer(
             invocation -> {
@@ -649,8 +698,9 @@ class SqlSpannerQueryTests {
     assertThat(((Detail) result).p2).isEqualTo("5");
   }
 
-  @Test
-  void sqlReturnTypeIsArrayJsonFieldTest() throws NoSuchMethodException {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void sqlReturnTypeIsArrayJsonFieldTest(boolean useValueExpressionDelegate) throws NoSuchMethodException {
     String sql = "SELECT detailsList from singer where stageName = @stageName";
 
     Object[] params = new Object[] {"STAGENAME"};
@@ -663,7 +713,7 @@ class SqlSpannerQueryTests {
     when(resultProcessor.getReturnedType()).thenReturn(returnedType);
     when(returnedType.getReturnedType()).thenReturn((Class) Detail.class);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false);
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false, useValueExpressionDelegate);
 
     doAnswer(
             invocation -> {
