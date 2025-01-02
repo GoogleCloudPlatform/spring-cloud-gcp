@@ -31,7 +31,6 @@ import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
@@ -51,8 +50,6 @@ class DatastoreQueryLookupStrategyTests {
 
   private DatastoreQueryMethod queryMethod;
 
-  private DatastoreQueryLookupStrategy[] lookupStrategies;
-
   private ValueExpressionDelegate valueExpressionDelegate;
 
   private QueryMethodEvaluationContextProvider evaluationContextProvider;
@@ -64,19 +61,15 @@ class DatastoreQueryLookupStrategyTests {
     this.queryMethod = mock(DatastoreQueryMethod.class);
     this.valueExpressionDelegate = mock(ValueExpressionDelegate.class);
     this.evaluationContextProvider = mock(QueryMethodEvaluationContextProvider.class);
-    this.lookupStrategies = new DatastoreQueryLookupStrategy[] {
-      getDatastoreQueryLookupStrategy(this.valueExpressionDelegate),
-      getDatastoreQueryLookupStrategy(this.evaluationContextProvider),
-    };
   }
 
   /**
    * int parameters are used as indexes of the two lookup strategies we use
    */
   @ParameterizedTest
-  @ValueSource(ints = {0, 1})
-  void resolveSqlQueryTest(int lookupStrategyIndex) {
-    DatastoreQueryLookupStrategy lookupStrategy = this.lookupStrategies[lookupStrategyIndex];
+  @ValueSource(booleans = {true, false})
+  void resolveSqlQueryTest(boolean useValueExpressionDelegate) {
+    DatastoreQueryLookupStrategy lookupStrategy = getDatastoreQueryLookupStrategy(useValueExpressionDelegate);
     String queryName = "fakeNamedQueryName";
     String query = "fake query";
     when(this.queryMethod.getNamedQueryName()).thenReturn(queryName);
@@ -106,6 +99,12 @@ class DatastoreQueryLookupStrategyTests {
 
     verify(lookupStrategy, times(1))
         .createGqlDatastoreQuery(eq(Object.class), same(this.queryMethod), eq(query));
+  }
+
+  private DatastoreQueryLookupStrategy getDatastoreQueryLookupStrategy(boolean useValueExpressionDelegate) {
+    return useValueExpressionDelegate ?
+        getDatastoreQueryLookupStrategy(this.valueExpressionDelegate)
+        : getDatastoreQueryLookupStrategy(this.evaluationContextProvider);
   }
 
   private DatastoreQueryLookupStrategy getDatastoreQueryLookupStrategy(ValueExpressionDelegate valueExpressionDelegate) {
