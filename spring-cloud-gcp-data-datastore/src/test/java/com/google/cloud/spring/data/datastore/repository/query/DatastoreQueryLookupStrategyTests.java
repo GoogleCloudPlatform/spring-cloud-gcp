@@ -102,8 +102,8 @@ class DatastoreQueryLookupStrategyTests {
   }
 
   private DatastoreQueryLookupStrategy getDatastoreQueryLookupStrategy(boolean useValueExpressionDelegate) {
-    return useValueExpressionDelegate ?
-        getDatastoreQueryLookupStrategy(this.valueExpressionDelegate)
+    return useValueExpressionDelegate
+        ? getDatastoreQueryLookupStrategy(this.valueExpressionDelegate)
         : getDatastoreQueryLookupStrategy(this.evaluationContextProvider);
   }
 
