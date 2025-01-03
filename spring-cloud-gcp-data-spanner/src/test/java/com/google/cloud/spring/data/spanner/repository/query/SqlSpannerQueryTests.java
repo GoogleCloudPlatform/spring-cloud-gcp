@@ -144,7 +144,7 @@ class SqlSpannerQueryTests {
   }
 
   @SuppressWarnings("deprecation")
-  private <T> SqlSpannerQuery<T> createQuery(String sql, Class<T> theClass, boolean isDml,boolean useValueExpressionDelegate) {
+  private <T> SqlSpannerQuery<T> createQuery(String sql, Class<T> theClass, boolean isDml, boolean useValueExpressionDelegate) {
     if (useValueExpressionDelegate) {
       return new SqlSpannerQuery<T>(
           theClass,
