@@ -6,7 +6,6 @@ maven_install(
       ] +
       IO_GRPC_GRPC_JAVA_ARTIFACTS,
     generate_compat_repositories = True,
-    override_targets = IO_GRPC_GRPC_JAVA_OVERRIDE_TARGETS,
     #Update this False for local development
     fail_on_missing_checksum = False,
     repositories = [

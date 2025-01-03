@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "com.google.cloud.memorystore.v1.memorystore.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud memorystore/Memorystore components.",
+      "defaultValue": true
+    }
+  ]
+}
