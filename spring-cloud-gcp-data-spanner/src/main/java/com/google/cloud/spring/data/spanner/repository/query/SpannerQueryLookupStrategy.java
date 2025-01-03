@@ -65,9 +65,9 @@ public class SpannerQueryLookupStrategy implements QueryLookupStrategy {
   }
 
   /**
-   * @deprecated Use
-   * {@link SpannerQueryLookupStrategy#SpannerQueryLookupStrategy(SpannerMappingContext, SpannerTemplate, ValueExpressionDelegate, SpelExpressionParser)}
-   * instead.
+   * @deprecated Use {@link
+   *     SpannerQueryLookupStrategy#SpannerQueryLookupStrategy(SpannerMappingContext,
+   *     SpannerTemplate, ValueExpressionDelegate, SpelExpressionParser)} instead.
    */
   @Deprecated
   public SpannerQueryLookupStrategy(

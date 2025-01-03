@@ -105,9 +105,9 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
   }
 
   /**
-   * @deprecated Use
-   * {@link SpannerQueryLookupStrategy#SpannerQueryLookupStrategy(SpannerMappingContext, SpannerTemplate, ValueExpressionDelegate, SpelExpressionParser)}
-   * instead.
+   * @deprecated Use {@link
+   *     SpannerQueryLookupStrategy#SpannerQueryLookupStrategy(SpannerMappingContext,
+   *     SpannerTemplate, ValueExpressionDelegate, SpelExpressionParser)} instead.
    */
   @Deprecated
   SqlSpannerQuery(
