@@ -54,6 +54,12 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 |===
 | Spring Framework on Google Cloud | Spring Cloud | Spring Boot | Spring Framework | Supported
 
+|6.x
+|https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2024.0-Release-Notes[2024.0.x] (Moorgate)
+|https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.4-Release-Notes[3.4.x]
+|https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-6.2-Release-Notes[6.2.x]
+|Yes
+
 |5.x
 |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2023.0-Release-Notes[2023.0.x] (Leyton)
 |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes[3.2.x]*, https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.3-Release-Notes[3.3.x]
