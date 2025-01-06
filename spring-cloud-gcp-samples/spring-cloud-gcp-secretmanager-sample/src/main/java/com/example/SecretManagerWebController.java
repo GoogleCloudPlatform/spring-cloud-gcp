@@ -39,12 +39,19 @@ public class SecretManagerWebController {
   // secret can be refreshed when decorated with @RefreshScope on the class.
   private final SecretConfiguration configuration;
 
+  // This syntax is not recommended. Please switch your code to the `sm@my_secret` syntax.
+  @Value("${${sm://application-fake}:DEFAULT}")
+  private String defaultSecretDeprecatedSyntax;
+
   // For the default value takes place, there should be no property called `application-fake`
   // in property files.
-  @Value("${${sm://application-fake}:DEFAULT}")
+  // It is not necessary to escape the color character by nesting
+  // placeholders as done with the legacy syntax (${${sm://secret}:DEFAULT}).
+  @Value("${sm@application-fake:DEFAULT}")
   private String defaultSecret;
+
   // Application secrets can be accessed using @Value syntax.
-  @Value("${sm://application-secret}")
+  @Value("${sm@application-secret}")
   private String appSecretFromValue;
 
   public SecretManagerWebController(SecretManagerTemplate secretManagerTemplate,
@@ -56,6 +63,7 @@ public class SecretManagerWebController {
 
   @GetMapping("/")
   public ModelAndView renderIndex(ModelMap map) {
+    System.out.println(defaultSecretDeprecatedSyntax);
     map.put("applicationDefaultSecret", defaultSecret);
     map.put(APPLICATION_SECRET_FROM_VALUE, appSecretFromValue);
     map.put("applicationSecretFromConfigurationProperties", configuration.getSecret());

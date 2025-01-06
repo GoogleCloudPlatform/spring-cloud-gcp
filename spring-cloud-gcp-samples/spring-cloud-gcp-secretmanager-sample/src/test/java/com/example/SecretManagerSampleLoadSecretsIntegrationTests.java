@@ -56,5 +56,6 @@ class SecretManagerSampleLoadSecretsIntegrationTests {
             "<b>Application secret from @ConfigurationProperties:</b> <i>"
                 + SECRET_CONTENT
                 + "</i>");
+    System.out.println(response.getBody());
   }
 }
