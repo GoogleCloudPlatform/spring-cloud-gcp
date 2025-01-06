@@ -16,24 +16,33 @@
 
 package com.google.cloud.spring.secretmanager;
 
+import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtil.getMatchedPrefixes;
+import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtil.warnIfUsingDeprecatedSyntax;
+
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 /** Utilities for parsing Secret Manager properties. */
 final class SecretManagerPropertyUtils {
 
-  private static final String GCP_SECRET_PREFIX = "sm://";
+  private static final Logger logger = LoggerFactory.getLogger(SecretManagerPropertyUtils.class);
 
   private SecretManagerPropertyUtils() {}
 
+
   static SecretVersionName getSecretVersionName(
-      String input, GcpProjectIdProvider projectIdProvider) {
-    if (!input.startsWith(GCP_SECRET_PREFIX)) {
+      final String input, GcpProjectIdProvider projectIdProvider) {
+    Optional<String> usedPrefix = getMatchedPrefixes(input::startsWith);
+    if (usedPrefix.isEmpty()) {
       return null;
     }
+    warnIfUsingDeprecatedSyntax(logger, usedPrefix.orElse(""));
 
-    String resourcePath = input.substring(GCP_SECRET_PREFIX.length());
+    String resourcePath = input.substring(usedPrefix.get().length());
     String[] tokens = resourcePath.split("/");
 
     String projectId = projectIdProvider.getProjectId();
@@ -41,26 +50,26 @@ final class SecretManagerPropertyUtils {
     String version = "latest";
 
     if (tokens.length == 1) {
-      // property is form "sm://<secret-id>"
+      // property is form "sm@<secret-id>"
       secretId = tokens[0];
     } else if (tokens.length == 2) {
-      // property is form "sm://<secret-id>/<version>"
+      // property is form "sm@<secret-id>/<version>"
       secretId = tokens[0];
       version = tokens[1];
     } else if (tokens.length == 3) {
-      // property is form "sm://<project-id>/<secret-id>/<version-id>"
+      // property is form "sm@<project-id>/<secret-id>/<version-id>"
       projectId = tokens[0];
       secretId = tokens[1];
       version = tokens[2];
     } else if (tokens.length == 4 && tokens[0].equals("projects") && tokens[2].equals("secrets")) {
-      // property is form "sm://projects/<project-id>/secrets/<secret-id>"
+      // property is form "sm@projects/<project-id>/secrets/<secret-id>"
       projectId = tokens[1];
       secretId = tokens[3];
     } else if (tokens.length == 6
         && tokens[0].equals("projects")
         && tokens[2].equals("secrets")
         && tokens[4].equals("versions")) {
-      // property is form "sm://projects/<project-id>/secrets/<secret-id>/versions/<version>"
+      // property is form "sm@projects/<project-id>/secrets/<secret-id>/versions/<version>"
       projectId = tokens[1];
       secretId = tokens[3];
       version = tokens[5];

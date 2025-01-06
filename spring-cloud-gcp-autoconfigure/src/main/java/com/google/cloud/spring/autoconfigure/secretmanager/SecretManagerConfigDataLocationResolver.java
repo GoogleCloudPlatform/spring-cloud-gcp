@@ -16,6 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
+import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtil.getMatchedPrefixes;
+import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtil.warnIfUsingDeprecatedSyntax;
+
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
@@ -23,10 +26,14 @@ import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.apache.arrow.util.VisibleForTesting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.BootstrapRegistry;
 import org.springframework.boot.context.config.ConfigDataLocation;
@@ -38,10 +45,8 @@ import org.springframework.boot.context.config.ConfigDataResourceNotFoundExcepti
 public class SecretManagerConfigDataLocationResolver implements
     ConfigDataLocationResolver<SecretManagerConfigDataResource> {
 
-  /**
-   * ConfigData Prefix for Google Cloud Secret Manager.
-   */
-  public static final String PREFIX = "sm://";
+  private static final Logger logger = LoggerFactory.getLogger(SecretManagerConfigDataLocationResolver.class);
+
   /**
    * A static client to avoid creating another client after refreshing.
    */
@@ -50,7 +55,9 @@ public class SecretManagerConfigDataLocationResolver implements
   @Override
   public boolean isResolvable(ConfigDataLocationResolverContext context,
       ConfigDataLocation location) {
-    return location.hasPrefix(PREFIX);
+    Optional<String> matchedPrefix = getMatchedPrefixes(location::hasPrefix);
+    warnIfUsingDeprecatedSyntax(logger, matchedPrefix.orElse(""));
+    return matchedPrefix.isPresent();
   }
 
   @Override
