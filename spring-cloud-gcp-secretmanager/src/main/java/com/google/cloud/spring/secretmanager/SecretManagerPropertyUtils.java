@@ -16,8 +16,8 @@
 
 package com.google.cloud.spring.secretmanager;
 
-import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtil.getMatchedPrefixes;
-import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtil.warnIfUsingDeprecatedSyntax;
+import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.getMatchedPrefixes;
+import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.warnIfUsingDeprecatedSyntax;
 
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
