@@ -41,8 +41,15 @@ public class SecretManagerWebController {
 
   // This syntax is not recommended. Please switch your code to the `sm@my_secret` syntax. Users
   // will be warned if using this syntax.
-  //@Value("${${sm://application-fake}:DEFAULT}")
+  // Note that the colon of the protocol specification section must be escaped;
+  // See https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3440
+  //@Value("${sm\\://application-fake:DEFAULT}")
   //private String defaultSecretDeprecatedSyntax;
+
+  // This syntax is not recommended. Please switch your code to the `sm@my_secret` syntax. Users
+  // will be warned if using this syntax.
+  //@Value("${sm://application-secret}")
+  //private String appSecretFromValueDeprecatedSyntax;
 
   // For the default value to take place, there should be no property called `application-fake`
   // in property files.
