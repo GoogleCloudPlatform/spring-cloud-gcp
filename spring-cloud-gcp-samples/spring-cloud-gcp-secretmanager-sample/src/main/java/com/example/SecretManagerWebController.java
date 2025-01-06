@@ -43,9 +43,16 @@ public class SecretManagerWebController {
   // in property files.
   @Value("${${sm://application-fake}:DEFAULT}")
   private String defaultSecret;
+
   // Application secrets can be accessed using @Value syntax.
   @Value("${sm://application-secret}")
   private String appSecretFromValue;
+
+  @Value("${sm://application-secret:DEFAULT}")
+  private String appSecretFromValueWithDefault;
+
+  @Value("${${sm://application-secret}:DEFAULT}")
+  private String appSecretFromValueWithDefaultUsingNestedPlaceholder;
 
   public SecretManagerWebController(SecretManagerTemplate secretManagerTemplate,
       SecretConfiguration configuration
@@ -57,6 +64,8 @@ public class SecretManagerWebController {
   @GetMapping("/")
   public ModelAndView renderIndex(ModelMap map) {
     map.put("applicationDefaultSecret", defaultSecret);
+    map.put("appSecretFromValueWithDefault", appSecretFromValueWithDefault);
+    map.put("appSecretFromValueWithDefaultUsingNestedPlaceholder", appSecretFromValueWithDefaultUsingNestedPlaceholder);
     map.put(APPLICATION_SECRET_FROM_VALUE, appSecretFromValue);
     map.put("applicationSecretFromConfigurationProperties", configuration.getSecret());
     return new ModelAndView(INDEX_PAGE, map);
