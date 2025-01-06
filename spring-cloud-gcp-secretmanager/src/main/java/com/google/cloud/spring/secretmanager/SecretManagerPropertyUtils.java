@@ -44,7 +44,7 @@ final class SecretManagerPropertyUtils {
     // and one with sm@secret (that's the one we want to process). The colon is also an invalid
     // character in secret IDs.
     // See https://github.com/spring-projects/spring-framework/issues/34124.
-    final boolean isAttemptingFullStringMatch = input.contains(":");
+    final boolean isAttemptingFullStringMatch = input.replace("sm://", "").contains(":");
     if (usedPrefix.isEmpty() || isAttemptingFullStringMatch) {
       return null;
     }
