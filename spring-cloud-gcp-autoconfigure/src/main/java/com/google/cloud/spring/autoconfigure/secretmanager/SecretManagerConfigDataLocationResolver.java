@@ -16,8 +16,8 @@
 
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
-import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtil.getMatchedPrefixes;
-import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtil.warnIfUsingDeprecatedSyntax;
+import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.getMatchedPrefixes;
+import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.warnIfUsingDeprecatedSyntax;
 
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
@@ -26,7 +26,6 @@ import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
-import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
