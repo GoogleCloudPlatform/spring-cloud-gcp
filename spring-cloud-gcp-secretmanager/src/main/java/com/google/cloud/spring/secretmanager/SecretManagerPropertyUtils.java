@@ -37,7 +37,15 @@ final class SecretManagerPropertyUtils {
   static SecretVersionName getSecretVersionName(
       final String input, GcpProjectIdProvider projectIdProvider) {
     Optional<String> usedPrefix = getMatchedPrefixes(input::startsWith);
-    if (usedPrefix.isEmpty()) {
+
+    // Since spring-core 6.2.2, the property resolution mechanism will try a full match that
+    // may include a default string if provided. For example, a @Value("${sm@secret:default}") will
+    // cause two attempts: one with sm@secret:default as a whole string (we don't want this),
+    // and one with sm@secret (that's the one we want to process). The colon is also an invalid
+    // character in secret IDs.
+    // See https://github.com/spring-projects/spring-framework/issues/34124.
+    final boolean isAttemptingFullStringMatch = input.contains(":");
+    if (usedPrefix.isEmpty() || isAttemptingFullStringMatch) {
       return null;
     }
     warnIfUsingDeprecatedSyntax(logger, usedPrefix.orElse(""));
