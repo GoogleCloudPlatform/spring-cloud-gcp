@@ -58,26 +58,26 @@ final class SecretManagerPropertyUtils {
     String version = "latest";
 
     if (tokens.length == 1) {
-      // property is form "sm@<secret-id>"
+      // property is of the form "sm@<secret-id>"
       secretId = tokens[0];
     } else if (tokens.length == 2) {
-      // property is form "sm@<secret-id>/<version>"
+      // property is of the form "sm@<secret-id>/<version>"
       secretId = tokens[0];
       version = tokens[1];
     } else if (tokens.length == 3) {
-      // property is form "sm@<project-id>/<secret-id>/<version-id>"
+      // property is of the form "sm@<project-id>/<secret-id>/<version-id>"
       projectId = tokens[0];
       secretId = tokens[1];
       version = tokens[2];
     } else if (tokens.length == 4 && tokens[0].equals("projects") && tokens[2].equals("secrets")) {
-      // property is form "sm@projects/<project-id>/secrets/<secret-id>"
+      // property is of the form "sm@projects/<project-id>/secrets/<secret-id>"
       projectId = tokens[1];
       secretId = tokens[3];
     } else if (tokens.length == 6
         && tokens[0].equals("projects")
         && tokens[2].equals("secrets")
         && tokens[4].equals("versions")) {
-      // property is form "sm@projects/<project-id>/secrets/<secret-id>/versions/<version>"
+      // property is of the form "sm@projects/<project-id>/secrets/<secret-id>/versions/<version>"
       projectId = tokens[1];
       secretId = tokens[3];
       version = tokens[5];
