@@ -44,8 +44,8 @@ public class SecretManagerSyntaxUtils {
         DEPRECATED_PREFIX, PREFERRED_PREFIX));
   }
 
+  @FunctionalInterface
   public interface PrefixMatcher {
     boolean matches(String input);
   }
-
 }
