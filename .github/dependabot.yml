@@ -80,3 +80,8 @@ updates:
     # Spring Shell dependencies
     - dependency-name: "org.springframework.shell:spring-shell-starter"
       versions: [">=3.2.0"]
+    # Spring Cloud Config dependencies
+    - dependency-name: "org.springframework.cloud:spring-cloud-config-dependencies"
+      versions: [">=4.2.0"]
+    - dependency-name: "org.springframework.cloud:spring-cloud-starter-bootstrap"
+      versions: [">=4.2.0"]
