@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.14](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.13...v3.8.14) (2025-01-16)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.20.1 to 1.21.2 ([#3465](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3465)) ([3c255f6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3c255f63f7a99d2eba295f1624c47b67b70ab26c))
+* bump com.google.cloud:libraries-bom from 26.52.0 to 26.53.0 ([#3475](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3475)) ([859cac1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/859cac118e722ae5a7200fdfd114fdea5b3fc1cf))
+* bump com.google.cloud.tools:appengine-maven-plugin ([#3466](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3466)) ([f0df564](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f0df564fc96292c7428cd56974ad443f6a618c22))
+* bump commons-io:commons-io from 2.17.0 to 2.18.0 ([#3399](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3399)) ([dfa30f5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/dfa30f5dca5a73206643baf0448758c686b33930))
+* bump org.projectlombok:lombok from 1.18.34 to 1.18.36 ([#3428](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3428)) ([50305b2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/50305b24fbfd9f5a5364f83499aff40022cd63e9))
+* bump org.testcontainers:testcontainers-bom from 1.20.3 to 1.20.4 ([#3427](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3427)) ([59a4f61](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/59a4f61191fbeae0f614e640dde8b19c66d60bc1))
+
 ## [3.8.13](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.12...v3.8.13) (2024-12-19)
 
 
