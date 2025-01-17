@@ -13,7 +13,7 @@ For a deep dive into the project, refer to the Spring Framework on Google Cloud 
 // {x-version-update-start:spring-cloud-gcp:released}
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/5.10.0/reference/html/index.html[Spring Framework on Google Cloud 5.10.0 (Latest)] - https://googleapis.dev/java/spring-cloud-gcp/5.10.0/index.html[Javadocs 5.10.0]
 // {x-version-update-end}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.10.12/reference/html/index.html[Spring Framework on Google Cloud 4.10.15] - https://googleapis.dev/java/spring-cloud-gcp/4.10.15/index.html[Javadocs 4.10.12]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.10.15/reference/html/index.html[Spring Framework on Google Cloud 4.10.15] - https://googleapis.dev/java/spring-cloud-gcp/4.10.15/index.html[Javadocs 4.10.15]
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.8.14/reference/html/index.html[Spring Framework on Google Cloud 3.8.14] - https://googleapis.dev/java/spring-cloud-gcp/3.8.14/index.html[Javadocs 3.8.14]
 
 If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Framework on Google Cloud sample applications] or the https://codelabs.developers.google.com/spring[Spring on Google Cloud codelabs].
