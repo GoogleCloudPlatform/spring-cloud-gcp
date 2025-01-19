@@ -52,6 +52,10 @@ class SecretManagerSampleLoadSecretsIntegrationTests {
     assertThat(response.getBody())
         .contains("<b>Application secret from @Value:</b> <i>" + SECRET_CONTENT + "</i>");
     assertThat(response.getBody())
+        .contains("<b>Application secret from @Value with default value:</b> <i>" + SECRET_CONTENT + "</i>");
+    assertThat(response.getBody())
+        .contains("<b>Application secret from @Value with default value using nested placeholder:</b> <i>" + SECRET_CONTENT + "</i>");
+    assertThat(response.getBody())
         .contains(
             "<b>Application secret from @ConfigurationProperties:</b> <i>"
                 + SECRET_CONTENT
