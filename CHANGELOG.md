@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.15](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.14...v3.8.15) (2025-01-21)
+
+
+### Bug Fixes
+
+* do not explicitly set python version, use one provided in docker image ([#3490](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3490)) ([26a7d27](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/26a7d277e5f8082e0af420ebb47815f486ea7803))
+
 ## [3.8.14](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.13...v3.8.14) (2025-01-16)
 
 
