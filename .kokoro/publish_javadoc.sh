@@ -13,7 +13,7 @@ pushd $dir/../
 ./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
 
 # Compute the project version.
-PROJECT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+PROJECT_VERSION=3.8.14
 
 # Install docuploader package
 python3 -m pip install --upgrade six
