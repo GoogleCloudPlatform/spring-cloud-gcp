@@ -37,7 +37,7 @@ public class PubSubConfiguration {
   /** Default number of executor threads. */
   public static final int DEFAULT_EXECUTOR_THREADS = 4;
 
-  private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 0L;
+  private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 3600L;
 
   /**
    * Automatically extracted user-provided properties. Contains only short subscription keys
