@@ -56,14 +56,6 @@
   <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
   <dependencyManagement>
     <dependencies>
-      <!-- use this to test locally with the yet-to-be-released spring-framework 6.2.2 -->
-<!--      <dependency>-->
-<!--        <groupId>org.springframework</groupId>-->
-<!--        <artifactId>spring-framework-bom</artifactId>-->
-<!--        <version>6.2.2-SNAPSHOT</version>-->
-<!--        <type>pom</type>-->
-<!--        <scope>import</scope>-->
-<!--      </dependency>-->
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
