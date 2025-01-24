@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - 5.x # 5.x supports JDK 17
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
