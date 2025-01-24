@@ -118,3 +118,111 @@ jobs:
           path: |
             **/target/failsafe-reports/*
             **/target/site
+
+  spring-boot-3-2-compatibility:
+    if: |
+      github.actor != 'dependabot[bot]' && ((
+        github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
+      ) || (github.event_name != 'pull_request'))
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        it:
+          - alloydb
+          - bigquery
+          - cloudsql
+          - config
+          - datastore
+          - firestore
+          - kms
+          - kotlin
+          - logging
+          - metrics
+          - multisample
+          - pubsub
+          - pubsub-bus
+          - pubsub-docs
+          - pubsub-emulator
+          - pubsub-integration
+          - secretmanager
+          - spanner
+          - storage
+          # trace excluded
+          - vision
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v2
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+      - name: Set Up Authentication
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.SPRING_CLOUD_GCP_CI_SA_KEY }}
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: latest
+          project_id: spring-cloud-gcp-ci
+          export_default_credentials: true
+      - name: Install pubsub-emulator
+        if: ${{ matrix.it == 'pubsub-emulator' }}
+        run: |
+          gcloud components install pubsub-emulator beta && \
+            gcloud components update
+      - name: Mvn install # Need this when the directory/pom structure changes
+        id: install
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --no-transfer-progress \
+            --threads 1.5C \
+            --define maven.test.skip=true \
+            --define maven.javadoc.skip=true \
+            --define org.slf4j.simpleLogger.showDateTime=true \
+            --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
+            install
+      - name: Update samples to use Spring Boot Starter 3.2.5
+        working-directory: ./spring-cloud-gcp-samples
+        run: |
+          sudo apt-get update && sudo apt-get install -y xmlstarlet
+          xmlstarlet ed -L -N x=http://maven.apache.org/POM/4.0.0 \
+              -u '/x:project/x:parent/x:version' -v '3.2.5' pom.xml
+      - name: Integration Tests
+        id: intTest
+        env:
+          DB_PASSWORD: ${{ secrets.SPRING_CLOUD_GCP_CI_DB_ROOT_PASSWORD }}
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --no-transfer-progress \
+            --activate-profiles spring-cloud-gcp-ci-it \
+            --define maven.javadoc.skip=true \
+            --define skip.surefire.tests=true \
+            --define org.slf4j.simpleLogger.showDateTime=true \
+            --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
+            --define "spring.datasource.password=${DB_PASSWORD}" \
+            --define "spring.r2dbc.password=${DB_PASSWORD}" \
+            --define "spring.cloud.gcp.sql.database-name=code_samples_test_db2" \
+            --define it.${{ matrix.it }}=true \
+            verify
+      - name: Aggregate Report
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --define aggregate=true \
+            surefire-report:failsafe-report-only
+      - name: Archive logs
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: Integration Test Logs - ${{ matrix.it}}
+          path: |
+            **/target/failsafe-reports/*
+            **/target/site

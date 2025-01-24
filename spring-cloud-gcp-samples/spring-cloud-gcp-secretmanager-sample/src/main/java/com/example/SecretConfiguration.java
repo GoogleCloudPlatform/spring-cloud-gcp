@@ -20,16 +20,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 @ConfigurationProperties("application")
+@RefreshScope
 public class SecretConfiguration {
 
   private String secret;
 
-  @RefreshScope
   public void setSecret(String secret) {
     this.secret = secret;
   }
 
-  @RefreshScope
   public String getSecret() {
     return secret;
   }
