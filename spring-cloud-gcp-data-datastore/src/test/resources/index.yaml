@@ -1,4 +1,3 @@
-# For running the ITs in local setups: `cd` into this folder and run `gcloud datastore indexes create index.yaml`
 indexes:
 
 - kind: test_entities_ci

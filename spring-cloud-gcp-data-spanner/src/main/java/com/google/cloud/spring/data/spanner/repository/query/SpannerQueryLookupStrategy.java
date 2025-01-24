@@ -26,7 +26,6 @@ import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryMethod;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
-import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.Assert;
 
@@ -42,34 +41,10 @@ public class SpannerQueryLookupStrategy implements QueryLookupStrategy {
 
   private final SpannerMappingContext spannerMappingContext;
 
-  private final ValueExpressionDelegate valueExpressionDelegate;
-
-  private final SpelExpressionParser expressionParser;
-
   private QueryMethodEvaluationContextProvider evaluationContextProvider;
 
-  public SpannerQueryLookupStrategy(
-      SpannerMappingContext spannerMappingContext,
-      SpannerTemplate spannerTemplate,
-      ValueExpressionDelegate valueExpressionDelegate,
-      SpelExpressionParser expressionParser) {
-    Assert.notNull(spannerMappingContext, "A valid SpannerMappingContext is required.");
-    Assert.notNull(spannerTemplate, "A valid SpannerTemplate is required.");
-    Assert.notNull(valueExpressionDelegate, "A valid ValueExpressionDelegate is required.");
-    Assert.notNull(expressionParser, "A valid SpelExpressionParser is required.");
-    this.spannerMappingContext = spannerMappingContext;
-    this.valueExpressionDelegate = valueExpressionDelegate;
-    this.evaluationContextProvider = null;
-    this.spannerTemplate = spannerTemplate;
-    this.expressionParser = expressionParser;
-  }
+  private SpelExpressionParser expressionParser;
 
-  /**
-   * @deprecated Use {@link
-   *     SpannerQueryLookupStrategy#SpannerQueryLookupStrategy(SpannerMappingContext,
-   *     SpannerTemplate, ValueExpressionDelegate, SpelExpressionParser)} instead.
-   */
-  @Deprecated
   public SpannerQueryLookupStrategy(
       SpannerMappingContext spannerMappingContext,
       SpannerTemplate spannerTemplate,
@@ -80,7 +55,6 @@ public class SpannerQueryLookupStrategy implements QueryLookupStrategy {
     Assert.notNull(evaluationContextProvider, "A valid EvaluationContextProvider is required.");
     Assert.notNull(expressionParser, "A valid SpelExpressionParser is required.");
     this.spannerMappingContext = spannerMappingContext;
-    this.valueExpressionDelegate = null;
     this.evaluationContextProvider = evaluationContextProvider;
     this.spannerTemplate = spannerTemplate;
     this.expressionParser = expressionParser;
@@ -118,17 +92,6 @@ public class SpannerQueryLookupStrategy implements QueryLookupStrategy {
 
   <T> SqlSpannerQuery<T> createSqlSpannerQuery(
       Class<T> entityType, SpannerQueryMethod queryMethod, String sql, boolean isDml) {
-    if (this.valueExpressionDelegate != null) {
-      return new SqlSpannerQuery<>(
-          entityType,
-          queryMethod,
-          this.spannerTemplate,
-          sql,
-          this.valueExpressionDelegate,
-          this.expressionParser,
-          this.spannerMappingContext,
-          isDml);
-    }
     return new SqlSpannerQuery<>(
         entityType,
         queryMethod,

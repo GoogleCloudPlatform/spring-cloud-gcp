@@ -36,7 +36,6 @@ import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.extension.AfterAllCallback;
@@ -56,7 +55,9 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  */
 public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, ParameterResolver {
 
-  private static final Path EMULATOR_CONFIG_DIR = getEmulatorConfigDir();
+  private static final Path EMULATOR_CONFIG_DIR =
+      Paths.get(System.getProperty("user.home"))
+          .resolve(Paths.get(".config", "gcloud", "emulators", "pubsub"));
 
   private static final String ENV_FILE_NAME = "env.yaml";
 
@@ -197,13 +198,13 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Para
 
     try {
       this.emulatorProcess =
-          new ProcessBuilder("bash", "-c", "gcloud beta emulators pubsub start").start();
+          new ProcessBuilder("gcloud", "beta", "emulators", "pubsub", "start").start();
     } catch (IOException ex) {
       fail("Gcloud not found; leaving host/port uninitialized.");
     }
 
     if (configPresent) {
-      waitForConfigUpdates(watchService);
+      updateConfig(watchService);
       watchService.close();
     } else {
       createConfig();
@@ -239,7 +240,7 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Para
   private void createConfig() {
     await()
         .pollInterval(Duration.ofSeconds(1))
-        .atMost(Duration.ofSeconds(10))
+        .atMost(Duration.ofSeconds(5))
         .untilAsserted(() -> assertThat(EMULATOR_CONFIG_PATH.toFile()).exists());
   }
 
@@ -251,7 +252,7 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Para
    * @throws InterruptedException which should interrupt the peaceful slumber and bubble up to fail
    *     the test.
    */
-  private void waitForConfigUpdates(WatchService watchService) throws InterruptedException {
+  private void updateConfig(WatchService watchService) throws InterruptedException {
     int attempts = 10;
     while (--attempts >= 0) {
       WatchKey key = watchService.poll(1000, TimeUnit.MILLISECONDS);
@@ -283,14 +284,5 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Para
     } catch (IOException ex) {
       LOGGER.warn("Failed to clean up PID " + pid);
     }
-  }
-
-  private static Path getEmulatorConfigDir() {
-    if (SystemUtils.IS_OS_WINDOWS) {
-      return Paths.get(System.getenv("APPDATA"))
-              .resolve(Paths.get("gcloud", "emulators", "pubsub"));
-    }
-    return Paths.get(System.getProperty("user.home"))
-            .resolve(Paths.get(".config", "gcloud", "emulators", "pubsub"));
   }
 }

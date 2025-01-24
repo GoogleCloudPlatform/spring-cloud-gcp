@@ -16,9 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
-import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.getMatchedPrefixes;
-import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.warnIfUsingDeprecatedSyntax;
-
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
@@ -29,10 +26,7 @@ import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import org.apache.arrow.util.VisibleForTesting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.BootstrapRegistry;
 import org.springframework.boot.context.config.ConfigDataLocation;
@@ -44,8 +38,10 @@ import org.springframework.boot.context.config.ConfigDataResourceNotFoundExcepti
 public class SecretManagerConfigDataLocationResolver implements
     ConfigDataLocationResolver<SecretManagerConfigDataResource> {
 
-  private static final Logger logger = LoggerFactory.getLogger(SecretManagerConfigDataLocationResolver.class);
-
+  /**
+   * ConfigData Prefix for Google Cloud Secret Manager.
+   */
+  public static final String PREFIX = "sm://";
   /**
    * A static client to avoid creating another client after refreshing.
    */
@@ -54,9 +50,7 @@ public class SecretManagerConfigDataLocationResolver implements
   @Override
   public boolean isResolvable(ConfigDataLocationResolverContext context,
       ConfigDataLocation location) {
-    Optional<String> matchedPrefix = getMatchedPrefixes(location::hasPrefix);
-    warnIfUsingDeprecatedSyntax(logger, matchedPrefix.orElse(""));
-    return matchedPrefix.isPresent();
+    return location.hasPrefix(PREFIX);
   }
 
   @Override

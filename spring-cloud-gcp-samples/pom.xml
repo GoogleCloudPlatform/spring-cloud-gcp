@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.2</version>
+		<version>3.3.4</version>
 		<relativePath/>
 	</parent>
 
@@ -52,6 +52,7 @@
 				</property>
 			</activation>
 			<modules>
+				<module>spring-cloud-gcp-config-sample</module>
 				<module>spring-cloud-gcp-trace-sample</module>
 				<module>spring-cloud-gcp-logging-sample</module>
 				<module>spring-cloud-gcp-sql-mysql-sample</module>
