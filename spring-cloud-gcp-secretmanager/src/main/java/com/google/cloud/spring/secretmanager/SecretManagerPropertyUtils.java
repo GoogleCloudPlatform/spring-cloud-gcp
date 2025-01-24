@@ -16,24 +16,41 @@
 
 package com.google.cloud.spring.secretmanager;
 
+import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.getMatchedPrefixes;
+import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.warnIfUsingDeprecatedSyntax;
+
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 /** Utilities for parsing Secret Manager properties. */
 final class SecretManagerPropertyUtils {
 
-  private static final String GCP_SECRET_PREFIX = "sm://";
+  private static final Logger logger = LoggerFactory.getLogger(SecretManagerPropertyUtils.class);
 
   private SecretManagerPropertyUtils() {}
 
+
   static SecretVersionName getSecretVersionName(
-      String input, GcpProjectIdProvider projectIdProvider) {
-    if (!input.startsWith(GCP_SECRET_PREFIX)) {
+      final String input, GcpProjectIdProvider projectIdProvider) {
+    Optional<String> usedPrefix = getMatchedPrefixes(input::startsWith);
+
+    // Since spring-core 6.2.2, the property resolution mechanism will try a full match that
+    // may include a default string if provided. For example, a @Value("${sm@secret:default}") will
+    // cause two attempts: one with sm@secret:default as a whole string (we don't want this),
+    // and one with sm@secret (that's the one we want to process). The colon is also an invalid
+    // character in secret IDs.
+    // See https://github.com/spring-projects/spring-framework/issues/34124.
+    final boolean isAttemptingFullStringMatch = input.replace("sm://", "").contains(":");
+    if (usedPrefix.isEmpty() || isAttemptingFullStringMatch) {
       return null;
     }
+    warnIfUsingDeprecatedSyntax(logger, usedPrefix.orElse(""));
 
-    String resourcePath = input.substring(GCP_SECRET_PREFIX.length());
+    String resourcePath = input.substring(usedPrefix.get().length());
     String[] tokens = resourcePath.split("/");
 
     String projectId = projectIdProvider.getProjectId();
@@ -41,26 +58,26 @@ final class SecretManagerPropertyUtils {
     String version = "latest";
 
     if (tokens.length == 1) {
-      // property is form "sm://<secret-id>"
+      // property is of the form "sm@<secret-id>"
       secretId = tokens[0];
     } else if (tokens.length == 2) {
-      // property is form "sm://<secret-id>/<version>"
+      // property is of the form "sm@<secret-id>/<version>"
       secretId = tokens[0];
       version = tokens[1];
     } else if (tokens.length == 3) {
-      // property is form "sm://<project-id>/<secret-id>/<version-id>"
+      // property is of the form "sm@<project-id>/<secret-id>/<version-id>"
       projectId = tokens[0];
       secretId = tokens[1];
       version = tokens[2];
     } else if (tokens.length == 4 && tokens[0].equals("projects") && tokens[2].equals("secrets")) {
-      // property is form "sm://projects/<project-id>/secrets/<secret-id>"
+      // property is of the form "sm@projects/<project-id>/secrets/<secret-id>"
       projectId = tokens[1];
       secretId = tokens[3];
     } else if (tokens.length == 6
         && tokens[0].equals("projects")
         && tokens[2].equals("secrets")
         && tokens[4].equals("versions")) {
-      // property is form "sm://projects/<project-id>/secrets/<secret-id>/versions/<version>"
+      // property is of the form "sm@projects/<project-id>/secrets/<secret-id>/versions/<version>"
       projectId = tokens[1];
       secretId = tokens[3];
       version = tokens[5];
