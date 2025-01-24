@@ -17,10 +17,13 @@
 package com.google.cloud.spring.stream.binder.pubsub;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.auth.CredentialTypeForMetrics;
+import com.google.auth.Credentials;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
@@ -101,11 +104,10 @@ class PubSubMessageChannelBinderTests {
         new ApplicationContextRunner()
             .withBean(PubSubTemplate.class, () -> pubSubTemplate)
             .withBean(PubSubAdmin.class, () -> pubSubAdmin)
-            .withUserConfiguration(BaseTestConfiguration.class)
             .withConfiguration(
                 AutoConfigurations.of(
-                    PubSubBinderConfiguration.class
-                ));
+                    PubSubBinderConfiguration.class,
+                    PubSubExtendedBindingProperties.class));
     this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
   }
 
@@ -363,24 +365,6 @@ class PubSubMessageChannelBinderTests {
   }
 
   @EnableAutoConfiguration
-  public static class BaseTestConfiguration {
-    @Bean
-    public PubSubExtendedBindingProperties pubSubExtendedBindingProperties() {
-      return new PubSubExtendedBindingProperties();
-    }
-
-    @Bean
-    public CredentialsProvider googleCredentials() {
-      return () -> TestUtils.MOCK_CREDENTIALS;
-    }
-
-    @Bean
-    public GcpProjectIdProvider projectIdProvider() {
-      return () -> "fake project";
-    }
-  }
-
-  @EnableAutoConfiguration
   public static class PubSubBinderTestConfig {
 
     @Bean
@@ -402,6 +386,16 @@ class PubSubMessageChannelBinderTests {
     @Bean
     public Consumer<String> consumer() {
       return str -> LOGGER.info("received " + str);
+    }
+
+    @Bean
+    public GcpProjectIdProvider projectIdProvider() {
+      return () -> "fake project";
+    }
+
+    @Bean
+    public CredentialsProvider googleCredentials() {
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }

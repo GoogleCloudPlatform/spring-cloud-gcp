@@ -8,8 +8,6 @@ Spring Framework on Google Cloud has dependency and transitive dependencies on S
 |===
 | Spring Framework on Google Cloud | Spring Cloud | Spring Boot | Spring Framework | Supported
 
-
-|6.x |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2024.0-Release-Notes[2024.0.x] (Moorgate)|https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.4-Release-Notes[3.4.x]|https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-6.2-Release-Notes[6.2.x]|Yes
 |5.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2023.0-Release-Notes[2023.0.x] (Leyton) |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes[3.2.x]*, https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.3-Release-Notes[3.3.x]
 | https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x#whats-new-in-version-61[6.1.x]| Yes
 |4.x | https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2022.0-Release-Notes[2022.0.x] (Kilburn) |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes[3.0.x], https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.1-Release-Notes[3.1.x]| https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x#whats-new-in-version-60[6.x]| Yes

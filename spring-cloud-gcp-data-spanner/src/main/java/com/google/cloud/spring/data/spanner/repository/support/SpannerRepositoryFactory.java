@@ -36,8 +36,6 @@ import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryLookupStrategy.Key;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
-import org.springframework.data.repository.query.ValueExpressionDelegate;
-import org.springframework.data.spel.EvaluationContextProvider;
 import org.springframework.data.spel.ExpressionDependencies;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -103,22 +101,6 @@ public class SpannerRepositoryFactory extends RepositoryFactorySupport
 
   @Override
   protected Optional<QueryLookupStrategy> getQueryLookupStrategy(
-      @Nullable Key key, ValueExpressionDelegate valueExpressionDelegate) {
-
-    return Optional.of(
-        new SpannerQueryLookupStrategy(
-            this.spannerMappingContext,
-            this.spannerTemplate,
-            valueExpressionDelegate,
-            EXPRESSION_PARSER));
-  }
-
-  /**
-   * @deprecated Use {@link #getQueryLookupStrategy(Key, ValueExpressionDelegate)} instead.
-   */
-  @Override
-  @Deprecated
-  protected Optional<QueryLookupStrategy> getQueryLookupStrategy(
       @Nullable Key key, QueryMethodEvaluationContextProvider evaluationContextProvider) {
 
     return Optional.of(
@@ -158,11 +140,6 @@ public class SpannerRepositoryFactory extends RepositoryFactorySupport
         evaluationContext.setBeanResolver(
             new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
         return evaluationContext;
-      }
-
-      @Override
-      public EvaluationContextProvider getEvaluationContextProvider() {
-        return (EvaluationContextProvider) evaluationContextProvider;
       }
     };
   }
