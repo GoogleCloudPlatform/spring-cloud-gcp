@@ -35,7 +35,7 @@ public class PubSubConfiguration {
   private static final Logger logger = LoggerFactory.getLogger(PubSubConfiguration.class);
 
   /** Default number of executor threads. */
-  public static final int DEFAULT_EXECUTOR_THREADS = 4;
+  public static final int DEFAULT_EXECUTOR_THREADS = 5;
 
   private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 3600L;
 
