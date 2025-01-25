@@ -36,6 +36,7 @@ import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.repository.query.ValueExpressionDelegate;
 
 /** Tests for the Spanner repository factory. */
 class SpannerRepositoryFactoryTests {
@@ -99,6 +100,10 @@ class SpannerRepositoryFactoryTests {
   @Test
   void getQueryLookupStrategyTest() {
     Optional<QueryLookupStrategy> qls =
+        this.spannerRepositoryFactory.getQueryLookupStrategy(
+            null, mock(ValueExpressionDelegate.class));
+    assertThat(qls.get()).isInstanceOf(SpannerQueryLookupStrategy.class);
+    qls =
         this.spannerRepositoryFactory.getQueryLookupStrategy(
             null, mock(QueryMethodEvaluationContextProvider.class));
     assertThat(qls.get()).isInstanceOf(SpannerQueryLookupStrategy.class);
