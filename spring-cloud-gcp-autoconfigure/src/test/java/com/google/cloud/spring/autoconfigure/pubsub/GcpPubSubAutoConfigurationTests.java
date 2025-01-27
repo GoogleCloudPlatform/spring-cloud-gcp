@@ -295,7 +295,7 @@ class GcpPubSubAutoConfigurationTests {
           ThreadPoolTaskScheduler globalSchedulerBean =
               (ThreadPoolTaskScheduler) ctx.getBean("globalPubSubSubscriberThreadPoolScheduler");
 
-          assertThat(FieldUtils.readField(globalSchedulerBean, "poolSize", true)).isEqualTo(4);
+          assertThat(FieldUtils.readField(globalSchedulerBean, "poolSize", true)).isEqualTo(5);
           assertThat(globalSchedulerBean.getThreadNamePrefix())
               .isEqualTo("global-gcp-pubsub-subscriber");
           assertThat(globalSchedulerBean.isDaemon()).isTrue();
@@ -359,7 +359,7 @@ class GcpPubSubAutoConfigurationTests {
               assertThat(FieldUtils.readField(selectiveScheduler, "poolSize", true)).isEqualTo(7);
               assertThat(globalScheduler.getThreadNamePrefix())
                   .isEqualTo("global-gcp-pubsub-subscriber");
-              assertThat(FieldUtils.readField(globalScheduler, "poolSize", true)).isEqualTo(4);
+              assertThat(FieldUtils.readField(globalScheduler, "poolSize", true)).isEqualTo(5);
               assertThat(globalScheduler.isDaemon()).isTrue();
             });
   }
@@ -507,7 +507,7 @@ class GcpPubSubAutoConfigurationTests {
               assertThat(
                   gcpPubSubProperties.computeMaxAckExtensionPeriod(
                       "subscription-name", projectIdProvider.getProjectId()))
-                  .isZero();
+                  .isEqualTo(3600);
               assertThat(
                   gcpPubSubProperties.computeMinDurationPerAckExtension(
                       "subscription-name", projectIdProvider.getProjectId()))

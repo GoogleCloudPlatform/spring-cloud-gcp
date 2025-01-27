@@ -265,7 +265,7 @@ class PubSubConfigurationTests {
     Long result =
         pubSubConfiguration.computeMaxAckExtensionPeriod("subscription-name", "projectId");
 
-    assertThat(result).isZero();
+    assertThat(result).isEqualTo(3600L);
   }
 
   @Test
