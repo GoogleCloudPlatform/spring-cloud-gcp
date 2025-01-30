@@ -111,13 +111,9 @@ public class GcpPubSubAutoConfiguration {
 
   private final ApplicationContext applicationContext;
 
-  private ThreadPoolTaskScheduler globalScheduler;
-
   private FlowControlSettings globalFlowControlSettings;
 
   private RetrySettings globalRetrySettings;
-
-  private ExecutorProvider globalExecutorProvider;
 
   private ObjectProvider<SelectiveSchedulerThreadNameProvider> selectiveSchedulerThreadNameProvider;
 
@@ -257,7 +253,6 @@ public class GcpPubSubAutoConfiguration {
       factory.setExecutorProvider(executorProvider.get());
     }
     factory.setExecutorProviderMap(this.executorProviderMap);
-    factory.setGlobalExecutorProvider(this.globalExecutorProvider);
 
     factory.setCredentialsProvider(this.finalCredentialsProvider);
     factory.setHeaderProvider(this.headerProvider);
@@ -375,8 +370,8 @@ public class GcpPubSubAutoConfiguration {
     factory.setEndpoint(gcpPubSubProperties.getPublisher().getEndpoint());
     factory.setUniverseDomain(gcpPubSubProperties.getPublisher().getUniverseDomain());
 
-    List<PublisherCustomizer> customizers = customizersProvider.orderedStream()
-        .collect(Collectors.toList());
+    List<PublisherCustomizer> customizers =
+        customizersProvider.orderedStream().collect(Collectors.toList());
     Collections.reverse(customizers); // highest priority customizer needs to be last
     factory.setCustomizers(customizers);
 
@@ -438,7 +433,8 @@ public class GcpPubSubAutoConfiguration {
   public TransportChannelProvider subscriberTransportChannelProvider() {
     return SubscriberStubSettings.defaultGrpcTransportProviderBuilder()
         // default value specified by pubsub client library,
-        // see https://github.com/googleapis/java-pubsub/blob/main/google-cloud-pubsub/src/main/java/com/google/cloud/pubsub/v1/Subscriber.java#L487.
+        // see
+        // https://github.com/googleapis/java-pubsub/blob/main/google-cloud-pubsub/src/main/java/com/google/cloud/pubsub/v1/Subscriber.java#L487.
         .setMaxInboundMetadataSize(4 * 1024 * 1024)
         .setKeepAliveTime(
             Duration.ofMinutes(this.gcpPubSubProperties.getKeepAliveIntervalMinutes()))
@@ -464,13 +460,6 @@ public class GcpPubSubAutoConfiguration {
   }
 
   private void registerSubscriberThreadPoolSchedulerBeans(GenericApplicationContext context) {
-    Integer numThreads = getGlobalExecutorThreads();
-    this.globalScheduler =
-        createAndRegisterSchedulerBean(
-            numThreads,
-            "global-gcp-pubsub-subscriber",
-            "globalPubSubSubscriberThreadPoolScheduler",
-            context);
     registerSelectiveSchedulerBeans(context);
   }
 
@@ -493,11 +482,6 @@ public class GcpPubSubAutoConfiguration {
   private void registerExecutorProviderBeans(GenericApplicationContext context) {
     if (context.containsBean("subscriberExecutorProvider")) {
       return;
-    }
-    if (this.globalScheduler != null) {
-      this.globalExecutorProvider =
-          createAndRegisterExecutorProvider(
-              "globalSubscriberExecutorProvider", this.globalScheduler, context);
     }
     createAndRegisterSelectiveExecutorProvider(context);
   }
@@ -533,10 +517,12 @@ public class GcpPubSubAutoConfiguration {
       Integer selectiveExecutorThreads = selectiveSubscriber.getExecutorThreads();
       if (selectiveExecutorThreads != null) {
         String qualifiedName = fullSubscriptionName.toString(); // will include slashes
-        String threadName = selectiveSchedulerThreadNameProvider
-            .getIfAvailable(
-                () -> subscriptionName -> "gcp-pubsub-subscriber-" + subscriptionName.toString())
-            .getThreadName(fullSubscriptionName);
+        String threadName =
+            selectiveSchedulerThreadNameProvider
+                .getIfAvailable(
+                    () ->
+                        subscriptionName -> "gcp-pubsub-subscriber-" + subscriptionName.toString())
+                .getThreadName(fullSubscriptionName);
         String beanName = "threadPoolScheduler_" + qualifiedName;
         ThreadPoolTaskScheduler selectiveScheduler =
             createAndRegisterSchedulerBean(selectiveExecutorThreads, threadName, beanName, context);
@@ -559,7 +545,9 @@ public class GcpPubSubAutoConfiguration {
       String threadName,
       String beanName,
       GenericApplicationContext context) {
-    ThreadPoolTaskScheduler scheduler = createThreadPoolTaskScheduler(executorThreads, threadName);
+    ThreadPoolTaskScheduler scheduler;
+    scheduler =
+        executorThreads == null ? null : createThreadPoolTaskScheduler(executorThreads, threadName);
     context.registerBeanDefinition(
         beanName,
         BeanDefinitionBuilder.genericBeanDefinition(ThreadPoolTaskScheduler.class, () -> scheduler)
@@ -618,9 +606,7 @@ public class GcpPubSubAutoConfiguration {
         ThreadPoolTaskScheduler scheduler = schedulerSet.getValue();
         ExecutorProvider executorProvider =
             createAndRegisterExecutorProvider(
-                "subscriberExecutorProvider-" + qualifiedName,
-                scheduler,
-                context);
+                "subscriberExecutorProvider-" + qualifiedName, scheduler, context);
         this.executorProviderMap.putIfAbsent(fullSubscriptionName, executorProvider);
       }
     }
@@ -660,7 +646,6 @@ public class GcpPubSubAutoConfiguration {
   }
 
   private Integer getGlobalExecutorThreads() {
-    Integer numThreads = this.gcpPubSubProperties.getSubscriber().getExecutorThreads();
-    return numThreads != null ? numThreads : PubSubConfiguration.DEFAULT_EXECUTOR_THREADS;
+    return this.gcpPubSubProperties.getSubscriber().getExecutorThreads();
   }
 }

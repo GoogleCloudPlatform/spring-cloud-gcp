@@ -89,9 +89,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
   private RetrySettings globalRetrySettings;
 
-  private Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
-
-  private ExecutorProvider globalExecutorProvider;
+  private Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap =
+      new ConcurrentHashMap<>();
 
   private Code[] retryableCodes;
 
@@ -307,7 +306,6 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
       subscriberBuilder.setUniverseDomain(universeDomain);
     }
 
-
     Subscriber subscriber = subscriberBuilder.build();
 
     if (shouldAddToHealthCheck) {
@@ -362,8 +360,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
       subscriberStubSettings.setEndpoint(endpoint);
     }
 
-    ExecutorProvider executor =
-        this.executorProvider != null ? this.executorProvider : this.globalExecutorProvider;
+    ExecutorProvider executor = this.executorProvider;
     if (executor != null) {
       subscriberStubSettings.setBackgroundExecutorProvider(executor);
     }
@@ -452,7 +449,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (this.executorProviderMap.containsKey(projectSubscriptionName)) {
       return this.executorProviderMap.get(projectSubscriptionName);
     }
-    return this.globalExecutorProvider;
+    return null;
   }
 
   /**
@@ -499,8 +496,12 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (this.maxAckExtensionPeriod != null) {
       return this.maxAckExtensionPeriod;
     }
-    return Duration.ofSeconds(
-        this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId));
+    Long maxAckExtensionPeriod =
+        this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId);
+    if (maxAckExtensionPeriod != null) {
+      return Duration.ofSeconds(maxAckExtensionPeriod);
+    }
+    return null;
   }
 
   @Nullable
@@ -572,16 +573,9 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     return this.pubSubConfiguration.computeSubscriberUniverseDomain(subscriptionName, projectId);
   }
 
-  public void setExecutorProviderMap(Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
+  public void setExecutorProviderMap(
+      Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
     this.executorProviderMap = executorProviderMap;
-  }
-
-  public void setGlobalExecutorProvider(ExecutorProvider executorProvider) {
-    this.globalExecutorProvider = executorProvider;
-  }
-
-  public ExecutorProvider getGlobalExecutorProvider() {
-    return this.globalExecutorProvider;
   }
 
   public void setFlowControlSettingsMap(

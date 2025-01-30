@@ -56,15 +56,18 @@ class PubSubAutoConfigurationIntegrationTests {
 
   private static GcpProjectIdProvider projectIdProvider;
 
-  private final String fullSubscriptionNameSub1 = "projects/" + projectIdProvider.getProjectId() + "/subscriptions/" + PULL_SUB;
-  private final String fullSubscriptionNameSub2 = "projects/" + projectIdProvider.getProjectId() + "/subscriptions/" + SUBSCRIBE_SUB;
+  private final String fullSubscriptionNameSub1 =
+      "projects/" + projectIdProvider.getProjectId() + "/subscriptions/" + PULL_SUB;
+  private final String fullSubscriptionNameSub2 =
+      "projects/" + projectIdProvider.getProjectId() + "/subscriptions/" + SUBSCRIBE_SUB;
 
   private final ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
           .withPropertyValues(
               "spring.cloud.gcp.pubsub.subscriber.retryableCodes=INTERNAL",
               "spring.cloud.gcp.pubsub.subscription.fully-qualified-test-sub-1-with-project-abc.executor-threads=3",
-              "spring.cloud.gcp.pubsub.subscription.fully-qualified-test-sub-1-with-project-abc.fully-qualified-name=" + fullSubscriptionNameSub1,
+              "spring.cloud.gcp.pubsub.subscription.fully-qualified-test-sub-1-with-project-abc.fully-qualified-name="
+                  + fullSubscriptionNameSub1,
               "spring.cloud.gcp.pubsub.subscription.fully-qualified-test-sub-1-with-project-abc.retry.total-timeout-seconds=600",
               "spring.cloud.gcp.pubsub.subscription.fully-qualified-test-sub-1-with-project-abc.retry.initial-retry-delay-seconds=100",
               "spring.cloud.gcp.pubsub.subscription.fully-qualified-test-sub-1-with-project-abc.retry.retry-delay-multiplier=1.3",
@@ -75,14 +78,28 @@ class PubSubAutoConfigurationIntegrationTests {
               "spring.cloud.gcp.pubsub.subscription.fully-qualified-test-sub-1-with-project-abc.retry.max-rpc-timeout-seconds=600",
               "spring.cloud.gcp.pubsub.subscription.fully-qualified-test-sub-1-with-project-abc.pull-endpoint=northamerica-northeast2-pubsub.googleapis.com:443",
               "spring.cloud.gcp.pubsub.subscription." + SUBSCRIBE_SUB + ".executor-threads=1",
-              "spring.cloud.gcp.pubsub.subscription." + SUBSCRIBE_SUB + ".max-ack-extension-period=0",
-              "spring.cloud.gcp.pubsub.subscription." + SUBSCRIBE_SUB + ".min-duration-per-ack-extension=1",
-              "spring.cloud.gcp.pubsub.subscription." + SUBSCRIBE_SUB + ".max-duration-per-ack-extension=2",
+              "spring.cloud.gcp.pubsub.subscription."
+                  + SUBSCRIBE_SUB
+                  + ".max-ack-extension-period=0",
+              "spring.cloud.gcp.pubsub.subscription."
+                  + SUBSCRIBE_SUB
+                  + ".min-duration-per-ack-extension=1",
+              "spring.cloud.gcp.pubsub.subscription."
+                  + SUBSCRIBE_SUB
+                  + ".max-duration-per-ack-extension=2",
               "spring.cloud.gcp.pubsub.subscription." + SUBSCRIBE_SUB + ".parallel-pull-count=1",
-              "spring.cloud.gcp.pubsub.subscription." + SUBSCRIBE_SUB + ".flow-control.max-outstanding-element-Count=1",
-              "spring.cloud.gcp.pubsub.subscription." + SUBSCRIBE_SUB + ".flow-control.max-outstanding-request-Bytes=1",
-              "spring.cloud.gcp.pubsub.subscription." + SUBSCRIBE_SUB + ".flow-control.limit-exceeded-behavior=Ignore",
-              "spring.cloud.gcp.pubsub.subscription." + SUBSCRIBE_SUB + ".pull-endpoint=bad.endpoint")
+              "spring.cloud.gcp.pubsub.subscription."
+                  + SUBSCRIBE_SUB
+                  + ".flow-control.max-outstanding-element-Count=1",
+              "spring.cloud.gcp.pubsub.subscription."
+                  + SUBSCRIBE_SUB
+                  + ".flow-control.max-outstanding-request-Bytes=1",
+              "spring.cloud.gcp.pubsub.subscription."
+                  + SUBSCRIBE_SUB
+                  + ".flow-control.limit-exceeded-behavior=Ignore",
+              "spring.cloud.gcp.pubsub.subscription."
+                  + SUBSCRIBE_SUB
+                  + ".pull-endpoint=bad.endpoint")
           .withConfiguration(
               AutoConfigurations.of(
                   GcpContextAutoConfiguration.class, GcpPubSubAutoConfiguration.class));
@@ -137,29 +154,25 @@ class PubSubAutoConfigurationIntegrationTests {
             assertThat(retry.getRpcTimeoutMultiplier()).isEqualTo(1);
             assertThat(retry.getMaxRpcTimeoutSeconds()).isEqualTo(600L);
             ThreadPoolTaskScheduler scheduler =
-                (ThreadPoolTaskScheduler) context.getBean(
-                    "threadPoolScheduler_" + fullSubscriptionNameSub1);
+                (ThreadPoolTaskScheduler)
+                    context.getBean("threadPoolScheduler_" + fullSubscriptionNameSub1);
             assertThat(scheduler).isNotNull();
-            assertThat(scheduler.getThreadNamePrefix()).isEqualTo(
-                "gcp-pubsub-subscriber-" + fullSubscriptionNameSub1);
+            assertThat(scheduler.getThreadNamePrefix())
+                .isEqualTo("gcp-pubsub-subscriber-" + fullSubscriptionNameSub1);
             assertThat(scheduler.isDaemon()).isTrue();
             assertThat(
-                (ThreadPoolTaskScheduler)
-                    context.getBean("globalPubSubSubscriberThreadPoolScheduler"))
-                .isNotNull();
-            assertThat((ExecutorProvider) context.getBean(
-                "subscriberExecutorProvider-" + fullSubscriptionNameSub1))
-                .isNotNull();
-            assertThat((ExecutorProvider) context.getBean("globalSubscriberExecutorProvider"))
+                    (ExecutorProvider)
+                        context.getBean("subscriberExecutorProvider-" + fullSubscriptionNameSub1))
                 .isNotNull();
             assertThat(gcpPubSubProperties.computeRetryableCodes(subscriptionName, projectId))
-                .isEqualTo(new Code[]{Code.INTERNAL});
+                .isEqualTo(new Code[] {Code.INTERNAL});
             assertThat(gcpPubSubProperties.computePullEndpoint(fullSubscriptionNameSub1, projectId))
                 .isEqualTo("northamerica-northeast2-pubsub.googleapis.com:443");
             assertThat(gcpPubSubProperties.computePullEndpoint(SUBSCRIBE_SUB, projectId))
                 .isEqualTo("bad.endpoint");
-            assertThat((RetrySettings) context.getBean(
-                "subscriberRetrySettings-" + fullSubscriptionNameSub1))
+            assertThat(
+                    (RetrySettings)
+                        context.getBean("subscriberRetrySettings-" + fullSubscriptionNameSub1))
                 .isEqualTo(expectedRetrySettings);
           } finally {
             pubSubAdmin.deleteSubscription(subscriptionName);
@@ -172,7 +185,6 @@ class PubSubAutoConfigurationIntegrationTests {
   void testSubscribe() {
     this.contextRunner.run(
         context -> {
-
           PubSubAdmin pubSubAdmin = context.getBean(PubSubAdmin.class);
           PubSubTemplate pubSubTemplate = context.getBean(PubSubTemplate.class);
 
@@ -210,44 +222,37 @@ class PubSubAutoConfigurationIntegrationTests {
                     .setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore)
                     .build();
             assertThat(
-                (FlowControlSettings) context.getBean(
-                    "subscriberFlowControlSettings-" + fullSubscriptionNameSub2))
+                    (FlowControlSettings)
+                        context.getBean(
+                            "subscriberFlowControlSettings-" + fullSubscriptionNameSub2))
                 .isEqualTo(flowControlSettings);
             assertThat(flowControl.getMaxOutstandingElementCount()).isEqualTo(1L);
             assertThat(flowControl.getMaxOutstandingRequestBytes()).isEqualTo(1L);
             assertThat(flowControl.getLimitExceededBehavior())
                 .isEqualTo(FlowController.LimitExceededBehavior.Ignore);
             assertThat(
-                gcpPubSubProperties.computeMaxAckExtensionPeriod(
-                    subscriptionName, projectId))
+                    gcpPubSubProperties.computeMaxAckExtensionPeriod(subscriptionName, projectId))
                 .isZero();
             assertThat(
-                gcpPubSubProperties.computeMinDurationPerAckExtension(
-                    subscriptionName, projectId))
+                    gcpPubSubProperties.computeMinDurationPerAckExtension(
+                        subscriptionName, projectId))
                 .isEqualTo(1L);
             assertThat(
-                gcpPubSubProperties.computeMaxDurationPerAckExtension(
-                    subscriptionName, projectId))
+                    gcpPubSubProperties.computeMaxDurationPerAckExtension(
+                        subscriptionName, projectId))
                 .isEqualTo(2L);
-            assertThat(
-                gcpPubSubProperties.computeParallelPullCount(
-                    subscriptionName, projectId))
+            assertThat(gcpPubSubProperties.computeParallelPullCount(subscriptionName, projectId))
                 .isEqualTo(1);
             ThreadPoolTaskScheduler scheduler =
-                (ThreadPoolTaskScheduler) context.getBean(
-                    "threadPoolScheduler_" + fullSubscriptionNameSub2);
+                (ThreadPoolTaskScheduler)
+                    context.getBean("threadPoolScheduler_" + fullSubscriptionNameSub2);
             assertThat(scheduler).isNotNull();
-            assertThat(scheduler.getThreadNamePrefix()).isEqualTo(
-                "gcp-pubsub-subscriber-" + fullSubscriptionNameSub2);
+            assertThat(scheduler.getThreadNamePrefix())
+                .isEqualTo("gcp-pubsub-subscriber-" + fullSubscriptionNameSub2);
             assertThat(scheduler.isDaemon()).isTrue();
             assertThat(
-                (ThreadPoolTaskScheduler)
-                    context.getBean("globalPubSubSubscriberThreadPoolScheduler"))
-                .isNotNull();
-            assertThat((ExecutorProvider) context.getBean(
-                "subscriberExecutorProvider-" + fullSubscriptionNameSub2))
-                .isNotNull();
-            assertThat((ExecutorProvider) context.getBean("globalSubscriberExecutorProvider"))
+                    (ExecutorProvider)
+                        context.getBean("subscriberExecutorProvider-" + fullSubscriptionNameSub2))
                 .isNotNull();
           } finally {
             pubSubAdmin.deleteSubscription(subscriptionName);

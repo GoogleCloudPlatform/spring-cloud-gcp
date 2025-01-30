@@ -94,6 +94,23 @@ class DefaultSubscriberFactoryTests {
   }
 
   @Test
+  void testNewSubscriber_noMaxAckExtensionPeriodSet_usesClientDefault()
+      throws NoSuchFieldException, IllegalAccessException {
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "sealion", pubSubConfig);
+    String subscriptionName = "deadbeef";
+
+    // By default, we build a subscriber with null max ack extension period
+    Duration maxAckExtensionPeriodArgument = factory.getMaxAckExtensionPeriod(subscriptionName);
+    assertThat(maxAckExtensionPeriodArgument).isNull();
+
+    // Now we check that the default in google-cloud-pubsub was used
+    Subscriber subscriber = factory.createSubscriber(subscriptionName, (message, consumer) -> {});
+    java.time.Duration effectiveMaxAckExtensionPeriod = (java.time.Duration) FieldUtils.readField(subscriber, "maxAckExtensionPeriod", true);
+    java.time.Duration clientDefaultMaxAckExtensionPeriod = (java.time.Duration) FieldUtils.readField(subscriber, "DEFAULT_MAX_ACK_EXTENSION_PERIOD", true);
+    assertThat(effectiveMaxAckExtensionPeriod).isEqualTo(clientDefaultMaxAckExtensionPeriod);
+  }
+
+  @Test
   void testNewSubscriber_constructorWithPubSubConfiguration() {
     GcpProjectIdProvider projectIdProvider = () -> "angeldust";
     DefaultSubscriberFactory factory =
@@ -534,7 +551,7 @@ class DefaultSubscriberFactoryTests {
         new DefaultSubscriberFactory(projectIdProvider, this.pubSubConfig);
 
     assertThat(factory.getMaxAckExtensionPeriod("subscription-name"))
-        .isEqualTo(Duration.ofSeconds(3600L));
+        .isNull();
   }
 
   @Test

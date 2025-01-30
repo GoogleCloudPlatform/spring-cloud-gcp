@@ -34,11 +34,6 @@ public class PubSubConfiguration {
 
   private static final Logger logger = LoggerFactory.getLogger(PubSubConfiguration.class);
 
-  /** Default number of executor threads. */
-  public static final int DEFAULT_EXECUTOR_THREADS = 5;
-
-  private static final Long DEFAULT_MAX_ACK_EXTENSION_PERIOD = 3600L;
-
   /**
    * Automatically extracted user-provided properties. Contains only short subscription keys
    * user-provided properties, therefore do not use except in initialize().
@@ -225,10 +220,7 @@ public class PubSubConfiguration {
     if (maxAckExtensionPeriod != null) {
       return maxAckExtensionPeriod;
     }
-    Long globalMaxAckExtensionPeriod = this.globalSubscriber.getMaxAckExtensionPeriod();
-    return globalMaxAckExtensionPeriod != null
-        ? globalMaxAckExtensionPeriod
-        : DEFAULT_MAX_ACK_EXTENSION_PERIOD;
+    return this.globalSubscriber.getMaxAckExtensionPeriod();
   }
 
   /**
