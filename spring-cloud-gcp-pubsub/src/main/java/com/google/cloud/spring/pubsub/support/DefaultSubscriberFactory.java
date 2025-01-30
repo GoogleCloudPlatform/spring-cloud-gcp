@@ -89,8 +89,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
   private RetrySettings globalRetrySettings;
 
-  private Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap =
-      new ConcurrentHashMap<>();
+  private Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
 
   private Code[] retryableCodes;
 
@@ -306,6 +305,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
       subscriberBuilder.setUniverseDomain(universeDomain);
     }
 
+
     Subscriber subscriber = subscriberBuilder.build();
 
     if (shouldAddToHealthCheck) {
@@ -496,8 +496,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (this.maxAckExtensionPeriod != null) {
       return this.maxAckExtensionPeriod;
     }
-    Long maxAckExtensionPeriod =
-        this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId);
+    Long maxAckExtensionPeriod = this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId);
     if (maxAckExtensionPeriod != null) {
       return Duration.ofSeconds(maxAckExtensionPeriod);
     }
@@ -573,8 +572,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     return this.pubSubConfiguration.computeSubscriberUniverseDomain(subscriptionName, projectId);
   }
 
-  public void setExecutorProviderMap(
-      Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
+  public void setExecutorProviderMap(Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
     this.executorProviderMap = executorProviderMap;
   }
 
