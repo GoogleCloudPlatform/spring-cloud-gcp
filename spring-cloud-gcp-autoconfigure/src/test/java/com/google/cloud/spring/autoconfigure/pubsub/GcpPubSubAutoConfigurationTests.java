@@ -25,7 +25,6 @@ import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
-import com.google.api.gax.core.InstantiatingExecutorProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.StatusCode.Code;
@@ -142,20 +141,6 @@ class GcpPubSubAutoConfigurationTests {
               ctx.getBean("subscriberTransportChannelProvider", TransportChannelProvider.class);
           assertThat(FieldUtils.readField(subscriberTcp, "maxInboundMetadataSize", true))
               .isEqualTo(4 * 1024 * 1024);
-        });
-  }
-
-  @Test
-  void defaultSubscriberFactory_noExecutorThreadsSet_usesClientDefault() {
-    contextRunner.run(
-        ctx -> {
-          DefaultSubscriberFactory defaultSubscriberFactory =
-              ctx.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
-          Subscriber subscriber = defaultSubscriberFactory.createSubscriber("dead10cc", (message, consumer) -> {});
-          // we confirm that the created subscriber uses the default thread setting in the client (5 as of Jan 2025).
-          InstantiatingExecutorProvider executorProvider = (InstantiatingExecutorProvider) FieldUtils.readField(subscriber, "executorProvider", true);
-          Integer threadsPerChannel = (Integer) FieldUtils.readField(subscriber, "THREADS_PER_CHANNEL", true);
-          assertThat(executorProvider.getExecutorThreadCount()).isEqualTo(threadsPerChannel);
         });
   }
 
@@ -298,8 +283,23 @@ class GcpPubSubAutoConfigurationTests {
               DefaultSubscriberFactory factory =
                   ctx.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
               assertThat(factory.getExecutorProvider("name")).isSameAs(executorProvider);
+              assertThat(ctx.containsBean("globalSubscriberExecutorProvider")).isFalse();
               assertThat(ctx.containsBean("subscriberExecutorProvider-name")).isFalse();
             });
+  }
+
+  @Test
+  void threadPoolScheduler_noConfigurationSet_globalCreated() {
+    contextRunner.run(
+        ctx -> {
+          ThreadPoolTaskScheduler globalSchedulerBean =
+              (ThreadPoolTaskScheduler) ctx.getBean("globalPubSubSubscriberThreadPoolScheduler");
+
+          assertThat(FieldUtils.readField(globalSchedulerBean, "poolSize", true)).isEqualTo(4);
+          assertThat(globalSchedulerBean.getThreadNamePrefix())
+              .isEqualTo("global-gcp-pubsub-subscriber");
+          assertThat(globalSchedulerBean.isDaemon()).isTrue();
+        });
   }
 
   @Test
@@ -309,10 +309,33 @@ class GcpPubSubAutoConfigurationTests {
         .run(
             ctx -> {
               GcpPubSubProperties gcpPubSubProperties = ctx.getBean(GcpPubSubProperties.class);
+              ThreadPoolTaskScheduler globalSchedulerBean =
+                  (ThreadPoolTaskScheduler) ctx.getBean(
+                      "globalPubSubSubscriberThreadPoolScheduler");
+
               assertThat(gcpPubSubProperties.getSubscriber().getExecutorThreads()).isEqualTo(7);
+              assertThat(globalSchedulerBean.getThreadNamePrefix())
+                  .isEqualTo("global-gcp-pubsub-subscriber");
+              assertThat(FieldUtils.readField(globalSchedulerBean, "poolSize", true)).isEqualTo(7);
+              assertThat(globalSchedulerBean.isDaemon()).isTrue();
             });
   }
 
+  @Test
+  void subscriberExecutorProvider_globalConfigurationSet() {
+    contextRunner
+        .withPropertyValues("spring.cloud.gcp.pubsub.subscriber.executor-threads=7")
+        .run(
+            ctx -> {
+              DefaultSubscriberFactory factory =
+                  (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
+              ExecutorProvider globalExecutorProvider =
+                  (ExecutorProvider) ctx.getBean("globalSubscriberExecutorProvider");
+
+              assertThat(globalExecutorProvider).isNotNull();
+              assertThat(factory.getExecutorProvider("other")).isSameAs(globalExecutorProvider);
+            });
+  }
 
   @Test
   void threadPoolTaskScheduler_selectiveConfigurationSet() {
@@ -326,11 +349,18 @@ class GcpPubSubAutoConfigurationTests {
               ThreadPoolTaskScheduler selectiveScheduler =
                   (ThreadPoolTaskScheduler) ctx.getBean(
                       "threadPoolScheduler_projects/fake project/subscriptions/subscription-name");
+              ThreadPoolTaskScheduler globalScheduler =
+                  (ThreadPoolTaskScheduler) ctx.getBean(
+                      "globalPubSubSubscriberThreadPoolScheduler");
               assertThat(selectiveScheduler.getThreadNamePrefix())
                   .isEqualTo(
                       "gcp-pubsub-subscriber-projects/fake project/subscriptions/subscription-name");
               assertThat(selectiveScheduler.isDaemon()).isTrue();
               assertThat(FieldUtils.readField(selectiveScheduler, "poolSize", true)).isEqualTo(7);
+              assertThat(globalScheduler.getThreadNamePrefix())
+                  .isEqualTo("global-gcp-pubsub-subscriber");
+              assertThat(FieldUtils.readField(globalScheduler, "poolSize", true)).isEqualTo(4);
+              assertThat(globalScheduler.isDaemon()).isTrue();
             });
   }
 
@@ -363,6 +393,10 @@ class GcpPubSubAutoConfigurationTests {
               ExecutorProvider selectiveExecutorProvider =
                   (ExecutorProvider) ctx.getBean(
                       "subscriberExecutorProvider-projects/fake project/subscriptions/subscription-name");
+              ExecutorProvider globalExecutorProvider =
+                  (ExecutorProvider) ctx.getBean("globalSubscriberExecutorProvider");
+
+              assertThat(globalExecutorProvider).isNotNull();
               assertThat(selectiveExecutorProvider).isNotNull();
               assertThat(factory.getExecutorProvider("subscription-name"))
                   .isSameAs(selectiveExecutorProvider);
@@ -382,11 +416,40 @@ class GcpPubSubAutoConfigurationTests {
               ThreadPoolTaskScheduler selectiveScheduler =
                   (ThreadPoolTaskScheduler) ctx.getBean(
                       "threadPoolScheduler_projects/fake project/subscriptions/subscription-name");
+              ThreadPoolTaskScheduler globalScheduler =
+                  (ThreadPoolTaskScheduler) ctx.getBean(
+                      "globalPubSubSubscriberThreadPoolScheduler");
               assertThat(selectiveScheduler.getThreadNamePrefix())
                   .isEqualTo(
                       "gcp-pubsub-subscriber-projects/fake project/subscriptions/subscription-name");
               assertThat(FieldUtils.readField(selectiveScheduler, "poolSize", true)).isEqualTo(3);
               assertThat(selectiveScheduler.isDaemon()).isTrue();
+              assertThat(globalScheduler.getThreadNamePrefix())
+                  .isEqualTo("global-gcp-pubsub-subscriber");
+              assertThat(FieldUtils.readField(globalScheduler, "poolSize", true)).isEqualTo(5);
+              assertThat(globalScheduler.isDaemon()).isTrue();
+            });
+  }
+
+  @Test
+  void threadPoolTaskScheduler_globalAndDifferentSelectiveConfigurationSet_onlyGlobalCreated() {
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.pubsub.subscriber.executor-threads=5",
+            "spring.cloud.gcp.pubsub.subscription.subscription-name.parallel-pull-count=3")
+        .run(
+            ctx -> {
+
+              // Verify that only global thread pool task scheduler is created
+              ThreadPoolTaskScheduler globalScheduler =
+                  (ThreadPoolTaskScheduler) ctx.getBean(
+                      "globalPubSubSubscriberThreadPoolScheduler");
+
+              assertThat(globalScheduler.getThreadNamePrefix())
+                  .isEqualTo("global-gcp-pubsub-subscriber");
+              assertThat(globalScheduler.isDaemon()).isTrue();
+              assertThat(FieldUtils.readField(globalScheduler, "poolSize", true)).isEqualTo(5);
+              assertThat(ctx.containsBean("threadPoolScheduler_subscription-name")).isFalse();
             });
   }
 
@@ -398,8 +461,15 @@ class GcpPubSubAutoConfigurationTests {
             "spring.cloud.gcp.pubsub.subscription.subscription-name.parallel-pull-count=3")
         .run(
             ctx -> {
+              DefaultSubscriberFactory factory =
+                  (DefaultSubscriberFactory) ctx.getBean("defaultSubscriberFactory");
+
+              // Verify that global executor provider is created and used
+              ExecutorProvider globalExecutorProvider =
+                  (ExecutorProvider) ctx.getBean("globalSubscriberExecutorProvider");
               assertThat(
                   ctx.containsBean("subscriberExecutorProvider-subscription-name")).isFalse();
+              assertThat(factory.getGlobalExecutorProvider()).isSameAs(globalExecutorProvider);
             });
   }
 
@@ -416,7 +486,12 @@ class GcpPubSubAutoConfigurationTests {
               ExecutorProvider selectiveExecutorProvider =
                   (ExecutorProvider) ctx.getBean(
                       "subscriberExecutorProvider-projects/fake project/subscriptions/subscription-name");
+              ExecutorProvider globalExecutorProvider =
+                  (ExecutorProvider) ctx.getBean("globalSubscriberExecutorProvider");
+
               assertThat(selectiveExecutorProvider).isNotNull();
+              assertThat(globalExecutorProvider).isNotNull();
+              assertThat(factory.getGlobalExecutorProvider()).isNotNull();
               assertThat(factory.getExecutorProvider("subscription-name"))
                   .isSameAs(selectiveExecutorProvider);
             });
@@ -432,7 +507,7 @@ class GcpPubSubAutoConfigurationTests {
               assertThat(
                   gcpPubSubProperties.computeMaxAckExtensionPeriod(
                       "subscription-name", projectIdProvider.getProjectId()))
-                  .isNull();
+                  .isZero();
               assertThat(
                   gcpPubSubProperties.computeMinDurationPerAckExtension(
                       "subscription-name", projectIdProvider.getProjectId()))

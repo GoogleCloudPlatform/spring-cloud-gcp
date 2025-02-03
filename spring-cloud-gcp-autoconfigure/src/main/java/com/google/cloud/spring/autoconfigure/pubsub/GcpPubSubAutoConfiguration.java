@@ -111,9 +111,13 @@ public class GcpPubSubAutoConfiguration {
 
   private final ApplicationContext applicationContext;
 
+  private ThreadPoolTaskScheduler globalScheduler;
+
   private FlowControlSettings globalFlowControlSettings;
 
   private RetrySettings globalRetrySettings;
+
+  private ExecutorProvider globalExecutorProvider;
 
   private ObjectProvider<SelectiveSchedulerThreadNameProvider> selectiveSchedulerThreadNameProvider;
 
@@ -253,6 +257,7 @@ public class GcpPubSubAutoConfiguration {
       factory.setExecutorProvider(executorProvider.get());
     }
     factory.setExecutorProviderMap(this.executorProviderMap);
+    factory.setGlobalExecutorProvider(this.globalExecutorProvider);
 
     factory.setCredentialsProvider(this.finalCredentialsProvider);
     factory.setHeaderProvider(this.headerProvider);
@@ -459,6 +464,13 @@ public class GcpPubSubAutoConfiguration {
   }
 
   private void registerSubscriberThreadPoolSchedulerBeans(GenericApplicationContext context) {
+    Integer numThreads = getGlobalExecutorThreads();
+    this.globalScheduler =
+        createAndRegisterSchedulerBean(
+            numThreads,
+            "global-gcp-pubsub-subscriber",
+            "globalPubSubSubscriberThreadPoolScheduler",
+            context);
     registerSelectiveSchedulerBeans(context);
   }
 
@@ -481,6 +493,11 @@ public class GcpPubSubAutoConfiguration {
   private void registerExecutorProviderBeans(GenericApplicationContext context) {
     if (context.containsBean("subscriberExecutorProvider")) {
       return;
+    }
+    if (this.globalScheduler != null) {
+      this.globalExecutorProvider =
+          createAndRegisterExecutorProvider(
+              "globalSubscriberExecutorProvider", this.globalScheduler, context);
     }
     createAndRegisterSelectiveExecutorProvider(context);
   }
@@ -542,11 +559,10 @@ public class GcpPubSubAutoConfiguration {
       String threadName,
       String beanName,
       GenericApplicationContext context) {
-    ThreadPoolTaskScheduler scheduler;
-    scheduler = executorThreads == null ? null : createThreadPoolTaskScheduler(executorThreads, threadName);
+    ThreadPoolTaskScheduler scheduler = createThreadPoolTaskScheduler(executorThreads, threadName);
     context.registerBeanDefinition(
         beanName,
-        BeanDefinitionBuilder.genericBeanDefinition(ThreadPoolTaskScheduler.class, () ->  scheduler)
+        BeanDefinitionBuilder.genericBeanDefinition(ThreadPoolTaskScheduler.class, () -> scheduler)
             .getBeanDefinition());
     return scheduler;
   }
@@ -644,6 +660,7 @@ public class GcpPubSubAutoConfiguration {
   }
 
   private Integer getGlobalExecutorThreads() {
-    return this.gcpPubSubProperties.getSubscriber().getExecutorThreads();
+    Integer numThreads = this.gcpPubSubProperties.getSubscriber().getExecutorThreads();
+    return numThreads != null ? numThreads : PubSubConfiguration.DEFAULT_EXECUTOR_THREADS;
   }
 }

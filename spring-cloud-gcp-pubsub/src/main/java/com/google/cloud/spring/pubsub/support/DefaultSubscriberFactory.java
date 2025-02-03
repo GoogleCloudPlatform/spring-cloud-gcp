@@ -91,6 +91,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
   private Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap = new ConcurrentHashMap<>();
 
+  private ExecutorProvider globalExecutorProvider;
+
   private Code[] retryableCodes;
 
   /**
@@ -360,7 +362,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
       subscriberStubSettings.setEndpoint(endpoint);
     }
 
-    ExecutorProvider executor = this.executorProvider;
+    ExecutorProvider executor =
+        this.executorProvider != null ? this.executorProvider : this.globalExecutorProvider;
     if (executor != null) {
       subscriberStubSettings.setBackgroundExecutorProvider(executor);
     }
@@ -449,7 +452,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (this.executorProviderMap.containsKey(projectSubscriptionName)) {
       return this.executorProviderMap.get(projectSubscriptionName);
     }
-    return null;
+    return this.globalExecutorProvider;
   }
 
   /**
@@ -496,11 +499,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (this.maxAckExtensionPeriod != null) {
       return this.maxAckExtensionPeriod;
     }
-    Long maxAckExtensionPeriod = this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId);
-    if (maxAckExtensionPeriod != null) {
-      return Duration.ofSeconds(maxAckExtensionPeriod);
-    }
-    return null;
+    return Duration.ofSeconds(
+        this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId));
   }
 
   @Nullable
@@ -574,6 +574,14 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
 
   public void setExecutorProviderMap(Map<ProjectSubscriptionName, ExecutorProvider> executorProviderMap) {
     this.executorProviderMap = executorProviderMap;
+  }
+
+  public void setGlobalExecutorProvider(ExecutorProvider executorProvider) {
+    this.globalExecutorProvider = executorProvider;
+  }
+
+  public ExecutorProvider getGlobalExecutorProvider() {
+    return this.globalExecutorProvider;
   }
 
   public void setFlowControlSettingsMap(
