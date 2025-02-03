@@ -143,8 +143,14 @@ class PubSubAutoConfigurationIntegrationTests {
             assertThat(scheduler.getThreadNamePrefix()).isEqualTo(
                 "gcp-pubsub-subscriber-" + fullSubscriptionNameSub1);
             assertThat(scheduler.isDaemon()).isTrue();
+            assertThat(
+                (ThreadPoolTaskScheduler)
+                    context.getBean("globalPubSubSubscriberThreadPoolScheduler"))
+                .isNotNull();
             assertThat((ExecutorProvider) context.getBean(
                 "subscriberExecutorProvider-" + fullSubscriptionNameSub1))
+                .isNotNull();
+            assertThat((ExecutorProvider) context.getBean("globalSubscriberExecutorProvider"))
                 .isNotNull();
             assertThat(gcpPubSubProperties.computeRetryableCodes(subscriptionName, projectId))
                 .isEqualTo(new Code[]{Code.INTERNAL});
@@ -234,8 +240,14 @@ class PubSubAutoConfigurationIntegrationTests {
             assertThat(scheduler.getThreadNamePrefix()).isEqualTo(
                 "gcp-pubsub-subscriber-" + fullSubscriptionNameSub2);
             assertThat(scheduler.isDaemon()).isTrue();
+            assertThat(
+                (ThreadPoolTaskScheduler)
+                    context.getBean("globalPubSubSubscriberThreadPoolScheduler"))
+                .isNotNull();
             assertThat((ExecutorProvider) context.getBean(
                 "subscriberExecutorProvider-" + fullSubscriptionNameSub2))
+                .isNotNull();
+            assertThat((ExecutorProvider) context.getBean("globalSubscriberExecutorProvider"))
                 .isNotNull();
           } finally {
             pubSubAdmin.deleteSubscription(subscriptionName);
