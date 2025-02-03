@@ -41,6 +41,42 @@ branchProtectionRules:
     requiredApprovingReviewCount: 1
     requiresCodeOwnerReviews: true
     requiresStrictStatusChecks: false
+  - pattern: 5.x
+    isAdminEnforced: true
+    requiredStatusCheckContexts:
+      - 'cla/google'
+      - 'unitTests (17)'
+      - 'unitTests (19)'
+      - 'unitTests (21)'
+      - 'releaseCheck'
+      - 'conventionalcommits.org'
+      - 'Build with Sonar'
+      - 'parallel-NativeTests (alloydb-sample)'
+      - 'parallel-NativeTests (bigquery-sample)'
+      - 'parallel-NativeTests (bigquery)'
+      - 'parallel-NativeTests (core)'
+      - 'parallel-NativeTests (data-firestore)'
+      - 'parallel-NativeTests (data-firestore-sample)'
+      - 'parallel-NativeTests (datastore)'
+      - 'parallel-NativeTests (datastore-basic-sample)'
+      - 'parallel-NativeTests (kms)'
+      - 'parallel-NativeTests (kms-sample)'
+      - 'parallel-NativeTests (logging-sample)'
+      - 'parallel-NativeTests (metrics-sample)'
+      - 'parallel-NativeTests (pubsub-sample)'
+      - 'parallel-NativeTests (pubsub-bus-sample)'
+      - 'parallel-NativeTests (pubsub-integration-sample)'
+      - 'parallel-NativeTests (secretmanager)'
+      - 'parallel-NativeTests (secretmanager-sample)'
+      - 'parallel-NativeTests (spanner)'
+      - 'parallel-NativeTests (sql-mysql-sample)'
+      - 'parallel-NativeTests (sql-postgres-sample)'
+      - 'parallel-NativeTests (starter-firestore-sample)'
+      - 'parallel-NativeTests (storage)'
+      - 'parallel-NativeTests (storage-sample)'
+      - 'parallel-NativeTests (trace-sample)'
+      - 'parallel-NativeTests (vision)'
+      - 'parallel-NativeTests (vision-sample)'
   - pattern: 4.x
     isAdminEnforced: true
     requiredStatusCheckContexts:
