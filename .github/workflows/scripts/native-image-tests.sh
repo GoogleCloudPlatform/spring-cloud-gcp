@@ -75,13 +75,17 @@ run_sample_tests () {
 
   else
     project_names="$(echo "${module_samples[@]}" | sed 's/ /,/g')"
+    # Note that spring.cloud.refresh is disabled in native image mode. This affects samples
+    # that use @RefreshScope.
+    # See https://docs.spring.io/spring-cloud-config/reference/client.html#aot-and-native-image-support
     mvn clean test \
       --activate-profiles native-sample-config,nativeTest \
       --define notAllModules=true \
       --define maven.javadoc.skip=true \
       -pl="${project_names}" \
       --define org.slf4j.simpleLogger.showDateTime=true \
-      --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
+      --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
+      --define spring-boot.run.arguments="--spring.cloud.refresh.enabled=false"
   fi
   popd
 }
