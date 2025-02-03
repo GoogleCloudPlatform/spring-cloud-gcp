@@ -41,6 +41,16 @@ branchProtectionRules:
     requiredApprovingReviewCount: 1
     requiresCodeOwnerReviews: true
     requiresStrictStatusChecks: false
+  - pattern: 5.x
+    isAdminEnforced: true
+    requiredStatusCheckContexts:
+      - 'cla/google'
+      - 'unitTests (17)'
+      - 'unitTests (19)'
+      - 'unitTests (21)'
+      - 'releaseCheck'
+      - 'conventionalcommits.org'
+      - 'Build with Sonar'
   - pattern: 4.x
     isAdminEnforced: true
     requiredStatusCheckContexts:
