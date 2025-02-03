@@ -34,6 +34,9 @@ public class PubSubConfiguration {
 
   private static final Logger logger = LoggerFactory.getLogger(PubSubConfiguration.class);
 
+  /** Default number of executor threads. */
+  public static final int DEFAULT_EXECUTOR_THREADS = 4;
+
   /**
    * Automatically extracted user-provided properties. Contains only short subscription keys
    * user-provided properties, therefore do not use except in initialize().

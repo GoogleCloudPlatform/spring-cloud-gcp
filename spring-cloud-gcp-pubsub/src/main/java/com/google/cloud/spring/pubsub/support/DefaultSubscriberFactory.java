@@ -499,8 +499,11 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (this.maxAckExtensionPeriod != null) {
       return this.maxAckExtensionPeriod;
     }
-    return Duration.ofSeconds(
-        this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId));
+    Long maxAckExtensionPeriod = this.pubSubConfiguration.computeMaxAckExtensionPeriod(subscriptionName, projectId);
+    if (maxAckExtensionPeriod != null) {
+      return Duration.ofSeconds(maxAckExtensionPeriod);
+    }
+    return null;
   }
 
   @Nullable
