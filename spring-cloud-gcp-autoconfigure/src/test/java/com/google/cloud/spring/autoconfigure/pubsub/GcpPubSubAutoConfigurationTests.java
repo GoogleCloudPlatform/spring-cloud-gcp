@@ -507,7 +507,7 @@ class GcpPubSubAutoConfigurationTests {
               assertThat(
                   gcpPubSubProperties.computeMaxAckExtensionPeriod(
                       "subscription-name", projectIdProvider.getProjectId()))
-                  .isZero();
+                  .isNull();
               assertThat(
                   gcpPubSubProperties.computeMinDurationPerAckExtension(
                       "subscription-name", projectIdProvider.getProjectId()))
