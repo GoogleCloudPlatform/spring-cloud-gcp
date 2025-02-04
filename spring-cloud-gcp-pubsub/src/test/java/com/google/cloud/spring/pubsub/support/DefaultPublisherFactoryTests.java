@@ -48,6 +48,7 @@ class DefaultPublisherFactoryTests {
     TransportChannelProvider mockChannelProvider = mock(TransportChannelProvider.class);
     TransportChannel mockTransportChannel = mock(TransportChannel.class);
     when(mockChannelProvider.getTransportChannel()).thenReturn(mockTransportChannel);
+    when(mockChannelProvider.withUseS2A(anyBoolean())).thenReturn(mockChannelProvider);
     ApiCallContext mockContext = mock(ApiCallContext.class);
     when(mockTransportChannel.getEmptyCallContext()).thenReturn(mockContext);
     when(mockContext.withTransportChannel(any())).thenReturn(mockContext);
