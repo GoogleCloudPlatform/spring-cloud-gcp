@@ -14,6 +14,19 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.15](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.14...v3.8.15) (2025-02-04)
+
+
+### Bug Fixes
+
+* do not explicitly set python version, use one provided in docker image ([#3490](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3490)) ([26a7d27](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/26a7d277e5f8082e0af420ebb47815f486ea7803))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.21.2 to 1.23.0 ([#3504](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3504)) ([5ed30c7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5ed30c736c16f705d4991b0db5185cd266f19c12))
+* bump com.google.cloud:libraries-bom from 26.53.0 to 26.54.0 ([#3520](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3520)) ([76f39be](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/76f39be918984e0b5c7d8f3cac760e18511811f5))
+
 ## [3.8.14](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.13...v3.8.14) (2025-01-16)
 
 
