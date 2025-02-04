@@ -166,6 +166,14 @@ public class ModelServiceSpringAutoConfiguration {
           .listModelVersionsSettings()
           .setRetrySettings(listModelVersionsRetrySettings);
 
+      RetrySettings listModelVersionCheckpointsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listModelVersionCheckpointsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listModelVersionCheckpointsSettings()
+          .setRetrySettings(listModelVersionCheckpointsRetrySettings);
+
       RetrySettings updateModelRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.updateModelSettings().getRetrySettings(), serviceRetry);
@@ -296,6 +304,20 @@ public class ModelServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listModelVersions from properties.");
+      }
+    }
+    Retry listModelVersionCheckpointsRetry = clientProperties.getListModelVersionCheckpointsRetry();
+    if (listModelVersionCheckpointsRetry != null) {
+      RetrySettings listModelVersionCheckpointsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listModelVersionCheckpointsSettings().getRetrySettings(),
+              listModelVersionCheckpointsRetry);
+      clientSettingsBuilder
+          .listModelVersionCheckpointsSettings()
+          .setRetrySettings(listModelVersionCheckpointsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listModelVersionCheckpoints from properties.");
       }
     }
     Retry updateModelRetry = clientProperties.getUpdateModelRetry();

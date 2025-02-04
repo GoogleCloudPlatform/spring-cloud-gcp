@@ -56,6 +56,11 @@ public class ModelServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry listModelVersionsRetry;
   /**
+   * Allow override of retry settings at method-level for listModelVersionCheckpoints. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listModelVersionCheckpointsRetry;
+  /**
    * Allow override of retry settings at method-level for updateModel. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -177,6 +182,14 @@ public class ModelServiceSpringProperties implements CredentialsSupplier {
 
   public void setListModelVersionsRetry(Retry listModelVersionsRetry) {
     this.listModelVersionsRetry = listModelVersionsRetry;
+  }
+
+  public Retry getListModelVersionCheckpointsRetry() {
+    return this.listModelVersionCheckpointsRetry;
+  }
+
+  public void setListModelVersionCheckpointsRetry(Retry listModelVersionCheckpointsRetry) {
+    this.listModelVersionCheckpointsRetry = listModelVersionCheckpointsRetry;
   }
 
   public Retry getUpdateModelRetry() {
