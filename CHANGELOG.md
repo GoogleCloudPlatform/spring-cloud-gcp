@@ -14,6 +14,32 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.0.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.10.0...v6.0.0) (2025-02-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* **pubsub:** set default max ack extension period to 60 minutes ([#3501](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3501))
+* Spring Cloud 2024.0 and Spring Boot 3.4.2 ([#3500](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3500))
+
+### Features
+
+* **pubsub:** set default max ack extension period to 60 minutes ([#3501](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3501)) ([9245031](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9245031042054efc2ab52cdffad75298922a5a79))
+* Spring Cloud 2024.0 and Spring Boot 3.4.1 ([a72a86b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a72a86b6091ffbc208e2aa4bbb02273b94ae32fc))
+* Spring Cloud 2024.0 and Spring Boot 3.4.2 ([#3500](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3500)) ([0108054](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/01080543e9133850ecb60d1d41120356a8af18fc))
+
+
+### Bug Fixes
+
+* **deps:** update gapic-generator-java-bom.version to v2.52.0 ([#3512](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3512)) ([c184e69](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c184e6993898a6f9be8f00a2e6ef5e12deb39bb5))
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.21.2 to 1.23.0 ([#3502](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3502)) ([7760474](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7760474ffd74897bcf67631157a100e2bc329569))
+* bump com.google.cloud:libraries-bom from 26.53.0 to 26.54.0 ([#3522](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3522)) ([f54327d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f54327dc20dc3e9019883b37413dbc1f5d76cba3))
+* bump org.springframework.boot:spring-boot-starter-parent ([#3495](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3495)) ([969c4b6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/969c4b6cb147295d690f3225591b7343713676f2))
+
 ## [5.10.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.9.0...v5.10.0) (2025-01-15)
 
 
