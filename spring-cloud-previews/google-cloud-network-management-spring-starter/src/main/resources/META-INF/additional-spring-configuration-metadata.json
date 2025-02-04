@@ -5,6 +5,12 @@
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud networkmanagement/ReachabilityService components.",
       "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.networkmanagement.v1.vpc-flow-logs-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud networkmanagement/VpcFlowLogsService components.",
+      "defaultValue": true
     }
   ]
 }
