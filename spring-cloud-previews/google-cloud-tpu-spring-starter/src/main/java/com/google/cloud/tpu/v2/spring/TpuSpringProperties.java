@@ -53,6 +53,16 @@ public class TpuSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getNodeRetry;
   /**
+   * Allow override of retry settings at method-level for listQueuedResources. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listQueuedResourcesRetry;
+  /**
+   * Allow override of retry settings at method-level for getQueuedResource. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getQueuedResourceRetry;
+  /**
    * Allow override of retry settings at method-level for generateServiceIdentity. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -144,6 +154,22 @@ public class TpuSpringProperties implements CredentialsSupplier {
 
   public void setGetNodeRetry(Retry getNodeRetry) {
     this.getNodeRetry = getNodeRetry;
+  }
+
+  public Retry getListQueuedResourcesRetry() {
+    return this.listQueuedResourcesRetry;
+  }
+
+  public void setListQueuedResourcesRetry(Retry listQueuedResourcesRetry) {
+    this.listQueuedResourcesRetry = listQueuedResourcesRetry;
+  }
+
+  public Retry getGetQueuedResourceRetry() {
+    return this.getQueuedResourceRetry;
+  }
+
+  public void setGetQueuedResourceRetry(Retry getQueuedResourceRetry) {
+    this.getQueuedResourceRetry = getQueuedResourceRetry;
   }
 
   public Retry getGenerateServiceIdentityRetry() {
