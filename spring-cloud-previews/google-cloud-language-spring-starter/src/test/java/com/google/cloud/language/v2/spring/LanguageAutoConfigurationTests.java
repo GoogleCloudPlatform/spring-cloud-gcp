@@ -18,6 +18,7 @@ package com.google.cloud.language.v2.spring;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
@@ -197,6 +198,7 @@ class LanguageAutoConfigurationTests {
   void testCustomTransportChannelProviderUsedWhenProvided() throws IOException {
     when(mockTransportChannelProvider.getTransportName()).thenReturn("grpc");
     when(mockTransportChannelProvider.getTransportChannel()).thenReturn(mockTransportChannel);
+    when(mockTransportChannelProvider.withUseS2A(anyBoolean())).thenReturn(mockTransportChannelProvider);
     when(mockTransportChannel.getEmptyCallContext()).thenReturn(mockApiCallContext);
     when(mockApiCallContext.withCredentials(any())).thenReturn(mockApiCallContext);
     when(mockApiCallContext.withTransportChannel(any())).thenReturn(mockApiCallContext);
