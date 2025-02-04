@@ -14,6 +14,15 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.10.16](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.15...v4.10.16) (2025-02-04)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.21.2 to 1.23.0 ([#3503](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3503)) ([e4d4953](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e4d49536470a95279adbf8a7af80561b5313ba94))
+* bump com.google.cloud:libraries-bom from 26.53.0 to 26.54.0 ([#3521](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3521)) ([ba314af](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ba314afd71026d7ee20e70b8df53bf0c80f26933))
+* bump com.puppycrawl.tools:checkstyle from 10.21.1 to 10.21.2 ([#3506](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3506)) ([6d3c1fa](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6d3c1fa602375a54525e6309af2b9537d179ec0e))
+
 ## [4.10.15](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.14...v4.10.15) (2025-01-16)
 
 
