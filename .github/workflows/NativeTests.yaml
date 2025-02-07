@@ -25,6 +25,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        java_version:
+          - 21
+          - 23
         it:
           - alloydb-sample
           - bigquery-sample
@@ -82,7 +85,7 @@ jobs:
             install
       - uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '21'
+          java-version: ${{ matrix.java_version }}
           distribution: 'graalvm-community'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
