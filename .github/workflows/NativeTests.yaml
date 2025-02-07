@@ -25,7 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java_version:
+        graalvm_for_jdk_version:
           - 21
           - 23
         it:
@@ -85,7 +85,7 @@ jobs:
             install
       - uses: graalvm/setup-graalvm@v1
         with:
-          java-version: ${{ matrix.java_version }}
+          java-version: ${{ matrix.graalvm_for_jdk_version }}
           distribution: 'graalvm-community'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
