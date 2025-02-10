@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,6 +92,51 @@ public class EventarcSpringProperties implements CredentialsSupplier {
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateGoogleChannelConfigRetry;
+  /**
+   * Allow override of retry settings at method-level for getMessageBus. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getMessageBusRetry;
+  /**
+   * Allow override of retry settings at method-level for listMessageBuses. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listMessageBusesRetry;
+  /**
+   * Allow override of retry settings at method-level for listMessageBusEnrollments. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listMessageBusEnrollmentsRetry;
+  /**
+   * Allow override of retry settings at method-level for getEnrollment. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getEnrollmentRetry;
+  /**
+   * Allow override of retry settings at method-level for listEnrollments. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listEnrollmentsRetry;
+  /**
+   * Allow override of retry settings at method-level for getPipeline. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getPipelineRetry;
+  /**
+   * Allow override of retry settings at method-level for listPipelines. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listPipelinesRetry;
+  /**
+   * Allow override of retry settings at method-level for getGoogleApiSource. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getGoogleApiSourceRetry;
+  /**
+   * Allow override of retry settings at method-level for listGoogleApiSources. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listGoogleApiSourcesRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -233,6 +278,78 @@ public class EventarcSpringProperties implements CredentialsSupplier {
 
   public void setUpdateGoogleChannelConfigRetry(Retry updateGoogleChannelConfigRetry) {
     this.updateGoogleChannelConfigRetry = updateGoogleChannelConfigRetry;
+  }
+
+  public Retry getGetMessageBusRetry() {
+    return this.getMessageBusRetry;
+  }
+
+  public void setGetMessageBusRetry(Retry getMessageBusRetry) {
+    this.getMessageBusRetry = getMessageBusRetry;
+  }
+
+  public Retry getListMessageBusesRetry() {
+    return this.listMessageBusesRetry;
+  }
+
+  public void setListMessageBusesRetry(Retry listMessageBusesRetry) {
+    this.listMessageBusesRetry = listMessageBusesRetry;
+  }
+
+  public Retry getListMessageBusEnrollmentsRetry() {
+    return this.listMessageBusEnrollmentsRetry;
+  }
+
+  public void setListMessageBusEnrollmentsRetry(Retry listMessageBusEnrollmentsRetry) {
+    this.listMessageBusEnrollmentsRetry = listMessageBusEnrollmentsRetry;
+  }
+
+  public Retry getGetEnrollmentRetry() {
+    return this.getEnrollmentRetry;
+  }
+
+  public void setGetEnrollmentRetry(Retry getEnrollmentRetry) {
+    this.getEnrollmentRetry = getEnrollmentRetry;
+  }
+
+  public Retry getListEnrollmentsRetry() {
+    return this.listEnrollmentsRetry;
+  }
+
+  public void setListEnrollmentsRetry(Retry listEnrollmentsRetry) {
+    this.listEnrollmentsRetry = listEnrollmentsRetry;
+  }
+
+  public Retry getGetPipelineRetry() {
+    return this.getPipelineRetry;
+  }
+
+  public void setGetPipelineRetry(Retry getPipelineRetry) {
+    this.getPipelineRetry = getPipelineRetry;
+  }
+
+  public Retry getListPipelinesRetry() {
+    return this.listPipelinesRetry;
+  }
+
+  public void setListPipelinesRetry(Retry listPipelinesRetry) {
+    this.listPipelinesRetry = listPipelinesRetry;
+  }
+
+  public Retry getGetGoogleApiSourceRetry() {
+    return this.getGoogleApiSourceRetry;
+  }
+
+  public void setGetGoogleApiSourceRetry(Retry getGoogleApiSourceRetry) {
+    this.getGoogleApiSourceRetry = getGoogleApiSourceRetry;
+  }
+
+  public Retry getListGoogleApiSourcesRetry() {
+    return this.listGoogleApiSourcesRetry;
+  }
+
+  public void setListGoogleApiSourcesRetry(Retry listGoogleApiSourcesRetry) {
+    this.listGoogleApiSourcesRetry = listGoogleApiSourcesRetry;
   }
 
   public Retry getListLocationsRetry() {

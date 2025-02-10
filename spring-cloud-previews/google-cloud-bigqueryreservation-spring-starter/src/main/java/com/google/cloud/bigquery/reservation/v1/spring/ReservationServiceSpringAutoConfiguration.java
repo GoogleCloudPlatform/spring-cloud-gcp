@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -194,6 +194,13 @@ public class ReservationServiceSpringAutoConfiguration {
           .updateReservationSettings()
           .setRetrySettings(updateReservationRetrySettings);
 
+      RetrySettings failoverReservationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.failoverReservationSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .failoverReservationSettings()
+          .setRetrySettings(failoverReservationRetrySettings);
+
       RetrySettings createCapacityCommitmentRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.createCapacityCommitmentSettings().getRetrySettings(),
@@ -381,6 +388,20 @@ public class ReservationServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for updateReservation from properties.");
+      }
+    }
+    Retry failoverReservationRetry = clientProperties.getFailoverReservationRetry();
+    if (failoverReservationRetry != null) {
+      RetrySettings failoverReservationRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.failoverReservationSettings().getRetrySettings(),
+              failoverReservationRetry);
+      clientSettingsBuilder
+          .failoverReservationSettings()
+          .setRetrySettings(failoverReservationRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for failoverReservation from properties.");
       }
     }
     Retry createCapacityCommitmentRetry = clientProperties.getCreateCapacityCommitmentRetry();

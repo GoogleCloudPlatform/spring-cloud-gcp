@@ -37,6 +37,7 @@ com.google.cloud.compute.v1.spring.NetworkAttachmentsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.NetworkEdgeSecurityServicesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.NetworkEndpointGroupsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.NetworkFirewallPoliciesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.NetworkProfilesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.NetworksSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.NodeGroupsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.NodeTemplatesSpringAutoConfiguration

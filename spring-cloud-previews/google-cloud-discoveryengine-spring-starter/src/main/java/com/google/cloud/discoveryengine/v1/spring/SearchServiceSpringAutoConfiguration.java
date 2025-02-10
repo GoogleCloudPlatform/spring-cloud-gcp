@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -165,6 +165,11 @@ public class SearchServiceSpringAutoConfiguration {
               clientSettingsBuilder.searchSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.searchSettings().setRetrySettings(searchRetrySettings);
 
+      RetrySettings searchLiteRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.searchLiteSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.searchLiteSettings().setRetrySettings(searchLiteRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -177,6 +182,16 @@ public class SearchServiceSpringAutoConfiguration {
       clientSettingsBuilder.searchSettings().setRetrySettings(searchRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for search from properties.");
+      }
+    }
+    Retry searchLiteRetry = clientProperties.getSearchLiteRetry();
+    if (searchLiteRetry != null) {
+      RetrySettings searchLiteRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.searchLiteSettings().getRetrySettings(), searchLiteRetry);
+      clientSettingsBuilder.searchLiteSettings().setRetrySettings(searchLiteRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for searchLite from properties.");
       }
     }
     return clientSettingsBuilder.build();

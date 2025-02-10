@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,6 +107,21 @@ public class CatalogServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchEntriesRetry;
+  /**
+   * Allow override of retry settings at method-level for getMetadataJob. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getMetadataJobRetry;
+  /**
+   * Allow override of retry settings at method-level for listMetadataJobs. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listMetadataJobsRetry;
+  /**
+   * Allow override of retry settings at method-level for cancelMetadataJob. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry cancelMetadataJobRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -257,6 +272,30 @@ public class CatalogServiceSpringProperties implements CredentialsSupplier {
 
   public void setSearchEntriesRetry(Retry searchEntriesRetry) {
     this.searchEntriesRetry = searchEntriesRetry;
+  }
+
+  public Retry getGetMetadataJobRetry() {
+    return this.getMetadataJobRetry;
+  }
+
+  public void setGetMetadataJobRetry(Retry getMetadataJobRetry) {
+    this.getMetadataJobRetry = getMetadataJobRetry;
+  }
+
+  public Retry getListMetadataJobsRetry() {
+    return this.listMetadataJobsRetry;
+  }
+
+  public void setListMetadataJobsRetry(Retry listMetadataJobsRetry) {
+    this.listMetadataJobsRetry = listMetadataJobsRetry;
+  }
+
+  public Retry getCancelMetadataJobRetry() {
+    return this.cancelMetadataJobRetry;
+  }
+
+  public void setCancelMetadataJobRetry(Retry cancelMetadataJobRetry) {
+    this.cancelMetadataJobRetry = cancelMetadataJobRetry;
   }
 
   public Retry getListLocationsRetry() {

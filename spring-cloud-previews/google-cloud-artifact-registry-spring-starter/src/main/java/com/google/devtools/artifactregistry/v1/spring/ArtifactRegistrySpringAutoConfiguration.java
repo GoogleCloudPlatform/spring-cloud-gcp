@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -252,6 +252,11 @@ public class ArtifactRegistrySpringAutoConfiguration {
               clientSettingsBuilder.getVersionSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getVersionSettings().setRetrySettings(getVersionRetrySettings);
 
+      RetrySettings updateVersionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateVersionSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.updateVersionSettings().setRetrySettings(updateVersionRetrySettings);
+
       RetrySettings listFilesRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listFilesSettings().getRetrySettings(), serviceRetry);
@@ -261,6 +266,11 @@ public class ArtifactRegistrySpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getFileSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getFileSettings().setRetrySettings(getFileRetrySettings);
+
+      RetrySettings updateFileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateFileSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.updateFileSettings().setRetrySettings(updateFileRetrySettings);
 
       RetrySettings listTagsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -286,6 +296,31 @@ public class ArtifactRegistrySpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.deleteTagSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.deleteTagSettings().setRetrySettings(deleteTagRetrySettings);
+
+      RetrySettings createRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.createRuleSettings().setRetrySettings(createRuleRetrySettings);
+
+      RetrySettings listRulesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listRulesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listRulesSettings().setRetrySettings(listRulesRetrySettings);
+
+      RetrySettings getRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getRuleSettings().setRetrySettings(getRuleRetrySettings);
+
+      RetrySettings updateRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.updateRuleSettings().setRetrySettings(updateRuleRetrySettings);
+
+      RetrySettings deleteRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteRuleSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.deleteRuleSettings().setRetrySettings(deleteRuleRetrySettings);
 
       RetrySettings setIamPolicyRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -330,6 +365,23 @@ public class ArtifactRegistrySpringAutoConfiguration {
       clientSettingsBuilder
           .updateVPCSCConfigSettings()
           .setRetrySettings(updateVPCSCConfigRetrySettings);
+
+      RetrySettings updatePackageRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updatePackageSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.updatePackageSettings().setRetrySettings(updatePackageRetrySettings);
+
+      RetrySettings listAttachmentsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAttachmentsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listAttachmentsSettings()
+          .setRetrySettings(listAttachmentsRetrySettings);
+
+      RetrySettings getAttachmentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getAttachmentSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getAttachmentSettings().setRetrySettings(getAttachmentRetrySettings);
 
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -527,6 +579,16 @@ public class ArtifactRegistrySpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for getVersion from properties.");
       }
     }
+    Retry updateVersionRetry = clientProperties.getUpdateVersionRetry();
+    if (updateVersionRetry != null) {
+      RetrySettings updateVersionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateVersionSettings().getRetrySettings(), updateVersionRetry);
+      clientSettingsBuilder.updateVersionSettings().setRetrySettings(updateVersionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for updateVersion from properties.");
+      }
+    }
     Retry listFilesRetry = clientProperties.getListFilesRetry();
     if (listFilesRetry != null) {
       RetrySettings listFilesRetrySettings =
@@ -545,6 +607,16 @@ public class ArtifactRegistrySpringAutoConfiguration {
       clientSettingsBuilder.getFileSettings().setRetrySettings(getFileRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getFile from properties.");
+      }
+    }
+    Retry updateFileRetry = clientProperties.getUpdateFileRetry();
+    if (updateFileRetry != null) {
+      RetrySettings updateFileRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateFileSettings().getRetrySettings(), updateFileRetry);
+      clientSettingsBuilder.updateFileSettings().setRetrySettings(updateFileRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for updateFile from properties.");
       }
     }
     Retry listTagsRetry = clientProperties.getListTagsRetry();
@@ -595,6 +667,56 @@ public class ArtifactRegistrySpringAutoConfiguration {
       clientSettingsBuilder.deleteTagSettings().setRetrySettings(deleteTagRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for deleteTag from properties.");
+      }
+    }
+    Retry createRuleRetry = clientProperties.getCreateRuleRetry();
+    if (createRuleRetry != null) {
+      RetrySettings createRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createRuleSettings().getRetrySettings(), createRuleRetry);
+      clientSettingsBuilder.createRuleSettings().setRetrySettings(createRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for createRule from properties.");
+      }
+    }
+    Retry listRulesRetry = clientProperties.getListRulesRetry();
+    if (listRulesRetry != null) {
+      RetrySettings listRulesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listRulesSettings().getRetrySettings(), listRulesRetry);
+      clientSettingsBuilder.listRulesSettings().setRetrySettings(listRulesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listRules from properties.");
+      }
+    }
+    Retry getRuleRetry = clientProperties.getGetRuleRetry();
+    if (getRuleRetry != null) {
+      RetrySettings getRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getRuleSettings().getRetrySettings(), getRuleRetry);
+      clientSettingsBuilder.getRuleSettings().setRetrySettings(getRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getRule from properties.");
+      }
+    }
+    Retry updateRuleRetry = clientProperties.getUpdateRuleRetry();
+    if (updateRuleRetry != null) {
+      RetrySettings updateRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateRuleSettings().getRetrySettings(), updateRuleRetry);
+      clientSettingsBuilder.updateRuleSettings().setRetrySettings(updateRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for updateRule from properties.");
+      }
+    }
+    Retry deleteRuleRetry = clientProperties.getDeleteRuleRetry();
+    if (deleteRuleRetry != null) {
+      RetrySettings deleteRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteRuleSettings().getRetrySettings(), deleteRuleRetry);
+      clientSettingsBuilder.deleteRuleSettings().setRetrySettings(deleteRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for deleteRule from properties.");
       }
     }
     Retry setIamPolicyRetry = clientProperties.getSetIamPolicyRetry();
@@ -682,6 +804,39 @@ public class ArtifactRegistrySpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for updateVPCSCConfig from properties.");
+      }
+    }
+    Retry updatePackageRetry = clientProperties.getUpdatePackageRetry();
+    if (updatePackageRetry != null) {
+      RetrySettings updatePackageRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updatePackageSettings().getRetrySettings(), updatePackageRetry);
+      clientSettingsBuilder.updatePackageSettings().setRetrySettings(updatePackageRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for updatePackage from properties.");
+      }
+    }
+    Retry listAttachmentsRetry = clientProperties.getListAttachmentsRetry();
+    if (listAttachmentsRetry != null) {
+      RetrySettings listAttachmentsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAttachmentsSettings().getRetrySettings(),
+              listAttachmentsRetry);
+      clientSettingsBuilder
+          .listAttachmentsSettings()
+          .setRetrySettings(listAttachmentsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listAttachments from properties.");
+      }
+    }
+    Retry getAttachmentRetry = clientProperties.getGetAttachmentRetry();
+    if (getAttachmentRetry != null) {
+      RetrySettings getAttachmentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getAttachmentSettings().getRetrySettings(), getAttachmentRetry);
+      clientSettingsBuilder.getAttachmentSettings().setRetrySettings(getAttachmentRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getAttachment from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

@@ -66,7 +66,6 @@ class TraceHelperTests extends PubSubTestBase {
     assertThat(producerSpan.kind()).isEqualTo(PRODUCER);
     assertChildOf(producerSpan, parent);
     assertThat(instrumentedMessage.getAttributesMap())
-        .isNotNull()
         .containsEntry("b3", producerSpan.traceId() + "-" + producerSpan.id() + "-1");
   }
 

@@ -55,6 +55,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.aiplatform.v1.gen-ai-cache-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/GenAiCacheService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.aiplatform.v1.gen-ai-tuning-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud aiplatform/GenAiTuningService components.",
@@ -139,6 +145,18 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.aiplatform.v1.reasoning-engine-execution-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/ReasoningEngineExecutionService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.reasoning-engine-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/ReasoningEngineService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.aiplatform.v1.schedule-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud aiplatform/ScheduleService components.",
@@ -154,6 +172,18 @@
       "name": "com.google.cloud.aiplatform.v1.tensorboard-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud aiplatform/TensorboardService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.vertex-rag-data-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/VertexRagDataService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.aiplatform.v1.vertex-rag-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/VertexRagService components.",
       "defaultValue": true
     },
     {

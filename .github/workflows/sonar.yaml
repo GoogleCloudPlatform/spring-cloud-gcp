@@ -16,6 +16,8 @@ jobs:
   sonar:
     name: Build with Sonar
     runs-on: ubuntu-20.04
+    # Sonar Token can't be passed to PRs from forks. Disable Sonar workflow unless PR is from a branch.
+    if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - name: Get current date
         id: date
@@ -52,6 +54,7 @@ jobs:
         id: sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           ./mvnw \
             --batch-mode \

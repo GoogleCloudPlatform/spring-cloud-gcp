@@ -66,7 +66,7 @@ However, if a per-subscription configuration is not set then the global or defau
 |===
 | Name | Description | Required | Default value
 | `spring.cloud.gcp.pubsub.subscriber.parallel-pull-count` | The number of pull workers | No | 1
-| `spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period` | The maximum period a message ack deadline will be extended, in seconds | No | 0
+| `spring.cloud.gcp.pubsub.subscriber.max-ack-extension-period` | The maximum period a message ack deadline will be extended, in seconds | No | Library default (60 minutes)
 | `spring.cloud.gcp.pubsub.subscriber.min-duration-per-ack-extension` | The lower bound for a single mod ack extension period, in seconds | No | 0
 | `spring.cloud.gcp.pubsub.subscriber.max-duration-per-ack-extension` | The upper bound for a single mod ack extension period, in seconds | No | 0
 | `spring.cloud.gcp.pubsub.subscriber.pull-endpoint` | The endpoint for pulling messages | No | pubsub.googleapis.com:443
@@ -111,7 +111,7 @@ When true, replicates the default behavior before Spring 6.1.x. | No | false
 | Name | Description | Required | Default value
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].fully-qualified-name` | The fully-qualified subscription name in the `projects/[PROJECT]/subscriptions/[SUBSCRIPTION]` format. When this property is present, the `[subscription-name]` key does not have to match any actual resources; it's used only for logical grouping. | No | 1
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].parallel-pull-count` | The number of pull workers. | No | 1
-| `spring.cloud.gcp.pubsub.subscription.[subscription-name].max-ack-extension-period` | The maximum period a message ack deadline will be extended, in seconds. | No | 0
+| `spring.cloud.gcp.pubsub.subscription.[subscription-name].max-ack-extension-period` | The maximum period a message ack deadline will be extended, in seconds. | No | Library default (60 minutes)
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].min-duration-per-ack-extension` | The lower bound for a single mod ack extension period, in seconds | No | 0
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].max-duration-per-ack-extension` | The upper bound for a single mod ack extension period, in seconds | No | 0
 | `spring.cloud.gcp.pubsub.subscription.[subscription-name].pull-endpoint` | The endpoint for pulling messages. | No | pubsub.googleapis.com:443
@@ -237,7 +237,7 @@ So, take care not to configure a subscription that has a business impact, or ins
 | Name | Description | Required | Default value
 | `management.health.pubsub.enabled` | Whether to enable the Pub/Sub health indicator | No | `true` with Spring Boot Actuator, `false` otherwise
 | `spring.cloud.gcp.pubsub.health.subscription` | Subscription to health check against by pulling a message | No | Random non-existent
-| `spring.cloud.gcp.pubsub.health.timeout-millis` | Milliseconds to wait for response from Pub/Sub before timing out | No | `2000`
+| `spring.cloud.gcp.pubsub.health.timeout-millis` | Milliseconds to wait for response from Pub/Sub before timing out | No | `5000`
 | `spring.cloud.gcp.pubsub.health.acknowledge-messages` | Whether to acknowledge messages pulled from the optionally specified subscription | No | `false`
 |===
 

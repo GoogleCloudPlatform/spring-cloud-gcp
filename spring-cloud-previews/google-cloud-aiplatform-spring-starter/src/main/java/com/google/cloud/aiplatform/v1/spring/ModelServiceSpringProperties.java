@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,11 @@ public class ModelServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listModelVersionsRetry;
+  /**
+   * Allow override of retry settings at method-level for listModelVersionCheckpoints. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listModelVersionCheckpointsRetry;
   /**
    * Allow override of retry settings at method-level for updateModel. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -177,6 +182,14 @@ public class ModelServiceSpringProperties implements CredentialsSupplier {
 
   public void setListModelVersionsRetry(Retry listModelVersionsRetry) {
     this.listModelVersionsRetry = listModelVersionsRetry;
+  }
+
+  public Retry getListModelVersionCheckpointsRetry() {
+    return this.listModelVersionCheckpointsRetry;
+  }
+
+  public void setListModelVersionCheckpointsRetry(Retry listModelVersionCheckpointsRetry) {
+    this.listModelVersionCheckpointsRetry = listModelVersionCheckpointsRetry;
   }
 
   public Retry getUpdateModelRetry() {
