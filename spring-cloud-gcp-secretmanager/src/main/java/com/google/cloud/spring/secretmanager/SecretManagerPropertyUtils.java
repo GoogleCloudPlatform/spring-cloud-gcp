@@ -34,7 +34,7 @@ final class SecretManagerPropertyUtils {
   private SecretManagerPropertyUtils() {}
 
   static SecretVersionName getSecretVersionName(
-    String input, GcpProjectIdProvider projectIdProvider) {
+      final String input, GcpProjectIdProvider projectIdProvider) {
     return getSecretVersionName(input, projectIdProvider, null);
   }
 
@@ -52,6 +52,7 @@ final class SecretManagerPropertyUtils {
     if (usedPrefix.isEmpty() || isAttemptingFullStringMatch) {
       return null;
     }
+
     warnIfUsingDeprecatedSyntax(logger, usedPrefix.orElse(""));
 
     String resourcePath = input.substring(usedPrefix.get().length());

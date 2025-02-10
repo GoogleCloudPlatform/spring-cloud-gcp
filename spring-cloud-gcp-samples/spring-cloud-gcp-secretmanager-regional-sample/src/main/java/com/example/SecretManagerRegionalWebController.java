@@ -41,10 +41,11 @@ public class SecretManagerRegionalWebController {
 
   // For the default value takes place, there should be no property called `application-fake`
   // in property files.
-  @Value("${${sm://application-fake}:DEFAULT}")
+  @Value("${sm@application-fake:DEFAULT}")
   private String defaultSecret;
+
   // Application secrets can be accessed using @Value syntax.
-  @Value("${sm://application-secret}")
+  @Value("${sm@application-secret:DEFAULT}")
   private String appSecretFromValue;
 
   public SecretManagerRegionalWebController(SecretManagerTemplate secretManagerTemplate,
@@ -77,11 +78,11 @@ public class SecretManagerRegionalWebController {
     String secretPayload;
     if (StringUtils.isEmpty(projectId)) {
       secretPayload =
-          this.secretManagerTemplate.getSecretString("sm://" + secretId + "/" + version);
+          this.secretManagerTemplate.getSecretString("sm@" + secretId + "/" + version);
     } else {
       secretPayload =
           this.secretManagerTemplate.getSecretString(
-              "sm://" + projectId + "/" + secretId + "/" + version);
+              "sm@" + projectId + "/" + secretId + "/" + version);
     }
 
     return "Secret ID: "
