@@ -14,6 +14,14 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.0.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.0.0...v6.0.1) (2025-02-11)
+
+
+### Documentation
+
+* Update README.adoc with latest released versions ([#3535](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3535)) ([76101e5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/76101e5c5432093c12af6d40f9bf1582fff70599))
+* update secret manager documentation ([#3534](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3534)) ([11f862e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/11f862efd1626f4d814533366fd267a9f07d8bb0))
+
 ## [6.0.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.10.0...v6.0.0) (2025-02-04)
 
 
