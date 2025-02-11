@@ -409,6 +409,9 @@
 							<it.firestore>true</it.firestore>
 							<it.bigquery>true</it.bigquery>
 						</systemPropertyVariables>
+						<buildArgs>
+                                                        <buildArg>--strict-image-heap</buildArg>
+                                                 </buildArgs>
 					</configuration>
 				</plugin>
 				<plugin>
