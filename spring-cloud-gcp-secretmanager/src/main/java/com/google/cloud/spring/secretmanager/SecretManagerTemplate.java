@@ -78,8 +78,8 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     return this;
   }
 
-  public String getLocation() {
-    return location.orElse(null);
+  public Optional<String> getLocation() {
+    return location;
   }
 
   public String getProjectId() {
@@ -239,7 +239,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     String parent;
     Secret.Builder secret = Secret.newBuilder();
     if (location.isPresent()) {
-      parent = LocationName.of(projectId, getLocation()).toString();
+      parent = LocationName.of(projectId, getLocation().get()).toString();
     } else {
       parent = ProjectName.of(projectId).toString();
       secret.setReplication(
@@ -261,7 +261,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
 
   private SecretName getSecretName(String projectId, String secretId) {
     if (location.isPresent()) {
-      return SecretName.ofProjectLocationSecretName(projectId, getLocation(), secretId);
+      return SecretName.ofProjectLocationSecretName(projectId, getLocation().get(), secretId);
     } else {
       return SecretName.of(projectId, secretId);
     }

@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -129,7 +130,7 @@ class SecretManagerPropertyUtilsTests {
         SecretManagerPropertyUtils.getSecretVersionName(
             property,
             DEFAULT_PROJECT_ID_PROVIDER,
-            "us-central1"
+            Optional.of("us-central1")
         );
 
     assertThat(secretIdentifier).isNull();
@@ -142,7 +143,7 @@ class SecretManagerPropertyUtilsTests {
     assertThatThrownBy(
             () ->
                     SecretManagerPropertyUtils.getSecretVersionName(
-                            property, DEFAULT_PROJECT_ID_PROVIDER, "us-central1"))
+                            property, DEFAULT_PROJECT_ID_PROVIDER, Optional.of("us-central1")))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("The GCP Secret Manager secret id must not be empty");
   }
@@ -154,7 +155,7 @@ class SecretManagerPropertyUtilsTests {
         SecretManagerPropertyUtils.getSecretVersionName(
             property,
             DEFAULT_PROJECT_ID_PROVIDER,
-            "us-central1"
+            Optional.of("us-central1")
         );
 
     assertThat(secretIdentifier.getProject()).isEqualTo("defaultProject");
@@ -170,7 +171,7 @@ class SecretManagerPropertyUtilsTests {
         SecretManagerPropertyUtils.getSecretVersionName(
             property,
             DEFAULT_PROJECT_ID_PROVIDER,
-            "us-central1"
+            Optional.of("us-central1")
         );
 
     assertThat(secretIdentifier.getProject()).isEqualTo("defaultProject");
@@ -186,7 +187,7 @@ class SecretManagerPropertyUtilsTests {
         SecretManagerPropertyUtils.getSecretVersionName(
             property,
             DEFAULT_PROJECT_ID_PROVIDER,
-            "us-central1"
+            Optional.of("us-central1")
         );
 
     assertThat(secretIdentifier.getProject()).isEqualTo("my-project");
@@ -202,7 +203,7 @@ class SecretManagerPropertyUtilsTests {
         SecretManagerPropertyUtils.getSecretVersionName(
             property,
             DEFAULT_PROJECT_ID_PROVIDER,
-            "us-central1"
+            Optional.of("us-central1")
         );
 
     assertThat(secretIdentifier.getProject()).isEqualTo("my-project");
@@ -218,7 +219,7 @@ class SecretManagerPropertyUtilsTests {
         SecretManagerPropertyUtils.getSecretVersionName(
             property,
             DEFAULT_PROJECT_ID_PROVIDER,
-            "us-central1"
+            Optional.of("us-central1")
         );
 
     assertThat(secretIdentifier.getProject()).isEqualTo("my-project");

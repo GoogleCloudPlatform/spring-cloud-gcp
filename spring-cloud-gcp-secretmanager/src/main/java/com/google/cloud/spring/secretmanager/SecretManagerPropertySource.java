@@ -67,7 +67,7 @@ public class SecretManagerPropertySource extends EnumerablePropertySource<Secret
     AtomicReference<SecretVersionName> secretIdentifier = new AtomicReference<>();
     getLocation().ifPresentOrElse(
         location -> secretIdentifier.set(SecretManagerPropertyUtils.getSecretVersionName(
-            name, this.projectIdProvider, location
+            name, this.projectIdProvider, getLocation()
         )),
         () -> secretIdentifier.set(SecretManagerPropertyUtils.getSecretVersionName(
             name, this.projectIdProvider

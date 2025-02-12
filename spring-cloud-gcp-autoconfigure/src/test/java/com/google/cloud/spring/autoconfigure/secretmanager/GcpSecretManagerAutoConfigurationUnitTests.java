@@ -25,6 +25,7 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -80,7 +81,7 @@ class GcpSecretManagerAutoConfigurationUnitTests {
         .withPropertyValues("spring.cloud.gcp.secretmanager.location=us-central1")
         .run(
             ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class)
-                .getLocation()).isEqualTo("us-central1"));
+                .getLocation()).isEqualTo(Optional.of("us-central1")));
   }
 
   static class TestConfig {

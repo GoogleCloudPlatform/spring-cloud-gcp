@@ -35,11 +35,11 @@ final class SecretManagerPropertyUtils {
 
   static SecretVersionName getSecretVersionName(
       final String input, GcpProjectIdProvider projectIdProvider) {
-    return getSecretVersionName(input, projectIdProvider, null);
+    return getSecretVersionName(input, projectIdProvider, Optional.empty());
   }
 
   static SecretVersionName getSecretVersionName(
-      final String input, GcpProjectIdProvider projectIdProvider, String location) {
+      final String input, GcpProjectIdProvider projectIdProvider, Optional<String> location) {
     Optional<String> usedPrefix = getMatchedPrefixes(input::startsWith);
 
     // Since spring-core 6.2.2, the property resolution mechanism will try a full match that
@@ -52,7 +52,6 @@ final class SecretManagerPropertyUtils {
     if (usedPrefix.isEmpty() || isAttemptingFullStringMatch) {
       return null;
     }
-
     warnIfUsingDeprecatedSyntax(logger, usedPrefix.orElse(""));
 
     String resourcePath = input.substring(usedPrefix.get().length());
@@ -101,9 +100,9 @@ final class SecretManagerPropertyUtils {
   }
 
   static SecretVersionName getSecretVersionName(
-          String projectId, String secretId, String version, String location) {
-    if (location != null) {
-      return SecretVersionName.newProjectLocationSecretSecretVersionBuilder().setLocation(location).setProject(projectId).setSecret(secretId).setSecretVersion(version).build();
+          String projectId, String secretId, String version, Optional<String> location) {
+    if (location.isPresent()) {
+      return SecretVersionName.newProjectLocationSecretSecretVersionBuilder().setLocation(location.get()).setProject(projectId).setSecret(secretId).setSecretVersion(version).build();
     } else {
       return SecretVersionName.newBuilder().setProject(projectId).setSecret(secretId).setSecretVersion(version).build();
     }
