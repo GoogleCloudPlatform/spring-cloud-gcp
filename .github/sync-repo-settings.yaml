@@ -115,6 +115,14 @@ branchProtectionRules:
     requiredApprovingReviewCount: 1
     requiresCodeOwnerReviews: true
     requiresStrictStatusChecks: false
+  - pattern: gh-pages
+    isAdminEnforced: true
+    requiredStatusCheckContexts:
+      - 'cla/google'
+      - 'conventionalcommits.org'
+    requiredApprovingReviewCount: 1
+    requiresCodeOwnerReviews: true
+    requiresStrictStatusChecks: false
 permissionRules:
   - team: cloud-java-team-teamsync
     permission: admin
