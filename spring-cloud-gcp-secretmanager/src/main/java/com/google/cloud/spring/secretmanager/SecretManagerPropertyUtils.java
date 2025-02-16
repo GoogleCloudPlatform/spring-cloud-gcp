@@ -100,11 +100,18 @@ final class SecretManagerPropertyUtils {
   }
 
   static SecretVersionName getSecretVersionName(
-          String projectId, String secretId, String version, Optional<String> location) {
-    if (location.isPresent()) {
-      return SecretVersionName.newProjectLocationSecretSecretVersionBuilder().setLocation(location.get()).setProject(projectId).setSecret(secretId).setSecretVersion(version).build();
-    } else {
-      return SecretVersionName.newBuilder().setProject(projectId).setSecret(secretId).setSecretVersion(version).build();
-    }
+      String projectId, String secretId, String version, Optional<String> location) {
+    return location
+        .map(loc -> SecretVersionName.newProjectLocationSecretSecretVersionBuilder()
+            .setLocation(loc)
+            .setProject(projectId)
+            .setSecret(secretId)
+            .setSecretVersion(version)
+            .build())
+        .orElseGet(() -> SecretVersionName.newBuilder()
+            .setProject(projectId)
+            .setSecret(secretId)
+            .setSecretVersion(version)
+            .build());
   }
 }

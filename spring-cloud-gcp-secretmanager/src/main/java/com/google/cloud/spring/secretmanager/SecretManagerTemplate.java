@@ -182,7 +182,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
 
   ByteString getSecretByteString(String secretIdentifier) {
     SecretVersionName secretVersionName = SecretManagerPropertyUtils.getSecretVersionName(
-            secretIdentifier, this.projectIdProvider, getLocation());
+        secretIdentifier, this.projectIdProvider, getLocation());
 
     if (secretVersionName == null) {
       secretVersionName = getDefaultSecretVersionName(secretIdentifier);
@@ -236,15 +236,15 @@ public class SecretManagerTemplate implements SecretManagerOperations {
    * versions of the secret which stores the payload of the secret.
    */
   private void createSecretInternal(String secretId, String projectId) {
-    String parent;
     Secret.Builder secret = Secret.newBuilder();
-    if (location.isPresent()) {
-      parent = LocationName.of(projectId, getLocation().get()).toString();
-    } else {
-      parent = ProjectName.of(projectId).toString();
-      secret.setReplication(
-          Replication.newBuilder().setAutomatic(Replication.Automatic.getDefaultInstance()));
-    }
+    String parent = getLocation()
+        .map(loc -> LocationName.of(projectId, loc).toString())
+        .orElseGet(() -> {
+          secret.setReplication(
+              Replication.newBuilder().setAutomatic(Replication.Automatic.getDefaultInstance())
+          );
+          return ProjectName.of(projectId).toString();
+        });
     CreateSecretRequest request =
         CreateSecretRequest.newBuilder()
             .setParent(parent)
@@ -260,10 +260,8 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   }
 
   private SecretName getSecretName(String projectId, String secretId) {
-    if (location.isPresent()) {
-      return SecretName.ofProjectLocationSecretName(projectId, getLocation().get(), secretId);
-    } else {
-      return SecretName.of(projectId, secretId);
-    }
+    return getLocation()
+        .map(loc -> SecretName.ofProjectLocationSecretName(projectId, loc, secretId))
+        .orElse(SecretName.of(projectId, secretId));
   }
 }
