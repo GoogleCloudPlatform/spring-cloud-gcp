@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,7 +45,7 @@ class SecretManagerPropertyUtilsTests {
   void testNonSecret() {
     String property = "spring.cloud.datasource";
     SecretVersionName secretIdentifier =
-        SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER);
+        SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER, Optional.empty());
 
     assertThat(secretIdentifier).isNull();
   }
@@ -57,7 +58,7 @@ class SecretManagerPropertyUtilsTests {
     assertThatThrownBy(
             () ->
                 SecretManagerPropertyUtils.getSecretVersionName(
-                    property, DEFAULT_PROJECT_ID_PROVIDER))
+                    property, DEFAULT_PROJECT_ID_PROVIDER, Optional.empty()))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("The GCP Secret Manager secret id must not be empty");
   }
@@ -67,7 +68,7 @@ class SecretManagerPropertyUtilsTests {
   void testShortProperty_secretId(String prefix) {
     String property = prefix + "the-secret";
     SecretVersionName secretIdentifier =
-        SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER);
+        SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER, Optional.empty());
 
     assertThat(secretIdentifier.getProject()).isEqualTo("defaultProject");
     assertThat(secretIdentifier.getSecret()).isEqualTo("the-secret");
@@ -79,7 +80,7 @@ class SecretManagerPropertyUtilsTests {
   void testShortProperty_projectSecretId(String prefix) {
     String property = prefix + "the-secret/the-version";
     SecretVersionName secretIdentifier =
-        SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER);
+        SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER, Optional.empty());
 
     assertThat(secretIdentifier.getProject()).isEqualTo("defaultProject");
     assertThat(secretIdentifier.getSecret()).isEqualTo("the-secret");
@@ -91,7 +92,7 @@ class SecretManagerPropertyUtilsTests {
   void testShortProperty_projectSecretIdVersion(String prefix) {
     String property = prefix + "my-project/the-secret/2";
     SecretVersionName secretIdentifier =
-        SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER);
+        SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER, Optional.empty());
 
     assertThat(secretIdentifier.getProject()).isEqualTo("my-project");
     assertThat(secretIdentifier.getSecret()).isEqualTo("the-secret");
@@ -103,7 +104,7 @@ class SecretManagerPropertyUtilsTests {
   void testLongProperty_projectSecret(String prefix) {
     String property = prefix + "projects/my-project/secrets/the-secret";
     SecretVersionName secretIdentifier =
-        SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER);
+        SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER, Optional.empty());
 
     assertThat(secretIdentifier.getProject()).isEqualTo("my-project");
     assertThat(secretIdentifier.getSecret()).isEqualTo("the-secret");
@@ -115,10 +116,115 @@ class SecretManagerPropertyUtilsTests {
   void testLongProperty_projectSecretVersion(String prefix) {
     String property = prefix + "projects/my-project/secrets/the-secret/versions/3";
     SecretVersionName secretIdentifier =
-        SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER);
+        SecretManagerPropertyUtils.getSecretVersionName(property, DEFAULT_PROJECT_ID_PROVIDER, Optional.empty());
 
     assertThat(secretIdentifier.getProject()).isEqualTo("my-project");
     assertThat(secretIdentifier.getSecret()).isEqualTo("the-secret");
     assertThat(secretIdentifier.getSecretVersion()).isEqualTo("3");
+  }
+
+  @Test
+  void testNonRegionalSecret() {
+    String property = "spring.cloud.datasource";
+    SecretVersionName secretIdentifier =
+        SecretManagerPropertyUtils.getSecretVersionName(
+            property,
+            DEFAULT_PROJECT_ID_PROVIDER,
+            Optional.of("us-central1")
+        );
+
+    assertThat(secretIdentifier).isNull();
+  }
+
+  @Test
+  void testInvalidSecretFormat_missingRegionalSecretId() {
+    String property = "sm://";
+
+    assertThatThrownBy(
+            () ->
+                    SecretManagerPropertyUtils.getSecretVersionName(
+                            property, DEFAULT_PROJECT_ID_PROVIDER, Optional.of("us-central1")))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("The GCP Secret Manager secret id must not be empty");
+  }
+
+  @Test
+  void testShortProperty_regionalSecretId() {
+    String property = "sm://the-reg-secret";
+    SecretVersionName secretIdentifier =
+        SecretManagerPropertyUtils.getSecretVersionName(
+            property,
+            DEFAULT_PROJECT_ID_PROVIDER,
+            Optional.of("us-central1")
+        );
+
+    assertThat(secretIdentifier.getProject()).isEqualTo("defaultProject");
+    assertThat(secretIdentifier.getLocation()).isEqualTo("us-central1");
+    assertThat(secretIdentifier.getSecret()).isEqualTo("the-reg-secret");
+    assertThat(secretIdentifier.getSecretVersion()).isEqualTo("latest");
+  }
+
+  @Test
+  void testShortProperty_projectRegionalSecretId() {
+    String property = "sm://the-reg-secret/the-reg-version";
+    SecretVersionName secretIdentifier =
+        SecretManagerPropertyUtils.getSecretVersionName(
+            property,
+            DEFAULT_PROJECT_ID_PROVIDER,
+            Optional.of("us-central1")
+        );
+
+    assertThat(secretIdentifier.getProject()).isEqualTo("defaultProject");
+    assertThat(secretIdentifier.getLocation()).isEqualTo("us-central1");
+    assertThat(secretIdentifier.getSecret()).isEqualTo("the-reg-secret");
+    assertThat(secretIdentifier.getSecretVersion()).isEqualTo("the-reg-version");
+  }
+
+  @Test
+  void testShortProperty_projectRegionalSecretIdVersion() {
+    String property = "sm://my-project/the-reg-secret/3";
+    SecretVersionName secretIdentifier =
+        SecretManagerPropertyUtils.getSecretVersionName(
+            property,
+            DEFAULT_PROJECT_ID_PROVIDER,
+            Optional.of("us-central1")
+        );
+
+    assertThat(secretIdentifier.getProject()).isEqualTo("my-project");
+    assertThat(secretIdentifier.getLocation()).isEqualTo("us-central1");
+    assertThat(secretIdentifier.getSecret()).isEqualTo("the-reg-secret");
+    assertThat(secretIdentifier.getSecretVersion()).isEqualTo("3");
+  }
+
+  @Test
+  void testLongProperty_projectRegionalSecret() {
+    String property = "sm://projects/my-project/secrets/the-reg-secret";
+    SecretVersionName secretIdentifier =
+        SecretManagerPropertyUtils.getSecretVersionName(
+            property,
+            DEFAULT_PROJECT_ID_PROVIDER,
+            Optional.of("us-central1")
+        );
+
+    assertThat(secretIdentifier.getProject()).isEqualTo("my-project");
+    assertThat(secretIdentifier.getLocation()).isEqualTo("us-central1");
+    assertThat(secretIdentifier.getSecret()).isEqualTo("the-reg-secret");
+    assertThat(secretIdentifier.getSecretVersion()).isEqualTo("latest");
+  }
+
+  @Test
+  void testLongProperty_projectRegionalSecretVersion() {
+    String property = "sm://projects/my-project/secrets/the-reg-secret/versions/2";
+    SecretVersionName secretIdentifier =
+        SecretManagerPropertyUtils.getSecretVersionName(
+            property,
+            DEFAULT_PROJECT_ID_PROVIDER,
+            Optional.of("us-central1")
+        );
+
+    assertThat(secretIdentifier.getProject()).isEqualTo("my-project");
+    assertThat(secretIdentifier.getLocation()).isEqualTo("us-central1");
+    assertThat(secretIdentifier.getSecret()).isEqualTo("the-reg-secret");
+    assertThat(secretIdentifier.getSecretVersion()).isEqualTo("2");
   }
 }

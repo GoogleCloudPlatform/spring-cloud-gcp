@@ -33,9 +33,8 @@ final class SecretManagerPropertyUtils {
 
   private SecretManagerPropertyUtils() {}
 
-
   static SecretVersionName getSecretVersionName(
-      final String input, GcpProjectIdProvider projectIdProvider) {
+      final String input, GcpProjectIdProvider projectIdProvider, Optional<String> location) {
     Optional<String> usedPrefix = getMatchedPrefixes(input::startsWith);
 
     // Since spring-core 6.2.2, the property resolution mechanism will try a full match that
@@ -92,10 +91,22 @@ final class SecretManagerPropertyUtils {
 
     Assert.hasText(version, "The GCP Secret Manager secret version must not be empty: " + input);
 
-    return SecretVersionName.newBuilder()
-        .setProject(projectId)
-        .setSecret(secretId)
-        .setSecretVersion(version)
-        .build();
+    return getSecretVersionName(projectId, secretId, version, location);
+  }
+
+  static SecretVersionName getSecretVersionName(
+      String projectId, String secretId, String version, Optional<String> location) {
+    return location
+        .map(loc -> SecretVersionName.newProjectLocationSecretSecretVersionBuilder()
+            .setLocation(loc)
+            .setProject(projectId)
+            .setSecret(secretId)
+            .setSecretVersion(version)
+            .build())
+        .orElseGet(() -> SecretVersionName.newBuilder()
+            .setProject(projectId)
+            .setSecret(secretId)
+            .setSecretVersion(version)
+            .build());
   }
 }

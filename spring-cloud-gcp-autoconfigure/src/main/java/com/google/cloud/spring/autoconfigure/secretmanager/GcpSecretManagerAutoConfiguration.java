@@ -76,6 +76,7 @@ public class GcpSecretManagerAutoConfiguration {
   @ConditionalOnMissingBean
   public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
     return new SecretManagerTemplate(client, this.gcpProjectIdProvider)
-        .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
+        .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret())
+        .setLocation(this.properties.getLocation());
   }
 }
