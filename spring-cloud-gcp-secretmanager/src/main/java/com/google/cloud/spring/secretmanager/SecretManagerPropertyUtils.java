@@ -34,11 +34,6 @@ final class SecretManagerPropertyUtils {
   private SecretManagerPropertyUtils() {}
 
   static SecretVersionName getSecretVersionName(
-      final String input, GcpProjectIdProvider projectIdProvider) {
-    return getSecretVersionName(input, projectIdProvider, Optional.empty());
-  }
-
-  static SecretVersionName getSecretVersionName(
       final String input, GcpProjectIdProvider projectIdProvider, Optional<String> location) {
     Optional<String> usedPrefix = getMatchedPrefixes(input::startsWith);
 
