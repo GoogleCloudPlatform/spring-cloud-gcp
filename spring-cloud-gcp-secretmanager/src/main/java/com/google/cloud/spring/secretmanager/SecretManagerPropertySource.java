@@ -19,7 +19,6 @@ package com.google.cloud.spring.secretmanager;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.core.env.EnumerablePropertySource;
 
 /**
@@ -64,18 +63,11 @@ public class SecretManagerPropertySource extends EnumerablePropertySource<Secret
 
   @Override
   public Object getProperty(String name) {
-    AtomicReference<SecretVersionName> secretIdentifier = new AtomicReference<>();
-    getLocation().ifPresentOrElse(
-        location -> secretIdentifier.set(SecretManagerPropertyUtils.getSecretVersionName(
-            name, this.projectIdProvider, getLocation()
-        )),
-        () -> secretIdentifier.set(SecretManagerPropertyUtils.getSecretVersionName(
-            name, this.projectIdProvider
-        ))
-    );
+    SecretVersionName secretIdentifier =
+        SecretManagerPropertyUtils.getSecretVersionName(name, this.projectIdProvider, getLocation());
 
-    if (secretIdentifier.get() != null) {
-      return getSource().getSecretByteString(secretIdentifier.get());
+    if (secretIdentifier != null) {
+      return getSource().getSecretByteString(secretIdentifier);
     } else {
       return null;
     }
