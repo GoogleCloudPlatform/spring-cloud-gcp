@@ -25,6 +25,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
 
 /** Utilities for parsing Secret Manager properties. */
 final class SecretManagerPropertyUtils {
@@ -34,7 +35,7 @@ final class SecretManagerPropertyUtils {
   private SecretManagerPropertyUtils() {}
 
   static SecretVersionName getSecretVersionName(
-      final String input, GcpProjectIdProvider projectIdProvider, Optional<String> location) {
+      final String input, GcpProjectIdProvider projectIdProvider, String location) {
     Optional<String> usedPrefix = getMatchedPrefixes(input::startsWith);
 
     // Since spring-core 6.2.2, the property resolution mechanism will try a full match that
@@ -95,18 +96,20 @@ final class SecretManagerPropertyUtils {
   }
 
   static SecretVersionName getSecretVersionName(
-      String projectId, String secretId, String version, Optional<String> location) {
-    return location
-        .map(loc -> SecretVersionName.newProjectLocationSecretSecretVersionBuilder()
-            .setLocation(loc)
-            .setProject(projectId)
-            .setSecret(secretId)
-            .setSecretVersion(version)
-            .build())
-        .orElseGet(() -> SecretVersionName.newBuilder()
-            .setProject(projectId)
-            .setSecret(secretId)
-            .setSecretVersion(version)
-            .build());
+      String projectId, String secretId, String version, String location) {
+    if (ObjectUtils.isEmpty(location)) {
+      return SecretVersionName.newBuilder()
+          .setProject(projectId)
+          .setSecret(secretId)
+          .setSecretVersion(version)
+          .build();
+    } else {
+      return SecretVersionName.newProjectLocationSecretSecretVersionBuilder()
+          .setLocation(location)
+          .setProject(projectId)
+          .setSecret(secretId)
+          .setSecretVersion(version)
+          .build();
+    }
   }
 }

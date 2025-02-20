@@ -30,10 +30,10 @@ import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.protobuf.ByteString;
-import java.util.Optional;
 import javax.annotation.Nullable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Offers convenience methods for performing common operations on Secret Manager including creating
@@ -56,7 +56,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
    */
   private boolean allowDefaultSecretValue;
 
-  private Optional<String> location = Optional.empty();
+  private String location;
 
   public SecretManagerTemplate(
       SecretManagerServiceClient secretManagerServiceClient,
@@ -72,13 +72,13 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     return this;
   }
 
-  public SecretManagerTemplate setLocation(Optional<String> location) {
+  public SecretManagerTemplate setLocation(String location) {
     this.location = location;
 
     return this;
   }
 
-  public Optional<String> getLocation() {
+  public String getLocation() {
     return location;
   }
 
@@ -237,14 +237,15 @@ public class SecretManagerTemplate implements SecretManagerOperations {
    */
   private void createSecretInternal(String secretId, String projectId) {
     Secret.Builder secret = Secret.newBuilder();
-    String parent = getLocation()
-        .map(loc -> LocationName.of(projectId, loc).toString())
-        .orElseGet(() -> {
-          secret.setReplication(
-              Replication.newBuilder().setAutomatic(Replication.Automatic.getDefaultInstance())
-          );
-          return ProjectName.of(projectId).toString();
-        });
+    String parent;
+    if (ObjectUtils.isEmpty(location)) {
+      secret.setReplication(
+          Replication.newBuilder().setAutomatic(Replication.Automatic.getDefaultInstance())
+      );
+      parent = ProjectName.of(projectId).toString();
+    } else {
+      parent = LocationName.of(projectId, location).toString();
+    }
     CreateSecretRequest request =
         CreateSecretRequest.newBuilder()
             .setParent(parent)
@@ -260,8 +261,10 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   }
 
   private SecretName getSecretName(String projectId, String secretId) {
-    return getLocation()
-        .map(loc -> SecretName.ofProjectLocationSecretName(projectId, loc, secretId))
-        .orElse(SecretName.of(projectId, secretId));
+    if (ObjectUtils.isEmpty(getLocation())) {
+      return SecretName.of(projectId, secretId);
+    } else {
+      return SecretName.ofProjectLocationSecretName(projectId, getLocation(), secretId);
+    }
   }
 }

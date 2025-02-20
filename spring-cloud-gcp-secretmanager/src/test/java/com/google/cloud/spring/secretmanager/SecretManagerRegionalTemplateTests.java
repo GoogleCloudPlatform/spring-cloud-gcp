@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2024 the original author or authors.
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.protobuf.ByteString;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -57,7 +56,7 @@ class SecretManagerRegionalTemplateTests {
                 .build());
 
     this.secretManagerTemplate =
-        new SecretManagerTemplate(this.client, () -> "my-reg-project").setLocation(Optional.of("us-central1"));
+        new SecretManagerTemplate(this.client, () -> "my-reg-project").setLocation("us-central1");
   }
 
   @Test
@@ -211,7 +210,7 @@ class SecretManagerRegionalTemplateTests {
     this.secretManagerTemplate =
         new SecretManagerTemplate(this.client, () -> "my-reg-project")
             .setAllowDefaultSecretValue(true)
-            .setLocation(Optional.of("us-central1"));
+            .setLocation("us-central1");
     String result = this.secretManagerTemplate.getSecretString("sm://fake-secret");
     assertThat(result).isNull();
   }

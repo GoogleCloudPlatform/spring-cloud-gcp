@@ -42,14 +42,14 @@ class SecretManagerConfigDataLoaderUnitTests {
     when(bootstrapContext.get(SecretManagerTemplate.class)).thenReturn(template);
     when(bootstrapContext.get(GcpSecretManagerProperties.class)).thenReturn(properties);
     when(template.secretExists(anyString(), anyString())).thenReturn(false);
-    when(properties.getLocation()).thenReturn(Optional.ofNullable(location));
+    when(properties.getLocation()).thenReturn(location);
     SecretManagerConfigDataResource resource = new SecretManagerConfigDataResource(
         ConfigDataLocation.of(resourceName));
     assertThatCode(() -> {
       ConfigData configData = loader.load(loaderContext, resource);
       SecretManagerPropertySource propertySource =
           (SecretManagerPropertySource) configData.getPropertySources().get(0);
-      assertThat(Optional.ofNullable(location)).isEqualTo(propertySource.getLocation());
+      assertThat(propertySource.getLocation()).isEqualTo(location);
     }).doesNotThrowAnyException();
   }
 }

@@ -21,7 +21,6 @@ import static com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManag
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.GcpScope;
-import java.util.Optional;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -49,7 +48,7 @@ public class GcpSecretManagerProperties implements CredentialsSupplier {
    *
    * <p>When not specified, the secret manager will use the Global Stack.
    */
-  private Optional<String> location = Optional.empty();
+  private String location;
 
   /**
    * Whether the secret manager will allow a default secret value when accessing a non-existing
@@ -80,11 +79,11 @@ public class GcpSecretManagerProperties implements CredentialsSupplier {
     this.allowDefaultSecret = allowDefaultSecret;
   }
 
-  public Optional<String> getLocation() {
+  public String getLocation() {
     return location;
   }
 
   public void setLocation(String location) {
-    this.location = Optional.ofNullable(location).filter(loc -> !loc.isEmpty());
+    this.location = location;
   }
 }

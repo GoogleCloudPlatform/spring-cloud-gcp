@@ -28,7 +28,6 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
-import java.util.Optional;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -92,6 +91,6 @@ public class SecretManagerRegionalTestConfiguration {
 
   @Bean
   public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
-    return new SecretManagerTemplate(client, this.projectIdProvider).setLocation(Optional.of("us-central1"));
+    return new SecretManagerTemplate(client, this.projectIdProvider).setLocation("us-central1");
   }
 }

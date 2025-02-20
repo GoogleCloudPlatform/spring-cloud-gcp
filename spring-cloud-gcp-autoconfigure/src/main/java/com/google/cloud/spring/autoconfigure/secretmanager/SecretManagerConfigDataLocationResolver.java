@@ -40,6 +40,7 @@ import org.springframework.boot.context.config.ConfigDataLocationNotFoundExcepti
 import org.springframework.boot.context.config.ConfigDataLocationResolver;
 import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.util.ObjectUtils;
 
 public class SecretManagerConfigDataLocationResolver implements
     ConfigDataLocationResolver<SecretManagerConfigDataResource> {
@@ -127,8 +128,9 @@ public class SecretManagerConfigDataLocationResolver implements
               .setCredentialsProvider(credentialsProvider)
               .setHeaderProvider(new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class));
 
-      properties.getLocation().ifPresent(location ->
-          settings.setEndpoint(String.format(ENDPOINT_FORMAT, properties.getLocation().get())));
+      if (!ObjectUtils.isEmpty(properties.getLocation())) {
+        settings.setEndpoint(String.format(ENDPOINT_FORMAT, properties.getLocation()));
+      }
 
       secretManagerServiceClient = SecretManagerServiceClient.create(settings.build());
 

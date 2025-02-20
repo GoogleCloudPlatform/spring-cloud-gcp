@@ -18,7 +18,6 @@ package com.google.cloud.spring.secretmanager;
 
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import java.util.Optional;
 import org.springframework.core.env.EnumerablePropertySource;
 
 /**
@@ -30,7 +29,7 @@ import org.springframework.core.env.EnumerablePropertySource;
 public class SecretManagerPropertySource extends EnumerablePropertySource<SecretManagerTemplate> {
 
   private final GcpProjectIdProvider projectIdProvider;
-  private Optional<String> location = Optional.empty();
+  private String location;
 
   public SecretManagerPropertySource(
       String propertySourceName,
@@ -48,7 +47,7 @@ public class SecretManagerPropertySource extends EnumerablePropertySource<Secret
    * @param location the location to be used when creating a SecretVersionName from a property
    *     string.
    */
-  public void setLocation(Optional<String> location) {
+  public void setLocation(String location) {
     this.location = location;
   }
 
@@ -57,7 +56,7 @@ public class SecretManagerPropertySource extends EnumerablePropertySource<Secret
    *
    * @return the location
    */
-  public Optional<String> getLocation() {
+  public String getLocation() {
     return location;
   }
 

@@ -81,7 +81,7 @@ class GcpSecretManagerAutoConfigurationUnitTests {
         .withPropertyValues("spring.cloud.gcp.secretmanager.location=us-central1")
         .run(
             ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class)
-                .getLocation()).isEqualTo(Optional.of("us-central1")));
+                .getLocation()).isEqualTo("us-central1"));
   }
 
   static class TestConfig {
