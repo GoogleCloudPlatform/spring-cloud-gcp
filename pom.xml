@@ -23,10 +23,6 @@
 	</issueManagement>
 
 	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://google.oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
 		<repository>
 			<id>ossrh</id>
 			<url>https://google.oss.sonatype.org/service/local/staging/deploy/maven2/</url>

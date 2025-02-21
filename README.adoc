@@ -123,20 +123,7 @@ This will allow you to not specify versions for any of the Maven dependencies an
 
 == Snapshots Repository
 
-We offer `SNAPSHOT` versions of the project that always reflect the latest code changes to the underlying GitHub repository for Spring Framework on Google Cloud via the Sonatype Snapshots Repository:
-
-[source,xml]
-----
-<repositories>
-    <repository>
-        <id>snapshots-repo</id>
-        <url>https://google.oss.sonatype.org/content/repositories/snapshots</url>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-</repositories>
-----
+We do not publish `SNAPSHOT` versions of the project. If you would like to test out the latest snapshot, please clone this repository and install locally.
 
 == Spring Boot Starters
 
