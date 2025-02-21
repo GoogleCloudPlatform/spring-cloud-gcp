@@ -11,10 +11,11 @@ You can check our project website https://spring.io/projects/spring-cloud-gcp[he
 For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation or Javadocs:
 
 // {x-version-update-start:spring-cloud-gcp:released}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/5.10.0/reference/html/index.html[Spring Framework on Google Cloud 5.8.0 (Latest)] - https://googleapis.dev/java/spring-cloud-gcp/5.8.0/index.html[Javadocs 5.8.0]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/6.0.0/reference/html/index.html[Spring Framework on Google Cloud 6.0.0 (Latest)] - https://googleapis.dev/java/spring-cloud-gcp/6.0.0/index.html[Javadocs 6.0.0]
 // {x-version-update-end}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.10.12/reference/html/index.html[Spring Framework on Google Cloud 4.10.12] - https://googleapis.dev/java/spring-cloud-gcp/4.10.12/index.html[Javadocs 4.10.12]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.8.11/reference/html/index.html[Spring Framework on Google Cloud 3.8.11] - https://googleapis.dev/java/spring-cloud-gcp/3.8.11/index.html[Javadocs 3.8.11]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/5.11.0/reference/html/index.html[Spring Framework on Google Cloud 5.11.0] - https://googleapis.dev/java/spring-cloud-gcp/5.11.0/index.html[Javadocs 5.11.0]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.10.15/reference/html/index.html[Spring Framework on Google Cloud 4.10.15] - https://googleapis.dev/java/spring-cloud-gcp/4.10.16/index.html[Javadocs 4.10.16]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.8.15/reference/html/index.html[Spring Framework on Google Cloud 3.8.15] - https://googleapis.dev/java/spring-cloud-gcp/3.8.14/index.html[Javadocs 3.8.15]
 
 If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Framework on Google Cloud sample applications] or the https://codelabs.developers.google.com/spring[Spring on Google Cloud codelabs].
 
@@ -53,6 +54,12 @@ Before you start working on one, please take a look at our link:CONTRIBUTING.md[
 This project has dependency and transitive dependencies on Spring Projects. The table below outlines the versions of Spring Cloud, Spring Boot and Spring Framework versions that are compatible with certain Spring Framework on Google Cloud version.
 |===
 | Spring Framework on Google Cloud | Spring Cloud | Spring Boot | Spring Framework | Supported
+
+|6.x
+|https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2024.0-Release-Notes[2024.0.x] (Moorgate)
+|https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.4-Release-Notes[3.4.x]
+|https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-6.2-Release-Notes[6.2.x]
+|Yes
 
 |5.x
 |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2023.0-Release-Notes[2023.0.x] (Leyton)
@@ -104,7 +111,7 @@ This will allow you to not specify versions for any of the Maven dependencies an
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-dependencies</artifactId>
-            <version>5.10.0</version>
+            <version>6.0.0</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>

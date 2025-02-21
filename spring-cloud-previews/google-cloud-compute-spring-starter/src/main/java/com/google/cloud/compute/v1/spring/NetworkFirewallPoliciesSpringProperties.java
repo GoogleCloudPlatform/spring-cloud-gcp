@@ -43,6 +43,11 @@ public class NetworkFirewallPoliciesSpringProperties implements CredentialsSuppl
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
   /**
+   * Allow override of retry settings at method-level for aggregatedList. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry aggregatedListRetry;
+  /**
    * Allow override of retry settings at method-level for get. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
@@ -105,6 +110,14 @@ public class NetworkFirewallPoliciesSpringProperties implements CredentialsSuppl
 
   public void setRetry(Retry retry) {
     this.retry = retry;
+  }
+
+  public Retry getAggregatedListRetry() {
+    return this.aggregatedListRetry;
+  }
+
+  public void setAggregatedListRetry(Retry aggregatedListRetry) {
+    this.aggregatedListRetry = aggregatedListRetry;
   }
 
   public Retry getGetRetry() {

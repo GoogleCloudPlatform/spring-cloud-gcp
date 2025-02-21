@@ -5,7 +5,7 @@
   <parent>
     <artifactId>spring-cloud-gcp</artifactId>
     <groupId>com.google.cloud</groupId>
-    <version>5.10.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+    <version>6.0.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -23,6 +23,7 @@
     <module>google-cloud-video-transcoder-spring-starter</module>
     <module>google-cloud-video-stitcher-spring-starter</module>
     <module>google-cloud-video-intelligence-spring-starter</module>
+    <module>google-cloud-valkey-spring-starter</module>
     <module>google-cloud-translate-spring-starter</module>
     <module>google-cloud-trace-spring-starter</module>
     <module>google-cloud-tpu-spring-starter</module>
@@ -61,7 +62,6 @@
     <module>google-cloud-network-security-spring-starter</module>
     <module>google-cloud-network-management-spring-starter</module>
     <module>google-cloud-monitoring-dashboard-spring-starter</module>
-    <module>google-cloud-valkey-spring-starter</module>
     <module>google-cloud-memcache-spring-starter</module>
     <module>google-cloud-managed-identities-spring-starter</module>
     <module>google-cloud-language-spring-starter</module>

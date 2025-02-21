@@ -152,6 +152,11 @@ public class NetworkFirewallPoliciesSpringAutoConfiguration {
     }
     Retry serviceRetry = clientProperties.getRetry();
     if (serviceRetry != null) {
+      RetrySettings aggregatedListRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.aggregatedListSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.aggregatedListSettings().setRetrySettings(aggregatedListRetrySettings);
+
       RetrySettings getRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getSettings().getRetrySettings(), serviceRetry);
@@ -191,6 +196,17 @@ public class NetworkFirewallPoliciesSpringAutoConfiguration {
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
+      }
+    }
+    Retry aggregatedListRetry = clientProperties.getAggregatedListRetry();
+    if (aggregatedListRetry != null) {
+      RetrySettings aggregatedListRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.aggregatedListSettings().getRetrySettings(),
+              aggregatedListRetry);
+      clientSettingsBuilder.aggregatedListSettings().setRetrySettings(aggregatedListRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for aggregatedList from properties.");
       }
     }
     Retry getRetry = clientProperties.getGetRetry();
