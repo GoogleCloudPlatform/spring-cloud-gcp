@@ -14,6 +14,20 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.11.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.11.0...v5.11.1) (2025-02-24)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.23.0 to 1.23.1 ([#3558](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3558)) ([cbad094](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cbad0942ba51c73c28615da71528f215e9c3cec0))
+* bump com.google.cloud:alloydb-jdbc-connector from 1.1.8 to 1.2.0 ([#3551](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3551)) ([30dea6f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/30dea6f31f06395f1b7cb2b861cdb64b1c9430e4))
+* bump io.micrometer:micrometer-tracing-bom from 1.4.2 to 1.4.3 ([#3546](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3546)) ([418f373](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/418f3732fb97999957085ab629a91a93859a0e5e))
+* bump io.opentelemetry:opentelemetry-api from 1.46.0 to 1.47.0 ([#3541](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3541)) ([b65245c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b65245c252c4846905620f5250c65baff990f5d0))
+* bump org.graalvm.buildtools:native-maven-plugin ([#3531](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3531)) ([a9315a4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a9315a475f4c33222114f3bca8803963274ae7d3))
+* bump org.springframework.boot:spring-boot-starter-parent ([#3569](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3569)) ([1a7e902](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1a7e90252c1985b392d03c8d86c62d0c5cf637eb))
+* bump spring-boot-dependencies.version from 3.3.8 to 3.3.9 ([#3568](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3568)) ([8c92449](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8c9244939c5071d2f76beba485718265181305da))
+* bump zipkin-gcp.version from 2.2.6 to 2.3.0 ([#3563](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3563)) ([a367f5a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a367f5a513ab41afbbb78a14923d28dace8af09d))
+
 ## [5.11.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.10.0...v5.11.0) (2025-02-04)
 
 
