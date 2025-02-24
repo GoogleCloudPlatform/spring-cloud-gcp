@@ -14,6 +14,21 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.10.17](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.16...v4.10.17) (2025-02-24)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.23.0 to 1.23.1 ([#3559](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3559)) ([77de2ac](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/77de2ac745e5f014928dd084f9b0b7ff82b2da5d))
+* bump com.google.cloud:libraries-bom from 26.54.0 to 26.55.0 ([#3578](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3578)) ([ff3fc6e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ff3fc6e16dab317d1459c2c5d28d7d2b671ec908))
+* bump com.puppycrawl.tools:checkstyle from 10.21.2 to 10.21.3 ([#3576](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3576)) ([700a87d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/700a87d18abd0ab6426c52a046187f6d9193812a))
+* bump io.micrometer:micrometer-tracing-bom from 1.4.2 to 1.4.3 ([#3545](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3545)) ([683693e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/683693e2c7ce79015378be39e06ec59c737fe129))
+* bump io.opentelemetry:opentelemetry-bom from 1.46.0 to 1.47.0 ([#3539](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3539)) ([68e320f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/68e320f5603607164f02fa243399200b58e97ec7))
+* bump org.apache.maven.plugins:maven-checkstyle-plugin ([#3345](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3345)) ([7b63f82](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7b63f8229133df60a63232075f0cafb8c21ad413))
+* bump org.apache.maven.plugins:maven-compiler-plugin ([#3577](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3577)) ([5dfdbaa](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5dfdbaa5e16e523a5690d590e3ba251cf7b12bbb))
+* bump org.awaitility:awaitility from 4.2.2 to 4.3.0 ([#3579](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3579)) ([0506997](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/050699729b1e04f7234377c36a6aab2d95702302))
+* bump org.graalvm.buildtools:native-maven-plugin ([#3532](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3532)) ([f7b534f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f7b534f47162f319ab70fe4d172bc21916ab8b1a))
+
 ## [4.10.16](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.10.15...v4.10.16) (2025-02-04)
 
 
