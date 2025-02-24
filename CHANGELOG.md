@@ -14,6 +14,17 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.8.16](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.15...v3.8.16) (2025-02-24)
+
+
+### Dependencies
+
+* bump cloud-sql-socket-factory.version from 1.23.0 to 1.23.1 ([#3557](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3557)) ([f824408](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f82440853d4ee250ad777f2ba2661579542496c9))
+* bump com.google.cloud:libraries-bom from 26.54.0 to 26.55.0 ([#3580](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3580)) ([6742fdf](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6742fdf1f3aa4f83a430bfc2a8327949afe57853))
+* bump org.apache.maven.plugins:maven-compiler-plugin ([#3581](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3581)) ([0879b85](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0879b85977bcc251402a44f6eb4c4b29c7d1657e))
+* bump org.awaitility:awaitility from 4.2.2 to 4.3.0 ([#3582](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3582)) ([5712846](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5712846c97a0e67ccba83d3d02e24dccb417a9c7))
+* bump org.testcontainers:testcontainers-bom from 1.20.4 to 1.20.5 ([#3566](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3566)) ([28379b1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/28379b1c2591f8a4830200082a88cc03754c78e8))
+
 ## [3.8.15](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.14...v3.8.15) (2025-02-04)
 
 
