@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,11 @@ public class GroundedGenerationServiceSpringProperties implements CredentialsSup
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
   /**
+   * Allow override of retry settings at method-level for generateGroundedContent. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry generateGroundedContentRetry;
+  /**
    * Allow override of retry settings at method-level for checkGrounding. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -83,6 +88,14 @@ public class GroundedGenerationServiceSpringProperties implements CredentialsSup
 
   public void setRetry(Retry retry) {
     this.retry = retry;
+  }
+
+  public Retry getGenerateGroundedContentRetry() {
+    return this.generateGroundedContentRetry;
+  }
+
+  public void setGenerateGroundedContentRetry(Retry generateGroundedContentRetry) {
+    this.generateGroundedContentRetry = generateGroundedContentRetry;
   }
 
   public Retry getCheckGroundingRetry() {

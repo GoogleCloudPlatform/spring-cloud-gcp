@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -165,6 +165,20 @@ public class TpuSpringAutoConfiguration {
               clientSettingsBuilder.getNodeSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getNodeSettings().setRetrySettings(getNodeRetrySettings);
 
+      RetrySettings listQueuedResourcesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listQueuedResourcesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listQueuedResourcesSettings()
+          .setRetrySettings(listQueuedResourcesRetrySettings);
+
+      RetrySettings getQueuedResourceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getQueuedResourceSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getQueuedResourceSettings()
+          .setRetrySettings(getQueuedResourceRetrySettings);
+
       RetrySettings generateServiceIdentityRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.generateServiceIdentitySettings().getRetrySettings(),
@@ -241,6 +255,34 @@ public class TpuSpringAutoConfiguration {
       clientSettingsBuilder.getNodeSettings().setRetrySettings(getNodeRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getNode from properties.");
+      }
+    }
+    Retry listQueuedResourcesRetry = clientProperties.getListQueuedResourcesRetry();
+    if (listQueuedResourcesRetry != null) {
+      RetrySettings listQueuedResourcesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listQueuedResourcesSettings().getRetrySettings(),
+              listQueuedResourcesRetry);
+      clientSettingsBuilder
+          .listQueuedResourcesSettings()
+          .setRetrySettings(listQueuedResourcesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listQueuedResources from properties.");
+      }
+    }
+    Retry getQueuedResourceRetry = clientProperties.getGetQueuedResourceRetry();
+    if (getQueuedResourceRetry != null) {
+      RetrySettings getQueuedResourceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getQueuedResourceSettings().getRetrySettings(),
+              getQueuedResourceRetry);
+      clientSettingsBuilder
+          .getQueuedResourceSettings()
+          .setRetrySettings(getQueuedResourceRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getQueuedResource from properties.");
       }
     }
     Retry generateServiceIdentityRetry = clientProperties.getGenerateServiceIdentityRetry();

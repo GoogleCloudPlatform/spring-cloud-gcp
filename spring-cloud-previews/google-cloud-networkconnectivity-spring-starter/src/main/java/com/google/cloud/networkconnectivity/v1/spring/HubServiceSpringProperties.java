@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,11 @@ public class HubServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listHubSpokesRetry;
+  /**
+   * Allow override of retry settings at method-level for queryHubStatus. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry queryHubStatusRetry;
   /**
    * Allow override of retry settings at method-level for listSpokes. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -172,6 +177,14 @@ public class HubServiceSpringProperties implements CredentialsSupplier {
 
   public void setListHubSpokesRetry(Retry listHubSpokesRetry) {
     this.listHubSpokesRetry = listHubSpokesRetry;
+  }
+
+  public Retry getQueryHubStatusRetry() {
+    return this.queryHubStatusRetry;
+  }
+
+  public void setQueryHubStatusRetry(Retry queryHubStatusRetry) {
+    this.queryHubStatusRetry = queryHubStatusRetry;
   }
 
   public Retry getListSpokesRetry() {

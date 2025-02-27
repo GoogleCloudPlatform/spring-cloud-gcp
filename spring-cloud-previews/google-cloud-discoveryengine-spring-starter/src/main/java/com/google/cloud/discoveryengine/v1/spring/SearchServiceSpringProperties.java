@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,11 @@ public class SearchServiceSpringProperties implements CredentialsSupplier {
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchRetry;
+  /**
+   * Allow override of retry settings at method-level for searchLite. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry searchLiteRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -91,5 +96,13 @@ public class SearchServiceSpringProperties implements CredentialsSupplier {
 
   public void setSearchRetry(Retry searchRetry) {
     this.searchRetry = searchRetry;
+  }
+
+  public Retry getSearchLiteRetry() {
+    return this.searchLiteRetry;
+  }
+
+  public void setSearchLiteRetry(Retry searchLiteRetry) {
+    this.searchLiteRetry = searchLiteRetry;
   }
 }

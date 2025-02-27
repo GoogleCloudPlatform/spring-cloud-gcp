@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -162,6 +162,14 @@ public class GroundedGenerationServiceSpringAutoConfiguration {
     }
     Retry serviceRetry = clientProperties.getRetry();
     if (serviceRetry != null) {
+      RetrySettings generateGroundedContentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateGroundedContentSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .generateGroundedContentSettings()
+          .setRetrySettings(generateGroundedContentRetrySettings);
+
       RetrySettings checkGroundingRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.checkGroundingSettings().getRetrySettings(), serviceRetry);
@@ -169,6 +177,20 @@ public class GroundedGenerationServiceSpringAutoConfiguration {
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
+      }
+    }
+    Retry generateGroundedContentRetry = clientProperties.getGenerateGroundedContentRetry();
+    if (generateGroundedContentRetry != null) {
+      RetrySettings generateGroundedContentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateGroundedContentSettings().getRetrySettings(),
+              generateGroundedContentRetry);
+      clientSettingsBuilder
+          .generateGroundedContentSettings()
+          .setRetrySettings(generateGroundedContentRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for generateGroundedContent from properties.");
       }
     }
     Retry checkGroundingRetry = clientProperties.getCheckGroundingRetry();

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 5.x
   pull_request:
     types: [opened, synchronize, reopened]
     paths-ignore:
@@ -106,7 +107,7 @@ jobs:
       - name: Archive logs
         if: always()
         continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Native Test Logs
           path: |

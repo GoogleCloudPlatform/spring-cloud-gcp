@@ -28,6 +28,10 @@ import reactor.core.publisher.Mono;
 public interface UserRepository extends FirestoreReactiveRepository<User> {
   Flux<User> findBy(Pageable pageable);
 
+  Mono<User> findFirstByAge(Integer age);
+
+  Mono<User> findTopByAge(Integer age);
+
   Flux<User> findByAge(Integer age);
 
   Flux<User> findByAge(Integer age, Sort sort);

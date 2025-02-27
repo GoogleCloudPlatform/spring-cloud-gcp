@@ -1,1 +1,2 @@
 com.google.cloud.networkmanagement.v1.spring.ReachabilityServiceSpringAutoConfiguration
+com.google.cloud.networkmanagement.v1.spring.VpcFlowLogsServiceSpringAutoConfiguration
