@@ -146,4 +146,8 @@ public class DatastoreMappingContext
           "Unable to find a DatastorePersistentEntity for: " + entityClass);
     }
   }
+
+  public boolean isSkipNullValue() {
+    return skipNullValue;
+  }
 }
