@@ -71,9 +71,9 @@ public interface DatastorePersistentProperty
   boolean isLazyLoaded();
 
   /**
-   * Return whether to ignore null value, i.e., skip insertion if value is null.
+   * Return whether to skip null value, i.e., skip insertion if value is null.
    *
    * @return {@code true} if the null value is ignored. {@code false} otherwise.
    */
-  boolean isNullValueIgnored();
+  boolean isSkipNullValue();
 }

@@ -38,7 +38,7 @@ public class DatastorePersistentPropertyImpl
 
   private final FieldNamingStrategy fieldNamingStrategy;
 
-  private final boolean isSkipEmptyValue;
+  private final boolean isSkipNullValue;
 
   /**
    * Constructor.
@@ -53,13 +53,13 @@ public class DatastorePersistentPropertyImpl
       PersistentEntity<?, DatastorePersistentProperty> owner,
       SimpleTypeHolder simpleTypeHolder,
       FieldNamingStrategy fieldNamingStrategy,
-      boolean isSkipEmptyValue) {
+      boolean isSkipNullValue) {
     super(property, owner, simpleTypeHolder);
     this.fieldNamingStrategy =
         (fieldNamingStrategy != null)
             ? fieldNamingStrategy
             : PropertyNameFieldNamingStrategy.INSTANCE;
-    this.isSkipEmptyValue = isSkipEmptyValue;
+    this.isSkipNullValue = isSkipNullValue;
     verify();
   }
 
@@ -137,7 +137,7 @@ public class DatastorePersistentPropertyImpl
   }
 
   @Override
-  public boolean isNullValueIgnored() {
-    return isSkipEmptyValue;
+  public boolean isSkipNullValue() {
+    return isSkipNullValue;
   }
 }

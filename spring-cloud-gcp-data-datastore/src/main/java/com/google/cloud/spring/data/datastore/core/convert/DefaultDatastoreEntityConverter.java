@@ -244,7 +244,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
             if (persistentProperty.isUnindexed()) {
               convertedVal = setExcludeFromIndexes(convertedVal);
             }
-            if (!(persistentProperty.isNullValueIgnored() && convertedVal.getType().equals(NULL))) {
+            if (!(persistentProperty.isSkipNullValue() && convertedVal.getType().equals(NULL))) {
               sink.set(persistentProperty.getFieldName(), convertedVal);
             }
           } catch (DatastoreDataException ex) {
