@@ -69,4 +69,10 @@ public interface DatastorePersistentProperty
    * @return {@code true} if the property is lazily-fetched. {@code false} otherwise.
    */
   boolean isLazyLoaded();
+
+  /**
+   * Return whether to skip inserting empty value.
+   * @return {@code true} if the empty value is skipped. {@code false} otherwise.
+   */
+  boolean isSkipEmptyValue();
 }
