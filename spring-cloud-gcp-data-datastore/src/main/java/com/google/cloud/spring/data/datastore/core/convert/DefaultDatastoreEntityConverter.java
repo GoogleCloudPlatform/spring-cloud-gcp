@@ -24,7 +24,6 @@ import com.google.cloud.datastore.EntityValue;
 import com.google.cloud.datastore.FullEntity;
 import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.ListValue;
-import com.google.cloud.datastore.NullValue;
 import com.google.cloud.datastore.StringValue;
 import com.google.cloud.datastore.Value;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
@@ -245,7 +244,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
             if (persistentProperty.isUnindexed()) {
               convertedVal = setExcludeFromIndexes(convertedVal);
             }
-            if (!(persistentProperty.isSkipEmptyValue() && convertedVal.getType().equals(NULL))) {
+            if (!(persistentProperty.isNullValueIgnored() && convertedVal.getType().equals(NULL))) {
               sink.set(persistentProperty.getFieldName(), convertedVal);
             }
           } catch (DatastoreDataException ex) {

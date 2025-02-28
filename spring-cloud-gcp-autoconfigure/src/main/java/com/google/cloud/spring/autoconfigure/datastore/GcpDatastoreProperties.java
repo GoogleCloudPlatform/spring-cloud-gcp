@@ -47,7 +47,7 @@ public class GcpDatastoreProperties implements CredentialsSupplier {
   private String namespace;
 
   /** Whether skip the insertion if the value is null */
-  private boolean skipNullValue;
+  private boolean isNullValueIgnored;
 
   @Override
   public Credentials getCredentials() {
@@ -90,11 +90,11 @@ public class GcpDatastoreProperties implements CredentialsSupplier {
     this.host = host;
   }
 
-  public boolean isSkipNullValue() {
-    return skipNullValue;
+  public boolean isNullValueIgnored() {
+    return isNullValueIgnored;
   }
 
-  public void setSkipNullValue(boolean skipNullValue) {
-    this.skipNullValue = skipNullValue;
+  public void setNullValueIgnored(boolean nullValueIgnored) {
+    isNullValueIgnored = nullValueIgnored;
   }
 }

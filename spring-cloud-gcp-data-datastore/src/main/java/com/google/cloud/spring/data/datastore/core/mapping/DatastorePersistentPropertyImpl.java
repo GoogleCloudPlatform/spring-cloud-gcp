@@ -137,7 +137,7 @@ public class DatastorePersistentPropertyImpl
   }
 
   @Override
-  public boolean isSkipEmptyValue() {
+  public boolean isNullValueIgnored() {
     return isSkipEmptyValue;
   }
 }
