@@ -33,6 +33,8 @@ The following options may be configured with Spring Cloud core.
 | `spring.cloud.gcp.core.enabled` | Enables or disables Google Cloud core auto configuration | No | `true`
 |===========================================================================
 
+NOTE: `spring.cloud.gcp.core.enabled` only enables or disables the Google Cloud Core module, not all Spring Framework on Google Cloud modules. If you want to disable individual modules, you will also need to disable via their corresponding configs. E.g. `spring.cloud.gcp.storage.enabled`
+
 === Project ID
 
 `GcpProjectIdProvider` is a functional interface that returns a Google Cloud project ID string.
