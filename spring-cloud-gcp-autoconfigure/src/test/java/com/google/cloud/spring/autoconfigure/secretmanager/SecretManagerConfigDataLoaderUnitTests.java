@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerPropertySource;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
-import java.util.Optional;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.ConfigurableBootstrapContext;
