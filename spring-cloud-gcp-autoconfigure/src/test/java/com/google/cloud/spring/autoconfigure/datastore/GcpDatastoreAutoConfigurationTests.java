@@ -192,7 +192,7 @@ class GcpDatastoreAutoConfigurationTests {
   @Test
   void testSkipNullValueSetToTrue() {
     this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.datastore.skipNullValue=true")
+        .withPropertyValues("spring.cloud.gcp.datastore.skip-null-value=true")
         .run(
             context -> {
               DatastoreMappingContext datastoreMappingContext =
