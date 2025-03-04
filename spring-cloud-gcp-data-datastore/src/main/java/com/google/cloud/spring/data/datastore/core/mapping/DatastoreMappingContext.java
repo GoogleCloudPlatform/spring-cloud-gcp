@@ -52,8 +52,15 @@ public class DatastoreMappingContext
   // Kind and that are subclasses of the given class.
   private static final Map<Class, Set<Class>> discriminationFamilies = new ConcurrentHashMap<>();
 
+  private final boolean skipNullValue;
+
   public DatastoreMappingContext() {
+    this(false);
+  }
+
+  public DatastoreMappingContext(boolean skipNullValue) {
     this.setSimpleTypeHolder(DatastoreNativeTypes.HOLDER);
+    this.skipNullValue = skipNullValue;
   }
 
   @Override
@@ -118,7 +125,7 @@ public class DatastoreMappingContext
   protected DatastorePersistentProperty createPersistentProperty(
       Property property, DatastorePersistentEntity<?> owner, SimpleTypeHolder simpleTypeHolder) {
     return new DatastorePersistentPropertyImpl(
-        property, owner, simpleTypeHolder, FIELD_NAMING_STRATEGY);
+        property, owner, simpleTypeHolder, FIELD_NAMING_STRATEGY, skipNullValue);
   }
 
   /**
@@ -138,5 +145,9 @@ public class DatastoreMappingContext
       throw new DatastoreDataException(
           "Unable to find a DatastorePersistentEntity for: " + entityClass);
     }
+  }
+
+  public boolean isSkipNullValue() {
+    return skipNullValue;
   }
 }

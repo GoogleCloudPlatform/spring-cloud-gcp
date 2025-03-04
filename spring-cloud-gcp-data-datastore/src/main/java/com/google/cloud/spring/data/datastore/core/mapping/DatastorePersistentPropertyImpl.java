@@ -38,6 +38,8 @@ public class DatastorePersistentPropertyImpl
 
   private final FieldNamingStrategy fieldNamingStrategy;
 
+  private final boolean isSkipNullValue;
+
   /**
    * Constructor.
    *
@@ -50,12 +52,14 @@ public class DatastorePersistentPropertyImpl
       Property property,
       PersistentEntity<?, DatastorePersistentProperty> owner,
       SimpleTypeHolder simpleTypeHolder,
-      FieldNamingStrategy fieldNamingStrategy) {
+      FieldNamingStrategy fieldNamingStrategy,
+      boolean isSkipNullValue) {
     super(property, owner, simpleTypeHolder);
     this.fieldNamingStrategy =
         (fieldNamingStrategy != null)
             ? fieldNamingStrategy
             : PropertyNameFieldNamingStrategy.INSTANCE;
+    this.isSkipNullValue = isSkipNullValue;
     verify();
   }
 
@@ -130,5 +134,10 @@ public class DatastorePersistentPropertyImpl
   @Override
   public boolean isLazyLoaded() {
     return findAnnotation(LazyReference.class) != null;
+  }
+
+  @Override
+  public boolean isSkipNullValue() {
+    return isSkipNullValue;
   }
 }

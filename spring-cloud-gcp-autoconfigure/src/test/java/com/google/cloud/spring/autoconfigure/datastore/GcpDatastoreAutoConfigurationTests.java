@@ -32,6 +32,7 @@ import com.google.cloud.spring.autoconfigure.datastore.health.DatastoreHealthInd
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
 import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager;
+import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -175,6 +176,30 @@ class GcpDatastoreAutoConfigurationTests {
         context ->
             assertThatExceptionOfType(NoSuchBeanDefinitionException.class)
                 .isThrownBy(() -> context.getBean(DatastoreHealthIndicator.class)));
+  }
+
+  @Test
+  void testSkipNullValueDefaultToFalse() {
+    this.contextRunner.run(
+        context -> {
+          DatastoreMappingContext datastoreMappingContext =
+              context.getBean(DatastoreMappingContext.class);
+          assertThat(datastoreMappingContext).isNotNull();
+          assertThat(datastoreMappingContext.isSkipNullValue()).isFalse();
+        });
+  }
+
+  @Test
+  void testSkipNullValueSetToTrue() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.datastore.skip-null-value=true")
+        .run(
+            context -> {
+              DatastoreMappingContext datastoreMappingContext =
+                  context.getBean(DatastoreMappingContext.class);
+              assertThat(datastoreMappingContext).isNotNull();
+              assertThat(datastoreMappingContext.isSkipNullValue()).isTrue();
+            });
   }
 
   private Datastore getDatastoreBean(ApplicationContext context) {

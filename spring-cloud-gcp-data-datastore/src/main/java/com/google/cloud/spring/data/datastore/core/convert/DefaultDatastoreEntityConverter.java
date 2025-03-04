@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.data.datastore.core.convert;
 
+import static com.google.cloud.datastore.ValueType.NULL;
 import static com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType.NOT_EMBEDDED;
 
 import com.google.cloud.datastore.BaseEntity;
@@ -243,7 +244,9 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
             if (persistentProperty.isUnindexed()) {
               convertedVal = setExcludeFromIndexes(convertedVal);
             }
-            sink.set(persistentProperty.getFieldName(), convertedVal);
+            if (!(persistentProperty.isSkipNullValue() && convertedVal.getType().equals(NULL))) {
+              sink.set(persistentProperty.getFieldName(), convertedVal);
+            }
           } catch (DatastoreDataException ex) {
             throw new DatastoreDataException(
                 "Unable to write "

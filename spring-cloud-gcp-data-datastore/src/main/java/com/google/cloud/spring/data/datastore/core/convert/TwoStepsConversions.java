@@ -244,23 +244,23 @@ public class TwoStepsConversions implements ReadWriteConversions {
   }
 
   @Override
-  public Value convertOnWrite(Object proppertyVal, DatastorePersistentProperty persistentProperty) {
+  public Value convertOnWrite(Object propertyVal, DatastorePersistentProperty persistentProperty) {
     return convertOnWrite(
-        proppertyVal,
+        propertyVal,
         persistentProperty.getEmbeddedType(),
         persistentProperty.getFieldName(),
         persistentProperty.getTypeInformation());
   }
 
   private Value convertOnWrite(
-      Object proppertyVal,
+      Object propertyVal,
       EmbeddedType embeddedType,
       String fieldName,
       TypeInformation typeInformation) {
-    Object val = proppertyVal;
+    Object val = propertyVal;
 
     Function<Object, Value> writeConverter = this::convertOnWriteSingle;
-    if (proppertyVal != null) {
+    if (propertyVal != null) {
       writeConverter = switch (embeddedType) {
         case EMBEDDED_MAP -> x -> convertOnWriteSingleEmbeddedMap(x, fieldName,
             typeInformation.getMapValueType());
