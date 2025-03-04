@@ -15,7 +15,7 @@ env:
 jobs:
   sonar:
     name: Build with Sonar
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Get current date
         id: date
