@@ -37,7 +37,6 @@
     <module>google-cloud-security-private-ca-spring-starter</module>
     <module>google-cloud-scheduler-spring-starter</module>
     <module>google-cloud-retail-spring-starter</module>
-    <module>google-cloud-resource-settings-spring-starter</module>
     <module>google-cloud-redis-spring-starter</module>
     <module>google-cloud-recommender-spring-starter</module>
     <module>google-cloud-recaptchaenterprise-spring-starter</module>
