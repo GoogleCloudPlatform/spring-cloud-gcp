@@ -18,9 +18,9 @@ jobs:
     # On initial opening of renovate or dependabot PR with matching branch condition,
     # log information required for manually triggering workflow and exit with error to block PR
     if: ${{ (github.event_name == 'workflow_dispatch') || startsWith(github.head_ref, 'renovate/main-gcp-libraries-bom.version') || startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom') }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Get PR info
         id: get_pr_info
         continue-on-error: false
@@ -54,9 +54,10 @@ jobs:
           fi
           echo "LIBRARIES_BOM_VERSION=$(xmllint --xpath "string(//*[local-name()='gcp-libraries-bom.version'])" spring-cloud-gcp-dependencies/pom.xml)" >> $GITHUB_OUTPUT
       - name: Setup Java 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
           java-version: 17
+          distribution: temurin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: bazelisk version
