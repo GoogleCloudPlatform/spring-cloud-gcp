@@ -25,6 +25,7 @@ import static org.mockito.Mockito.verify;
 import ch.qos.logback.classic.Level;
 import com.google.cloud.logging.Logging;
 import com.google.cloud.logging.LoggingOptions;
+import com.google.cloud.logging.Severity;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import org.junit.jupiter.api.Test;
 
@@ -67,8 +68,9 @@ class LoggingAppenderTests {
         .contains("Spring");
 
     loggingAppender.start();
-    // java-logging-logback appender default is ERROR
-    verify(logging).setFlushSeverity(com.google.cloud.logging.Severity.ERROR);
+    // java-logging-logback appender default is OFF
+    // See: https://github.com/googleapis/java-logging-logback/pull/1441
+    assertThat(logging.getFlushSeverity()).isNull();
   }
 
   @Test
