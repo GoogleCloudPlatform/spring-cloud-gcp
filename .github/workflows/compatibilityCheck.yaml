@@ -19,7 +19,7 @@ jobs:
   integrationTests:
     name: Integration Tests for Compatibility Check
     if: github.repository == 'suztomo/spring-cloud-gcp'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
