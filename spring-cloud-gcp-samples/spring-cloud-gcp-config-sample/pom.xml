@@ -13,15 +13,11 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>spring-cloud-gcp-config-sample</artifactId>
     <name>Spring Framework on Google Cloud Code Sample - Runtime Configuration</name>
-    <properties>
-        <springboot.version>3.1.12</springboot.version>
-    </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${springboot.version}</version>
         </dependency>
 
         <!-- Configuration Client Starter for Google Cloud Runtime Configurator API -->
@@ -35,7 +31,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-            <version>${springboot.version}</version>
         </dependency>
 
         <!-- Test-related dependencies. -->
@@ -53,7 +48,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>${springboot.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
