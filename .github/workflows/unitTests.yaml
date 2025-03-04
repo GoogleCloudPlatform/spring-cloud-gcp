@@ -13,7 +13,7 @@ on:
 
 jobs:
   unitTests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -78,7 +78,7 @@ jobs:
           **/target/site
 
   releaseCheck:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
     steps:
