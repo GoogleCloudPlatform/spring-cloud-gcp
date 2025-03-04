@@ -40,6 +40,7 @@ import org.springframework.boot.context.config.ConfigDataLocationNotFoundExcepti
 import org.springframework.boot.context.config.ConfigDataLocationResolver;
 import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.util.ObjectUtils;
 
 public class SecretManagerConfigDataLocationResolver implements
     ConfigDataLocationResolver<SecretManagerConfigDataResource> {
@@ -50,6 +51,10 @@ public class SecretManagerConfigDataLocationResolver implements
    * A static client to avoid creating another client after refreshing.
    */
   private static SecretManagerServiceClient secretManagerServiceClient;
+  /**
+   * A static endpoint format for regional client creation.
+   */
+  private static final String ENDPOINT_FORMAT = "secretmanager.%s.rep.googleapis.com:443";
 
   @Override
   public boolean isResolvable(ConfigDataLocationResolverContext context,
@@ -118,12 +123,16 @@ public class SecretManagerConfigDataLocationResolver implements
           .get(GcpSecretManagerProperties.class);
       DefaultCredentialsProvider credentialsProvider =
           new DefaultCredentialsProvider(properties);
-      SecretManagerServiceSettings settings = SecretManagerServiceSettings.newBuilder()
-          .setCredentialsProvider(credentialsProvider)
-          .setHeaderProvider(
-              new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class))
-          .build();
-      secretManagerServiceClient = SecretManagerServiceClient.create(settings);
+      SecretManagerServiceSettings.Builder settings =
+          SecretManagerServiceSettings.newBuilder()
+              .setCredentialsProvider(credentialsProvider)
+              .setHeaderProvider(new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class));
+
+      if (!ObjectUtils.isEmpty(properties.getLocation())) {
+        settings.setEndpoint(String.format(ENDPOINT_FORMAT, properties.getLocation()));
+      }
+
+      secretManagerServiceClient = SecretManagerServiceClient.create(settings.build());
 
       return secretManagerServiceClient;
     } catch (IOException e) {
@@ -142,7 +151,8 @@ public class SecretManagerConfigDataLocationResolver implements
         .get(GcpSecretManagerProperties.class);
 
     return new SecretManagerTemplate(client, projectIdProvider)
-        .setAllowDefaultSecretValue(properties.isAllowDefaultSecret());
+        .setAllowDefaultSecretValue(properties.isAllowDefaultSecret())
+        .setLocation(properties.getLocation());
   }
 
   /**

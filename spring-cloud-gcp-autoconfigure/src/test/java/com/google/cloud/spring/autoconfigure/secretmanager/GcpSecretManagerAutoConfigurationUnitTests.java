@@ -17,10 +17,8 @@
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
@@ -72,6 +70,15 @@ class GcpSecretManagerAutoConfigurationUnitTests {
     contextRunner.run(
         ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class))
             .isNotNull());
+  }
+
+  @Test
+  void testLocationWithSecretManagerProperties() {
+    contextRunner
+        .withPropertyValues("spring.cloud.gcp.secretmanager.location=us-central1")
+        .run(
+            ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class)
+                .getLocation()).isEqualTo("us-central1"));
   }
 
   static class TestConfig {
