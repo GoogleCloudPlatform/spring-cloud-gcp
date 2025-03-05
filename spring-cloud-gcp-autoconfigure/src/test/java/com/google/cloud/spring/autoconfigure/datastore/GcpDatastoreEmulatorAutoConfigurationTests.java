@@ -42,7 +42,8 @@ class GcpDatastoreEmulatorAutoConfigurationTests {
             "spring.cloud.gcp.datastore.emulator.enabled=true",
             "spring.cloud.gcp.datastore.emulator.consistency=0.8",
             "spring.cloud.gcp.datastore.emulator.dataDir=/usr/local/datastore",
-            "spring.cloud.gcp.datastore.emulator.storeOnDisk=false")
+            "spring.cloud.gcp.datastore.emulator.storeOnDisk=false",
+            "spring.cloud.gcp.datastore.emulator.firestoreInDatastoreMode=true")
         .run(
             context -> {
               LocalDatastoreHelper helper = context.getBean(LocalDatastoreHelper.class);
@@ -51,6 +52,7 @@ class GcpDatastoreEmulatorAutoConfigurationTests {
               assertThat(helper.getConsistency()).isEqualTo(0.8D);
               assertThat(helper.getGcdPath()).isEqualTo(Paths.get("/usr/local/datastore"));
               assertThat(helper.isStoreOnDisk()).isFalse();
+              assertThat(helper.isFirestoreInDatastoreMode()).isTrue();
             });
   }
 
