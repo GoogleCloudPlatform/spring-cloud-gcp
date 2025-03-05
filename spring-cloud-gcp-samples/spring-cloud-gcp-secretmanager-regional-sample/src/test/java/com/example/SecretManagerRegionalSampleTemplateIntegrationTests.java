@@ -52,13 +52,13 @@ class SecretManagerRegionalSampleTemplateIntegrationTests {
   @BeforeEach
   void createRegionalSecret() {
     this.secretName = String.format("secret-manager-sample-regional-secret-%s", UUID.randomUUID());
-    secretManagerTemplate.createSecret(this.secretName, "54321");
+    secretManagerTemplate.createSecret(this.secretName, "54321", "us-central1");
   }
 
   @AfterEach
   void deleteRegionalSecret() {
-    if (secretManagerTemplate.secretExists(this.secretName)) {
-      secretManagerTemplate.deleteSecret(this.secretName);
+    if (secretManagerTemplate.secretExists(this.secretName, secretManagerTemplate.getProjectId(), "us-central1")) {
+      secretManagerTemplate.deleteSecret(this.secretName, secretManagerTemplate.getProjectId(), "us-central1");
     }
   }
 
@@ -68,6 +68,7 @@ class SecretManagerRegionalSampleTemplateIntegrationTests {
     params.add("secretId", this.secretName);
     params.add("projectId", "");
     params.add("secretPayload", "54321");
+    params.add("locationId", "us-central1");
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
 
     ResponseEntity<String> response =
@@ -77,7 +78,7 @@ class SecretManagerRegionalSampleTemplateIntegrationTests {
 
   @Test
   void testReadRegionalSecret() {
-    String getSecretUrl = String.format("/getSecret?secretId=%s", this.secretName);
+    String getSecretUrl = String.format("/getSecret?secretId=%s&locationId=us-central1", this.secretName);
     ResponseEntity<String> response =
         this.testRestTemplate.getForEntity(getSecretUrl, String.class);
     assertThat(response.getBody())
@@ -89,6 +90,7 @@ class SecretManagerRegionalSampleTemplateIntegrationTests {
     MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
     params.add("secretId", this.secretName);
     params.add("projectId", "");
+    params.add("locationId", "us-central1");
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, new HttpHeaders());
 
     ResponseEntity<String> response =

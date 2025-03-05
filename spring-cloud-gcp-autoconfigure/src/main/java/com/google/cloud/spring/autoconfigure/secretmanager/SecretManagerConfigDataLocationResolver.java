@@ -151,8 +151,7 @@ public class SecretManagerConfigDataLocationResolver implements
         .get(GcpSecretManagerProperties.class);
 
     return new SecretManagerTemplate(client, projectIdProvider)
-        .setAllowDefaultSecretValue(properties.isAllowDefaultSecret())
-        .setLocation(properties.getLocation());
+        .setAllowDefaultSecretValue(properties.isAllowDefaultSecret());
   }
 
   /**

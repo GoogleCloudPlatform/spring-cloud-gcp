@@ -97,8 +97,8 @@ class SecretManagerRegionalCompatibilityTests {
         );
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
-      assertThat(environment.getProperty("sm://my-reg-secret")).isEqualTo("newRegSecret");
-      assertThatThrownBy(() -> environment.getProperty("sm://fake-reg-secret"))
+      assertThat(environment.getProperty("sm://projects/regional-secret-manager-project/locations/us-central1/secrets/my-reg-secret/versions/latest")).isEqualTo("newRegSecret");
+      assertThatThrownBy(() -> environment.getProperty("sm://projects/regional-secret-manager-project/locations/us-central1/secrets/fake-reg-secret/versions/latest"))
           .isExactlyInstanceOf(NotFoundException.class);
     }
   }
@@ -116,8 +116,8 @@ class SecretManagerRegionalCompatibilityTests {
         );
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
-      assertThat(environment.getProperty("sm://my-reg-secret")).isEqualTo("newRegSecret");
-      assertThat(environment.getProperty("sm://fake-reg-secret")).isNull();
+      assertThat(environment.getProperty("sm://projects/regional-secret-manager-project/locations/us-central1/secrets/my-reg-secret/versions/latest")).isEqualTo("newRegSecret");
+      assertThat(environment.getProperty("sm://projects/regional-secret-manager-project/locations/us-central1/secrets/fake-reg-secret/versions/latest")).isNull();
     }
   }
 }

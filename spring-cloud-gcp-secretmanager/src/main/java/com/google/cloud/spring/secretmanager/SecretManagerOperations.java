@@ -58,6 +58,18 @@ public interface SecretManagerOperations {
    * then it simply creates a new version under the secret with the secret {@code payload}.
    *
    * @param secretId the secret ID of the secret to create.
+   * @param payload the secret payload string.
+   * @param locationId the secret location string.
+   */
+  void createSecret(String secretId, String payload, String locationId);
+
+  /**
+   * Creates a new secret or a new version of existing secret with the provided {@code payload}.
+   *
+   * <p>If there is already a secret saved in SecretManager with the specified {@code secretId},
+   * then it simply creates a new version under the secret with the secret {@code payload}.
+   *
+   * @param secretId the secret ID of the secret to create.
    * @param payload the secret payload as a byte array.
    */
   void createSecret(String secretId, byte[] payload);
@@ -74,6 +86,20 @@ public interface SecretManagerOperations {
    * @param projectId unique identifier of your project.
    */
   void createSecret(String secretId, byte[] payload, String projectId);
+
+  /**
+   * Creates a new secret or a new version of existing secret with the provided {@code payload} for
+   * a specific {@code projectId}.
+   *
+   * <p>If there is already a secret saved in SecretManager with the specified {@code secretId},
+   * then it simply creates a new version under the secret with the secret {@code payload}.
+   *
+   * @param secretId the secret ID of the secret to create.
+   * @param payload the secret payload as a byte array.
+   * @param projectId unique identifier of your project.
+   * @param locationId the secret location string.
+   */
+  void createSecret(String secretId, byte[] payload, String projectId, String locationId);
 
   /**
    * Enables the specified secret version under the default-configured project.
@@ -93,6 +119,16 @@ public interface SecretManagerOperations {
   void enableSecretVersion(String secretId, String version, String projectId);
 
   /**
+   * Enables the secret version under the specified project.
+   *
+   * @param secretId the secret ID of the secret to enable.
+   * @param version the version to enable
+   * @param projectId unique identifier of your project.
+   * @param locationId the secret location string.
+   */
+  void enableSecretVersion(String secretId, String version, String projectId, String locationId);
+
+  /**
    * Disables the specified secret version under the default-configured project.
    *
    * @param secretId the secret ID of the secret to disable.
@@ -110,6 +146,16 @@ public interface SecretManagerOperations {
   void disableSecretVersion(String secretId, String version, String projectId);
 
   /**
+   * Disables the secret version under the specified project.
+   *
+   * @param secretId the secret ID of the secret to disable.
+   * @param version the version to disable
+   * @param projectId unique identifier of your project.
+   * @param locationId the secret location string.
+   */
+  void disableSecretVersion(String secretId, String version, String projectId, String locationId);
+
+  /**
    * Deletes the specified secret under the default-configured project.
    *
    * @param secretId the secret ID of the secret to delete.
@@ -125,6 +171,15 @@ public interface SecretManagerOperations {
   void deleteSecret(String secretId, String projectId);
 
   /**
+   * Deletes the specified secret.
+   *
+   * @param secretId the secret ID of the secret to delete.
+   * @param projectId the GCP project containing the secret to delete.
+   * @param locationId the secret location string.
+   */
+  void deleteSecret(String secretId, String projectId, String locationId);
+
+  /**
    * Deletes the specified secret version.
    *
    * @param secretId the secret ID of the secret to delete.
@@ -132,6 +187,16 @@ public interface SecretManagerOperations {
    * @param projectId the GCP project containing the secret to delete.
    */
   void deleteSecretVersion(String secretId, String version, String projectId);
+
+  /**
+   * Deletes the specified secret version.
+   *
+   * @param secretId the secret ID of the secret to delete.
+   * @param version the version to delete
+   * @param projectId the GCP project containing the secret to delete.
+   * @param locationId the secret location string.
+   */
+  void deleteSecretVersion(String secretId, String version, String projectId, String locationId);
 
   /**
    * Gets the secret payload of the specified {@code secretIdentifier} secret.
@@ -161,9 +226,43 @@ public interface SecretManagerOperations {
    *
    * @param secretIdentifier the GCP secret ID of the secret or a sm:// formatted string specifying
    *     the secret.
+   * @param locationId the secret location string.
+   * @return The secret payload as String
+   */
+  String getSecretString(String secretIdentifier, String locationId);
+
+  /**
+   * Gets the secret payload of the specified {@code secretIdentifier} secret.
+   *
+   * <p>The {@code secretIdentifier} must either be a secret ID or a fully qualified `sm://`
+   * protocol string which specifies the secret (see javadocs of {@link SecretManagerOperations} for
+   * the protocol format).
+   *
+   * <p>If the secret ID string is passed in, then this will return the payload of the secret for
+   * the default project at the latest version.
+   *
+   * @param secretIdentifier the GCP secret ID of the secret or a sm:// formatted string specifying
+   *     the secret.
    * @return The secret payload as byte array
    */
   byte[] getSecretBytes(String secretIdentifier);
+
+  /**
+   * Gets the secret payload of the specified {@code secretIdentifier} secret.
+   *
+   * <p>The {@code secretIdentifier} must either be a secret ID or a fully qualified `sm://`
+   * protocol string which specifies the secret (see javadocs of {@link SecretManagerOperations} for
+   * the protocol format).
+   *
+   * <p>If the secret ID string is passed in, then this will return the payload of the secret for
+   * the default project at the latest version.
+   *
+   * @param secretIdentifier the GCP secret ID of the secret or a sm:// formatted string specifying
+   *     the secret.
+   * @param locationId the secret location string.
+   * @return The secret payload as byte array
+   */
+  byte[] getSecretBytes(String secretIdentifier, String locationId);
 
   /**
    * Returns true if there already exists a secret under the GCP project with the {@code secretId}.
@@ -182,4 +281,15 @@ public interface SecretManagerOperations {
    * @return true if the secret exists in Secret Manager; false otherwise
    */
   boolean secretExists(String secretId, String projectId);
+
+  /**
+   * Returns true if there already exists a secret under the GCP {@code projectId} with the {@code
+   * secretId}.
+   *
+   * @param secretId unique identifier of your secret in Secret Manager.
+   * @param projectId unique identifier of your project.
+   * @param locationId the secret location string.
+   * @return true if the secret exists in Secret Manager; false otherwise
+   */
+  boolean secretExists(String secretId, String projectId, String locationId);
 }

@@ -35,7 +35,7 @@ final class SecretManagerPropertyUtils {
   private SecretManagerPropertyUtils() {}
 
   static SecretVersionName getSecretVersionName(
-      final String input, GcpProjectIdProvider projectIdProvider, String location) {
+      final String input, GcpProjectIdProvider projectIdProvider, String locationId) {
     Optional<String> usedPrefix = getMatchedPrefixes(input::startsWith);
 
     // Since spring-core 6.2.2, the property resolution mechanism will try a full match that
@@ -81,6 +81,16 @@ final class SecretManagerPropertyUtils {
       projectId = tokens[1];
       secretId = tokens[3];
       version = tokens[5];
+    } else if (tokens.length == 8
+        && tokens[0].equals("projects")
+        && tokens[2].equals("locations")
+        && tokens[4].equals("secrets")
+        && tokens[6].equals("versions")) {
+      // property is of the form "sm@projects/<project-id>/locations/<location-id>/secrets/<secret-id>/versions/<version>"
+      projectId = tokens[1];
+      locationId = tokens[3];
+      secretId = tokens[5];
+      version = tokens[7];
     } else {
       throw new IllegalArgumentException(
           "Unrecognized format for specifying a GCP Secret Manager secret: " + input);
@@ -92,7 +102,7 @@ final class SecretManagerPropertyUtils {
 
     Assert.hasText(version, "The GCP Secret Manager secret version must not be empty: " + input);
 
-    return getSecretVersionName(projectId, secretId, version, location);
+    return getSecretVersionName(projectId, secretId, version, locationId);
   }
 
   static SecretVersionName getSecretVersionName(

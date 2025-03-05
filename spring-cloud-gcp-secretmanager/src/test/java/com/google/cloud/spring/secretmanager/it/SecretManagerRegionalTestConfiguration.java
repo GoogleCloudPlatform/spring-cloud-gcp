@@ -91,6 +91,6 @@ public class SecretManagerRegionalTestConfiguration {
 
   @Bean
   public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
-    return new SecretManagerTemplate(client, this.projectIdProvider).setLocation("us-central1");
+    return new SecretManagerTemplate(client, this.projectIdProvider);
   }
 }

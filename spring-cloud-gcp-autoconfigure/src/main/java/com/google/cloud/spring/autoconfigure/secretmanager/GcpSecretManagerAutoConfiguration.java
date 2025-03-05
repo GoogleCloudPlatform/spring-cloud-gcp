@@ -29,6 +29,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.util.ObjectUtils;
 
 /**
  *  Autoconfiguration for GCP Secret Manager.
@@ -44,6 +45,11 @@ public class GcpSecretManagerAutoConfiguration {
   private final GcpProjectIdProvider gcpProjectIdProvider;
   private final GcpSecretManagerProperties properties;
   private final CredentialsProvider credentialsProvider;
+
+  /**
+   * A static endpoint format for regional client creation.
+   */
+  private static final String ENDPOINT_FORMAT = "secretmanager.%s.rep.googleapis.com:443";
 
   public GcpSecretManagerAutoConfiguration(
       CredentialsProvider credentialsProvider,
@@ -62,21 +68,23 @@ public class GcpSecretManagerAutoConfiguration {
   @ConditionalOnMissingBean
   public SecretManagerServiceClient secretManagerClient()
       throws IOException {
-    SecretManagerServiceSettings settings =
+    SecretManagerServiceSettings.Builder settings =
         SecretManagerServiceSettings.newBuilder()
             .setCredentialsProvider(this.credentialsProvider)
             .setHeaderProvider(
-                new UserAgentHeaderProvider(GcpSecretManagerAutoConfiguration.class))
-            .build();
+                new UserAgentHeaderProvider(GcpSecretManagerAutoConfiguration.class));
 
-    return SecretManagerServiceClient.create(settings);
+    if (!ObjectUtils.isEmpty(properties.getLocation())) {
+      settings.setEndpoint(String.format(ENDPOINT_FORMAT, properties.getLocation()));
+    }
+
+    return SecretManagerServiceClient.create(settings.build());
   }
 
   @Bean
   @ConditionalOnMissingBean
   public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
     return new SecretManagerTemplate(client, this.gcpProjectIdProvider)
-        .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret())
-        .setLocation(this.properties.getLocation());
+        .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
   }
 }

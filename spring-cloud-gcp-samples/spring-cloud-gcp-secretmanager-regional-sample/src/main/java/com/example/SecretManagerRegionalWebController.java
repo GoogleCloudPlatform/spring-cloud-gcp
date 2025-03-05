@@ -67,6 +67,7 @@ public class SecretManagerRegionalWebController {
   @ResponseBody
   public String getSecret(
       @RequestParam String secretId,
+      @RequestParam(required = false) String locationId,
       @RequestParam(required = false) String version,
       @RequestParam(required = false) String projectId,
       ModelMap map) {
@@ -76,13 +77,19 @@ public class SecretManagerRegionalWebController {
     }
 
     String secretPayload;
+    String secretIdentifier;
     if (StringUtils.isEmpty(projectId)) {
+      secretIdentifier = "sm@" + secretId + "/" + version;
+    } else {
+      secretIdentifier = "sm@" + projectId + "/" + secretId + "/" + version;
+    }
+
+    if (StringUtils.isEmpty(locationId)) {
       secretPayload =
-          this.secretManagerTemplate.getSecretString("sm@" + secretId + "/" + version);
+          this.secretManagerTemplate.getSecretString(secretIdentifier);
     } else {
       secretPayload =
-          this.secretManagerTemplate.getSecretString(
-              "sm@" + projectId + "/" + secretId + "/" + version);
+          this.secretManagerTemplate.getSecretString(secretIdentifier, locationId);
     }
 
     return "Secret ID: "
@@ -96,13 +103,22 @@ public class SecretManagerRegionalWebController {
   public ModelAndView createSecret(
       @RequestParam String secretId,
       @RequestParam String secretPayload,
+      @RequestParam(required = false) String locationId,
       @RequestParam(required = false) String projectId,
       ModelMap map) {
 
     if (StringUtils.isEmpty(projectId)) {
-      this.secretManagerTemplate.createSecret(secretId, secretPayload);
+      if (StringUtils.isEmpty(locationId)) {
+        this.secretManagerTemplate.createSecret(secretId, secretPayload);
+      } else {
+        this.secretManagerTemplate.createSecret(secretId, secretPayload, locationId);
+      }
     } else {
-      this.secretManagerTemplate.createSecret(secretId, secretPayload.getBytes(), projectId);
+      if (StringUtils.isEmpty(locationId)) {
+        this.secretManagerTemplate.createSecret(secretId, secretPayload.getBytes(), projectId);
+      } else {
+        this.secretManagerTemplate.createSecret(secretId, secretPayload.getBytes(), projectId, locationId);
+      }
     }
 
     map.put(APPLICATION_SECRET_FROM_VALUE, this.appSecretFromValue);
@@ -113,12 +129,21 @@ public class SecretManagerRegionalWebController {
   @PostMapping("/deleteSecret")
   public ModelAndView deleteSecret(
       @RequestParam String secretId,
+      @RequestParam(required = false) String locationId,
       @RequestParam(required = false) String projectId,
       ModelMap map) {
     if (StringUtils.isEmpty(projectId)) {
-      this.secretManagerTemplate.deleteSecret(secretId);
+      if (StringUtils.isEmpty(locationId)) {
+        this.secretManagerTemplate.deleteSecret(secretId);
+      } else {
+        this.secretManagerTemplate.deleteSecret(secretId, this.secretManagerTemplate.getProjectId(), locationId);
+      }
     } else {
-      this.secretManagerTemplate.deleteSecret(secretId, projectId);
+      if (StringUtils.isEmpty(locationId)) {
+        this.secretManagerTemplate.deleteSecret(secretId, projectId);
+      } else {
+        this.secretManagerTemplate.deleteSecret(secretId, projectId, locationId);
+      }
     }
     map.put(APPLICATION_SECRET_FROM_VALUE, this.appSecretFromValue);
     map.put("message", "Secret deleted!");

@@ -46,19 +46,19 @@ class SecretManagerRegionalTemplateIntegrationTests {
   void createSecret() {
     this.secretName = String.format("test-reg-secret-%s", UUID.randomUUID());
 
-    secretManagerTemplate.createSecret(secretName, "4321");
+    secretManagerTemplate.createSecret(secretName, "4321", "us-central1");
     await()
         .atMost(Duration.ofSeconds(5))
         .untilAsserted(
             () -> {
-              String secretString = secretManagerTemplate.getSecretString(secretName);
+              String secretString = secretManagerTemplate.getSecretString(secretName, "us-central1");
               assertThat(secretString).isEqualTo("4321");
             });
   }
 
   @AfterEach
   void deleteSecret() {
-    secretManagerTemplate.deleteSecret(this.secretName);
+    secretManagerTemplate.deleteSecret(this.secretName, secretManagerTemplate.getProjectId(), "us-central1");
   }
 
   @Test
@@ -67,10 +67,10 @@ class SecretManagerRegionalTemplateIntegrationTests {
         .atMost(Duration.ofSeconds(5))
         .untilAsserted(
             () -> {
-              String secretString = secretManagerTemplate.getSecretString(this.secretName);
+              String secretString = secretManagerTemplate.getSecretString(this.secretName, "us-central1");
               assertThat(secretString).isEqualTo("4321");
 
-              byte[] secretBytes = secretManagerTemplate.getSecretBytes(this.secretName);
+              byte[] secretBytes = secretManagerTemplate.getSecretBytes(this.secretName, "us-central1");
               assertThat(secretBytes).isEqualTo("4321".getBytes());
             });
   }
@@ -78,22 +78,22 @@ class SecretManagerRegionalTemplateIntegrationTests {
   @Test
   void testReadMissingSecret() {
 
-    assertThatThrownBy(() -> secretManagerTemplate.getSecretBytes("test-NON-EXISTING-reg-secret"))
+    assertThatThrownBy(() -> secretManagerTemplate.getSecretBytes("test-NON-EXISTING-reg-secret", "us-central1"))
               .isInstanceOf(com.google.api.gax.rpc.NotFoundException.class);
   }
 
   @Test
   void testUpdateSecrets() {
 
-    secretManagerTemplate.createSecret(this.secretName, "9999");
+    secretManagerTemplate.createSecret(this.secretName, "9999", "us-central1");
     await()
         .atMost(Duration.ofSeconds(10))
         .untilAsserted(
             () -> {
-              String secretString = secretManagerTemplate.getSecretString(this.secretName);
+              String secretString = secretManagerTemplate.getSecretString(this.secretName, "us-central1");
               assertThat(secretString).isEqualTo("9999");
 
-              byte[] secretBytes = secretManagerTemplate.getSecretBytes(this.secretName);
+              byte[] secretBytes = secretManagerTemplate.getSecretBytes(this.secretName, "us-central1");
               assertThat(secretBytes).isEqualTo("9999".getBytes());
             });
   }
