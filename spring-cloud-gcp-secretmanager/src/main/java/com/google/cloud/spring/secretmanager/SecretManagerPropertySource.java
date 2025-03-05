@@ -29,6 +29,7 @@ import org.springframework.core.env.EnumerablePropertySource;
 public class SecretManagerPropertySource extends EnumerablePropertySource<SecretManagerTemplate> {
 
   private final GcpProjectIdProvider projectIdProvider;
+  private String location;
 
   public SecretManagerPropertySource(
       String propertySourceName,
@@ -38,10 +39,31 @@ public class SecretManagerPropertySource extends EnumerablePropertySource<Secret
     this.projectIdProvider = projectIdProvider;
   }
 
+  /**
+   * Set the location to be used when creating a SecretVersionName from a property string. This
+   * property is used when the property string does not contain enough information to create a
+   * SecretVersionName.
+   *
+   * @param location the location to be used when creating a SecretVersionName from a property
+   *     string.
+   */
+  public void setLocation(String location) {
+    this.location = location;
+  }
+
+  /**
+   * Returns the location.
+   *
+   * @return the location
+   */
+  public String getLocation() {
+    return location;
+  }
+
   @Override
   public Object getProperty(String name) {
     SecretVersionName secretIdentifier =
-        SecretManagerPropertyUtils.getSecretVersionName(name, this.projectIdProvider);
+        SecretManagerPropertyUtils.getSecretVersionName(name, this.projectIdProvider, getLocation());
 
     if (secretIdentifier != null) {
       return getSource().getSecretByteString(secretIdentifier);
