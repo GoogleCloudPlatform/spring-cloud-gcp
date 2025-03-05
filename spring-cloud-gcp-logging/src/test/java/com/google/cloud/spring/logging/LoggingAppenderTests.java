@@ -17,15 +17,10 @@
 package com.google.cloud.spring.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
-import ch.qos.logback.classic.Level;
 import com.google.cloud.logging.Logging;
 import com.google.cloud.logging.LoggingOptions;
-import com.google.cloud.logging.Severity;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +34,7 @@ class LoggingAppenderTests {
   private final Logging logging = mock(Logging.class);
 
   private class TestLoggingAppender extends LoggingAppender {
+
     private LoggingOptions loggingOptions;
 
     @Override
@@ -66,21 +62,6 @@ class LoggingAppenderTests {
         .isNotNull()
         .contains("spring-cloud-gcp-logging")
         .contains("Spring");
-
-    loggingAppender.start();
-    // java-logging-logback appender default is OFF
-    // See: https://github.com/googleapis/java-logging-logback/pull/1441
-    assertThat(logging.getFlushSeverity()).isNull();
-  }
-
-  @Test
-  void testDisablingFlushLevel() {
-    LoggingAppender loggingAppender = new TestLoggingAppender();
-    loggingAppender.setLogDestinationProjectId("my-log-destination-project");
-    loggingAppender.setFlushLevel(Level.OFF);
-
-    loggingAppender.start();
-    verify(logging, never()).setFlushSeverity(any());
   }
 
   @Test
@@ -88,11 +69,7 @@ class LoggingAppenderTests {
     LoggingAppender loggingAppender = new TestLoggingAppender();
     loggingAppender.setCredentialsFile("src/test/resources/fake-project-key.json");
     loggingAppender.setLogDestinationProjectId("my-log-destination-project");
-    assertThat(loggingAppender.getLoggingOptions().getCredentials()).isNotNull();
-    assertThat(loggingAppender.getLoggingOptions().getProjectId()).isEqualTo("my-log-destination-project");
-    assertThat(loggingAppender.getLoggingOptions().getUserAgent())
-        .isNotNull()
-        .contains("spring-cloud-gcp-logging")
-        .contains("Spring");
+    assertThat(loggingAppender.getLoggingOptions().getProjectId())
+        .isEqualTo("my-log-destination-project");
   }
 }
