@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.0.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.0.1...v6.0.2) (2025-03-05)
+
+
+### Bug Fixes
+
+* **deps:** update gapic-generator-java-bom.version to v2.54.0 ([#3598](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3598)) ([c6b6e45](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c6b6e457addf5d561287dc8a885d8db5568c94dd))
+
 ## [6.0.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.0.0...v6.0.1) (2025-02-24)
 
 
