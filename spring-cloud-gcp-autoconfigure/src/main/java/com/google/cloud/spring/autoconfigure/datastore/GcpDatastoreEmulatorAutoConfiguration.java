@@ -58,6 +58,7 @@ public class GcpDatastoreEmulatorAutoConfiguration implements SmartLifecycle {
             .setPort(settings.getPort())
             .setStoreOnDisk(settings.isStoreOnDisk())
             .setDataDir(settings.getDataDir())
+            .setFirestoreInDatastoreMode(settings.getFirestoreInDatastoreMode())
             .build();
 
     return this.helper;
