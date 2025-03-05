@@ -15,7 +15,7 @@ env:
 jobs:
   sonar:
     name: Build with Sonar
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     # Sonar Token can't be passed to PRs from forks. Disable Sonar workflow unless PR is from a branch.
     if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
