@@ -71,5 +71,4 @@ public class GcpSecretManagerProperties implements CredentialsSupplier {
   public void setAllowDefaultSecret(boolean allowDefaultSecret) {
     this.allowDefaultSecret = allowDefaultSecret;
   }
-
 }
