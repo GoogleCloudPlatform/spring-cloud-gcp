@@ -65,12 +65,12 @@ class SecretManagerConfigDataLocationResolverUnitTests {
   }
 
   @Test
-  void createSecretManagerClientFactoryWithPresetFactoryTest() {
-    SecretManagerServiceClientFactory clientFactory = mock(SecretManagerServiceClientFactory.class);
-    defaultBootstrapContext.register(SecretManagerServiceClientFactory.class,
-        BootstrapRegistry.InstanceSupplier.of(clientFactory));
-    assertThat(context.getBootstrapContext().get(SecretManagerServiceClientFactory.class))
-        .isEqualTo(clientFactory);
+  void createSecretManagerClientWithPresetClientTest() {
+    SecretManagerServiceClientFactory secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
+    SecretManagerConfigDataLocationResolver.setSecretManagerServiceClientFactory(secretManagerServiceClientFactory);
+    assertThat(
+        SecretManagerConfigDataLocationResolver.createSecretManagerServiceClientFactory(context))
+        .isEqualTo(secretManagerServiceClientFactory);
   }
 
   @BeforeEach
