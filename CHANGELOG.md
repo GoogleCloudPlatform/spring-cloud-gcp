@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.11.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.11.1...v5.11.2) (2025-03-06)
+
+
+### Bug Fixes
+
+* **test:** change logback default flush lev ([#3627](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3627)) ([1cff867](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1cff8677cc3df8195fb26b794afa3f1a839d6f8a))
+
+
+### Dependencies
+
+* update libraries-bom to 26.56.0 ([#3626](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3626)) ([02e55e0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/02e55e0f9fd420383761fa51b60151a25b8dd494))
+
 ## [5.11.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.11.0...v5.11.1) (2025-02-24)
 
 
