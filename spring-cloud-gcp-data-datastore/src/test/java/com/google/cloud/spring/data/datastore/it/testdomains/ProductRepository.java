@@ -22,4 +22,6 @@ import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductRepository extends DatastoreRepository<Product, Key> {}
+public interface ProductRepository extends DatastoreRepository<Product, Key> {
+
+}
