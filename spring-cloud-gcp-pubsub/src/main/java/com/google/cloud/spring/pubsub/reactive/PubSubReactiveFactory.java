@@ -40,7 +40,10 @@ import reactor.core.scheduler.Scheduler;
  *
  * @since 1.2
  */
-public final class PubSubReactiveFactory {
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscription;
+
+public final class PubSubReactiveFactory implements Publisher<AcknowledgeablePubsubMessage> {
 
   private static final Log LOGGER = LogFactory.getLog(PubSubReactiveFactory.class);
 
@@ -178,4 +181,17 @@ public final class PubSubReactiveFactory {
       sink.error(exception);
     }
   }
+
+    @Override
+    public void subscribe(org.reactivestreams.Subscriber<? super AcknowledgeablePubsubMessage> s) {
+      s.onSubscribe(new Subscription() {
+        @Override
+        public void request(long n) {
+        }
+
+        @Override
+        public void cancel() {
+        }
+      });
+    }
 }
