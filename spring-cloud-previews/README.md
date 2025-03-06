@@ -93,7 +93,6 @@ add the following dependency to your `pom.xml`:
 |[java/recaptchaenterprise](https://github.com/googleapis/google-cloud-java/blob/v1.50.0/java/recaptchaenterprise/README.md)|com.google.cloud:google-cloud-recaptchaenterprise-spring-starter|
 |[java/recommender](https://github.com/googleapis/google-cloud-java/blob/v1.50.0/java/recommender/README.md)|com.google.cloud:google-cloud-recommender-spring-starter|
 |[java/redis](https://github.com/googleapis/google-cloud-java/blob/v1.50.0/java/redis/README.md)|com.google.cloud:google-cloud-redis-spring-starter|
-|[java/resource-settings](https://github.com/googleapis/google-cloud-java/blob/v1.50.0/java/resource-settings/README.md)|com.google.cloud:google-cloud-resource-settings-spring-starter|
 |[java/retail](https://github.com/googleapis/google-cloud-java/blob/v1.50.0/java/retail/README.md)|com.google.cloud:google-cloud-retail-spring-starter|
 |[java/scheduler](https://github.com/googleapis/google-cloud-java/blob/v1.50.0/java/scheduler/README.md)|com.google.cloud:google-cloud-scheduler-spring-starter|
 |[java/securesourcemanager](https://github.com/googleapis/google-cloud-java/blob/v1.50.0/java/securesourcemanager/README.md)|com.google.cloud:google-cloud-securesourcemanager-spring-starter|
