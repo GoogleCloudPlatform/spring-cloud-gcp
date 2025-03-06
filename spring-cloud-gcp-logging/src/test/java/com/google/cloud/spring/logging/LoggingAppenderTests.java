@@ -17,11 +17,7 @@
 package com.google.cloud.spring.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
-import com.google.cloud.logging.Logging;
-import com.google.cloud.logging.LoggingOptions;
-import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -31,30 +27,9 @@ import org.junit.jupiter.api.Test;
  */
 class LoggingAppenderTests {
 
-  private final Logging logging = mock(Logging.class);
-
-  private class TestLoggingAppender extends LoggingAppender {
-
-    private LoggingOptions loggingOptions;
-
-    @Override
-    protected LoggingOptions getLoggingOptions() {
-      if (loggingOptions == null) {
-        this.loggingOptions = super.getLoggingOptions().toBuilder()
-            // Duplicates logic in base class.
-            // Workaround for https://github.com/googleapis/sdk-platform-java/issues/2821
-            .setHeaderProvider(new UserAgentHeaderProvider(this.getClass()))
-            // Inject mock
-            .setServiceFactory((options) -> logging)
-            .build();
-      }
-      return loggingOptions;
-    }
-  }
-
   @Test
   void testGetLoggingOptions() {
-    LoggingAppender loggingAppender = new TestLoggingAppender();
+    LoggingAppender loggingAppender = new LoggingAppender();
     loggingAppender.setCredentialsFile("src/test/resources/fake-project-key.json");
     assertThat(loggingAppender.getLoggingOptions().getCredentials()).isNotNull();
     assertThat(loggingAppender.getLoggingOptions().getProjectId()).isEqualTo("fake-project");
@@ -66,7 +41,7 @@ class LoggingAppenderTests {
 
   @Test
   void testSetLogDestinationProjectId() {
-    LoggingAppender loggingAppender = new TestLoggingAppender();
+    LoggingAppender loggingAppender = new LoggingAppender();
     loggingAppender.setCredentialsFile("src/test/resources/fake-project-key.json");
     loggingAppender.setLogDestinationProjectId("my-log-destination-project");
     assertThat(loggingAppender.getLoggingOptions().getProjectId())
