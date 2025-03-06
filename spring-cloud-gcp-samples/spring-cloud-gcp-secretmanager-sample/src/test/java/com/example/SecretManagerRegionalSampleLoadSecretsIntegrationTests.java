@@ -30,13 +30,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Tests sample application endpoint that loads secrets as properties into the application context.
- * Application secret named "application-secret" must exist at location us-central1 and have a value of "Hello regional world.".
+ * Application secret named "application-secret" must exist at location us-central1 and have a value
+ * of "Hello regional world.".
  */
 @EnabledIfSystemProperty(named = "it.secretmanager", matches = "true")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = SecretManagerRegionalApplication.class)
+    classes = SecretManagerApplication.class)
 class SecretManagerRegionalSampleLoadSecretsIntegrationTests {
 
   @Autowired private SecretManagerTemplate secretManagerTemplate;
@@ -50,10 +51,10 @@ class SecretManagerRegionalSampleLoadSecretsIntegrationTests {
     ResponseEntity<String> response = this.testRestTemplate.getForEntity("/", String.class);
     assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
     assertThat(response.getBody())
-        .contains("<b>Application secret from @Value:</b> <i>" + SECRET_CONTENT + "</i>");
+        .contains("<b>Application regional secret from @Value:</b> <i>" + SECRET_CONTENT + "</i>");
     assertThat(response.getBody())
         .contains(
-            "<b>Application secret from @ConfigurationProperties:</b> <i>"
+            "<b>Application regional secret from @ConfigurationProperties:</b> <i>"
                 + SECRET_CONTENT
                 + "</i>");
   }

@@ -41,14 +41,19 @@ import org.junit.jupiter.api.Test;
 
 class SecretManagerTemplateTests {
 
-  private SecretManagerServiceClient client;
+  private SecretManagerServiceClientFactory secretManagerServiceClientFactory;
 
   private SecretManagerTemplate secretManagerTemplate;
 
   @BeforeEach
   void setupMocks() {
-    this.client = mock(SecretManagerServiceClient.class);
-    when(this.client.accessSecretVersion(any(SecretVersionName.class)))
+    SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
+    this.secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
+    when(secretManagerServiceClientFactory.getClient()).thenReturn(secretManagerServiceClient);
+    when(secretManagerServiceClientFactory.getClient(null)).thenReturn(secretManagerServiceClient);
+    when(this.secretManagerServiceClientFactory
+            .getClient()
+            .accessSecretVersion(any(SecretVersionName.class)))
         .thenReturn(
             AccessSecretVersionResponse.newBuilder()
                 .setPayload(
@@ -56,7 +61,7 @@ class SecretManagerTemplateTests {
                 .build());
 
     this.secretManagerTemplate =
-        new SecretManagerTemplate(this.client, () -> "my-project");
+        new SecretManagerTemplate(this.secretManagerServiceClientFactory, () -> "my-project");
   }
 
   @Test
@@ -67,7 +72,8 @@ class SecretManagerTemplateTests {
   @Test
   void testCreateSecretIfMissing() {
     // This means that no previous secrets exist.
-    when(this.client.getSecret(any(SecretName.class))).thenThrow(NotFoundException.class);
+    when(this.secretManagerServiceClientFactory.getClient().getSecret(any(SecretName.class)))
+        .thenThrow(NotFoundException.class);
 
     this.secretManagerTemplate.createSecret("my-secret", "hello world!");
 
@@ -80,7 +86,8 @@ class SecretManagerTemplateTests {
 
   @Test
   void testCreateSecretIfMissing_withProject() {
-    when(this.client.getSecret(any(SecretName.class))).thenThrow(NotFoundException.class);
+    when(this.secretManagerServiceClientFactory.getClient().getSecret(any(SecretName.class)))
+        .thenThrow(NotFoundException.class);
 
     this.secretManagerTemplate.createSecret(
         "my-secret", "hello world!".getBytes(), "custom-project");
@@ -92,32 +99,39 @@ class SecretManagerTemplateTests {
   @Test
   void testCreateSecretIfAlreadyPresent() {
     // The secret 'my-secret' already exists.
-    when(this.client.getSecret(SecretName.of("my-project", "my-secret")))
+    when(this.secretManagerServiceClientFactory
+            .getClient()
+            .getSecret(SecretName.of("my-project", "my-secret")))
         .thenReturn(Secret.getDefaultInstance());
 
     // Verify that the secret is not created.
     this.secretManagerTemplate.createSecret("my-secret", "hello world!");
-    verify(this.client).getSecret(SecretName.of("my-project", "my-secret"));
-    verify(this.client, never()).createSecret(any());
+    verify(this.secretManagerServiceClientFactory.getClient())
+        .getSecret(SecretName.of("my-project", "my-secret"));
+    verify(this.secretManagerServiceClientFactory.getClient(), never()).createSecret(any());
     verifyAddSecretRequest("my-secret", "hello world!", "my-project");
   }
 
   @Test
   void testCreateSecretIfAlreadyPresent_withProject() {
-    when(this.client.getSecret(SecretName.of("custom-project", "my-secret")))
+    when(this.secretManagerServiceClientFactory
+            .getClient()
+            .getSecret(SecretName.of("custom-project", "my-secret")))
         .thenReturn(Secret.getDefaultInstance());
 
     this.secretManagerTemplate.createSecret(
         "my-secret", "hello world!".getBytes(), "custom-project");
-    verify(this.client).getSecret(SecretName.of("custom-project", "my-secret"));
-    verify(this.client, never()).createSecret(any());
+    verify(this.secretManagerServiceClientFactory.getClient())
+        .getSecret(SecretName.of("custom-project", "my-secret"));
+    verify(this.secretManagerServiceClientFactory.getClient(), never()).createSecret(any());
     verifyAddSecretRequest("my-secret", "hello world!", "custom-project");
   }
 
   @Test
   void testCreateByteSecretIfMissing() {
     // This means that no previous secrets exist.
-    when(this.client.getSecret(any(SecretName.class))).thenThrow(NotFoundException.class);
+    when(this.secretManagerServiceClientFactory.getClient().getSecret(any(SecretName.class)))
+        .thenThrow(NotFoundException.class);
 
     this.secretManagerTemplate.createSecret("my-secret", "hello world!".getBytes());
 
@@ -128,7 +142,8 @@ class SecretManagerTemplateTests {
   @Test
   void testCreateByteSecretIfMissing_withProject() {
     // This means that no previous secrets exist.
-    when(this.client.getSecret(any(SecretName.class))).thenThrow(NotFoundException.class);
+    when(this.secretManagerServiceClientFactory.getClient().getSecret(any(SecretName.class)))
+        .thenThrow(NotFoundException.class);
 
     this.secretManagerTemplate.createSecret(
         "my-secret", "hello world!".getBytes(), "custom-project");
@@ -140,57 +155,67 @@ class SecretManagerTemplateTests {
   @Test
   void testCreateByteSecretIfAlreadyPresent() {
     // The secret 'my-secret' already exists.
-    when(this.client.getSecret(SecretName.of("my-project", "my-secret")))
+    when(this.secretManagerServiceClientFactory
+            .getClient()
+            .getSecret(SecretName.of("my-project", "my-secret")))
         .thenReturn(Secret.getDefaultInstance());
 
     // Verify that the secret is not created.
     this.secretManagerTemplate.createSecret("my-secret", "hello world!".getBytes());
-    verify(this.client).getSecret(SecretName.of("my-project", "my-secret"));
-    verify(this.client, never()).createSecret(any());
+    verify(this.secretManagerServiceClientFactory.getClient())
+        .getSecret(SecretName.of("my-project", "my-secret"));
+    verify(this.secretManagerServiceClientFactory.getClient(), never()).createSecret(any());
     verifyAddSecretRequest("my-secret", "hello world!", "my-project");
   }
 
   @Test
   void testCreateByteSecretIfAlreadyPresent_withProject() {
     // The secret 'my-secret' already exists.
-    when(this.client.getSecret(SecretName.of("custom-project", "my-secret")))
+    when(this.secretManagerServiceClientFactory
+            .getClient()
+            .getSecret(SecretName.of("custom-project", "my-secret")))
         .thenReturn(Secret.getDefaultInstance());
 
     // Verify that the secret is not created.
     this.secretManagerTemplate.createSecret(
         "my-secret", "hello world!".getBytes(), "custom-project");
-    verify(this.client).getSecret(SecretName.of("custom-project", "my-secret"));
-    verify(this.client, never()).createSecret(any());
+    verify(this.secretManagerServiceClientFactory.getClient())
+        .getSecret(SecretName.of("custom-project", "my-secret"));
+    verify(this.secretManagerServiceClientFactory.getClient(), never()).createSecret(any());
     verifyAddSecretRequest("my-secret", "hello world!", "custom-project");
   }
 
   @Test
   void testAccessSecretBytes() {
     byte[] result = this.secretManagerTemplate.getSecretBytes("my-secret");
-    verify(this.client)
+    verify(this.secretManagerServiceClientFactory.getClient())
         .accessSecretVersion(SecretVersionName.of("my-project", "my-secret", "latest"));
     assertThat(result).isEqualTo("get after it.".getBytes());
 
     result = this.secretManagerTemplate.getSecretBytes("sm://my-secret/1");
-    verify(this.client).accessSecretVersion(SecretVersionName.of("my-project", "my-secret", "1"));
+    verify(this.secretManagerServiceClientFactory.getClient())
+        .accessSecretVersion(SecretVersionName.of("my-project", "my-secret", "1"));
     assertThat(result).isEqualTo("get after it.".getBytes());
   }
 
   @Test
   void testAccessSecretString() {
     String result = this.secretManagerTemplate.getSecretString("my-secret");
-    verify(this.client)
+    verify(this.secretManagerServiceClientFactory.getClient())
         .accessSecretVersion(SecretVersionName.of("my-project", "my-secret", "latest"));
     assertThat(result).isEqualTo("get after it.");
 
     result = this.secretManagerTemplate.getSecretString("sm://my-secret/1");
-    verify(this.client).accessSecretVersion(SecretVersionName.of("my-project", "my-secret", "1"));
+    verify(this.secretManagerServiceClientFactory.getClient())
+        .accessSecretVersion(SecretVersionName.of("my-project", "my-secret", "1"));
     assertThat(result).isEqualTo("get after it.");
   }
 
   @Test
   void testAccessNonExistentSecretStringWhenDefaultIsNotAllowed() {
-    when(this.client.accessSecretVersion(any(SecretVersionName.class)))
+    when(this.secretManagerServiceClientFactory
+            .getClient()
+            .accessSecretVersion(any(SecretVersionName.class)))
         .thenThrow(NotFoundException.class);
     assertThatThrownBy(() -> this.secretManagerTemplate.getSecretString("sm://fake-secret"))
         .isExactlyInstanceOf(NotFoundException.class);
@@ -198,10 +223,12 @@ class SecretManagerTemplateTests {
 
   @Test
   void testAccessNonExistentSecretStringWhenDefaultIsAllowed() {
-    when(this.client.accessSecretVersion(any(SecretVersionName.class)))
+    when(this.secretManagerServiceClientFactory
+            .getClient()
+            .accessSecretVersion(any(SecretVersionName.class)))
         .thenThrow(NotFoundException.class);
     this.secretManagerTemplate =
-        new SecretManagerTemplate(this.client, () -> "my-project")
+        new SecretManagerTemplate(this.secretManagerServiceClientFactory, () -> "my-project")
             .setAllowDefaultSecretValue(true);
     String result = this.secretManagerTemplate.getSecretString("sm://fake-secret");
     assertThat(result).isNull();
@@ -254,7 +281,7 @@ class SecretManagerTemplateTests {
             .setSecret(secretToAdd)
             .build();
 
-    verify(this.client).createSecret(createSecretRequest);
+    verify(this.secretManagerServiceClientFactory.getClient()).createSecret(createSecretRequest);
   }
 
   private void verifyAddSecretRequest(String secretId, String payload, String projectId) {
@@ -263,7 +290,8 @@ class SecretManagerTemplateTests {
             .setParent("projects/" + projectId + "/secrets/" + secretId)
             .setPayload(SecretPayload.newBuilder().setData(ByteString.copyFromUtf8(payload)))
             .build();
-    verify(this.client).addSecretVersion(addSecretVersionRequest);
+    verify(this.secretManagerServiceClientFactory.getClient())
+        .addSecretVersion(addSecretVersionRequest);
   }
 
   private void verifyEnableSecretVersionRequest(String secretId, String version, String projectId) {
@@ -273,13 +301,14 @@ class SecretManagerTemplateTests {
             .setSecret(secretId)
             .setSecretVersion(version)
             .build();
-    verify(this.client).enableSecretVersion(secretVersionName);
+    verify(this.secretManagerServiceClientFactory.getClient())
+        .enableSecretVersion(secretVersionName);
   }
 
   private void verifyDeleteSecretRequest(String secretId, String projectId) {
     SecretName name = SecretName.of(projectId, secretId);
     DeleteSecretRequest request = DeleteSecretRequest.newBuilder().setName(name.toString()).build();
-    verify(this.client).deleteSecret(request);
+    verify(this.secretManagerServiceClientFactory.getClient()).deleteSecret(request);
   }
 
   private void verifyDeleteSecretVersionRequest(String secretId, String version, String projectId) {
@@ -289,7 +318,8 @@ class SecretManagerTemplateTests {
             .setSecret(secretId)
             .setSecretVersion(version)
             .build();
-    verify(this.client).destroySecretVersion(secretVersionName);
+    verify(this.secretManagerServiceClientFactory.getClient())
+        .destroySecretVersion(secretVersionName);
   }
 
   private void verifyDisableSecretVersionRequest(
@@ -300,6 +330,7 @@ class SecretManagerTemplateTests {
             .setSecret(secretId)
             .setSecretVersion(version)
             .build();
-    verify(this.client).disableSecretVersion(secretVersionName);
+    verify(this.secretManagerServiceClientFactory.getClient())
+        .disableSecretVersion(secretVersionName);
   }
 }

@@ -38,25 +38,30 @@ import com.google.protobuf.ByteString;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 class SecretManagerRegionalTemplateTests {
 
-  private SecretManagerServiceClient client;
+  private SecretManagerServiceClientFactory secretManagerServiceClientFactory;
 
   private SecretManagerTemplate secretManagerTemplate;
 
   @BeforeEach
   void setupMocks() {
-    this.client = mock(SecretManagerServiceClient.class);
-    when(this.client.accessSecretVersion(any(SecretVersionName.class)))
+    SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
+    this.secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
+    when(secretManagerServiceClientFactory.getClient("us-central1"))
+        .thenReturn(secretManagerServiceClient);
+    when(this.secretManagerServiceClientFactory
+            .getClient("us-central1")
+            .accessSecretVersion(any(SecretVersionName.class)))
         .thenReturn(
             AccessSecretVersionResponse.newBuilder()
                 .setPayload(
-                    SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("regional payload.")))
+                    SecretPayload.newBuilder()
+                        .setData(ByteString.copyFromUtf8("regional payload.")))
                 .build());
 
     this.secretManagerTemplate =
-        new SecretManagerTemplate(this.client, () -> "my-reg-project");
+        new SecretManagerTemplate(this.secretManagerServiceClientFactory, () -> "my-reg-project");
   }
 
   @Test
@@ -67,157 +72,236 @@ class SecretManagerRegionalTemplateTests {
   @Test
   void testCreateRegionalSecretIfMissing() {
     // This means that no previous regional secrets exist.
-    when(this.client.getSecret(any(SecretName.class))).thenThrow(NotFoundException.class);
+    when(this.secretManagerServiceClientFactory
+            .getClient("us-central1")
+            .getSecret(any(SecretName.class)))
+        .thenThrow(NotFoundException.class);
 
-    this.secretManagerTemplate.createSecret("my-reg-secret", "hello regional world!", "us-central1");
+    this.secretManagerTemplate.createSecret(
+        "my-reg-secret", "hello regional world!", "us-central1");
 
     // Verify the regional secret is created correctly.
     verifyCreateRegionalSecretRequest("my-reg-secret", "us-central1", "my-reg-project");
 
     // Verifies the regional secret payload is added correctly.
-    verifyAddRegionalSecretRequest("my-reg-secret", "hello regional world!", "us-central1", "my-reg-project");
+    verifyAddRegionalSecretRequest(
+        "my-reg-secret", "hello regional world!", "us-central1", "my-reg-project");
   }
 
   @Test
   void testCreateRegionalSecretIfMissing_withProject() {
-    when(this.client.getSecret(any(SecretName.class))).thenThrow(NotFoundException.class);
+    when(this.secretManagerServiceClientFactory
+            .getClient("us-central1")
+            .getSecret(any(SecretName.class)))
+        .thenThrow(NotFoundException.class);
 
     this.secretManagerTemplate.createSecret(
         "my-reg-secret", "hello regional world!".getBytes(), "custom-reg-project", "us-central1");
 
     verifyCreateRegionalSecretRequest("my-reg-secret", "us-central1", "custom-reg-project");
-    verifyAddRegionalSecretRequest("my-reg-secret", "hello regional world!", "us-central1", "custom-reg-project");
+    verifyAddRegionalSecretRequest(
+        "my-reg-secret", "hello regional world!", "us-central1", "custom-reg-project");
   }
 
   @Test
   void testCreateRegionalSecretIfAlreadyPresent() {
     // The secret 'my-reg-secret' already exists.
-    when(this.client.getSecret(SecretName.ofProjectLocationSecretName("my-reg-project", "us-central1", "my-reg-secret")))
+    when(this.secretManagerServiceClientFactory
+            .getClient("us-central1")
+            .getSecret(
+                SecretName.ofProjectLocationSecretName(
+                    "my-reg-project", "us-central1", "my-reg-secret")))
         .thenReturn(Secret.getDefaultInstance());
 
     // Verify that the secret is not created.
-    this.secretManagerTemplate.createSecret("my-reg-secret", "hello regional world!", "us-central1");
-    verify(this.client).getSecret(SecretName.ofProjectLocationSecretName("my-reg-project", "us-central1", "my-reg-secret"));
-    verify(this.client, never()).createSecret(any());
-    verifyAddRegionalSecretRequest("my-reg-secret", "hello regional world!", "us-central1", "my-reg-project");
+    this.secretManagerTemplate.createSecret(
+        "my-reg-secret", "hello regional world!", "us-central1");
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
+        .getSecret(
+            SecretName.ofProjectLocationSecretName(
+                "my-reg-project", "us-central1", "my-reg-secret"));
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"), never())
+        .createSecret(any());
+    verifyAddRegionalSecretRequest(
+        "my-reg-secret", "hello regional world!", "us-central1", "my-reg-project");
   }
 
   @Test
   void testCreateRegionalSecretIfAlreadyPresent_withProject() {
-    when(this.client.getSecret(SecretName.ofProjectLocationSecretName("custom-reg-project", "us-central1", "my-reg-secret")))
+    when(this.secretManagerServiceClientFactory
+            .getClient("us-central1")
+            .getSecret(
+                SecretName.ofProjectLocationSecretName(
+                    "custom-reg-project", "us-central1", "my-reg-secret")))
         .thenReturn(Secret.getDefaultInstance());
 
     this.secretManagerTemplate.createSecret(
         "my-reg-secret", "hello regional world!".getBytes(), "custom-reg-project", "us-central1");
-    verify(this.client).getSecret(SecretName.ofProjectLocationSecretName("custom-reg-project", "us-central1", "my-reg-secret"));
-    verify(this.client, never()).createSecret(any());
-    verifyAddRegionalSecretRequest("my-reg-secret", "hello regional world!", "us-central1", "custom-reg-project");
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
+        .getSecret(
+            SecretName.ofProjectLocationSecretName(
+                "custom-reg-project", "us-central1", "my-reg-secret"));
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"), never())
+        .createSecret(any());
+    verifyAddRegionalSecretRequest(
+        "my-reg-secret", "hello regional world!", "us-central1", "custom-reg-project");
   }
 
   @Test
   void testCreateRegionalByteSecretIfMissing() {
     // This means that no previous secrets exist.
-    when(this.client.getSecret(any(SecretName.class))).thenThrow(NotFoundException.class);
+    when(this.secretManagerServiceClientFactory
+            .getClient("us-central1")
+            .getSecret(any(SecretName.class)))
+        .thenThrow(NotFoundException.class);
 
-    this.secretManagerTemplate.createSecret("my-reg-secret", "hello regional world!".getBytes(), this.secretManagerTemplate.getProjectId(), "us-central1");
+    this.secretManagerTemplate.createSecret(
+        "my-reg-secret",
+        "hello regional world!".getBytes(),
+        this.secretManagerTemplate.getProjectId(),
+        "us-central1");
 
     verifyCreateRegionalSecretRequest("my-reg-secret", "us-central1", "my-reg-project");
-    verifyAddRegionalSecretRequest("my-reg-secret", "hello regional world!", "us-central1", "my-reg-project");
+    verifyAddRegionalSecretRequest(
+        "my-reg-secret", "hello regional world!", "us-central1", "my-reg-project");
   }
 
   @Test
   void testCreateRegionalByteSecretIfMissing_withProject() {
     // This means that no previous secrets exist.
-    when(this.client.getSecret(any(SecretName.class))).thenThrow(NotFoundException.class);
+    when(this.secretManagerServiceClientFactory
+            .getClient("us-central1")
+            .getSecret(any(SecretName.class)))
+        .thenThrow(NotFoundException.class);
 
     this.secretManagerTemplate.createSecret(
         "my-reg-secret", "hello regional world!".getBytes(), "custom-reg-project", "us-central1");
 
     verifyCreateRegionalSecretRequest("my-reg-secret", "us-central1", "custom-reg-project");
-    verifyAddRegionalSecretRequest("my-reg-secret", "hello regional world!", "us-central1", "custom-reg-project");
+    verifyAddRegionalSecretRequest(
+        "my-reg-secret", "hello regional world!", "us-central1", "custom-reg-project");
   }
 
   @Test
   void testCreateRegionalByteSecretIfAlreadyPresent() {
     // The secret 'my-reg-secret' already exists.
-    when(this.client.getSecret(SecretName.ofProjectLocationSecretName("my-reg-project", "us-central1", "my-reg-secret")))
+    when(this.secretManagerServiceClientFactory
+            .getClient("us-central1")
+            .getSecret(
+                SecretName.ofProjectLocationSecretName(
+                    "my-reg-project", "us-central1", "my-reg-secret")))
         .thenReturn(Secret.getDefaultInstance());
 
     // Verify that the secret is not created.
-    this.secretManagerTemplate.createSecret("my-reg-secret", "hello regional world!".getBytes(), this.secretManagerTemplate.getProjectId(), "us-central1");
-    verify(this.client).getSecret(SecretName.ofProjectLocationSecretName("my-reg-project", "us-central1", "my-reg-secret"));
-    verify(this.client, never()).createSecret(any());
-    verifyAddRegionalSecretRequest("my-reg-secret", "hello regional world!", "us-central1", "my-reg-project");
+    this.secretManagerTemplate.createSecret(
+        "my-reg-secret",
+        "hello regional world!".getBytes(),
+        this.secretManagerTemplate.getProjectId(),
+        "us-central1");
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
+        .getSecret(
+            SecretName.ofProjectLocationSecretName(
+                "my-reg-project", "us-central1", "my-reg-secret"));
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"), never())
+        .createSecret(any());
+    verifyAddRegionalSecretRequest(
+        "my-reg-secret", "hello regional world!", "us-central1", "my-reg-project");
   }
 
   @Test
   void testCreateRegionalByteSecretIfAlreadyPresent_withProject() {
     // The secret 'my-reg-secret' already exists.
-    when(this.client.getSecret(SecretName.ofProjectLocationSecretName("custom-reg-project", "us-central1", "my-reg-secret")))
+    when(this.secretManagerServiceClientFactory
+            .getClient("us-central1")
+            .getSecret(
+                SecretName.ofProjectLocationSecretName(
+                    "custom-reg-project", "us-central1", "my-reg-secret")))
         .thenReturn(Secret.getDefaultInstance());
 
     // Verify that the secret is not created.
     this.secretManagerTemplate.createSecret(
         "my-reg-secret", "hello regional world!".getBytes(), "custom-reg-project", "us-central1");
-    verify(this.client).getSecret(SecretName.ofProjectLocationSecretName("custom-reg-project", "us-central1", "my-reg-secret"));
-    verify(this.client, never()).createSecret(any());
-    verifyAddRegionalSecretRequest("my-reg-secret", "hello regional world!", "us-central1", "custom-reg-project");
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
+        .getSecret(
+            SecretName.ofProjectLocationSecretName(
+                "custom-reg-project", "us-central1", "my-reg-secret"));
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"), never())
+        .createSecret(any());
+    verifyAddRegionalSecretRequest(
+        "my-reg-secret", "hello regional world!", "us-central1", "custom-reg-project");
   }
 
   @Test
   void testAccessRegionalSecretBytes() {
-    byte[] result = this.secretManagerTemplate.getSecretBytes("my-reg-secret", "us-central1");
-    verify(this.client)
+    byte[] result =
+        this.secretManagerTemplate.getSecretBytes("sm@locations/us-central1/my-reg-secret");
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
         .accessSecretVersion(
             SecretVersionName.ofProjectLocationSecretSecretVersionName(
-                "my-reg-project",
-                "us-central1",
-                "my-reg-secret",
-                "latest"
-            )
-        );
+                "my-reg-project", "us-central1", "my-reg-secret", "latest"));
     assertThat(result).isEqualTo("regional payload.".getBytes());
 
-    result = this.secretManagerTemplate.getSecretBytes("sm://my-reg-secret/1", "us-central1");
-    verify(this.client).accessSecretVersion(SecretVersionName.ofProjectLocationSecretSecretVersionName("my-reg-project", "us-central1", "my-reg-secret", "1"));
+    result =
+        this.secretManagerTemplate.getSecretBytes("sm://locations/us-central1/my-reg-secret/1");
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
+        .accessSecretVersion(
+            SecretVersionName.ofProjectLocationSecretSecretVersionName(
+                "my-reg-project", "us-central1", "my-reg-secret", "1"));
     assertThat(result).isEqualTo("regional payload.".getBytes());
   }
 
   @Test
   void testAccessRegionalSecretString() {
-    String result = this.secretManagerTemplate.getSecretString("my-reg-secret", "us-central1");
-    verify(this.client)
-        .accessSecretVersion(SecretVersionName.ofProjectLocationSecretSecretVersionName("my-reg-project", "us-central1", "my-reg-secret", "latest"));
+    String result =
+        this.secretManagerTemplate.getSecretString("sm@locations/us-central1/my-reg-secret");
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
+        .accessSecretVersion(
+            SecretVersionName.ofProjectLocationSecretSecretVersionName(
+                "my-reg-project", "us-central1", "my-reg-secret", "latest"));
     assertThat(result).isEqualTo("regional payload.");
 
-    result = this.secretManagerTemplate.getSecretString("sm://my-reg-secret/1", "us-central1");
-    verify(this.client).accessSecretVersion(SecretVersionName.ofProjectLocationSecretSecretVersionName("my-reg-project", "us-central1", "my-reg-secret", "1"));
+    result =
+        this.secretManagerTemplate.getSecretString("sm://locations/us-central1/my-reg-secret/1");
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
+        .accessSecretVersion(
+            SecretVersionName.ofProjectLocationSecretSecretVersionName(
+                "my-reg-project", "us-central1", "my-reg-secret", "1"));
     assertThat(result).isEqualTo("regional payload.");
   }
 
   @Test
   void testAccessNonExistentRegionalSecretStringWhenDefaultIsNotAllowed() {
-    when(this.client.accessSecretVersion(any(SecretVersionName.class)))
+    when(this.secretManagerServiceClientFactory
+            .getClient("us-central1")
+            .accessSecretVersion(any(SecretVersionName.class)))
         .thenThrow(NotFoundException.class);
-    assertThatThrownBy(() -> this.secretManagerTemplate.getSecretString("sm://fake-secret"))
+    assertThatThrownBy(
+            () ->
+                this.secretManagerTemplate.getSecretString(
+                    "sm://locations/us-central1/fake-secret"))
         .isExactlyInstanceOf(NotFoundException.class);
   }
 
   @Test
   void testAccessNonExistentRegionalSecretStringWhenDefaultIsAllowed() {
-    when(this.client.accessSecretVersion(any(SecretVersionName.class)))
+    when(this.secretManagerServiceClientFactory
+            .getClient("us-central1")
+            .accessSecretVersion(any(SecretVersionName.class)))
         .thenThrow(NotFoundException.class);
     this.secretManagerTemplate =
-        new SecretManagerTemplate(this.client, () -> "my-reg-project")
+        new SecretManagerTemplate(this.secretManagerServiceClientFactory, () -> "my-reg-project")
             .setAllowDefaultSecretValue(true);
-    String result = this.secretManagerTemplate.getSecretString("sm://fake-secret");
+    String result =
+        this.secretManagerTemplate.getSecretString("sm://locations/us-central1/fake-secret");
     assertThat(result).isNull();
   }
 
   @Test
   void testEnableRegionalSecretVersion() {
-    this.secretManagerTemplate.enableSecretVersion("my-reg-secret", "1", "custom-reg-project", "us-central1");
-    verifyEnableRegionalSecretVersionRequest("my-reg-secret", "1", "us-central1", "custom-reg-project");
+    this.secretManagerTemplate.enableSecretVersion(
+        "my-reg-secret", "1", "custom-reg-project", "us-central1");
+    verifyEnableRegionalSecretVersionRequest(
+        "my-reg-secret", "1", "us-central1", "custom-reg-project");
   }
 
   @Test
@@ -228,17 +312,22 @@ class SecretManagerRegionalTemplateTests {
 
   @Test
   void testDeleteRegionalSecretVersion() {
-    this.secretManagerTemplate.deleteSecretVersion("my-reg-secret", "10", "custom-reg-project", "us-central1");
-    verifyDeleteRegionalSecretVersionRequest("my-reg-secret", "10", "us-central1", "custom-reg-project");
+    this.secretManagerTemplate.deleteSecretVersion(
+        "my-reg-secret", "10", "custom-reg-project", "us-central1");
+    verifyDeleteRegionalSecretVersionRequest(
+        "my-reg-secret", "10", "us-central1", "custom-reg-project");
   }
 
   @Test
   void testDisableRegionalSecretVersion() {
-    this.secretManagerTemplate.disableSecretVersion("my-reg-secret", "1", this.secretManagerTemplate.getProjectId(), "us-central1");
-    verifyDisableRegionalSecretVersionRequest("my-reg-secret", "1", "us-central1", "my-reg-project");
+    this.secretManagerTemplate.disableSecretVersion(
+        "my-reg-secret", "1", this.secretManagerTemplate.getProjectId(), "us-central1");
+    verifyDisableRegionalSecretVersionRequest(
+        "my-reg-secret", "1", "us-central1", "my-reg-project");
   }
 
-  private void verifyCreateRegionalSecretRequest(String secretId, String locationId, String projectId) {
+  private void verifyCreateRegionalSecretRequest(
+      String secretId, String locationId, String projectId) {
     Secret secretToAdd = Secret.newBuilder().build();
 
     CreateSecretRequest createSecretRequest =
@@ -248,19 +337,24 @@ class SecretManagerRegionalTemplateTests {
             .setSecret(secretToAdd)
             .build();
 
-    verify(this.client).createSecret(createSecretRequest);
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
+        .createSecret(createSecretRequest);
   }
 
-  private void verifyAddRegionalSecretRequest(String secretId, String payload, String locationId, String projectId) {
+  private void verifyAddRegionalSecretRequest(
+      String secretId, String payload, String locationId, String projectId) {
     AddSecretVersionRequest addSecretVersionRequest =
         AddSecretVersionRequest.newBuilder()
-            .setParent("projects/" + projectId + "/locations/" + locationId + "/secrets/" + secretId)
+            .setParent(
+                "projects/" + projectId + "/locations/" + locationId + "/secrets/" + secretId)
             .setPayload(SecretPayload.newBuilder().setData(ByteString.copyFromUtf8(payload)))
             .build();
-    verify(this.client).addSecretVersion(addSecretVersionRequest);
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
+        .addSecretVersion(addSecretVersionRequest);
   }
 
-  private void verifyEnableRegionalSecretVersionRequest(String secretId, String version, String locationId, String projectId) {
+  private void verifyEnableRegionalSecretVersionRequest(
+      String secretId, String version, String locationId, String projectId) {
     SecretVersionName secretVersionName =
         SecretVersionName.newProjectLocationSecretSecretVersionBuilder()
             .setProject(projectId)
@@ -268,16 +362,19 @@ class SecretManagerRegionalTemplateTests {
             .setSecret(secretId)
             .setSecretVersion(version)
             .build();
-    verify(this.client).enableSecretVersion(secretVersionName);
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
+        .enableSecretVersion(secretVersionName);
   }
 
-  private void verifyDeleteRegionalSecretRequest(String secretId, String locationId, String projectId) {
+  private void verifyDeleteRegionalSecretRequest(
+      String secretId, String locationId, String projectId) {
     SecretName name = SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
     DeleteSecretRequest request = DeleteSecretRequest.newBuilder().setName(name.toString()).build();
-    verify(this.client).deleteSecret(request);
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1")).deleteSecret(request);
   }
 
-  private void verifyDeleteRegionalSecretVersionRequest(String secretId, String version, String locationId, String projectId) {
+  private void verifyDeleteRegionalSecretVersionRequest(
+      String secretId, String version, String locationId, String projectId) {
     SecretVersionName secretVersionName =
         SecretVersionName.newProjectLocationSecretSecretVersionBuilder()
             .setProject(projectId)
@@ -285,7 +382,8 @@ class SecretManagerRegionalTemplateTests {
             .setSecret(secretId)
             .setSecretVersion(version)
             .build();
-    verify(this.client).destroySecretVersion(secretVersionName);
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
+        .destroySecretVersion(secretVersionName);
   }
 
   private void verifyDisableRegionalSecretVersionRequest(
@@ -297,6 +395,7 @@ class SecretManagerRegionalTemplateTests {
             .setSecret(secretId)
             .setSecretVersion(version)
             .build();
-    verify(this.client).disableSecretVersion(secretVersionName);
+    verify(this.secretManagerServiceClientFactory.getClient("us-central1"))
+        .disableSecretVersion(secretVersionName);
   }
 }

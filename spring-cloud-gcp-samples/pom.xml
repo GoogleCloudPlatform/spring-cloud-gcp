@@ -79,7 +79,6 @@
 				<module>spring-cloud-gcp-data-firestore-sample</module>
 				<module>spring-cloud-gcp-bigquery-sample</module>
 				<module>spring-cloud-gcp-security-firebase-sample</module>
-				<module>spring-cloud-gcp-secretmanager-regional-sample</module>
 				<module>spring-cloud-gcp-secretmanager-sample</module>
 				<module>spring-cloud-gcp-kotlin-samples</module>
 				<module>spring-cloud-gcp-metrics-sample</module>
@@ -103,7 +102,6 @@
 				<module>spring-cloud-gcp-integration-storage-sample</module>
 				<module>spring-cloud-gcp-trace-sample</module>
 				<module>spring-cloud-gcp-vision-api-sample</module>
-				<module>spring-cloud-gcp-secretmanager-regional-sample</module>
 				<module>spring-cloud-gcp-secretmanager-sample</module>
 				<module>spring-cloud-gcp-vision-ocr-demo</module>
 				<module>spring-cloud-gcp-data-spanner-template-sample</module>

@@ -44,13 +44,6 @@ public class GcpSecretManagerProperties implements CredentialsSupplier {
   private String projectId;
 
   /**
-   * Defines the region of the secrets when Regional Stack is used.
-   *
-   * <p>When not specified, the secret manager will use the Global Stack.
-   */
-  private String location;
-
-  /**
    * Whether the secret manager will allow a default secret value when accessing a non-existing
    * secret.
    *
@@ -79,11 +72,4 @@ public class GcpSecretManagerProperties implements CredentialsSupplier {
     this.allowDefaultSecret = allowDefaultSecret;
   }
 
-  public String getLocation() {
-    return location;
-  }
-
-  public void setLocation(String location) {
-    this.location = location;
-  }
 }

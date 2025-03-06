@@ -5,15 +5,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
+import com.google.cloud.spring.autoconfigure.TestUtils;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.protobuf.ByteString;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -21,6 +23,7 @@ import org.springframework.boot.BootstrapRegistry.InstanceSupplier;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
@@ -30,7 +33,7 @@ class SecretManagerCompatibilityTests {
 
   private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
   private SpringApplicationBuilder application;
-  private SecretManagerServiceClient client;
+  private SecretManagerServiceClientFactory secretManagerServiceClientFactory;
 
   static Stream<Arguments> prefixes() {
     return Stream.of(
@@ -45,16 +48,20 @@ class SecretManagerCompatibilityTests {
         .web(WebApplicationType.NONE)
         .properties(
             "spring.cloud.gcp.secretmanager.project-id=" + PROJECT_NAME,
-            "spring.cloud.gcp.sql.enabled=false");
+            "spring.cloud.gcp.sql.enabled=false")
+        .sources(TestConfig.class);
 
-    client = mock(SecretManagerServiceClient.class);
+    SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
+    secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
+    when(secretManagerServiceClientFactory.getClient(null)).thenReturn(secretManagerServiceClient);
+    when(secretManagerServiceClientFactory.getClient()).thenReturn(secretManagerServiceClient);
     SecretVersionName secretVersionName =
         SecretVersionName.newBuilder()
             .setProject(PROJECT_NAME)
             .setSecret("my-secret")
             .setSecretVersion("latest")
             .build();
-    when(client.accessSecretVersion(secretVersionName))
+    when(secretManagerServiceClientFactory.getClient().accessSecretVersion(secretVersionName))
         .thenReturn(
             AccessSecretVersionResponse.newBuilder()
                 .setPayload(
@@ -66,7 +73,7 @@ class SecretManagerCompatibilityTests {
             .setSecret("fake-secret")
             .setSecretVersion("latest")
             .build();
-    when(client.accessSecretVersion(secretVersionName))
+    when(secretManagerServiceClientFactory.getClient().accessSecretVersion(secretVersionName))
         .thenThrow(NotFoundException.class);
   }
 
@@ -82,8 +89,8 @@ class SecretManagerCompatibilityTests {
             "spring.config.import=" + prefix)
         .addBootstrapRegistryInitializer(
             (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClient.class,
-                InstanceSupplier.of(client)
+                SecretManagerServiceClientFactory.class,
+                InstanceSupplier.of(secretManagerServiceClientFactory)
             )
         );
     try (ConfigurableApplicationContext applicationContext = application.run()) {
@@ -102,14 +109,22 @@ class SecretManagerCompatibilityTests {
             "spring.config.import=" + prefix)
         .addBootstrapRegistryInitializer(
             (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClient.class,
-                InstanceSupplier.of(client)
+                SecretManagerServiceClientFactory.class,
+                InstanceSupplier.of(secretManagerServiceClientFactory)
             )
         );
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
       assertThat(environment.getProperty(prefix + "my-secret")).isEqualTo("newSecret");
       assertThat(environment.getProperty(prefix + "fake-secret")).isNull();
+    }
+  }
+
+  static class TestConfig {
+
+    @Bean
+    public CredentialsProvider googleCredentials() {
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }

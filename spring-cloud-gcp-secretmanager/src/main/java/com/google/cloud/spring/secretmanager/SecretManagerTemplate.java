@@ -24,7 +24,6 @@ import com.google.cloud.secretmanager.v1.LocationName;
 import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Replication;
 import com.google.cloud.secretmanager.v1.Secret;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
@@ -49,7 +48,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   public static final String LATEST_VERSION = "latest";
 
   private static final Log LOGGER = LogFactory.getLog(SecretManagerTemplate.class);
-  private final SecretManagerServiceClient secretManagerServiceClient;
+  private final SecretManagerServiceClientFactory clientFactory;
   private final GcpProjectIdProvider projectIdProvider;
   /**
    * Define the behavior when accessing a non-existed secret string/bytes.
@@ -58,9 +57,9 @@ public class SecretManagerTemplate implements SecretManagerOperations {
 
 
   public SecretManagerTemplate(
-      SecretManagerServiceClient secretManagerServiceClient,
+      SecretManagerServiceClientFactory clientFactory,
       GcpProjectIdProvider projectIdProvider) {
-    this.secretManagerServiceClient = secretManagerServiceClient;
+    this.clientFactory = clientFactory;
     this.projectIdProvider = projectIdProvider;
     this.allowDefaultSecretValue = false;
   }
@@ -107,30 +106,30 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   @Override
   @Nullable
   public String getSecretString(String secretIdentifier) {
-    ByteString secretByteString = getSecretByteString(secretIdentifier, null);
+    ByteString secretByteString = getSecretByteString(secretIdentifier);
     return secretByteString == null ? null : secretByteString.toStringUtf8();
   }
 
-  @Override
+  /*@Override
   @Nullable
   public String getSecretString(String secretIdentifier, String locationId) {
     ByteString secretByteString = getSecretByteString(secretIdentifier, locationId);
     return secretByteString == null ? null : secretByteString.toStringUtf8();
-  }
+  }*/
 
   @Override
   @Nullable
   public byte[] getSecretBytes(String secretIdentifier) {
-    ByteString secretByteString = getSecretByteString(secretIdentifier, null);
+    ByteString secretByteString = getSecretByteString(secretIdentifier);
     return secretByteString == null ? null : secretByteString.toByteArray();
   }
 
-  @Override
+  /*@Override
   @Nullable
   public byte[] getSecretBytes(String secretIdentifier, String locationId) {
     ByteString secretByteString = getSecretByteString(secretIdentifier, locationId);
     return secretByteString == null ? null : secretByteString.toByteArray();
-  }
+  }*/
 
   @Override
   public boolean secretExists(String secretId) {
@@ -141,7 +140,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   public boolean secretExists(String secretId, String projectId) {
     SecretName secretName = getSecretName(projectId, secretId, null);
     try {
-      this.secretManagerServiceClient.getSecret(secretName);
+      this.clientFactory.getClient().getSecret(secretName);
     } catch (NotFoundException ex) {
       return false;
     }
@@ -153,7 +152,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   public boolean secretExists(String secretId, String projectId, String locationId) {
     SecretName secretName = getSecretName(projectId, secretId, locationId);
     try {
-      this.secretManagerServiceClient.getSecret(secretName);
+      this.clientFactory.getClient(locationId).getSecret(secretName);
     } catch (NotFoundException ex) {
       return false;
     }
@@ -171,7 +170,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     SecretVersionName secretVersionName =
         SecretManagerPropertyUtils.getSecretVersionName(
             projectId, secretId, version, null);
-    this.secretManagerServiceClient.disableSecretVersion(secretVersionName);
+    this.clientFactory.getClient().disableSecretVersion(secretVersionName);
   }
 
   @Override
@@ -179,7 +178,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     SecretVersionName secretVersionName =
         SecretManagerPropertyUtils.getSecretVersionName(
             projectId, secretId, version, locationId);
-    this.secretManagerServiceClient.disableSecretVersion(secretVersionName);
+    this.clientFactory.getClient(locationId).disableSecretVersion(secretVersionName);
   }
 
   @Override
@@ -192,7 +191,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     SecretVersionName secretVersionName =
         SecretManagerPropertyUtils.getSecretVersionName(
             projectId, secretId, version, null);
-    this.secretManagerServiceClient.enableSecretVersion(secretVersionName);
+    this.clientFactory.getClient().enableSecretVersion(secretVersionName);
   }
 
   @Override
@@ -200,7 +199,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     SecretVersionName secretVersionName =
         SecretManagerPropertyUtils.getSecretVersionName(
             projectId, secretId, version, locationId);
-    this.secretManagerServiceClient.enableSecretVersion(secretVersionName);
+    this.clientFactory.getClient(locationId).enableSecretVersion(secretVersionName);
   }
 
   @Override
@@ -212,14 +211,14 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   public void deleteSecret(String secretId, String projectId) {
     SecretName name = getSecretName(projectId, secretId, null);
     DeleteSecretRequest request = DeleteSecretRequest.newBuilder().setName(name.toString()).build();
-    this.secretManagerServiceClient.deleteSecret(request);
+    this.clientFactory.getClient().deleteSecret(request);
   }
 
   @Override
   public void deleteSecret(String secretId, String projectId, String locationId) {
     SecretName name = getSecretName(projectId, secretId, locationId);
     DeleteSecretRequest request = DeleteSecretRequest.newBuilder().setName(name.toString()).build();
-    this.secretManagerServiceClient.deleteSecret(request);
+    this.clientFactory.getClient(locationId).deleteSecret(request);
   }
 
   @Override
@@ -227,7 +226,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     SecretVersionName secretVersionName =
         SecretManagerPropertyUtils.getSecretVersionName(
             projectId, secretId, version, null);
-    this.secretManagerServiceClient.destroySecretVersion(secretVersionName);
+    this.clientFactory.getClient().destroySecretVersion(secretVersionName);
   }
 
   @Override
@@ -235,15 +234,15 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     SecretVersionName secretVersionName =
         SecretManagerPropertyUtils.getSecretVersionName(
             projectId, secretId, version, locationId);
-    this.secretManagerServiceClient.destroySecretVersion(secretVersionName);
+    this.clientFactory.getClient(locationId).destroySecretVersion(secretVersionName);
   }
 
-  ByteString getSecretByteString(String secretIdentifier, String locationId) {
+  ByteString getSecretByteString(String secretIdentifier) {
     SecretVersionName secretVersionName = SecretManagerPropertyUtils.getSecretVersionName(
-        secretIdentifier, this.projectIdProvider, locationId);
+        secretIdentifier, this.projectIdProvider);
 
     if (secretVersionName == null) {
-      secretVersionName = getDefaultSecretVersionName(secretIdentifier, locationId);
+      secretVersionName = getDefaultSecretVersionName(secretIdentifier);
     }
 
     return getSecretByteString(secretVersionName);
@@ -253,7 +252,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     ByteString secretData;
     try {
       secretData =
-          secretManagerServiceClient.accessSecretVersion(secretVersionName).getPayload().getData();
+        this.clientFactory.getClient(secretVersionName.getLocation()).accessSecretVersion(secretVersionName).getPayload().getData();
     } catch (NotFoundException ex) {
       LOGGER.warn(secretVersionName.toString() + " doesn't exist in Secret Manager.");
       if (!this.allowDefaultSecretValue) {
@@ -284,7 +283,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
             .setParent(name.toString())
             .setPayload(SecretPayload.newBuilder().setData(payload))
             .build();
-    secretManagerServiceClient.addSecretVersion(payloadRequest);
+    this.clientFactory.getClient(locationId).addSecretVersion(payloadRequest);
   }
 
   /**
@@ -310,12 +309,12 @@ public class SecretManagerTemplate implements SecretManagerOperations {
             .setSecretId(secretId)
             .setSecret(secret.build())
             .build();
-    this.secretManagerServiceClient.createSecret(request);
+    this.clientFactory.getClient(locationId).createSecret(request);
   }
 
-  private SecretVersionName getDefaultSecretVersionName(String secretId, String locationId) {
+  private SecretVersionName getDefaultSecretVersionName(String secretId) {
     return SecretManagerPropertyUtils.getSecretVersionName(
-        this.projectIdProvider.getProjectId(), secretId, LATEST_VERSION, locationId);
+        this.projectIdProvider.getProjectId(), secretId, LATEST_VERSION, null);
   }
 
   private SecretName getSecretName(String projectId, String secretId, String locationId) {

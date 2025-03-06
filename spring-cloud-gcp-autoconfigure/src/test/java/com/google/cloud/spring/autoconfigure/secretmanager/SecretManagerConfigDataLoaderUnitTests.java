@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerPropertySource;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
@@ -26,6 +27,7 @@ class SecretManagerConfigDataLoaderUnitTests {
   private final GcpProjectIdProvider idProvider = mock(GcpProjectIdProvider.class);
   private final SecretManagerTemplate template = mock(SecretManagerTemplate.class);
   private final GcpSecretManagerProperties properties = mock(GcpSecretManagerProperties.class);
+  private final CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
   private final ConfigurableBootstrapContext bootstrapContext = mock(
       ConfigurableBootstrapContext.class);
   private final SecretManagerConfigDataLoader loader = new SecretManagerConfigDataLoader();
@@ -40,15 +42,10 @@ class SecretManagerConfigDataLoaderUnitTests {
     when(bootstrapContext.get(GcpProjectIdProvider.class)).thenReturn(idProvider);
     when(bootstrapContext.get(SecretManagerTemplate.class)).thenReturn(template);
     when(bootstrapContext.get(GcpSecretManagerProperties.class)).thenReturn(properties);
+    when(bootstrapContext.get(CredentialsProvider.class)).thenReturn(credentialsProvider);
     when(template.secretExists(anyString(), anyString())).thenReturn(false);
-    when(properties.getLocation()).thenReturn(location);
     SecretManagerConfigDataResource resource = new SecretManagerConfigDataResource(
-        ConfigDataLocation.of(resourceName));
-    assertThatCode(() -> {
-      ConfigData configData = loader.load(loaderContext, resource);
-      SecretManagerPropertySource propertySource =
-          (SecretManagerPropertySource) configData.getPropertySources().get(0);
-      assertThat(propertySource.getLocation()).isEqualTo(location);
-    }).doesNotThrowAnyException();
+        ConfigDataLocation.of("fake"));
+    assertThatCode(() -> loader.load(loaderContext, resource)).doesNotThrowAnyException();
   }
 }

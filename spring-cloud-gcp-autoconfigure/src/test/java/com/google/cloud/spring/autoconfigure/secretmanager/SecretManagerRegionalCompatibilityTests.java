@@ -21,11 +21,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
+import com.google.cloud.spring.autoconfigure.TestUtils;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.protobuf.ByteString;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +36,7 @@ import org.springframework.boot.BootstrapRegistry.InstanceSupplier;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 
@@ -44,7 +48,7 @@ class SecretManagerRegionalCompatibilityTests {
   private static final String PROJECT_NAME = "regional-secret-manager-project";
   private static final String LOCATION = "us-central1";
   private SpringApplicationBuilder application;
-  private SecretManagerServiceClient client;
+  private SecretManagerServiceClientFactory secretManagerServiceClientFactory;
 
   @BeforeEach
   void init() {
@@ -52,10 +56,13 @@ class SecretManagerRegionalCompatibilityTests {
         .web(WebApplicationType.NONE)
         .properties(
             "spring.cloud.gcp.secretmanager.project-id=" + PROJECT_NAME,
-            "spring.cloud.gcp.sql.enabled=false",
-            "spring.cloud.gcp.secretmanager.location=" + LOCATION);
+            "spring.cloud.gcp.sql.enabled=false")
+        .sources(TestConfig.class);
 
-    client = mock(SecretManagerServiceClient.class);
+    SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
+    secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
+    when(secretManagerServiceClientFactory.getClient(LOCATION)).thenReturn(secretManagerServiceClient);
+
     SecretVersionName secretVersionName =
         SecretVersionName.newProjectLocationSecretSecretVersionBuilder()
             .setProject(PROJECT_NAME)
@@ -63,7 +70,7 @@ class SecretManagerRegionalCompatibilityTests {
             .setSecret("my-reg-secret")
             .setSecretVersion("latest")
             .build();
-    when(client.accessSecretVersion(secretVersionName))
+    when(secretManagerServiceClientFactory.getClient(LOCATION).accessSecretVersion(secretVersionName))
         .thenReturn(
             AccessSecretVersionResponse.newBuilder()
                 .setPayload(
@@ -76,7 +83,7 @@ class SecretManagerRegionalCompatibilityTests {
             .setSecret("fake-reg-secret")
             .setSecretVersion("latest")
             .build();
-    when(client.accessSecretVersion(secretVersionName))
+    when(secretManagerServiceClientFactory.getClient(LOCATION).accessSecretVersion(secretVersionName))
         .thenThrow(NotFoundException.class);
   }
 
@@ -91,8 +98,8 @@ class SecretManagerRegionalCompatibilityTests {
             "spring.config.import=sm://")
         .addBootstrapRegistryInitializer(
             (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClient.class,
-                InstanceSupplier.of(client)
+                SecretManagerServiceClientFactory.class,
+                InstanceSupplier.of(secretManagerServiceClientFactory)
             )
         );
     try (ConfigurableApplicationContext applicationContext = application.run()) {
@@ -110,14 +117,23 @@ class SecretManagerRegionalCompatibilityTests {
             "spring.config.import=sm://")
         .addBootstrapRegistryInitializer(
             (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClient.class,
-                InstanceSupplier.of(client)
+                SecretManagerServiceClientFactory.class,
+                InstanceSupplier.of(secretManagerServiceClientFactory)
             )
         );
+    application.sources(TestConfig.class);
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
       assertThat(environment.getProperty("sm://projects/regional-secret-manager-project/locations/us-central1/secrets/my-reg-secret/versions/latest")).isEqualTo("newRegSecret");
       assertThat(environment.getProperty("sm://projects/regional-secret-manager-project/locations/us-central1/secrets/fake-reg-secret/versions/latest")).isNull();
+    }
+  }
+
+  static class TestConfig {
+
+    @Bean
+    public CredentialsProvider googleCredentials() {
+      return () -> TestUtils.MOCK_CREDENTIALS;
     }
   }
 }

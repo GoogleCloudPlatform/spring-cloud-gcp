@@ -19,18 +19,16 @@ package com.google.cloud.spring.autoconfigure.secretmanager;
 import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.getMatchedPrefixes;
 import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.warnIfUsingDeprecatedSyntax;
 
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
+import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.apache.arrow.util.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -40,21 +38,11 @@ import org.springframework.boot.context.config.ConfigDataLocationNotFoundExcepti
 import org.springframework.boot.context.config.ConfigDataLocationResolver;
 import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
-import org.springframework.util.ObjectUtils;
 
 public class SecretManagerConfigDataLocationResolver implements
     ConfigDataLocationResolver<SecretManagerConfigDataResource> {
 
   private static final Logger logger = LoggerFactory.getLogger(SecretManagerConfigDataLocationResolver.class);
-
-  /**
-   * A static client to avoid creating another client after refreshing.
-   */
-  private static SecretManagerServiceClient secretManagerServiceClient;
-  /**
-   * A static endpoint format for regional client creation.
-   */
-  private static final String ENDPOINT_FORMAT = "secretmanager.%s.rep.googleapis.com:443";
 
   @Override
   public boolean isResolvable(ConfigDataLocationResolverContext context,
@@ -68,23 +56,28 @@ public class SecretManagerConfigDataLocationResolver implements
   public List<SecretManagerConfigDataResource> resolve(ConfigDataLocationResolverContext context,
       ConfigDataLocation location)
       throws ConfigDataLocationNotFoundException, ConfigDataResourceNotFoundException {
-    registerSecretManagerBeans(context);
+    try {
+      registerSecretManagerBeans(context);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
 
     return Collections.singletonList(
         new SecretManagerConfigDataResource(location));
   }
 
-  private static void registerSecretManagerBeans(ConfigDataLocationResolverContext context) {
+  private static void registerSecretManagerBeans(ConfigDataLocationResolverContext context) throws IOException {
     // Register the Secret Manager properties.
     registerBean(
         context, GcpSecretManagerProperties.class, getSecretManagerProperties(context));
-    // Register the Secret Manager client.
+    // Register the CredentialsProvider.
+    registerBean(
+        context, CredentialsProvider.class, getCredentialsProvider(context));
+    // Register the Secret Manager client factory.
     registerAndPromoteBean(
-        context,
-        SecretManagerServiceClient.class,
-        // lazy register the client solely for unit test.
-        BootstrapRegistry.InstanceSupplier.from(() -> createSecretManagerClient(context)));
-    // Register the GCP Project ID provider.
+        context, SecretManagerServiceClientFactory.class,
+        BootstrapRegistry.InstanceSupplier.from(() -> new DefaultSecretManagerServiceClientFactory(
+            context.getBootstrapContext().get(CredentialsProvider.class))));
     registerAndPromoteBean(
         context,
         GcpProjectIdProvider.class,
@@ -103,6 +96,11 @@ public class SecretManagerConfigDataLocationResolver implements
         .orElse(new GcpSecretManagerProperties());
   }
 
+  private static CredentialsProvider getCredentialsProvider(ConfigDataLocationResolverContext context) throws IOException {
+    GcpSecretManagerProperties properties = context.getBootstrapContext().get(GcpSecretManagerProperties.class);
+    return context.getBinder().bind(GcpSecretManagerProperties.PREFIX, CredentialsProvider.class).orElse(new DefaultCredentialsProvider(properties));
+  }
+
   private static GcpProjectIdProvider createProjectIdProvider(
       ConfigDataLocationResolverContext context) {
     GcpSecretManagerProperties properties = context.getBootstrapContext()
@@ -111,40 +109,10 @@ public class SecretManagerConfigDataLocationResolver implements
         ? properties::getProjectId : new DefaultGcpProjectIdProvider();
   }
 
-  @VisibleForTesting
-  static synchronized SecretManagerServiceClient createSecretManagerClient(
-      ConfigDataLocationResolverContext context) {
-    if (secretManagerServiceClient != null && !secretManagerServiceClient.isTerminated()) {
-      return secretManagerServiceClient;
-    }
-
-    try {
-      GcpSecretManagerProperties properties = context.getBootstrapContext()
-          .get(GcpSecretManagerProperties.class);
-      DefaultCredentialsProvider credentialsProvider =
-          new DefaultCredentialsProvider(properties);
-      SecretManagerServiceSettings.Builder settings =
-          SecretManagerServiceSettings.newBuilder()
-              .setCredentialsProvider(credentialsProvider)
-              .setHeaderProvider(new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class));
-
-      if (!ObjectUtils.isEmpty(properties.getLocation())) {
-        settings.setEndpoint(String.format(ENDPOINT_FORMAT, properties.getLocation()));
-      }
-
-      secretManagerServiceClient = SecretManagerServiceClient.create(settings.build());
-
-      return secretManagerServiceClient;
-    } catch (IOException e) {
-      throw new RuntimeException(
-          "Failed to create the Secret Manager Client for ConfigData loading.", e);
-    }
-  }
-
   private static SecretManagerTemplate createSecretManagerTemplate(
       ConfigDataLocationResolverContext context) {
-    SecretManagerServiceClient client = context.getBootstrapContext()
-        .get(SecretManagerServiceClient.class);
+    SecretManagerServiceClientFactory client = context.getBootstrapContext()
+        .get(SecretManagerServiceClientFactory.class);
     GcpProjectIdProvider projectIdProvider = context.getBootstrapContext()
         .get(GcpProjectIdProvider.class);
     GcpSecretManagerProperties properties = context.getBootstrapContext()
@@ -184,8 +152,4 @@ public class SecretManagerConfigDataLocationResolver implements
     });
   }
 
-  @VisibleForTesting
-  static void setSecretManagerServiceClient(SecretManagerServiceClient client) {
-    secretManagerServiceClient = client;
-  }
 }

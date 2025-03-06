@@ -22,6 +22,7 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,9 +60,9 @@ class GcpSecretManagerAutoConfigurationUnitTests {
   }
 
   @Test
-  void testSecretManagerServiceClientExists() {
+  void testSecretManagerServiceClientFactoryExists() {
     contextRunner.run(
-        ctx -> assertThat(ctx.getBean(SecretManagerServiceClient.class))
+        ctx -> assertThat(ctx.getBean(SecretManagerServiceClientFactory.class))
             .isNotNull());
   }
 

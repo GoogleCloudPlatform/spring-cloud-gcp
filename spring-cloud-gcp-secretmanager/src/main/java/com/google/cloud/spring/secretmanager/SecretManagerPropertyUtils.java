@@ -35,7 +35,7 @@ final class SecretManagerPropertyUtils {
   private SecretManagerPropertyUtils() {}
 
   static SecretVersionName getSecretVersionName(
-      final String input, GcpProjectIdProvider projectIdProvider, String locationId) {
+      final String input, GcpProjectIdProvider projectIdProvider) {
     Optional<String> usedPrefix = getMatchedPrefixes(input::startsWith);
 
     // Since spring-core 6.2.2, the property resolution mechanism will try a full match that
@@ -55,6 +55,7 @@ final class SecretManagerPropertyUtils {
 
     String projectId = projectIdProvider.getProjectId();
     String secretId = null;
+    String locationId = null;
     String version = "latest";
 
     if (tokens.length == 1) {
@@ -64,6 +65,10 @@ final class SecretManagerPropertyUtils {
       // property is of the form "sm@<secret-id>/<version>"
       secretId = tokens[0];
       version = tokens[1];
+    } else if (tokens.length == 3 && tokens[0].equals("locations")) {
+      // property is of the form "sm@locations/<location-id>/<secret-id>"
+      locationId = tokens[1];
+      secretId = tokens[2];
     } else if (tokens.length == 3) {
       // property is of the form "sm@<project-id>/<secret-id>/<version-id>"
       projectId = tokens[0];
@@ -73,6 +78,17 @@ final class SecretManagerPropertyUtils {
       // property is of the form "sm@projects/<project-id>/secrets/<secret-id>"
       projectId = tokens[1];
       secretId = tokens[3];
+    } else if (tokens.length == 4 && tokens[0].equals("locations")) {
+      // property is of the form "sm@locations/<location-id>/<secret-id>/<version-id>"
+      locationId = tokens[1];
+      secretId = tokens[2];
+      version = tokens[3];
+    } else if (tokens.length == 4) {
+      // property is of the form "sm@<project-id>/<location-id>/<secret-id>/<version-id>"
+      projectId = tokens[0];
+      locationId = tokens[1];
+      secretId = tokens[2];
+      version = tokens[3];
     } else if (tokens.length == 6
         && tokens[0].equals("projects")
         && tokens[2].equals("secrets")
@@ -81,12 +97,22 @@ final class SecretManagerPropertyUtils {
       projectId = tokens[1];
       secretId = tokens[3];
       version = tokens[5];
+    } else if (tokens.length == 6
+        && tokens[0].equals("projects")
+        && tokens[2].equals("locations")
+        && tokens[4].equals("secrets")) {
+      // property is of the form
+      // "sm@projects/<project-id>/locations/<location-id>/secrets/<secret-id>"
+      projectId = tokens[1];
+      locationId = tokens[3];
+      secretId = tokens[5];
     } else if (tokens.length == 8
         && tokens[0].equals("projects")
         && tokens[2].equals("locations")
         && tokens[4].equals("secrets")
         && tokens[6].equals("versions")) {
-      // property is of the form "sm@projects/<project-id>/locations/<location-id>/secrets/<secret-id>/versions/<version>"
+      // property is of the form
+      // "sm@projects/<project-id>/locations/<location-id>/secrets/<secret-id>/versions/<version>"
       projectId = tokens[1];
       locationId = tokens[3];
       secretId = tokens[5];

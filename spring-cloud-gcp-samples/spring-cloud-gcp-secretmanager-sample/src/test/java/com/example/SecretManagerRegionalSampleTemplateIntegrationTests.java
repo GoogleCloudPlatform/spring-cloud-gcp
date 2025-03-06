@@ -40,7 +40,7 @@ import org.springframework.util.MultiValueMap;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = SecretManagerRegionalApplication.class)
+    classes = SecretManagerApplication.class)
 class SecretManagerRegionalSampleTemplateIntegrationTests {
 
   @Autowired private SecretManagerTemplate secretManagerTemplate;
@@ -57,8 +57,10 @@ class SecretManagerRegionalSampleTemplateIntegrationTests {
 
   @AfterEach
   void deleteRegionalSecret() {
-    if (secretManagerTemplate.secretExists(this.secretName, secretManagerTemplate.getProjectId(), "us-central1")) {
-      secretManagerTemplate.deleteSecret(this.secretName, secretManagerTemplate.getProjectId(), "us-central1");
+    if (secretManagerTemplate.secretExists(
+        this.secretName, secretManagerTemplate.getProjectId(), "us-central1")) {
+      secretManagerTemplate.deleteSecret(
+          this.secretName, secretManagerTemplate.getProjectId(), "us-central1");
     }
   }
 
@@ -78,7 +80,8 @@ class SecretManagerRegionalSampleTemplateIntegrationTests {
 
   @Test
   void testReadRegionalSecret() {
-    String getSecretUrl = String.format("/getSecret?secretId=%s&locationId=us-central1", this.secretName);
+    String getSecretUrl =
+        String.format("/getSecret?secretId=%s&locationId=us-central1", this.secretName);
     ResponseEntity<String> response =
         this.testRestTemplate.getForEntity(getSecretUrl, String.class);
     assertThat(response.getBody())

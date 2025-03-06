@@ -6,7 +6,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.spring.core.Credentials;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,8 +29,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 class SecretManagerConfigDataLocationResolverUnitTests {
 
   private final SecretManagerConfigDataLocationResolver resolver = new SecretManagerConfigDataLocationResolver();
-  private final ConfigDataLocationResolverContext context = mock(
-      ConfigDataLocationResolverContext.class);
+  private final ConfigDataLocationResolverContext context = mock(ConfigDataLocationResolverContext.class);
   private final DefaultBootstrapContext defaultBootstrapContext = new DefaultBootstrapContext();
 
   static Stream<Arguments> prefixes() {
@@ -51,15 +51,6 @@ class SecretManagerConfigDataLocationResolverUnitTests {
     assertThat(resolver.isResolvable(context, ConfigDataLocation.of(prefix))).isTrue();
   }
 
-  @Test
-  void createSecretManagerClientWithPresetClientTest() {
-    SecretManagerServiceClient client = mock(SecretManagerServiceClient.class);
-    SecretManagerConfigDataLocationResolver.setSecretManagerServiceClient(client);
-    assertThat(
-        SecretManagerConfigDataLocationResolver.createSecretManagerClient(context))
-        .isEqualTo(client);
-  }
-
   @ParameterizedTest
   @MethodSource("prefixes")
   void resolveReturnsConfigDataLocation(String prefix) {
@@ -70,22 +61,33 @@ class SecretManagerConfigDataLocationResolverUnitTests {
         .isEqualTo(ConfigDataLocation.of(prefix + "my-secret"));
     ConfigurableApplicationContext applicationContext = mock(ConfigurableApplicationContext.class);
     when(applicationContext.getBeanFactory()).thenReturn(new DefaultListableBeanFactory());
-    assertThatCode(
-        () -> defaultBootstrapContext.close(applicationContext)).doesNotThrowAnyException();
+    assertThatCode(() -> defaultBootstrapContext.close(applicationContext)).doesNotThrowAnyException();
+  }
+
+  @Test
+  void createSecretManagerClientFactoryWithPresetFactoryTest() {
+    SecretManagerServiceClientFactory clientFactory = mock(SecretManagerServiceClientFactory.class);
+    defaultBootstrapContext.register(SecretManagerServiceClientFactory.class,
+        BootstrapRegistry.InstanceSupplier.of(clientFactory));
+    assertThat(context.getBootstrapContext().get(SecretManagerServiceClientFactory.class))
+        .isEqualTo(clientFactory);
   }
 
   @BeforeEach
   void registerBean() {
     GcpSecretManagerProperties properties = mock(GcpSecretManagerProperties.class);
+    Credentials credentials = mock(Credentials.class);
     CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
-    SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
+    SecretManagerServiceClientFactory secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
+
+    when(properties.getCredentials()).thenReturn(credentials);
 
     defaultBootstrapContext.register(GcpSecretManagerProperties.class,
         BootstrapRegistry.InstanceSupplier.of(properties));
     defaultBootstrapContext.register(CredentialsProvider.class,
         BootstrapRegistry.InstanceSupplier.of(credentialsProvider));
-    defaultBootstrapContext.register(SecretManagerServiceClient.class,
-        BootstrapRegistry.InstanceSupplier.of(secretManagerServiceClient));
+    defaultBootstrapContext.register(SecretManagerServiceClientFactory.class,
+        BootstrapRegistry.InstanceSupplier.of(secretManagerServiceClientFactory));
 
     when(context.getBinder()).thenReturn(new Binder());
     when(context.getBootstrapContext()).thenReturn(defaultBootstrapContext);

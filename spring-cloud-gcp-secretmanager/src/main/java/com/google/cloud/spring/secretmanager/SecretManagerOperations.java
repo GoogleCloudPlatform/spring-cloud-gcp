@@ -226,43 +226,9 @@ public interface SecretManagerOperations {
    *
    * @param secretIdentifier the GCP secret ID of the secret or a sm:// formatted string specifying
    *     the secret.
-   * @param locationId the secret location string.
-   * @return The secret payload as String
-   */
-  String getSecretString(String secretIdentifier, String locationId);
-
-  /**
-   * Gets the secret payload of the specified {@code secretIdentifier} secret.
-   *
-   * <p>The {@code secretIdentifier} must either be a secret ID or a fully qualified `sm://`
-   * protocol string which specifies the secret (see javadocs of {@link SecretManagerOperations} for
-   * the protocol format).
-   *
-   * <p>If the secret ID string is passed in, then this will return the payload of the secret for
-   * the default project at the latest version.
-   *
-   * @param secretIdentifier the GCP secret ID of the secret or a sm:// formatted string specifying
-   *     the secret.
    * @return The secret payload as byte array
    */
   byte[] getSecretBytes(String secretIdentifier);
-
-  /**
-   * Gets the secret payload of the specified {@code secretIdentifier} secret.
-   *
-   * <p>The {@code secretIdentifier} must either be a secret ID or a fully qualified `sm://`
-   * protocol string which specifies the secret (see javadocs of {@link SecretManagerOperations} for
-   * the protocol format).
-   *
-   * <p>If the secret ID string is passed in, then this will return the payload of the secret for
-   * the default project at the latest version.
-   *
-   * @param secretIdentifier the GCP secret ID of the secret or a sm:// formatted string specifying
-   *     the secret.
-   * @param locationId the secret location string.
-   * @return The secret payload as byte array
-   */
-  byte[] getSecretBytes(String secretIdentifier, String locationId);
 
   /**
    * Returns true if there already exists a secret under the GCP project with the {@code secretId}.
