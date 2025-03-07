@@ -76,6 +76,6 @@ public interface DatastorePersistentProperty
    * @return {@code true} if the null value is skipped. {@code false} otherwise.
    */
   default boolean isSkipNullValue() {
-    return true;
+    return false;
   }
 }
