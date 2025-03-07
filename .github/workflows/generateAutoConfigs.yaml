@@ -58,7 +58,7 @@ jobs:
         with:
           java-version: 17
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
       - run: bazelisk version
       - uses: actions/setup-go@v3
       - name: Install buildozer
