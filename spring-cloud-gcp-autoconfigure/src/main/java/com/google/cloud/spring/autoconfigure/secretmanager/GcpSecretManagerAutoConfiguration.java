@@ -17,18 +17,16 @@
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
-import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
-import java.io.IOException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+
 
 /**
  *  Autoconfiguration for GCP Secret Manager.
@@ -60,22 +58,14 @@ public class GcpSecretManagerAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public SecretManagerServiceClient secretManagerClient()
-      throws IOException {
-    SecretManagerServiceSettings settings =
-        SecretManagerServiceSettings.newBuilder()
-            .setCredentialsProvider(this.credentialsProvider)
-            .setHeaderProvider(
-                new UserAgentHeaderProvider(GcpSecretManagerAutoConfiguration.class))
-            .build();
-
-    return SecretManagerServiceClient.create(settings);
+  public SecretManagerServiceClientFactory clientFactory() {
+    return new DefaultSecretManagerServiceClientFactory(this.credentialsProvider);
   }
 
   @Bean
   @ConditionalOnMissingBean
-  public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
-    return new SecretManagerTemplate(client, this.gcpProjectIdProvider)
+  public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClientFactory clientFactory) {
+    return new SecretManagerTemplate(clientFactory, this.gcpProjectIdProvider)
         .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
   }
 }
