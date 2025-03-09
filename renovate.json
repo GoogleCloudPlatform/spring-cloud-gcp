@@ -1,18 +1,21 @@
 {
 	"extends": [
-	"config:base"
+		"config:recommended"
 	],
-	"ignorePaths": [".kokoro/requirements.txt"],
-	"packageRules": [{
-		"matchPackageNames": [
-			"com.coveo:fmt-maven-plugin",
-			"com.google.googlejavaformat:google-java-format"
-		],
-		"enabled": false
+	"ignorePaths": [
+		".kokoro/requirements.txt"
+	],
+	"packageRules": [
+		{
+			"matchPackageNames": [
+				"com.coveo:fmt-maven-plugin",
+				"com.google.googlejavaformat:google-java-format"
+			],
+			"enabled": false
 		},
 		{
-		"major": {
-			"enabled": false
+			"major": {
+				"enabled": false
 			}
 		}
 	],
@@ -20,4 +23,3 @@
 		"dependencies"
 	]
 }
-

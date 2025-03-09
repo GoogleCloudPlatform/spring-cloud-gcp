@@ -21,10 +21,13 @@ jobs:
       github.actor != 'dependabot[bot]' && ((
         github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
       ) || (github.event_name != 'pull_request'))
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        graalvm_for_jdk_version:
+          - 21
+          - 23
         it:
           - alloydb-sample
           - bigquery-sample
@@ -82,7 +85,7 @@ jobs:
             install
       - uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '21'
+          java-version: ${{ matrix.graalvm_for_jdk_version }}
           distribution: 'graalvm-community'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
