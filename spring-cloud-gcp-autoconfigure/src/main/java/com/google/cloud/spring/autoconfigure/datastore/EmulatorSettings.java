@@ -54,6 +54,20 @@ public class EmulatorSettings {
    */
   private Path dataDir;
 
+  /**
+   * Configures whether the emulator runs in "Cloud Firestore in Datastore Mode". Correspondent CLI
+   * property: --use-firestore-in-datastore-mode.
+   */
+  private boolean firestoreInDatastoreMode = false;
+
+  public boolean getFirestoreInDatastoreMode() {
+    return firestoreInDatastoreMode;
+  }
+
+  public void setFirestoreInDatastoreMode(boolean useFirestoreInDatastoreMode) {
+    this.firestoreInDatastoreMode = useFirestoreInDatastoreMode;
+  }
+
   public Path getDataDir() {
     return dataDir;
   }
