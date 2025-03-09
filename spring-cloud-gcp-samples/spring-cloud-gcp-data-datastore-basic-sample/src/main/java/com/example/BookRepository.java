@@ -30,4 +30,6 @@ public interface BookRepository extends DatastoreRepository<Book, Long> {
   List<Book> findByYearGreaterThan(int year);
 
   List<Book> findByAuthorAndYear(String author, int year);
+
+  List<Book> findByAuthorNot(String author);
 }

@@ -20,6 +20,7 @@ import static org.springframework.data.repository.query.parser.Part.Type.GREATER
 import static org.springframework.data.repository.query.parser.Part.Type.GREATER_THAN_EQUAL;
 import static org.springframework.data.repository.query.parser.Part.Type.LESS_THAN;
 import static org.springframework.data.repository.query.parser.Part.Type.LESS_THAN_EQUAL;
+import static org.springframework.data.repository.query.parser.Part.Type.NEGATING_SIMPLE_PROPERTY;
 import static org.springframework.data.repository.query.parser.Part.Type.SIMPLE_PROPERTY;
 
 import com.google.cloud.datastore.Cursor;
@@ -92,6 +93,7 @@ public class PartTreeDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
           .put(GREATER_THAN, PropertyFilter::gt)
           .put(LESS_THAN_EQUAL, PropertyFilter::le)
           .put(LESS_THAN, PropertyFilter::lt)
+          .put(NEGATING_SIMPLE_PROPERTY, PropertyFilter::neq)
           .build();
 
   /**

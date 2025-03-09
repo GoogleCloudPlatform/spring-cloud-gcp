@@ -153,6 +153,49 @@ class PartTreeDatastoreQueryTests {
   }
 
   @Test
+  void notEqualsSupportTest() throws NoSuchMethodException {
+    queryWithMockResult(
+        "findBySymbolNotAndSymbolIsNot",
+        null,
+        getClass()
+            .getMethod(
+                "tradeMethodNotEquals",
+                String.class,
+                String.class));
+
+    Object[] params =
+        new Object[] {
+            "abcd",
+            "abcde",
+        };
+
+    when(this.datastoreTemplate.queryKeysOrEntities(any(), any()))
+        .thenAnswer(
+            invocation -> {
+              EntityQuery statement = invocation.getArgument(0);
+
+              EntityQuery expected =
+                  StructuredQuery.newEntityQueryBuilder()
+                      .setFilter(
+                          CompositeFilter.and(
+                              PropertyFilter.neq("ticker", "abcd"),
+                              PropertyFilter.neq("ticker", "abcde")
+                              ))
+                      .setKind("trades")
+                      .build();
+
+              assertThat(statement).isEqualTo(expected);
+
+              return EMPTY_RESPONSE;
+            });
+
+    when(this.queryMethod.getCollectionReturnType()).thenReturn(List.class);
+
+    this.partTreeDatastoreQuery.execute(params);
+    verify(this.datastoreTemplate).queryKeysOrEntities(any(), any());
+  }
+
+  @Test
   void compoundNameConventionTest() throws NoSuchMethodException {
     queryWithMockResult(
             "findTop333ByActionAndSymbolAndPriceLessThan"
@@ -1123,6 +1166,11 @@ class PartTreeDatastoreQueryTests {
 
   public List<Trade> tradeMethod(
           String action, String symbol, double pless, double pgreater, Sort sort) {
+    return null;
+  }
+
+  public List<Trade> tradeMethodNotEquals(
+      String symbolNeq, String symbolNeq2) {
     return null;
   }
 

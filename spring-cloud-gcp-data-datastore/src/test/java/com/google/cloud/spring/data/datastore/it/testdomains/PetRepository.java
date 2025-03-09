@@ -21,4 +21,6 @@ import java.util.List;
 
 public interface PetRepository extends DatastoreRepository<Pet, Long> {
   List<Pet> findByName(String s);
+
+  List<Pet> findByNameNot(String s);
 }
