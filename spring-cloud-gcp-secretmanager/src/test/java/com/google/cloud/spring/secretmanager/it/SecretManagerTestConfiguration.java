@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 the original author or authors.
+ * Copyright 2017-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import com.google.cloud.spring.core.DefaultGcpEnvironmentProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.util.ObjectUtils;
 
 @Configuration
 public class SecretManagerTestConfiguration {
@@ -79,17 +81,45 @@ public class SecretManagerTestConfiguration {
   }
 
   @Bean
-  public SecretManagerServiceClient secretManagerClient() throws IOException {
-    SecretManagerServiceSettings settings =
-        SecretManagerServiceSettings.newBuilder()
-            .setCredentialsProvider(this.credentialsProvider)
-            .build();
+  public SecretManagerServiceClientFactory secretManagerServiceClientFactory() throws IOException {
+    return new SecretManagerServiceClientFactory() {
+      @Override
+      public SecretManagerServiceClient getClient(String location) {
+        if (ObjectUtils.isEmpty(location)) {
+          return getClient();
+        }
+        try {
+          SecretManagerServiceSettings settings =
+              SecretManagerServiceSettings.newBuilder()
+                  .setEndpoint("secretmanager.us-central1.rep.googleapis.com:443")
+                  .setCredentialsProvider(credentialsProvider)
+                  .build();
 
-    return SecretManagerServiceClient.create(settings);
+          return SecretManagerServiceClient.create(settings);
+        } catch (Exception e) {
+          return null;
+        }
+      }
+
+      @Override
+      public SecretManagerServiceClient getClient() {
+        try {
+          SecretManagerServiceSettings settings =
+              SecretManagerServiceSettings.newBuilder()
+                  .setCredentialsProvider(credentialsProvider)
+                  .build();
+
+          return SecretManagerServiceClient.create(settings);
+        } catch (Exception e) {
+          return null;
+        }
+      }
+    };
   }
 
   @Bean
-  public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
-    return new SecretManagerTemplate(client, this.projectIdProvider);
+  public SecretManagerTemplate secretManagerTemplate(
+      SecretManagerServiceClientFactory secretManagerServiceClientFactory) {
+    return new SecretManagerTemplate(secretManagerServiceClientFactory, this.projectIdProvider);
   }
 }
