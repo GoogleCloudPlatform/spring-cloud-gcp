@@ -965,6 +965,8 @@ public interface TradeRepository extends DatastoreRepository<Trade, String[]> {
   List<TestEntity> findBySymbol(String symbol, Sort sort);
 
   Stream<TestEntity> findBySymbol(String symbol);
+
+  Stream<TestEntity> findBySymbolIsNot(String symbol);
 }
 ----
 
@@ -975,6 +977,7 @@ NOTE: You can refer to nested fields using https://docs.spring.io/spring-data/jp
 Cloud Datastore only supports filter components joined by AND, and the following operations:
 
 * `equals`
+* `not equals`
 * `greater than or equals`
 * `greater than`
 * `less than or equals`
