@@ -32,4 +32,8 @@ public abstract class Pet {
   }
 
   public abstract String speak();
+
+  public String getName() {
+    return name;
+  }
 }

@@ -57,6 +57,13 @@ public class BookController {
     return books.toString();
   }
 
+  @GetMapping("/findByAuthorNotEquals")
+  public String findByAuthorNotEquals(
+      @RequestParam("author") String author) {
+    List<Book> books = this.bookRepository.findByAuthorNot(author);
+    return books.toString();
+  }
+
   @GetMapping("/findByYearGreaterThan")
   public String findByYearGreaterThan(@RequestParam("year") Optional<Integer> year) {
     List<Book> books = this.bookRepository.findByYearGreaterThan(year.orElse(0));
