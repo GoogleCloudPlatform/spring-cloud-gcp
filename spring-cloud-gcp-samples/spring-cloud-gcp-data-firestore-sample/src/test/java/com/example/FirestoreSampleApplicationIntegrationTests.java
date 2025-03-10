@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -40,6 +41,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = FirestoreSampleApplication.class)
 @TestPropertySource("classpath:application-test.properties")
+@ImportRuntimeHints(DomainTypeRuntimeHints.class)
 class FirestoreSampleApplicationIntegrationTests {
   private static final User ALPHA_USER =
       new User("Alpha", 49, singletonList(new Pet("rat", "Snowflake")));
@@ -96,5 +98,13 @@ class FirestoreSampleApplicationIntegrationTests {
     testUserClient.removePhonesForUser("Alpha");
     phoneNumbers = testUserClient.listPhoneNumbers("Alpha");
     assertThat(phoneNumbers).isEmpty();
+  }
+
+  @Test
+  void templateTest() {
+    this.firestoreTemplate.save(new Person("Alice", 12)).block();
+    assertThat(this.firestoreTemplate.count(Person.class).block()).isEqualTo(1);
+    this.firestoreTemplate.deleteAll(Person.class).block();
+    assertThat(this.firestoreTemplate.count(Person.class).block()).isEqualTo(0);
   }
 }
