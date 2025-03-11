@@ -35,7 +35,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 /** Integration tests for {@link SecretManagerTemplate} for regional secrets. */
 @EnabledIfSystemProperty(named = "it.secretmanager", matches = "true")
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {SecretManagerTestConfiguration.class})
+@ContextConfiguration(classes = {SecretManagerRegionalTestConfiguration.class})
 class SecretManagerRegionalTemplateIntegrationTests {
 
   @Autowired SecretManagerTemplate secretManagerTemplate;

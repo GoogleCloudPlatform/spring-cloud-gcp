@@ -17,6 +17,7 @@
 package com.google.cloud.spring.secretmanager;
 
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import javax.annotation.Nullable;
 
 /** Interface for creating Secret Manager service clients. */
 public interface SecretManagerServiceClientFactory {
@@ -26,12 +27,5 @@ public interface SecretManagerServiceClientFactory {
    * @param location the location to create a client for.
    * @return a Secret Manager service client.
    */
-  SecretManagerServiceClient getClient(String location);
-
-  /**
-   * Creates a Secret Manager service client for the global location.
-   *
-   * @return a Secret Manager service client.
-   */
-  SecretManagerServiceClient getClient();
+  SecretManagerServiceClient getClient(@Nullable String location);
 }

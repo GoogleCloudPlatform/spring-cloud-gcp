@@ -45,6 +45,11 @@ import org.springframework.core.env.ConfigurableEnvironment;
  */
 class SecretManagerRegionalCompatibilityTests {
 
+  /**
+   * Default value for the latest version of the secret.
+   */
+  public static final String GLOBAL_LOCATION = "global";
+
   private static final String PROJECT_NAME = "regional-secret-manager-project";
   private static final String LOCATION = "us-central1";
   private SpringApplicationBuilder application;
@@ -63,7 +68,7 @@ class SecretManagerRegionalCompatibilityTests {
     client = mock(SecretManagerServiceClient.class);
     SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
     secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
-    when(secretManagerServiceClientFactory.getClient()).thenReturn(client);
+    when(secretManagerServiceClientFactory.getClient(GLOBAL_LOCATION)).thenReturn(client);
     when(secretManagerServiceClientFactory.getClient(LOCATION)).thenReturn(secretManagerServiceClient);
 
     SecretVersionName secretVersionName =

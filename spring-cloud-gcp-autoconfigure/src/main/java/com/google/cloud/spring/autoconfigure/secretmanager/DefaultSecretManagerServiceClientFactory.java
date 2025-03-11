@@ -24,6 +24,7 @@ import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
@@ -38,25 +39,30 @@ import org.springframework.util.ObjectUtils;
 @Component
 public class DefaultSecretManagerServiceClientFactory implements SecretManagerServiceClientFactory {
 
+  /**
+   * Default value for the latest version of the secret.
+   */
+  public static final String GLOBAL_LOCATION = "global";
+
   private final CredentialsProvider credentialsProvider;
   private final Map<String, SecretManagerServiceClient> clientCache = new ConcurrentHashMap<>();
 
   public DefaultSecretManagerServiceClientFactory(CredentialsProvider credentialsProvider, SecretManagerServiceClient client) {
     this.credentialsProvider = credentialsProvider;
-    this.clientCache.putIfAbsent("global", client);
+    this.clientCache.putIfAbsent(GLOBAL_LOCATION, client);
   }
 
   @Override
-  public SecretManagerServiceClient getClient(String location) {
+  public SecretManagerServiceClient getClient(@Nullable String location) {
     if (ObjectUtils.isEmpty(location)) {
-      location = "global";
+      location = GLOBAL_LOCATION;
     }
     return clientCache.computeIfAbsent(location, loc -> {
       try {
         SecretManagerServiceSettings.Builder settings = SecretManagerServiceSettings.newBuilder()
             .setCredentialsProvider(credentialsProvider)
             .setHeaderProvider(new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class));
-        if (!ObjectUtils.isEmpty(loc)) {
+        if (!loc.equals(GLOBAL_LOCATION)) {
           settings.setEndpoint(String.format("secretmanager.%s.rep.googleapis.com:443", loc));
         }
         return SecretManagerServiceClient.create(settings.build());
@@ -65,10 +71,5 @@ public class DefaultSecretManagerServiceClientFactory implements SecretManagerSe
             "Failed to create SecretManagerServiceClient for location: " + loc, e);
       }
     });
-  }
-
-  @Override
-  public SecretManagerServiceClient getClient() {
-    return getClient(null);
   }
 }

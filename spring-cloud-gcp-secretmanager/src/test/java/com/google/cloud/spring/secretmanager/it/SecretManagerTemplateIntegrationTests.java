@@ -79,7 +79,7 @@ class SecretManagerTemplateIntegrationTests {
   void testReadMissingSecret() {
 
     assertThatThrownBy(() -> secretManagerTemplate.getSecretBytes("test-NON-EXISTING-secret"))
-              .isInstanceOf(com.google.api.gax.rpc.NotFoundException.class);
+        .isInstanceOf(com.google.api.gax.rpc.NotFoundException.class);
   }
 
   @Test

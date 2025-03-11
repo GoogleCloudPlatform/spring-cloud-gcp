@@ -25,22 +25,28 @@ import com.google.cloud.spring.core.DefaultGcpEnvironmentProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpEnvironmentProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
+import javax.annotation.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.util.ObjectUtils;
 
 @Configuration
-public class SecretManagerTestConfiguration {
+public class SecretManagerRegionalTestConfiguration {
+
+  /** Default value for the latest version of the secret. */
+  public static final String GLOBAL_LOCATION = "global";
 
   private final GcpProjectIdProvider projectIdProvider;
 
   private final CredentialsProvider credentialsProvider;
 
-  public SecretManagerTestConfiguration(ConfigurableEnvironment configurableEnvironment)
+  public SecretManagerRegionalTestConfiguration(ConfigurableEnvironment configurableEnvironment)
       throws IOException {
 
     this.projectIdProvider = new DefaultGcpProjectIdProvider();
@@ -79,17 +85,32 @@ public class SecretManagerTestConfiguration {
   }
 
   @Bean
-  public SecretManagerServiceClient secretManagerClient() throws IOException {
-    SecretManagerServiceSettings settings =
-        SecretManagerServiceSettings.newBuilder()
-            .setCredentialsProvider(this.credentialsProvider)
-            .build();
-
-    return SecretManagerServiceClient.create(settings);
+  public SecretManagerServiceClientFactory secretManagerServiceClientFactory() throws IOException {
+    return new SecretManagerServiceClientFactory() {
+      @Override
+      public SecretManagerServiceClient getClient(@Nullable String location) {
+        if (ObjectUtils.isEmpty(location)) {
+          location = GLOBAL_LOCATION;
+        }
+        try {
+          SecretManagerServiceSettings.Builder settings =
+              SecretManagerServiceSettings.newBuilder()
+                  .setCredentialsProvider(credentialsProvider);
+          if (!location.equals(GLOBAL_LOCATION)) {
+            settings.setEndpoint(String.format("secretmanager.%s.rep.googleapis.com:443", location));
+          }
+          return SecretManagerServiceClient.create(settings.build());
+        } catch (IOException e) {
+          throw new RuntimeException(
+              "Failed to create SecretManagerServiceClient for location: " + location, e);
+        }
+      }
+    };
   }
 
   @Bean
-  public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
-    return new SecretManagerTemplate(client, this.projectIdProvider);
+  public SecretManagerTemplate secretManagerTemplate(
+      SecretManagerServiceClientFactory secretManagerServiceClientFactory) {
+    return new SecretManagerTemplate(secretManagerServiceClientFactory, this.projectIdProvider);
   }
 }
