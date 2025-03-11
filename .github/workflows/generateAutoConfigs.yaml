@@ -26,6 +26,17 @@ jobs:
         with:
           token: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
           persist-credentials: false
+      - run: |
+          git remote remove origin
+          git remote add origin https://${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}@github.com/GoogleCloudPlatform/spring-cloud-gcp.git
+          git fetch origin ${{ github.event.inputs.branch_name }}
+          git checkout ${{ github.event.inputs.branch_name }}
+          git reset --hard
+          git stash pop
+          echo 'test' > test
+          git add test
+          git commit -m "test commit"
+          git push -u origin ${{ github.event.inputs.branch_name }}
       - name: Get PR info
         id: get_pr_info
         continue-on-error: false
