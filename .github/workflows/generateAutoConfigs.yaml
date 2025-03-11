@@ -73,6 +73,8 @@ jobs:
         continue-on-error: false
         run: |
           set -e
+          find .
+          ls -lah
           ./mvnw \
             --batch-mode \
             --no-transfer-progress \
