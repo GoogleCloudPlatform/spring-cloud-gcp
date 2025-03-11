@@ -153,7 +153,7 @@ jobs:
             git stash pop
             git add ./spring-cloud-previews
             git commit -m "chore: update starter modules in spring-cloud-previews"
-            git push -u origin ${{ github.event.inputs.branch_name }}
+            git push -u https://${GITHUB_TOKEN}@github.com/GoogleCloudPlatform/spring-cloud-gcp.git ${{ github.event.inputs.branch_name }}
           fi
 
         env:
