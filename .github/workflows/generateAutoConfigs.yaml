@@ -119,7 +119,6 @@ jobs:
           # pops the changes in a new branch from main
           git checkout main
           git checkout -b $NEW_BRANCH_NAME
-          #git checkout stash -- .
           git stash pop
           git add .
 
@@ -128,7 +127,7 @@ jobs:
           git config --global user.email "cloud-java-bot@google.com"
 
           # commit
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/$GITHUB_REPOSITORY
           git commit -m "$MESSAGE"
           git push --set-upstream origin $NEW_BRANCH_NAME
 
