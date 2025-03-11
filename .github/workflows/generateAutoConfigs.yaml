@@ -19,8 +19,12 @@ jobs:
     # log information required for manually triggering workflow and exit with error to block PR
     if: ${{ (github.event_name == 'workflow_dispatch') || startsWith(github.head_ref, 'renovate/main-gcp-libraries-bom.version') || startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom') }}
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
       - name: Get PR info
         id: get_pr_info
         continue-on-error: false
@@ -57,8 +61,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
-        env:
-          GITHUB_TOKEN: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
       - run: bazelisk version
       - uses: actions/setup-go@v3
       - name: Install buildozer
@@ -156,7 +158,3 @@ jobs:
             git push -u https://${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}@github.com/GoogleCloudPlatform/spring-cloud-gcp.git ${{ github.event.inputs.branch_name }}
           fi
 
-        env:
-          GITHUB_ACTOR_EMAIL: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_EMAIL }}
-          GITHUB_ACTOR_NAME: ${{ steps.determine_workflow_author_email.outputs.GITHUB_ACTOR_NAME }}
-          GITHUB_TOKEN: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
