@@ -21,9 +21,12 @@ import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.war
 
 import autovalue.shaded.com.google.common.annotations.VisibleForTesting;
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.io.IOException;
@@ -46,6 +49,10 @@ public class SecretManagerConfigDataLocationResolver implements
   private static final Logger logger =
       LoggerFactory.getLogger(SecretManagerConfigDataLocationResolver.class);
 
+  /**
+   * A static client to avoid creating another client after refreshing.
+   */
+  private static SecretManagerServiceClient secretManagerServiceClient;
   /**
    * A static client factory to avoid creating another client after refreshing.
    */
@@ -79,6 +86,12 @@ public class SecretManagerConfigDataLocationResolver implements
         SecretManagerServiceClientFactory.class,
         BootstrapRegistry.InstanceSupplier.from(
             () -> createSecretManagerServiceClientFactory(context)));
+    // Register the Secret Manager client.
+    registerAndPromoteBean(
+        context,
+        SecretManagerServiceClient.class,
+        // lazy register the client solely for unit test.
+        BootstrapRegistry.InstanceSupplier.from(() -> createSecretManagerClient(context)));
     registerAndPromoteBean(
         context,
         GcpProjectIdProvider.class,
@@ -121,27 +134,63 @@ public class SecretManagerConfigDataLocationResolver implements
   }
 
   @VisibleForTesting
+  static synchronized SecretManagerServiceClient createSecretManagerClient(
+      ConfigDataLocationResolverContext context) {
+    if (secretManagerServiceClient != null && !secretManagerServiceClient.isTerminated()) {
+      return secretManagerServiceClient;
+    }
+
+    try {
+      GcpSecretManagerProperties properties = context.getBootstrapContext()
+          .get(GcpSecretManagerProperties.class);
+      DefaultCredentialsProvider credentialsProvider =
+          new DefaultCredentialsProvider(properties);
+      SecretManagerServiceSettings settings = SecretManagerServiceSettings.newBuilder()
+          .setCredentialsProvider(credentialsProvider)
+          .setHeaderProvider(
+              new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class))
+          .build();
+      secretManagerServiceClient = SecretManagerServiceClient.create(settings);
+
+      return secretManagerServiceClient;
+    } catch (IOException e) {
+      throw new RuntimeException(
+          "Failed to create the Secret Manager Client for ConfigData loading.", e);
+    }
+  }
+
+  @VisibleForTesting
   static synchronized SecretManagerServiceClientFactory createSecretManagerServiceClientFactory(
       ConfigDataLocationResolverContext context) {
     if (secretManagerServiceClientFactory != null) {
       return secretManagerServiceClientFactory;
     }
+    SecretManagerServiceClient client = context.getBootstrapContext()
+        .get(SecretManagerServiceClient.class);
     return new DefaultSecretManagerServiceClientFactory(
-        context.getBootstrapContext().get(CredentialsProvider.class));
+        context.getBootstrapContext().get(CredentialsProvider.class), client);
   }
 
   private static SecretManagerTemplate createSecretManagerTemplate(
       ConfigDataLocationResolverContext context) {
-    SecretManagerServiceClientFactory client = context.getBootstrapContext()
+    SecretManagerServiceClient client = context.getBootstrapContext()
+        .get(SecretManagerServiceClient.class);
+    SecretManagerServiceClientFactory clientFactory = context.getBootstrapContext()
         .get(SecretManagerServiceClientFactory.class);
     GcpProjectIdProvider projectIdProvider = context.getBootstrapContext()
         .get(GcpProjectIdProvider.class);
     GcpSecretManagerProperties properties = context.getBootstrapContext()
         .get(GcpSecretManagerProperties.class);
 
-    return new SecretManagerTemplate(client, projectIdProvider)
-        .setAllowDefaultSecretValue(properties.isAllowDefaultSecret());
+    if (clientFactory != null) {
+      return new SecretManagerTemplate(clientFactory, projectIdProvider)
+          .setAllowDefaultSecretValue(properties.isAllowDefaultSecret());
+    } else {
+      return new SecretManagerTemplate(client, projectIdProvider)
+          .setAllowDefaultSecretValue(properties.isAllowDefaultSecret());
+    }
   }
+
 
   /**
    * Registers a bean in the Bootstrap Registry.
@@ -173,6 +222,11 @@ public class SecretManagerConfigDataLocationResolver implements
         factory.registerSingleton(beanName, instance);
       }
     });
+  }
+
+  @VisibleForTesting
+  static void setSecretManagerServiceClient(SecretManagerServiceClient client) {
+    secretManagerServiceClient = client;
   }
 
   @VisibleForTesting

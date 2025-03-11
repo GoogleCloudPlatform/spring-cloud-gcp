@@ -24,6 +24,7 @@ import com.google.cloud.secretmanager.v1.LocationName;
 import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Replication;
 import com.google.cloud.secretmanager.v1.Secret;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
@@ -48,6 +49,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   public static final String LATEST_VERSION = "latest";
 
   private static final Log LOGGER = LogFactory.getLog(SecretManagerTemplate.class);
+  private final SecretManagerServiceClient secretManagerServiceClient;
   private final SecretManagerServiceClientFactory clientFactory;
   private final GcpProjectIdProvider projectIdProvider;
   /**
@@ -55,10 +57,26 @@ public class SecretManagerTemplate implements SecretManagerOperations {
    */
   private boolean allowDefaultSecretValue;
 
+  // Constructor for SecretManagerServiceClient
+  public SecretManagerTemplate(
+      SecretManagerServiceClient secretManagerServiceClient,
+      GcpProjectIdProvider projectIdProvider) {
+    this(secretManagerServiceClient, null, projectIdProvider);
+  }
 
+  // Constructor for SecretManagerServiceClientFactory
   public SecretManagerTemplate(
       SecretManagerServiceClientFactory clientFactory,
       GcpProjectIdProvider projectIdProvider) {
+    this(clientFactory.getClient(), clientFactory, projectIdProvider);
+  }
+
+  // Private constructor that initializes common fields
+  private SecretManagerTemplate(
+      SecretManagerServiceClient secretManagerServiceClient,
+      SecretManagerServiceClientFactory clientFactory,
+      GcpProjectIdProvider projectIdProvider) {
+    this.secretManagerServiceClient = secretManagerServiceClient;
     this.clientFactory = clientFactory;
     this.projectIdProvider = projectIdProvider;
     this.allowDefaultSecretValue = false;

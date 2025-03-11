@@ -48,6 +48,7 @@ class SecretManagerRegionalCompatibilityTests {
   private static final String PROJECT_NAME = "regional-secret-manager-project";
   private static final String LOCATION = "us-central1";
   private SpringApplicationBuilder application;
+  private SecretManagerServiceClient client;
   private SecretManagerServiceClientFactory secretManagerServiceClientFactory;
 
   @BeforeEach
@@ -59,8 +60,10 @@ class SecretManagerRegionalCompatibilityTests {
             "spring.cloud.gcp.sql.enabled=false")
         .sources(TestConfig.class);
 
+    client = mock(SecretManagerServiceClient.class);
     SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
     secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
+    when(secretManagerServiceClientFactory.getClient()).thenReturn(client);
     when(secretManagerServiceClientFactory.getClient(LOCATION)).thenReturn(secretManagerServiceClient);
 
     SecretVersionName secretVersionName =
@@ -101,6 +104,12 @@ class SecretManagerRegionalCompatibilityTests {
                 SecretManagerServiceClientFactory.class,
                 InstanceSupplier.of(secretManagerServiceClientFactory)
             )
+        )
+        .addBootstrapRegistryInitializer(
+            (registry) -> registry.registerIfAbsent(
+                SecretManagerServiceClient.class,
+                InstanceSupplier.of(client)
+            )
         );
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
@@ -119,6 +128,12 @@ class SecretManagerRegionalCompatibilityTests {
             (registry) -> registry.registerIfAbsent(
                 SecretManagerServiceClientFactory.class,
                 InstanceSupplier.of(secretManagerServiceClientFactory)
+            )
+        )
+        .addBootstrapRegistryInitializer(
+            (registry) -> registry.registerIfAbsent(
+                SecretManagerServiceClient.class,
+                InstanceSupplier.of(client)
             )
         );
     application.sources(TestConfig.class);

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import java.util.List;
@@ -66,6 +67,15 @@ class SecretManagerConfigDataLocationResolverUnitTests {
 
   @Test
   void createSecretManagerClientWithPresetClientTest() {
+    SecretManagerServiceClient client = mock(SecretManagerServiceClient.class);
+    SecretManagerConfigDataLocationResolver.setSecretManagerServiceClient(client);
+    assertThat(
+        SecretManagerConfigDataLocationResolver.createSecretManagerClient(context))
+        .isEqualTo(client);
+  }
+
+  @Test
+  void createSecretManagerClientFactoryWithPresetClientTest() {
     SecretManagerServiceClientFactory secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
     SecretManagerConfigDataLocationResolver.setSecretManagerServiceClientFactory(secretManagerServiceClientFactory);
     assertThat(
@@ -78,6 +88,7 @@ class SecretManagerConfigDataLocationResolverUnitTests {
     GcpSecretManagerProperties properties = mock(GcpSecretManagerProperties.class);
     Credentials credentials = mock(Credentials.class);
     CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
+    SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
     SecretManagerServiceClientFactory secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
 
     when(properties.getCredentials()).thenReturn(credentials);
@@ -86,6 +97,8 @@ class SecretManagerConfigDataLocationResolverUnitTests {
         BootstrapRegistry.InstanceSupplier.of(properties));
     defaultBootstrapContext.register(CredentialsProvider.class,
         BootstrapRegistry.InstanceSupplier.of(credentialsProvider));
+    defaultBootstrapContext.register(SecretManagerServiceClient.class,
+        BootstrapRegistry.InstanceSupplier.of(secretManagerServiceClient));
     defaultBootstrapContext.register(SecretManagerServiceClientFactory.class,
         BootstrapRegistry.InstanceSupplier.of(secretManagerServiceClientFactory));
 

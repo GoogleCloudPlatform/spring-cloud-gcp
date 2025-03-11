@@ -41,23 +41,25 @@ public class DefaultSecretManagerServiceClientFactory implements SecretManagerSe
   private final CredentialsProvider credentialsProvider;
   private final Map<String, SecretManagerServiceClient> clientCache = new ConcurrentHashMap<>();
 
-  public DefaultSecretManagerServiceClientFactory(CredentialsProvider credentialsProvider) {
+  public DefaultSecretManagerServiceClientFactory(CredentialsProvider credentialsProvider, SecretManagerServiceClient client) {
     this.credentialsProvider = credentialsProvider;
+    this.clientCache.putIfAbsent("global", client);
   }
 
   @Override
   public SecretManagerServiceClient getClient(String location) {
     if (ObjectUtils.isEmpty(location)) {
-      return getClient();
+      location = "global";
     }
     return clientCache.computeIfAbsent(location, loc -> {
       try {
-        String endpoint = String.format("secretmanager.%s.rep.googleapis.com:443", loc);
-        SecretManagerServiceSettings settings = SecretManagerServiceSettings.newBuilder()
+        SecretManagerServiceSettings.Builder settings = SecretManagerServiceSettings.newBuilder()
             .setCredentialsProvider(credentialsProvider)
-            .setHeaderProvider(new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class))
-            .setEndpoint(endpoint).build();
-        return SecretManagerServiceClient.create(settings);
+            .setHeaderProvider(new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class));
+        if (!ObjectUtils.isEmpty(loc)) {
+          settings.setEndpoint(String.format("secretmanager.%s.rep.googleapis.com:443", loc));
+        }
+        return SecretManagerServiceClient.create(settings.build());
       } catch (IOException e) {
         throw new RuntimeException(
             "Failed to create SecretManagerServiceClient for location: " + loc, e);
@@ -67,17 +69,6 @@ public class DefaultSecretManagerServiceClientFactory implements SecretManagerSe
 
   @Override
   public SecretManagerServiceClient getClient() {
-    return clientCache.computeIfAbsent("", loc -> {
-      try {
-        SecretManagerServiceSettings settings = SecretManagerServiceSettings.newBuilder()
-            .setCredentialsProvider(credentialsProvider)
-            .setHeaderProvider(new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class)
-            ).build();
-
-        return SecretManagerServiceClient.create(settings);
-      } catch (IOException e) {
-        throw new RuntimeException("Failed to create SecretManagerServiceClient", e);
-      }
-    });
+    return getClient(null);
   }
 }
