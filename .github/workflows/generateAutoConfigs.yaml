@@ -140,7 +140,6 @@ jobs:
           # configure author
           git config --global user.name "Cloud Java Bot"
           git config --global user.email "cloud-java-bot@google.com"
-
           
           # push changes to branch
           if [[ ${{ github.event.inputs.forked_repo }} != "none" ]]; then
