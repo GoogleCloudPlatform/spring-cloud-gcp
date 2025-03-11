@@ -73,8 +73,6 @@ jobs:
         continue-on-error: false
         run: |
           set -e
-          find .
-          ls -lah
           ./mvnw \
             --batch-mode \
             --no-transfer-progress \
@@ -142,6 +140,7 @@ jobs:
           # configure author
           git config --global user.name "Cloud Java Bot"
           git config --global user.email "cloud-java-bot@google.com"
+
           
           # push changes to branch
           if [[ ${{ github.event.inputs.forked_repo }} != "none" ]]; then
@@ -152,12 +151,14 @@ jobs:
             git commit -m "chore: update starter modules in spring-cloud-previews"
             git push https://github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
           else
+            git remote remove origin
+            git remote add origin https://${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}@github.com/GoogleCloudPlatform/spring-cloud-gcp.git
             git fetch origin ${{ github.event.inputs.branch_name }}
             git checkout ${{ github.event.inputs.branch_name }}
             git reset --hard
             git stash pop
             git add ./spring-cloud-previews
             git commit -m "chore: update starter modules in spring-cloud-previews"
-            git push -u https://${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}@github.com/GoogleCloudPlatform/spring-cloud-gcp.git ${{ github.event.inputs.branch_name }}
+            git push -u origin ${{ github.event.inputs.branch_name }}
           fi
 
