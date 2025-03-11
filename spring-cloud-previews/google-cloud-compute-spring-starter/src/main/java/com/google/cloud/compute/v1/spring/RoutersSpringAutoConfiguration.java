@@ -166,6 +166,11 @@ public class RoutersSpringAutoConfiguration {
           .getNatMappingInfoSettings()
           .setRetrySettings(getNatMappingInfoRetrySettings);
 
+      RetrySettings getRoutePolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getRoutePolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getRoutePolicySettings().setRetrySettings(getRoutePolicyRetrySettings);
+
       RetrySettings getRouterStatusRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getRouterStatusSettings().getRetrySettings(), serviceRetry);
@@ -177,6 +182,18 @@ public class RoutersSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listSettings().setRetrySettings(listRetrySettings);
+
+      RetrySettings listBgpRoutesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBgpRoutesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listBgpRoutesSettings().setRetrySettings(listBgpRoutesRetrySettings);
+
+      RetrySettings listRoutePoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listRoutePoliciesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listRoutePoliciesSettings()
+          .setRetrySettings(listRoutePoliciesRetrySettings);
 
       RetrySettings previewRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -232,6 +249,17 @@ public class RoutersSpringAutoConfiguration {
             "Configured method-level retry settings for getNatMappingInfo from properties.");
       }
     }
+    Retry getRoutePolicyRetry = clientProperties.getGetRoutePolicyRetry();
+    if (getRoutePolicyRetry != null) {
+      RetrySettings getRoutePolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getRoutePolicySettings().getRetrySettings(),
+              getRoutePolicyRetry);
+      clientSettingsBuilder.getRoutePolicySettings().setRetrySettings(getRoutePolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getRoutePolicy from properties.");
+      }
+    }
     Retry getRouterStatusRetry = clientProperties.getGetRouterStatusRetry();
     if (getRouterStatusRetry != null) {
       RetrySettings getRouterStatusRetrySettings =
@@ -253,6 +281,30 @@ public class RoutersSpringAutoConfiguration {
       clientSettingsBuilder.listSettings().setRetrySettings(listRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for list from properties.");
+      }
+    }
+    Retry listBgpRoutesRetry = clientProperties.getListBgpRoutesRetry();
+    if (listBgpRoutesRetry != null) {
+      RetrySettings listBgpRoutesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBgpRoutesSettings().getRetrySettings(), listBgpRoutesRetry);
+      clientSettingsBuilder.listBgpRoutesSettings().setRetrySettings(listBgpRoutesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listBgpRoutes from properties.");
+      }
+    }
+    Retry listRoutePoliciesRetry = clientProperties.getListRoutePoliciesRetry();
+    if (listRoutePoliciesRetry != null) {
+      RetrySettings listRoutePoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listRoutePoliciesSettings().getRetrySettings(),
+              listRoutePoliciesRetry);
+      clientSettingsBuilder
+          .listRoutePoliciesSettings()
+          .setRetrySettings(listRoutePoliciesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listRoutePolicies from properties.");
       }
     }
     Retry previewRetry = clientProperties.getPreviewRetry();
