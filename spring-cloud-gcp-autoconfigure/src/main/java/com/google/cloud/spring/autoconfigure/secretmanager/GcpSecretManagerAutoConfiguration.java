@@ -24,6 +24,7 @@ import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.io.IOException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -81,7 +82,10 @@ public class GcpSecretManagerAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean
   public SecretManagerTemplate secretManagerTemplate(
-      SecretManagerServiceClient client, SecretManagerServiceClientFactory clientFactory) {
+      SecretManagerServiceClient client, ObjectProvider<SecretManagerServiceClientFactory> clientFactoryProvider) {
+
+    SecretManagerServiceClientFactory clientFactory = clientFactoryProvider.getIfAvailable();
+
     if (clientFactory != null) {
       return new SecretManagerTemplate(clientFactory, this.gcpProjectIdProvider)
           .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
