@@ -25,6 +25,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
+          persist-credentials: false
       - name: Get PR info
         id: get_pr_info
         continue-on-error: false
