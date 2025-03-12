@@ -63,6 +63,11 @@ public class RoutersSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getNatMappingInfoRetry;
   /**
+   * Allow override of retry settings at method-level for getRoutePolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getRoutePolicyRetry;
+  /**
    * Allow override of retry settings at method-level for getRouterStatus. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -72,6 +77,16 @@ public class RoutersSpringProperties implements CredentialsSupplier {
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listRetry;
+  /**
+   * Allow override of retry settings at method-level for listBgpRoutes. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listBgpRoutesRetry;
+  /**
+   * Allow override of retry settings at method-level for listRoutePolicies. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listRoutePoliciesRetry;
   /**
    * Allow override of retry settings at method-level for preview. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
@@ -139,6 +154,14 @@ public class RoutersSpringProperties implements CredentialsSupplier {
     this.getNatMappingInfoRetry = getNatMappingInfoRetry;
   }
 
+  public Retry getGetRoutePolicyRetry() {
+    return this.getRoutePolicyRetry;
+  }
+
+  public void setGetRoutePolicyRetry(Retry getRoutePolicyRetry) {
+    this.getRoutePolicyRetry = getRoutePolicyRetry;
+  }
+
   public Retry getGetRouterStatusRetry() {
     return this.getRouterStatusRetry;
   }
@@ -153,6 +176,22 @@ public class RoutersSpringProperties implements CredentialsSupplier {
 
   public void setListRetry(Retry listRetry) {
     this.listRetry = listRetry;
+  }
+
+  public Retry getListBgpRoutesRetry() {
+    return this.listBgpRoutesRetry;
+  }
+
+  public void setListBgpRoutesRetry(Retry listBgpRoutesRetry) {
+    this.listBgpRoutesRetry = listBgpRoutesRetry;
+  }
+
+  public Retry getListRoutePoliciesRetry() {
+    return this.listRoutePoliciesRetry;
+  }
+
+  public void setListRoutePoliciesRetry(Retry listRoutePoliciesRetry) {
+    this.listRoutePoliciesRetry = listRoutePoliciesRetry;
   }
 
   public Retry getPreviewRetry() {
