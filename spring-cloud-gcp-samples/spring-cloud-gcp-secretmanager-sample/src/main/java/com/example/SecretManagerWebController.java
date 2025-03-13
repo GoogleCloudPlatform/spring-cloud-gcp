@@ -33,6 +33,7 @@ public class SecretManagerWebController {
 
   private static final String INDEX_PAGE = "index.html";
   private static final String APPLICATION_SECRET_FROM_VALUE = "applicationSecretFromValue";
+  private static final String APPLICATION_REGIONAL_SECRET_FROM_VALUE = "applicationRegionalSecretFromValue";
 
   private final SecretManagerTemplate secretManagerTemplate;
   // Application secrets can be accessed using configuration properties class,
@@ -62,6 +63,10 @@ public class SecretManagerWebController {
   @Value("${sm@application-secret:DEFAULT}")
   private String appSecretFromValue;
 
+  // Application secrets can be accessed using @Value syntax.
+  @Value("${sm@locations/us-central1/application-secret:DEFAULT}")
+  private String appRegionalSecretFromValue;
+
   public SecretManagerWebController(SecretManagerTemplate secretManagerTemplate,
       SecretConfiguration configuration
   ) {
@@ -73,7 +78,9 @@ public class SecretManagerWebController {
   public ModelAndView renderIndex(ModelMap map) {
     map.put("applicationDefaultSecret", defaultSecret);
     map.put(APPLICATION_SECRET_FROM_VALUE, appSecretFromValue);
+    map.put(APPLICATION_REGIONAL_SECRET_FROM_VALUE, appRegionalSecretFromValue);
     map.put("applicationSecretFromConfigurationProperties", configuration.getSecret());
+    map.put("applicationRegionalSecretFromConfigurationProperties", configuration.getRegSecret());
     return new ModelAndView(INDEX_PAGE, map);
   }
 
@@ -81,6 +88,7 @@ public class SecretManagerWebController {
   @ResponseBody
   public String getSecret(
       @RequestParam String secretId,
+      @RequestParam(required = false) String locationId,
       @RequestParam(required = false) String version,
       @RequestParam(required = false) String projectId,
       ModelMap map) {
@@ -90,14 +98,21 @@ public class SecretManagerWebController {
     }
 
     String secretPayload;
+    String secretIdentifier;
     if (StringUtils.isEmpty(projectId)) {
-      secretPayload =
-          this.secretManagerTemplate.getSecretString("sm@" + secretId + "/" + version);
+      if (StringUtils.isEmpty(locationId)) {
+        secretIdentifier = "sm@" + secretId + "/" + version;
+      } else {
+        secretIdentifier = "sm@" + "locations/" + locationId + "/" + secretId + "/" + version;
+      }
     } else {
-      secretPayload =
-          this.secretManagerTemplate.getSecretString(
-              "sm@" + projectId + "/" + secretId + "/" + version);
+      if (StringUtils.isEmpty(locationId)) {
+        secretIdentifier = "sm@" + projectId + "/" + secretId + "/" + version;
+      } else {
+        secretIdentifier = "sm@" + projectId + "/" + locationId + "/" + secretId + "/" + version;
+      }
     }
+    secretPayload = this.secretManagerTemplate.getSecretString(secretIdentifier);
 
     return "Secret ID: "
         + HtmlUtils.htmlEscape(secretId)
@@ -110,13 +125,22 @@ public class SecretManagerWebController {
   public ModelAndView createSecret(
       @RequestParam String secretId,
       @RequestParam String secretPayload,
+      @RequestParam(required = false) String locationId,
       @RequestParam(required = false) String projectId,
       ModelMap map) {
 
     if (StringUtils.isEmpty(projectId)) {
-      this.secretManagerTemplate.createSecret(secretId, secretPayload);
+      if (StringUtils.isEmpty(locationId)) {
+        this.secretManagerTemplate.createSecret(secretId, secretPayload);
+      } else {
+        this.secretManagerTemplate.createSecret(secretId, secretPayload, locationId);
+      }
     } else {
-      this.secretManagerTemplate.createSecret(secretId, secretPayload.getBytes(), projectId);
+      if (StringUtils.isEmpty(locationId)) {
+        this.secretManagerTemplate.createSecret(secretId, secretPayload.getBytes(), projectId);
+      } else {
+        this.secretManagerTemplate.createSecret(secretId, secretPayload.getBytes(), projectId, locationId);
+      }
     }
 
     map.put(APPLICATION_SECRET_FROM_VALUE, this.appSecretFromValue);
@@ -127,12 +151,21 @@ public class SecretManagerWebController {
   @PostMapping("/deleteSecret")
   public ModelAndView deleteSecret(
       @RequestParam String secretId,
+      @RequestParam(required = false) String locationId,
       @RequestParam(required = false) String projectId,
       ModelMap map) {
     if (StringUtils.isEmpty(projectId)) {
-      this.secretManagerTemplate.deleteSecret(secretId);
+      if (StringUtils.isEmpty(locationId)) {
+        this.secretManagerTemplate.deleteSecret(secretId);
+      } else {
+        this.secretManagerTemplate.deleteSecret(secretId, this.secretManagerTemplate.getProjectId(), locationId);
+      }
     } else {
-      this.secretManagerTemplate.deleteSecret(secretId, projectId);
+      if (StringUtils.isEmpty(locationId)) {
+        this.secretManagerTemplate.deleteSecret(secretId, projectId);
+      } else {
+        this.secretManagerTemplate.deleteSecret(secretId, projectId, locationId);
+      }
     }
     map.put(APPLICATION_SECRET_FROM_VALUE, this.appSecretFromValue);
     map.put("message", "Secret deleted!");
