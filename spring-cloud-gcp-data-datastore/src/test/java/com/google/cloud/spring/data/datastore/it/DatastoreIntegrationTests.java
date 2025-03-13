@@ -179,6 +179,17 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   }
 
   @Test
+  void testNotEquals() {
+    Pet linux = new Dog("Linux");
+    Pet lukas = new Dog("Lukas");
+    petRepository.save(linux);
+    petRepository.save(lukas);
+    List<Pet> result = petRepository.findByNameNot("Linux");
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).getName()).isEqualTo("Lukas");
+  }
+
+  @Test
   void testFindByExampleReference() {
     Store store1 = new Store("store1");
     Product product1 = new Product(store1);
@@ -693,7 +704,8 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   void referenceTest() {
     ReferenceEntity parent = saveReferenceEntitiesGraph();
 
-    ReferenceEntity loadedParent = this.datastoreTemplate.findById(parent.id, ReferenceEntity.class);
+    ReferenceEntity loadedParent =
+        this.datastoreTemplate.findById(parent.id, ReferenceEntity.class);
     assertThat(loadedParent).isEqualTo(parent);
 
     parent.name = "parent updated";
@@ -718,7 +730,8 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
   void lazyReferenceCollectionTest() {
     ReferenceLazyEntity parent = saveEntitiesGraph();
 
-    ReferenceLazyEntity lazyParent = this.datastoreTemplate.findById(parent.id, ReferenceLazyEntity.class);
+    ReferenceLazyEntity lazyParent =
+        this.datastoreTemplate.findById(parent.id, ReferenceLazyEntity.class);
 
     // Saving an entity with not loaded lazy field
     this.datastoreTemplate.save(lazyParent);
@@ -766,7 +779,8 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
 
     // Exception should be produced if a lazy loaded property accessed outside of the initial
     // transaction
-    ReferenceLazyEntity finalLoadedParent = this.transactionalTemplateService.findByIdLazy(parent.id);
+    ReferenceLazyEntity finalLoadedParent =
+        this.transactionalTemplateService.findByIdLazy(parent.id);
     assertThatThrownBy(() -> finalLoadedParent.children.size())
         .isInstanceOf(DatastoreDataException.class)
         .hasMessage("Lazy load should be invoked within the same transaction");
@@ -1015,8 +1029,6 @@ class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests {
     assertThat(readCompany.leaders).hasSize(1);
     assertThat(readCompany.leaders.get(0).id).isEqualTo(entity1.id);
   }
-
-
 
   @Test
   void testPageableGqlEntityProjectionsPage() {

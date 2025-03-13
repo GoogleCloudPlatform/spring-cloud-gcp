@@ -63,6 +63,11 @@ public class NetworkFirewallPoliciesSpringProperties implements CredentialsSuppl
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
   /**
+   * Allow override of retry settings at method-level for getPacketMirroringRule. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getPacketMirroringRuleRetry;
+  /**
    * Allow override of retry settings at method-level for getRule. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
@@ -142,6 +147,14 @@ public class NetworkFirewallPoliciesSpringProperties implements CredentialsSuppl
 
   public void setGetIamPolicyRetry(Retry getIamPolicyRetry) {
     this.getIamPolicyRetry = getIamPolicyRetry;
+  }
+
+  public Retry getGetPacketMirroringRuleRetry() {
+    return this.getPacketMirroringRuleRetry;
+  }
+
+  public void setGetPacketMirroringRuleRetry(Retry getPacketMirroringRuleRetry) {
+    this.getPacketMirroringRuleRetry = getPacketMirroringRuleRetry;
   }
 
   public Retry getGetRuleRetry() {

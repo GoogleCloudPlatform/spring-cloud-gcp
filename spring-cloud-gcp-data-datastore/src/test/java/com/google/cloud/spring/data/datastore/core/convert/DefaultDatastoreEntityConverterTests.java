@@ -23,6 +23,7 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.BaseEntity;
 import com.google.cloud.datastore.Blob;
 import com.google.cloud.datastore.Datastore;
+import com.google.cloud.datastore.DatastoreException;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.EntityValue;
 import com.google.cloud.datastore.FullEntity;
@@ -351,6 +352,43 @@ class DefaultDatastoreEntityConverterTests {
     // You get an "ambiguous method" error if put right into the assert.
     Value<String> baseEntity = entity.getValue("stringField");
     assertThat(baseEntity).as("validate null field").isEqualTo(new NullValue());
+  }
+
+  @Test
+  void testWriteEmptyValueSkipped() {
+    DatastoreMappingContext context = new DatastoreMappingContext(true);
+    DatastoreEntityConverter skipEmptyValueConverter =
+        new DefaultDatastoreEntityConverter(
+            new DatastoreMappingContext(true),
+            new TwoStepsConversions(
+                new DatastoreCustomConversions(
+                    Collections.singletonList(
+                        new Converter<HashMap, String>() {
+                          @Nullable
+                          @Override
+                          public String convert(HashMap source) {
+                            return "Map was converted to String";
+                          }
+                        })),
+                null,
+                context));
+    byte[] bytes = {1, 2, 3};
+    TestDatastoreItem item = new TestDatastoreItem();
+    item.setStringField(null);
+    item.setBoolField(true);
+    item.setDoubleField(3.1415D);
+    item.setLongField(123L);
+    item.setLatLngField(LatLng.of(10, 20));
+    item.setTimestampField(Timestamp.ofTimeSecondsAndNanos(30, 40));
+    item.setBlobField(Blob.copyFrom(bytes));
+
+    Entity.Builder builder = getEntityBuilder();
+    skipEmptyValueConverter.write(item, builder);
+
+    Entity entity = builder.build();
+    assertThatThrownBy(() -> entity.getValue("stringField"))
+        .isInstanceOf(DatastoreException.class)
+        .hasMessage("No such property stringField");
   }
 
   @Test
