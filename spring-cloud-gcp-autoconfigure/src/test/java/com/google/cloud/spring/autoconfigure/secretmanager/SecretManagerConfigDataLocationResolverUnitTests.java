@@ -99,7 +99,7 @@ class SecretManagerConfigDataLocationResolverUnitTests {
   }
 
   @Test
-  void SecretManagerProjectIdTakesPrecedence() {
+  void testSecretManagerProjectIdTakesPrecedence() {
     when(secretManagerProperties.getProjectId()).thenReturn("secret-manager-property-id");
     GcpProjectIdProvider projectIdProvider =
         SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
@@ -107,7 +107,7 @@ class SecretManagerConfigDataLocationResolverUnitTests {
   }
 
   @Test
-  void testProjectIDUseCoreWhenBoSecretManagerProjectId() {
+  void testProjectIdUseCoreWhenBoSecretManagerProjectId() {
     when(gcpProperties.getProjectId()).thenReturn("gcp-project-id");
     GcpProjectIdProvider projectIdProvider =
         SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
@@ -115,7 +115,7 @@ class SecretManagerConfigDataLocationResolverUnitTests {
   }
 
   @Test
-  void testProjectIDFallBackToDefault() {
+  void testProjectIdFallBackToDefault() {
     GcpProjectIdProvider projectIdProvider =
         SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
     assertThat(projectIdProvider).isInstanceOf(DefaultGcpProjectIdProvider.class);
