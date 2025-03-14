@@ -73,8 +73,7 @@ public class SecretManagerConfigDataLocationResolver implements
 
   private static void registerSecretManagerBeans(ConfigDataLocationResolverContext context) {
     // Register the Core properties.
-    registerBean(
-        context, GcpProperties.class, getGcpProperties(context));
+    registerBean(context, GcpProperties.class, getGcpProperties(context));
     // Register the Secret Manager properties.
     registerBean(
         context, GcpSecretManagerProperties.class, getSecretManagerProperties(context));
@@ -96,9 +95,11 @@ public class SecretManagerConfigDataLocationResolver implements
         BootstrapRegistry.InstanceSupplier.of(createSecretManagerTemplate(context)));
   }
 
-  private static GcpProperties getGcpProperties(
-      ConfigDataLocationResolverContext context) {
-    return context.getBinder().bind(GcpProperties.PREFIX, GcpProperties.class).orElse(new GcpProperties());
+  private static GcpProperties getGcpProperties(ConfigDataLocationResolverContext context) {
+    return context
+        .getBinder()
+        .bind(GcpProperties.PREFIX, GcpProperties.class)
+        .orElse(new GcpProperties());
   }
 
   private static GcpSecretManagerProperties getSecretManagerProperties(
@@ -108,23 +109,19 @@ public class SecretManagerConfigDataLocationResolver implements
         .orElse(new GcpSecretManagerProperties());
   }
 
-  private static GcpProjectIdProvider createProjectIdProvider(
-      ConfigDataLocationResolverContext context) {
-
+  @VisibleForTesting
+  static GcpProjectIdProvider createProjectIdProvider(ConfigDataLocationResolverContext context) {
     ConfigurableBootstrapContext bootstrapContext = context.getBootstrapContext();
-    
-    GcpSecretManagerProperties secretManagerProperties = bootstrapContext.get(GcpSecretManagerProperties.class);
+    GcpSecretManagerProperties secretManagerProperties =
+        bootstrapContext.get(GcpSecretManagerProperties.class);
     if (secretManagerProperties.getProjectId() != null) {
       return secretManagerProperties::getProjectId;
     }
-    
     GcpProperties gcpProperties = bootstrapContext.get(GcpProperties.class);
     if (gcpProperties.getProjectId() != null) {
       return gcpProperties::getProjectId;
     }
-    
     return new DefaultGcpProjectIdProvider();
-
   }
 
   @VisibleForTesting
