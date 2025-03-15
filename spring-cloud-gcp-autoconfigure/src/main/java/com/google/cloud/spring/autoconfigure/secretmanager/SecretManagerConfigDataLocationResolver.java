@@ -21,6 +21,7 @@ import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.war
 
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
+import com.google.cloud.spring.autoconfigure.core.GcpProperties;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
@@ -35,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.BootstrapRegistry;
+import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataLocationNotFoundException;
 import org.springframework.boot.context.config.ConfigDataLocationResolver;
@@ -70,6 +72,8 @@ public class SecretManagerConfigDataLocationResolver implements
   }
 
   private static void registerSecretManagerBeans(ConfigDataLocationResolverContext context) {
+    // Register the Core properties.
+    registerBean(context, GcpProperties.class, getGcpProperties(context));
     // Register the Secret Manager properties.
     registerBean(
         context, GcpSecretManagerProperties.class, getSecretManagerProperties(context));
@@ -91,6 +95,13 @@ public class SecretManagerConfigDataLocationResolver implements
         BootstrapRegistry.InstanceSupplier.of(createSecretManagerTemplate(context)));
   }
 
+  private static GcpProperties getGcpProperties(ConfigDataLocationResolverContext context) {
+    return context
+        .getBinder()
+        .bind(GcpProperties.PREFIX, GcpProperties.class)
+        .orElse(new GcpProperties());
+  }
+
   private static GcpSecretManagerProperties getSecretManagerProperties(
       ConfigDataLocationResolverContext context) {
     return context.getBinder()
@@ -98,12 +109,19 @@ public class SecretManagerConfigDataLocationResolver implements
         .orElse(new GcpSecretManagerProperties());
   }
 
-  private static GcpProjectIdProvider createProjectIdProvider(
-      ConfigDataLocationResolverContext context) {
-    GcpSecretManagerProperties properties = context.getBootstrapContext()
-        .get(GcpSecretManagerProperties.class);
-    return properties.getProjectId() != null
-        ? properties::getProjectId : new DefaultGcpProjectIdProvider();
+  @VisibleForTesting
+  static GcpProjectIdProvider createProjectIdProvider(ConfigDataLocationResolverContext context) {
+    ConfigurableBootstrapContext bootstrapContext = context.getBootstrapContext();
+    GcpSecretManagerProperties secretManagerProperties =
+        bootstrapContext.get(GcpSecretManagerProperties.class);
+    if (secretManagerProperties.getProjectId() != null) {
+      return secretManagerProperties::getProjectId;
+    }
+    GcpProperties gcpProperties = bootstrapContext.get(GcpProperties.class);
+    if (gcpProperties.getProjectId() != null) {
+      return gcpProperties::getProjectId;
+    }
+    return new DefaultGcpProjectIdProvider();
   }
 
   @VisibleForTesting
