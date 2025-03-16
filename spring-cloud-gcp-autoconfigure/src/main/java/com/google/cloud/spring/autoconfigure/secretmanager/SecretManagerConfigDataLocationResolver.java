@@ -84,10 +84,7 @@ public class SecretManagerConfigDataLocationResolver implements
         // lazy register the client solely for unit test.
         BootstrapRegistry.InstanceSupplier.from(() -> createSecretManagerClient(context)));
     // Register the GCP Project ID provider.
-    registerAndPromoteBean(
-        context,
-        GcpProjectIdProvider.class,
-        BootstrapRegistry.InstanceSupplier.of(createProjectIdProvider(context)));
+    registerBean(context, GcpProjectIdProvider.class, createProjectIdProvider(context));
     // Register the Secret Manager template.
     registerAndPromoteBean(
         context,
