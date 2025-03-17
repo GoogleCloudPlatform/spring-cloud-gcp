@@ -95,7 +95,7 @@ public class SecretManagerConfigDataLocationResolver implements
   private static GcpProperties getGcpProperties(ConfigDataLocationResolverContext context) {
     return context
         .getBinder()
-        .bind(GcpProperties.PREFIX, GcpProperties.class)
+        .bind(GcpProperties.CORE_PROPERTY_PREFIX, GcpProperties.class)
         .orElse(new GcpProperties());
   }
 
