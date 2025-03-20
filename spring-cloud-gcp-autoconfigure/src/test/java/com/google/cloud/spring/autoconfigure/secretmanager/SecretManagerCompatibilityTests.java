@@ -44,7 +44,6 @@ class SecretManagerCompatibilityTests {
     application = new SpringApplicationBuilder(SecretManagerCompatibilityTests.class)
         .web(WebApplicationType.NONE)
         .properties(
-            // "spring.cloud.gcp.secretmanager.project-id=" + PROJECT_NAME,
             "spring.cloud.gcp.sql.enabled=false");
 
     client = mock(SecretManagerServiceClient.class);

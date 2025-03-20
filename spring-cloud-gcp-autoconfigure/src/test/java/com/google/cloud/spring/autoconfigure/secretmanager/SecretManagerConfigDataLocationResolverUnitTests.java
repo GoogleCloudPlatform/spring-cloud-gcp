@@ -101,13 +101,14 @@ class SecretManagerConfigDataLocationResolverUnitTests {
   @Test
   void testSecretManagerProjectIdTakesPrecedence() {
     when(secretManagerProperties.getProjectId()).thenReturn("secret-manager-property-id");
+    when(gcpProperties.getProjectId()).thenReturn("gcp-project-id");
     GcpProjectIdProvider projectIdProvider =
         SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
     assertThat(projectIdProvider.getProjectId()).isEqualTo("secret-manager-property-id");
   }
 
   @Test
-  void testProjectIdUseCoreWhenBoSecretManagerProjectId() {
+  void testProjectIdUseCoreWhenNoSecretManagerProjectId() {
     when(gcpProperties.getProjectId()).thenReturn("gcp-project-id");
     GcpProjectIdProvider projectIdProvider =
         SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
