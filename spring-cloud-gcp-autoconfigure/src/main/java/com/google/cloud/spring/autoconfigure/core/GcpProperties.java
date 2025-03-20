@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.autoconfigure.core;
 
+import static com.google.cloud.spring.autoconfigure.core.GcpProperties.CORE_PROPERTY_PREFIX;
+
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,9 +25,12 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.ImportRuntimeHints;
 
 /** Top-level auto-config settings. */
-@ConfigurationProperties("spring.cloud.gcp")
+@ConfigurationProperties(CORE_PROPERTY_PREFIX)
 @ImportRuntimeHints(CredentialsRuntimeHints.class)
 public class GcpProperties implements CredentialsSupplier {
+
+  /** Configuration prefix. */
+  public static final String CORE_PROPERTY_PREFIX = "spring.cloud.gcp";
 
   /** GCP project ID where services are running. */
   private String projectId;
