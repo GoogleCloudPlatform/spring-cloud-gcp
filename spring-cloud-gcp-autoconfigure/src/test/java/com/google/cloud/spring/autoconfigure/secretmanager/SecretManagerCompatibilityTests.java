@@ -33,9 +33,10 @@ class SecretManagerCompatibilityTests {
 
   static Stream<Arguments> prefixes() {
     return Stream.of(
-        Arguments.of("sm://"),
-        Arguments.of("sm@")
-    );
+        Arguments.of("sm://", "spring.cloud.gcp.project-id="),
+        Arguments.of("sm://", "spring.cloud.gcp.secretmanager.project-id="),
+        Arguments.of("sm@", "spring.cloud.gcp.project-id="),
+        Arguments.of("sm@", "spring.cloud.gcp.secretmanager.project-id="));
   }
 
   @BeforeEach
@@ -43,7 +44,6 @@ class SecretManagerCompatibilityTests {
     application = new SpringApplicationBuilder(SecretManagerCompatibilityTests.class)
         .web(WebApplicationType.NONE)
         .properties(
-            "spring.cloud.gcp.secretmanager.project-id=" + PROJECT_NAME,
             "spring.cloud.gcp.sql.enabled=false");
 
     client = mock(SecretManagerServiceClient.class);
@@ -76,15 +76,13 @@ class SecretManagerCompatibilityTests {
    */
   @ParameterizedTest
   @MethodSource("prefixes")
-  void testConfigurationWhenDefaultSecretIsNotAllowed(String prefix) {
-    application.properties(
-            "spring.config.import=" + prefix)
+  void testConfigurationWhenDefaultSecretIsNotAllowed(String prefix, String projectIdPropertyName) {
+    application
+        .properties(projectIdPropertyName + PROJECT_NAME, "spring.config.import=" + prefix)
         .addBootstrapRegistryInitializer(
-            (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClient.class,
-                InstanceSupplier.of(client)
-            )
-        );
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClient.class, InstanceSupplier.of(client)));
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
       assertThat(environment.getProperty(prefix + "my-secret")).isEqualTo("newSecret");
@@ -95,16 +93,16 @@ class SecretManagerCompatibilityTests {
 
   @ParameterizedTest
   @MethodSource("prefixes")
-  void testConfigurationWhenDefaultSecretIsAllowed(String prefix) {
-    application.properties(
+  void testConfigurationWhenDefaultSecretIsAllowed(String prefix, String projectIdPropertyName) {
+    application
+        .properties(
+            projectIdPropertyName + PROJECT_NAME,
             "spring.cloud.gcp.secretmanager.allow-default-secret=true",
             "spring.config.import=" + prefix)
         .addBootstrapRegistryInitializer(
-            (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClient.class,
-                InstanceSupplier.of(client)
-            )
-        );
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClient.class, InstanceSupplier.of(client)));
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
       assertThat(environment.getProperty(prefix + "my-secret")).isEqualTo("newSecret");

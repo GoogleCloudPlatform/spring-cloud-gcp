@@ -172,6 +172,14 @@ public class NetworkFirewallPoliciesSpringAutoConfiguration {
               clientSettingsBuilder.getIamPolicySettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
 
+      RetrySettings getPacketMirroringRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPacketMirroringRuleSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getPacketMirroringRuleSettings()
+          .setRetrySettings(getPacketMirroringRuleRetrySettings);
+
       RetrySettings getRuleRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getRuleSettings().getRetrySettings(), serviceRetry);
@@ -238,6 +246,20 @@ public class NetworkFirewallPoliciesSpringAutoConfiguration {
       clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getIamPolicy from properties.");
+      }
+    }
+    Retry getPacketMirroringRuleRetry = clientProperties.getGetPacketMirroringRuleRetry();
+    if (getPacketMirroringRuleRetry != null) {
+      RetrySettings getPacketMirroringRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPacketMirroringRuleSettings().getRetrySettings(),
+              getPacketMirroringRuleRetry);
+      clientSettingsBuilder
+          .getPacketMirroringRuleSettings()
+          .setRetrySettings(getPacketMirroringRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getPacketMirroringRule from properties.");
       }
     }
     Retry getRuleRetry = clientProperties.getGetRuleRetry();

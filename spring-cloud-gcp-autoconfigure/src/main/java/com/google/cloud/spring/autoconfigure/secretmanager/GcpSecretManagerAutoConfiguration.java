@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.secretmanager;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
@@ -26,6 +27,7 @@ import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.io.IOException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -42,6 +44,7 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(GcpSecretManagerProperties.class)
 @ConditionalOnClass(SecretManagerTemplate.class)
 @ConditionalOnProperty(value = "spring.cloud.gcp.secretmanager.enabled", matchIfMissing = true)
+@AutoConfigureAfter(GcpContextAutoConfiguration.class)
 public class GcpSecretManagerAutoConfiguration {
 
   private final GcpProjectIdProvider gcpProjectIdProvider;

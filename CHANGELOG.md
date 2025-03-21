@@ -14,6 +14,22 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.1.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.0.1...v6.1.0) (2025-03-12)
+
+
+### Features
+
+* add support for `not equals` queries in datastore integration ([#3635](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3635)) ([548823f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/548823f70a7459bb56fb36c10b5c21ab20c3314b))
+* **datastore:** support `--use-firestore-in-datastore-mode` in the datastore emulator ([#3633](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3633)) ([06ca7a7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/06ca7a796636ffc8290787b4e12fe6de02015bcd))
+
+
+### Bug Fixes
+
+* create a datastore property to skip insertion if the value is `null` ([#3611](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3611)) ([925c0e1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/925c0e17052445e20380cd7ba1d2fc1041a34b91))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.56.0 ([#3612](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3612)) ([6cb3e2e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6cb3e2ecd6a0a62c1a39f9f38cb1ecc113133553))
+* **deps:** update gapic-generator-java-bom.version to v2.54.0 ([#3598](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3598)) ([c6b6e45](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c6b6e457addf5d561287dc8a885d8db5568c94dd))
+* **test:** change logback default flush lev ([#3627](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3627)) ([#3637](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3637)) ([dbe8f95](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/dbe8f959e3cc512a19a7719ef2de4efba1fd6e9c))
+
 ## [6.0.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.0.0...v6.0.1) (2025-02-24)
 
 

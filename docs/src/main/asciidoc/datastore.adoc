@@ -79,6 +79,9 @@ The following configuration options are available:
 | `spring.cloud.gcp.datastore.emulator.consistency` | The https://cloud.google.com/sdk/gcloud/reference/beta/emulators/datastore/start?#--consistency[consistency] to use for the Datastore Emulator instance | No | `0.9`
 | `spring.cloud.gcp.datastore.emulator.store-on-disk` | Configures whether or not the emulator should persist any data to disk. | No | `true`
 | `spring.cloud.gcp.datastore.emulator.data-dir` | The directory to be used to store/retrieve data/config for an emulator run. | No | The default value is `<USER_CONFIG_DIR>/emulators/datastore`. See the https://cloud.google.com/sdk/gcloud/reference/beta/emulators/datastore/start[gcloud documentation] for finding your `USER_CONFIG_DIR`.
+| `spring.cloud.gcp.datastore.emulator.firestore-in-datastore-mode` | Configures whether the emulator runs in "Cloud Firestore in Datastore Mode" | No | `false`
+| `spring.cloud.gcp.datastore.skip-null-value` | Whether skip inserting `null` values. | No | The default value is `false`.
+If configured to `true`, `null` value will not be inserted into the datastore.
 
 |===
 
@@ -962,6 +965,8 @@ public interface TradeRepository extends DatastoreRepository<Trade, String[]> {
   List<TestEntity> findBySymbol(String symbol, Sort sort);
 
   Stream<TestEntity> findBySymbol(String symbol);
+
+  Stream<TestEntity> findBySymbolIsNot(String symbol);
 }
 ----
 
@@ -972,6 +977,7 @@ NOTE: You can refer to nested fields using https://docs.spring.io/spring-data/jp
 Cloud Datastore only supports filter components joined by AND, and the following operations:
 
 * `equals`
+* `not equals`
 * `greater than or equals`
 * `greater than`
 * `less than or equals`
