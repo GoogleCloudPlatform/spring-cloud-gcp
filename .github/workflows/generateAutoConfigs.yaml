@@ -19,6 +19,9 @@ jobs:
     # log information required for manually triggering workflow and exit with error to block PR
     if: ${{ (github.event_name == 'workflow_dispatch') || startsWith(github.head_ref, 'renovate/main-gcp-libraries-bom.version') || startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom') }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     env:
       GITHUB_TOKEN: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
     steps:
