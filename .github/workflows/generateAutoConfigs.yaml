@@ -151,7 +151,7 @@ jobs:
             git stash pop
             git add ./spring-cloud-previews
             git commit -m "chore: update starter modules in spring-cloud-previews"
-            git push https://github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
+            git push https://${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}@github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
           else
             git remote remove origin
             git remote add origin https://${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}@github.com/GoogleCloudPlatform/spring-cloud-gcp.git
