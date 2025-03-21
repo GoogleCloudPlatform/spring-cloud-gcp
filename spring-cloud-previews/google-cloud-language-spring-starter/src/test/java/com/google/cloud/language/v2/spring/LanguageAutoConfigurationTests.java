@@ -198,7 +198,8 @@ class LanguageAutoConfigurationTests {
   void testCustomTransportChannelProviderUsedWhenProvided() throws IOException {
     when(mockTransportChannelProvider.getTransportName()).thenReturn("grpc");
     when(mockTransportChannelProvider.getTransportChannel()).thenReturn(mockTransportChannel);
-    when(mockTransportChannelProvider.withUseS2A(anyBoolean())).thenReturn(mockTransportChannelProvider);
+    when(mockTransportChannelProvider.withUseS2A(anyBoolean()))
+        .thenReturn(mockTransportChannelProvider);
     when(mockTransportChannel.getEmptyCallContext()).thenReturn(mockApiCallContext);
     when(mockApiCallContext.withCredentials(any())).thenReturn(mockApiCallContext);
     when(mockApiCallContext.withTransportChannel(any())).thenReturn(mockApiCallContext);
