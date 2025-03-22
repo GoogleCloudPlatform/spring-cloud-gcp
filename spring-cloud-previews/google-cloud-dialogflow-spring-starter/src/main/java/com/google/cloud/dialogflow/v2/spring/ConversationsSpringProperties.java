@@ -65,6 +65,11 @@ public class ConversationsSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry completeConversationRetry;
   /**
+   * Allow override of retry settings at method-level for ingestContextReferences. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry ingestContextReferencesRetry;
+  /**
    * Allow override of retry settings at method-level for listMessages. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -89,6 +94,11 @@ public class ConversationsSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchKnowledgeRetry;
+  /**
+   * Allow override of retry settings at method-level for generateSuggestions. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry generateSuggestionsRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -169,6 +179,14 @@ public class ConversationsSpringProperties implements CredentialsSupplier {
     this.completeConversationRetry = completeConversationRetry;
   }
 
+  public Retry getIngestContextReferencesRetry() {
+    return this.ingestContextReferencesRetry;
+  }
+
+  public void setIngestContextReferencesRetry(Retry ingestContextReferencesRetry) {
+    this.ingestContextReferencesRetry = ingestContextReferencesRetry;
+  }
+
   public Retry getListMessagesRetry() {
     return this.listMessagesRetry;
   }
@@ -207,6 +225,14 @@ public class ConversationsSpringProperties implements CredentialsSupplier {
 
   public void setSearchKnowledgeRetry(Retry searchKnowledgeRetry) {
     this.searchKnowledgeRetry = searchKnowledgeRetry;
+  }
+
+  public Retry getGenerateSuggestionsRetry() {
+    return this.generateSuggestionsRetry;
+  }
+
+  public void setGenerateSuggestionsRetry(Retry generateSuggestionsRetry) {
+    this.generateSuggestionsRetry = generateSuggestionsRetry;
   }
 
   public Retry getListLocationsRetry() {
