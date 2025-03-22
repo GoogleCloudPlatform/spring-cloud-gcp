@@ -68,7 +68,7 @@ function generate_showcase_spring_starter(){
   git checkout "v${gapic_generator_java_version}"
 
   # Install showcase client libraries locally
-  pushd showcase
+  pushd java-showcase
   # For local development, we cleanup any traces of previous runs
   rm -rdf "${output_folder}"
   mvn clean install
