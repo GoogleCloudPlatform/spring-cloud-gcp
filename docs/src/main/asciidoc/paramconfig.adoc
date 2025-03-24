@@ -41,7 +41,6 @@ If more than a single profile, last one is chosen
 | `spring.cloud.gcp.paramconfig.project-id` | Google Cloud project ID where the Google Parameter Manager is hosted | No |
 | `spring.cloud.gcp.paramconfig.credentials.location` | OAuth2 credentials for authenticating with the Google Parameter Manager | No |
 | `spring.cloud.gcp.paramconfig.credentials.encoded-key` | Base64-encoded OAuth2 credentials for authenticating with the Google Parameter Manager | No |
-| `spring.cloud.gcp.paramconfig.credentials.scopes` | https://developers.google.com/identity/protocols/googlescopes[OAuth2 scope] for Spring Framework on Google Cloud Parameter Manager credentials | No | https://www.googleapis.com/auth/cloudruntimeconfig
 |===
 
 NOTE: These properties should be specified in a https://cloud.spring.io/spring-cloud-static/spring-cloud.html#_the_bootstrap_application_context[`bootstrap.yml`/`bootstrap.properties`] file, rather than the usual `applications.yml`/`application.properties`.

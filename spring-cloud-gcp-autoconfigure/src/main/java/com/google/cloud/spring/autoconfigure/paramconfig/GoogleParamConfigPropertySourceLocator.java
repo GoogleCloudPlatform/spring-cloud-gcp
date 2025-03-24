@@ -137,7 +137,6 @@ public class GoogleParamConfigPropertySourceLocator implements PropertySourceLoc
     try {
       return objectMapper.readValue(data, Map.class);
     } catch (Exception e) {
-      System.out.println("Error parsing JSON: " + e.getMessage());
       try {
         Yaml yaml = new Yaml();
         return yaml.load(data);
