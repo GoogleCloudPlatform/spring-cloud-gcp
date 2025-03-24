@@ -41,7 +41,7 @@ import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
 import com.google.cloud.bigquery.Table;
 import com.google.cloud.bigquery.spi.BigQueryRpcFactory;
-import com.google.cloud.bigquery.spi.v2.BigQueryRpc;
+import com.google.cloud.bigquery.spi.v2.HttpBigQueryRpc;
 import com.google.cloud.bigquery.storage.v1.BatchCommitWriteStreamsResponse;
 import com.google.cloud.bigquery.storage.v1.BigQueryWriteClient;
 import com.google.cloud.bigquery.storage.v1.StorageError;
@@ -78,7 +78,7 @@ class BigQueryTemplateTest {
   private static final int JSON_WRITER_BATCH_SIZE = 1000;
 
   private BigQueryRpcFactory rpcFactoryMock;
-  private BigQueryRpc bigqueryRpcMock;
+  private HttpBigQueryRpc bigqueryRpcMock;
   private BigQuery bigquery;
   private BigQueryOptions options;
   private final Map<String, Object> bqInitSettings = new HashMap<>();
@@ -100,7 +100,7 @@ class BigQueryTemplateTest {
   @BeforeEach
   public void setUp() {
     rpcFactoryMock = mock(BigQueryRpcFactory.class);
-    bigqueryRpcMock = mock(BigQueryRpc.class);
+    bigqueryRpcMock = mock(HttpBigQueryRpc.class);
     when(rpcFactoryMock.create(any(BigQueryOptions.class))).thenReturn(bigqueryRpcMock);
     options = createBigQueryOptionsForProject(rpcFactoryMock);
     bigQueryWriteClientMock = mock(BigQueryWriteClient.class);
