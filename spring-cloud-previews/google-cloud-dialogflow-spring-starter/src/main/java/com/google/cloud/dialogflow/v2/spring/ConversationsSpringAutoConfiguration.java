@@ -189,6 +189,14 @@ public class ConversationsSpringAutoConfiguration {
           .completeConversationSettings()
           .setRetrySettings(completeConversationRetrySettings);
 
+      RetrySettings ingestContextReferencesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.ingestContextReferencesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .ingestContextReferencesSettings()
+          .setRetrySettings(ingestContextReferencesRetrySettings);
+
       RetrySettings listMessagesRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listMessagesSettings().getRetrySettings(), serviceRetry);
@@ -224,6 +232,13 @@ public class ConversationsSpringAutoConfiguration {
       clientSettingsBuilder
           .searchKnowledgeSettings()
           .setRetrySettings(searchKnowledgeRetrySettings);
+
+      RetrySettings generateSuggestionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateSuggestionsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .generateSuggestionsSettings()
+          .setRetrySettings(generateSuggestionsRetrySettings);
 
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -294,6 +309,20 @@ public class ConversationsSpringAutoConfiguration {
             "Configured method-level retry settings for completeConversation from properties.");
       }
     }
+    Retry ingestContextReferencesRetry = clientProperties.getIngestContextReferencesRetry();
+    if (ingestContextReferencesRetry != null) {
+      RetrySettings ingestContextReferencesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.ingestContextReferencesSettings().getRetrySettings(),
+              ingestContextReferencesRetry);
+      clientSettingsBuilder
+          .ingestContextReferencesSettings()
+          .setRetrySettings(ingestContextReferencesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for ingestContextReferences from properties.");
+      }
+    }
     Retry listMessagesRetry = clientProperties.getListMessagesRetry();
     if (listMessagesRetry != null) {
       RetrySettings listMessagesRetrySettings =
@@ -357,6 +386,20 @@ public class ConversationsSpringAutoConfiguration {
           .setRetrySettings(searchKnowledgeRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for searchKnowledge from properties.");
+      }
+    }
+    Retry generateSuggestionsRetry = clientProperties.getGenerateSuggestionsRetry();
+    if (generateSuggestionsRetry != null) {
+      RetrySettings generateSuggestionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateSuggestionsSettings().getRetrySettings(),
+              generateSuggestionsRetry);
+      clientSettingsBuilder
+          .generateSuggestionsSettings()
+          .setRetrySettings(generateSuggestionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for generateSuggestions from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
