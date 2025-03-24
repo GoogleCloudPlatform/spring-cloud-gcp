@@ -20,8 +20,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
-import com.google.cloud.parametermanager.v1.ParameterVersion;
 import com.google.cloud.parametermanager.v1.ParameterVersionName;
+import com.google.cloud.parametermanager.v1.RenderParameterVersionResponse;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import java.io.IOException;
@@ -93,12 +93,12 @@ public class GoogleParamConfigPropertySourceLocator implements PropertySourceLoc
     }
   }
 
-  ParameterVersion getRemoteEnvironment() throws Exception {
+  RenderParameterVersionResponse getRemoteEnvironment() throws Exception {
     // Fetch the parameter from the parameter manager
     try {
       ParameterVersionName parameterVersionName =
           ParameterVersionName.of(projectId, this.location, this.name, this.profile);
-      ParameterVersion response = this.parameterManagerClient.getParameterVersion(parameterVersionName.toString());
+      RenderParameterVersionResponse response = this.parameterManagerClient.renderParameterVersion(parameterVersionName.toString());
 
       if (response == null) {
         throw new HttpClientErrorException(
@@ -106,7 +106,7 @@ public class GoogleParamConfigPropertySourceLocator implements PropertySourceLoc
       }
       return response;
     } catch (Exception ex) {
-      throw new Exception("Something went wrong!", ex);
+      throw new Exception("Unable to load the configuration", ex);
     }
   }
 
@@ -117,8 +117,8 @@ public class GoogleParamConfigPropertySourceLocator implements PropertySourceLoc
     }
     Map<String, Object> config;
     try {
-      ParameterVersion googleParamConfigEnvironment = getRemoteEnvironment();
-      config = convertStringToMap(googleParamConfigEnvironment.getPayload().getData().toStringUtf8());
+      RenderParameterVersionResponse googleParamConfigEnvironment = getRemoteEnvironment();
+      config = convertStringToMap(googleParamConfigEnvironment.getRenderedPayload().toStringUtf8());
       Assert.notNull(googleParamConfigEnvironment, "Configuration not in expected format.");
     } catch (Exception ex) {
       String message =

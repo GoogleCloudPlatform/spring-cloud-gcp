@@ -29,9 +29,8 @@ import static org.mockito.Mockito.when;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
-import com.google.cloud.parametermanager.v1.ParameterVersion;
 import com.google.cloud.parametermanager.v1.ParameterVersionName;
-import com.google.cloud.parametermanager.v1.ParameterVersionPayload;
+import com.google.cloud.parametermanager.v1.RenderParameterVersionResponse;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
@@ -80,15 +79,15 @@ class GoogleParamConfigPropertySourceLocatorTest {
 
   @Test
   void locateReturnsMapPropertySourceJson() throws Exception {
-    ParameterVersion version = ParameterVersion.newBuilder()
-        .setPayload(
-            ParameterVersionPayload.newBuilder().setData(ByteString.copyFromUtf8("{\"property-int\": 10, \"property-bool\": true}")))
+    RenderParameterVersionResponse version = RenderParameterVersionResponse.newBuilder()
+        .setRenderedPayload(
+            ByteString.copyFromUtf8("{\"property-int\": 10, \"property-bool\": true}"))
         .build();
-    when(this.parameterManagerClient.getParameterVersion(any(ParameterVersionName.class)))
+    when(this.parameterManagerClient.renderParameterVersion(any(ParameterVersionName.class)))
         .thenReturn(
-            ParameterVersion.newBuilder()
-                .setPayload(
-                    ParameterVersionPayload.newBuilder().setData(ByteString.copyFromUtf8("{\"property-int\": 10, \"property-bool\": true}")))
+            RenderParameterVersionResponse.newBuilder()
+                .setRenderedPayload(
+                    ByteString.copyFromUtf8("{\"property-int\": 10, \"property-bool\": true}"))
                 .build());
 
     this.googleParamConfigPropertySourceLocator =
@@ -108,15 +107,15 @@ class GoogleParamConfigPropertySourceLocatorTest {
 
   @Test
   void locateReturnsMapPropertySourceUnformatted() throws Exception {
-    ParameterVersion version = ParameterVersion.newBuilder()
-        .setPayload(
-            ParameterVersionPayload.newBuilder().setData(ByteString.copyFromUtf8("This is unformatted payload")))
+    RenderParameterVersionResponse version = RenderParameterVersionResponse.newBuilder()
+        .setRenderedPayload(
+            ByteString.copyFromUtf8("This is unformatted payload"))
         .build();
-    when(this.parameterManagerClient.getParameterVersion(any(ParameterVersionName.class)))
+    when(this.parameterManagerClient.renderParameterVersion(any(ParameterVersionName.class)))
         .thenReturn(
-            ParameterVersion.newBuilder()
-                .setPayload(
-                    ParameterVersionPayload.newBuilder().setData(ByteString.copyFromUtf8("This is unformatted payload")))
+            RenderParameterVersionResponse.newBuilder()
+                .setRenderedPayload(
+                    ByteString.copyFromUtf8("This is unformatted payload"))
                 .build());
 
     this.googleParamConfigPropertySourceLocator =
@@ -133,16 +132,16 @@ class GoogleParamConfigPropertySourceLocatorTest {
 
   @Test
   void locateReturnsMapPropertySource_disabled() throws Exception {
-    ParameterVersion version = ParameterVersion.newBuilder()
-        .setPayload(
-            ParameterVersionPayload.newBuilder().setData(ByteString.copyFromUtf8("get after it.")))
+    RenderParameterVersionResponse version = RenderParameterVersionResponse.newBuilder()
+        .setRenderedPayload(
+            ByteString.copyFromUtf8("get after it."))
         .build();
     when(this.gcpParamConfigProperties.isEnabled()).thenReturn(false);
-    when(this.parameterManagerClient.getParameterVersion(any(ParameterVersionName.class)))
+    when(this.parameterManagerClient.renderParameterVersion(any(ParameterVersionName.class)))
         .thenReturn(
-            ParameterVersion.newBuilder()
-                .setPayload(
-                    ParameterVersionPayload.newBuilder().setData(ByteString.copyFromUtf8("get after it.")))
+            RenderParameterVersionResponse.newBuilder()
+                .setRenderedPayload(
+                    ByteString.copyFromUtf8("get after it."))
                 .build());
 
     // Configure the behavior of the mock objects
@@ -161,15 +160,15 @@ class GoogleParamConfigPropertySourceLocatorTest {
 
   @Test
   void locateReturnsMapPropertySourceYaml() throws Exception {
-    ParameterVersion version = ParameterVersion.newBuilder()
-        .setPayload(
-            ParameterVersionPayload.newBuilder().setData(ByteString.copyFromUtf8("property-int: 10\nproperty-bool: true\nnested_property:\n   nested_int: 5")))
+    RenderParameterVersionResponse version = RenderParameterVersionResponse.newBuilder()
+        .setRenderedPayload(
+            ByteString.copyFromUtf8("property-int: 10\nproperty-bool: true\nnested_property:\n   nested_int: 5"))
         .build();
-    when(this.parameterManagerClient.getParameterVersion(any(ParameterVersionName.class)))
+    when(this.parameterManagerClient.renderParameterVersion(any(ParameterVersionName.class)))
         .thenReturn(
-            ParameterVersion.newBuilder()
-                .setPayload(
-                    ParameterVersionPayload.newBuilder().setData(ByteString.copyFromUtf8("property-int: 10\nproperty-bool: true\nnested_property:\n   nested_int: 5")))
+            RenderParameterVersionResponse.newBuilder()
+                .setRenderedPayload(
+                    ByteString.copyFromUtf8("property-int: 10\nproperty-bool: true\nnested_property:\n   nested_int: 5"))
                 .build());
     Map<String, Object> expectedMap = Map.of("nested_int", 5);
 
