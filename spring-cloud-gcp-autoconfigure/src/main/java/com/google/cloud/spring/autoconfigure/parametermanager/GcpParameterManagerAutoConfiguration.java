@@ -19,11 +19,13 @@ package com.google.cloud.spring.autoconfigure.parametermanager;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
 import com.google.cloud.parametermanager.v1.ParameterManagerSettings;
+import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.parametermanager.ParameterManagerTemplate;
 import java.io.IOException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -35,6 +37,7 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(GcpParameterManagerProperties.class)
 @ConditionalOnClass(ParameterManagerTemplate.class)
 @ConditionalOnProperty(value = "spring.cloud.gcp.parametermanager.enabled", matchIfMissing = true)
+@AutoConfigureAfter(GcpContextAutoConfiguration.class)
 public class GcpParameterManagerAutoConfiguration {
 
   private final GcpProjectIdProvider gcpProjectIdProvider;

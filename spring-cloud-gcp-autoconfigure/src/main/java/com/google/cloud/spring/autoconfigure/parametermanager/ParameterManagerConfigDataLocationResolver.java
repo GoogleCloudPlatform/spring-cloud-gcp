@@ -18,6 +18,7 @@ package com.google.cloud.spring.autoconfigure.parametermanager;
 
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
 import com.google.cloud.parametermanager.v1.ParameterManagerSettings;
+import com.google.cloud.spring.autoconfigure.core.GcpProperties;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
@@ -29,6 +30,7 @@ import java.util.List;
 import org.apache.arrow.util.VisibleForTesting;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.BootstrapRegistry;
+import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataLocationNotFoundException;
 import org.springframework.boot.context.config.ConfigDataLocationResolver;
@@ -45,6 +47,8 @@ public class ParameterManagerConfigDataLocationResolver
   private static ParameterManagerClient parameterManagerClient;
 
   private static void registerParameterManagerBeans(ConfigDataLocationResolverContext context) {
+    // Register the Core properties.
+    registerBean(context, GcpProperties.class, getGcpProperties(context));
     // Register the Parameter Manager properties.
     registerBean(
         context, GcpParameterManagerProperties.class, getParameterManagerProperties(context));
@@ -55,15 +59,19 @@ public class ParameterManagerConfigDataLocationResolver
         // lazy register the client solely for unit test.
         BootstrapRegistry.InstanceSupplier.from(() -> createParameterManagerClient(context)));
     // Register the GCP Project ID provider.
-    registerAndPromoteBean(
-        context,
-        GcpProjectIdProvider.class,
-        BootstrapRegistry.InstanceSupplier.of(createProjectIdProvider(context)));
+    registerBean(context, GcpProjectIdProvider.class, createProjectIdProvider(context));
     // Register the Parameter Manager template.
     registerAndPromoteBean(
         context,
         ParameterManagerTemplate.class,
         BootstrapRegistry.InstanceSupplier.of(createParameterManagerTemplate(context)));
+  }
+
+  private static GcpProperties getGcpProperties(ConfigDataLocationResolverContext context) {
+    return context
+        .getBinder()
+        .bind(GcpProperties.CORE_PROPERTY_PREFIX, GcpProperties.class)
+        .orElse(new GcpProperties());
   }
 
   private static GcpParameterManagerProperties getParameterManagerProperties(
@@ -74,13 +82,19 @@ public class ParameterManagerConfigDataLocationResolver
         .orElse(new GcpParameterManagerProperties());
   }
 
-  private static GcpProjectIdProvider createProjectIdProvider(
-      ConfigDataLocationResolverContext context) {
-    GcpParameterManagerProperties properties =
-        context.getBootstrapContext().get(GcpParameterManagerProperties.class);
-    return properties.getProjectId() != null
-        ? properties::getProjectId
-        : new DefaultGcpProjectIdProvider();
+  @VisibleForTesting
+  static GcpProjectIdProvider createProjectIdProvider(ConfigDataLocationResolverContext context) {
+    ConfigurableBootstrapContext bootstrapContext = context.getBootstrapContext();
+    GcpParameterManagerProperties parameterManagerProperties =
+        bootstrapContext.get(GcpParameterManagerProperties.class);
+    if (parameterManagerProperties.getProjectId() != null) {
+      return parameterManagerProperties::getProjectId;
+    }
+    GcpProperties gcpProperties = bootstrapContext.get(GcpProperties.class);
+    if (gcpProperties.getProjectId() != null) {
+      return gcpProperties::getProjectId;
+    }
+    return new DefaultGcpProjectIdProvider();
   }
 
   @VisibleForTesting
