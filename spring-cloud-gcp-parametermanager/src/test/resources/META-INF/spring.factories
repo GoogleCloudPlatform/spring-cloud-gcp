@@ -1,0 +1,2 @@
+org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+com.google.cloud.spring.parametermanager.it.ParameterManagerTestConfiguration

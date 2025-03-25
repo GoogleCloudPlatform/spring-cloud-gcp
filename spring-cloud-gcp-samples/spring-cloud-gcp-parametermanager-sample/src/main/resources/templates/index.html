@@ -1,0 +1,148 @@
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+
+<style>
+    html * {
+      font-family: Roboto, Verdana, sans-serif;
+    }
+
+    body {
+      max-width: 50em;
+    }
+
+    li {
+      padding: 0.25em;
+    }
+
+    .panel {
+      margin: 1em;
+      padding: 1em;
+      border: 1px solid black;
+      border-radius: 5px;
+    }
+
+    .highlight {
+      background-color: #d6f5d6;
+    }
+
+    .message-highlight {
+      background-color: #f4d03f;
+    }
+
+</style>
+
+<head>
+    <title>Google Cloud Parameter Manager Demo</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <link href="css/style.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+<h1>Parameter Manager Demo with Spring Cloud GCP</h1>
+
+<div class="panel">
+    <h3>Parameter Manager Property Source</h3>
+    At the bootstrap phase, we loaded the following parameter into the application context:
+    <br/>
+    <br/>
+    <b>Default Application parameter if not found :</b> <i>[[${applicationDefaultParameter}]]</i><br/>
+    <b>Application parameter from @Value:</b> <i>[[${applicationParameterFromValue}]]</i><br/>
+    <b>Application parameter from @ConfigurationProperties:</b> <i>[[${applicationParameterFromConfigurationProperties}]]</i>
+</div>
+
+<div class="panel">
+    <h2>Create, Read, Update and Delete Parameters</h2>
+
+    <p>
+        Using the form below, you can create/update parameters in Parameter Manager, read and delete them.
+        In the controller code, the <i>ParameterManagerTemplate</i> is being used to do these operations.
+    </p>
+
+    <p>
+        <b>NOTE: </b> In practice, you never want to allow your parameter to be visible as plaintext.
+        This is just a demonstration!
+    </p>
+
+    <div class="panel highlight">
+        <h3>Get Parameter Version by Parameter ID and Version ID</h3>
+        <p>
+            Get a parameter version by parameter ID from Parameter Manager. You will receive an error if you
+            try to get a parameter ID that does not already exist.
+        </p>
+        <form action="/getParameter" method="GET">
+            <ol>
+                <li>Parameter ID: <input name="parameterId" type="text"/></li>
+                <li>Version ID: <input name="versionId" type="text"/></li>
+                <li>Location ID: <input name="locationId" type="text"/></li>
+                <li>Project ID (optional): <input name="projectId" type="text"/></li>
+                <li><input type="submit" value="Get Parameter"/></li>
+            </ol>
+        </form>
+    </div>
+
+    <div class="panel highlight">
+        <h3>Create/Update Parameter</h3>
+        <p>
+            This will create a parameter if the provided parameter ID does not exist.
+            Otherwise, it will create version under the provided parameter ID.
+        </p>
+        <form action="/createParameter" method="POST">
+            <ol>
+                <li>Parameter ID: <input name="parameterId" type="text"/></li>
+                <li>Version ID: <input name="versionId" type="text"/></li>
+                <li>Parameter Payload: <input name="parameterPayload" type="text"/></li>
+                <li>Location ID: <input name="locationId" type="text"/></li>
+                <li>Project ID (optional): <input name="projectId" type="text"/></li>
+                <li><input type="submit" value="Create/Update Parameter"/></li>
+            </ol>
+        </form>
+    </div>
+
+    <div class="panel highlight">
+        <h3>Delete Parameter</h3>
+        <p>
+            This will delete a parameter if the provided parameter ID exist.
+        </p>
+        <form action="/deleteParameter" method="POST">
+            <ol>
+                <li>Parameter ID: <input name="parameterId" type="text"/></li>
+                <li>Location ID: <input name="locationId" type="text"/></li>
+                <li>Project ID (optional): <input name="projectId" type="text"/></li>
+                <li><input type="submit" value="Delete Parameter"/></li>
+            </ol>
+        </form>
+    </div>
+
+    <div class="panel highlight">
+        <h3>Delete Parameter Version</h3>
+        <p>
+            This will delete a parameter if the provided version ID exist in given parameter.
+        </p>
+        <form action="/deleteParameterVersion" method="POST">
+            <ol>
+                <li>Parameter ID: <input name="parameterId" type="text"/></li>
+                <li>Version ID: <input name="versionId" type="text"/></li>
+                <li>Location ID: <input name="locationId" type="text"/></li>
+                <li>Project ID (optional): <input name="projectId" type="text"/></li>
+                <li><input type="submit" value="Delete Parameter Version"/></li>
+            </ol>
+        </form>
+    </div>
+
+    <div class="panel message-highlight" th:if="${message}">
+        <h3>
+            Parameter Manager Operation: [[${message}]]
+        </h3>
+    </div>
+</div>
+
+<div class="panel">
+    <p>
+        You can also view your parameters in the
+        <a href="https://console.cloud.google.com/security/parametermanager">
+            Parameter Manager UI in Google Cloud Console
+        </a>.
+    </p>
+</div>
+
+</body>
+</html>
