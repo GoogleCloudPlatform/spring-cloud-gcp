@@ -33,8 +33,8 @@ import com.google.cloud.parametermanager.v1.ParameterFormat;
  * <p>3. Short form - specify project ID, location ID, parameter ID, and version ID
  * pm@{project-id}/{location-id}/{parameter-id}/{version-id}
  *
- * <p>4. Shortest form - specify locationID, parameter ID and version ID, use default GCP project configured
- * pm@{location-id}/{parameter-id}/{version-id}
+ * <p>4. Shortest form - specify locationID, parameter ID and version ID, use default GCP project
+ * configured pm@{location-id}/{parameter-id}/{version-id}
  */
 public interface ParameterManagerOperations {
 
@@ -85,7 +85,11 @@ public interface ParameterManagerOperations {
    * @param format the parameter format (JSON or YAML or UNFORMATTED).
    */
   void createParameter(
-      String locationId, String parameterId, String versionId, String payload, ParameterFormat format);
+      String locationId,
+      String parameterId,
+      String versionId,
+      String payload,
+      ParameterFormat format);
 
   /**
    * Creates a new parameter or a new version of existing parameter with the provided {@code
@@ -140,7 +144,11 @@ public interface ParameterManagerOperations {
    * @param format the parameter format (JSON or YAML or UNFORMATTED).
    */
   void createParameter(
-      String locationId, String parameterId, String versionId, byte[] payload, ParameterFormat format);
+      String locationId,
+      String parameterId,
+      String versionId,
+      byte[] payload,
+      ParameterFormat format);
 
   /**
    * Creates a new parameter or a new version of existing parameter with the provided {@code
@@ -338,7 +346,7 @@ public interface ParameterManagerOperations {
    * @param parameterIdentifier a pm@ formatted string specifying the parameter version.
    * @return The rendered parameter data as a string
    */
-  String getRenderedParameterString(String parameterIdentifier);
+  String renderedParameterVersionString(String parameterIdentifier);
 
   /**
    * Gets the rendered parameter data as a byte array from the specified {@code
@@ -354,5 +362,5 @@ public interface ParameterManagerOperations {
    * @param parameterIdentifier a pm@ formatted string specifying the parameter version.
    * @return The rendered parameter data as a byte array
    */
-  byte[] getRenderedParameterBytes(String parameterIdentifier);
+  byte[] renderedParameterVersionBytes(String parameterIdentifier);
 }

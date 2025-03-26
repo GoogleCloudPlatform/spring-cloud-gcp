@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.cloud.spring.autoconfigure.parametermanager;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -6,6 +22,7 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.parametermanager.ParameterManagerClientFactory;
 import com.google.cloud.spring.parametermanager.ParameterManagerTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,13 +35,12 @@ class GcpParameterManagerAutoConfigurationUnitTests {
 
   @BeforeEach
   void init() {
-    contextRunner =
-        new ApplicationContextRunner()
-            .withConfiguration(
-                AutoConfigurations.of(
-                    GcpParameterManagerAutoConfiguration.class, GcpContextAutoConfiguration.class))
-            .withPropertyValues("spring.cloud.gcp.project-id=globalProject")
-            .withUserConfiguration(TestConfig.class);
+    contextRunner = new ApplicationContextRunner()
+        .withConfiguration(AutoConfigurations.of(
+            GcpParameterManagerAutoConfiguration.class,
+            GcpContextAutoConfiguration.class))
+        .withPropertyValues("spring.cloud.gcp.project-id=globalProject")
+        .withUserConfiguration(TestConfig.class);
   }
 
   @Test
@@ -32,30 +48,40 @@ class GcpParameterManagerAutoConfigurationUnitTests {
     contextRunner
         .withPropertyValues("spring.cloud.gcp.parametermanager.project-id=parameterManagerProject")
         .run(
-            ctx ->
-                assertThat(ctx.getBean(ParameterManagerTemplate.class).getProjectId())
-                    .isEqualTo("parameterManagerProject"));
+            ctx -> assertThat(ctx.getBean(ParameterManagerTemplate.class)
+                   .getProjectId()).isEqualTo("parameterManagerProject"));
   }
 
   @Test
   void testProjectIdWithGcpProperties() {
     contextRunner.run(
-        ctx ->
-            assertThat(ctx.getBean(ParameterManagerTemplate.class).getProjectId())
-                .isEqualTo("globalProject"));
+        ctx -> assertThat(ctx.getBean(ParameterManagerTemplate.class)
+            .getProjectId()).isEqualTo("globalProject"));
   }
 
   @Test
   void testParameterManagerClientExists() {
-    contextRunner.run(ctx -> assertThat(ctx.getBean(ParameterManagerClient.class)).isNotNull());
+    contextRunner.run(
+        ctx -> assertThat(ctx.getBean(ParameterManagerClient.class))
+            .isNotNull());
+  }
+
+  @Test
+  void testParameterManagerClientFactoryExists() {
+    contextRunner.run(
+        ctx -> assertThat(ctx.getBean(ParameterManagerClientFactory.class))
+            .isNotNull());
   }
 
   @Test
   void testParameterManagerTemplateExists() {
-    contextRunner.run(ctx -> assertThat(ctx.getBean(ParameterManagerTemplate.class)).isNotNull());
+    contextRunner.run(
+        ctx -> assertThat(ctx.getBean(ParameterManagerTemplate.class))
+            .isNotNull());
   }
 
   static class TestConfig {
+
     @Bean
     public CredentialsProvider googleCredentials() {
       return () -> TestUtils.MOCK_CREDENTIALS;

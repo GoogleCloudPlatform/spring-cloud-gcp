@@ -43,15 +43,19 @@ import com.google.protobuf.util.FieldMaskUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ParameterManagerTemplateTests {
+class ParameterManagerRegionalTemplateTests {
 
-  private ParameterManagerClient client;
+  private ParameterManagerClientFactory parameterManagerClientFactory;
   private ParameterManagerTemplate parameterManagerTemplate;
 
   @BeforeEach
   void setupMocks() {
-    this.client = mock(ParameterManagerClient.class);
-    when(this.client.getParameterVersion(any(ParameterVersionName.class)))
+    ParameterManagerClient parameterManagerClient = mock(ParameterManagerClient.class);
+    this.parameterManagerClientFactory = mock(ParameterManagerClientFactory.class);
+    when(parameterManagerClientFactory.getClient("us-central1"))
+        .thenReturn(parameterManagerClient);
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameterVersion(any(ParameterVersionName.class)))
         .thenReturn(
             ParameterVersion.newBuilder()
                 .setPayload(
@@ -59,7 +63,7 @@ class ParameterManagerTemplateTests {
                         .setData(ByteString.copyFromUtf8("get after it."))
                         .build())
                 .build());
-    this.parameterManagerTemplate = new ParameterManagerTemplate(this.client, () -> "my-project");
+    this.parameterManagerTemplate = new ParameterManagerTemplate(this.parameterManagerClientFactory, () -> "my-project");
   }
 
   @Test
@@ -73,15 +77,16 @@ class ParameterManagerTemplateTests {
     String versionId = "v1";
     String payload = "{'message': 'hello world!'}";
 
-    when(this.client.getParameter(any(ParameterName.class))).thenThrow(NotFoundException.class);
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameter(any(ParameterName.class))).thenThrow(NotFoundException.class);
 
     this.parameterManagerTemplate.createParameter(
-        "global", parameterId, versionId, payload, ParameterFormat.JSON);
+        "us-central1", parameterId, versionId, payload, ParameterFormat.JSON);
 
-    verifyCreateParameterRequest(parameterId, ParameterFormat.JSON, "my-project", "global");
+    verifyCreateParameterRequest(parameterId, ParameterFormat.JSON, "my-project", "us-central1");
 
     verifyCreateParameterVersionRequest(
-        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "global");
+        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "us-central1");
   }
 
   @Test
@@ -90,13 +95,14 @@ class ParameterManagerTemplateTests {
     String versionId = "v1";
     String payload = "{'message': 'hello world!'}";
 
-    when(this.client.getParameter(any(ParameterName.class))).thenThrow(NotFoundException.class);
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameter(any(ParameterName.class))).thenThrow(NotFoundException.class);
     this.parameterManagerTemplate.createParameter(
-        "custom-location", parameterId, versionId, payload, ParameterFormat.JSON);
+        "us-central1", parameterId, versionId, payload, ParameterFormat.JSON);
     verifyCreateParameterRequest(
-        parameterId, ParameterFormat.JSON, "my-project", "custom-location");
+        parameterId, ParameterFormat.JSON, "my-project", "us-central1");
     verifyCreateParameterVersionRequest(
-        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "custom-location");
+        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "us-central1");
   }
 
   @Test
@@ -105,19 +111,20 @@ class ParameterManagerTemplateTests {
     String versionId = "v1";
     String payload = "{'message': 'hello world!'}";
 
-    when(this.client.getParameter(any(ParameterName.class))).thenThrow(NotFoundException.class);
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameter(any(ParameterName.class))).thenThrow(NotFoundException.class);
 
     this.parameterManagerTemplate.createParameter(
-        "custom-project", "custom-location", parameterId, versionId, payload, ParameterFormat.JSON);
+        "custom-project", "us-central1", parameterId, versionId, payload, ParameterFormat.JSON);
     verifyCreateParameterRequest(
-        parameterId, ParameterFormat.JSON, "custom-project", "custom-location");
+        parameterId, ParameterFormat.JSON, "custom-project", "us-central1");
 
     verifyCreateParameterVersionRequest(
         parameterId,
         versionId,
         ByteString.copyFromUtf8(payload),
         "custom-project",
-        "custom-location");
+        "us-central1");
   }
 
   @Test
@@ -127,16 +134,19 @@ class ParameterManagerTemplateTests {
     String payload = "{'message': 'hello world!'}";
 
     // The Parameter "my-parameter" already exists.
-    when(this.client.getParameter(ParameterName.of("my-project", "global", parameterId)))
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameter(ParameterName.of("my-project", "us-central1", parameterId)))
         .thenReturn(Parameter.getDefaultInstance());
 
     // Verify that the parameter is not created.
     this.parameterManagerTemplate.createParameter(
-        "global", parameterId, versionId, payload, ParameterFormat.JSON);
-    verify(this.client).getParameter(ParameterName.of("my-project", "global", parameterId));
-    verify(this.client, never()).createParameter(any());
+        "us-central1", parameterId, versionId, payload, ParameterFormat.JSON);
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1")).getParameter(ParameterName.of("my-project", "us-central1", parameterId));
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1"), never()).createParameter(any());
     verifyCreateParameterVersionRequest(
-        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "global");
+        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "us-central1");
   }
 
   @Test
@@ -146,16 +156,19 @@ class ParameterManagerTemplateTests {
     String payload = "{'message': 'hello world!'}";
 
     // The Parameter "my-parameter" already exists.
-    when(this.client.getParameter(ParameterName.of("my-project", "my-location", parameterId)))
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameter(ParameterName.of("my-project", "us-central1", parameterId)))
         .thenReturn(Parameter.getDefaultInstance());
 
     // Verify that the parameter is not created.
     this.parameterManagerTemplate.createParameter(
-        "my-location", parameterId, versionId, payload, ParameterFormat.JSON);
-    verify(this.client).getParameter(ParameterName.of("my-project", "my-location", parameterId));
-    verify(this.client, never()).createParameter(any());
+        "us-central1", parameterId, versionId, payload, ParameterFormat.JSON);
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1")).getParameter(ParameterName.of("my-project", "us-central1", parameterId));
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1"), never()).createParameter(any());
     verifyCreateParameterVersionRequest(
-        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "my-location");
+        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "us-central1");
   }
 
   @Test
@@ -165,22 +178,25 @@ class ParameterManagerTemplateTests {
     String payload = "{'message': 'hello world!'}";
 
     // The Parameter "my-parameter" already exists.
-    when(this.client.getParameter(
-            ParameterName.of("custom-project", "custom-location", parameterId)))
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameter(
+            ParameterName.of("custom-project", "us-central1", parameterId)))
         .thenReturn(Parameter.getDefaultInstance());
 
     // Verify that the parameter is not created.
     this.parameterManagerTemplate.createParameter(
-        "custom-project", "custom-location", parameterId, versionId, payload, ParameterFormat.JSON);
-    verify(this.client)
-        .getParameter(ParameterName.of("custom-project", "custom-location", parameterId));
-    verify(this.client, never()).createParameter(any());
+        "custom-project", "us-central1", parameterId, versionId, payload, ParameterFormat.JSON);
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1"))
+        .getParameter(ParameterName.of("custom-project", "us-central1", parameterId));
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1"), never()).createParameter(any());
     verifyCreateParameterVersionRequest(
         parameterId,
         versionId,
         ByteString.copyFromUtf8(payload),
         "custom-project",
-        "custom-location");
+        "us-central1");
   }
 
   @Test
@@ -189,15 +205,16 @@ class ParameterManagerTemplateTests {
     String versionId = "v1";
     String payload = "{'message': 'hello world!'}";
 
-    when(this.client.getParameter(any(ParameterName.class))).thenThrow(NotFoundException.class);
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameter(any(ParameterName.class))).thenThrow(NotFoundException.class);
 
     this.parameterManagerTemplate.createParameter(
-        "global", parameterId, versionId, payload.getBytes(), ParameterFormat.JSON);
+        "us-central1", parameterId, versionId, payload.getBytes(), ParameterFormat.JSON);
 
-    verifyCreateParameterRequest(parameterId, ParameterFormat.JSON, "my-project", "global");
+    verifyCreateParameterRequest(parameterId, ParameterFormat.JSON, "my-project", "us-central1");
 
     verifyCreateParameterVersionRequest(
-        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "global");
+        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "us-central1");
   }
 
   @Test
@@ -206,13 +223,14 @@ class ParameterManagerTemplateTests {
     String versionId = "v1";
     String payload = "{'message': 'hello world!'}";
 
-    when(this.client.getParameter(any(ParameterName.class))).thenThrow(NotFoundException.class);
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameter(any(ParameterName.class))).thenThrow(NotFoundException.class);
     this.parameterManagerTemplate.createParameter(
-        "custom-location", parameterId, versionId, payload.getBytes(), ParameterFormat.JSON);
+        "us-central1", parameterId, versionId, payload.getBytes(), ParameterFormat.JSON);
     verifyCreateParameterRequest(
-        parameterId, ParameterFormat.JSON, "my-project", "custom-location");
+        parameterId, ParameterFormat.JSON, "my-project", "us-central1");
     verifyCreateParameterVersionRequest(
-        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "custom-location");
+        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "us-central1");
   }
 
   @Test
@@ -221,24 +239,25 @@ class ParameterManagerTemplateTests {
     String versionId = "v1";
     String payload = "{'message': 'hello world!'}";
 
-    when(this.client.getParameter(any(ParameterName.class))).thenThrow(NotFoundException.class);
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameter(any(ParameterName.class))).thenThrow(NotFoundException.class);
 
     this.parameterManagerTemplate.createParameter(
         "custom-project",
-        "custom-location",
+        "us-central1",
         parameterId,
         versionId,
         payload.getBytes(),
         ParameterFormat.JSON);
     verifyCreateParameterRequest(
-        parameterId, ParameterFormat.JSON, "custom-project", "custom-location");
+        parameterId, ParameterFormat.JSON, "custom-project", "us-central1");
 
     verifyCreateParameterVersionRequest(
         parameterId,
         versionId,
         ByteString.copyFromUtf8(payload),
         "custom-project",
-        "custom-location");
+        "us-central1");
   }
 
   @Test
@@ -248,16 +267,19 @@ class ParameterManagerTemplateTests {
     String payload = "{'message': 'hello world!'}";
 
     // The Parameter "my-parameter" already exists.
-    when(this.client.getParameter(ParameterName.of("my-project", "global", parameterId)))
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameter(ParameterName.of("my-project", "us-central1", parameterId)))
         .thenReturn(Parameter.getDefaultInstance());
 
     // Verify that the parameter is not created.
     this.parameterManagerTemplate.createParameter(
-        "global", parameterId, versionId, payload.getBytes(), ParameterFormat.JSON);
-    verify(this.client).getParameter(ParameterName.of("my-project", "global", parameterId));
-    verify(this.client, never()).createParameter(any());
+        "us-central1", parameterId, versionId, payload.getBytes(), ParameterFormat.JSON);
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1")).getParameter(ParameterName.of("my-project", "us-central1", parameterId));
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1"), never()).createParameter(any());
     verifyCreateParameterVersionRequest(
-        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "global");
+        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "us-central1");
   }
 
   @Test
@@ -267,16 +289,19 @@ class ParameterManagerTemplateTests {
     String payload = "{'message': 'hello world!'}";
 
     // The Parameter "my-parameter" already exists.
-    when(this.client.getParameter(ParameterName.of("my-project", "my-location", parameterId)))
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameter(ParameterName.of("my-project", "us-central1", parameterId)))
         .thenReturn(Parameter.getDefaultInstance());
 
     // Verify that the parameter is not created.
     this.parameterManagerTemplate.createParameter(
-        "my-location", parameterId, versionId, payload.getBytes(), ParameterFormat.JSON);
-    verify(this.client).getParameter(ParameterName.of("my-project", "my-location", parameterId));
-    verify(this.client, never()).createParameter(any());
+        "us-central1", parameterId, versionId, payload.getBytes(), ParameterFormat.JSON);
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1")).getParameter(ParameterName.of("my-project", "us-central1", parameterId));
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1"), never()).createParameter(any());
     verifyCreateParameterVersionRequest(
-        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "my-location");
+        parameterId, versionId, ByteString.copyFromUtf8(payload), "my-project", "us-central1");
   }
 
   @Test
@@ -286,27 +311,30 @@ class ParameterManagerTemplateTests {
     String payload = "{'message': 'hello world!'}";
 
     // The Parameter "my-parameter" already exists.
-    when(this.client.getParameter(
-            ParameterName.of("custom-project", "custom-location", parameterId)))
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameter(
+            ParameterName.of("custom-project", "us-central1", parameterId)))
         .thenReturn(Parameter.getDefaultInstance());
 
     // Verify that the parameter is not created.
     this.parameterManagerTemplate.createParameter(
         "custom-project",
-        "custom-location",
+        "us-central1",
         parameterId,
         versionId,
         payload.getBytes(),
         ParameterFormat.JSON);
-    verify(this.client)
-        .getParameter(ParameterName.of("custom-project", "custom-location", parameterId));
-    verify(this.client, never()).createParameter(any());
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1"))
+        .getParameter(ParameterName.of("custom-project", "us-central1", parameterId));
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1"), never()).createParameter(any());
     verifyCreateParameterVersionRequest(
         parameterId,
         versionId,
         ByteString.copyFromUtf8(payload),
         "custom-project",
-        "custom-location");
+        "us-central1");
   }
 
   @Test
@@ -322,13 +350,15 @@ class ParameterManagerTemplateTests {
                     .setData(ByteString.copyFromUtf8(expectedValue))
                     .build())
             .build();
-    when(this.client.getParameterVersion(any(ParameterVersionName.class)))
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameterVersion(any(ParameterVersionName.class)))
         .thenReturn(parameterVersion);
 
     String result =
         this.parameterManagerTemplate.getParameterString(
-            "pm@global/" + parameterId + "/" + versionId);
-    verify(this.client).getParameterVersion(any(ParameterVersionName.class));
+            "pm@us-central1/" + parameterId + "/" + versionId);
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1")).getParameterVersion(any(ParameterVersionName.class));
     assertThat(result).isEqualTo(expectedValue);
   }
 
@@ -345,32 +375,36 @@ class ParameterManagerTemplateTests {
                     .setData(ByteString.copyFromUtf8(expectedValue))
                     .build())
             .build();
-    when(this.client.getParameterVersion(any(ParameterVersionName.class)))
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameterVersion(any(ParameterVersionName.class)))
         .thenReturn(parameterVersion);
 
     byte[] result =
         this.parameterManagerTemplate.getParameterBytes(
-            "pm@global/" + parameterId + "/" + versionId);
-    verify(this.client).getParameterVersion(any(ParameterVersionName.class));
+            "pm@us-central1/" + parameterId + "/" + versionId);
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1")).getParameterVersion(any(ParameterVersionName.class));
     assertThat(result).isEqualTo(expectedValue.getBytes());
   }
 
   @Test
   void testAccessNonExistentParameterStringWhenDefaultIsNotAllowed() {
-    when(this.client.getParameterVersion(any(ParameterVersionName.class)))
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameterVersion(any(ParameterVersionName.class)))
         .thenThrow(NotFoundException.class);
     assertThatThrownBy(
-            () -> this.parameterManagerTemplate.getParameterString("pm@global/fake-parameter/v1"))
+            () -> this.parameterManagerTemplate.getParameterString("pm@us-central1/fake-parameter/v1"))
         .isExactlyInstanceOf(NotFoundException.class);
   }
 
   @Test
   void testAccessNonExistentParameterStringWhenDefaultIsAllowed() {
-    when(this.client.getParameterVersion(any(ParameterVersionName.class)))
+    when(this.parameterManagerClientFactory
+        .getClient("us-central1").getParameterVersion(any(ParameterVersionName.class)))
         .thenThrow(NotFoundException.class);
 
     this.parameterManagerTemplate.setAllowDefaultParameterValue(true);
-    String result = this.parameterManagerTemplate.getParameterString("pm@global/fake-parameter/v1");
+    String result = this.parameterManagerTemplate.getParameterString("pm@us-central1/fake-parameter/v1");
     assertThat(result).isNull();
   }
 
@@ -378,11 +412,11 @@ class ParameterManagerTemplateTests {
   void testDeleteParameter() {
     String parameterId = "my-parameter";
 
-    this.parameterManagerTemplate.deleteParameter("my-location", parameterId);
-    verifyDeleteParameterRequest(parameterId, "my-project", "my-location");
+    this.parameterManagerTemplate.deleteParameter("us-central1", parameterId);
+    verifyDeleteParameterRequest(parameterId, "my-project", "us-central1");
 
-    this.parameterManagerTemplate.deleteParameter("custom-project", "custom-location", parameterId);
-    verifyDeleteParameterRequest(parameterId, "custom-project", "custom-location");
+    this.parameterManagerTemplate.deleteParameter("custom-project", "us-central1", parameterId);
+    verifyDeleteParameterRequest(parameterId, "custom-project", "us-central1");
   }
 
   @Test
@@ -390,13 +424,13 @@ class ParameterManagerTemplateTests {
     String parameterId = "my-parameter";
     String versionId = "v1";
 
-    this.parameterManagerTemplate.deleteParameterVersion("my-location", parameterId, versionId);
-    verifyDeleteParameterVersionRequest(parameterId, versionId, "my-project", "my-location");
+    this.parameterManagerTemplate.deleteParameterVersion("us-central1", parameterId, versionId);
+    verifyDeleteParameterVersionRequest(parameterId, versionId, "my-project", "us-central1");
 
     this.parameterManagerTemplate.deleteParameterVersion(
-        "custom-project", "custom-location", parameterId, versionId);
+        "custom-project", "us-central1", parameterId, versionId);
     verifyDeleteParameterVersionRequest(
-        parameterId, versionId, "custom-project", "custom-location");
+        parameterId, versionId, "custom-project", "us-central1");
   }
 
   @Test
@@ -404,14 +438,14 @@ class ParameterManagerTemplateTests {
     String parameterId = "my-parameter";
     String versionId = "v1";
 
-    this.parameterManagerTemplate.enableParameterVersion("custom-location", parameterId, versionId);
+    this.parameterManagerTemplate.enableParameterVersion("us-central1", parameterId, versionId);
     verifyEnableDisableParameterVersionRequest(
-        parameterId, versionId, "my-project", "custom-location", false);
+        parameterId, versionId, "my-project", "us-central1", false);
 
     this.parameterManagerTemplate.enableParameterVersion(
-        "custom-project", "custom-location", parameterId, versionId);
+        "custom-project", "us-central1", parameterId, versionId);
     verifyEnableDisableParameterVersionRequest(
-        parameterId, versionId, "custom-project", "custom-location", false);
+        parameterId, versionId, "custom-project", "us-central1", false);
   }
 
   @Test
@@ -419,19 +453,15 @@ class ParameterManagerTemplateTests {
     String parameterId = "my-parameter";
     String versionId = "v1";
 
-    this.parameterManagerTemplate.disableParameterVersion("global", parameterId, versionId);
+    this.parameterManagerTemplate.disableParameterVersion(
+        "us-central1", parameterId, versionId);
     verifyEnableDisableParameterVersionRequest(
-        parameterId, versionId, "my-project", "global", true);
+        parameterId, versionId, "my-project", "us-central1", true);
 
     this.parameterManagerTemplate.disableParameterVersion(
-        "custom-location", parameterId, versionId);
+        "custom-project", "us-central1", parameterId, versionId);
     verifyEnableDisableParameterVersionRequest(
-        parameterId, versionId, "my-project", "custom-location", true);
-
-    this.parameterManagerTemplate.disableParameterVersion(
-        "custom-project", "custom-location", parameterId, versionId);
-    verifyEnableDisableParameterVersionRequest(
-        parameterId, versionId, "custom-project", "custom-location", true);
+        parameterId, versionId, "custom-project", "us-central1", true);
   }
 
   private void verifyCreateParameterRequest(
@@ -445,7 +475,8 @@ class ParameterManagerTemplateTests {
             .setParameterId(parameterId)
             .setParameter(parameter)
             .build();
-    verify(this.client).createParameter(request);
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1")).createParameter(request);
   }
 
   private void verifyCreateParameterVersionRequest(
@@ -464,7 +495,8 @@ class ParameterManagerTemplateTests {
                     .setPayload(ParameterVersionPayload.newBuilder().setData(payload).build())
                     .build())
             .build();
-    verify(this.client).createParameterVersion(parameterVersionRequest);
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1")).createParameterVersion(parameterVersionRequest);
   }
 
   private void verifyDeleteParameterRequest(
@@ -472,7 +504,8 @@ class ParameterManagerTemplateTests {
     ParameterName parameterName = ParameterName.of(projectId, locationId, parameterId);
     DeleteParameterRequest request =
         DeleteParameterRequest.newBuilder().setName(parameterName.toString()).build();
-    verify(this.client).deleteParameter(request);
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1")).deleteParameter(request);
   }
 
   private void verifyDeleteParameterVersionRequest(
@@ -481,7 +514,8 @@ class ParameterManagerTemplateTests {
         ParameterVersionName.of(projectId, locationId, parameterId, versionId);
     DeleteParameterVersionRequest request =
         DeleteParameterVersionRequest.newBuilder().setName(parameterVersionName.toString()).build();
-    verify(this.client).deleteParameterVersion(request);
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1")).deleteParameterVersion(request);
   }
 
   private void verifyEnableDisableParameterVersionRequest(
@@ -498,6 +532,7 @@ class ParameterManagerTemplateTests {
             .setParameterVersion(parameterVersion)
             .setUpdateMask(FieldMaskUtil.fromString("disabled"))
             .build();
-    verify(this.client).updateParameterVersion(request);
+    verify(this.parameterManagerClientFactory
+        .getClient("us-central1")).updateParameterVersion(request);
   }
 }

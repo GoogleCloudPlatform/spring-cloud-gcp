@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.parametermanager;
 
+import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
 import com.google.cloud.parametermanager.v1.ParameterManagerSettings;
 import com.google.cloud.spring.autoconfigure.core.GcpProperties;
@@ -23,6 +24,7 @@ import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.parametermanager.ParameterManagerClientFactory;
 import com.google.cloud.spring.parametermanager.ParameterManagerTemplate;
 import java.io.IOException;
 import java.util.Collections;
@@ -43,15 +45,45 @@ public class ParameterManagerConfigDataLocationResolver
   /** ConfigData Prefix for Google Cloud Parameter Manager. */
   public static final String PARAMETER_MANAGER_PREFIX = "pm@";
 
-  /** A static client to avoid creating another client after refreshing. */
+  /**
+   * A static client to avoid creating another client after refreshing.
+   */
   private static ParameterManagerClient parameterManagerClient;
+
+  /**
+   * A static client factory to avoid creating another client after refreshing.
+   */
+  private static ParameterManagerClientFactory parameterManagerClientFactory;
+
+  @Override
+  public boolean isResolvable(
+      ConfigDataLocationResolverContext context, ConfigDataLocation location) {
+    return location.hasPrefix(PARAMETER_MANAGER_PREFIX);
+  }
+
+  @Override
+  public List<ParameterManagerConfigDataResource> resolve(
+      ConfigDataLocationResolverContext context, ConfigDataLocation location)
+      throws ConfigDataLocationNotFoundException, ConfigDataResourceNotFoundException {
+    registerParameterManagerBeans(context);
+
+    return Collections.singletonList(
+        new ParameterManagerConfigDataResource(location));
+  }
 
   private static void registerParameterManagerBeans(ConfigDataLocationResolverContext context) {
     // Register the Core properties.
     registerBean(context, GcpProperties.class, getGcpProperties(context));
     // Register the Parameter Manager properties.
-    registerBean(
-        context, GcpParameterManagerProperties.class, getParameterManagerProperties(context));
+    registerBean(context, GcpParameterManagerProperties.class, getParameterManagerProperties(context));
+    // Register the CredentialsProvider.
+    registerBean(context, CredentialsProvider.class, getCredentialsProvider(context));
+    // Register the Parameter Manager client factory.
+    registerAndPromoteBean(
+        context,
+        ParameterManagerClientFactory.class,
+        BootstrapRegistry.InstanceSupplier.from(
+            () -> createParameterManagerClientFactory(context)));
     // Register the Parameter Manager client.
     registerAndPromoteBean(
         context,
@@ -76,10 +108,23 @@ public class ParameterManagerConfigDataLocationResolver
 
   private static GcpParameterManagerProperties getParameterManagerProperties(
       ConfigDataLocationResolverContext context) {
-    return context
-        .getBinder()
+    return context.getBinder()
         .bind(GcpParameterManagerProperties.PREFIX, GcpParameterManagerProperties.class)
         .orElse(new GcpParameterManagerProperties());
+  }
+
+  private static CredentialsProvider getCredentialsProvider(
+      ConfigDataLocationResolverContext context) {
+    try {
+      GcpParameterManagerProperties properties =
+          context.getBootstrapContext().get(GcpParameterManagerProperties.class);
+      return context.getBinder()
+          .bind(GcpParameterManagerProperties.PREFIX, CredentialsProvider.class)
+          .orElse(new DefaultCredentialsProvider(properties));
+    } catch (IOException e) {
+      throw new RuntimeException(
+          "Failed to create the Parameter Manager Client Factory for ConfigData loading.", e);
+    }
   }
 
   @VisibleForTesting
@@ -105,15 +150,14 @@ public class ParameterManagerConfigDataLocationResolver
     }
 
     try {
-      GcpParameterManagerProperties properties =
-          context.getBootstrapContext().get(GcpParameterManagerProperties.class);
+      GcpParameterManagerProperties properties = context.getBootstrapContext()
+          .get(GcpParameterManagerProperties.class);
       DefaultCredentialsProvider credentialsProvider = new DefaultCredentialsProvider(properties);
-      ParameterManagerSettings settings =
-          ParameterManagerSettings.newBuilder()
-              .setCredentialsProvider(credentialsProvider)
-              .setHeaderProvider(
-                  new UserAgentHeaderProvider(ParameterManagerConfigDataLoader.class))
-              .build();
+      ParameterManagerSettings settings = ParameterManagerSettings.newBuilder()
+          .setCredentialsProvider(credentialsProvider)
+          .setHeaderProvider(
+              new UserAgentHeaderProvider(ParameterManagerConfigDataLoader.class))
+          .build();
       parameterManagerClient = ParameterManagerClient.create(settings);
 
       return parameterManagerClient;
@@ -123,28 +167,46 @@ public class ParameterManagerConfigDataLocationResolver
     }
   }
 
+  @VisibleForTesting
+  static synchronized ParameterManagerClientFactory createParameterManagerClientFactory(
+      ConfigDataLocationResolverContext context) {
+    if (parameterManagerClientFactory != null) {
+      return parameterManagerClientFactory;
+    }
+    ParameterManagerClient client = context.getBootstrapContext().get(ParameterManagerClient.class);
+    return new DefaultParameterManagerClientFactory(
+        context.getBootstrapContext().get(CredentialsProvider.class), client);
+  }
+
   private static ParameterManagerTemplate createParameterManagerTemplate(
       ConfigDataLocationResolverContext context) {
-    ParameterManagerClient client = context.getBootstrapContext().get(ParameterManagerClient.class);
-    GcpProjectIdProvider projectIdProvider =
-        context.getBootstrapContext().get(GcpProjectIdProvider.class);
-    GcpParameterManagerProperties properties =
-        context.getBootstrapContext().get(GcpParameterManagerProperties.class);
+    ParameterManagerClient client = context.getBootstrapContext()
+        .get(ParameterManagerClient.class);
+    ParameterManagerClientFactory clientFactory = context.getBootstrapContext()
+        .get(ParameterManagerClientFactory.class);
+    GcpProjectIdProvider projectIdProvider = context.getBootstrapContext()
+        .get(GcpProjectIdProvider.class);
+    GcpParameterManagerProperties properties = context.getBootstrapContext()
+        .get(GcpParameterManagerProperties.class);
 
-    return new ParameterManagerTemplate(client, projectIdProvider)
-        .setAllowDefaultParameterValue(properties.isAllowDefaultParameter());
+    if (clientFactory != null) {
+      return new ParameterManagerTemplate(clientFactory, projectIdProvider)
+          .setAllowDefaultParameterValue(properties.isAllowDefaultParameter());
+    } else {
+      return new ParameterManagerTemplate(client, projectIdProvider)
+          .setAllowDefaultParameterValue(properties.isAllowDefaultParameter());
+    }
   }
 
   /**
    * Registers a bean in the Bootstrap Registry.
    *
-   * <p>The Bootstrap Registry is a temporary context which exists for creating the ConfigData
-   * property sources.
+   * <p>The Bootstrap Registry is a temporary context which exists for creating
+   * the ConfigData property sources.
    */
   private static <T> void registerBean(
       ConfigDataLocationResolverContext context, Class<T> type, T instance) {
-    context
-        .getBootstrapContext()
+    context.getBootstrapContext()
         .registerIfAbsent(type, BootstrapRegistry.InstanceSupplier.of(instance));
   }
 
@@ -153,22 +215,17 @@ public class ParameterManagerConfigDataLocationResolver
    * application context.
    */
   private static <T> void registerAndPromoteBean(
-      ConfigDataLocationResolverContext context,
-      Class<T> type,
+      ConfigDataLocationResolverContext context, Class<T> type,
       BootstrapRegistry.InstanceSupplier<T> supplier) {
     context.getBootstrapContext().registerIfAbsent(type, supplier);
-    context
-        .getBootstrapContext()
-        .addCloseListener(
-            event -> {
-              T instance = event.getBootstrapContext().get(type);
-              String beanName = "gcp-parametermanager-config-data-" + type.getSimpleName();
-              ConfigurableListableBeanFactory factory =
-                  event.getApplicationContext().getBeanFactory();
-              if (!factory.containsSingleton(beanName)) {
-                factory.registerSingleton(beanName, instance);
-              }
-            });
+    context.getBootstrapContext().addCloseListener(event -> {
+      T instance = event.getBootstrapContext().get(type);
+      String beanName = "gcp-parametermanager-config-data-" + type.getSimpleName();
+      ConfigurableListableBeanFactory factory = event.getApplicationContext().getBeanFactory();
+      if (!factory.containsSingleton(beanName)) {
+        factory.registerSingleton(beanName, instance);
+      }
+    });
   }
 
   @VisibleForTesting
@@ -176,18 +233,9 @@ public class ParameterManagerConfigDataLocationResolver
     parameterManagerClient = client;
   }
 
-  @Override
-  public boolean isResolvable(
-      ConfigDataLocationResolverContext context, ConfigDataLocation location) {
-    return location.hasPrefix(PARAMETER_MANAGER_PREFIX);
-  }
-
-  @Override
-  public List<ParameterManagerConfigDataResource> resolve(
-      ConfigDataLocationResolverContext context, ConfigDataLocation location)
-      throws ConfigDataLocationNotFoundException, ConfigDataResourceNotFoundException {
-    registerParameterManagerBeans(context);
-
-    return Collections.singletonList(new ParameterManagerConfigDataResource(location));
+  @VisibleForTesting
+  static void setParameterManagerClientFactory(
+      ParameterManagerClientFactory clientFactory) {
+    parameterManagerClientFactory = clientFactory;
   }
 }

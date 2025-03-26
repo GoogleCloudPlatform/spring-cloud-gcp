@@ -38,7 +38,7 @@ public class ParameterManagerPropertySource
         ParameterManagerPropertyUtils.getParameterVersionName(name, this.projectIdProvider);
 
     if (parameterIdentifier != null) {
-      return getSource().getParameterByteString(parameterIdentifier);
+      return getSource().getRenderedParameterByteString(parameterIdentifier);
     }
     return null;
   }

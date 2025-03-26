@@ -34,6 +34,7 @@ public class ParameterManagerWebController {
 
   private static final String INDEX_PAGE = "index.html";
   private static final String APPLICATION_PARAMETER_FROM_VALUE = "applicationParameterFromValue";
+  private static final String APPLICATION_REGIONAL_PARAMETER_FROM_VALUE = "applicationRegionalParameterFromValue";
 
   private final ParameterManagerTemplate parameterManagerTemplate;
   // Application parameters can be accessed from the configuration properties class,
@@ -47,6 +48,10 @@ public class ParameterManagerWebController {
   @Value("${pm@global/application-parameter/dev:DEFAULT}")
   private String appParameterFromValue;
 
+  // Application parameter with regions can be accessed with this syntax.
+  @Value("${pm@us-central1/application-parameter/dev:DEFAULT}")
+  private String appRegionalParameterFromValue;
+
   public ParameterManagerWebController(
       ParameterManagerTemplate parameterManagerTemplate,
       ParameterManagerConfiguration configuration) {
@@ -58,7 +63,9 @@ public class ParameterManagerWebController {
   public ModelAndView renderIndex(ModelMap map) {
     map.put("applicationDefaultParameter", defaultParameter);
     map.put(APPLICATION_PARAMETER_FROM_VALUE, appParameterFromValue);
+    map.put(APPLICATION_REGIONAL_PARAMETER_FROM_VALUE, appRegionalParameterFromValue);
     map.put("applicationParameterFromConfigurationProperties", configuration.getParameter());
+    map.put("applicationRegionalParameterFromConfigurationProperties", configuration.getRegionalParameter());
     return new ModelAndView(INDEX_PAGE, map);
   }
 
@@ -79,6 +86,30 @@ public class ParameterManagerWebController {
           "pm@" + projectId + "/" + locationId + "/" + parameterId + "/" + versionId;
     }
     parameterPayload = this.parameterManagerTemplate.getParameterString(parameterIdentifier);
+    return "Parameter Version ID: "
+        + HtmlUtils.htmlEscape(versionId)
+        + " | Value: "
+        + parameterPayload
+        + "<br/><br/><a href='/'>Go back</a>";
+  }
+
+  @GetMapping("/renderParameter")
+  @ResponseBody
+  public String renderParameter(
+      @RequestParam String locationId,
+      @RequestParam String parameterId,
+      @RequestParam String versionId,
+      @RequestParam(required = false) String projectId,
+      ModelMap map) {
+    String parameterPayload;
+    String parameterIdentifier;
+    if (StringUtils.isEmpty(projectId)) {
+      parameterIdentifier = "pm@" + locationId + "/" + parameterId + "/" + versionId;
+    } else {
+      parameterIdentifier =
+          "pm@" + projectId + "/" + locationId + "/" + parameterId + "/" + versionId;
+    }
+    parameterPayload = this.parameterManagerTemplate.renderedParameterVersionString(parameterIdentifier);
     return "Parameter Version ID: "
         + HtmlUtils.htmlEscape(versionId)
         + " | Value: "

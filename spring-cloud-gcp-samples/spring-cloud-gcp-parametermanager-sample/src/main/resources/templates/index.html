@@ -46,7 +46,9 @@
     <br/>
     <b>Default Application parameter if not found :</b> <i>[[${applicationDefaultParameter}]]</i><br/>
     <b>Application parameter from @Value:</b> <i>[[${applicationParameterFromValue}]]</i><br/>
-    <b>Application parameter from @ConfigurationProperties:</b> <i>[[${applicationParameterFromConfigurationProperties}]]</i>
+    <b>Application regional parameter from @Value:</b> <i>[[${applicationRegionalParameterFromValue}]]</i><br/>
+    <b>Application parameter from @ConfigurationProperties:</b> <i>[[${applicationParameterFromConfigurationProperties}]]</i><br/>
+    <b>Application regional parameter from @Value:</b> <i>[[${applicationRegionalParameterFromConfigurationProperties}]]</i><br/>
 </div>
 
 <div class="panel">
@@ -75,6 +77,23 @@
                 <li>Location ID: <input name="locationId" type="text"/></li>
                 <li>Project ID (optional): <input name="projectId" type="text"/></li>
                 <li><input type="submit" value="Get Parameter"/></li>
+            </ol>
+        </form>
+    </div>
+
+    <div class="panel highlight">
+        <h3>Render Parameter Version by Parameter ID and Version ID</h3>
+        <p>
+            Render a parameter version by parameter ID from Parameter Manager. You will receive an error if you
+            try to render a parameter ID that does not already exist or the parameter do not have permission of the secret attached.
+        </p>
+        <form action="/renderParameter" method="GET">
+            <ol>
+                <li>Parameter ID: <input name="parameterId" type="text"/></li>
+                <li>Version ID: <input name="versionId" type="text"/></li>
+                <li>Location ID: <input name="locationId" type="text"/></li>
+                <li>Project ID (optional): <input name="projectId" type="text"/></li>
+                <li><input type="submit" value="Render Parameter"/></li>
             </ol>
         </form>
     </div>

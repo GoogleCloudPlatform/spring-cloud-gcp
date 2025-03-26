@@ -44,18 +44,42 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ParameterManagerTemplate implements ParameterManagerOperations {
 
+  /** Default value for the location ID. */
+  public static final String GLOBAL_LOCATION = "global";
+
   private static final Log LOGGER = LogFactory.getLog(ParameterManagerTemplate.class);
   private final ParameterManagerClient parameterManagerClient;
+  private final ParameterManagerClientFactory clientFactory;
   private final GcpProjectIdProvider projectIdProvider;
 
   /** Define the behavior when accessing a non-existed parameter string/bytes. */
   private boolean allowDefaultParameterValue;
 
+  // Constructor for ParameterManagerClient
   public ParameterManagerTemplate(
       ParameterManagerClient parameterManagerClient, GcpProjectIdProvider projectIdProvider) {
+    this(parameterManagerClient, null, projectIdProvider);
+  }
+
+  // Constructor for ParameterManagerClientFactory
+  public ParameterManagerTemplate(
+      ParameterManagerClientFactory clientFactory, GcpProjectIdProvider projectIdProvider) {
+    this(clientFactory.getClient(GLOBAL_LOCATION), clientFactory, projectIdProvider);
+  }
+
+  // Private constructor that initializes common fields
+  private ParameterManagerTemplate(
+      ParameterManagerClient parameterManagerClient,
+      ParameterManagerClientFactory clientFactory,
+      GcpProjectIdProvider projectIdProvider) {
     this.parameterManagerClient = parameterManagerClient;
+    this.clientFactory = clientFactory;
     this.projectIdProvider = projectIdProvider;
     this.allowDefaultParameterValue = false;
+  }
+
+  private ParameterManagerClient getClient(@Nullable String locationId) {
+    return clientFactory == null ? parameterManagerClient : clientFactory.getClient(locationId);
   }
 
   public ParameterManagerTemplate setAllowDefaultParameterValue(
@@ -94,7 +118,11 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
 
   @Override
   public void createParameter(
-      String locationId, String parameterId, String versionId, String payload, ParameterFormat format) {
+      String locationId,
+      String parameterId,
+      String versionId,
+      String payload,
+      ParameterFormat format) {
     createNewParameterVersion(
         projectIdProvider.getProjectId(),
         locationId,
@@ -111,8 +139,7 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
       String parameterId,
       String versionId,
       String payload,
-      ParameterFormat format
-      ) {
+      ParameterFormat format) {
     createNewParameterVersion(
         projectId, locationId, parameterId, versionId, ByteString.copyFromUtf8(payload), format);
   }
@@ -135,8 +162,7 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
       String parameterId,
       String versionId,
       byte[] payload,
-      ParameterFormat format
-      ) {
+      ParameterFormat format) {
     createNewParameterVersion(
         projectIdProvider.getProjectId(),
         locationId,
@@ -153,8 +179,7 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
       String parameterId,
       String versionId,
       byte[] payload,
-      ParameterFormat format
-      ) {
+      ParameterFormat format) {
     createNewParameterVersion(
         projectId, locationId, parameterId, versionId, ByteString.copyFrom(payload), format);
   }
@@ -179,7 +204,7 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
             .setParameterVersion(parameterVersion)
             .setUpdateMask(FieldMaskUtil.fromString("disabled"))
             .build();
-    this.parameterManagerClient.updateParameterVersion(request);
+    getClient(locationId).updateParameterVersion(request);
   }
 
   @Override
@@ -202,7 +227,7 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
             .setParameterVersion(parameterVersion)
             .setUpdateMask(FieldMaskUtil.fromString("disabled"))
             .build();
-    this.parameterManagerClient.updateParameterVersion(request);
+    getClient(locationId).updateParameterVersion(request);
   }
 
   @Override
@@ -215,7 +240,7 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
     ParameterName parameterName = ParameterName.of(projectId, locationId, parameterId);
     DeleteParameterRequest request =
         DeleteParameterRequest.newBuilder().setName(parameterName.toString()).build();
-    this.parameterManagerClient.deleteParameter(request);
+    getClient(locationId).deleteParameter(request);
   }
 
   @Override
@@ -230,7 +255,7 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
         ParameterVersionName.of(projectId, locationId, parameterId, versionId);
     DeleteParameterVersionRequest request =
         DeleteParameterVersionRequest.newBuilder().setName(parameterVersionName.toString()).build();
-    this.parameterManagerClient.deleteParameterVersion(request);
+    getClient(locationId).deleteParameterVersion(request);
   }
 
   @Override
@@ -242,7 +267,7 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
   public boolean parameterExists(String projectId, String locationId, String parameterId) {
     ParameterName parameterName = ParameterName.of(projectId, locationId, parameterId);
     try {
-      this.parameterManagerClient.getParameter(parameterName);
+      getClient(locationId).getParameter(parameterName);
     } catch (NotFoundException e) {
       return false;
     }
@@ -263,7 +288,7 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
     GetParameterVersionRequest request =
         GetParameterVersionRequest.newBuilder().setName(parameterVersionName.toString()).build();
     try {
-      this.parameterManagerClient.getParameterVersion(request);
+      getClient(locationId).getParameterVersion(request);
     } catch (NotFoundException e) {
       return false;
     }
@@ -286,14 +311,14 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
 
   @Override
   @Nullable
-  public String getRenderedParameterString(String parameterIdentifier) {
+  public String renderedParameterVersionString(String parameterIdentifier) {
     ByteString renderedParameterByteString = getRenderedParameterByteString(parameterIdentifier);
     return renderedParameterByteString == null ? null : renderedParameterByteString.toStringUtf8();
   }
 
   @Override
   @Nullable
-  public byte[] getRenderedParameterBytes(String parameterIdentifier) {
+  public byte[] renderedParameterVersionBytes(String parameterIdentifier) {
     ByteString renderedParameterByteString = getRenderedParameterByteString(parameterIdentifier);
     return renderedParameterByteString == null ? null : renderedParameterByteString.toByteArray();
   }
@@ -309,7 +334,7 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
     ByteString parameterData;
     try {
       parameterData =
-          parameterManagerClient.getParameterVersion(parameterVersionName).getPayload().getData();
+          getClient(parameterVersionName.getLocation()).getParameterVersion(parameterVersionName).getPayload().getData();
     } catch (NotFoundException ex) {
       LOGGER.warn(parameterVersionName.toString() + " doesn't exist in Parameter Manager.");
       if (!this.allowDefaultParameterValue) {
@@ -334,7 +359,7 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
     ByteString parameterData;
     try {
       parameterData =
-          parameterManagerClient.renderParameterVersion(parameterVersionName).getRenderedPayload();
+          getClient(parameterVersionName.getLocation()).renderParameterVersion(parameterVersionName).getRenderedPayload();
     } catch (NotFoundException ex) {
       LOGGER.warn(parameterVersionName.toString() + " doesn't exist in Parameter Manager.");
       if (!this.allowDefaultParameterValue) {
@@ -374,7 +399,7 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
             .setParameterVersion(
                 ParameterVersion.newBuilder().setPayload(parameterVersionPayload).build())
             .build();
-    this.parameterManagerClient.createParameterVersion(payloadRequest);
+    getClient(locationId).createParameterVersion(payloadRequest);
   }
 
   /**
@@ -396,6 +421,6 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
             .setParameterId(parameterId)
             .setParameter(parameter)
             .build();
-    this.parameterManagerClient.createParameter(request);
+    getClient(locationId).createParameter(request);
   }
 }

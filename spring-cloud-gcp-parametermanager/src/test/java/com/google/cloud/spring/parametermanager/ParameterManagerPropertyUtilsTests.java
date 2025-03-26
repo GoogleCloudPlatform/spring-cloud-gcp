@@ -58,8 +58,7 @@ class ParameterManagerPropertyUtilsTests {
                 ParameterManagerPropertyUtils.getParameterVersionName(
                     property, DEFAULT_PROJECT_ID_PROVIDER))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessageContaining(
-            "The GCP Parameter Manager parameter id must not be empty:");
+        .hasMessageContaining("The GCP Parameter Manager parameter id must not be empty:");
   }
 
   @Test

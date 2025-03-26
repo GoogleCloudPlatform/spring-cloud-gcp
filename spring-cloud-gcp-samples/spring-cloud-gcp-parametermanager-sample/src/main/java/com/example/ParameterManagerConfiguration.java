@@ -23,6 +23,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 public class ParameterManagerConfiguration {
 
   private String parameter;
+  private String regionalParameter;
 
   @RefreshScope
   public String getParameter() {
@@ -32,5 +33,15 @@ public class ParameterManagerConfiguration {
   @RefreshScope
   public void setParameter(String parameter) {
     this.parameter = parameter;
+  }
+
+  @RefreshScope
+  public String getRegionalParameter() {
+    return regionalParameter;
+  }
+
+  @RefreshScope
+  public void setRegionalParameter(String regionalParameter) {
+    this.regionalParameter = regionalParameter;
   }
 }

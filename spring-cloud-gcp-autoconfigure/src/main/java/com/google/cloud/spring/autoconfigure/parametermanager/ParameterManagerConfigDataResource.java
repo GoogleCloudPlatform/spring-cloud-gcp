@@ -16,6 +16,7 @@
 
 package com.google.cloud.spring.autoconfigure.parametermanager;
 
+import java.util.Objects;
 import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataResource;
 
@@ -32,15 +33,16 @@ public class ParameterManagerConfigDataResource extends ConfigDataResource {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ParameterManagerConfigDataResource that)) {
+    if (!(o instanceof ParameterManagerConfigDataResource)) {
       return false;
     }
+    ParameterManagerConfigDataResource that = (ParameterManagerConfigDataResource) o;
     return location.equals(that.location);
   }
 
   @Override
   public int hashCode() {
-    return location.hashCode();
+    return Objects.hash(location);
   }
 
   @Override

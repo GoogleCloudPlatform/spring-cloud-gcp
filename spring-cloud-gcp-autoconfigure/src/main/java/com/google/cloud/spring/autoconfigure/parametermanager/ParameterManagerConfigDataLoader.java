@@ -26,17 +26,18 @@ import org.springframework.boot.context.config.ConfigDataLoader;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 
-public class ParameterManagerConfigDataLoader
-    implements ConfigDataLoader<ParameterManagerConfigDataResource> {
+public class ParameterManagerConfigDataLoader implements
+    ConfigDataLoader<ParameterManagerConfigDataResource> {
   @Override
   public ConfigData load(
-      ConfigDataLoaderContext context, ParameterManagerConfigDataResource resource)
+      ConfigDataLoaderContext context,
+      ParameterManagerConfigDataResource resource)
       throws IOException, ConfigDataResourceNotFoundException {
-    ParameterManagerTemplate parameterManagerTemplate =
-        context.getBootstrapContext().get(ParameterManagerTemplate.class);
+    ParameterManagerTemplate parameterManagerTemplate = context.getBootstrapContext()
+            .get(ParameterManagerTemplate.class);
 
-    GcpProjectIdProvider projectIdProvider =
-        context.getBootstrapContext().get(GcpProjectIdProvider.class);
+    GcpProjectIdProvider projectIdProvider = context.getBootstrapContext()
+            .get(GcpProjectIdProvider.class);
 
     return new ConfigData(
         Collections.singleton(
