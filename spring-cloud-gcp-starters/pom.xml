@@ -25,6 +25,7 @@
 		<module>spring-cloud-gcp-starter-cloudfoundry</module>
 		<module>spring-cloud-gcp-starter-pubsub</module>
 		<module>spring-cloud-gcp-starter-config</module>
+		<module>spring-cloud-gcp-starter-paramconfig</module>
 		<module>spring-cloud-gcp-starter-storage</module>
 		<module>spring-cloud-gcp-starter-data-spanner</module>
 		<module>spring-cloud-gcp-starter-data-datastore</module>

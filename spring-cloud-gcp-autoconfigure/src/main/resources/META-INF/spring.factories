@@ -1,5 +1,6 @@
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-com.google.cloud.spring.autoconfigure.config.GcpConfigBootstrapConfiguration
+com.google.cloud.spring.autoconfigure.config.GcpConfigBootstrapConfiguration,\
+com.google.cloud.spring.autoconfigure.paramconfig.GcpParamConfigBootstrapConfiguration
 org.springframework.boot.env.EnvironmentPostProcessor=\
 com.google.cloud.spring.autoconfigure.alloydb.AlloyDbEnvironmentPostProcessor,\
 com.google.cloud.spring.autoconfigure.sql.CloudSqlEnvironmentPostProcessor,\
