@@ -63,7 +63,7 @@ public class SecretManagerWebController {
   @Value("${sm@application-secret:DEFAULT}")
   private String appSecretFromValue;
 
-  // Application secrets can be accessed using @Value syntax.
+  // Application secrets with regions can be accessed with this syntax.
   @Value("${sm@locations/us-central1/application-secret:DEFAULT}")
   private String appRegionalSecretFromValue;
 

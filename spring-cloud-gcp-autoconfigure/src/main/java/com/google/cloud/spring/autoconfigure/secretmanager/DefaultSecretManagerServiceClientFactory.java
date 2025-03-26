@@ -16,6 +16,8 @@
 
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
+import static com.google.cloud.spring.secretmanager.SecretManagerTemplate.GLOBAL_LOCATION;
+
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
@@ -39,15 +41,10 @@ import org.springframework.util.ObjectUtils;
 @Component
 public class DefaultSecretManagerServiceClientFactory implements SecretManagerServiceClientFactory {
 
-  /**
-   * Default value for the latest version of the secret.
-   */
-  public static final String GLOBAL_LOCATION = "global";
-
   private final CredentialsProvider credentialsProvider;
   private final Map<String, SecretManagerServiceClient> clientCache = new ConcurrentHashMap<>();
 
-  public DefaultSecretManagerServiceClientFactory(CredentialsProvider credentialsProvider, SecretManagerServiceClient client) {
+  DefaultSecretManagerServiceClientFactory(CredentialsProvider credentialsProvider, SecretManagerServiceClient client) {
     this.credentialsProvider = credentialsProvider;
     this.clientCache.putIfAbsent(GLOBAL_LOCATION, client);
   }

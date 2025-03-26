@@ -60,6 +60,13 @@ class GcpSecretManagerAutoConfigurationUnitTests {
   }
 
   @Test
+  void testSecretManagerServiceClientExists() {
+    contextRunner.run(
+        ctx -> assertThat(ctx.getBean(SecretManagerServiceClient.class))
+            .isNotNull());
+  }
+
+  @Test
   void testSecretManagerServiceClientFactoryExists() {
     contextRunner.run(
         ctx -> assertThat(ctx.getBean(SecretManagerServiceClientFactory.class))
