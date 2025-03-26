@@ -22,8 +22,10 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.io.IOException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -31,6 +33,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+
 
 /**
  *  Autoconfiguration for GCP Secret Manager.
@@ -63,22 +66,36 @@ public class GcpSecretManagerAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public SecretManagerServiceClient secretManagerClient()
-      throws IOException {
+  public SecretManagerServiceClient secretManagerClient() throws IOException {
     SecretManagerServiceSettings settings =
         SecretManagerServiceSettings.newBuilder()
             .setCredentialsProvider(this.credentialsProvider)
-            .setHeaderProvider(
-                new UserAgentHeaderProvider(GcpSecretManagerAutoConfiguration.class))
+            .setHeaderProvider(new UserAgentHeaderProvider(GcpSecretManagerAutoConfiguration.class))
             .build();
-
     return SecretManagerServiceClient.create(settings);
   }
 
   @Bean
   @ConditionalOnMissingBean
-  public SecretManagerTemplate secretManagerTemplate(SecretManagerServiceClient client) {
-    return new SecretManagerTemplate(client, this.gcpProjectIdProvider)
-        .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
+  public SecretManagerServiceClientFactory clientFactory(SecretManagerServiceClient client) {
+    return new DefaultSecretManagerServiceClientFactory(this.credentialsProvider, client);
   }
+
+
+  @Bean
+  @ConditionalOnMissingBean
+  public SecretManagerTemplate secretManagerTemplate(
+      SecretManagerServiceClient client, ObjectProvider<SecretManagerServiceClientFactory> clientFactoryProvider) {
+
+    SecretManagerServiceClientFactory clientFactory = clientFactoryProvider.getIfAvailable();
+
+    if (clientFactory != null) {
+      return new SecretManagerTemplate(clientFactory, this.gcpProjectIdProvider)
+          .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
+    } else {
+      return new SecretManagerTemplate(client, this.gcpProjectIdProvider)
+          .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
+    }
+  }
+
 }
