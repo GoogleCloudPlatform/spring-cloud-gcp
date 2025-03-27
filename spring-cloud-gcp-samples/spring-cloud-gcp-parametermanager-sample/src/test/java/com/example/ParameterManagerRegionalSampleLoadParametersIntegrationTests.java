@@ -25,7 +25,7 @@ import org.springframework.web.util.HtmlUtils;
     classes = ParameterManagerApplication.class)
 class ParameterManagerRegionalSampleLoadParametersIntegrationTests {
 
-  private static final String PARAMETER_CONTENT = "{ \"message\": \"Hello World from GCP PM!!\" }";
+  private static final String PARAMETER_CONTENT = "{ \"message\": \"Hello Regional World from GCP PM!!\" }";
   @Autowired private ParameterManagerTemplate parameterManagerTemplate;
   @Autowired private TestRestTemplate testRestTemplate;
 
@@ -35,13 +35,13 @@ class ParameterManagerRegionalSampleLoadParametersIntegrationTests {
     assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
     assertThat(response.getBody().replaceAll("\\s+", " "))
         .contains(
-            ("<b>Application parameter from @Value:</b> <i>"
+            ("<b>Application regional parameter from @Value:</b> <i>"
                     + HtmlUtils.htmlEscape(PARAMETER_CONTENT)
                     + "</i>")
                 .replaceAll("\\s+", " "));
     assertThat(response.getBody().replaceAll("\\s+", " "))
         .contains(
-            ("<b>Application parameter from @ConfigurationProperties:</b> <i>"
+            ("<b>Application regional parameter from @ConfigurationProperties:</b> <i>"
                     + HtmlUtils.htmlEscape(PARAMETER_CONTENT)
                     + "</i>")
                 .replaceAll("\\s+", " "));

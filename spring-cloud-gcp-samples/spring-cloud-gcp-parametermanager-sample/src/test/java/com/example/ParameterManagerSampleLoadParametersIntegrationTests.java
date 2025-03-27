@@ -35,13 +35,13 @@ class ParameterManagerSampleLoadParametersIntegrationTests {
     assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
     assertThat(response.getBody().replaceAll("\\s+", " "))
         .contains(
-            ("<b>Application regional parameter from @Value:</b> <i>"
+            ("<b>Application parameter from @Value:</b> <i>"
                     + HtmlUtils.htmlEscape(PARAMETER_CONTENT)
                     + "</i>")
                 .replaceAll("\\s+", " "));
     assertThat(response.getBody().replaceAll("\\s+", " "))
         .contains(
-            ("<b>Application regional parameter from @ConfigurationProperties:</b> <i>"
+            ("<b>Application parameter from @ConfigurationProperties:</b> <i>"
                     + HtmlUtils.htmlEscape(PARAMETER_CONTENT)
                     + "</i>")
                 .replaceAll("\\s+", " "));

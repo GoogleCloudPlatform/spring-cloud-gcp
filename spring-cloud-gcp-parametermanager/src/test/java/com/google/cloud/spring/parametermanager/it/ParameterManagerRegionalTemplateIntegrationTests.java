@@ -35,7 +35,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 /** Integration tests for {@link ParameterManagerTemplate} */
 @EnabledIfSystemProperty(named = "it.parametermanager", matches = "true")
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {ParameterManagerTestConfiguration.class})
+@ContextConfiguration(classes = {ParameterManagerRegionalTestConfiguration.class})
 public class ParameterManagerRegionalTemplateIntegrationTests {
 
   @Autowired ParameterManagerTemplate parameterManagerTemplate;
