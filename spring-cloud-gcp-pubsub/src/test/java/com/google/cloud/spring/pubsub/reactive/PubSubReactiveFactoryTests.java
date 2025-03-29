@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -210,7 +209,7 @@ class PubSubReactiveFactoryTests {
 
   @Test
   void testSequentialRequestsNackOnCancel() {
-   var mockMsg = setUpMessages("msg1","stop", "msg2", "msg3");
+    var mockMsg = setUpMessages("msg1", "stop", "msg2", "msg3");
 
     StepVerifier.withVirtualTime(() -> factory.poll("sub1", 10).map(this::messageToString), 1)
         .expectSubscription()
@@ -221,39 +220,41 @@ class PubSubReactiveFactoryTests {
         .verify();
 
     InOrder methodOrder = Mockito.inOrder(this.subscriberOperations);
-    methodOrder.verify(this.subscriberOperations,times(1)).pullAsync("sub1", 1, false);
-    methodOrder.verify(this.subscriberOperations,times(2)).pullAsync("sub1", 2, false);
+    methodOrder.verify(this.subscriberOperations, times(1)).pullAsync("sub1", 1, false);
+    methodOrder.verify(this.subscriberOperations, times(2)).pullAsync("sub1", 2, false);
     methodOrder.verifyNoMoreInteractions();
     
-    Mockito.verify(mockMsg.get("msg1"),never()).nack();
+    Mockito.verify(mockMsg.get("msg1"), never()).nack();
     assertThat(messageToString(mockMsg.get("msg2"))).isEqualTo("msg2");
     Mockito.verify(mockMsg.get("msg2")).nack();
     assertThat(messageToString(mockMsg.get("msg3"))).isEqualTo("msg3");
     Mockito.verify(mockMsg.get("msg3")).nack();
     
   }
+
   @Test
   void testUnlimitedDemandNackOnCancel() {
-      var mockMsg = setUpMessages("msg1", "msg2", "stop", "msg3", "msg4", "stop");
-
-      StepVerifier.withVirtualTime(() -> factory.poll("sub1", 10).map(this::messageToString))
+    var mockMsg = setUpMessages("msg1", "msg2", "stop", "msg3", "msg4", "stop");
+    
+    StepVerifier.withVirtualTime(() -> factory.poll("sub1", 10).map(this::messageToString))
           .expectSubscription()
           .expectNext("msg1", "msg2")
           .expectNoEvent(Duration.ofMillis(10))
           .expectNext("msg3")
-
+    
           .thenCancel()
           .verify();
-
-      InOrder methodOrder = Mockito.inOrder(this.subscriberOperations);
-      methodOrder
-          .verify(this.subscriberOperations, times(2))
-          .pullAsync("sub1", Integer.MAX_VALUE, true);
-      methodOrder.verifyNoMoreInteractions();
-      
+    
+    InOrder methodOrder = Mockito.inOrder(this.subscriberOperations);
+    methodOrder
+        .verify(this.subscriberOperations, times(2))
+        .pullAsync("sub1", Integer.MAX_VALUE, true);
+    methodOrder.verifyNoMoreInteractions();
+    
+    Mockito.verify(mockMsg.get("msg1"), never()).nack();
     assertThat(messageToString(mockMsg.get("msg4"))).isEqualTo("msg4");
     Mockito.verify(mockMsg.get("msg4")).nack();
-    Mockito.verify(mockMsg.get("msg1"),never()).nack();
+    Mockito.verify(mockMsg.get("msg1"), never()).nack();
   }
   
   private String messageToString(AcknowledgeablePubsubMessage message) {
@@ -269,9 +270,9 @@ class PubSubReactiveFactoryTests {
    *
    * @param messages messages to replay
    */
-  private Map<String,AcknowledgeablePubsubMessage> setUpMessages(String... messages) {
+  private Map<String, AcknowledgeablePubsubMessage> setUpMessages(String... messages) {
     List<String> msgList = new ArrayList<>(Arrays.asList(messages));
-    Map<String,AcknowledgeablePubsubMessage> mockMsgs = new ConcurrentHashMap<>(messages.length);
+    Map<String, AcknowledgeablePubsubMessage> mockMsgs = new ConcurrentHashMap<>(messages.length);
     when(subscriberOperations.pullAsync(eq("sub1"), any(Integer.class), any(Boolean.class)))
         .then(
             invocationOnMock -> {
@@ -303,7 +304,7 @@ class PubSubReactiveFactoryTests {
                 }
 
                 AcknowledgeablePubsubMessage msg = mock(AcknowledgeablePubsubMessage.class);
-                mockMsgs.put(nextPayload,msg);
+                mockMsgs.put(nextPayload, msg);
                 PubsubMessage pubsubMessage =
                     PubsubMessage.newBuilder()
                         .setData(ByteString.copyFrom((nextPayload).getBytes()))

@@ -20,6 +20,7 @@ import com.google.api.gax.rpc.DeadlineExceededException;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import java.time.Duration;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
@@ -117,46 +118,46 @@ public final class PubSubReactiveFactory {
                 }));
   }
 
-
-
-private void pollingPull(String subscriptionName, long pollingPeriodMs, FluxSink<AcknowledgeablePubsubMessage> sink) {
+  private void pollingPull(String subscriptionName, long pollingPeriodMs, FluxSink<AcknowledgeablePubsubMessage> sink) {
     sink.onDispose(Flux.interval(Duration.ZERO, Duration.ofMillis(pollingPeriodMs), scheduler)
-    .flatMap(ignore ->  Mono.fromFuture(this.subscriberOperations.pullAsync(subscriptionName, maxMessages, true))
-            .doOnNext(messages ->{
-                if (!sink.isCancelled()) {
-                    messages.forEach(sink::next);
-                  }
-                if (sink.isCancelled()) {
-                      messages.forEach(AcknowledgeablePubsubMessage::nack);
-                  }
-            })
-    )
-    .doOnError(sink::error).subscribe());
-}
-  private void backpressurePull(
-      String subscriptionName, long numRequested, FluxSink<AcknowledgeablePubsubMessage> sink) {
+        .flatMap(ignore ->  {
+          var future = this.subscriberOperations.pullAsync(subscriptionName, maxMessages, true);
+          return Mono.fromFuture(future)
+                    .doOnNext(messages -> {
+                      if (!sink.isCancelled()) {
+                        messages.forEach(sink::next);
+                      }
+                      if (sink.isCancelled()) {
+                        messages.forEach(AcknowledgeablePubsubMessage::nack);
+                      }
+                    });
+        }).doOnError(sink::error).subscribe());
+  }
+  
+  private void backpressurePull(String subscriptionName, long numRequested, FluxSink<AcknowledgeablePubsubMessage> sink) {
+    sink.onDispose(backpressurePullFlux(subscriptionName, numRequested)
+        .doOnNext(messages -> {
+          if (!sink.isCancelled()) {
+            messages.forEach(sink::next);
+          }
+          if (sink.isCancelled()) {
+            messages.forEach(AcknowledgeablePubsubMessage::nack);
+          }
+        }).doOnError(exception -> exceptionHandler(subscriptionName, numRequested, sink, exception))
+        .subscribe());
+  }
+    
+  private Flux<List<AcknowledgeablePubsubMessage>> backpressurePullFlux(String subscriptionName, long numRequested) {
     int intDemand = numRequested > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) numRequested;
-    this.subscriberOperations
-        .pullAsync(subscriptionName, intDemand, false)
-        .whenComplete(
-            (messages, exception) -> {
-              if (exception != null) {
-                exceptionHandler(subscriptionName, numRequested, sink, exception);
-                return;
-              }
-
-              if (!sink.isCancelled()) {
-                messages.forEach(sink::next);
-              }
-              if (!sink.isCancelled()) {
-                long numToPull = numRequested - messages.size();
-                if (numToPull > 0) {
-                  backpressurePull(subscriptionName, numToPull, sink);
-                }
-              }
-              if(sink.isCancelled())
-                messages.forEach(AcknowledgeablePubsubMessage::nack);
-            });
+    var future = this.subscriberOperations.pullAsync(subscriptionName, intDemand, false);
+    return Mono.fromFuture(future)
+        .flatMapMany(messages -> {
+          long numToPull = numRequested - messages.size();
+          if (numToPull > 0) {
+            return Mono.just(messages).concatWith(Flux.defer(() -> backpressurePullFlux(subscriptionName, numToPull)));
+          }
+          return Mono.just(messages);
+        });
   }
 
   private void exceptionHandler(
