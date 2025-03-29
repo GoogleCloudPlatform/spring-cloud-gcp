@@ -111,70 +111,54 @@ public final class PubSubReactiveFactory {
             sink.onRequest(
                 numRequested -> {
                   if (numRequested == Long.MAX_VALUE) {
-                    pollingPull(subscriptionName, pollingPeriodMs, sink);
+                    transferMessages(pollingPull(subscriptionName, pollingPeriodMs), sink);
                   } else {
-                    backpressurePull(subscriptionName, numRequested, sink);
+                    transferMessages(backpressurePull(subscriptionName, numRequested), sink);
                   }
                 }));
   }
 
-  private void pollingPull(String subscriptionName, long pollingPeriodMs, FluxSink<AcknowledgeablePubsubMessage> sink) {
-    sink.onDispose(Flux.interval(Duration.ZERO, Duration.ofMillis(pollingPeriodMs), scheduler)
-        .flatMap(ignore ->  {
-          var future = this.subscriberOperations.pullAsync(subscriptionName, maxMessages, true);
-          return Mono.fromFuture(future)
-                    .doOnNext(messages -> {
-                      if (!sink.isCancelled()) {
-                        messages.forEach(sink::next);
-                      }
-                      if (sink.isCancelled()) {
-                        messages.forEach(AcknowledgeablePubsubMessage::nack);
-                      }
-                    });
-        }).doOnError(sink::error).subscribe());
+  private Flux<List<AcknowledgeablePubsubMessage>> pollingPull(String subscriptionName, long pollingPeriodMs) {
+    return Flux.interval(Duration.ZERO, Duration.ofMillis(pollingPeriodMs), scheduler)
+        .flatMap(ignore -> Mono.fromFuture(this.subscriberOperations.pullAsync(subscriptionName, maxMessages, true)));
   }
-  
-  private void backpressurePull(String subscriptionName, long numRequested, FluxSink<AcknowledgeablePubsubMessage> sink) {
-    sink.onDispose(backpressurePullFlux(subscriptionName, numRequested)
-        .doOnNext(messages -> {
-          if (!sink.isCancelled()) {
-            messages.forEach(sink::next);
-          }
-          if (sink.isCancelled()) {
-            messages.forEach(AcknowledgeablePubsubMessage::nack);
-          }
-        }).doOnError(exception -> exceptionHandler(subscriptionName, numRequested, sink, exception))
-        .subscribe());
-  }
-    
-  private Flux<List<AcknowledgeablePubsubMessage>> backpressurePullFlux(String subscriptionName, long numRequested) {
+
+  private Flux<List<AcknowledgeablePubsubMessage>> backpressurePull(String subscriptionName, long numRequested) {
     int intDemand = numRequested > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) numRequested;
     var future = this.subscriberOperations.pullAsync(subscriptionName, intDemand, false);
     return Mono.fromFuture(future)
-        .flatMapMany(messages -> {
-          long numToPull = numRequested - messages.size();
-          if (numToPull > 0) {
-            return Mono.just(messages).concatWith(Flux.defer(() -> backpressurePullFlux(subscriptionName, numToPull)));
-          }
-          return Mono.just(messages);
-        });
+          .flatMapMany(messages -> {
+            long numToPull = numRequested - messages.size();
+            if (numToPull > 0) {
+              return Mono.just(messages).concatWith(Flux.defer(() -> backpressurePull(subscriptionName, numToPull)));
+            }
+            return Mono.just(messages);
+          }).onErrorResume(exception -> {
+            if (exception instanceof DeadlineExceededException) {
+              if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace(
+                    "Blocking pull timed out due to empty subscription "
+                    + subscriptionName
+                    + "; retrying.");
+              }
+              return Flux.defer(() -> backpressurePull(subscriptionName, numRequested));
+            } else {
+              return  Mono.error(exception);
+            }
+          });
   }
 
-  private void exceptionHandler(
-      String subscriptionName,
-      long numRequested,
-      FluxSink<AcknowledgeablePubsubMessage> sink,
-      Throwable exception) {
-    if (exception instanceof DeadlineExceededException) {
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Blocking pull timed out due to empty subscription "
-                + subscriptionName
-                + "; retrying.");
-      }
-      backpressurePull(subscriptionName, numRequested, sink);
-    } else {
-      sink.error(exception);
-    }
+  private void transferMessages(Flux<List<AcknowledgeablePubsubMessage>> source, FluxSink<AcknowledgeablePubsubMessage> destination) {
+    destination.onDispose(source
+        .doOnNext(messages -> {
+          if (!destination.isCancelled()) {
+            messages.forEach(destination::next);
+          }
+          if (destination.isCancelled()) {
+            messages.forEach(AcknowledgeablePubsubMessage::nack);
+          }
+        }).doOnError(destination::error).subscribe());
   }
+    
+  
 }
