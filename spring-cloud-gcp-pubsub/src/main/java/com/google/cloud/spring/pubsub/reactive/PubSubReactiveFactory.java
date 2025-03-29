@@ -118,12 +118,14 @@ public final class PubSubReactiveFactory {
                 }));
   }
 
-  private Flux<List<AcknowledgeablePubsubMessage>> pollingPull(String subscriptionName, long pollingPeriodMs) {
+  private Flux<List<AcknowledgeablePubsubMessage>> pollingPull(
+      String subscriptionName, long pollingPeriodMs) {
     return Flux.interval(Duration.ZERO, Duration.ofMillis(pollingPeriodMs), scheduler)
         .flatMap(ignore -> Mono.fromFuture(this.subscriberOperations.pullAsync(subscriptionName, maxMessages, true)));
   }
 
-  private Flux<List<AcknowledgeablePubsubMessage>> backpressurePull(String subscriptionName, long numRequested) {
+  private Flux<List<AcknowledgeablePubsubMessage>> backpressurePull(
+      String subscriptionName, long numRequested) {
     int intDemand = numRequested > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) numRequested;
     var future = this.subscriberOperations.pullAsync(subscriptionName, intDemand, false);
     return Mono.fromFuture(future)
@@ -131,8 +133,9 @@ public final class PubSubReactiveFactory {
             long numToPull = numRequested - messages.size();
             if (numToPull > 0) {
               return Mono.just(messages).concatWith(Flux.defer(() -> backpressurePull(subscriptionName, numToPull)));
+            } else {
+              return Mono.just(messages);
             }
-            return Mono.just(messages);
           }).onErrorResume(exception -> {
             if (exception instanceof DeadlineExceededException) {
               if (LOGGER.isTraceEnabled()) {
@@ -155,7 +158,7 @@ public final class PubSubReactiveFactory {
             messages.forEach(destination::next);
           }
           if (destination.isCancelled()) {
-            messages.forEach(AcknowledgeablePubsubMessage::nack);
+            messages.forEach(msg -> msg.modifyAckDeadline(0));
           }
         }).doOnError(destination::error).subscribe());
   }

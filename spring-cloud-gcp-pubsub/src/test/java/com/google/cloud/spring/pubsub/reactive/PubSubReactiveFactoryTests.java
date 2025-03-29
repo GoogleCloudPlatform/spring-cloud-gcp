@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -224,11 +225,11 @@ class PubSubReactiveFactoryTests {
     methodOrder.verify(this.subscriberOperations, times(2)).pullAsync("sub1", 2, false);
     methodOrder.verifyNoMoreInteractions();
     
-    Mockito.verify(mockMsg.get("msg1"), never()).nack();
+    Mockito.verify(mockMsg.get("msg1"), never()).modifyAckDeadline(anyInt());
     assertThat(messageToString(mockMsg.get("msg2"))).isEqualTo("msg2");
-    Mockito.verify(mockMsg.get("msg2")).nack();
+    Mockito.verify(mockMsg.get("msg2")).modifyAckDeadline(0);
     assertThat(messageToString(mockMsg.get("msg3"))).isEqualTo("msg3");
-    Mockito.verify(mockMsg.get("msg3")).nack();
+    Mockito.verify(mockMsg.get("msg3")).modifyAckDeadline(0);;
     
   }
 
@@ -251,10 +252,12 @@ class PubSubReactiveFactoryTests {
         .pullAsync("sub1", Integer.MAX_VALUE, true);
     methodOrder.verifyNoMoreInteractions();
     
-    Mockito.verify(mockMsg.get("msg1"), never()).nack();
+    Mockito.verify(mockMsg.get("msg1"), never()).modifyAckDeadline(anyInt());
+    Mockito.verify(mockMsg.get("msg2"), never()).modifyAckDeadline(anyInt());
+    //msg3 is nacked but if the processing already acked the message it should not be a problem
+    Mockito.verify(mockMsg.get("msg3"), times(1)).modifyAckDeadline(0);
     assertThat(messageToString(mockMsg.get("msg4"))).isEqualTo("msg4");
-    Mockito.verify(mockMsg.get("msg4")).nack();
-    Mockito.verify(mockMsg.get("msg1"), never()).nack();
+    Mockito.verify(mockMsg.get("msg4")).modifyAckDeadline(0);
   }
   
   private String messageToString(AcknowledgeablePubsubMessage message) {
