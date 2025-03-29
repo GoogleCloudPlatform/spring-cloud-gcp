@@ -20,12 +20,9 @@ import com.google.api.gax.rpc.DeadlineExceededException;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
 import com.google.cloud.spring.pubsub.support.AcknowledgeablePubsubMessage;
 import java.time.Duration;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
-import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
@@ -120,23 +117,22 @@ public final class PubSubReactiveFactory {
                 }));
   }
 
-  private void pollingPull(
-      String subscriptionName, long pollingPeriodMs, FluxSink<AcknowledgeablePubsubMessage> sink) {
-    Disposable disposable =
-        Flux.interval(Duration.ZERO, Duration.ofMillis(pollingPeriodMs), scheduler)
-            .flatMap(ignore -> pullAll(subscriptionName))
-            .subscribe(sink::next, sink::error);
 
-    sink.onDispose(disposable);
-  }
 
-  private Flux<AcknowledgeablePubsubMessage> pullAll(String subscriptionName) {
-    CompletableFuture<List<AcknowledgeablePubsubMessage>> pullResponseFuture =
-        this.subscriberOperations.pullAsync(subscriptionName, maxMessages, true);
-
-    return Mono.fromFuture(pullResponseFuture).flatMapMany(Flux::fromIterable);
-  }
-
+private void pollingPull(String subscriptionName, long pollingPeriodMs, FluxSink<AcknowledgeablePubsubMessage> sink) {
+    sink.onDispose(Flux.interval(Duration.ZERO, Duration.ofMillis(pollingPeriodMs), scheduler)
+    .flatMap(ignore ->  Mono.fromFuture(this.subscriberOperations.pullAsync(subscriptionName, maxMessages, true))
+            .doOnNext(messages ->{
+                if (!sink.isCancelled()) {
+                    messages.forEach(sink::next);
+                  }
+                if (sink.isCancelled()) {
+                      messages.forEach(AcknowledgeablePubsubMessage::nack);
+                  }
+            })
+    )
+    .doOnError(sink::error).subscribe());
+}
   private void backpressurePull(
       String subscriptionName, long numRequested, FluxSink<AcknowledgeablePubsubMessage> sink) {
     int intDemand = numRequested > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) numRequested;
@@ -158,6 +154,8 @@ public final class PubSubReactiveFactory {
                   backpressurePull(subscriptionName, numToPull, sink);
                 }
               }
+              if(sink.isCancelled())
+                messages.forEach(AcknowledgeablePubsubMessage::nack);
             });
   }
 
