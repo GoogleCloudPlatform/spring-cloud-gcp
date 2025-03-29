@@ -129,6 +129,7 @@ public final class PubSubReactiveFactory {
     int intDemand = numRequested > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) numRequested;
     var future = this.subscriberOperations.pullAsync(subscriptionName, intDemand, false);
     return Mono.fromFuture(future)
+          .publishOn(scheduler)
           .flatMapMany(messages -> {
             long numToPull = numRequested - messages.size();
             if (numToPull > 0) {
@@ -158,6 +159,7 @@ public final class PubSubReactiveFactory {
             messages.forEach(destination::next);
           }
           if (destination.isCancelled()) {
+            source.cancelOn(scheduler);
             messages.forEach(msg -> msg.modifyAckDeadline(0));
           }
         }).doOnError(destination::error).subscribe());
