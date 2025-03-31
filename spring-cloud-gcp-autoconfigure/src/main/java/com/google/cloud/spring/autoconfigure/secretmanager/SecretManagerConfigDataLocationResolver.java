@@ -53,12 +53,40 @@ public class SecretManagerConfigDataLocationResolver implements
    */
   private static SecretManagerServiceClient secretManagerServiceClient;
 
+  /**
+   * Checks if the property can be resolved by the Secret Manager resolver.
+   * For the check, we rely on the presence of the SecretManagerSyntaxUtils class, which is an
+   * optional dependency.
+   * Since optional dependencies can not be present at runtime, we explicitly check for its
+   * existence before resolving the property.
+   * If it's not present, it means this config resolver (which operates at early stages of Spring
+   * initialization) is not meant to be used.
+   * @return true if it contains the expected `sm@` or `sm://` prefix, false otherwise.
+   */
   @Override
   public boolean isResolvable(ConfigDataLocationResolverContext context,
       ConfigDataLocation location) {
+    boolean secretManagerSyntaxUtilsPresent = isClassPresent("com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils");
+    if (!secretManagerSyntaxUtilsPresent) {
+      return false;
+    }
     Optional<String> matchedPrefix = getMatchedPrefixes(location::hasPrefix);
     warnIfUsingDeprecatedSyntax(logger, matchedPrefix.orElse(""));
     return matchedPrefix.isPresent();
+  }
+
+  /**
+   *
+   * @param clazzFullName
+   * @return Whether the specified class is present in this runtime.
+   */
+  private boolean isClassPresent(String clazzFullName) {
+    try {
+      Class.forName(clazzFullName);
+      return true;
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
   }
 
   @Override
