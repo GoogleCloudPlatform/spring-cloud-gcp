@@ -60,6 +60,7 @@ public class SecretManagerConfigDataLocationResolver implements
    * Since optional dependencies may not be present at runtime, we explicitly check for its
    * existence before resolving the property.
    * If it's not present, it means this config resolver is not meant to be used.
+   *
    * @return true if it contains the expected `sm@` or `sm://` prefix, false otherwise.
    */
   @Override
@@ -75,9 +76,10 @@ public class SecretManagerConfigDataLocationResolver implements
   }
 
   /**
+   * Checks if the specified class is present in this runtime.
    *
-   * @param clazzFullName
-   * @return Whether the specified class is present in this runtime.
+   * @param clazzFullName the full name of the class for the existence check
+   * @return true if present
    */
   private boolean isClassPresent(String clazzFullName) {
     try {
