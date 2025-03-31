@@ -59,8 +59,7 @@ public class SecretManagerConfigDataLocationResolver implements
    * optional dependency.
    * Since optional dependencies may not be present at runtime, we explicitly check for its
    * existence before resolving the property.
-   * If it's not present, it means this config resolver (which operates at early stages of Spring
-   * initialization) is not meant to be used.
+   * If it's not present, it means this config resolver is not meant to be used.
    * @return true if it contains the expected `sm@` or `sm://` prefix, false otherwise.
    */
   @Override
