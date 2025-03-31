@@ -57,7 +57,7 @@ public class SecretManagerConfigDataLocationResolver implements
    * Checks if the property can be resolved by the Secret Manager resolver.
    * For the check, we rely on the presence of the SecretManagerSyntaxUtils class, which is an
    * optional dependency.
-   * Since optional dependencies can not be present at runtime, we explicitly check for its
+   * Since optional dependencies may not be present at runtime, we explicitly check for its
    * existence before resolving the property.
    * If it's not present, it means this config resolver (which operates at early stages of Spring
    * initialization) is not meant to be used.
