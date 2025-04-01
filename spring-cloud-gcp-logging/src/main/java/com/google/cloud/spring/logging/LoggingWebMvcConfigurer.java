@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.logging;
 
-import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.logging.extractors.CloudTraceIdExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -35,11 +34,9 @@ public class LoggingWebMvcConfigurer implements WebMvcConfigurer {
    *
    * @param interceptor the interceptor to use with this configurer. If not provided a {@link
    *     TraceIdLoggingWebMvcInterceptor} is used with the trace ID extractor described above.
-   * @param projectIdProvider the project ID provider to use
    */
   public LoggingWebMvcConfigurer(
-      @Autowired(required = false) TraceIdLoggingWebMvcInterceptor interceptor,
-      GcpProjectIdProvider projectIdProvider) {
+      @Autowired(required = false) TraceIdLoggingWebMvcInterceptor interceptor) {
     if (interceptor != null) {
       this.interceptor = interceptor;
     } else {
