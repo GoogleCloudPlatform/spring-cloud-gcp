@@ -19,16 +19,19 @@ package com.google.cloud.spring.storage.it;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.cloud.WriteChannel;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.core.UserAgentHeaderProvider;
 import com.google.cloud.spring.storage.GoogleStorageProtocolResolver;
 import com.google.cloud.spring.storage.GoogleStorageResource;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import org.junit.jupiter.api.BeforeEach;
@@ -125,6 +128,23 @@ class GoogleStorageIntegrationTests {
     }
   }
 
+  @Test
+  void testRestorableStateSerialization() throws IOException {
+
+    String message = "test message";
+
+    try (OutputStream os = thisResource().getOutputStream()) {
+      os.write(message.getBytes());
+    }
+
+    assertThat(this.resource.exists()).isTrue();
+
+    try (WriteChannel writer = thisResource().getBlob().writer();
+         ObjectOutputStream objectOutputStream = new ObjectOutputStream(OutputStream.nullOutputStream())) {
+      objectOutputStream.writeObject(writer.capture());
+    }
+  }
+
   /** Spring config for the tests. */
   @Configuration
   @PropertySource("application-test.properties")
@@ -136,6 +156,7 @@ class GoogleStorageIntegrationTests {
         CredentialsProvider credentialsProvider, GcpProjectIdProvider projectIdProvider)
         throws IOException {
       return StorageOptions.newBuilder()
+          .setHeaderProvider(new UserAgentHeaderProvider(GoogleStorageIntegrationTestsConfiguration.class))
           .setCredentials(credentialsProvider.getCredentials())
           .setProjectId(projectIdProvider.getProjectId())
           .build()
