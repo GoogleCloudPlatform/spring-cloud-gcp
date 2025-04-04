@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,33 +32,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/** Integration tests for {@link SecretManagerTemplate}. */
+/** Integration tests for {@link SecretManagerTemplate} for regional secrets. */
 @EnabledIfSystemProperty(named = "it.secretmanager", matches = "true")
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {SecretManagerTestConfiguration.class})
-class SecretManagerTemplateIntegrationTests {
+@ContextConfiguration(classes = {SecretManagerRegionalTestConfiguration.class})
+class SecretManagerRegionalTemplateIntegrationTests {
 
   @Autowired SecretManagerTemplate secretManagerTemplate;
 
   private String secretName;
+  private String regionalSecretName;
 
   @BeforeEach
   void createSecret() {
-    this.secretName = String.format("test-secret-%s", UUID.randomUUID());
+    this.secretName = String.format("test-reg-secret-%s", UUID.randomUUID());
+    this.regionalSecretName = String.format("sm@locations/us-central1/%s", this.secretName);
 
-    secretManagerTemplate.createSecret(secretName, "1234");
+    secretManagerTemplate.createSecret(secretName, "4321", "us-central1");
     await()
         .atMost(Duration.ofSeconds(5))
         .untilAsserted(
             () -> {
-              String secretString = secretManagerTemplate.getSecretString(secretName);
-              assertThat(secretString).isEqualTo("1234");
+              String secretString = secretManagerTemplate.getSecretString(this.regionalSecretName);
+              assertThat(secretString).isEqualTo("4321");
             });
   }
 
   @AfterEach
   void deleteSecret() {
-    secretManagerTemplate.deleteSecret(this.secretName);
+    secretManagerTemplate.deleteSecret(
+        this.secretName, secretManagerTemplate.getProjectId(), "us-central1");
   }
 
   @Test
@@ -67,34 +70,37 @@ class SecretManagerTemplateIntegrationTests {
         .atMost(Duration.ofSeconds(5))
         .untilAsserted(
             () -> {
-              String secretString = secretManagerTemplate.getSecretString(this.secretName);
-              assertThat(secretString).isEqualTo("1234");
+              String secretString = secretManagerTemplate.getSecretString(this.regionalSecretName);
+              assertThat(secretString).isEqualTo("4321");
 
-              byte[] secretBytes = secretManagerTemplate.getSecretBytes(this.secretName);
-              assertThat(secretBytes).isEqualTo("1234".getBytes());
+              byte[] secretBytes = secretManagerTemplate.getSecretBytes(this.regionalSecretName);
+              assertThat(secretBytes).isEqualTo("4321".getBytes());
             });
   }
 
   @Test
   void testReadMissingSecret() {
 
-    assertThatThrownBy(() -> secretManagerTemplate.getSecretBytes("test-NON-EXISTING-secret"))
+    assertThatThrownBy(
+            () ->
+                secretManagerTemplate.getSecretBytes(
+                    "sm@locations/us-central1/test-NON-EXISTING-reg-secret"))
         .isInstanceOf(com.google.api.gax.rpc.NotFoundException.class);
   }
 
   @Test
   void testUpdateSecrets() {
 
-    secretManagerTemplate.createSecret(this.secretName, "6666");
+    secretManagerTemplate.createSecret(this.secretName, "9999", "us-central1");
     await()
         .atMost(Duration.ofSeconds(10))
         .untilAsserted(
             () -> {
-              String secretString = secretManagerTemplate.getSecretString(this.secretName);
-              assertThat(secretString).isEqualTo("6666");
+              String secretString = secretManagerTemplate.getSecretString(this.regionalSecretName);
+              assertThat(secretString).isEqualTo("9999");
 
-              byte[] secretBytes = secretManagerTemplate.getSecretBytes(this.secretName);
-              assertThat(secretBytes).isEqualTo("6666".getBytes());
+              byte[] secretBytes = secretManagerTemplate.getSecretBytes(this.regionalSecretName);
+              assertThat(secretBytes).isEqualTo("9999".getBytes());
             });
   }
 }

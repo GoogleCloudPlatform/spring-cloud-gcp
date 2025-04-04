@@ -8,11 +8,14 @@ import static org.mockito.Mockito.when;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.spring.autoconfigure.core.GcpProperties;
+import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -44,81 +47,213 @@ class SecretManagerConfigDataLocationResolverUnitTests {
     );
   }
 
-  @Test
-  void isResolvableReturnsFalseWithIncorrectPrefix() {
-    assertThat(resolver.isResolvable(context, ConfigDataLocation.of("test://"))).isFalse();
-    assertThat(resolver.isResolvable(context, ConfigDataLocation.of("sm:"))).isFalse();
+  @Nested
+  class WithStandardBeans {
+    @Test
+    void isResolvableReturnsFalseWithIncorrectPrefix() {
+      assertThat(resolver.isResolvable(context, ConfigDataLocation.of("test://"))).isFalse();
+      assertThat(resolver.isResolvable(context, ConfigDataLocation.of("sm:"))).isFalse();
+    }
+
+    @ParameterizedTest
+    @MethodSource(
+        "com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolverUnitTests#prefixes")
+    void isResolvableReturnsFalseWithCorrectPrefix(String prefix) {
+      assertThat(resolver.isResolvable(context, ConfigDataLocation.of(prefix))).isTrue();
+    }
+
+    @ParameterizedTest
+    @MethodSource(
+        "com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolverUnitTests#prefixes")
+    void resolveReturnsConfigDataLocation(String prefix) {
+      List<SecretManagerConfigDataResource> locations =
+          resolver.resolve(context, ConfigDataLocation.of(prefix + "my-secret"));
+      assertThat(locations).hasSize(1);
+      assertThat(locations)
+          .first()
+          .extracting("location")
+          .isEqualTo(ConfigDataLocation.of(prefix + "my-secret"));
+      ConfigurableApplicationContext applicationContext =
+          mock(ConfigurableApplicationContext.class);
+      when(applicationContext.getBeanFactory()).thenReturn(new DefaultListableBeanFactory());
+      assertThatCode(() -> defaultBootstrapContext.close(applicationContext))
+          .doesNotThrowAnyException();
+    }
+
+    @Test
+    void createSecretManagerClientWithPresetClientTest() {
+      SecretManagerServiceClient client = mock(SecretManagerServiceClient.class);
+      SecretManagerConfigDataLocationResolver.setSecretManagerServiceClient(client);
+      assertThat(SecretManagerConfigDataLocationResolver.createSecretManagerClient(context))
+          .isEqualTo(client);
+    }
+
+    @Test
+    void createSecretManagerClientFactoryWithPresetClientTest() {
+      SecretManagerServiceClientFactory secretManagerServiceClientFactory =
+          mock(SecretManagerServiceClientFactory.class);
+      SecretManagerConfigDataLocationResolver.setSecretManagerServiceClientFactory(
+          secretManagerServiceClientFactory);
+      assertThat(
+          SecretManagerConfigDataLocationResolver.createSecretManagerServiceClientFactory(
+              context))
+          .isEqualTo(secretManagerServiceClientFactory);
+    }
+
+    @Test
+    void testSecretManagerProjectIdTakesPrecedence() {
+      when(secretManagerProperties.getProjectId()).thenReturn("secret-manager-property-id");
+      when(gcpProperties.getProjectId()).thenReturn("gcp-project-id");
+      GcpProjectIdProvider projectIdProvider =
+          SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
+      assertThat(projectIdProvider.getProjectId()).isEqualTo("secret-manager-property-id");
+    }
+
+    @Test
+    void testProjectIdUseCoreWhenNoSecretManagerProjectId() {
+      when(gcpProperties.getProjectId()).thenReturn("gcp-project-id");
+      GcpProjectIdProvider projectIdProvider =
+          SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
+      assertThat(projectIdProvider.getProjectId()).isEqualTo("gcp-project-id");
+    }
+
+    @Test
+    void testProjectIdFallBackToDefault() {
+      GcpProjectIdProvider projectIdProvider =
+          SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
+      assertThat(projectIdProvider).isInstanceOf(DefaultGcpProjectIdProvider.class);
+    }
+
+    @BeforeEach
+    void registerBean() {
+      Credentials credentials = mock(Credentials.class);
+      CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
+      SecretManagerServiceClient secretManagerServiceClient =
+          mock(SecretManagerServiceClient.class);
+
+      when(gcpProperties.getCredentials()).thenReturn(credentials);
+      when(secretManagerProperties.getCredentials()).thenReturn(credentials);
+
+      defaultBootstrapContext.register(
+          GcpProperties.class, BootstrapRegistry.InstanceSupplier.of(gcpProperties));
+      defaultBootstrapContext.register(
+          GcpSecretManagerProperties.class, BootstrapRegistry.InstanceSupplier.of(secretManagerProperties));
+      defaultBootstrapContext.register(
+          CredentialsProvider.class, BootstrapRegistry.InstanceSupplier.of(credentialsProvider));
+      defaultBootstrapContext.register(
+          SecretManagerServiceClient.class,
+          BootstrapRegistry.InstanceSupplier.of(secretManagerServiceClient));
+
+      when(context.getBinder()).thenReturn(new Binder());
+      when(context.getBootstrapContext()).thenReturn(defaultBootstrapContext);
+    }
   }
 
-  @ParameterizedTest
-  @MethodSource("prefixes")
-  void isResolvableReturnsFalseWithCorrectPrefix(String prefix) {
-    assertThat(resolver.isResolvable(context, ConfigDataLocation.of(prefix))).isTrue();
-  }
+  @Nested
+  class WithFactoryBean {
+    @Test
+    void isResolvableReturnsFalseWithIncorrectPrefix() {
+      assertThat(resolver.isResolvable(context, ConfigDataLocation.of("test://"))).isFalse();
+      assertThat(resolver.isResolvable(context, ConfigDataLocation.of("sm:"))).isFalse();
+    }
 
-  @Test
-  void createSecretManagerClientWithPresetClientTest() {
-    SecretManagerServiceClient client = mock(SecretManagerServiceClient.class);
-    SecretManagerConfigDataLocationResolver.setSecretManagerServiceClient(client);
-    assertThat(
-        SecretManagerConfigDataLocationResolver.createSecretManagerClient(context))
-        .isEqualTo(client);
-  }
+    @ParameterizedTest
+    @MethodSource(
+        "com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolverUnitTests#prefixes")
+    void isResolvableReturnsFalseWithCorrectPrefix(String prefix) {
+      assertThat(resolver.isResolvable(context, ConfigDataLocation.of(prefix))).isTrue();
+    }
 
-  @ParameterizedTest
-  @MethodSource("prefixes")
-  void resolveReturnsConfigDataLocation(String prefix) {
-    List<SecretManagerConfigDataResource> locations = resolver.resolve(context,
-        ConfigDataLocation.of(prefix + "my-secret"));
-    assertThat(locations).hasSize(1);
-    assertThat(locations).first().extracting("location")
-        .isEqualTo(ConfigDataLocation.of(prefix + "my-secret"));
-    ConfigurableApplicationContext applicationContext = mock(ConfigurableApplicationContext.class);
-    when(applicationContext.getBeanFactory()).thenReturn(new DefaultListableBeanFactory());
-    assertThatCode(
-        () -> defaultBootstrapContext.close(applicationContext)).doesNotThrowAnyException();
-  }
+    @ParameterizedTest
+    @MethodSource(
+        "com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolverUnitTests#prefixes")
+    void resolveReturnsConfigDataLocation(String prefix) {
+      List<SecretManagerConfigDataResource> locations =
+          resolver.resolve(context, ConfigDataLocation.of(prefix + "my-secret"));
+      assertThat(locations).hasSize(1);
+      assertThat(locations)
+          .first()
+          .extracting("location")
+          .isEqualTo(ConfigDataLocation.of(prefix + "my-secret"));
+      ConfigurableApplicationContext applicationContext =
+          mock(ConfigurableApplicationContext.class);
+      when(applicationContext.getBeanFactory()).thenReturn(new DefaultListableBeanFactory());
+      assertThatCode(() -> defaultBootstrapContext.close(applicationContext))
+          .doesNotThrowAnyException();
+    }
 
-  @BeforeEach
-  void registerBean() {
-    CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
-    SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
+    @Test
+    void createSecretManagerClientWithPresetClientTest() {
+      SecretManagerServiceClient client = mock(SecretManagerServiceClient.class);
+      SecretManagerConfigDataLocationResolver.setSecretManagerServiceClient(client);
+      assertThat(SecretManagerConfigDataLocationResolver.createSecretManagerClient(context))
+          .isEqualTo(client);
+    }
 
-    defaultBootstrapContext.register(
-        GcpProperties.class, BootstrapRegistry.InstanceSupplier.of(gcpProperties));
-    defaultBootstrapContext.register(
-        GcpSecretManagerProperties.class,
-        BootstrapRegistry.InstanceSupplier.of(secretManagerProperties));
-    defaultBootstrapContext.register(CredentialsProvider.class,
-        BootstrapRegistry.InstanceSupplier.of(credentialsProvider));
-    defaultBootstrapContext.register(SecretManagerServiceClient.class,
-        BootstrapRegistry.InstanceSupplier.of(secretManagerServiceClient));
+    @Test
+    void createSecretManagerClientFactoryWithPresetClientTest() {
+      SecretManagerServiceClientFactory secretManagerServiceClientFactory =
+          mock(SecretManagerServiceClientFactory.class);
+      SecretManagerConfigDataLocationResolver.setSecretManagerServiceClientFactory(
+          secretManagerServiceClientFactory);
+      assertThat(
+          SecretManagerConfigDataLocationResolver.createSecretManagerServiceClientFactory(
+              context))
+          .isEqualTo(secretManagerServiceClientFactory);
+    }
 
-    when(context.getBinder()).thenReturn(new Binder());
-    when(context.getBootstrapContext()).thenReturn(defaultBootstrapContext);
-  }
+    @Test
+    void testSecretManagerProjectIdTakesPrecedence() {
+      when(secretManagerProperties.getProjectId()).thenReturn("secret-manager-property-id");
+      when(gcpProperties.getProjectId()).thenReturn("gcp-project-id");
+      GcpProjectIdProvider projectIdProvider =
+          SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
+      assertThat(projectIdProvider.getProjectId()).isEqualTo("secret-manager-property-id");
+    }
 
-  @Test
-  void testSecretManagerProjectIdTakesPrecedence() {
-    when(secretManagerProperties.getProjectId()).thenReturn("secret-manager-property-id");
-    when(gcpProperties.getProjectId()).thenReturn("gcp-project-id");
-    GcpProjectIdProvider projectIdProvider =
-        SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
-    assertThat(projectIdProvider.getProjectId()).isEqualTo("secret-manager-property-id");
-  }
+    @Test
+    void testProjectIdUseCoreWhenNoSecretManagerProjectId() {
+      when(gcpProperties.getProjectId()).thenReturn("gcp-project-id");
+      GcpProjectIdProvider projectIdProvider =
+          SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
+      assertThat(projectIdProvider.getProjectId()).isEqualTo("gcp-project-id");
+    }
 
-  @Test
-  void testProjectIdUseCoreWhenNoSecretManagerProjectId() {
-    when(gcpProperties.getProjectId()).thenReturn("gcp-project-id");
-    GcpProjectIdProvider projectIdProvider =
-        SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
-    assertThat(projectIdProvider.getProjectId()).isEqualTo("gcp-project-id");
-  }
+    @Test
+    void testProjectIdFallBackToDefault() {
+      GcpProjectIdProvider projectIdProvider =
+          SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
+      assertThat(projectIdProvider).isInstanceOf(DefaultGcpProjectIdProvider.class);
+    }
 
-  @Test
-  void testProjectIdFallBackToDefault() {
-    GcpProjectIdProvider projectIdProvider =
-        SecretManagerConfigDataLocationResolver.createProjectIdProvider(context);
-    assertThat(projectIdProvider).isInstanceOf(DefaultGcpProjectIdProvider.class);
+    @BeforeEach
+    void registerBean() {
+      Credentials credentials = mock(Credentials.class);
+      CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
+      SecretManagerServiceClient secretManagerServiceClient =
+          mock(SecretManagerServiceClient.class);
+      SecretManagerServiceClientFactory secretManagerServiceClientFactory =
+          mock(SecretManagerServiceClientFactory.class);
+
+      when(gcpProperties.getCredentials()).thenReturn(credentials);
+      when(secretManagerProperties.getCredentials()).thenReturn(credentials);
+
+      defaultBootstrapContext.register(
+          GcpProperties.class, BootstrapRegistry.InstanceSupplier.of(gcpProperties));
+      defaultBootstrapContext.register(
+          GcpSecretManagerProperties.class,
+          BootstrapRegistry.InstanceSupplier.of(secretManagerProperties));
+      defaultBootstrapContext.register(
+          CredentialsProvider.class, BootstrapRegistry.InstanceSupplier.of(credentialsProvider));
+      defaultBootstrapContext.register(
+          SecretManagerServiceClient.class,
+          BootstrapRegistry.InstanceSupplier.of(secretManagerServiceClient));
+      defaultBootstrapContext.register(
+          SecretManagerServiceClientFactory.class,
+          BootstrapRegistry.InstanceSupplier.of(secretManagerServiceClientFactory));
+
+      when(context.getBinder()).thenReturn(new Binder());
+      when(context.getBootstrapContext()).thenReturn(defaultBootstrapContext);
+    }
   }
 }
