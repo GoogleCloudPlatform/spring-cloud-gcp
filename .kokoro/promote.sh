@@ -38,7 +38,7 @@ create_settings_xml_file $MAVEN_SETTINGS_FILE
   --batch-mode \
   --settings ${MAVEN_SETTINGS_FILE} \
   -DstagingRepositoryId=${STAGING_REPOSITORY_ID} \
-  -Drelease=true \
+  -DperformRelease=true \
   --activate-profiles skip-unreleased-modules
 
 popd

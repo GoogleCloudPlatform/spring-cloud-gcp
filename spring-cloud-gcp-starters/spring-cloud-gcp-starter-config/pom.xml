@@ -36,6 +36,11 @@
 		<!-- skip for GA releases to Maven Central -->
 		<profile>
 			<id>skip-unreleased-modules</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+				</property>
+			</activation>
 			<build>
 				<plugins>
 					<plugin>
