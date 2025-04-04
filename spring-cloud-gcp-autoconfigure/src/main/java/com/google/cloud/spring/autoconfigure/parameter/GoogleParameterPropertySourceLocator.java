@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.parameters;
+package com.google.cloud.spring.autoconfigure.parameter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.gax.core.CredentialsProvider;
