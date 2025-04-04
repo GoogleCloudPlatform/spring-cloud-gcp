@@ -7,11 +7,11 @@
         <!-- Your own application should inherit from spring-boot-starter-parent -->
         <artifactId>spring-cloud-gcp-samples</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>6.1.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>6.1.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>spring-cloud-gcp-param-config-sample</artifactId>
+    <artifactId>spring-cloud-gcp-parameter-sample</artifactId>
     <name>Spring Framework on Google Cloud Code Sample - Param Configuration</name>
 
     <dependencies>
@@ -23,7 +23,7 @@
         <!-- Configuration Client Starter for Google Parameter Manager Configuration -->
         <dependency>
             <groupId>com.google.cloud</groupId>
-            <artifactId>spring-cloud-gcp-starter-paramconfig</artifactId>
+            <artifactId>spring-cloud-gcp-starter-parameter</artifactId>
             <version>${project.version}</version>
         </dependency>
 

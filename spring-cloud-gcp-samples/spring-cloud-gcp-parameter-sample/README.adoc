@@ -1,9 +1,9 @@
-= Spring Framework on Google Cloud ParamConfig Starter Code Sample
+= Spring Framework on Google Cloud Parameter Starter Code Sample
 
 == Setup & Configuration
 
 1. Run `$ mvn clean install` from the root directory of the project.
-2. Move to the param-config sample directory by running `$ cd spring-cloud-gcp-samples/spring-cloud-gcp-param-config-sample`
+2. Move to the parameter sample directory by running `$ cd spring-cloud-gcp-samples/spring-cloud-gcp-parameter-sample`
 3. Checkout the code of this sample.
 4. Enable the Google https://console.cloud.google.com/marketplace/product/google/parametermanager.googleapis.com[Parameter Manager API].
 5. Create a parameter using the https://cloud.google.com/sdk/[Google Cloud SDK].
@@ -21,7 +21,7 @@ $ gcloud beta parametermanager parameters versions create prod --parameter=myapp
 6.  Update link:src/main/resources/bootstrap.properties[]:
 +
 ....
-spring.cloud.gcp.paramconfig.enabled=true
+spring.cloud.gcp.parameter.enabled=true
 spring.application.name=myapp
 
 #default profile = default

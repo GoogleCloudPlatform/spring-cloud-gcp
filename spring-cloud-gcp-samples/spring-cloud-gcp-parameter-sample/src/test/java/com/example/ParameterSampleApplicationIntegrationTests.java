@@ -30,15 +30,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-/** Tests for paramConfig sample. */
+/** Tests for parameter sample. */
 // Please use "-Dit.config=true" to enable the tests.
 @ExtendWith(SpringExtension.class)
-@EnabledIfSystemProperty(named = "it.paramconfig", matches = "true")
+@EnabledIfSystemProperty(named = "it.parameter", matches = "true")
 @SpringBootTest(
     classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class ParamConfigSampleApplicationIntegrationTests {
+class ParameterSampleApplicationIntegrationTests {
   @Autowired private MockMvc mvc;
 
   @Test

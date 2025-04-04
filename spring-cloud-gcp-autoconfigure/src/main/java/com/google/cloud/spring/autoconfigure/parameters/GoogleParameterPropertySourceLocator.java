@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.paramconfig;
+package com.google.cloud.spring.autoconfigure.parameters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.gax.core.CredentialsProvider;
@@ -41,7 +41,7 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @since 1.1
  */
-public class GoogleParamConfigPropertySourceLocator implements PropertySourceLocator {
+public class GoogleParameterPropertySourceLocator implements PropertySourceLocator {
 
   private static final String PROPERTY_SOURCE_NAME = "spring-cloud-gcp";
 
@@ -59,37 +59,37 @@ public class GoogleParamConfigPropertySourceLocator implements PropertySourceLoc
 
   private boolean enabled;
 
-  public GoogleParamConfigPropertySourceLocator(
+  public GoogleParameterPropertySourceLocator(
       GcpProjectIdProvider projectIdProvider,
       CredentialsProvider credentialsProvider,
-      GcpParamConfigProperties gcpParamConfigProperties,
+      GcpParameterProperties gcpParameterProperties,
       ParameterManagerClient parameterManagerClient)
       throws IOException {
 
     this.parameterManagerClient = parameterManagerClient;
-    Assert.notNull(gcpParamConfigProperties, "Google ParamConfig properties must not be null");
+    Assert.notNull(gcpParameterProperties, "Google Parameter properties must not be null");
 
-    if (gcpParamConfigProperties.isEnabled()) {
+    if (gcpParameterProperties.isEnabled()) {
       Assert.notNull(credentialsProvider, "Credentials provider cannot be null");
       Assert.notNull(projectIdProvider, "Project ID provider cannot be null");
       this.credentials =
-          gcpParamConfigProperties.getCredentials().hasKey()
-              ? new DefaultCredentialsProvider(gcpParamConfigProperties).getCredentials()
+          gcpParameterProperties.getCredentials().hasKey()
+              ? new DefaultCredentialsProvider(gcpParameterProperties).getCredentials()
               : credentialsProvider.getCredentials();
       this.projectId =
-          (gcpParamConfigProperties.getProjectId() != null)
-              ? gcpParamConfigProperties.getProjectId()
+          (gcpParameterProperties.getProjectId() != null)
+              ? gcpParameterProperties.getProjectId()
               : projectIdProvider.getProjectId();
       Assert.notNull(this.credentials, "Credentials must not be null");
 
       Assert.notNull(this.projectId, "Project ID must not be null");
 
-      this.name = gcpParamConfigProperties.getName();
-      this.profile = gcpParamConfigProperties.getProfile();
-      this.location = gcpParamConfigProperties.getLocation();
-      this.enabled = gcpParamConfigProperties.isEnabled();
-      Assert.notNull(this.name, "ParamConfig name must not be null");
-      Assert.notNull(this.profile, "ParamConfig version must not be null");
+      this.name = gcpParameterProperties.getName();
+      this.profile = gcpParameterProperties.getProfile();
+      this.location = gcpParameterProperties.getLocation();
+      this.enabled = gcpParameterProperties.isEnabled();
+      Assert.notNull(this.name, "Parameter name must not be null");
+      Assert.notNull(this.profile, "Parameter version must not be null");
     }
   }
 
@@ -117,9 +117,9 @@ public class GoogleParamConfigPropertySourceLocator implements PropertySourceLoc
     }
     Map<String, Object> config;
     try {
-      RenderParameterVersionResponse googleParamConfigEnvironment = getRemoteEnvironment();
-      config = convertStringToMap(googleParamConfigEnvironment.getRenderedPayload().toStringUtf8());
-      Assert.notNull(googleParamConfigEnvironment, "Configuration not in expected format.");
+      RenderParameterVersionResponse googleParameterEnvironment = getRemoteEnvironment();
+      config = convertStringToMap(googleParameterEnvironment.getRenderedPayload().toStringUtf8());
+      Assert.notNull(googleParameterEnvironment, "Configuration not in expected format.");
     } catch (Exception ex) {
       String message =
           "Error loading configuration";

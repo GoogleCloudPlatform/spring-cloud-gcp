@@ -22,7 +22,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 /** Sample spring boot application. */
 @SpringBootApplication
-@EnableConfigurationProperties(MyParamAppProperties.class)
+@EnableConfigurationProperties(MyParameterAppProperties.class)
 public class Application {
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);

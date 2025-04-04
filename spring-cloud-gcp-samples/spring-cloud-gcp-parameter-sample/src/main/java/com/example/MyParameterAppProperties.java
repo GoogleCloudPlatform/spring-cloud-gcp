@@ -22,7 +22,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 /** Sample Configuration class with property values loaded using the Parameter Manager. */
 @RefreshScope
 @ConfigurationProperties("myapp")
-public class MyParamAppProperties {
+public class MyParameterAppProperties {
 
   private String username;
 

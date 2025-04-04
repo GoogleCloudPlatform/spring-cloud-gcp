@@ -1,9 +1,9 @@
 [#cloud-parameter-manager]
 == Cloud Parameter Manager
 
-Spring Framework on Google Cloud makes it possible to use the https://cloud.google.com/secret-manager/parameter-manager/docs/reference/rest/[Google Parameter Manager] as a Spring Cloud ParamConfig server to remotely store your application configuration data.
+Spring Framework on Google Cloud makes it possible to use the https://cloud.google.com/secret-manager/parameter-manager/docs/reference/rest/[Google Parameter Manager] as a Spring Cloud Parameter server to remotely store your application configuration data.
 
-The Spring Framework on Google Cloud ParamConfig support is provided via its own Spring Boot starter.
+The Spring Framework on Google Cloud Parameter support is provided via its own Spring Boot starter.
 It enables the use of the Google Parameter Manager as a source for Spring Boot configuration properties.
 
 Maven coordinates:
@@ -12,7 +12,7 @@ Maven coordinates:
 ----
 <dependency>
     <groupId>com.google.cloud</groupId>
-    <artifactId>spring-cloud-gcp-starter-paramconfig</artifactId>
+    <artifactId>spring-cloud-gcp-starter-parameter</artifactId>
     <version>{project-version}</version>
 </dependency>
 ----
@@ -23,7 +23,7 @@ Gradle coordinates:
 ----
 dependencies {
     compile group: 'org.springframework.cloud',
-    name: 'spring-cloud-gcp-starter-paramconfig',
+    name: 'spring-cloud-gcp-starter-parameter',
     version: '{project-version}'
 }
 ----
@@ -34,13 +34,13 @@ The following parameters are configurable in Spring Framework on Google Cloud Pa
 
 |===
 | Name | Description | Required | Default value
-| `spring.cloud.gcp.paramconfig.enabled` | Enables the ParamConfig client | No | `false`
-| `spring.cloud.gcp.paramconfig.name` | Name of your application | No | Value of the `spring.application.name` property.
-If none, `application` | `spring.cloud.gcp.paramconfig.profile` | Active profile | No | Value of the `spring.profiles.active` property.
+| `spring.cloud.gcp.parameter.enabled` | Enables the Parameter client | No | `false`
+| `spring.cloud.gcp.parameter.name` | Name of your application | No | Value of the `spring.application.name` property.
+If none, `application` | `spring.cloud.gcp.parameter.profile` | Active profile | No | Value of the `spring.profiles.active` property.
 If more than a single profile, last one is chosen
-| `spring.cloud.gcp.paramconfig.project-id` | Google Cloud project ID where the Google Parameter Manager is hosted | No |
-| `spring.cloud.gcp.paramconfig.credentials.location` | OAuth2 credentials for authenticating with the Google Parameter Manager | No |
-| `spring.cloud.gcp.paramconfig.credentials.encoded-key` | Base64-encoded OAuth2 credentials for authenticating with the Google Parameter Manager | No |
+| `spring.cloud.gcp.parameter.project-id` | Google Cloud project ID where the Google Parameter Manager is hosted | No |
+| `spring.cloud.gcp.parameter.credentials.location` | OAuth2 credentials for authenticating with the Google Parameter Manager | No |
+| `spring.cloud.gcp.parameter.credentials.encoded-key` | Base64-encoded OAuth2 credentials for authenticating with the Google Parameter Manager | No |
 |===
 
 NOTE: These properties should be specified in a https://cloud.spring.io/spring-cloud-static/spring-cloud.html#_the_bootstrap_application_context[`bootstrap.yml`/`bootstrap.properties`] file, rather than the usual `applications.yml`/`application.properties`.
@@ -100,7 +100,7 @@ public class MyParamAppProperties {
 }
 ----
 
-When your Spring application starts, the `username` field value will be set to `test-user` and `password` field value will be `test-password` for the above `MyParamAppProperties` bean.
+When your Spring application starts, the `username` field value will be set to `test-user` and `password` field value will be `test-password` for the above `MyParameterAppProperties` bean.
 
 === Refreshing the configuration at runtime
 
@@ -143,4 +143,4 @@ $ curl -XPOST https://myapp.host.com/actuator/refresh
 
 === Sample
 
-A https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-param-config-sample[sample application] is available.
+A https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-parameter-sample[sample application] is available.

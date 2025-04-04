@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.paramconfig;
+package com.google.cloud.spring.autoconfigure.parameters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -28,20 +28,20 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 
 /** Tests for Parameter Config bootstrap configuration. */
-class GcpParamConfigBootstrapConfigurationTest {
+class GcpParameterBootstrapConfigurationTest {
 
   private ApplicationContextRunner contextRunner =
       new ApplicationContextRunner()
-          .withConfiguration(AutoConfigurations.of(GcpParamConfigBootstrapConfiguration.class))
+          .withConfiguration(AutoConfigurations.of(GcpParameterBootstrapConfiguration.class))
           .withUserConfiguration(TestConfiguration.class);
 
   @Test
-  void testParamConfigurationValueDefaultsAreAsExpected() {
+  void testParameterurationValueDefaultsAreAsExpected() {
     this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.paramconfig.enabled=true")
+        .withPropertyValues("spring.cloud.gcp.parameter.enabled=true")
         .run(
             context -> {
-              GcpParamConfigProperties config = context.getBean(GcpParamConfigProperties.class);
+              GcpParameterProperties config = context.getBean(GcpParameterProperties.class);
               assertThat(config.getName()).isEqualTo("application");
               assertThat(config.getProfile()).isEqualTo("default");
               assertThat(config.getLocation()).isEqualTo("global");
@@ -50,16 +50,16 @@ class GcpParamConfigBootstrapConfigurationTest {
   }
 
   @Test
-  void testParamConfigurationValuesAreCorrectlyLoaded() {
+  void testParameterurationValuesAreCorrectlyLoaded() {
     this.contextRunner
         .withPropertyValues(
             "spring.application.name=myapp",
-            "spring.cloud.gcp.paramconfig.enabled=true",
-            "spring.cloud.gcp.paramconfig.project-id=pariah",
-            "spring.cloud.gcp.paramconfig.location=us-central1")
+            "spring.cloud.gcp.parameter.enabled=true",
+            "spring.cloud.gcp.parameter.project-id=pariah",
+            "spring.cloud.gcp.parameter.location=us-central1")
         .run(
             context -> {
-              GcpParamConfigProperties config = context.getBean(GcpParamConfigProperties.class);
+              GcpParameterProperties config = context.getBean(GcpParameterProperties.class);
               assertThat(config.getName()).isEqualTo("myapp");
               assertThat(config.getProfile()).isEqualTo("default");
               assertThat(config.getLocation()).isEqualTo("us-central1");
@@ -69,17 +69,17 @@ class GcpParamConfigBootstrapConfigurationTest {
   }
 
   @Test
-  void testParamConfigurationValuesAreCorrectlyLoadedWithCustomProfile() {
+  void testParameterurationValuesAreCorrectlyLoadedWithCustomProfile() {
     this.contextRunner
         .withPropertyValues(
             "spring.application.name=myapp",
             "spring.profiles.active=prod",
-            "spring.cloud.gcp.paramconfig.enabled=true",
-            "spring.cloud.gcp.paramconfig.project-id=pariah",
-            "spring.cloud.gcp.paramconfig.location=us-central1")
+            "spring.cloud.gcp.parameter.enabled=true",
+            "spring.cloud.gcp.parameter.project-id=pariah",
+            "spring.cloud.gcp.parameter.location=us-central1")
         .run(
             context -> {
-              GcpParamConfigProperties config = context.getBean(GcpParamConfigProperties.class);
+              GcpParameterProperties config = context.getBean(GcpParameterProperties.class);
               assertThat(config.getName()).isEqualTo("myapp");
               assertThat(config.getProfile()).isEqualTo("prod");
               assertThat(config.getLocation()).isEqualTo("us-central1");
@@ -89,17 +89,17 @@ class GcpParamConfigBootstrapConfigurationTest {
   }
 
   @Test
-  void testParamConfigurationValuesAreCorrectlyLoadedWithMultiProfile() {
+  void testParameterurationValuesAreCorrectlyLoadedWithMultiProfile() {
     this.contextRunner
         .withPropertyValues(
             "spring.application.name=myapp",
             "spring.profiles.active=dev,prod",
-            "spring.cloud.gcp.paramconfig.enabled=true",
-            "spring.cloud.gcp.paramconfig.project-id=pariah",
-            "spring.cloud.gcp.paramconfig.location=us-central1")
+            "spring.cloud.gcp.parameter.enabled=true",
+            "spring.cloud.gcp.parameter.project-id=pariah",
+            "spring.cloud.gcp.parameter.location=us-central1")
         .run(
             context -> {
-              GcpParamConfigProperties config = context.getBean(GcpParamConfigProperties.class);
+              GcpParameterProperties config = context.getBean(GcpParameterProperties.class);
               assertThat(config.getName()).isEqualTo("myapp");
               assertThat(config.getProfile()).isEqualTo("prod");
               assertThat(config.getLocation()).isEqualTo("us-central1");
@@ -109,17 +109,17 @@ class GcpParamConfigBootstrapConfigurationTest {
   }
 
   @Test
-  void testParamConfigurationValuesAreCorrectlyLoadedWithParamConfigKeys() {
+  void testParameterurationValuesAreCorrectlyLoadedWithParameterKeys() {
     this.contextRunner
         .withPropertyValues(
-            "spring.cloud.gcp.paramconfig.name=myapp",
-            "spring.cloud.gcp.paramconfig.profile=dev,prod",
-            "spring.cloud.gcp.paramconfig.enabled=true",
-            "spring.cloud.gcp.paramconfig.project-id=pariah",
-            "spring.cloud.gcp.paramconfig.location=us-central1")
+            "spring.cloud.gcp.parameter.name=myapp",
+            "spring.cloud.gcp.parameter.profile=dev,prod",
+            "spring.cloud.gcp.parameter.enabled=true",
+            "spring.cloud.gcp.parameter.project-id=pariah",
+            "spring.cloud.gcp.parameter.location=us-central1")
         .run(
             context -> {
-              GcpParamConfigProperties config = context.getBean(GcpParamConfigProperties.class);
+              GcpParameterProperties config = context.getBean(GcpParameterProperties.class);
               assertThat(config.getName()).isEqualTo("myapp");
               assertThat(config.getProfile()).isEqualTo("prod");
               assertThat(config.getLocation()).isEqualTo("us-central1");
@@ -129,11 +129,11 @@ class GcpParamConfigBootstrapConfigurationTest {
   }
 
   @Test
-  void testParamConfigurationDisabled() {
+  void testParameterurationDisabled() {
     this.contextRunner.run(
         context ->
             assertThatExceptionOfType(NoSuchBeanDefinitionException.class)
-                .isThrownBy(() -> context.getBean(GcpParamConfigProperties.class)));
+                .isThrownBy(() -> context.getBean(GcpParameterProperties.class)));
   }
 
   private static class TestConfiguration {
@@ -144,8 +144,8 @@ class GcpParamConfigBootstrapConfigurationTest {
     }
 
     @Bean
-    public GoogleParamConfigPropertySourceLocator googleParamConfigPropertySourceLocator() {
-      return mock(GoogleParamConfigPropertySourceLocator.class);
+    public GoogleParameterPropertySourceLocator googleParameterPropertySourceLocator() {
+      return mock(GoogleParameterPropertySourceLocator.class);
     }
   }
 }

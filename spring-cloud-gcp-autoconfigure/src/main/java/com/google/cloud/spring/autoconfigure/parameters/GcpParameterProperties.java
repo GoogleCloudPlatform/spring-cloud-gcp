@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.autoconfigure.paramconfig;
+package com.google.cloud.spring.autoconfigure.parameters;
 
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
@@ -26,20 +26,20 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 
 /**
- * Configuration for {@link GoogleParamConfigPropertySourceLocator}.
+ * Configuration for {@link GoogleParameterPropertySourceLocator}.
  *
  * @since 1.1
  */
-@ConfigurationProperties(GcpParamConfigProperties.PREFIX)
-public class GcpParamConfigProperties implements CredentialsSupplier, EnvironmentAware {
+@ConfigurationProperties(GcpParameterProperties.PREFIX)
+public class GcpParameterProperties implements CredentialsSupplier, EnvironmentAware {
 
   /** Overrides the GCP OAuth2 credentials specified in the Core module. */
   @NestedConfigurationProperty
   private final Credentials credentials = new Credentials(GcpScope.CLOUD_PLATFORM.getUrl());
 
-  public static final String PREFIX = "spring.cloud.gcp.paramconfig";
+  public static final String PREFIX = "spring.cloud.gcp.parameter";
   /**
-   * Enables Spring Cloud GCP ParamConfig.
+   * Enables Spring Cloud GCP Parameter.
    */
   private boolean enabled;
 

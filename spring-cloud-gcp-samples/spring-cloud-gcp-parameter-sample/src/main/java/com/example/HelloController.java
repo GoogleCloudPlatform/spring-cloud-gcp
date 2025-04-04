@@ -24,10 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-  private final MyParamAppProperties sampleConfig;
+  private final MyParameterAppProperties sampleConfig;
 
   @Autowired
-  public HelloController(MyParamAppProperties sampleConfig) {
+  public HelloController(MyParameterAppProperties sampleConfig) {
     this.sampleConfig = sampleConfig;
   }
 

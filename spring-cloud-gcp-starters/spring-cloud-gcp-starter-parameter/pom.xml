@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>com.google.cloud</groupId>
 		<artifactId>spring-cloud-gcp-starters</artifactId>
-		<version>6.1.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+		<version>6.1.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
-	<artifactId>spring-cloud-gcp-starter-paramconfig</artifactId>
+	<artifactId>spring-cloud-gcp-starter-parameter</artifactId>
 	<name>Spring Framework on Google Cloud Starter - Param Config</name>
 	<description>Starter for Spring Cloud Config Client using Google Parameter Manager</description>
-	<url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-paramconfig</url>
+	<url>https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-starters/spring-cloud-gcp-starter-parameter</url>
 	<organization>
 		<name>Google</name>
 		<url>https://cloud.google.com</url>

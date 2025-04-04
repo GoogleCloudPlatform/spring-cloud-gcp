@@ -85,7 +85,7 @@
 				<module>spring-cloud-gcp-kms-sample</module>
 				<module>spring-cloud-spanner-r2dbc-samples</module>
 				<module>spring-cloud-gcp-alloydb-sample</module>
-				<module>spring-cloud-gcp-param-config-sample</module>
+				<module>spring-cloud-gcp-parameter-sample</module>
 			</modules>
 		</profile>
 		<profile>
@@ -116,7 +116,7 @@
 				<module>spring-cloud-gcp-sql-postgres-sample</module>
 				<module>spring-cloud-gcp-sql-postgres-r2dbc-sample</module>
 				<module>spring-cloud-gcp-alloydb-sample</module>
-				<module>spring-cloud-gcp-param-config-sample</module>
+				<module>spring-cloud-gcp-parameter-sample</module>
 			</modules>
 		</profile>
 		<profile>
