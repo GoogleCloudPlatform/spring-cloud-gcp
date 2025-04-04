@@ -105,7 +105,7 @@ class DefaultPublisherFactoryTests {
 
     Publisher publisher = factory.createPublisher("testtopic");
 
-    Publisher defaultPublisher = Publisher.newBuilder("testtopic")
+    Publisher defaultPublisher = Publisher.newBuilder("projects/testproject/topics/testtopic")
         .setCredentialsProvider(NoCredentialsProvider.create())
         .build();
     assertThat(publisher.getBatchingSettings()).isSameAs(defaultPublisher.getBatchingSettings());
