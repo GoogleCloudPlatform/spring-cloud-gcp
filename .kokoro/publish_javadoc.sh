@@ -16,7 +16,7 @@ PROJECT_VERSION=$(grep "^spring-cloud-gcp:" "./versions.txt" | cut -d: -f3)
 python3 -m pip install --require-hashes -r .kokoro/requirements.txt
 
 # Build the javadocs
-mvn clean javadoc:aggregate -Drelease=true
+mvn clean javadoc:aggregate -DperformRelease=true
 
 # Move into generated docs directory
 pushd target/reports/apidocs/
