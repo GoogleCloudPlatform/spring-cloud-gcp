@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.1.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.1.1...v6.1.2) (2025-04-09)
+
+
+### Bug Fixes
+
+* secretmanager to be an optional dep in autoconfig module ([#3706](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3706)) ([cabb7a5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cabb7a59fa6d49d280dd311a7f59ec4d922300e7))
+
+
+### Documentation
+
+* Update README links ([#3696](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3696)) ([30bb2b6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/30bb2b6ab85110f49291ab30befdcf3c04257de1))
+
 ## [6.1.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.1.0...v6.1.1) (2025-03-22)
 
 
