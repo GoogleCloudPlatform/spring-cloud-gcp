@@ -44,7 +44,7 @@ class SecretManagerSampleLoadSecretsIntegrationTests {
   @Autowired private TestRestTemplate testRestTemplate;
 
   private static final String SECRET_CONTENT = "Hello world.";
-  private static final String DEFAULT_CONTENT = "DEFAULT.";
+  private static final String DEFAULT_CONTENT = "DEFAULT";
 
   @Test
   void testApplicationStartupSecretLoadsCorrectly() {
