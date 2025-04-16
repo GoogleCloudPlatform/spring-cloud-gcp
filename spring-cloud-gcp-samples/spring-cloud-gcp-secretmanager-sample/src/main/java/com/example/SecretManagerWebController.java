@@ -55,7 +55,7 @@ public class SecretManagerWebController {
   // in property files.
   // When using the new syntax, it is not necessary to escape the colon character by nesting
   // placeholders as done with the legacy syntax (${${sm://secret}:DEFAULT}).
-  @Value("${sm@application-fake:DEFAULT}")
+  @Value("${${env_var_for_secret}:DEFAULT}")
   private String defaultSecret;
 
   // Application secrets can be accessed using @Value syntax.
