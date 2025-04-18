@@ -79,7 +79,7 @@ class SecretManagerTemplateIntegrationTests {
   void testReadMissingSecret() {
 
     assertThatThrownBy(() -> secretManagerTemplate.getSecretBytes("test-NON-EXISTING-secret"))
-        .isInstanceOf(com.google.api.gax.rpc.NotFoundException.class);
+              .isInstanceOf(com.google.api.gax.rpc.NotFoundException.class);
   }
 
   @Test
@@ -90,10 +90,10 @@ class SecretManagerTemplateIntegrationTests {
         .atMost(Duration.ofSeconds(10))
         .untilAsserted(
             () -> {
-              String secretString = secretManagerTemplate.getSecretString(this.secretName);
+              String secretString = secretManagerTemplate.getSecretString("test-update-secret");
               assertThat(secretString).isEqualTo("6666");
 
-              byte[] secretBytes = secretManagerTemplate.getSecretBytes(this.secretName);
+              byte[] secretBytes = secretManagerTemplate.getSecretBytes("test-update-secret");
               assertThat(secretBytes).isEqualTo("6666".getBytes());
             });
   }
