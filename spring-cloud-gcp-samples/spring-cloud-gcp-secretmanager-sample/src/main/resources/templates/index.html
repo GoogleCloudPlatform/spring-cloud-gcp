@@ -46,9 +46,7 @@
   <br/>
   <b>Default Application secret if not found:</b> <i>[[${applicationDefaultSecret}]]</i><br/>
   <b>Application secret from @Value:</b> <i>[[${applicationSecretFromValue}]]</i><br/>
-  <b>Application regional secret from @Value:</b> <i>[[${applicationRegionalSecretFromValue}]]</i><br/>
-  <b>Application secret from @ConfigurationProperties:</b> <i>[[${applicationSecretFromConfigurationProperties}]]</i><br/>
-  <b>Application regional secret from @ConfigurationProperties:</b> <i>[[${applicationRegionalSecretFromConfigurationProperties}]]</i><br/>
+  <b>Application secret from @ConfigurationProperties:</b> <i>[[${applicationSecretFromConfigurationProperties}]]</i>
 </div>
 
 <div class="panel">
@@ -73,7 +71,6 @@
     <form method="GET" action="/getSecret">
       <ol>
         <li>Secret ID: <input type="text" name="secretId"/></li>
-        <li>Location ID (optional): <input type="text" name="locationId"/></li>
         <li>Version (optional): <input type="text" name="version"/></li>
         <li>Project ID (optional): <input type="text" name="projectId"/></li>
         <li><input type="submit" value="Get Secret"/></li>
@@ -91,7 +88,6 @@
       <ol>
         <li>Secret ID: <input type="text" name="secretId"/></li>
         <li>Secret Payload: <input type="text" name="secretPayload"/></li>
-        <li>Location ID (optional): <input type="text" name="locationId"/></li>
         <li>Project ID (optional): <input type="text" name="projectId"/></li>
         <li><input type="submit" value="Create/Update Secret"/></li>
       </ol>
@@ -107,7 +103,6 @@
     <form method="POST" action="/deleteSecret">
       <ol>
         <li>Secret ID: <input type="text" name="secretId"/></li>
-        <li>Location ID (optional): <input type="text" name="locationId"/></li>
         <li>Project ID (optional): <input type="text" name="projectId"/></li>
         <li><input type="submit" value="Delete Secret"/></li>
       </ol>
