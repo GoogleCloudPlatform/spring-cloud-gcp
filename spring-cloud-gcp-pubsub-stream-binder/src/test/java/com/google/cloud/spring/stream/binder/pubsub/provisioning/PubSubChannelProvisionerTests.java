@@ -390,17 +390,4 @@ class PubSubChannelProvisionerTests {
 
     assertThat(destination.getName()).isEqualTo("topic_A");
   }
-
-  @Test
-  void testProvisionProducerDestination_dontCreateTopic() {
-    when(this.pubSubProducerProperties.isAutoCreateResources()).thenReturn(false);
-    when(this.pubSubAdminMock.getTopic(any())).thenReturn(null);
-
-    assertThatExceptionOfType(ProvisioningException.class)
-        .isThrownBy(
-            () ->
-                this.pubSubChannelProvisioner.provisionProducerDestination(
-                    "not_yet_created", extendedProducerProperties))
-        .withMessageContaining("Non-existing");
-  }
 }

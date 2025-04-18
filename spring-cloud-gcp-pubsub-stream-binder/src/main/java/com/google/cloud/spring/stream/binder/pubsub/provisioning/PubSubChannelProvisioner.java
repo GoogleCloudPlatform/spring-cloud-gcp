@@ -58,7 +58,10 @@ public class PubSubChannelProvisioner
   @Override
   public ProducerDestination provisionProducerDestination(
       String topic, ExtendedProducerProperties<PubSubProducerProperties> properties) {
-    ensureTopicExists(topic, properties.getExtension().isAutoCreateResources());
+    boolean autoCreate = properties.getExtension().isAutoCreateResources();
+    if (autoCreate) {
+      ensureTopicExists(topic, autoCreate);
+    }
 
     return new PubSubProducerDestination(topic);
   }
