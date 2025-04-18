@@ -14,6 +14,28 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.2.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.1.1...v6.2.0) (2025-04-18)
+
+
+### Features
+
+* added regional secret support for secret-manager ([#3365](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3365)) ([42dcccb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/42dcccb951751874525e360c124a781fb6428f03))
+
+
+### Bug Fixes
+
+* secretmanager to be an optional dep in autoconfig module ([#3706](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3706)) ([cabb7a5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cabb7a59fa6d49d280dd311a7f59ec4d922300e7))
+
+
+### Reverts
+
+* "feat: added regional secret support for secret-manager ([#3365](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3365))" ([#3734](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3734)) ([377551d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/377551dc34ed4670c3a057e14c9c9e2b478cca1b))
+
+
+### Documentation
+
+* Update README links ([#3696](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3696)) ([30bb2b6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/30bb2b6ab85110f49291ab30befdcf3c04257de1))
+
 ## [6.1.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.1.0...v6.1.1) (2025-03-22)
 
 
