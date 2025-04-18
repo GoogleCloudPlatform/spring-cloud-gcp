@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -36,9 +35,7 @@ import org.springframework.util.ObjectUtils;
  * <p>This factory provides a caching layer for {@link SecretManagerServiceClient} instances.
  * Clients are created using the provided {@link CredentialsProvider} and a {@link
  * UserAgentHeaderProvider} that adds the Spring Cloud GCP agent header to the client.
- *
  */
-@Component
 public class DefaultSecretManagerServiceClientFactory implements SecretManagerServiceClientFactory {
 
   private final CredentialsProvider credentialsProvider;
