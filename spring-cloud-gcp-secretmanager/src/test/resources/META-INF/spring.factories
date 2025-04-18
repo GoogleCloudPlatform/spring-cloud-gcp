@@ -1,3 +1,2 @@
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-com.google.cloud.spring.secretmanager.it.SecretManagerTestConfiguration,\
-  com.google.cloud.spring.secretmanager.it.SecretManagerRegionalTestConfiguration
+com.google.cloud.spring.secretmanager.it.SecretManagerTestConfiguration

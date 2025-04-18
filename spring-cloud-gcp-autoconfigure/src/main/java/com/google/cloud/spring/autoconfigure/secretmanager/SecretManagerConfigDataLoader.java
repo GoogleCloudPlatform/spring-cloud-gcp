@@ -40,8 +40,7 @@ public class SecretManagerConfigDataLoader implements
     GcpProjectIdProvider projectIdProvider = context.getBootstrapContext()
         .get(GcpProjectIdProvider.class);
 
-    SecretManagerPropertySource secretManagerPropertySource = new SecretManagerPropertySource(
-        "spring-cloud-gcp-secret-manager", secretManagerTemplate, projectIdProvider);
-    return new ConfigData(Collections.singleton(secretManagerPropertySource));
+    return new ConfigData(Collections.singleton(new SecretManagerPropertySource(
+        "spring-cloud-gcp-secret-manager", secretManagerTemplate, projectIdProvider)));
   }
 }
