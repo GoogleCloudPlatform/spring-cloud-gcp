@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.11.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.11.3...v5.11.4) (2025-04-23)
+
+
+### Bug Fixes
+
+* producer destination: ensure topic exists or create one, only if auto create resource is true ([#3717](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3717)) ([#3740](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3740)) ([c705bed](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c705bedea973c5042d4fef1bcc8cbdef8d44d87b))
+
 ## [5.11.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.11.2...v5.11.3) (2025-03-24)
 
 
