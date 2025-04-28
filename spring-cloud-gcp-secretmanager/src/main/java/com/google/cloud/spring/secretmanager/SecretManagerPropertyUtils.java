@@ -25,6 +25,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
 
 /** Utilities for parsing Secret Manager properties. */
 final class SecretManagerPropertyUtils {
@@ -32,7 +33,6 @@ final class SecretManagerPropertyUtils {
   private static final Logger logger = LoggerFactory.getLogger(SecretManagerPropertyUtils.class);
 
   private SecretManagerPropertyUtils() {}
-
 
   static SecretVersionName getSecretVersionName(
       final String input, GcpProjectIdProvider projectIdProvider) {
@@ -55,6 +55,7 @@ final class SecretManagerPropertyUtils {
 
     String projectId = projectIdProvider.getProjectId();
     String secretId = null;
+    String locationId = null;
     String version = "latest";
 
     if (tokens.length == 1) {
@@ -64,6 +65,10 @@ final class SecretManagerPropertyUtils {
       // property is of the form "sm@<secret-id>/<version>"
       secretId = tokens[0];
       version = tokens[1];
+    } else if (tokens.length == 3 && tokens[0].equals("locations")) {
+      // property is of the form "sm@locations/<location-id>/<secret-id>"
+      locationId = tokens[1];
+      secretId = tokens[2];
     } else if (tokens.length == 3) {
       // property is of the form "sm@<project-id>/<secret-id>/<version-id>"
       projectId = tokens[0];
@@ -73,6 +78,17 @@ final class SecretManagerPropertyUtils {
       // property is of the form "sm@projects/<project-id>/secrets/<secret-id>"
       projectId = tokens[1];
       secretId = tokens[3];
+    } else if (tokens.length == 4 && tokens[0].equals("locations")) {
+      // property is of the form "sm@locations/<location-id>/<secret-id>/<version-id>"
+      locationId = tokens[1];
+      secretId = tokens[2];
+      version = tokens[3];
+    } else if (tokens.length == 4) {
+      // property is of the form "sm@<project-id>/<location-id>/<secret-id>/<version-id>"
+      projectId = tokens[0];
+      locationId = tokens[1];
+      secretId = tokens[2];
+      version = tokens[3];
     } else if (tokens.length == 6
         && tokens[0].equals("projects")
         && tokens[2].equals("secrets")
@@ -81,6 +97,26 @@ final class SecretManagerPropertyUtils {
       projectId = tokens[1];
       secretId = tokens[3];
       version = tokens[5];
+    } else if (tokens.length == 6
+        && tokens[0].equals("projects")
+        && tokens[2].equals("locations")
+        && tokens[4].equals("secrets")) {
+      // property is of the form
+      // "sm@projects/<project-id>/locations/<location-id>/secrets/<secret-id>"
+      projectId = tokens[1];
+      locationId = tokens[3];
+      secretId = tokens[5];
+    } else if (tokens.length == 8
+        && tokens[0].equals("projects")
+        && tokens[2].equals("locations")
+        && tokens[4].equals("secrets")
+        && tokens[6].equals("versions")) {
+      // property is of the form
+      // "sm@projects/<project-id>/locations/<location-id>/secrets/<secret-id>/versions/<version>"
+      projectId = tokens[1];
+      locationId = tokens[3];
+      secretId = tokens[5];
+      version = tokens[7];
     } else {
       throw new IllegalArgumentException(
           "Unrecognized format for specifying a GCP Secret Manager secret: " + input);
@@ -92,10 +128,24 @@ final class SecretManagerPropertyUtils {
 
     Assert.hasText(version, "The GCP Secret Manager secret version must not be empty: " + input);
 
-    return SecretVersionName.newBuilder()
-        .setProject(projectId)
-        .setSecret(secretId)
-        .setSecretVersion(version)
-        .build();
+    return getSecretVersionName(projectId, secretId, version, locationId);
+  }
+
+  static SecretVersionName getSecretVersionName(
+      String projectId, String secretId, String version, String location) {
+    if (ObjectUtils.isEmpty(location)) {
+      return SecretVersionName.newBuilder()
+          .setProject(projectId)
+          .setSecret(secretId)
+          .setSecretVersion(version)
+          .build();
+    } else {
+      return SecretVersionName.newProjectLocationSecretSecretVersionBuilder()
+          .setLocation(location)
+          .setProject(projectId)
+          .setSecret(secretId)
+          .setSecretVersion(version)
+          .build();
+    }
   }
 }
