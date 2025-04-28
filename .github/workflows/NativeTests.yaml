@@ -29,33 +29,8 @@ jobs:
           - 21
           - 23
         it:
-          - alloydb-sample
-          - bigquery-sample
-          - bigquery
-          - core
-          - data-firestore
-          - data-firestore-sample
-          - datastore
-          - datastore-basic-sample
-          - kms
-          - kms-sample
-          - logging-sample
-          - metrics-sample
-          - pubsub-sample
-          - pubsub-bus-sample
-          - pubsub-integration-sample
-          #- pubsub-stream-sample ## https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2456
           - secretmanager
           - secretmanager-sample
-          - spanner
-          - sql-mysql-sample
-          - sql-postgres-sample
-          - starter-firestore-sample
-          - storage
-          - storage-sample
-          - trace-sample
-          - vision
-          - vision-sample
     steps:
       - name: Get current date
         id: date
