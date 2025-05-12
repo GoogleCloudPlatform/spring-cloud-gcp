@@ -70,7 +70,6 @@
     <module>google-cloud-dlp-spring-starter</module>
     <module>google-cloud-dialogflow-spring-starter</module>
     <module>google-cloud-deploy-spring-starter</module>
-    <module>google-cloud-debugger-client-spring-starter</module>
     <module>google-cloud-datastream-spring-starter</module>
     <module>google-cloud-dataproc-spring-starter</module>
     <module>google-cloud-dataproc-metastore-spring-starter</module>
