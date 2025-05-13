@@ -26,6 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         graalvm_for_jdk_version:
+          - 17
           - 21
           - 23
         it:
