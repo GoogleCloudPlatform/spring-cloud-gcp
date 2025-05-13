@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
+import com.google.cloud.spanner.Interval;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Value;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -194,6 +196,8 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
             Timestamp.ofTimeSecondsAndNanos(111, 0),
             Timestamp.ofTimeSecondsAndNanos(222, 0),
             Timestamp.ofTimeSecondsAndNanos(333, 0));
+    List<Interval> intervals = Collections.singletonList(Interval.ofSeconds(1L));
+    List<UUID> uuids = Collections.singletonList(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
 
     Struct struct1 =
         Struct.newBuilder()
@@ -253,6 +257,14 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
             .to(Value.numeric(BigDecimal.TEN))
             .set("bigDecimals")
             .to(Value.numericArray(Arrays.asList(BigDecimal.ONE, BigDecimal.ZERO)))
+            .set("intervalField")
+            .to(Interval.ofSeconds(100L))
+            .set("intervalList")
+            .to(Value.intervalArray(intervals))
+            .set("uuidField")
+            .to(Value.uuid(UUID.fromString("a1b2c3d4-e5f6-7890-1234-567890abcdef")))
+            .set("uuidList")
+            .to(Value.uuidArray(uuids))
             .build();
 
     Struct struct2 =
@@ -315,6 +327,14 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
             .to(
                 Value.numericArray(
                     Arrays.asList(new BigDecimal("-0.999"), new BigDecimal("10.9001"))))
+            .set("intervalField")
+            .to(Value.interval(Interval.ofSeconds(200L)))
+            .set("intervalList")
+            .to(Value.intervalArray(intervals))
+            .set("uuidField")
+            .to(Value.uuid(UUID.fromString("123e4567-e89b-12d3-a456-426614174000")))
+            .set("uuidList")
+            .to(Value.uuidArray(uuids))
             .build();
 
     MockResults mockResults = new MockResults();
@@ -354,6 +374,11 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
     assertThat(t1.floatField).isEqualTo(3.33F, DELTA_FLOAT);
     assertThat(t1.floatArray).hasSize(3);
     assertThat(t1.bigDecimals).containsExactly(BigDecimal.ONE, BigDecimal.ZERO);
+    assertThat(t1.intervalField).isEqualTo(Interval.ofSeconds(100L));
+    assertThat(t1.intervalList).containsExactly(Interval.ofSeconds(1L));
+    assertThat(t1.uuidField).isEqualTo(UUID.fromString("a1b2c3d4-e5f6-7890-1234-567890abcdef"));
+    assertThat(t1.uuidList).containsExactly(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
+
 
     assertThat(t2)
         .hasFieldOrPropertyWithValue("id", "key12")
@@ -381,6 +406,10 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
     assertThat(t2.stringList).containsExactly("string");
     assertThat(t2.bigDecimalField).isEqualTo(new BigDecimal("0.0001"));
     assertThat(t2.bigDecimals).containsExactly(new BigDecimal("-0.999"), new BigDecimal("10.9001"));
+    assertThat(t2.intervalField).isEqualTo(Interval.ofSeconds(200L));
+    assertThat(t2.intervalList).containsExactly(Interval.ofSeconds(1L));
+    assertThat(t2.uuidField).isEqualTo(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
+    assertThat(t2.uuidList).containsExactly(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
   }
 
   @Test
