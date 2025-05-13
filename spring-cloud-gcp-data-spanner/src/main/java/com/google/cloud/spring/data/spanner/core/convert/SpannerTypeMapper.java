@@ -18,6 +18,7 @@ package com.google.cloud.spring.data.spanner.core.convert;
 
 import com.google.cloud.ByteArray;
 import com.google.cloud.Timestamp;
+import com.google.cloud.spanner.Interval;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Type.Code;
@@ -26,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * A utility class to map between common Java types and types to use with Spanner.
@@ -52,6 +54,8 @@ public final class SpannerTypeMapper {
           .put(Type.Code.STRING, String.class)
           .put(Type.Code.STRUCT, Struct.class)
           .put(Type.Code.TIMESTAMP, Timestamp.class)
+          .put(Type.Code.INTERVAL, Interval.class)
+              .put(Type.Code.UUID, UUID.class)
           .build();
 
   private static final Map<Type.Code, Class> SPANNER_ARRAY_COLUMN_CODES_TO_JAVA_TYPE_MAPPING =
@@ -66,6 +70,8 @@ public final class SpannerTypeMapper {
           .put(Type.Code.STRING, String[].class)
           .put(Type.Code.STRUCT, Struct[].class)
           .put(Type.Code.TIMESTAMP, Timestamp[].class)
+          .put(Type.Code.INTERVAL, Interval[].class)
+              .put(Code.UUID, UUID[].class)
           .build();
 
   static {
