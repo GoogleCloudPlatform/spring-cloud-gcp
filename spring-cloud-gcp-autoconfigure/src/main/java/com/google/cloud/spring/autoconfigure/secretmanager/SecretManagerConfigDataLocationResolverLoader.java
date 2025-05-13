@@ -21,7 +21,6 @@ import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataLocationResolver;
 import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
 import org.springframework.boot.context.config.ConfigDataResource;
-import org.springframework.util.ClassUtils;
 
 /**
  * A safe delegating ConfigDataLocationResolver that loads SecretManagerConfigDataLocationResolver
@@ -30,9 +29,7 @@ import org.springframework.util.ClassUtils;
 public class SecretManagerConfigDataLocationResolverLoader
     implements ConfigDataLocationResolver<ConfigDataResource> {
   private static final boolean SECRET_MANAGER_PRESENT =
-      ClassUtils.isPresent(
-          "com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils",
-          SecretManagerConfigDataLocationResolverLoader.class.getClassLoader());
+      isClassPresent("com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils");
 
   private final ConfigDataLocationResolver<ConfigDataResource> delegate;
 
@@ -52,10 +49,36 @@ public class SecretManagerConfigDataLocationResolverLoader
     }
   }
 
+  /**
+   * Checks if the property can be resolved by the Secret Manager resolver.
+   * For the check, we rely on the presence of the SecretManagerSyntaxUtils class, which is an
+   * optional dependency.
+   * Since optional dependencies may not be present at runtime, we explicitly check for its
+   * existence before resolving the property.
+   * If it's not present, it means this config resolver is not meant to be used.
+   *
+   * @return true if the delegate resolver is initialized and the location has the expected
+   *     Secret Manager prefix (e.g., {@code sm@} or {@code sm://}); false otherwise.
+   */
   @Override
   public boolean isResolvable(
       ConfigDataLocationResolverContext context, ConfigDataLocation location) {
     return delegate != null && delegate.isResolvable(context, location);
+  }
+
+  /**
+   * Checks if the specified class is present in this runtime.
+   *
+   * @param clazzFullName the full name of the class for the existence check
+   * @return true if present
+   */
+  private static boolean isClassPresent(String clazzFullName) {
+    try {
+      Class.forName(clazzFullName);
+      return true;
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
   }
 
   @Override
