@@ -14,6 +14,23 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.12.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.11.3...v5.12.0) (2025-05-14)
+
+
+### Features
+
+* **spanner:** support Interval and UUID types. ([92b07de](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/92b07dede7e1531c6e7fd5b63b7edad28cdbfd60))
+
+
+### Bug Fixes
+
+* producer destination: ensure topic exists or create one, only if auto create resource is true ([#3717](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3717)) ([#3740](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3740)) ([c705bed](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c705bedea973c5042d4fef1bcc8cbdef8d44d87b))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.57.0 to 26.60.0 ([92b07de](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/92b07dede7e1531c6e7fd5b63b7edad28cdbfd60))
+
 ## [5.11.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.11.2...v5.11.3) (2025-03-24)
 
 
