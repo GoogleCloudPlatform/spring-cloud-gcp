@@ -34,7 +34,7 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.57.0</gcp-libraries-bom.version>
+		<gcp-libraries-bom.version>26.60.0</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.23.1</cloud-sql-socket-factory.version>
 		<r2dbc-postgres-driver.version>1.0.7.RELEASE</r2dbc-postgres-driver.version>
 		<cloud-spanner-r2dbc.version>1.3.0</cloud-spanner-r2dbc.version>
