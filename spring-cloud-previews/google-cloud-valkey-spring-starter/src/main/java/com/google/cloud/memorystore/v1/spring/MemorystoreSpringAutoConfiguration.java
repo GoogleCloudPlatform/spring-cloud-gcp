@@ -166,6 +166,31 @@ public class MemorystoreSpringAutoConfiguration {
           .getCertificateAuthoritySettings()
           .setRetrySettings(getCertificateAuthorityRetrySettings);
 
+      RetrySettings listBackupCollectionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackupCollectionsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listBackupCollectionsSettings()
+          .setRetrySettings(listBackupCollectionsRetrySettings);
+
+      RetrySettings getBackupCollectionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackupCollectionSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getBackupCollectionSettings()
+          .setRetrySettings(getBackupCollectionRetrySettings);
+
+      RetrySettings listBackupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackupsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listBackupsSettings().setRetrySettings(listBackupsRetrySettings);
+
+      RetrySettings getBackupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackupSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getBackupSettings().setRetrySettings(getBackupRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -212,6 +237,54 @@ public class MemorystoreSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getCertificateAuthority from properties.");
+      }
+    }
+    Retry listBackupCollectionsRetry = clientProperties.getListBackupCollectionsRetry();
+    if (listBackupCollectionsRetry != null) {
+      RetrySettings listBackupCollectionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackupCollectionsSettings().getRetrySettings(),
+              listBackupCollectionsRetry);
+      clientSettingsBuilder
+          .listBackupCollectionsSettings()
+          .setRetrySettings(listBackupCollectionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listBackupCollections from properties.");
+      }
+    }
+    Retry getBackupCollectionRetry = clientProperties.getGetBackupCollectionRetry();
+    if (getBackupCollectionRetry != null) {
+      RetrySettings getBackupCollectionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackupCollectionSettings().getRetrySettings(),
+              getBackupCollectionRetry);
+      clientSettingsBuilder
+          .getBackupCollectionSettings()
+          .setRetrySettings(getBackupCollectionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getBackupCollection from properties.");
+      }
+    }
+    Retry listBackupsRetry = clientProperties.getListBackupsRetry();
+    if (listBackupsRetry != null) {
+      RetrySettings listBackupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackupsSettings().getRetrySettings(), listBackupsRetry);
+      clientSettingsBuilder.listBackupsSettings().setRetrySettings(listBackupsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listBackups from properties.");
+      }
+    }
+    Retry getBackupRetry = clientProperties.getGetBackupRetry();
+    if (getBackupRetry != null) {
+      RetrySettings getBackupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackupSettings().getRetrySettings(), getBackupRetry);
+      clientSettingsBuilder.getBackupSettings().setRetrySettings(getBackupRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getBackup from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

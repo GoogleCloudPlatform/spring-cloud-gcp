@@ -71,6 +71,7 @@ com.google.cloud.compute.v1.spring.RegionTargetTcpProxiesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionUrlMapsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionZonesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionsSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.ReservationBlocksSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ReservationsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ResourcePoliciesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RoutersSpringAutoConfiguration
