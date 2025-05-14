@@ -19,6 +19,7 @@ package com.google.cloud.spring.data.spanner.core.convert;
 import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
+import com.google.cloud.spanner.Interval;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.Embedded;
@@ -29,6 +30,7 @@ import com.google.spanner.v1.TypeCode;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 /** Test entities for Spanner tests that hit many features and situations. */
 class TestEntities {
@@ -109,6 +111,14 @@ class TestEntities {
     BigDecimal bigDecimalField;
 
     List<BigDecimal> bigDecimals;
+
+    Interval intervalField;
+
+    List<Interval> intervalList;
+
+    UUID uuidField;
+
+    List<UUID> uuidList;
   }
 
   /** A test entity that acts as a child of another entity. */
