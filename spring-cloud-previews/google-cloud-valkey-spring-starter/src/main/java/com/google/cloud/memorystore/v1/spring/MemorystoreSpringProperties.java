@@ -56,6 +56,26 @@ public class MemorystoreSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getCertificateAuthorityRetry;
   /**
+   * Allow override of retry settings at method-level for listBackupCollections. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listBackupCollectionsRetry;
+  /**
+   * Allow override of retry settings at method-level for getBackupCollection. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getBackupCollectionRetry;
+  /**
+   * Allow override of retry settings at method-level for listBackups. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listBackupsRetry;
+  /**
+   * Allow override of retry settings at method-level for getBackup. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getBackupRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -117,6 +137,38 @@ public class MemorystoreSpringProperties implements CredentialsSupplier {
 
   public void setGetCertificateAuthorityRetry(Retry getCertificateAuthorityRetry) {
     this.getCertificateAuthorityRetry = getCertificateAuthorityRetry;
+  }
+
+  public Retry getListBackupCollectionsRetry() {
+    return this.listBackupCollectionsRetry;
+  }
+
+  public void setListBackupCollectionsRetry(Retry listBackupCollectionsRetry) {
+    this.listBackupCollectionsRetry = listBackupCollectionsRetry;
+  }
+
+  public Retry getGetBackupCollectionRetry() {
+    return this.getBackupCollectionRetry;
+  }
+
+  public void setGetBackupCollectionRetry(Retry getBackupCollectionRetry) {
+    this.getBackupCollectionRetry = getBackupCollectionRetry;
+  }
+
+  public Retry getListBackupsRetry() {
+    return this.listBackupsRetry;
+  }
+
+  public void setListBackupsRetry(Retry listBackupsRetry) {
+    this.listBackupsRetry = listBackupsRetry;
+  }
+
+  public Retry getGetBackupRetry() {
+    return this.getBackupRetry;
+  }
+
+  public void setGetBackupRetry(Retry getBackupRetry) {
+    this.getBackupRetry = getBackupRetry;
   }
 
   public Retry getListLocationsRetry() {

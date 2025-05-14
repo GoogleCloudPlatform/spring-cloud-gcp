@@ -68,6 +68,11 @@ public class IdentityAwareProxyAdminServiceSpringProperties implements Credentia
    */
   @NestedConfigurationProperty private Retry updateIapSettingsRetry;
   /**
+   * Allow override of retry settings at method-level for validateIapAttributeExpression. If
+   * defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry validateIapAttributeExpressionRetry;
+  /**
    * Allow override of retry settings at method-level for listTunnelDestGroups. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -168,6 +173,14 @@ public class IdentityAwareProxyAdminServiceSpringProperties implements Credentia
 
   public void setUpdateIapSettingsRetry(Retry updateIapSettingsRetry) {
     this.updateIapSettingsRetry = updateIapSettingsRetry;
+  }
+
+  public Retry getValidateIapAttributeExpressionRetry() {
+    return this.validateIapAttributeExpressionRetry;
+  }
+
+  public void setValidateIapAttributeExpressionRetry(Retry validateIapAttributeExpressionRetry) {
+    this.validateIapAttributeExpressionRetry = validateIapAttributeExpressionRetry;
   }
 
   public Retry getListTunnelDestGroupsRetry() {
