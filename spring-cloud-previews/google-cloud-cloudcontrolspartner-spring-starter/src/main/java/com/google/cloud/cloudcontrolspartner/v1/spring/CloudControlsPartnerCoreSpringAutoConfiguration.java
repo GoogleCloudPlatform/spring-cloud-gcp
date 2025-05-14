@@ -210,6 +210,21 @@ public class CloudControlsPartnerCoreSpringAutoConfiguration {
               clientSettingsBuilder.getPartnerSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getPartnerSettings().setRetrySettings(getPartnerRetrySettings);
 
+      RetrySettings createCustomerRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createCustomerSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.createCustomerSettings().setRetrySettings(createCustomerRetrySettings);
+
+      RetrySettings updateCustomerRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateCustomerSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.updateCustomerSettings().setRetrySettings(updateCustomerRetrySettings);
+
+      RetrySettings deleteCustomerRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteCustomerSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.deleteCustomerSettings().setRetrySettings(deleteCustomerRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -304,6 +319,39 @@ public class CloudControlsPartnerCoreSpringAutoConfiguration {
       clientSettingsBuilder.getPartnerSettings().setRetrySettings(getPartnerRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getPartner from properties.");
+      }
+    }
+    Retry createCustomerRetry = clientProperties.getCreateCustomerRetry();
+    if (createCustomerRetry != null) {
+      RetrySettings createCustomerRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createCustomerSettings().getRetrySettings(),
+              createCustomerRetry);
+      clientSettingsBuilder.createCustomerSettings().setRetrySettings(createCustomerRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for createCustomer from properties.");
+      }
+    }
+    Retry updateCustomerRetry = clientProperties.getUpdateCustomerRetry();
+    if (updateCustomerRetry != null) {
+      RetrySettings updateCustomerRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateCustomerSettings().getRetrySettings(),
+              updateCustomerRetry);
+      clientSettingsBuilder.updateCustomerSettings().setRetrySettings(updateCustomerRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for updateCustomer from properties.");
+      }
+    }
+    Retry deleteCustomerRetry = clientProperties.getDeleteCustomerRetry();
+    if (deleteCustomerRetry != null) {
+      RetrySettings deleteCustomerRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteCustomerSettings().getRetrySettings(),
+              deleteCustomerRetry);
+      clientSettingsBuilder.deleteCustomerSettings().setRetrySettings(deleteCustomerRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for deleteCustomer from properties.");
       }
     }
     return clientSettingsBuilder.build();

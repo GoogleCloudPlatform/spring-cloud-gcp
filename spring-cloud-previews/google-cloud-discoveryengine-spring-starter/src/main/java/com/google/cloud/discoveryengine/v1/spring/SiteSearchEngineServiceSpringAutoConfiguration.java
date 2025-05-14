@@ -181,6 +181,11 @@ public class SiteSearchEngineServiceSpringAutoConfiguration {
           .listTargetSitesSettings()
           .setRetrySettings(listTargetSitesRetrySettings);
 
+      RetrySettings fetchSitemapsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchSitemapsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.fetchSitemapsSettings().setRetrySettings(fetchSitemapsRetrySettings);
+
       RetrySettings fetchDomainVerificationStatusRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.fetchDomainVerificationStatusSettings().getRetrySettings(),
@@ -228,6 +233,16 @@ public class SiteSearchEngineServiceSpringAutoConfiguration {
           .setRetrySettings(listTargetSitesRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listTargetSites from properties.");
+      }
+    }
+    Retry fetchSitemapsRetry = clientProperties.getFetchSitemapsRetry();
+    if (fetchSitemapsRetry != null) {
+      RetrySettings fetchSitemapsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchSitemapsSettings().getRetrySettings(), fetchSitemapsRetry);
+      clientSettingsBuilder.fetchSitemapsSettings().setRetrySettings(fetchSitemapsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for fetchSitemaps from properties.");
       }
     }
     Retry fetchDomainVerificationStatusRetry =

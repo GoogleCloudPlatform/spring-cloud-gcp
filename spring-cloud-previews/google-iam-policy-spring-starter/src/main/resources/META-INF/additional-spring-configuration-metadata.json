@@ -1,9 +1,15 @@
 {
   "properties": [
     {
-      "name": "com.google.iam.v2.policies.enabled",
+      "name": "com.google.iam.v3.policy-bindings.enabled",
       "type": "java.lang.Boolean",
-      "description": "Auto-configure Google Cloud iam/Policies components.",
+      "description": "Auto-configure Google Cloud iam/PolicyBindings components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.iam.v3.principal-access-boundary-policies.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud iam/PrincipalAccessBoundaryPolicies components.",
       "defaultValue": true
     }
   ]

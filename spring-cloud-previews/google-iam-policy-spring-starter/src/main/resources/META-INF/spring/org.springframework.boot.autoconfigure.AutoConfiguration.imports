@@ -1,1 +1,2 @@
-com.google.iam.v2.spring.PoliciesSpringAutoConfiguration
+com.google.iam.v3.spring.PolicyBindingsSpringAutoConfiguration
+com.google.iam.v3.spring.PrincipalAccessBoundaryPoliciesSpringAutoConfiguration
