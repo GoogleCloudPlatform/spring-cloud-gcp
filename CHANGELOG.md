@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.9.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.18...v3.9.0) (2025-05-15)
+
+
+### Features
+
+* **spanner:** support Interval and UUID types. ([52a4c78](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/52a4c78a4902f9265f18afe3cae4f3c86491179f))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.57.0 to 26.60.0 ([52a4c78](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/52a4c78a4902f9265f18afe3cae4f3c86491179f))
+
 ## [3.8.18](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.8.17...v3.8.18) (2025-03-24)
 
 
