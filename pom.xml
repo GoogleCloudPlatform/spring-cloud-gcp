@@ -456,7 +456,7 @@
 							<artifactId>maven-surefire-plugin</artifactId>
 							<configuration>
 								<!-- illegal-access=permit is needed to make GCLIB proxying work, used in Datastore -->
-								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED</argLine>
+								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
 								<skip>${skip.surefire.tests}</skip>
 								<excludes>
 									<exclude>${integration-test.pattern}</exclude>
@@ -472,7 +472,7 @@
 								<includes>
 									<include>${integration-test.pattern}</include>
 								</includes>
-								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED</argLine>
+								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
 							</configuration>
 						</plugin>
 					</plugins>
