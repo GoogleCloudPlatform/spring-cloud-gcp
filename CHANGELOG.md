@@ -14,6 +14,30 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.2.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.1.1...v6.2.0) (2025-05-15)
+
+
+### Features
+
+* **spanner:** support Interval and UUID types. ([ba48d4d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ba48d4d16096cb885f458c1911c139e5b069ed14))
+
+
+### Bug Fixes
+
+* **deps:** update gapic-generator-java-bom.version to v2.57.0 ([#3757](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3757)) ([de08d37](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/de08d37eacce8f3253407ab955eb8211f1706099))
+* producer destination: ensure topic exists or create one, only if auto create resource is true ([#3717](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3717)) ([3b06a2f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3b06a2fb74e755288bff51aba3c90612bcc61f48))
+* secretmanager to be an optional dep in autoconfig module ([#3706](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3706)) ([cabb7a5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cabb7a59fa6d49d280dd311a7f59ec4d922300e7))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.57.0 to 26.60.0 ([ba48d4d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ba48d4d16096cb885f458c1911c139e5b069ed14))
+
+
+### Documentation
+
+* Update README links ([#3696](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3696)) ([30bb2b6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/30bb2b6ab85110f49291ab30befdcf3c04257de1))
+
 ## [6.1.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.1.0...v6.1.1) (2025-03-22)
 
 

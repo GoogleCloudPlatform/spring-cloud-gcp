@@ -167,6 +167,13 @@ public class EchoSpringAutoConfiguration {
           .echoErrorDetailsSettings()
           .setRetrySettings(echoErrorDetailsRetrySettings);
 
+      RetrySettings failEchoWithDetailsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.failEchoWithDetailsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .failEchoWithDetailsSettings()
+          .setRetrySettings(failEchoWithDetailsRetrySettings);
+
       RetrySettings pagedExpandRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.pagedExpandSettings().getRetrySettings(), serviceRetry);
@@ -245,6 +252,20 @@ public class EchoSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for echoErrorDetails from properties.");
+      }
+    }
+    Retry failEchoWithDetailsRetry = clientProperties.getFailEchoWithDetailsRetry();
+    if (failEchoWithDetailsRetry != null) {
+      RetrySettings failEchoWithDetailsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.failEchoWithDetailsSettings().getRetrySettings(),
+              failEchoWithDetailsRetry);
+      clientSettingsBuilder
+          .failEchoWithDetailsSettings()
+          .setRetrySettings(failEchoWithDetailsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for failEchoWithDetails from properties.");
       }
     }
     Retry pagedExpandRetry = clientProperties.getPagedExpandRetry();
