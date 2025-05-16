@@ -51,7 +51,7 @@ then
     ./mvnw nexus-staging:release \
     --batch-mode \
     --settings ${MAVEN_SETTINGS_FILE} \
-    -DperformRelease=true \
+    -DperformRelease=true
 fi
 
 popd
