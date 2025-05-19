@@ -44,9 +44,8 @@ public class DefaultSecretManagerServiceClientFactory implements SecretManagerSe
   private final CredentialsProvider credentialsProvider;
   private final Map<String, SecretManagerServiceClient> clientCache = new ConcurrentHashMap<>();
 
-  DefaultSecretManagerServiceClientFactory(CredentialsProvider credentialsProvider, SecretManagerServiceClient client) {
+  DefaultSecretManagerServiceClientFactory(CredentialsProvider credentialsProvider) {
     this.credentialsProvider = credentialsProvider;
-    this.clientCache.putIfAbsent(GLOBAL_LOCATION, client);
   }
 
   @Override

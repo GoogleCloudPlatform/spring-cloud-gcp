@@ -23,10 +23,6 @@ import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
 
-/**
- * Runtime Hints for Secret Manager. For now, this is only necessary to enable image generation with
- * GraalVM for JDK 17. GraalVM for JDK 21 and 23 do not need this hint.
- */
 public class SecretManagerRuntimeHints implements RuntimeHintsRegistrar {
   @Override
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {

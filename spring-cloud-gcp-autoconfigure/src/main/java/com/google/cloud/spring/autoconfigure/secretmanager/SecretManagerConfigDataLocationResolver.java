@@ -187,10 +187,8 @@ public class SecretManagerConfigDataLocationResolver implements
     if (secretManagerServiceClientFactory != null) {
       return secretManagerServiceClientFactory;
     }
-    SecretManagerServiceClient client = context.getBootstrapContext()
-        .get(SecretManagerServiceClient.class);
     return new DefaultSecretManagerServiceClientFactory(
-        context.getBootstrapContext().get(CredentialsProvider.class), client);
+        context.getBootstrapContext().get(CredentialsProvider.class));
   }
 
   private static SecretManagerTemplate createSecretManagerTemplate(
