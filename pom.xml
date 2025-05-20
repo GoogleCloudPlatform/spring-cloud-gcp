@@ -649,7 +649,7 @@
 		<profile>
 			<id>errorprone_java_17_and_up</id>
 			<activation>
-				<jdk>[17,]</jdk>
+				<jdk>[17,24)</jdk>
 			</activation>
 			<build>
 				<pluginManagement>
@@ -659,7 +659,8 @@
 							<artifactId>maven-compiler-plugin</artifactId>
 							<version>${maven-compiler-plugin.version}</version>
 							<configuration>
-								<release>${maven.compiler.source}</release>
+								<source>${maven.compiler.source}</source>
+								<target>${maven.compiler.target}</target>
 								<encoding>UTF-8</encoding>
 								<fork>true</fork>
 								<compilerArgs>
