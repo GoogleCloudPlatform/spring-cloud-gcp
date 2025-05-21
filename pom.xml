@@ -6,7 +6,7 @@
 
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>3.8.19-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>3.9.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
@@ -456,7 +456,7 @@
 							<artifactId>maven-surefire-plugin</artifactId>
 							<configuration>
 								<!-- illegal-access=permit is needed to make GCLIB proxying work, used in Datastore -->
-								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED</argLine>
+								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
 								<skip>${skip.surefire.tests}</skip>
 								<excludes>
 									<exclude>${integration-test.pattern}</exclude>
@@ -472,7 +472,7 @@
 								<includes>
 									<include>${integration-test.pattern}</include>
 								</includes>
-								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED</argLine>
+								<argLine>-Xms512m -Xmx512m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
 							</configuration>
 						</plugin>
 					</plugins>
