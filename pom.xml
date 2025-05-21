@@ -659,11 +659,11 @@
 							<artifactId>maven-compiler-plugin</artifactId>
 							<version>${maven-compiler-plugin.version}</version>
 							<configuration>
-								<source>${maven.compiler.source}</source>
-								<target>${maven.compiler.target}</target>
+								<release>${maven.compiler.source}</release>
 								<encoding>UTF-8</encoding>
 								<fork>true</fork>
 								<compilerArgs>
+									<arg>--should-stop=ifError=FLOW</arg>
 									<arg>-XDcompilePolicy=simple</arg>
 									<arg>-Xplugin:ErrorProne -Xep:UnicodeInCode:OFF</arg>
 									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
