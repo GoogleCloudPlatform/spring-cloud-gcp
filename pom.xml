@@ -697,6 +697,7 @@
 				</pluginManagement>
 			</build>
 		</profile>
+
 		<!-- Handles deploying snapshots and releases. -->
 		<profile>
 			<id>release</id>
