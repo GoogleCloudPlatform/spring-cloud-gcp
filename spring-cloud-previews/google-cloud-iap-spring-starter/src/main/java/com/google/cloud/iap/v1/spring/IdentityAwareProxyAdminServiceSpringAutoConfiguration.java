@@ -193,6 +193,14 @@ public class IdentityAwareProxyAdminServiceSpringAutoConfiguration {
           .updateIapSettingsSettings()
           .setRetrySettings(updateIapSettingsRetrySettings);
 
+      RetrySettings validateIapAttributeExpressionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.validateIapAttributeExpressionSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .validateIapAttributeExpressionSettings()
+          .setRetrySettings(validateIapAttributeExpressionRetrySettings);
+
       RetrySettings listTunnelDestGroupsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listTunnelDestGroupsSettings().getRetrySettings(),
@@ -293,6 +301,21 @@ public class IdentityAwareProxyAdminServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for updateIapSettings from properties.");
+      }
+    }
+    Retry validateIapAttributeExpressionRetry =
+        clientProperties.getValidateIapAttributeExpressionRetry();
+    if (validateIapAttributeExpressionRetry != null) {
+      RetrySettings validateIapAttributeExpressionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.validateIapAttributeExpressionSettings().getRetrySettings(),
+              validateIapAttributeExpressionRetry);
+      clientSettingsBuilder
+          .validateIapAttributeExpressionSettings()
+          .setRetrySettings(validateIapAttributeExpressionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for validateIapAttributeExpression from properties.");
       }
     }
     Retry listTunnelDestGroupsRetry = clientProperties.getListTunnelDestGroupsRetry();

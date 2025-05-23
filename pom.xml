@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>6.1.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>6.2.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -56,7 +56,7 @@
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
 		<native-maven-plugin.version>0.10.5</native-maven-plugin.version>
-		<errorprone.version>2.34.0</errorprone.version>
+		<errorprone.version>2.38.0</errorprone.version>
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
@@ -659,11 +659,11 @@
 							<artifactId>maven-compiler-plugin</artifactId>
 							<version>${maven-compiler-plugin.version}</version>
 							<configuration>
-								<source>${maven.compiler.source}</source>
-								<target>${maven.compiler.target}</target>
+								<release>${maven.compiler.source}</release>
 								<encoding>UTF-8</encoding>
 								<fork>true</fork>
 								<compilerArgs>
+									<arg>--should-stop=ifError=FLOW</arg>
 									<arg>-XDcompilePolicy=simple</arg>
 									<arg>-Xplugin:ErrorProne -Xep:UnicodeInCode:OFF</arg>
 									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->

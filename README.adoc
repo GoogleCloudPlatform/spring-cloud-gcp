@@ -11,7 +11,7 @@ You can check our project website https://spring.io/projects/spring-cloud-gcp[he
 For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation or Javadocs:
 
 // {x-version-update-start:spring-cloud-gcp:released}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/6.1.1/reference/html/index.html[Spring Framework on Google Cloud 6.1.1 (Latest)] - https://googleapis.dev/java/spring-cloud-gcp/6.1.1/index.html[Javadocs 6.1.1]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/6.2.1/reference/html/index.html[Spring Framework on Google Cloud 6.1.1 (Latest)] - https://googleapis.dev/java/spring-cloud-gcp/6.1.1/index.html[Javadocs 6.1.1]
 // {x-version-update-end}
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/5.11.3/reference/html/index.html[Spring Framework on Google Cloud 5.11.3] - https://googleapis.dev/java/spring-cloud-gcp/5.11.3/index.html[Javadocs 5.11.3]
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.10.19/reference/html/index.html[Spring Framework on Google Cloud 4.10.19] - https://googleapis.dev/java/spring-cloud-gcp/4.10.19/index.html[Javadocs 4.10.19]
@@ -111,7 +111,7 @@ This will allow you to not specify versions for any of the Maven dependencies an
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-dependencies</artifactId>
-            <version>6.1.1</version>
+            <version>6.2.1</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>

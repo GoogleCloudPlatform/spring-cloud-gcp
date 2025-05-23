@@ -51,6 +51,11 @@ public class EchoSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry echoErrorDetailsRetry;
   /**
+   * Allow override of retry settings at method-level for failEchoWithDetails. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry failEchoWithDetailsRetry;
+  /**
    * Allow override of retry settings at method-level for pagedExpand. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -147,6 +152,14 @@ public class EchoSpringProperties implements CredentialsSupplier {
 
   public void setEchoErrorDetailsRetry(Retry echoErrorDetailsRetry) {
     this.echoErrorDetailsRetry = echoErrorDetailsRetry;
+  }
+
+  public Retry getFailEchoWithDetailsRetry() {
+    return this.failEchoWithDetailsRetry;
+  }
+
+  public void setFailEchoWithDetailsRetry(Retry failEchoWithDetailsRetry) {
+    this.failEchoWithDetailsRetry = failEchoWithDetailsRetry;
   }
 
   public Retry getPagedExpandRetry() {
