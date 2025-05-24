@@ -17,13 +17,12 @@
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,6 +63,13 @@ class GcpSecretManagerAutoConfigurationUnitTests {
   void testSecretManagerServiceClientExists() {
     contextRunner.run(
         ctx -> assertThat(ctx.getBean(SecretManagerServiceClient.class))
+            .isNotNull());
+  }
+
+  @Test
+  void testSecretManagerServiceClientFactoryExists() {
+    contextRunner.run(
+        ctx -> assertThat(ctx.getBean(SecretManagerServiceClientFactory.class))
             .isNotNull());
   }
 
