@@ -52,6 +52,7 @@ public class JacksonPubSubMessageConverter implements PubSubMessageConverter {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public <T> T fromPubSubMessage(PubsubMessage message, Class<T> payloadType) {
     try {
       return (T)
