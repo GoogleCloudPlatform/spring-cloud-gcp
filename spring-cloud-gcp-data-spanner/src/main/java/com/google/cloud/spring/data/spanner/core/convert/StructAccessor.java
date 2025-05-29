@@ -20,6 +20,7 @@ import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.AbstractStructReader;
+import com.google.cloud.spanner.Interval;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Type.Code;
@@ -32,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.BiFunction;
 
 /**
@@ -55,6 +57,8 @@ public class StructAccessor {
           .put(ByteArray.class, AbstractStructReader::getBytesList)
           .put(BigDecimal.class, AbstractStructReader::getBigDecimalList)
           .put(Struct.class, AbstractStructReader::getStructList)
+              .put(Interval.class, AbstractStructReader::getIntervalList)
+              .put(UUID.class, AbstractStructReader::getUuidList)
           .build();
 
   static final Map<Class, BiFunction<Struct, String, ?>> singleItemReadMethodMapping =
@@ -75,6 +79,8 @@ public class StructAccessor {
           .put(float[].class, AbstractStructReader::getFloatArray)
           .put(long[].class, AbstractStructReader::getLongArray)
           .put(boolean[].class, AbstractStructReader::getBooleanArray)
+              .put(Interval.class, AbstractStructReader::getInterval)
+              .put(UUID.class, AbstractStructReader::getUuid)
           // Note that Struct.class appears in this map. While we support
           // converting structs into POJO fields of POJOs, the value in this map is for
           // the case where the field within the POJO is Struct.
@@ -99,6 +105,8 @@ public class StructAccessor {
           .put(float[].class, AbstractStructReader::getFloatArray)
           .put(long[].class, AbstractStructReader::getLongArray)
           .put(boolean[].class, AbstractStructReader::getBooleanArray)
+              .put(Interval.class, AbstractStructReader::getInterval)
+              .put(UUID.class, AbstractStructReader::getUuid)
           // Note that Struct.class appears in this map. While we support
           // converting structs into POJO fields of POJOs, the value in this map
           // is for

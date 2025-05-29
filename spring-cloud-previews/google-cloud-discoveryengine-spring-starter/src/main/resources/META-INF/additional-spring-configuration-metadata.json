@@ -79,6 +79,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.discoveryengine.v1.serving-config-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/ServingConfigService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.discoveryengine.v1.site-search-engine-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud discoveryengine/SiteSearchEngineService components.",

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.google.cloud</groupId>
 		<artifactId>spring-cloud-gcp-starters</artifactId>
-		<version>6.1.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+		<version>6.2.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 	<artifactId>spring-cloud-gcp-starter-config</artifactId>
 	<name>Spring Framework on Google Cloud Starter - Config</name>
@@ -36,6 +36,11 @@
 		<!-- skip for GA releases to Maven Central -->
 		<profile>
 			<id>skip-unreleased-modules</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+				</property>
+			</activation>
 			<build>
 				<plugins>
 					<plugin>

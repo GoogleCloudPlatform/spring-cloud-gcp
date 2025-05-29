@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>6.1.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>6.2.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -33,7 +33,7 @@
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
 		<spring-cloud-dependencies.version>2024.0.0</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>3.4.2</spring-boot-dependencies.version>
+		<spring-boot-dependencies.version>3.4.6</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>2.3.0</zipkin-gcp.version>
 		<java-cfenv.version>2.5.0</java-cfenv.version>
@@ -49,14 +49,13 @@
 		<maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.3.1</maven-source-plugin.version>
 		<maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.release>17</maven.compiler.release>
 		<nexus-staging-plugin.version>1.7.0</nexus-staging-plugin.version>
 		<maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
 		<native-maven-plugin.version>0.10.5</native-maven-plugin.version>
-		<errorprone.version>2.34.0</errorprone.version>
+		<errorprone.version>2.38.0</errorprone.version>
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
@@ -448,7 +447,7 @@
 			<id>default</id>
 			<activation>
 				<property>
-					<name>!release</name>
+					<name>!performRelease</name>
 				</property>
 			</activation>
 			<modules>
@@ -659,11 +658,11 @@
 							<artifactId>maven-compiler-plugin</artifactId>
 							<version>${maven-compiler-plugin.version}</version>
 							<configuration>
-								<source>${maven.compiler.source}</source>
-								<target>${maven.compiler.target}</target>
+								<release>${maven.compiler.release}</release>
 								<encoding>UTF-8</encoding>
 								<fork>true</fork>
 								<compilerArgs>
+									<arg>--should-stop=ifError=FLOW</arg>
 									<arg>-XDcompilePolicy=simple</arg>
 									<arg>-Xplugin:ErrorProne -Xep:UnicodeInCode:OFF</arg>
 									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
@@ -703,7 +702,7 @@
 			<id>release</id>
 			<activation>
 				<property>
-					<name>release</name>
+					<name>performRelease</name>
 				</property>
 			</activation>
 			<modules>
@@ -814,19 +813,6 @@
 								com.google.cloud.firestore
 							</excludePackageNames>
 						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-								<phase>package</phase>
-							</execution>
-						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
