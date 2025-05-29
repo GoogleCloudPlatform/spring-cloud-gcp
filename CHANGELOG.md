@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.2.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.1...v6.2.2) (2025-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update spring boot to 3.4.6 ([#3825](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3825)) ([62837b7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/62837b7c695e85e72cf88f5d72b00261009fd827))
+
+
+### Documentation
+
+* Update README links ([#3822](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3822)) ([8b36a19](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8b36a1966a2de7b06c3d5eefccea3086cbed49fa))
+
 ## [6.2.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.0...v6.2.1) (2025-05-23)
 
 
