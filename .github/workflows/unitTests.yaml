@@ -15,6 +15,7 @@ on:
 env:
   # Workaround for kotlin sample multithreading issue: https://youtrack.jetbrains.com/issue/KT-43894
   MAVEN_OPTS: "-Didea.home.path=${{ vars.RUNNER_TEMP }} -Didea.ignore.disabled.plugins=true"
+  TZ: 'America/Los_Angeles' # Or any other non-UTC timezone
 jobs:
   unitTests:
     runs-on: ubuntu-latest
