@@ -40,7 +40,8 @@ create_settings_xml_file $MAVEN_SETTINGS_FILE
   -Dgpg.passphrase=${GPG_PASSPHRASE} \
   -Dgpg.homedir=${GPG_HOMEDIR} \
   -Drelease=true \
-  --activate-profiles skip-unreleased-modules
+  --activate-profiles skip-unreleased-modules \
+  -Prelease-sonatype
 
 # promote release
 if [[ -n "${AUTORELEASE_PR}" ]]
@@ -49,7 +50,8 @@ then
     --batch-mode \
     --settings ${MAVEN_SETTINGS_FILE} \
     -Drelease=true \
-    --activate-profiles skip-unreleased-modules
+    --activate-profiles skip-unreleased-modules \
+    -Prelease-sonatype
 fi
 
 popd
