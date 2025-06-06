@@ -54,7 +54,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
 @DisabledInAotMode
-@Disabled
 class GcsStreamingMessageSourceTests {
 
   @Autowired private PollableChannel unsortedChannel;
