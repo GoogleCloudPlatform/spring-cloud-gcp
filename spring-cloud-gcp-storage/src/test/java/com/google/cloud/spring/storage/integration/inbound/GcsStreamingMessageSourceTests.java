@@ -80,7 +80,7 @@ class GcsStreamingMessageSourceTests {
   }
 
   @Test
-  void testInboundStreamingChannelAdapter() throws InterruptedException {
+  void testInboundStreamingChannelAdapter() {
     Message<?> message = this.unsortedChannel.receive(5000);
     assertThat(message).isNotNull();
     assertThat(message.getPayload()).isInstanceOf(InputStream.class);
@@ -94,20 +94,12 @@ class GcsStreamingMessageSourceTests {
     assertThat(message.getHeaders().get(FileHeaders.REMOTE_FILE)).isEqualTo("alpha/alpha");
     assertThat(message.getPayload()).isInstanceOf(InputStream.class);
 
-    while (true) {
-      Message<?> msg = this.unsortedChannel.receive(5000);
-      if (msg == null) {
-        break;
-      }
-      System.out.println(msg);
-    }
-    Thread.sleep(1000);
     message = this.unsortedChannel.receive(10);
     assertThat(message).isNull();
   }
 
   @Test
-  void testSortedInboundChannelAdapter() throws InterruptedException {
+  void testSortedInboundChannelAdapter() {
     // This uses the channel adapter with a custom comparator.
     // Files will be processed in ascending order by name: alpha/alpha, beta, gamma
     Message<?> message = this.sortedChannel.receive(5000);
@@ -123,14 +115,6 @@ class GcsStreamingMessageSourceTests {
     assertThat(message.getHeaders().get(FileHeaders.REMOTE_FILE)).isEqualTo("gamma");
     assertThat(message.getPayload()).isInstanceOf(InputStream.class);
 
-    Thread.sleep(1000);
-    while (true) {
-      Message<?> msg = this.sortedChannel.receive(5000);
-      if (msg == null) {
-        break;
-      }
-      System.out.println(msg);
-    }
     message = this.sortedChannel.receive(10);
     assertThat(message).isNull();
   }
