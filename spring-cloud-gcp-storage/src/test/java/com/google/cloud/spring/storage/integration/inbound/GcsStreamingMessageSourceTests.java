@@ -29,9 +29,10 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,15 @@ class GcsStreamingMessageSourceTests {
   private static Blob betaBlob = mock(Blob.class);
 
   private static Blob gammaBlob = mock(Blob.class);
+
+  private static List<Blob> blobList = new ArrayList<>();
+
+  @BeforeAll
+  static void setUp() {
+    blobList.add(mockBlob(gammaBlob, "gamma"));
+    blobList.add(mockBlob(betaBlob, "beta"));
+    blobList.add(mockBlob(alphaBlob, "alpha/alpha"));
+  }
 
   @Test
   void testInboundStreamingChannelAdapter() throws InterruptedException {
@@ -125,10 +135,9 @@ class GcsStreamingMessageSourceTests {
     assertThat(message).isNull();
   }
 
-  private static Blob createBlob(Blob blob, String name) {
+  private static Blob mockBlob(Blob blob, String name) {
     when(blob.getBucket()).thenReturn("gcsbucket");
     when(blob.getName()).thenReturn(name);
-    when(blob.isDirectory()).thenReturn(false);
     return blob;
   }
 
@@ -146,11 +155,7 @@ class GcsStreamingMessageSourceTests {
               new PageImpl<>(
                   null,
                   null,
-                  Stream.of(
-                          createBlob(alphaBlob, "gamma"),
-                          createBlob(betaBlob, "beta"),
-                          createBlob(gammaBlob, "alpha/alpha"))
-                      .collect(Collectors.toList())))
+                  blobList))
           .given(gcs)
           .list(eq("gcsbucket"));
 
