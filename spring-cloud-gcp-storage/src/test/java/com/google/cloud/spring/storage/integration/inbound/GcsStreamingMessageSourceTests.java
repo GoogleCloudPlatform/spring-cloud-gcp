@@ -27,6 +27,8 @@ import com.google.cloud.spring.storage.integration.GcsSessionFactory;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
 import java.io.InputStream;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -101,6 +103,7 @@ class GcsStreamingMessageSourceTests {
     Blob blob = mock(Blob.class);
     willAnswer(invocationOnMock -> bucket).given(blob).getBucket();
     willAnswer(invocationOnMock -> name).given(blob).getName();
+    willAnswer(invocationOnMock -> OffsetDateTime.now(ZoneOffset.UTC)).given(blob).getUpdateTimeOffsetDateTime();
     return blob;
   }
 
