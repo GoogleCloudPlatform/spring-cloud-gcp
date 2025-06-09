@@ -214,6 +214,7 @@
 					<version>${maven-surefire-plugin.version}</version>
 					<configuration>
 						<argLine>-Xms512m -Xmx512m</argLine>
+						<argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
 						<skip>${skip.surefire.tests}</skip>
 						<excludes>
 							<exclude>${integration-test.pattern}</exclude>
