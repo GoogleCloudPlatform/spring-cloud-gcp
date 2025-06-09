@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.willAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.PageImpl;
 import com.google.cloud.ReadChannel;
@@ -28,8 +29,6 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import java.io.InputStream;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,6 +62,12 @@ class GcsStreamingMessageSourceTests {
 
   @Autowired
   private PollableChannel sortedChannel;
+
+  private static Blob alphaBlob = mock(Blob.class);
+
+  private static Blob betaBlob = mock(Blob.class);
+
+  private static Blob gammaBlob = mock(Blob.class);
 
   @Test
   void testInboundStreamingChannelAdapter() throws InterruptedException {
@@ -120,13 +125,10 @@ class GcsStreamingMessageSourceTests {
     assertThat(message).isNull();
   }
 
-  private static Blob createBlob(String bucket, String name) {
-    Blob blob = mock(Blob.class);
-    willAnswer(invocationOnMock -> bucket).given(blob).getBucket();
-    willAnswer(invocationOnMock -> name).given(blob).getName();
-    willAnswer(invocationOnMock -> OffsetDateTime.now(ZoneOffset.UTC).toEpochSecond())
-        .given(blob)
-        .getUpdateTime();
+  private static Blob createBlob(Blob blob, String name) {
+    when(blob.getBucket()).thenReturn("gcsbucket");
+    when(blob.getName()).thenReturn(name);
+    when(blob.isDirectory()).thenReturn(false);
     return blob;
   }
 
@@ -145,9 +147,9 @@ class GcsStreamingMessageSourceTests {
                   null,
                   null,
                   Stream.of(
-                          createBlob("gcsbucket", "gamma"),
-                          createBlob("gcsbucket", "beta"),
-                          createBlob("gcsbucket", "alpha/alpha"))
+                          createBlob(alphaBlob, "gamma"),
+                          createBlob(betaBlob, "beta"),
+                          createBlob(gammaBlob, "alpha/alpha"))
                       .collect(Collectors.toList())))
           .given(gcs)
           .list(eq("gcsbucket"));
