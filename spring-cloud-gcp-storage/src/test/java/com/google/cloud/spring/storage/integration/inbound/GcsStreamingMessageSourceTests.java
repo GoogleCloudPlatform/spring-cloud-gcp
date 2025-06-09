@@ -28,6 +28,7 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
 import java.io.InputStream;
 import java.util.Comparator;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,14 +50,20 @@ import org.springframework.messaging.PollableChannel;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/** Tests for the streaming message source. */
+/**
+ * Tests for the streaming message source.
+ */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
 class GcsStreamingMessageSourceTests {
 
-  @Autowired private PollableChannel unsortedChannel;
+  @Autowired
+  private PollableChannel unsortedChannel;
 
-  @Autowired private PollableChannel sortedChannel;
+  @Autowired
+  private PollableChannel sortedChannel;
+
+  private static CountDownLatch latch = new CountDownLatch(1);
 
   @BeforeEach
   public void setUp() {
@@ -65,7 +72,8 @@ class GcsStreamingMessageSourceTests {
   }
 
   @Test
-  void testInboundStreamingChannelAdapter() {
+  void testInboundStreamingChannelAdapter() throws InterruptedException {
+    latch.await();
     Message<?> message = this.unsortedChannel.receive(5000);
     assertThat(message).isNotNull();
     assertThat(message.getPayload()).isInstanceOf(InputStream.class);
@@ -84,7 +92,8 @@ class GcsStreamingMessageSourceTests {
   }
 
   @Test
-  void testSortedInboundChannelAdapter() {
+  void testSortedInboundChannelAdapter() throws InterruptedException {
+    latch.await();
     // This uses the channel adapter with a custom comparator.
     // Files will be processed in ascending order by name: alpha/alpha, beta, gamma
     Message<?> message = this.sortedChannel.receive(5000);
@@ -111,25 +120,25 @@ class GcsStreamingMessageSourceTests {
     return blob;
   }
 
-  /** Spring config for the tests. */
+  /**
+   * Spring config for the tests.
+   */
   @Configuration
   @EnableIntegration
   public static class Config {
-
-    @Bean
     public Storage gcsClient() {
       Storage gcs = mock(Storage.class);
 
       willAnswer(
-              invocationOnMock ->
-                  new PageImpl<>(
-                      null,
-                      null,
-                      Stream.of(
-                              createBlob("gcsbucket", "gamma"),
-                              createBlob("gcsbucket", "beta"),
-                              createBlob("gcsbucket", "alpha/alpha"))
-                          .collect(Collectors.toList())))
+          invocationOnMock ->
+              new PageImpl<>(
+                  null,
+                  null,
+                  Stream.of(
+                          createBlob("gcsbucket", "gamma"),
+                          createBlob("gcsbucket", "beta"),
+                          createBlob("gcsbucket", "alpha/alpha"))
+                      .collect(Collectors.toList())))
           .given(gcs)
           .list(eq("gcsbucket"));
 
@@ -148,25 +157,28 @@ class GcsStreamingMessageSourceTests {
 
     @Bean
     @InboundChannelAdapter(value = "unsortedChannel", poller = @Poller(fixedDelay = "100"))
-    public MessageSource<InputStream> unsortedChannelAdapter(Storage gcs) {
+    public MessageSource<InputStream> unsortedChannelAdapter() {
       GcsStreamingMessageSource adapter =
-          new GcsStreamingMessageSource(new RemoteFileTemplate<>(new GcsSessionFactory(gcs)));
+          new GcsStreamingMessageSource(
+              new RemoteFileTemplate<>(new GcsSessionFactory(gcsClient())));
       adapter.setRemoteDirectory("gcsbucket");
       adapter.setFilter(new AcceptOnceFileListFilter<>());
+      latch.countDown();
 
       return adapter;
     }
 
     @Bean
     @InboundChannelAdapter(value = "sortedChannel", poller = @Poller(fixedDelay = "100"))
-    public MessageSource<InputStream> sortedChannelAdapter(Storage gcs) {
+    public MessageSource<InputStream> sortedChannelAdapter() {
       GcsStreamingMessageSource adapter =
           new GcsStreamingMessageSource(
-              new RemoteFileTemplate<>(new GcsSessionFactory(gcs)),
+              new RemoteFileTemplate<>(new GcsSessionFactory(gcsClient())),
               Comparator.comparing(blob -> blob.getName()));
 
       adapter.setRemoteDirectory("gcsbucket");
       adapter.setFilter(new AcceptOnceFileListFilter<>());
+      latch.countDown();
 
       return adapter;
     }
