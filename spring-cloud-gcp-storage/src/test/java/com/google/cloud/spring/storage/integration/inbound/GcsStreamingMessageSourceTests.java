@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,12 @@ class GcsStreamingMessageSourceTests {
   @Autowired private PollableChannel unsortedChannel;
 
   @Autowired private PollableChannel sortedChannel;
+
+  @BeforeEach
+  public void setUp() {
+    ((QueueChannel) unsortedChannel).purge(null);
+    ((QueueChannel) sortedChannel).purge(null);
+  }
 
   @Test
   void testInboundStreamingChannelAdapter() {
