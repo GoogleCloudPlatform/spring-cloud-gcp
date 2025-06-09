@@ -25,6 +25,7 @@ import com.google.cloud.PageImpl;
 import com.google.cloud.ReadChannel;
 import com.google.cloud.spring.storage.integration.GcsSessionFactory;
 import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import java.io.InputStream;
 import java.time.OffsetDateTime;
@@ -78,6 +79,14 @@ class GcsStreamingMessageSourceTests {
     assertThat(message.getHeaders().get(FileHeaders.REMOTE_FILE)).isEqualTo("alpha/alpha");
     assertThat(message.getPayload()).isInstanceOf(InputStream.class);
 
+    while (true) {
+      Message<?> msg = this.unsortedChannel.receive(5000);
+      if (msg == null) {
+        break;
+      }
+      System.out.println(msg);
+    }
+    Thread.sleep(1000);
     message = this.unsortedChannel.receive(10);
     assertThat(message).isNull();
   }
@@ -99,6 +108,14 @@ class GcsStreamingMessageSourceTests {
     assertThat(message.getHeaders().get(FileHeaders.REMOTE_FILE)).isEqualTo("gamma");
     assertThat(message.getPayload()).isInstanceOf(InputStream.class);
 
+    Thread.sleep(1000);
+    while (true) {
+      Message<?> msg = this.sortedChannel.receive(5000);
+      if (msg == null) {
+        break;
+      }
+      System.out.println(msg);
+    }
     message = this.sortedChannel.receive(10);
     assertThat(message).isNull();
   }
@@ -119,7 +136,7 @@ class GcsStreamingMessageSourceTests {
   @Configuration
   @EnableIntegration
   public static class Config {
-    public Storage gcsClient() {
+    private Storage gcsClient() {
       Storage gcs = mock(Storage.class);
 
       willAnswer(
@@ -166,7 +183,7 @@ class GcsStreamingMessageSourceTests {
       GcsStreamingMessageSource adapter =
           new GcsStreamingMessageSource(
               new RemoteFileTemplate<>(new GcsSessionFactory(gcsClient())),
-              Comparator.comparing(blob -> blob.getName()));
+              Comparator.comparing(BlobInfo::getName));
 
       adapter.setRemoteDirectory("gcsbucket");
       adapter.setFilter(new AcceptOnceFileListFilter<>());
