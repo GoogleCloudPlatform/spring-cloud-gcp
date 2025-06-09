@@ -107,7 +107,9 @@ class GcsStreamingMessageSourceTests {
     Blob blob = mock(Blob.class);
     willAnswer(invocationOnMock -> bucket).given(blob).getBucket();
     willAnswer(invocationOnMock -> name).given(blob).getName();
-    willAnswer(invocationOnMock -> OffsetDateTime.now(ZoneOffset.UTC)).given(blob).getUpdateTime();
+    willAnswer(invocationOnMock -> OffsetDateTime.now(ZoneOffset.UTC).toEpochSecond())
+        .given(blob)
+        .getUpdateTime();
     return blob;
   }
 
