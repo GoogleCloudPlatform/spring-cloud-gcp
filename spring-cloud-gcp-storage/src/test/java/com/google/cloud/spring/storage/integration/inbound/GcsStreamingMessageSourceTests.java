@@ -27,11 +27,11 @@ import com.google.cloud.spring.storage.integration.GcsSessionFactory;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
 import java.io.InputStream;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Comparator;
-import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,17 +63,8 @@ class GcsStreamingMessageSourceTests {
   @Autowired
   private PollableChannel sortedChannel;
 
-  private static CountDownLatch latch = new CountDownLatch(1);
-
-  @BeforeEach
-  public void setUp() {
-    ((QueueChannel) unsortedChannel).purge(null);
-    ((QueueChannel) sortedChannel).purge(null);
-  }
-
   @Test
   void testInboundStreamingChannelAdapter() throws InterruptedException {
-    latch.await();
     Message<?> message = this.unsortedChannel.receive(5000);
     assertThat(message).isNotNull();
     assertThat(message.getPayload()).isInstanceOf(InputStream.class);
@@ -93,7 +84,6 @@ class GcsStreamingMessageSourceTests {
 
   @Test
   void testSortedInboundChannelAdapter() throws InterruptedException {
-    latch.await();
     // This uses the channel adapter with a custom comparator.
     // Files will be processed in ascending order by name: alpha/alpha, beta, gamma
     Message<?> message = this.sortedChannel.receive(5000);
@@ -117,6 +107,7 @@ class GcsStreamingMessageSourceTests {
     Blob blob = mock(Blob.class);
     willAnswer(invocationOnMock -> bucket).given(blob).getBucket();
     willAnswer(invocationOnMock -> name).given(blob).getName();
+    willAnswer(invocationOnMock -> OffsetDateTime.now(ZoneOffset.UTC)).given(blob).getUpdateTime();
     return blob;
   }
 
@@ -163,7 +154,6 @@ class GcsStreamingMessageSourceTests {
               new RemoteFileTemplate<>(new GcsSessionFactory(gcsClient())));
       adapter.setRemoteDirectory("gcsbucket");
       adapter.setFilter(new AcceptOnceFileListFilter<>());
-      latch.countDown();
 
       return adapter;
     }
@@ -178,7 +168,6 @@ class GcsStreamingMessageSourceTests {
 
       adapter.setRemoteDirectory("gcsbucket");
       adapter.setFilter(new AcceptOnceFileListFilter<>());
-      latch.countDown();
 
       return adapter;
     }
