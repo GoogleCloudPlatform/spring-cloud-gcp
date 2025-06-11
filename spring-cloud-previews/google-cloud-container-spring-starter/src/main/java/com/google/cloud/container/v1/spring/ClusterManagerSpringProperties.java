@@ -212,6 +212,16 @@ public class ClusterManagerSpringProperties implements CredentialsSupplier {
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry checkAutopilotCompatibilityRetry;
+  /**
+   * Allow override of retry settings at method-level for fetchClusterUpgradeInfo. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchClusterUpgradeInfoRetry;
+  /**
+   * Allow override of retry settings at method-level for fetchNodePoolUpgradeInfo. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchNodePoolUpgradeInfoRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -520,5 +530,21 @@ public class ClusterManagerSpringProperties implements CredentialsSupplier {
 
   public void setCheckAutopilotCompatibilityRetry(Retry checkAutopilotCompatibilityRetry) {
     this.checkAutopilotCompatibilityRetry = checkAutopilotCompatibilityRetry;
+  }
+
+  public Retry getFetchClusterUpgradeInfoRetry() {
+    return this.fetchClusterUpgradeInfoRetry;
+  }
+
+  public void setFetchClusterUpgradeInfoRetry(Retry fetchClusterUpgradeInfoRetry) {
+    this.fetchClusterUpgradeInfoRetry = fetchClusterUpgradeInfoRetry;
+  }
+
+  public Retry getFetchNodePoolUpgradeInfoRetry() {
+    return this.fetchNodePoolUpgradeInfoRetry;
+  }
+
+  public void setFetchNodePoolUpgradeInfoRetry(Retry fetchNodePoolUpgradeInfoRetry) {
+    this.fetchNodePoolUpgradeInfoRetry = fetchNodePoolUpgradeInfoRetry;
   }
 }

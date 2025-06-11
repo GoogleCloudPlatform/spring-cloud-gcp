@@ -1,6 +1,12 @@
 {
   "properties": [
     {
+      "name": "com.google.cloud.discoveryengine.v1.cmek-config-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/CmekConfigService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.discoveryengine.v1.completion-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud discoveryengine/CompletionService components.",
@@ -40,6 +46,12 @@
       "name": "com.google.cloud.discoveryengine.v1.grounded-generation-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud discoveryengine/GroundedGenerationService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.identity-mapping-store-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/IdentityMappingStoreService components.",
       "defaultValue": true
     },
     {
@@ -94,6 +106,12 @@
       "name": "com.google.cloud.discoveryengine.v1.user-event-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud discoveryengine/UserEventService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.user-license-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/UserLicenseService components.",
       "defaultValue": true
     }
   ]
