@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.9.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.9.1...v3.9.2) (2025-06-11)
+
+
+### Bug Fixes
+
+* make mock blobs created only once ([#3850](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3850)) ([70dffff](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/70dffff017601ca48ed70a2700f3aa1593458b69))
+
 ## [3.9.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.9.0...v3.9.1) (2025-05-23)
 
 
