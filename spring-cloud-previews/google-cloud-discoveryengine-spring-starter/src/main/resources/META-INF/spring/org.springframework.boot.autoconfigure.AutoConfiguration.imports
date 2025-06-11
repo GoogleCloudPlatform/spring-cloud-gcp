@@ -1,3 +1,4 @@
+com.google.cloud.discoveryengine.v1.spring.CmekConfigServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.CompletionServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.ControlServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.ConversationalSearchServiceSpringAutoConfiguration
@@ -5,6 +6,7 @@ com.google.cloud.discoveryengine.v1.spring.DataStoreServiceSpringAutoConfigurati
 com.google.cloud.discoveryengine.v1.spring.DocumentServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.EngineServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.GroundedGenerationServiceSpringAutoConfiguration
+com.google.cloud.discoveryengine.v1.spring.IdentityMappingStoreServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.ProjectServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.RankServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.RecommendationServiceSpringAutoConfiguration
@@ -14,3 +16,4 @@ com.google.cloud.discoveryengine.v1.spring.SearchTuningServiceSpringAutoConfigur
 com.google.cloud.discoveryengine.v1.spring.ServingConfigServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.SiteSearchEngineServiceSpringAutoConfiguration
 com.google.cloud.discoveryengine.v1.spring.UserEventServiceSpringAutoConfiguration
+com.google.cloud.discoveryengine.v1.spring.UserLicenseServiceSpringAutoConfiguration
