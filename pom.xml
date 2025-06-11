@@ -313,7 +313,7 @@
 			<id>default</id>
 			<activation>
 				<property>
-					<name>!release</name>
+					<name>!performRelease</name>
 				</property>
 			</activation>
 			<modules>
@@ -567,7 +567,7 @@
 			<id>release</id>
 			<activation>
 				<property>
-					<name>release</name>
+					<name>performRelease</name>
 				</property>
 			</activation>
 			<modules>
@@ -673,19 +673,6 @@
 								com.google.cloud.firestore
 							</excludePackageNames>
 						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-								<phase>package</phase>
-							</execution>
-						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>

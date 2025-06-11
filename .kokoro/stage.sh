@@ -39,7 +39,7 @@ create_settings_xml_file $MAVEN_SETTINGS_FILE
   -Dgpg.executable=gpg \
   -Dgpg.passphrase=${GPG_PASSPHRASE} \
   -Dgpg.homedir=${GPG_HOMEDIR} \
-  -Drelease=true \
+  -DperformRelease=true \
   --activate-profiles skip-unreleased-modules \
   -Prelease-sonatype
 
@@ -49,7 +49,7 @@ then
     mvn nexus-staging:release \
     --batch-mode \
     --settings ${MAVEN_SETTINGS_FILE} \
-    -Drelease=true \
+    -DperformRelease=true \
     --activate-profiles skip-unreleased-modules \
     -Prelease-sonatype
 fi

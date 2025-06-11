@@ -21,7 +21,7 @@ python3 -m pip install --upgrade protobuf
 python3 -m pip install gcp-docuploader
 
 # Build the javadocs
-./mvnw clean javadoc:aggregate -Drelease=true
+./mvnw clean javadoc:aggregate -DperformRelease=true
 
 # Move into generated docs directory
 pushd target/reports/apidocs/
