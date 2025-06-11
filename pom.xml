@@ -567,7 +567,7 @@
 			<id>release</id>
 			<activation>
 				<property>
-					<name>release</name>
+					<name>performRelease</name>
 				</property>
 			</activation>
 			<modules>
