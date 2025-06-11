@@ -114,7 +114,7 @@ jobs:
           ./mvnw \
             --batch-mode \
             --no-transfer-progress \
-            -Drelease=true \
+            -DperformRelease=true \
             -DskipTests \
             -Dgpg.skip \
             -Dcheckstyle.skip \
