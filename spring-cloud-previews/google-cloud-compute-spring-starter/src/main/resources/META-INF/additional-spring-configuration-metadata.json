@@ -163,9 +163,21 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.interconnect-attachment-groups.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/InterconnectAttachmentGroups components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.interconnect-attachments.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/InterconnectAttachments components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.interconnect-groups.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/InterconnectGroups components.",
       "defaultValue": true
     },
     {
@@ -442,6 +454,12 @@
       "name": "com.google.cloud.compute.v1.reservation-blocks.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/ReservationBlocks components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.reservation-sub-blocks.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/ReservationSubBlocks components.",
       "defaultValue": true
     },
     {
