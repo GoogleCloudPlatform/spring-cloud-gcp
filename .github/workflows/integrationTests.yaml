@@ -73,7 +73,7 @@ jobs:
         if: ${{ matrix.it == 'pubsub-emulator' }}
         run: |
           gcloud components install pubsub-emulator beta && \
-            gcloud components update
+            gcloud components update --version 525.0.0
       - name: Mvn install # Need this when the directory/pom structure changes
         id: install
         run: |
