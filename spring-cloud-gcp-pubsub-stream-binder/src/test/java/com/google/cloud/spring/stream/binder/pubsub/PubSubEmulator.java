@@ -40,7 +40,9 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
@@ -54,7 +56,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  *
  * @since 1.1
  */
-public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, ParameterResolver {
+public class PubSubEmulator implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
   private static final Path EMULATOR_CONFIG_DIR = getEmulatorConfigDir();
 
@@ -90,7 +92,7 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Para
    * @throws InterruptedException if process is stopped while waiting to retry.
    */
   @Override
-  public void beforeAll(ExtensionContext extensionContext)
+  public void beforeEach(ExtensionContext extensionContext)
       throws IOException, InterruptedException {
 
     assumeTrue(
@@ -124,7 +126,7 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Para
    * operation.
    */
   @Override
-  public void afterAll(ExtensionContext extensionContext) throws Exception {
+  public void afterEach(ExtensionContext extensionContext) throws Exception {
     findAndDestroyEmulator();
   }
 
