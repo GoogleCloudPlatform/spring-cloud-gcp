@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.9.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.9.3...v3.9.4) (2025-06-13)
+
+
+### Bug Fixes
+
+* **test:** swap image used in VisionApiSampleApplicationIntegrationTests ([#3875](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3875)) ([385646b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/385646b61c40acaef11e54b24e84ce439e11f90f))
+
 ## [3.9.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.9.2...v3.9.3) (2025-06-11)
 
 
