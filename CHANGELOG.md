@@ -14,6 +14,20 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.12.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.12.1...v5.12.2) (2025-06-13)
+
+
+### Bug Fixes
+
+* make mock blobs created only once ([#3850](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3850)) ([#3858](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3858)) ([e9eadc3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e9eadc326902c7f5788af73ac086e6c5de00158c))
+* mock OffsetDateTime (5.x) ([#3847](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3847)) ([d4839a9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d4839a93d05e335f906c37d9029429d2d7e8d3c9))
+* **test:** swap image used in VisionApiSampleApplicationIntegrationTests ([#3873](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3873)) ([87c3ed1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/87c3ed1e5c60379e2a674627acede935581f4b00))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.61.0 to 26.62.0 ([#3864](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3864)) ([266b5bb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/266b5bb5cc405c62976029270fcdd1179b68fd33))
+
 ## [5.12.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.12.0...v5.12.1) (2025-05-23)
 
 
