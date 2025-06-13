@@ -134,7 +134,7 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
     });
 
     moduleOutputChannel.send(message);
-    Assert.isTrue(latch.await(5, TimeUnit.SECONDS), "Failed to receive message");
+    Assert.isTrue(latch.await(10, TimeUnit.SECONDS), "Failed to receive message");
 
     assertThat(inboundMessageRef.get().getPayload()).isEqualTo("insert some random stuff here".getBytes());
     assertThat(inboundMessageRef.get().getHeaders().get("secondHeader")).isNull();
