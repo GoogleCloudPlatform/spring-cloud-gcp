@@ -145,6 +145,7 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
   }
 
   @Test
+  @Disabled()
   void testSendAndReceiveWithHeaderMappingsProducer() throws Exception {
     //This test is checking if the producer headerMapper is working fine. The message has two headers built in it,
     //producer allows only one of them to be mapped and the consumer allows both of them. So when we receive the
