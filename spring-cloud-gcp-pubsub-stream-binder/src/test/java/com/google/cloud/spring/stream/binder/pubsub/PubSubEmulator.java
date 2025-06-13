@@ -40,9 +40,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
@@ -56,7 +54,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  *
  * @since 1.1
  */
-public class PubSubEmulator implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
+public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, ParameterResolver {
 
   private static final Path EMULATOR_CONFIG_DIR = getEmulatorConfigDir();
 
@@ -92,7 +90,7 @@ public class PubSubEmulator implements BeforeEachCallback, AfterEachCallback, Pa
    * @throws InterruptedException if process is stopped while waiting to retry.
    */
   @Override
-  public void beforeEach(ExtensionContext extensionContext)
+  public void beforeAll(ExtensionContext extensionContext)
       throws IOException, InterruptedException {
 
     assumeTrue(
@@ -126,7 +124,7 @@ public class PubSubEmulator implements BeforeEachCallback, AfterEachCallback, Pa
    * operation.
    */
   @Override
-  public void afterEach(ExtensionContext extensionContext) throws Exception {
+  public void afterAll(ExtensionContext extensionContext) {
     findAndDestroyEmulator();
   }
 
@@ -138,7 +136,7 @@ public class PubSubEmulator implements BeforeEachCallback, AfterEachCallback, Pa
       LOGGER.warn("Emulator process null after tests; nothing to terminate.");
     }
 
-    // find destory emulator process spawned by gcloud
+    // find and destroy emulator process spawned by gcloud
     if (this.emulatorHostPort == null) {
       LOGGER.warn("Host/port null after the test.");
     } else {
