@@ -14,6 +14,24 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.2.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.1...v6.2.2) (2025-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.62.0 ([#3860](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3860)) ([27e97aa](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/27e97aa1dd9ad9c0e9bef058c0dfbd9df1933672))
+* **deps:** update gapic-generator-java-bom.version to v2.59.0 ([#3859](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3859)) ([a3fcb88](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a3fcb8854fb5c40ddabfb8a8e85a6df8e08cd0f9))
+* **deps:** update spring boot to 3.4.6 ([#3825](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3825)) ([62837b7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/62837b7c695e85e72cf88f5d72b00261009fd827))
+* make mock blobs created only once ([#3850](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3850)) ([#3856](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3856)) ([ec85c4b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ec85c4b92c787b57b918e1fb5f0c1e8a7658eec5))
+* storage mock OffsetDateTime in GcsStreamingMessageSourceTests ([37cb89d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/37cb89d31a63f6654fae21f7e516a3dec0d4a86f))
+* **test:** swap image used in VisionApiSampleApplicationIntegrationTests ([#3872](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3872)) ([f89f202](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f89f2020f5a05e9c332ddba2e27ee7a095fc6b6b))
+* use different channel names in pubsub emulator integration tests ([#3878](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3878)) ([79c38b0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/79c38b0955b3d3e1bad6b9cbe8d103bf2afd077f))
+
+
+### Documentation
+
+* Update README links ([#3822](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3822)) ([8b36a19](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8b36a1966a2de7b06c3d5eefccea3086cbed49fa))
+
 ## [6.2.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.0...v6.2.1) (2025-05-23)
 
 
