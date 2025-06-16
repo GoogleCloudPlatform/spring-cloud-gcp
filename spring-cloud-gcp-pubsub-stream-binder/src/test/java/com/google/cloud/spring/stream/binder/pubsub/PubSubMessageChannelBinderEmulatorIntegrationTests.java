@@ -106,15 +106,15 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
     producerProps.getExtension().setAllowedHeaders(new String[]{"firstHeader", "secondHeader"});
 
     BindingProperties outputBindingProperties = createProducerBindingProperties(producerProps);
-    DirectChannel moduleOutputChannel = createBindableChannel("output", outputBindingProperties);
+    DirectChannel moduleOutputChannel = createBindableChannel("output-consumer-mapping", outputBindingProperties);
 
     BindingProperties inputBindingProperties = createConsumerBindingProperties(consumerProps);
-    DirectChannel moduleInputChannel = createBindableChannel("input", inputBindingProperties);
+    DirectChannel moduleInputChannel = createBindableChannel("input-consumer-mapping", inputBindingProperties);
 
     Binding<MessageChannel> producerBinding = binder.bindProducer(String.format("foo%s0", getDestinationNameDelimiter()),
             moduleOutputChannel, producerProps);
     Binding<MessageChannel> consumerBinding = binder.bindConsumer(String.format("foo%s0", getDestinationNameDelimiter()),
-            "test-group", moduleInputChannel,
+            "test-group-consumer", moduleInputChannel,
             consumerProps);
 
     Message<?> message = MessageBuilder.withPayload("insert some random stuff here")
@@ -124,7 +124,7 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
     // Let the consumer actually bind to the producer before sending a msg
     binderBindUnbindLatency();
     CountDownLatch latch = new CountDownLatch(1);
-    AtomicReference<Message<byte[]>> inboundMessageRef = new AtomicReference<Message<byte[]>>();
+    AtomicReference<Message<byte[]>> inboundMessageRef = new AtomicReference<>();
     moduleInputChannel.subscribe(message1 -> {
       try {
         inboundMessageRef.set((Message<byte[]>) message1);
@@ -159,15 +159,15 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
     producerProps.getExtension().setAllowedHeaders(new String[]{"secondHeader"});
 
     BindingProperties outputBindingProperties = createProducerBindingProperties(producerProps);
-    DirectChannel moduleOutputChannel = createBindableChannel("output", outputBindingProperties);
+    DirectChannel moduleOutputChannel = createBindableChannel("output-producer-mapping", outputBindingProperties);
 
     BindingProperties inputBindingProperties = createConsumerBindingProperties(consumerProps);
-    DirectChannel moduleInputChannel = createBindableChannel("input", inputBindingProperties);
+    DirectChannel moduleInputChannel = createBindableChannel("input-producer-mapping", inputBindingProperties);
 
     Binding<MessageChannel> producerBinding = binder.bindProducer(String.format("foo%s0", getDestinationNameDelimiter()),
             moduleOutputChannel, producerProps);
     Binding<MessageChannel> consumerBinding = binder.bindConsumer(String.format("foo%s0", getDestinationNameDelimiter()),
-            "test-group", moduleInputChannel,
+            "test-group-producer", moduleInputChannel,
             consumerProps);
 
     Message<?> message = MessageBuilder.withPayload("insert some random stuff here")
@@ -177,7 +177,7 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
     // Let the consumer actually bind to the producer before sending a msg
     binderBindUnbindLatency();
     CountDownLatch latch = new CountDownLatch(1);
-    AtomicReference<Message<byte[]>> inboundMessageRef = new AtomicReference<Message<byte[]>>();
+    AtomicReference<Message<byte[]>> inboundMessageRef = new AtomicReference<>();
     moduleInputChannel.subscribe(message1 -> {
       try {
         inboundMessageRef.set((Message<byte[]>) message1);
