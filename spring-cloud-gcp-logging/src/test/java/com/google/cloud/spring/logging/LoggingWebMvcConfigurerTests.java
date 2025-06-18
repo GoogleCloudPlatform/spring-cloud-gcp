@@ -34,7 +34,7 @@ class LoggingWebMvcConfigurerTests {
   @Test
   void testAddInterceptors() {
     LoggingWebMvcConfigurer adapter =
-        new LoggingWebMvcConfigurer(this.interceptor, () -> "remission");
+        new LoggingWebMvcConfigurer(this.interceptor);
     TestInterceptorRegistry registry = new TestInterceptorRegistry();
 
     adapter.addInterceptors(registry);
