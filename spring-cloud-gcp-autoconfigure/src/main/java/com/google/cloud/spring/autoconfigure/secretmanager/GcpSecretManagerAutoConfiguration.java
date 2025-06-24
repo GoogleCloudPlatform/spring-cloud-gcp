@@ -77,7 +77,7 @@ public class GcpSecretManagerAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public SecretManagerServiceClientFactory clientFactory(SecretManagerServiceClient client) {
+  public SecretManagerServiceClientFactory clientFactory() {
     return new DefaultSecretManagerServiceClientFactory(this.credentialsProvider);
   }
 
