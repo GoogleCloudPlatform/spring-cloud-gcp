@@ -58,6 +58,11 @@ public class SiteSearchEngineServiceSpringProperties implements CredentialsSuppl
    */
   @NestedConfigurationProperty private Retry listTargetSitesRetry;
   /**
+   * Allow override of retry settings at method-level for fetchSitemaps. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchSitemapsRetry;
+  /**
    * Allow override of retry settings at method-level for fetchDomainVerificationStatus. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
@@ -122,6 +127,14 @@ public class SiteSearchEngineServiceSpringProperties implements CredentialsSuppl
 
   public void setListTargetSitesRetry(Retry listTargetSitesRetry) {
     this.listTargetSitesRetry = listTargetSitesRetry;
+  }
+
+  public Retry getFetchSitemapsRetry() {
+    return this.fetchSitemapsRetry;
+  }
+
+  public void setFetchSitemapsRetry(Retry fetchSitemapsRetry) {
+    this.fetchSitemapsRetry = fetchSitemapsRetry;
   }
 
   public Retry getFetchDomainVerificationStatusRetry() {

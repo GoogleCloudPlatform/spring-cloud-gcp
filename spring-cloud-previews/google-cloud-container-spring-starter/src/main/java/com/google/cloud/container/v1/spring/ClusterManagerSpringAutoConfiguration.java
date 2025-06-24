@@ -370,6 +370,22 @@ public class ClusterManagerSpringAutoConfiguration {
           .checkAutopilotCompatibilitySettings()
           .setRetrySettings(checkAutopilotCompatibilityRetrySettings);
 
+      RetrySettings fetchClusterUpgradeInfoRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchClusterUpgradeInfoSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .fetchClusterUpgradeInfoSettings()
+          .setRetrySettings(fetchClusterUpgradeInfoRetrySettings);
+
+      RetrySettings fetchNodePoolUpgradeInfoRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchNodePoolUpgradeInfoSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .fetchNodePoolUpgradeInfoSettings()
+          .setRetrySettings(fetchNodePoolUpgradeInfoRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -776,6 +792,34 @@ public class ClusterManagerSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for checkAutopilotCompatibility from properties.");
+      }
+    }
+    Retry fetchClusterUpgradeInfoRetry = clientProperties.getFetchClusterUpgradeInfoRetry();
+    if (fetchClusterUpgradeInfoRetry != null) {
+      RetrySettings fetchClusterUpgradeInfoRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchClusterUpgradeInfoSettings().getRetrySettings(),
+              fetchClusterUpgradeInfoRetry);
+      clientSettingsBuilder
+          .fetchClusterUpgradeInfoSettings()
+          .setRetrySettings(fetchClusterUpgradeInfoRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for fetchClusterUpgradeInfo from properties.");
+      }
+    }
+    Retry fetchNodePoolUpgradeInfoRetry = clientProperties.getFetchNodePoolUpgradeInfoRetry();
+    if (fetchNodePoolUpgradeInfoRetry != null) {
+      RetrySettings fetchNodePoolUpgradeInfoRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchNodePoolUpgradeInfoSettings().getRetrySettings(),
+              fetchNodePoolUpgradeInfoRetry);
+      clientSettingsBuilder
+          .fetchNodePoolUpgradeInfoSettings()
+          .setRetrySettings(fetchNodePoolUpgradeInfoRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for fetchNodePoolUpgradeInfo from properties.");
       }
     }
     return clientSettingsBuilder.build();

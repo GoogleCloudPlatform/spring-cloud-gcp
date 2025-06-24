@@ -82,6 +82,21 @@ public class CloudControlsPartnerCoreSpringProperties implements CredentialsSupp
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getPartnerRetry;
+  /**
+   * Allow override of retry settings at method-level for createCustomer. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createCustomerRetry;
+  /**
+   * Allow override of retry settings at method-level for updateCustomer. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateCustomerRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteCustomer. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteCustomerRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -182,5 +197,29 @@ public class CloudControlsPartnerCoreSpringProperties implements CredentialsSupp
 
   public void setGetPartnerRetry(Retry getPartnerRetry) {
     this.getPartnerRetry = getPartnerRetry;
+  }
+
+  public Retry getCreateCustomerRetry() {
+    return this.createCustomerRetry;
+  }
+
+  public void setCreateCustomerRetry(Retry createCustomerRetry) {
+    this.createCustomerRetry = createCustomerRetry;
+  }
+
+  public Retry getUpdateCustomerRetry() {
+    return this.updateCustomerRetry;
+  }
+
+  public void setUpdateCustomerRetry(Retry updateCustomerRetry) {
+    this.updateCustomerRetry = updateCustomerRetry;
+  }
+
+  public Retry getDeleteCustomerRetry() {
+    return this.deleteCustomerRetry;
+  }
+
+  public void setDeleteCustomerRetry(Retry deleteCustomerRetry) {
+    this.deleteCustomerRetry = deleteCustomerRetry;
   }
 }

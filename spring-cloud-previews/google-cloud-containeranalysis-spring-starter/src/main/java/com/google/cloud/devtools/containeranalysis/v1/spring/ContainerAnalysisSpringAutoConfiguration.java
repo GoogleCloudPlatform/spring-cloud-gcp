@@ -186,6 +186,11 @@ public class ContainerAnalysisSpringAutoConfiguration {
           .getVulnerabilityOccurrencesSummarySettings()
           .setRetrySettings(getVulnerabilityOccurrencesSummaryRetrySettings);
 
+      RetrySettings exportSBOMRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.exportSBOMSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.exportSBOMSettings().setRetrySettings(exportSBOMRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -237,6 +242,16 @@ public class ContainerAnalysisSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getVulnerabilityOccurrencesSummary from properties.");
+      }
+    }
+    Retry exportSBOMRetry = clientProperties.getExportSBOMRetry();
+    if (exportSBOMRetry != null) {
+      RetrySettings exportSBOMRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.exportSBOMSettings().getRetrySettings(), exportSBOMRetry);
+      clientSettingsBuilder.exportSBOMSettings().setRetrySettings(exportSBOMRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for exportSBOM from properties.");
       }
     }
     return clientSettingsBuilder.build();

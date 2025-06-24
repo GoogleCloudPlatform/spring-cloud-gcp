@@ -53,6 +53,11 @@ public class WorkflowsSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getWorkflowRetry;
   /**
+   * Allow override of retry settings at method-level for listWorkflowRevisions. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listWorkflowRevisionsRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -114,6 +119,14 @@ public class WorkflowsSpringProperties implements CredentialsSupplier {
 
   public void setGetWorkflowRetry(Retry getWorkflowRetry) {
     this.getWorkflowRetry = getWorkflowRetry;
+  }
+
+  public Retry getListWorkflowRevisionsRetry() {
+    return this.listWorkflowRevisionsRetry;
+  }
+
+  public void setListWorkflowRevisionsRetry(Retry listWorkflowRevisionsRetry) {
+    this.listWorkflowRevisionsRetry = listWorkflowRevisionsRetry;
   }
 
   public Retry getListLocationsRetry() {
