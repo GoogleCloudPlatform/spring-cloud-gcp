@@ -39,10 +39,25 @@ public class SecretManagerWebController {
   // secret can be refreshed when decorated with @RefreshScope on the class.
   private final SecretConfiguration configuration;
 
-  // For the default value takes place, there should be no property called `application-fake`
+  // This syntax is not recommended. Please switch your code to the `sm@my_secret` syntax. Users
+  // will be warned if using this syntax.
+  // Note that the colon of the protocol specification section must be escaped;
+  // See https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3440
+  // @Value("${sm\\://application-fake:DEFAULT}")
+  // private String defaultSecretDeprecatedSyntax;
+
+  // This syntax is not recommended. Please switch your code to the `sm@my_secret` syntax. Users
+  // will be warned if using this syntax.
+  // @Value("${sm://application-secret}")
+  // private String appSecretFromValueDeprecatedSyntax;
+
+  // For the default value to take place, there should be no property called `application-fake`
   // in property files.
-  @Value("${${sm://application-fake}:DEFAULT}")
+  // When using the new syntax, it is not necessary to escape the colon character by nesting
+  // placeholders as done with the legacy syntax (${${sm://secret}:DEFAULT}).
+  @Value("${sm@application-fake:DEFAULT}")
   private String defaultSecret;
+
   // Application secrets can be accessed using @Value syntax.
   @Value("${sm://application-secret}")
   private String appSecretFromValue;
@@ -76,12 +91,11 @@ public class SecretManagerWebController {
 
     String secretPayload;
     if (StringUtils.isEmpty(projectId)) {
-      secretPayload =
-          this.secretManagerTemplate.getSecretString("sm://" + secretId + "/" + version);
+      secretPayload = this.secretManagerTemplate.getSecretString("sm@" + secretId + "/" + version);
     } else {
       secretPayload =
           this.secretManagerTemplate.getSecretString(
-              "sm://" + projectId + "/" + secretId + "/" + version);
+              "sm@" + projectId + "/" + secretId + "/" + version);
     }
 
     return "Secret ID: "
