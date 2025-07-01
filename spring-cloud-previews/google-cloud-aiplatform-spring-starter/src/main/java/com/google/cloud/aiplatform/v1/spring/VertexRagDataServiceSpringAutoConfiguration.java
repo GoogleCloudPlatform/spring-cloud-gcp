@@ -177,6 +177,13 @@ public class VertexRagDataServiceSpringAutoConfiguration {
               clientSettingsBuilder.listRagFilesSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listRagFilesSettings().setRetrySettings(listRagFilesRetrySettings);
 
+      RetrySettings getRagEngineConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getRagEngineConfigSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getRagEngineConfigSettings()
+          .setRetrySettings(getRagEngineConfigRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -257,6 +264,20 @@ public class VertexRagDataServiceSpringAutoConfiguration {
       clientSettingsBuilder.listRagFilesSettings().setRetrySettings(listRagFilesRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listRagFiles from properties.");
+      }
+    }
+    Retry getRagEngineConfigRetry = clientProperties.getGetRagEngineConfigRetry();
+    if (getRagEngineConfigRetry != null) {
+      RetrySettings getRagEngineConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getRagEngineConfigSettings().getRetrySettings(),
+              getRagEngineConfigRetry);
+      clientSettingsBuilder
+          .getRagEngineConfigSettings()
+          .setRetrySettings(getRagEngineConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getRagEngineConfig from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
