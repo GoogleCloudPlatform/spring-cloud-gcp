@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.3.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.3...v6.3.0) (2025-07-01)
+
+
+### Features
+
+* added regional secret support for secret-manager ([#3746](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3746)) ([8d9e7f6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8d9e7f66011d37b48f20dd6f8e499b4ebb1065e5))
+
 ## [6.2.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.2...v6.2.3) (2025-07-01)
 
 
