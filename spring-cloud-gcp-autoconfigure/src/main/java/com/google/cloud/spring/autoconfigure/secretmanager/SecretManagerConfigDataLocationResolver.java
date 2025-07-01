@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.secretmanager;
 import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.getMatchedPrefixes;
 import static com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils.warnIfUsingDeprecatedSyntax;
 
+import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.spring.autoconfigure.core.GcpProperties;
@@ -26,6 +27,7 @@ import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.io.IOException;
 import java.util.Collections;
@@ -52,42 +54,24 @@ public class SecretManagerConfigDataLocationResolver implements
    * A static client to avoid creating another client after refreshing.
    */
   private static SecretManagerServiceClient secretManagerServiceClient;
+  /**
+   * A static client factory to avoid creating another client after refreshing.
+   */
+  private static SecretManagerServiceClientFactory secretManagerServiceClientFactory;
 
   /**
    * Checks if the property can be resolved by the Secret Manager resolver.
    * For the check, we rely on the presence of the SecretManagerSyntaxUtils class, which is an
    * optional dependency.
-   * Since optional dependencies may not be present at runtime, we explicitly check for its
-   * existence before resolving the property.
-   * If it's not present, it means this config resolver is not meant to be used.
    *
    * @return true if it contains the expected `sm@` or `sm://` prefix, false otherwise.
    */
   @Override
   public boolean isResolvable(ConfigDataLocationResolverContext context,
       ConfigDataLocation location) {
-    boolean secretManagerSyntaxUtilsPresent = isClassPresent("com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils");
-    if (!secretManagerSyntaxUtilsPresent) {
-      return false;
-    }
     Optional<String> matchedPrefix = getMatchedPrefixes(location::hasPrefix);
     warnIfUsingDeprecatedSyntax(logger, matchedPrefix.orElse(""));
     return matchedPrefix.isPresent();
-  }
-
-  /**
-   * Checks if the specified class is present in this runtime.
-   *
-   * @param clazzFullName the full name of the class for the existence check
-   * @return true if present
-   */
-  private boolean isClassPresent(String clazzFullName) {
-    try {
-      Class.forName(clazzFullName);
-      return true;
-    } catch (ClassNotFoundException e) {
-      return false;
-    }
   }
 
   @Override
@@ -104,8 +88,15 @@ public class SecretManagerConfigDataLocationResolver implements
     // Register the Core properties.
     registerBean(context, GcpProperties.class, getGcpProperties(context));
     // Register the Secret Manager properties.
-    registerBean(
-        context, GcpSecretManagerProperties.class, getSecretManagerProperties(context));
+    registerBean(context, GcpSecretManagerProperties.class, getSecretManagerProperties(context));
+    // Register the CredentialsProvider.
+    registerBean(context, CredentialsProvider.class, getCredentialsProvider(context));
+    // Register the Secret Manager client factory.
+    registerAndPromoteBean(
+        context,
+        SecretManagerServiceClientFactory.class,
+        BootstrapRegistry.InstanceSupplier.from(
+            () -> createSecretManagerServiceClientFactory(context)));
     // Register the Secret Manager client.
     registerAndPromoteBean(
         context,
@@ -133,6 +124,20 @@ public class SecretManagerConfigDataLocationResolver implements
     return context.getBinder()
         .bind(GcpSecretManagerProperties.PREFIX, GcpSecretManagerProperties.class)
         .orElse(new GcpSecretManagerProperties());
+  }
+
+  private static CredentialsProvider getCredentialsProvider(
+      ConfigDataLocationResolverContext context) {
+    try {
+      GcpSecretManagerProperties properties =
+          context.getBootstrapContext().get(GcpSecretManagerProperties.class);
+      return context.getBinder()
+          .bind(GcpSecretManagerProperties.PREFIX, CredentialsProvider.class)
+          .orElse(new DefaultCredentialsProvider(properties));
+    } catch (IOException e) {
+      throw new RuntimeException(
+          "Failed to create the Secret Manager Client Factory for ConfigData loading.", e);
+    }
   }
 
   @VisibleForTesting
@@ -176,17 +181,34 @@ public class SecretManagerConfigDataLocationResolver implements
     }
   }
 
+  @VisibleForTesting
+  static synchronized SecretManagerServiceClientFactory createSecretManagerServiceClientFactory(
+      ConfigDataLocationResolverContext context) {
+    if (secretManagerServiceClientFactory != null) {
+      return secretManagerServiceClientFactory;
+    }
+    return new DefaultSecretManagerServiceClientFactory(
+        context.getBootstrapContext().get(CredentialsProvider.class));
+  }
+
   private static SecretManagerTemplate createSecretManagerTemplate(
       ConfigDataLocationResolverContext context) {
     SecretManagerServiceClient client = context.getBootstrapContext()
         .get(SecretManagerServiceClient.class);
+    SecretManagerServiceClientFactory clientFactory = context.getBootstrapContext()
+        .get(SecretManagerServiceClientFactory.class);
     GcpProjectIdProvider projectIdProvider = context.getBootstrapContext()
         .get(GcpProjectIdProvider.class);
     GcpSecretManagerProperties properties = context.getBootstrapContext()
         .get(GcpSecretManagerProperties.class);
 
-    return new SecretManagerTemplate(client, projectIdProvider)
-        .setAllowDefaultSecretValue(properties.isAllowDefaultSecret());
+    if (clientFactory != null) {
+      return new SecretManagerTemplate(clientFactory, projectIdProvider)
+          .setAllowDefaultSecretValue(properties.isAllowDefaultSecret());
+    } else {
+      return new SecretManagerTemplate(client, projectIdProvider)
+          .setAllowDefaultSecretValue(properties.isAllowDefaultSecret());
+    }
   }
 
   /**
@@ -222,5 +244,11 @@ public class SecretManagerConfigDataLocationResolver implements
   @VisibleForTesting
   static void setSecretManagerServiceClient(SecretManagerServiceClient client) {
     secretManagerServiceClient = client;
+  }
+
+  @VisibleForTesting
+  static void setSecretManagerServiceClientFactory(
+      SecretManagerServiceClientFactory clientFactory) {
+    secretManagerServiceClientFactory = clientFactory;
   }
 }
