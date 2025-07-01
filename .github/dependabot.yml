@@ -8,7 +8,7 @@ updates:
   commit-message:
     # Prefix all commit messages with "deps: "
     prefix: "deps"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 20
   labels:
     - "dependencies"
   ignore:
@@ -27,7 +27,7 @@ updates:
   commit-message:
     # Prefix all commit messages with "deps: "
     prefix: "deps"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 20
   target-branch: "3.x"
   labels:
     - "3.x dependencies"
@@ -59,7 +59,7 @@ updates:
   commit-message:
     # Prefix all commit messages with "deps: "
     prefix: "deps"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 20
   target-branch: "4.x"
   labels:
     - "4.x dependencies"
@@ -93,7 +93,7 @@ updates:
   commit-message:
     # Prefix all commit messages with "deps: "
     prefix: "deps"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 20
   target-branch: "5.x"
   labels:
     - "5.x dependencies"
