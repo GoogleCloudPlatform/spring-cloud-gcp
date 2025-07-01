@@ -10,6 +10,7 @@ import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.protobuf.ByteString;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,10 @@ class SecretManagerCompatibilityTests {
   private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
   private SpringApplicationBuilder application;
   private SecretManagerServiceClient client;
+  /**
+   * A static client factory to avoid creating another client after refreshing.
+   */
+  private static SecretManagerServiceClientFactory secretManagerServiceClientFactory;
 
   static Stream<Arguments> prefixes() {
     return Stream.of(
@@ -47,13 +52,16 @@ class SecretManagerCompatibilityTests {
             "spring.cloud.gcp.sql.enabled=false");
 
     client = mock(SecretManagerServiceClient.class);
+    secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
+    when(secretManagerServiceClientFactory.getClient(null)).thenReturn(client);
+
     SecretVersionName secretVersionName =
         SecretVersionName.newBuilder()
             .setProject(PROJECT_NAME)
             .setSecret("my-secret")
             .setSecretVersion("latest")
             .build();
-    when(client.accessSecretVersion(secretVersionName))
+    when(secretManagerServiceClientFactory.getClient(null).accessSecretVersion(secretVersionName))
         .thenReturn(
             AccessSecretVersionResponse.newBuilder()
                 .setPayload(
@@ -65,7 +73,7 @@ class SecretManagerCompatibilityTests {
             .setSecret("fake-secret")
             .setSecretVersion("latest")
             .build();
-    when(client.accessSecretVersion(secretVersionName))
+    when(secretManagerServiceClientFactory.getClient(null).accessSecretVersion(secretVersionName))
         .thenThrow(NotFoundException.class);
   }
 
@@ -80,9 +88,17 @@ class SecretManagerCompatibilityTests {
     application
         .properties(projectIdPropertyName + PROJECT_NAME, "spring.config.import=" + prefix)
         .addBootstrapRegistryInitializer(
-            (registry) ->
-                registry.registerIfAbsent(
-                    SecretManagerServiceClient.class, InstanceSupplier.of(client)));
+            (registry) -> registry.registerIfAbsent(
+                SecretManagerServiceClientFactory.class,
+                InstanceSupplier.of(secretManagerServiceClientFactory)
+            )
+        )
+        .addBootstrapRegistryInitializer(
+            (registry) -> registry.registerIfAbsent(
+                SecretManagerServiceClient.class,
+                InstanceSupplier.of(client)
+            )
+        );
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
       assertThat(environment.getProperty(prefix + "my-secret")).isEqualTo("newSecret");
@@ -100,9 +116,17 @@ class SecretManagerCompatibilityTests {
             "spring.cloud.gcp.secretmanager.allow-default-secret=true",
             "spring.config.import=" + prefix)
         .addBootstrapRegistryInitializer(
-            (registry) ->
-                registry.registerIfAbsent(
-                    SecretManagerServiceClient.class, InstanceSupplier.of(client)));
+            (registry) -> registry.registerIfAbsent(
+                SecretManagerServiceClientFactory.class,
+                InstanceSupplier.of(secretManagerServiceClientFactory)
+            )
+        )
+        .addBootstrapRegistryInitializer(
+            (registry) -> registry.registerIfAbsent(
+                SecretManagerServiceClient.class,
+                InstanceSupplier.of(client)
+            )
+        );
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
       assertThat(environment.getProperty(prefix + "my-secret")).isEqualTo("newSecret");

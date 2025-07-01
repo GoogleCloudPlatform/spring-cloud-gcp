@@ -28,11 +28,16 @@ Such as: `spring.cloud.gcp.secretmanager.credentials.location=file:/path/to/cred
 4. Using the https://console.cloud.google.com/security/secret-manager[Secret Manager UI in Cloud Console], create a new secret named `application-secret` and set it to any value.
 Instructions for using the Secret Manager UI can be found in the https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets#secretmanager-create-secret-web[Secret Manager documentation].
 
-5. Run `$ mvn clean install` from the root directory of the project.
+5. Using the https://console.cloud.google.com/security/secret-manager[Secret Manager UI in Cloud Console], create a new regional secret named `application-secret` and choose the location `us-central1` and set it to any value.
+Instructions for using the Secret Manager UI for regional secret can be found in the https://cloud.google.com/secret-manager/regional-secrets/create-regional-secret[Secret Manager Regional documentation].
 
-6. Run `$ mvn spring-boot:run` command from the same directory as this sample's `pom.xml` file.
+6. For regional secret, please refer to the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/blob/main/docs/src/main/asciidoc/secretmanager.adoc#secret-manager-config-data-resource[Secret Manager Config Data Resource], which outlines the various formats supported for regional secrets.
 
-7. Go to http://localhost:8080 in your browser or use the `Web Preview` button in Cloud Shell to preview the app
+7. Run `$ mvn clean install` from the root directory of the project.
+
+8. Run `$ mvn spring-boot:run` command from the same directory as this sample's `pom.xml` file.
+
+9. Go to http://localhost:8080 in your browser or use the `Web Preview` button in Cloud Shell to preview the app
 on port 8080. Your secret value is injected into your application through the `WebController` and you will see it
 displayed.
 +
@@ -46,7 +51,7 @@ This is done by using the `SecretManagerTemplate`.
 +
 Finally, you can view all of your secrets using the https://console.cloud.google.com/security/secret-manager[Secret Manager Cloud Console UI], which is the source of truth for all of your secrets in Secret Manager.
 
-8. Refresh the secrets without restarting the application:
+10. Refresh the secrets without restarting the application:
 
 a. After running the application, change your secrets using https://console.cloud.google.com/security/secret-manager[Secret Manager Cloud Console UI].
 
