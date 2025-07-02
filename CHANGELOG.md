@@ -14,6 +14,69 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.2.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.2...v6.2.3) (2025-07-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.63.0 ([#3916](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3916)) ([ed52076](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ed5207617a0ac6c8f539a0791db5f761bfb2f284))
+* **deps:** update gapic-generator-java-bom.version to v2.60.0 ([#3912](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3912)) ([f16af84](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f16af84c56a36aee78c21d6c216cbca298247c86))
+
+
+### Dependencies
+
+* upgrade spring-boot-starter-parent and spring-boot-dependencies.version to 3.4.7 ([#3902](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3902)) ([ee77c09](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ee77c095b9cee302d3c5d339dcd6c6bf20273bd3))
+
+## [6.2.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.1...v6.2.2) (2025-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.62.0 ([#3860](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3860)) ([27e97aa](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/27e97aa1dd9ad9c0e9bef058c0dfbd9df1933672))
+* **deps:** update gapic-generator-java-bom.version to v2.59.0 ([#3859](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3859)) ([a3fcb88](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a3fcb8854fb5c40ddabfb8a8e85a6df8e08cd0f9))
+* **deps:** update spring boot to 3.4.6 ([#3825](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3825)) ([62837b7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/62837b7c695e85e72cf88f5d72b00261009fd827))
+* make mock blobs created only once ([#3850](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3850)) ([#3856](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3856)) ([ec85c4b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ec85c4b92c787b57b918e1fb5f0c1e8a7658eec5))
+* storage mock OffsetDateTime in GcsStreamingMessageSourceTests ([37cb89d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/37cb89d31a63f6654fae21f7e516a3dec0d4a86f))
+* **test:** swap image used in VisionApiSampleApplicationIntegrationTests ([#3872](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3872)) ([f89f202](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f89f2020f5a05e9c332ddba2e27ee7a095fc6b6b))
+* use different channel names in pubsub emulator integration tests ([#3878](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3878)) ([79c38b0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/79c38b0955b3d3e1bad6b9cbe8d103bf2afd077f))
+
+
+### Documentation
+
+* Update README links ([#3822](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3822)) ([8b36a19](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8b36a1966a2de7b06c3d5eefccea3086cbed49fa))
+
+## [6.2.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.0...v6.2.1) (2025-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.61.0 ([#3799](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3799)) ([3832b52](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3832b528fe6dd3b4255d6c431471525a95d71cf4))
+* **deps:** update gapic-generator-java-bom.version to v2.58.0 ([#3800](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3800)) ([cd7f8d1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cd7f8d1e97e3c04f007fe65fe623e833ec29c904))
+
+## [6.2.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.1.1...v6.2.0) (2025-05-15)
+
+
+### Features
+
+* **spanner:** support Interval and UUID types. ([ba48d4d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ba48d4d16096cb885f458c1911c139e5b069ed14))
+
+
+### Bug Fixes
+
+* **deps:** update gapic-generator-java-bom.version to v2.57.0 ([#3757](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3757)) ([de08d37](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/de08d37eacce8f3253407ab955eb8211f1706099))
+* producer destination: ensure topic exists or create one, only if auto create resource is true ([#3717](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3717)) ([3b06a2f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3b06a2fb74e755288bff51aba3c90612bcc61f48))
+* secretmanager to be an optional dep in autoconfig module ([#3706](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3706)) ([cabb7a5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cabb7a59fa6d49d280dd311a7f59ec4d922300e7))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.57.0 to 26.60.0 ([ba48d4d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ba48d4d16096cb885f458c1911c139e5b069ed14))
+
+
+### Documentation
+
+* Update README links ([#3696](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3696)) ([30bb2b6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/30bb2b6ab85110f49291ab30befdcf3c04257de1))
+
 ## [6.1.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.1.0...v6.1.1) (2025-03-22)
 
 

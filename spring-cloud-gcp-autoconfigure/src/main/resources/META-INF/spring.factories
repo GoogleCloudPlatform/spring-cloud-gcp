@@ -9,6 +9,7 @@ com.google.cloud.spring.autoconfigure.parametermanager.GcpParameterManagerEnviro
 # ConfigData Location Resolvers
 org.springframework.boot.context.config.ConfigDataLocationResolver=\
 com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolver,\
+com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolverLoader
 com.google.cloud.spring.autoconfigure.parametermanager.ParameterManagerConfigDataLocationResolver
 # ConfigData Loaders
 org.springframework.boot.context.config.ConfigDataLoader=\

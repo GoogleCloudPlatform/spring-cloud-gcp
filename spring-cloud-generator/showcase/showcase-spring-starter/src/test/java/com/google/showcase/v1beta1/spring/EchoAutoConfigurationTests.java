@@ -189,8 +189,7 @@ class EchoAutoConfigurationTests {
   @Test
   void testCustomTransportChannelProviderUsedWhenProvided() throws IOException {
     InstantiatingGrpcChannelProvider channelProvider =
-        InstantiatingGrpcChannelProvider.newBuilder()
-            .build();
+        InstantiatingGrpcChannelProvider.newBuilder().build();
     contextRunner
         .withBean(
             TRANSPORT_CHANNEL_PROVIDER_QUALIFIER_NAME,

@@ -43,8 +43,8 @@ export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.
   -Dgpg.executable=gpg \
   -Dgpg.passphrase=${GPG_PASSPHRASE} \
   -Dgpg.homedir=${GPG_HOMEDIR} \
-  -Drelease=true \
-  --activate-profiles skip-unreleased-modules
+  -DperformRelease=true \
+  -Prelease-sonatype
 
 # promote release
 if [[ -n "${AUTORELEASE_PR}" ]]
@@ -52,8 +52,8 @@ then
     ./mvnw nexus-staging:release \
     --batch-mode \
     --settings ${MAVEN_SETTINGS_FILE} \
-    -Drelease=true \
-    --activate-profiles skip-unreleased-modules
+    -DperformRelease=true \
+    -Prelease-sonatype
 fi
 
 popd

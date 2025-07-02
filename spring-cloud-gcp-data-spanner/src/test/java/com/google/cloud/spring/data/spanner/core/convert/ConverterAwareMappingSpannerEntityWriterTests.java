@@ -35,6 +35,7 @@ import static org.springframework.util.ReflectionUtils.setField;
 import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
+import com.google.cloud.spanner.Interval;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Mutation.WriteBuilder;
@@ -61,6 +62,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -116,6 +118,12 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     t.timestampList.add(t.timestampField);
     t.bytesList = new ArrayList<>();
     t.bytesList.add(t.bytes);
+    t.intervalField = Interval.ofSeconds(100L);
+    t.intervalList = new ArrayList<>();
+    t.intervalList.add(t.intervalField);
+    t.uuidField = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
+    t.uuidList = new ArrayList<>();
+    t.uuidList.add(t.uuidField);
 
     // this property will be ignored in write mapping because it is a child relationship. no
     // exception will result even though it is an unsupported type for writing.
@@ -260,6 +268,22 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     when(bigDecimalsBinder.toNumericArray(any())).thenReturn(null);
     when(writeBuilder.set("bigDecimals")).thenReturn(bigDecimalsBinder);
 
+    ValueBinder<WriteBuilder> intervalFieldBinder = mock(ValueBinder.class);
+    when(intervalFieldBinder.to((Interval) any())).thenReturn(null);
+    when(writeBuilder.set("intervalField")).thenReturn(intervalFieldBinder);
+
+    ValueBinder<WriteBuilder> intervalListFieldBinder = mock(ValueBinder.class);
+    when(intervalListFieldBinder.toIntervalArray(any())).thenReturn(null);
+    when(writeBuilder.set("intervalList")).thenReturn(intervalListFieldBinder);
+
+    ValueBinder<WriteBuilder> uuidFieldBinder = mock(ValueBinder.class);
+    when(uuidFieldBinder.to((UUID) any())).thenReturn(null);
+    when(writeBuilder.set("uuidField")).thenReturn(uuidFieldBinder);
+
+    ValueBinder<WriteBuilder> uuidListFieldBinder = mock(ValueBinder.class);
+    when(uuidListFieldBinder.toUuidArray(any())).thenReturn(null);
+    when(writeBuilder.set("uuidList")).thenReturn(uuidListFieldBinder);
+
     this.spannerEntityWriter.write(t, writeBuilder::set);
 
     verify(idBinder, times(1)).to(t.id);
@@ -293,6 +317,10 @@ class ConverterAwareMappingSpannerEntityWriterTests {
 
     verify(bigDecimalFieldBinder, times(1)).to(t.bigDecimalField);
     verify(bigDecimalsBinder, times(1)).toNumericArray(t.bigDecimals);
+    verify(intervalFieldBinder, times(1)).to(t.intervalField);
+    verify(intervalListFieldBinder, times(1)).toIntervalArray(t.intervalList);
+    verify(uuidFieldBinder, times(1)).to(t.uuidField);
+    verify(uuidListFieldBinder, times(1)).toUuidArray(t.uuidList);
   }
 
   @Test

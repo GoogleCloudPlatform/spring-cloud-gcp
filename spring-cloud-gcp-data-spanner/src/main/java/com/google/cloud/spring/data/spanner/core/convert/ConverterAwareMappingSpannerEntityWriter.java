@@ -19,6 +19,7 @@ package com.google.cloud.spring.data.spanner.core.convert;
 import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
 import com.google.cloud.Timestamp;
+import com.google.cloud.spanner.Interval;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Mutation.WriteBuilder;
 import com.google.cloud.spanner.Struct;
@@ -38,6 +39,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -65,7 +67,8 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
                   ByteArray.class,
                   Timestamp.class,
                   com.google.cloud.Date.class,
-                  BigDecimal.class)));
+                  BigDecimal.class,
+                  UUID.class)));
 
   /** A map of types to functions that binds them to `ValueBinder` objects. */
   public static final Map<Class<?>, BiFunction<ValueBinder, ?, ?>>
@@ -86,6 +89,8 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
     map.put(Date.class, ValueBinder::toDateArray);
     map.put(ByteArray.class, ValueBinder::toBytesArray);
     map.put(String.class, ValueBinder::toStringArray);
+    map.put(Interval.class, ValueBinder::toIntervalArray);
+    map.put(UUID.class, ValueBinder::toUuidArray);
 
     return Collections.unmodifiableMap(map);
   }
@@ -110,7 +115,8 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
     map.put(boolean[].class, (BiFunction<ValueBinder, boolean[], ?>) ValueBinder::toBoolArray);
     map.put(long[].class, (BiFunction<ValueBinder, long[], ?>) ValueBinder::toInt64Array);
     map.put(Struct.class, (BiFunction<ValueBinder, Struct, ?>) ValueBinder::to);
-
+    map.put(Interval.class, (BiFunction<ValueBinder, Interval, ?>) ValueBinder::to);
+    map.put(UUID.class, (BiFunction<ValueBinder, UUID, ?>) ValueBinder::to);
     singleItemTypeValueBinderMethodMap = Collections.unmodifiableMap(map);
   }
 
