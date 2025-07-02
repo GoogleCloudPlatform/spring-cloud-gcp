@@ -11,8 +11,12 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.protobuf.ByteString;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.BootstrapRegistry.InstanceSupplier;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -27,6 +31,10 @@ class SecretManagerCompatibilityTests {
   private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
   private SpringApplicationBuilder application;
   private SecretManagerServiceClient client;
+
+  static Stream<Arguments> prefixes() {
+    return Stream.of(Arguments.of("sm://"), Arguments.of("sm@"));
+  }
 
   @BeforeEach
   void init() {
@@ -64,39 +72,38 @@ class SecretManagerCompatibilityTests {
    * com.google.cloud.spring.secretmanager.SecretManagerTemplate} autoconfiguration and properties
    * resolved.
    */
-  @Test
-  void testConfigurationWhenDefaultSecretIsNotAllowed() {
-    application.properties(
-            "spring.config.import=sm://")
+  @ParameterizedTest
+  @MethodSource("prefixes")
+  void testConfigurationWhenDefaultSecretIsNotAllowed(String prefix) {
+    application
+        .properties("spring.config.import=" + prefix)
         .addBootstrapRegistryInitializer(
-            (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClient.class,
-                InstanceSupplier.of(client)
-            )
-        );
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClient.class, InstanceSupplier.of(client)));
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
-      assertThat(environment.getProperty("sm://my-secret")).isEqualTo("newSecret");
-      assertThatThrownBy(() -> environment.getProperty("sm://fake-secret"))
+      assertThat(environment.getProperty(prefix + "my-secret")).isEqualTo("newSecret");
+      assertThatThrownBy(() -> environment.getProperty(prefix + "fake-secret"))
           .isExactlyInstanceOf(NotFoundException.class);
     }
   }
 
-  @Test
-  void testConfigurationWhenDefaultSecretIsAllowed() {
-    application.properties(
+  @ParameterizedTest
+  @MethodSource("prefixes")
+  void testConfigurationWhenDefaultSecretIsAllowed(String prefix) {
+    application
+        .properties(
             "spring.cloud.gcp.secretmanager.allow-default-secret=true",
-            "spring.config.import=sm://")
+            "spring.config.import=" + prefix)
         .addBootstrapRegistryInitializer(
-            (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClient.class,
-                InstanceSupplier.of(client)
-            )
-        );
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClient.class, InstanceSupplier.of(client)));
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
-      assertThat(environment.getProperty("sm://my-secret")).isEqualTo("newSecret");
-      assertThat(environment.getProperty("sm://fake-secret")).isNull();
+      assertThat(environment.getProperty(prefix + "my-secret")).isEqualTo("newSecret");
+      assertThat(environment.getProperty(prefix + "fake-secret")).isNull();
     }
   }
 }
