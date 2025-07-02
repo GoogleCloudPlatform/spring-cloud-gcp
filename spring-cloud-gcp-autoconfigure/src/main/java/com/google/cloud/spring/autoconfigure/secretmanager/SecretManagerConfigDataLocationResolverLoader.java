@@ -37,6 +37,21 @@ public class SecretManagerConfigDataLocationResolverLoader
         this.delegate = SECRET_MANAGER_PRESENT ? instantiateRealResolver() : null;
     }
 
+    /**
+     * Checks if the specified class is present in this runtime.
+     *
+     * @param clazzFullName the full name of the class for the existence check
+     * @return true if present
+     */
+    private static boolean isClassPresent(String clazzFullName) {
+        try {
+            Class.forName(clazzFullName);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
     private ConfigDataLocationResolver<ConfigDataResource> instantiateRealResolver() {
         try {
             Class<?> clazz = Class.forName(
@@ -64,21 +79,6 @@ public class SecretManagerConfigDataLocationResolverLoader
     public boolean isResolvable(
             ConfigDataLocationResolverContext context, ConfigDataLocation location) {
         return delegate != null && delegate.isResolvable(context, location);
-    }
-
-    /**
-     * Checks if the specified class is present in this runtime.
-     *
-     * @param clazzFullName the full name of the class for the existence check
-     * @return true if present
-     */
-    private static boolean isClassPresent(String clazzFullName) {
-        try {
-            Class.forName(clazzFullName);
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
     }
 
     @Override
