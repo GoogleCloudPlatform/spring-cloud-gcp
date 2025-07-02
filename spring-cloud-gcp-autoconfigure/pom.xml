@@ -275,10 +275,7 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-secretmanager</artifactId>
-            <!-- A few starters need this dependency to validate secrets -->
-            <!-- using SecretManagerSyntaxUtils. Making it optional produces runtime failures -->
-            <!-- of the kind ClassNotFoundError. -->
-            <optional>false</optional>
+            <optional>true</optional>
         </dependency>
 
         <!-- KMS -->
