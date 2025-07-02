@@ -82,6 +82,8 @@ public class GcpParameterProperties implements CredentialsSupplier, EnvironmentA
     return this.name;
   }
 
+  // If multiple profiles are provided as a comma-separated list, this method set the
+  // last one as the active profile. If no profile is provided, it defaults to "default".
   public void setProfile(String profile) {
     String[] profiles = profile.split(",");
     if (profiles.length > 0) {

@@ -141,7 +141,8 @@ public class GoogleParameterPropertySourceLocator implements PropertySourceLocat
         Yaml yaml = new Yaml();
         return yaml.load(data);
       } catch (Exception ex) {
-        throw new RuntimeException("Error parsing Properties", e);
+        ex.addSuppressed(e);
+        throw new RuntimeException("Error parsing Properties", ex);
       }
     }
   }
