@@ -27,68 +27,68 @@ import org.springframework.boot.context.config.ConfigDataResource;
  * only if Secret Manager dependency is present on the classpath.
  */
 public class SecretManagerConfigDataLocationResolverLoader
-        implements ConfigDataLocationResolver<ConfigDataResource> {
-    private static final boolean SECRET_MANAGER_PRESENT =
-            isClassPresent("com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils");
+    implements ConfigDataLocationResolver<ConfigDataResource> {
+  private static final boolean SECRET_MANAGER_PRESENT =
+      isClassPresent("com.google.cloud.spring.secretmanager.SecretManagerSyntaxUtils");
 
-    private final ConfigDataLocationResolver<ConfigDataResource> delegate;
+  private final ConfigDataLocationResolver<ConfigDataResource> delegate;
 
-    public SecretManagerConfigDataLocationResolverLoader() {
-        this.delegate = SECRET_MANAGER_PRESENT ? instantiateRealResolver() : null;
+  public SecretManagerConfigDataLocationResolverLoader() {
+    this.delegate = SECRET_MANAGER_PRESENT ? instantiateRealResolver() : null;
+  }
+
+  /**
+   * Checks if the specified class is present in this runtime.
+   *
+   * @param clazzFullName the full name of the class for the existence check
+   * @return true if present
+   */
+  private static boolean isClassPresent(String clazzFullName) {
+    try {
+      Class.forName(clazzFullName);
+      return true;
+    } catch (ClassNotFoundException e) {
+      return false;
     }
+  }
 
-    /**
-     * Checks if the specified class is present in this runtime.
-     *
-     * @param clazzFullName the full name of the class for the existence check
-     * @return true if present
-     */
-    private static boolean isClassPresent(String clazzFullName) {
-        try {
-            Class.forName(clazzFullName);
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+  private ConfigDataLocationResolver<ConfigDataResource> instantiateRealResolver() {
+    try {
+      Class<?> clazz =
+          Class.forName(
+              "com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolver");
+      return (ConfigDataLocationResolver<ConfigDataResource>)
+          clazz.getDeclaredConstructor().newInstance();
+    } catch (Exception ex) {
+      throw new IllegalStateException(
+          "Failed to instantiate SecretManagerConfigDataLocationResolver", ex);
     }
+  }
 
-    private ConfigDataLocationResolver<ConfigDataResource> instantiateRealResolver() {
-        try {
-            Class<?> clazz = Class.forName(
-                    "com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolver");
-            return (ConfigDataLocationResolver<ConfigDataResource>) clazz
-                    .getDeclaredConstructor().newInstance();
-        } catch (Exception ex) {
-            throw new IllegalStateException(
-                    "Failed to instantiate SecretManagerConfigDataLocationResolver", ex);
-        }
-    }
+  /**
+   * Checks if the property can be resolved by the Secret Manager resolver. For the check, we rely
+   * on the presence of the SecretManagerSyntaxUtils class, which is an optional dependency. Since
+   * optional dependencies may not be present at runtime, we explicitly check for its existence
+   * before resolving the property. If it's not present, it means this config resolver is not meant
+   * to be used.
+   *
+   * @return true if the delegate resolver is initialized and the location has the expected Secret
+   *     Manager prefix (e.g., {@code sm@} or {@code sm://}); false otherwise.
+   */
+  @Override
+  public boolean isResolvable(
+      ConfigDataLocationResolverContext context, ConfigDataLocation location) {
+    return delegate != null && delegate.isResolvable(context, location);
+  }
 
-    /**
-     * Checks if the property can be resolved by the Secret Manager resolver.
-     * For the check, we rely on the presence of the SecretManagerSyntaxUtils class, which is an
-     * optional dependency.
-     * Since optional dependencies may not be present at runtime, we explicitly check for its
-     * existence before resolving the property.
-     * If it's not present, it means this config resolver is not meant to be used.
-     *
-     * @return true if the delegate resolver is initialized and the location has the expected
-     *     Secret Manager prefix (e.g., {@code sm@} or {@code sm://}); false otherwise.
-     */
-    @Override
-    public boolean isResolvable(
-            ConfigDataLocationResolverContext context, ConfigDataLocation location) {
-        return delegate != null && delegate.isResolvable(context, location);
+  @Override
+  public List<ConfigDataResource> resolve(
+      ConfigDataLocationResolverContext context, ConfigDataLocation location) {
+    if (delegate == null) {
+      // This should technically never happen if isResolvable is checked first,
+      // but safe guard.
+      throw new IllegalStateException("Secret Manager support is not available on the classpath.");
     }
-
-    @Override
-    public List<ConfigDataResource> resolve(
-            ConfigDataLocationResolverContext context, ConfigDataLocation location) {
-        if (delegate == null) {
-            // This should technically never happen if isResolvable is checked first,
-            // but safe guard.
-            throw new IllegalStateException("Secret Manager support is not available on the classpath.");
-        }
-        return delegate.resolve(context, location);
-    }
+    return delegate.resolve(context, location);
+  }
 }
