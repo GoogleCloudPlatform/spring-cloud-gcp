@@ -59,7 +59,7 @@ public class SecretManagerWebController {
   private String defaultSecret;
 
   // Application secrets can be accessed using @Value syntax.
-  @Value("${sm://application-secret}")
+  @Value("${sm@application-secret:DEFAULT}")
   private String appSecretFromValue;
 
   public SecretManagerWebController(SecretManagerTemplate secretManagerTemplate,
