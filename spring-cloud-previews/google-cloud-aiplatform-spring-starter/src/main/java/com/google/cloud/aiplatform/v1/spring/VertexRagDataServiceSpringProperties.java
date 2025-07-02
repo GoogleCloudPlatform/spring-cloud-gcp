@@ -66,6 +66,11 @@ public class VertexRagDataServiceSpringProperties implements CredentialsSupplier
    */
   @NestedConfigurationProperty private Retry listRagFilesRetry;
   /**
+   * Allow override of retry settings at method-level for getRagEngineConfig. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getRagEngineConfigRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -158,6 +163,14 @@ public class VertexRagDataServiceSpringProperties implements CredentialsSupplier
 
   public void setListRagFilesRetry(Retry listRagFilesRetry) {
     this.listRagFilesRetry = listRagFilesRetry;
+  }
+
+  public Retry getGetRagEngineConfigRetry() {
+    return this.getRagEngineConfigRetry;
+  }
+
+  public void setGetRagEngineConfigRetry(Retry getRagEngineConfigRetry) {
+    this.getRagEngineConfigRetry = getRagEngineConfigRetry;
   }
 
   public Retry getListLocationsRetry() {

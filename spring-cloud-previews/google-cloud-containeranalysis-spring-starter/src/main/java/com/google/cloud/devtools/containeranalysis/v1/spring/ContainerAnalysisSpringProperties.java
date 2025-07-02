@@ -62,6 +62,11 @@ public class ContainerAnalysisSpringProperties implements CredentialsSupplier {
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getVulnerabilityOccurrencesSummaryRetry;
+  /**
+   * Allow override of retry settings at method-level for exportSBOM. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry exportSBOMRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -131,5 +136,13 @@ public class ContainerAnalysisSpringProperties implements CredentialsSupplier {
   public void setGetVulnerabilityOccurrencesSummaryRetry(
       Retry getVulnerabilityOccurrencesSummaryRetry) {
     this.getVulnerabilityOccurrencesSummaryRetry = getVulnerabilityOccurrencesSummaryRetry;
+  }
+
+  public Retry getExportSBOMRetry() {
+    return this.exportSBOMRetry;
+  }
+
+  public void setExportSBOMRetry(Retry exportSBOMRetry) {
+    this.exportSBOMRetry = exportSBOMRetry;
   }
 }

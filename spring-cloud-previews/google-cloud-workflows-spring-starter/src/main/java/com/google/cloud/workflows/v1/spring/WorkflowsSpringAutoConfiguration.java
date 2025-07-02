@@ -167,6 +167,14 @@ public class WorkflowsSpringAutoConfiguration {
               clientSettingsBuilder.getWorkflowSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getWorkflowSettings().setRetrySettings(getWorkflowRetrySettings);
 
+      RetrySettings listWorkflowRevisionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listWorkflowRevisionsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listWorkflowRevisionsSettings()
+          .setRetrySettings(listWorkflowRevisionsRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -199,6 +207,20 @@ public class WorkflowsSpringAutoConfiguration {
       clientSettingsBuilder.getWorkflowSettings().setRetrySettings(getWorkflowRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getWorkflow from properties.");
+      }
+    }
+    Retry listWorkflowRevisionsRetry = clientProperties.getListWorkflowRevisionsRetry();
+    if (listWorkflowRevisionsRetry != null) {
+      RetrySettings listWorkflowRevisionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listWorkflowRevisionsSettings().getRetrySettings(),
+              listWorkflowRevisionsRetry);
+      clientSettingsBuilder
+          .listWorkflowRevisionsSettings()
+          .setRetrySettings(listWorkflowRevisionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listWorkflowRevisions from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
