@@ -53,6 +53,7 @@ import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +79,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.threeten.bp.Duration;
 
 /** Auto-config for Pub/Sub. */
 @AutoConfiguration
@@ -300,7 +300,9 @@ public class GcpPubSubAutoConfiguration {
     boolean shouldBuild =
         ifSet(
             batching.getDelayThresholdSeconds(),
-            x -> builder.setDelayThreshold(Duration.ofSeconds(x)));
+            x -> builder.setDelayThresholdDuration(Duration.ofSeconds(x)));
+
+    shouldBuild |= ifSet(batching.getDelayThresholdDuration(), builder::setDelayThresholdDuration);
     shouldBuild |= ifSet(batching.getElementCountThreshold(), builder::setElementCountThreshold);
     shouldBuild |= ifSet(batching.getEnabled(), builder::setIsEnabled);
     shouldBuild |= ifSet(batching.getRequestByteThreshold(), builder::setRequestByteThreshold);
@@ -320,27 +322,27 @@ public class GcpPubSubAutoConfiguration {
     boolean shouldBuild =
         ifSet(
             retryProperties.getInitialRetryDelaySeconds(),
-            x -> builder.setInitialRetryDelay(Duration.ofSeconds(x)));
+            x -> builder.setInitialRetryDelayDuration(Duration.ofSeconds(x)));
     shouldBuild |=
         ifSet(
             retryProperties.getInitialRpcTimeoutSeconds(),
-            x -> builder.setInitialRpcTimeout(Duration.ofSeconds(x)));
+            x -> builder.setInitialRpcTimeoutDuration(Duration.ofSeconds(x)));
     shouldBuild |= ifSet(retryProperties.getJittered(), builder::setJittered);
     shouldBuild |= ifSet(retryProperties.getMaxAttempts(), builder::setMaxAttempts);
     shouldBuild |=
         ifSet(
             retryProperties.getMaxRetryDelaySeconds(),
-            x -> builder.setMaxRetryDelay(Duration.ofSeconds(x)));
+            x -> builder.setMaxRetryDelayDuration(Duration.ofSeconds(x)));
     shouldBuild |=
         ifSet(
             retryProperties.getMaxRpcTimeoutSeconds(),
-            x -> builder.setMaxRpcTimeout(Duration.ofSeconds(x)));
+            x -> builder.setMaxRpcTimeoutDuration(Duration.ofSeconds(x)));
     shouldBuild |=
         ifSet(retryProperties.getRetryDelayMultiplier(), builder::setRetryDelayMultiplier);
     shouldBuild |=
         ifSet(
             retryProperties.getTotalTimeoutSeconds(),
-            x -> builder.setTotalTimeout(Duration.ofSeconds(x)));
+            x -> builder.setTotalTimeoutDuration(Duration.ofSeconds(x)));
     shouldBuild |=
         ifSet(retryProperties.getRpcTimeoutMultiplier(), builder::setRpcTimeoutMultiplier);
 
@@ -440,7 +442,7 @@ public class GcpPubSubAutoConfiguration {
         // default value specified by pubsub client library,
         // see https://github.com/googleapis/java-pubsub/blob/main/google-cloud-pubsub/src/main/java/com/google/cloud/pubsub/v1/Subscriber.java#L487.
         .setMaxInboundMetadataSize(4 * 1024 * 1024)
-        .setKeepAliveTime(
+        .setKeepAliveTimeDuration(
             Duration.ofMinutes(this.gcpPubSubProperties.getKeepAliveIntervalMinutes()))
         .build();
   }
@@ -449,7 +451,7 @@ public class GcpPubSubAutoConfiguration {
   @ConditionalOnMissingBean(name = "publisherTransportChannelProvider")
   public TransportChannelProvider publisherTransportChannelProvider() {
     return PublisherStubSettings.defaultGrpcTransportProviderBuilder()
-        .setKeepAliveTime(
+        .setKeepAliveTimeDuration(
             Duration.ofMinutes(this.gcpPubSubProperties.getKeepAliveIntervalMinutes()))
         .build();
   }

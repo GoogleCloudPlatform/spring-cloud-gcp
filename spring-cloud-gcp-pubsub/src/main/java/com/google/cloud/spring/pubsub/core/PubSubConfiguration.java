@@ -20,6 +20,7 @@ import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.pubsub.v1.ProjectSubscriptionName;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -853,6 +854,12 @@ public class PubSubConfiguration {
      */
     private Long delayThresholdSeconds;
 
+    /**
+     * The delay threshold to use for batching. After this amount of time has elapsed (counting from
+     * the first element added), the elements will be wrapped up in a batch and sent.
+     */
+    private Duration delayThresholdDuration;
+
     /** Enables batching if true. */
     private Boolean enabled;
 
@@ -878,6 +885,14 @@ public class PubSubConfiguration {
 
     public void setDelayThresholdSeconds(Long delayThresholdSeconds) {
       this.delayThresholdSeconds = delayThresholdSeconds;
+    }
+
+    public Duration getDelayThresholdDuration() {
+      return this.delayThresholdDuration;
+    }
+
+    public void setDelayThresholdDuration(Duration delayThresholdDuration) {
+      this.delayThresholdDuration = delayThresholdDuration;
     }
 
     public Boolean getEnabled() {
