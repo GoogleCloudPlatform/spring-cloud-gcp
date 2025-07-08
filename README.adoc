@@ -11,11 +11,11 @@ You can check our project website https://spring.io/projects/spring-cloud-gcp[he
 For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation or Javadocs:
 
 // {x-version-update-start:spring-cloud-gcp:released}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/6.2.3/reference/html/index.html[Spring Framework on Google Cloud 6.2.1 (Latest)] - https://googleapis.dev/java/spring-cloud-gcp/6.2.1/index.html[Javadocs 6.2.1]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/6.2.3/reference/html/index.html[Spring Framework on Google Cloud 6.2.3 (Latest)] - https://googleapis.dev/java/spring-cloud-gcp/6.2.3/index.html[Javadocs 6.2.3]
 // {x-version-update-end}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/5.12.1/reference/html/index.html[Spring Framework on Google Cloud 5.12.1] - https://googleapis.dev/java/spring-cloud-gcp/5.12.1/index.html[Javadocs 5.12.1]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.11.1/reference/html/index.html[Spring Framework on Google Cloud 4.11.1] - https://googleapis.dev/java/spring-cloud-gcp/4.11.1/index.html[Javadocs 4.11.1]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.9.1/reference/html/index.html[Spring Framework on Google Cloud 3.9.1] - https://googleapis.dev/java/spring-cloud-gcp/3.9.1/index.html[Javadocs 3.9.1]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/5.12.3/reference/html/index.html[Spring Framework on Google Cloud 5.12.3] - https://googleapis.dev/java/spring-cloud-gcp/5.12.3/index.html[Javadocs 5.12.3]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.11.3/reference/html/index.html[Spring Framework on Google Cloud 4.11.3] - https://googleapis.dev/java/spring-cloud-gcp/4.11.3/index.html[Javadocs 4.11.3]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.9.5/reference/html/index.html[Spring Framework on Google Cloud 3.9.5] - https://googleapis.dev/java/spring-cloud-gcp/3.9.5/index.html[Javadocs 3.9.5]
 
 If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Framework on Google Cloud sample applications] or the https://codelabs.developers.google.com/spring[Spring on Google Cloud codelabs].
 
