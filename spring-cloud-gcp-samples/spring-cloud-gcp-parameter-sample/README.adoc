@@ -15,7 +15,7 @@ $ gcloud beta parametermanager parameters create myapp --location=global --param
 Then create a version that your application will load:
 +
 ....
-$ gcloud beta parametermanager parameters versions create prod --parameter=myapp --location=global --payload-data="{\"username\":\"test-user\",\"password\":\"test-password\"}"
+$ gcloud beta parametermanager parameters versions create prod --parameter=myapp --location=global --payload-data="{\"myapp.username\":\"test-user\",\"myapp.password\":\"test-password\"}"
 ....
 
 6.  Update link:src/main/resources/bootstrap.properties[]:
