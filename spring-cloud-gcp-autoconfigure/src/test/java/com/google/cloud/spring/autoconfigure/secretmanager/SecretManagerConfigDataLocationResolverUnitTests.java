@@ -8,8 +8,12 @@ import static org.mockito.Mockito.when;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.BootstrapRegistry;
 import org.springframework.boot.DefaultBootstrapContext;
@@ -28,15 +32,23 @@ class SecretManagerConfigDataLocationResolverUnitTests {
       ConfigDataLocationResolverContext.class);
   private final DefaultBootstrapContext defaultBootstrapContext = new DefaultBootstrapContext();
 
+  static Stream<Arguments> prefixes() {
+    return Stream.of(
+            Arguments.of("sm://"),
+            Arguments.of("sm@")
+    );
+  }
+
   @Test
   void isResolvableReturnsFalseWithIncorrectPrefix() {
     assertThat(resolver.isResolvable(context, ConfigDataLocation.of("test://"))).isFalse();
     assertThat(resolver.isResolvable(context, ConfigDataLocation.of("sm:"))).isFalse();
   }
 
-  @Test
-  void isResolvableReturnsFalseWithCorrectPrefix() {
-    assertThat(resolver.isResolvable(context, ConfigDataLocation.of("sm://"))).isTrue();
+  @ParameterizedTest
+  @MethodSource("prefixes")
+  void isResolvableReturnsFalseWithCorrectPrefix(String prefix) {
+    assertThat(resolver.isResolvable(context, ConfigDataLocation.of(prefix))).isTrue();
   }
 
   @Test
@@ -48,13 +60,14 @@ class SecretManagerConfigDataLocationResolverUnitTests {
         .isEqualTo(client);
   }
 
-  @Test
-  void resolveReturnsConfigDataLocation() {
+  @ParameterizedTest
+  @MethodSource("prefixes")
+  void resolveReturnsConfigDataLocation(String prefix) {
     List<SecretManagerConfigDataResource> locations = resolver.resolve(context,
-        ConfigDataLocation.of("sm://my-secret"));
+            ConfigDataLocation.of(prefix + "my-secret"));
     assertThat(locations).hasSize(1);
     assertThat(locations).first().extracting("location")
-        .isEqualTo(ConfigDataLocation.of("sm://my-secret"));
+            .isEqualTo(ConfigDataLocation.of(prefix + "my-secret"));
     ConfigurableApplicationContext applicationContext = mock(ConfigurableApplicationContext.class);
     when(applicationContext.getBeanFactory()).thenReturn(new DefaultListableBeanFactory());
     assertThatCode(
