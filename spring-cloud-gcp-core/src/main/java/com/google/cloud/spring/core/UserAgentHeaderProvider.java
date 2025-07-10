@@ -27,6 +27,8 @@ import java.util.Map;
  */
 public class UserAgentHeaderProvider implements HeaderProvider, Serializable {
 
+  private static final long serialVersionUID = 4928605135114708652L;
+
   private String userAgent;
 
   private final Map<String, String> headers;
