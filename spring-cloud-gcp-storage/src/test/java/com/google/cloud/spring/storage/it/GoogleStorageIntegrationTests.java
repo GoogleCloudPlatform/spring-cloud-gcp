@@ -46,6 +46,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.StreamUtils;
 
@@ -129,6 +130,7 @@ class GoogleStorageIntegrationTests {
   }
 
   @Test
+  @DisabledInAotMode
   void testRestorableStateSerialization() throws IOException {
 
     String message = "test message";
