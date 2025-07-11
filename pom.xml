@@ -32,7 +32,7 @@
 	<properties>
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
-		<spring-cloud-dependencies.version>2024.0.0</spring-cloud-dependencies.version>
+		<spring-cloud-dependencies.version>2024.0.2</spring-cloud-dependencies.version>
 		<spring-boot-dependencies.version>3.4.7</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>2.3.0</zipkin-gcp.version>
