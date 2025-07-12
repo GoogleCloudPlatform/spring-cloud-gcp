@@ -29,6 +29,7 @@ import com.google.cloud.spring.storage.GoogleStorageProtocolResolver;
 import com.google.cloud.spring.storage.GoogleStorageResource;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
@@ -97,6 +98,28 @@ class GoogleStorageIntegrationTests {
     try (InputStream is = this.resource.getInputStream()) {
       assertThat(StreamUtils.copyToString(is, Charset.defaultCharset())).isEqualTo(message);
     }
+  }
+
+  @Test
+  void createFromStreamTest() throws IOException {
+
+    String message = "test message";
+    InputStream inputStream = new ByteArrayInputStream(message.getBytes());
+
+    thisResource().createBlobFrom(inputStream);
+
+    assertThat(this.resource)
+        .returns(true, Resource::exists)
+        .extracting(
+            res -> {
+              try {
+                return res.getInputStream();
+              } catch (IOException e) {
+                throw new AssertionError(e);
+              }
+            })
+        .asString()
+        .isEqualTo(message);
   }
 
   @Test
