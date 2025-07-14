@@ -17,6 +17,7 @@
 package com.google.cloud.spring.core;
 
 import com.google.api.gax.rpc.HeaderProvider;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -24,7 +25,9 @@ import java.util.Map;
  * Provides the user-agent header to signal to the Google Cloud Client Libraries that requests
  * originate from a Spring Integration.
  */
-public class UserAgentHeaderProvider implements HeaderProvider {
+public class UserAgentHeaderProvider implements HeaderProvider, Serializable {
+
+  private static final long serialVersionUID = 4928605135114708652L;
 
   private String userAgent;
 

@@ -23,6 +23,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 public class SecretConfiguration {
 
   private String secret;
+  private String regSecret;
 
   @RefreshScope
   public void setSecret(String secret) {
@@ -32,5 +33,15 @@ public class SecretConfiguration {
   @RefreshScope
   public String getSecret() {
     return secret;
+  }
+
+  @RefreshScope
+  public String getRegSecret() {
+    return regSecret;
+  }
+
+  @RefreshScope
+  public void setRegSecret(String regSecret) {
+    this.regSecret = regSecret;
   }
 }
