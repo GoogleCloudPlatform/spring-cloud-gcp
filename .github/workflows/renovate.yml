@@ -16,5 +16,5 @@ jobs:
       - name: Run Renovate
         uses: renovatebot/forking-renovate@main
         with:
-          baseBranches: main,3.x,4.x,5.x
+          baseBranches: main,6.x,5.x,4.x,3.x
           createPullRequests: true
