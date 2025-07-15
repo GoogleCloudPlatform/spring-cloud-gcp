@@ -113,6 +113,7 @@ branchProtectionRules:
       - 'parallel-NativeTests (trace-sample)'
       - 'parallel-NativeTests (vision)'
       - 'parallel-NativeTests (vision-sample)'
+  # 4.x is not supported but we keep the required checks in case of critical updates
   - pattern: 4.x
     isAdminEnforced: true
     requiredStatusCheckContexts:
