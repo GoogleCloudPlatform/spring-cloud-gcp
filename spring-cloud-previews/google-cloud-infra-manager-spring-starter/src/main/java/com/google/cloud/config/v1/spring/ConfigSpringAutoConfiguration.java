@@ -254,6 +254,34 @@ public class ConfigSpringAutoConfiguration {
           .getTerraformVersionSettings()
           .setRetrySettings(getTerraformVersionRetrySettings);
 
+      RetrySettings listResourceChangesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listResourceChangesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listResourceChangesSettings()
+          .setRetrySettings(listResourceChangesRetrySettings);
+
+      RetrySettings getResourceChangeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getResourceChangeSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getResourceChangeSettings()
+          .setRetrySettings(getResourceChangeRetrySettings);
+
+      RetrySettings listResourceDriftsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listResourceDriftsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listResourceDriftsSettings()
+          .setRetrySettings(listResourceDriftsRetrySettings);
+
+      RetrySettings getResourceDriftRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getResourceDriftSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getResourceDriftSettings()
+          .setRetrySettings(getResourceDriftRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -473,6 +501,62 @@ public class ConfigSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getTerraformVersion from properties.");
+      }
+    }
+    Retry listResourceChangesRetry = clientProperties.getListResourceChangesRetry();
+    if (listResourceChangesRetry != null) {
+      RetrySettings listResourceChangesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listResourceChangesSettings().getRetrySettings(),
+              listResourceChangesRetry);
+      clientSettingsBuilder
+          .listResourceChangesSettings()
+          .setRetrySettings(listResourceChangesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listResourceChanges from properties.");
+      }
+    }
+    Retry getResourceChangeRetry = clientProperties.getGetResourceChangeRetry();
+    if (getResourceChangeRetry != null) {
+      RetrySettings getResourceChangeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getResourceChangeSettings().getRetrySettings(),
+              getResourceChangeRetry);
+      clientSettingsBuilder
+          .getResourceChangeSettings()
+          .setRetrySettings(getResourceChangeRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getResourceChange from properties.");
+      }
+    }
+    Retry listResourceDriftsRetry = clientProperties.getListResourceDriftsRetry();
+    if (listResourceDriftsRetry != null) {
+      RetrySettings listResourceDriftsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listResourceDriftsSettings().getRetrySettings(),
+              listResourceDriftsRetry);
+      clientSettingsBuilder
+          .listResourceDriftsSettings()
+          .setRetrySettings(listResourceDriftsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listResourceDrifts from properties.");
+      }
+    }
+    Retry getResourceDriftRetry = clientProperties.getGetResourceDriftRetry();
+    if (getResourceDriftRetry != null) {
+      RetrySettings getResourceDriftRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getResourceDriftSettings().getRetrySettings(),
+              getResourceDriftRetry);
+      clientSettingsBuilder
+          .getResourceDriftSettings()
+          .setRetrySettings(getResourceDriftRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getResourceDrift from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

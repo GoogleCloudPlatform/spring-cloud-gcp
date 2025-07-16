@@ -123,6 +123,26 @@ public class ConfigSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getTerraformVersionRetry;
   /**
+   * Allow override of retry settings at method-level for listResourceChanges. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listResourceChangesRetry;
+  /**
+   * Allow override of retry settings at method-level for getResourceChange. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getResourceChangeRetry;
+  /**
+   * Allow override of retry settings at method-level for listResourceDrifts. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listResourceDriftsRetry;
+  /**
+   * Allow override of retry settings at method-level for getResourceDrift. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getResourceDriftRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -311,6 +331,38 @@ public class ConfigSpringProperties implements CredentialsSupplier {
 
   public void setGetTerraformVersionRetry(Retry getTerraformVersionRetry) {
     this.getTerraformVersionRetry = getTerraformVersionRetry;
+  }
+
+  public Retry getListResourceChangesRetry() {
+    return this.listResourceChangesRetry;
+  }
+
+  public void setListResourceChangesRetry(Retry listResourceChangesRetry) {
+    this.listResourceChangesRetry = listResourceChangesRetry;
+  }
+
+  public Retry getGetResourceChangeRetry() {
+    return this.getResourceChangeRetry;
+  }
+
+  public void setGetResourceChangeRetry(Retry getResourceChangeRetry) {
+    this.getResourceChangeRetry = getResourceChangeRetry;
+  }
+
+  public Retry getListResourceDriftsRetry() {
+    return this.listResourceDriftsRetry;
+  }
+
+  public void setListResourceDriftsRetry(Retry listResourceDriftsRetry) {
+    this.listResourceDriftsRetry = listResourceDriftsRetry;
+  }
+
+  public Retry getGetResourceDriftRetry() {
+    return this.getResourceDriftRetry;
+  }
+
+  public void setGetResourceDriftRetry(Retry getResourceDriftRetry) {
+    this.getResourceDriftRetry = getResourceDriftRetry;
   }
 
   public Retry getListLocationsRetry() {
