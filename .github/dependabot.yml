@@ -45,47 +45,13 @@ updates:
     # Spring Cloud dependencies
     # spring-cloud-dependencies-parent should be eventually removed per #1294
     - dependency-name: "org.springframework.cloud:spring-cloud-*"
-      versions: ["2022.x", "2023.x", "2024.x"]
+      versions: ["2022.x", "2023.x", "2024.x", "2025.x"]
     # Spring Shell dependencies
     - dependency-name: "org.springframework.shell:spring-shell-starter"
       versions: ["3.x"]
     # Spring Native dependencies: 
     # Will be superseded by Spring Boot 3 official native support
 
-- package-ecosystem: maven
-  directory: "/"
-  schedule:
-    interval: daily
-  commit-message:
-    # Prefix all commit messages with "deps: "
-    prefix: "deps"
-  open-pull-requests-limit: 10
-  target-branch: "4.x"
-  labels:
-    - "4.x dependencies"
-  ignore:
-    # Ignore major version updates - these should be made manually
-    - dependency-name: "*"
-      update-types: [ "version-update:semver-major" ]
-    # Ignore formatter dependency versions used in codegen modules, since they are fixed for Java 8 support
-    - dependency-name: "com.coveo:fmt-maven-plugin"
-    - dependency-name: "com.google.googlejavaformat:google-java-format"
-    # Ignore dependencies corresponding to Spring Boot 3.2+, Spring Cloud 2023.x:
-    # Spring Boot dependencies
-    - dependency-name: "org.springframework.boot:spring-boot-*"
-      versions: [">=3.2.0"]
-    # Spring Cloud dependencies
-    - dependency-name: "org.springframework.cloud:spring-cloud-*"
-      versions: ["2023.x", "2024.x"]
-    # Spring Shell dependencies
-    - dependency-name: "org.springframework.shell:spring-shell-starter"
-      versions: [">=3.2.0"]
-    # Spring Cloud Config dependencies
-    - dependency-name: "org.springframework.cloud:spring-cloud-config-dependencies"
-      versions: [">=4.2.0"]
-    - dependency-name: "org.springframework.cloud:spring-cloud-starter-bootstrap"
-      versions: [">=4.2.0"]
-      
 - package-ecosystem: maven
   directory: "/"
   schedule:
@@ -110,8 +76,34 @@ updates:
       versions: [">=3.4.0"]
     # Spring Cloud dependencies
     - dependency-name: "org.springframework.cloud:spring-cloud-*"
-      versions: ["2024.x"]
+      versions: ["2024.x", "2025.x"]
     # Spring Shell dependencies 3.4+ is meant to be used with Spring boot 3.4, which is part of
     # the non-supported (by 5.x branch) Spring Cloud 2024
     - dependency-name: "org.springframework.shell:spring-shell-starter"
       versions: [">=3.4.0"]
+
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  commit-message:
+    # Prefix all commit messages with "deps: "
+    prefix: "deps"
+  open-pull-requests-limit: 10
+  target-branch: "6.x"
+  labels:
+    - "6.x dependencies"
+  ignore:
+    # Ignore major version updates - these should be made manually
+    - dependency-name: "*"
+      update-types: [ "version-update:semver-major" ]
+    # Ignore formatter dependency versions used in codegen modules, since they are fixed for Java 8 support
+    - dependency-name: "com.coveo:fmt-maven-plugin"
+    - dependency-name: "com.google.googlejavaformat:google-java-format"
+    # Ignore dependencies corresponding to Spring Boot 3.5+, <= Spring Cloud 2025.x:
+    # Spring Boot dependencies
+    - dependency-name: "org.springframework.boot:spring-boot-*"
+      versions: [">=3.5.0"]
+    # Spring Cloud dependencies
+    - dependency-name: "org.springframework.cloud:spring-cloud-*"
+      versions: ["2025.x"]

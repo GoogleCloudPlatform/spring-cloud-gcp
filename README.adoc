@@ -11,11 +11,13 @@ You can check our project website https://spring.io/projects/spring-cloud-gcp[he
 For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation or Javadocs:
 
 // {x-version-update-start:spring-cloud-gcp:released}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/6.2.3/reference/html/index.html[Spring Framework on Google Cloud 6.2.1 (Latest)] - https://googleapis.dev/java/spring-cloud-gcp/6.2.1/index.html[Javadocs 6.2.1]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/7.0.0/reference/html/index.html[Spring Framework on Google Cloud 7.0.0 (Latest)] - https://googleapis.dev/java/spring-cloud-gcp/7.0.0/index.html[Javadocs 7.0.0]
 // {x-version-update-end}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/5.12.1/reference/html/index.html[Spring Framework on Google Cloud 5.12.1] - https://googleapis.dev/java/spring-cloud-gcp/5.12.1/index.html[Javadocs 5.12.1]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.11.1/reference/html/index.html[Spring Framework on Google Cloud 4.11.1] - https://googleapis.dev/java/spring-cloud-gcp/4.11.1/index.html[Javadocs 4.11.1]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.9.1/reference/html/index.html[Spring Framework on Google Cloud 3.9.1] - https://googleapis.dev/java/spring-cloud-gcp/3.9.1/index.html[Javadocs 3.9.1]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/6.2.3/reference/html/index.html[Spring Framework on Google Cloud 6.2.3] - https://googleapis.dev/java/spring-cloud-gcp/6.2.3/index.html[Javadocs 6.2.3]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/5.12.3/reference/html/index.html[Spring Framework on Google Cloud 5.12.3] - https://googleapis.dev/java/spring-cloud-gcp/5.12.3/index.html[Javadocs 5.12.3]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.11.3/reference/html/index.html[Spring Framework on Google Cloud 4.11.3] - https://googleapis.dev/java/spring-cloud-gcp/4.11.3/index.html[Javadocs 4.11.3]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.9.5/reference/html/index.html[Spring Framework on Google Cloud 3.9.5] - https://googleapis.dev/java/spring-cloud-gcp/3.9.5/index.html[Javadocs 3.9.5]
+
 
 If you prefer to learn by doing, try taking a look at the https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples[Spring Framework on Google Cloud sample applications] or the https://codelabs.developers.google.com/spring[Spring on Google Cloud codelabs].
 
@@ -55,10 +57,16 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 |===
 | Spring Framework on Google Cloud | Spring Cloud | Spring Boot | Spring Framework | Supported
 
+|7.x
+|https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2025.0-Release-Notes[2025.0.x] (Northfields)
+|https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.5-Release-Notes[3.5.x]
+|https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-6.2-Release-Notes[6.2.8 or above]
+|Yes
+
 |6.x
 |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2024.0-Release-Notes[2024.0.x] (Moorgate)
 |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.4-Release-Notes[3.4.x]
-|https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-6.2-Release-Notes[6.2.x]
+|https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-6.2-Release-Notes[6.2.0 - 6.2.7]
 |Yes
 
 |5.x
@@ -73,7 +81,7 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2022.0-Release-Notes[2022.0.x] (Kilburn)
 |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes[3.0.x], https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.1-Release-Notes[3.1.x]
 |https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x#whats-new-in-version-60[6.0.x]
-|Yes
+|No
 
 |3.x
 |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes[2021.0.x] (Jubilee)
