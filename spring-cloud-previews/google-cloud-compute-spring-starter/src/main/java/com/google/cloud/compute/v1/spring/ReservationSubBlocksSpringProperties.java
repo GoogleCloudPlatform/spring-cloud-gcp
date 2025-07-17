@@ -34,7 +34,6 @@ public class ReservationSubBlocksSpringProperties implements CredentialsSupplier
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials(
-          "https://www.googleapis.com/auth/compute.readonly",
           "https://www.googleapis.com/auth/compute",
           "https://www.googleapis.com/auth/cloud-platform");
   /** Quota project to use for billing. */
