@@ -14,6 +14,23 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.3.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.3...v6.3.0) (2025-07-17)
+
+
+### Features
+
+* added regional secret support for secret-manager ([#3746](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3746)) ([8d9e7f6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8d9e7f66011d37b48f20dd6f8e499b4ebb1065e5))
+
+
+### Bug Fixes
+
+* make UserAgentHeaderProvider Serializable ([#3935](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3935)) ([3489110](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/348911060caadaf774356036524f120b979c5ca8))
+
+
+### Dependencies
+
+* **6.x:** bump com.google.cloud:libraries-bom from 26.63.0 to 26.64.0 ([8cc0b78](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8cc0b788548bed8253146d7136f881db391851fa))
+
 ## [6.2.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.2...v6.2.3) (2025-07-01)
 
 
