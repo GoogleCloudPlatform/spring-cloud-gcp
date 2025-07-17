@@ -27,9 +27,9 @@ spring.application.name=myapp
 #default profile = default
 spring.profiles.active=prod
 ....
-7.  Notice that link:src/main/java/com/example/MyParamAppProperties.java[MyParamAppProperties.java] uses `@ConfigurationProperties` to bind the `myapp` namespace from the environment.
+7.  Notice that link:src/main/java/com/example/MyParameterAppProperties.java[MyParamAppProperties.java] uses `@ConfigurationProperties` to bind the `myapp` namespace from the environment.
 
-8. Note that in order to expose /actuator/refresh endpoint, link:src/resources/application.properties[application.properties] file includes the following property:
+8. Note that in order to expose /actuator/refresh endpoint, link:src/main/resources/application.properties[application.properties] file includes the following property:
 +
 ....
 management.endpoints.web.exposure.include=refresh
