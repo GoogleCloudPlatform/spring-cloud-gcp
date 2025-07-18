@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.13.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.12.3...v5.13.0) (2025-07-18)
+
+
+### Features
+
+* **5.x:** add and recommend sm@ annotation in secretmanager ([#3910](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3910)) ([9fbf636](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9fbf63689ca10401ce55bafb02c4d32ad83d20e0))
+
+
+### Dependencies
+
+* **5.x:** update dependency com.google.cloud:libraries-bom to v26.64.0 ([#3967](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3967)) ([d431071](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d431071f4db727500e3ebc4c9c271cc305a6375b))
+
 ## [5.12.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.12.2...v5.12.3) (2025-07-01)
 
 
