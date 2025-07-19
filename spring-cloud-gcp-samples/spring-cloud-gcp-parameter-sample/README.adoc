@@ -1,0 +1,50 @@
+= Spring Framework on Google Cloud Parameter Starter Code Sample
+
+== Setup & Configuration
+
+1. Run `$ mvn clean install` from the root directory of the project.
+2. Move to the parameter sample directory by running `$ cd spring-cloud-gcp-samples/spring-cloud-gcp-parameter-sample`
+3. Checkout the code of this sample.
+4. Enable the Google https://console.cloud.google.com/marketplace/product/google/parametermanager.googleapis.com[Parameter Manager API].
+5. Create a parameter using the https://cloud.google.com/sdk/[Google Cloud SDK].
++
+....
+$ gcloud beta parametermanager parameters create myapp --location=global --parameter-format=JSON
+....
++
+Then create a version that your application will load:
++
+....
+$ gcloud beta parametermanager parameters versions create prod --parameter=myapp --location=global --payload-data="{\"myapp.username\":\"test-user\",\"myapp.password\":\"test-password\"}"
+....
+
+6.  Update link:src/main/resources/bootstrap.properties[]:
++
+....
+spring.cloud.gcp.parameter.enabled=true
+spring.application.name=myapp
+
+#default profile = default
+spring.profiles.active=prod
+....
+7.  Notice that link:src/main/java/com/example/MyParameterAppProperties.java[MyParamAppProperties.java] uses `@ConfigurationProperties` to bind the `myapp` namespace from the environment.
+
+8. Note that in order to expose /actuator/refresh endpoint, link:src/main/resources/application.properties[application.properties] file includes the following property:
++
+....
+management.endpoints.web.exposure.include=refresh
+....
+9.  Run the application using the `$ mvn spring-boot:run` command and verify the values are set appropriately at http://localhost:8080/ or use the `Web Preview` button in Cloud Shell to preview the app on port 8080.
+10.  Update a property with `gcloud`. For Parameter Manager, need to delete and create the version:
++
+....
+$ gcloud beta parametermanager parameters versions delete prod --parameter=myapp --location=global
+
+$ gcloud beta parametermanager parameters versions create prod --parameter=myapp --location=global --payload-data="{\"username\":\"test-user\",\"password\":\"test-password-refreshed\"}"
+....
+11.  Send a POST request to the refresh endpoint:
++
+....
+$ curl -XPOST http://localhost:8080/actuator/refresh
+....
+12. Verify the values are updated at http://localhost:8080/ or Cloud Shell `Web Preview`.
