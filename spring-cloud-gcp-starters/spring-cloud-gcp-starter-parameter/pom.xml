@@ -35,9 +35,21 @@
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-parametermanager</artifactId>
 		</dependency>
-	</dependencies>
+        </dependencies>
 
-	<profiles>
+        <build>
+                <plugins>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-checkstyle-plugin</artifactId>
+                                <configuration>
+                                        <suppressionsLocation>../../src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+                                </configuration>
+                        </plugin>
+                </plugins>
+        </build>
+
+        <profiles>
 		<!-- skip for GA releases to Maven Central -->
 		<profile>
 			<id>skip-unreleased-modules</id>
@@ -58,13 +70,6 @@
 							<serverId>ossrh</serverId>
 							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 						</configuration>
-                                        </plugin>
-                                        <plugin>
-                                                <groupId>org.apache.maven.plugins</groupId>
-                                                <artifactId>maven-checkstyle-plugin</artifactId>
-                                                <configuration>
-                                                        <suppressionsLocation>../../src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
-                                                </configuration>
                                         </plugin>
 				</plugins>
 			</build>
