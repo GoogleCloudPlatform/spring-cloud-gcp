@@ -60,8 +60,10 @@ $ gcloud init # if this is your first Google Cloud SDK run.
 
 $ gcloud beta parametermanager parameters create myapp --location=global --parameter-format=JSON
 
-$ gcloud beta parametermanager parameters versions create prod --parameter=myapp --location=global --payload-data="{\"username\":\"test-user\",\"password\":\"test-password\"}"
+$ gcloud beta parametermanager parameters versions create prod --parameter=myapp --location=global --payload-data="{\"myapp.username\":\"test-user\",\"myapp.password\":\"test-password\"}"
 ----
+
+In the parameter version payload, `myapp.username` and `myapp.password` correspond to properties where `myapp` is the prefix specified in the `@ConfigurationProperties` annotation. For example: `@ConfigurationProperties("myapp")`.
 
 2. Configure your `bootstrap.properties` file with your application's configuration data:
 +
