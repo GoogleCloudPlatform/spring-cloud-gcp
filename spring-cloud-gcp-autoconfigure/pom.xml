@@ -130,6 +130,11 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-parametermanager</artifactId>
+        </dependency>
+
         <!-- Storage -->
         <dependency>
             <groupId>com.google.cloud</groupId>
