@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>spring-cloud-gcp</artifactId>
 		<groupId>com.google.cloud</groupId>
-		<version>6.2.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+		<version>7.0.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 	<packaging>pom</packaging>
 	<name>Spring Framework on Google Cloud Starters</name>
@@ -25,6 +25,7 @@
 		<module>spring-cloud-gcp-starter-cloudfoundry</module>
 		<module>spring-cloud-gcp-starter-pubsub</module>
 		<module>spring-cloud-gcp-starter-config</module>
+		<module>spring-cloud-gcp-starter-parameter</module>
 		<module>spring-cloud-gcp-starter-storage</module>
 		<module>spring-cloud-gcp-starter-data-spanner</module>
 		<module>spring-cloud-gcp-starter-data-datastore</module>

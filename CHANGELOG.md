@@ -14,6 +14,31 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.0.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.3...v7.0.0) (2025-07-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* upgrade Spring Cloud 2025 ([#3837](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3837))
+
+### Features
+
+* added regional secret support for secret-manager ([#3746](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3746)) ([8d9e7f6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8d9e7f66011d37b48f20dd6f8e499b4ebb1065e5))
+* upgrade Spring Cloud 2025 ([#3837](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3837)) ([16dd1ff](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/16dd1ff89dfc5a655e4e9237d8247f62b6808469))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.64.0 ([#3963](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3963)) ([fd327c0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fd327c032dc39c6f83d2f71d72bce15fe0cfc907))
+* **deps:** update gapic-generator-java-bom.version to v2.60.1 ([#3962](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3962)) ([80fb22f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/80fb22ff64f010af1817e4390986693fd10a26dd))
+* make UserAgentHeaderProvider Serializable ([#3935](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3935)) ([3489110](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/348911060caadaf774356036524f120b979c5ca8))
+
+
+### Documentation
+
+* correct compatibility matrix ([#3948](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3948)) ([669b239](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/669b239f7efa67c52aa2d3e3e0ecc9a149d68ec2))
+* fix versions mismatch in README.adoc ([#3961](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3961)) ([75531d8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/75531d8c9f7605d6c2e8871dfe6aebe362e2f392))
+
 ## [6.2.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.2...v6.2.3) (2025-07-01)
 
 
