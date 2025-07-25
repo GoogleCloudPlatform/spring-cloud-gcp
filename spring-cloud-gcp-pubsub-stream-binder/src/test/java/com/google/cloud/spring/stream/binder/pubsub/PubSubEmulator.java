@@ -125,7 +125,7 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Para
    * operation.
    */
   @Override
-  public void afterAll(ExtensionContext extensionContext) throws Exception {
+  public void afterAll(ExtensionContext extensionContext) {
     findAndDestroyEmulator();
   }
 
@@ -137,7 +137,7 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Para
       LOGGER.warn("Emulator process null after tests; nothing to terminate.");
     }
 
-    // find destory emulator process spawned by gcloud
+    // find and destroy emulator process spawned by gcloud
     if (this.emulatorHostPort == null) {
       LOGGER.warn("Host/port null after the test.");
     } else {
