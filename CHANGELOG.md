@@ -14,6 +14,23 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.1.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.0.0...v7.1.0) (2025-07-25)
+
+
+### Features
+
+* **parameter:** added support for remote configuration using the gcp parameter manager ([#3684](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3684)) ([d73760e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d73760e689e08fb4262a3126923b7702f00d2673))
+
+
+### Bug Fixes
+
+* remove unused parameter for LoggingWebMvcConfigurer. ([#3573](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3573)) ([c96f8bc](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c96f8bcd79d1ab2cc42249ccf0c50c5c109c0cd9))
+
+
+### Documentation
+
+* indicate support for boot 3.5.x in SCGCP 7.x ([#3968](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3968)) ([d9f5c81](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d9f5c81b98754c40f4dffdeea5b4fe69bbda1a06))
+
 ## [7.0.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.2.3...v7.0.0) (2025-07-17)
 
 
