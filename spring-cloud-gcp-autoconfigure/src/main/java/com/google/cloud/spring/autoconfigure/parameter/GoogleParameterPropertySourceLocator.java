@@ -35,6 +35,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.SafeConstructor;
 
 /**
  * Custom {@link PropertySourceLocator} for Google Cloud Parameter Manager API.
@@ -138,7 +139,7 @@ public class GoogleParameterPropertySourceLocator implements PropertySourceLocat
       return objectMapper.readValue(data, Map.class);
     } catch (Exception e) {
       try {
-        Yaml yaml = new Yaml();
+        Yaml yaml = new Yaml(new SafeConstructor());
         return yaml.load(data);
       } catch (Exception ex) {
         ex.addSuppressed(e);
