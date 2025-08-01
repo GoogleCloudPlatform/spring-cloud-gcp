@@ -183,6 +183,16 @@ public class SecureSourceManagerSpringAutoConfiguration {
               clientSettingsBuilder.getRepositorySettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getRepositorySettings().setRetrySettings(getRepositoryRetrySettings);
 
+      RetrySettings listHooksRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listHooksSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listHooksSettings().setRetrySettings(listHooksRetrySettings);
+
+      RetrySettings getHookRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getHookSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getHookSettings().setRetrySettings(getHookRetrySettings);
+
       RetrySettings getIamPolicyRepoRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getIamPolicyRepoSettings().getRetrySettings(), serviceRetry);
@@ -216,6 +226,76 @@ public class SecureSourceManagerSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getBranchRuleSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getBranchRuleSettings().setRetrySettings(getBranchRuleRetrySettings);
+
+      RetrySettings getPullRequestRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPullRequestSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getPullRequestSettings().setRetrySettings(getPullRequestRetrySettings);
+
+      RetrySettings listPullRequestsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPullRequestsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listPullRequestsSettings()
+          .setRetrySettings(listPullRequestsRetrySettings);
+
+      RetrySettings listPullRequestFileDiffsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPullRequestFileDiffsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listPullRequestFileDiffsSettings()
+          .setRetrySettings(listPullRequestFileDiffsRetrySettings);
+
+      RetrySettings fetchTreeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchTreeSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.fetchTreeSettings().setRetrySettings(fetchTreeRetrySettings);
+
+      RetrySettings fetchBlobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchBlobSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.fetchBlobSettings().setRetrySettings(fetchBlobRetrySettings);
+
+      RetrySettings getIssueRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIssueSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getIssueSettings().setRetrySettings(getIssueRetrySettings);
+
+      RetrySettings listIssuesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listIssuesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listIssuesSettings().setRetrySettings(listIssuesRetrySettings);
+
+      RetrySettings getPullRequestCommentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPullRequestCommentSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getPullRequestCommentSettings()
+          .setRetrySettings(getPullRequestCommentRetrySettings);
+
+      RetrySettings listPullRequestCommentsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPullRequestCommentsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listPullRequestCommentsSettings()
+          .setRetrySettings(listPullRequestCommentsRetrySettings);
+
+      RetrySettings getIssueCommentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIssueCommentSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getIssueCommentSettings()
+          .setRetrySettings(getIssueCommentRetrySettings);
+
+      RetrySettings listIssueCommentsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listIssueCommentsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listIssueCommentsSettings()
+          .setRetrySettings(listIssueCommentsRetrySettings);
 
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -292,6 +372,26 @@ public class SecureSourceManagerSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for getRepository from properties.");
       }
     }
+    Retry listHooksRetry = clientProperties.getListHooksRetry();
+    if (listHooksRetry != null) {
+      RetrySettings listHooksRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listHooksSettings().getRetrySettings(), listHooksRetry);
+      clientSettingsBuilder.listHooksSettings().setRetrySettings(listHooksRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listHooks from properties.");
+      }
+    }
+    Retry getHookRetry = clientProperties.getGetHookRetry();
+    if (getHookRetry != null) {
+      RetrySettings getHookRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getHookSettings().getRetrySettings(), getHookRetry);
+      clientSettingsBuilder.getHookSettings().setRetrySettings(getHookRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getHook from properties.");
+      }
+    }
     Retry getIamPolicyRepoRetry = clientProperties.getGetIamPolicyRepoRetry();
     if (getIamPolicyRepoRetry != null) {
       RetrySettings getIamPolicyRepoRetrySettings =
@@ -355,6 +455,140 @@ public class SecureSourceManagerSpringAutoConfiguration {
       clientSettingsBuilder.getBranchRuleSettings().setRetrySettings(getBranchRuleRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getBranchRule from properties.");
+      }
+    }
+    Retry getPullRequestRetry = clientProperties.getGetPullRequestRetry();
+    if (getPullRequestRetry != null) {
+      RetrySettings getPullRequestRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPullRequestSettings().getRetrySettings(),
+              getPullRequestRetry);
+      clientSettingsBuilder.getPullRequestSettings().setRetrySettings(getPullRequestRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getPullRequest from properties.");
+      }
+    }
+    Retry listPullRequestsRetry = clientProperties.getListPullRequestsRetry();
+    if (listPullRequestsRetry != null) {
+      RetrySettings listPullRequestsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPullRequestsSettings().getRetrySettings(),
+              listPullRequestsRetry);
+      clientSettingsBuilder
+          .listPullRequestsSettings()
+          .setRetrySettings(listPullRequestsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listPullRequests from properties.");
+      }
+    }
+    Retry listPullRequestFileDiffsRetry = clientProperties.getListPullRequestFileDiffsRetry();
+    if (listPullRequestFileDiffsRetry != null) {
+      RetrySettings listPullRequestFileDiffsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPullRequestFileDiffsSettings().getRetrySettings(),
+              listPullRequestFileDiffsRetry);
+      clientSettingsBuilder
+          .listPullRequestFileDiffsSettings()
+          .setRetrySettings(listPullRequestFileDiffsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listPullRequestFileDiffs from properties.");
+      }
+    }
+    Retry fetchTreeRetry = clientProperties.getFetchTreeRetry();
+    if (fetchTreeRetry != null) {
+      RetrySettings fetchTreeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchTreeSettings().getRetrySettings(), fetchTreeRetry);
+      clientSettingsBuilder.fetchTreeSettings().setRetrySettings(fetchTreeRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for fetchTree from properties.");
+      }
+    }
+    Retry fetchBlobRetry = clientProperties.getFetchBlobRetry();
+    if (fetchBlobRetry != null) {
+      RetrySettings fetchBlobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchBlobSettings().getRetrySettings(), fetchBlobRetry);
+      clientSettingsBuilder.fetchBlobSettings().setRetrySettings(fetchBlobRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for fetchBlob from properties.");
+      }
+    }
+    Retry getIssueRetry = clientProperties.getGetIssueRetry();
+    if (getIssueRetry != null) {
+      RetrySettings getIssueRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIssueSettings().getRetrySettings(), getIssueRetry);
+      clientSettingsBuilder.getIssueSettings().setRetrySettings(getIssueRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getIssue from properties.");
+      }
+    }
+    Retry listIssuesRetry = clientProperties.getListIssuesRetry();
+    if (listIssuesRetry != null) {
+      RetrySettings listIssuesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listIssuesSettings().getRetrySettings(), listIssuesRetry);
+      clientSettingsBuilder.listIssuesSettings().setRetrySettings(listIssuesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listIssues from properties.");
+      }
+    }
+    Retry getPullRequestCommentRetry = clientProperties.getGetPullRequestCommentRetry();
+    if (getPullRequestCommentRetry != null) {
+      RetrySettings getPullRequestCommentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPullRequestCommentSettings().getRetrySettings(),
+              getPullRequestCommentRetry);
+      clientSettingsBuilder
+          .getPullRequestCommentSettings()
+          .setRetrySettings(getPullRequestCommentRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getPullRequestComment from properties.");
+      }
+    }
+    Retry listPullRequestCommentsRetry = clientProperties.getListPullRequestCommentsRetry();
+    if (listPullRequestCommentsRetry != null) {
+      RetrySettings listPullRequestCommentsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPullRequestCommentsSettings().getRetrySettings(),
+              listPullRequestCommentsRetry);
+      clientSettingsBuilder
+          .listPullRequestCommentsSettings()
+          .setRetrySettings(listPullRequestCommentsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listPullRequestComments from properties.");
+      }
+    }
+    Retry getIssueCommentRetry = clientProperties.getGetIssueCommentRetry();
+    if (getIssueCommentRetry != null) {
+      RetrySettings getIssueCommentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIssueCommentSettings().getRetrySettings(),
+              getIssueCommentRetry);
+      clientSettingsBuilder
+          .getIssueCommentSettings()
+          .setRetrySettings(getIssueCommentRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getIssueComment from properties.");
+      }
+    }
+    Retry listIssueCommentsRetry = clientProperties.getListIssueCommentsRetry();
+    if (listIssueCommentsRetry != null) {
+      RetrySettings listIssueCommentsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listIssueCommentsSettings().getRetrySettings(),
+              listIssueCommentsRetry);
+      clientSettingsBuilder
+          .listIssueCommentsSettings()
+          .setRetrySettings(listIssueCommentsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listIssueComments from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
