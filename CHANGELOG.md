@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [3.9.7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.9.6...v3.9.7) (2025-08-02)
+
+
+### Bug Fixes
+
+* use different channel names in pubsub emulator integration tests ([#3878](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3878)) ([#3882](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3882)) ([e8dc99b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e8dc99babc98554c9d591210853a6b39c181f5f9))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.64.0 to 26.65.0 ([#4013](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4013)) ([7354930](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/73549302e14d11d772ccf72442dfc384e24c1a65))
+
 ## [3.9.6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v3.9.5...v3.9.6) (2025-07-18)
 
 
