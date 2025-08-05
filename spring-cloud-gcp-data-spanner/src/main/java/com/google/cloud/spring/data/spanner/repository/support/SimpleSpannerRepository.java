@@ -176,6 +176,9 @@ public class SimpleSpannerRepository<T, I> implements SpannerRepository<T, I> {
   @Override
   public void deleteAllById(Iterable<? extends I> ids) {
     Assert.notNull(ids, "IDs must not be null");
+    if (!ids.iterator().hasNext()) {
+      return;
+    }
     KeySet.Builder builder = KeySet.newBuilder();
     for (Object id : ids) {
       builder.addKey(toKey(id));
