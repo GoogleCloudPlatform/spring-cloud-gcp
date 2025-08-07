@@ -149,6 +149,12 @@
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Alloydb support components.",
       "defaultValue": true
+    },
+    {
+      "name": "spring.cloud.gcp.parametermanager.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure GCP Parameter Manager support components.",
+      "defaultValue": true
     }
   ]
 }
