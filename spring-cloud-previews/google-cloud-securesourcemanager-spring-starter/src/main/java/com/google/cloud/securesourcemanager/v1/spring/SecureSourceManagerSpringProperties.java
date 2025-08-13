@@ -63,6 +63,16 @@ public class SecureSourceManagerSpringProperties implements CredentialsSupplier 
    */
   @NestedConfigurationProperty private Retry getRepositoryRetry;
   /**
+   * Allow override of retry settings at method-level for listHooks. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listHooksRetry;
+  /**
+   * Allow override of retry settings at method-level for getHook. If defined, this takes precedence
+   * over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getHookRetry;
+  /**
    * Allow override of retry settings at method-level for getIamPolicyRepo. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -87,6 +97,61 @@ public class SecureSourceManagerSpringProperties implements CredentialsSupplier 
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBranchRuleRetry;
+  /**
+   * Allow override of retry settings at method-level for getPullRequest. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getPullRequestRetry;
+  /**
+   * Allow override of retry settings at method-level for listPullRequests. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listPullRequestsRetry;
+  /**
+   * Allow override of retry settings at method-level for listPullRequestFileDiffs. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listPullRequestFileDiffsRetry;
+  /**
+   * Allow override of retry settings at method-level for fetchTree. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchTreeRetry;
+  /**
+   * Allow override of retry settings at method-level for fetchBlob. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchBlobRetry;
+  /**
+   * Allow override of retry settings at method-level for getIssue. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getIssueRetry;
+  /**
+   * Allow override of retry settings at method-level for listIssues. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listIssuesRetry;
+  /**
+   * Allow override of retry settings at method-level for getPullRequestComment. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getPullRequestCommentRetry;
+  /**
+   * Allow override of retry settings at method-level for listPullRequestComments. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listPullRequestCommentsRetry;
+  /**
+   * Allow override of retry settings at method-level for getIssueComment. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getIssueCommentRetry;
+  /**
+   * Allow override of retry settings at method-level for listIssueComments. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listIssueCommentsRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -182,6 +247,22 @@ public class SecureSourceManagerSpringProperties implements CredentialsSupplier 
     this.getRepositoryRetry = getRepositoryRetry;
   }
 
+  public Retry getListHooksRetry() {
+    return this.listHooksRetry;
+  }
+
+  public void setListHooksRetry(Retry listHooksRetry) {
+    this.listHooksRetry = listHooksRetry;
+  }
+
+  public Retry getGetHookRetry() {
+    return this.getHookRetry;
+  }
+
+  public void setGetHookRetry(Retry getHookRetry) {
+    this.getHookRetry = getHookRetry;
+  }
+
   public Retry getGetIamPolicyRepoRetry() {
     return this.getIamPolicyRepoRetry;
   }
@@ -220,6 +301,94 @@ public class SecureSourceManagerSpringProperties implements CredentialsSupplier 
 
   public void setGetBranchRuleRetry(Retry getBranchRuleRetry) {
     this.getBranchRuleRetry = getBranchRuleRetry;
+  }
+
+  public Retry getGetPullRequestRetry() {
+    return this.getPullRequestRetry;
+  }
+
+  public void setGetPullRequestRetry(Retry getPullRequestRetry) {
+    this.getPullRequestRetry = getPullRequestRetry;
+  }
+
+  public Retry getListPullRequestsRetry() {
+    return this.listPullRequestsRetry;
+  }
+
+  public void setListPullRequestsRetry(Retry listPullRequestsRetry) {
+    this.listPullRequestsRetry = listPullRequestsRetry;
+  }
+
+  public Retry getListPullRequestFileDiffsRetry() {
+    return this.listPullRequestFileDiffsRetry;
+  }
+
+  public void setListPullRequestFileDiffsRetry(Retry listPullRequestFileDiffsRetry) {
+    this.listPullRequestFileDiffsRetry = listPullRequestFileDiffsRetry;
+  }
+
+  public Retry getFetchTreeRetry() {
+    return this.fetchTreeRetry;
+  }
+
+  public void setFetchTreeRetry(Retry fetchTreeRetry) {
+    this.fetchTreeRetry = fetchTreeRetry;
+  }
+
+  public Retry getFetchBlobRetry() {
+    return this.fetchBlobRetry;
+  }
+
+  public void setFetchBlobRetry(Retry fetchBlobRetry) {
+    this.fetchBlobRetry = fetchBlobRetry;
+  }
+
+  public Retry getGetIssueRetry() {
+    return this.getIssueRetry;
+  }
+
+  public void setGetIssueRetry(Retry getIssueRetry) {
+    this.getIssueRetry = getIssueRetry;
+  }
+
+  public Retry getListIssuesRetry() {
+    return this.listIssuesRetry;
+  }
+
+  public void setListIssuesRetry(Retry listIssuesRetry) {
+    this.listIssuesRetry = listIssuesRetry;
+  }
+
+  public Retry getGetPullRequestCommentRetry() {
+    return this.getPullRequestCommentRetry;
+  }
+
+  public void setGetPullRequestCommentRetry(Retry getPullRequestCommentRetry) {
+    this.getPullRequestCommentRetry = getPullRequestCommentRetry;
+  }
+
+  public Retry getListPullRequestCommentsRetry() {
+    return this.listPullRequestCommentsRetry;
+  }
+
+  public void setListPullRequestCommentsRetry(Retry listPullRequestCommentsRetry) {
+    this.listPullRequestCommentsRetry = listPullRequestCommentsRetry;
+  }
+
+  public Retry getGetIssueCommentRetry() {
+    return this.getIssueCommentRetry;
+  }
+
+  public void setGetIssueCommentRetry(Retry getIssueCommentRetry) {
+    this.getIssueCommentRetry = getIssueCommentRetry;
+  }
+
+  public Retry getListIssueCommentsRetry() {
+    return this.listIssueCommentsRetry;
+  }
+
+  public void setListIssueCommentsRetry(Retry listIssueCommentsRetry) {
+    this.listIssueCommentsRetry = listIssueCommentsRetry;
   }
 
   public Retry getListLocationsRetry() {

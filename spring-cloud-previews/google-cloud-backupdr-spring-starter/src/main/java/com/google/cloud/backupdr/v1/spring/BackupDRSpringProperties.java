@@ -98,6 +98,16 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry listBackupPlansRetry;
   /**
+   * Allow override of retry settings at method-level for getBackupPlanRevision. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getBackupPlanRevisionRetry;
+  /**
+   * Allow override of retry settings at method-level for listBackupPlanRevisions. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listBackupPlanRevisionsRetry;
+  /**
    * Allow override of retry settings at method-level for getBackupPlanAssociation. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -107,6 +117,22 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBackupPlanAssociationsRetry;
+  /**
+   * Allow override of retry settings at method-level for
+   * fetchBackupPlanAssociationsForResourceType. If defined, this takes precedence over
+   * service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchBackupPlanAssociationsForResourceTypeRetry;
+  /**
+   * Allow override of retry settings at method-level for getDataSourceReference. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getDataSourceReferenceRetry;
+  /**
+   * Allow override of retry settings at method-level for fetchDataSourceReferencesForResourceType.
+   * If defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchDataSourceReferencesForResourceTypeRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -258,6 +284,22 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
     this.listBackupPlansRetry = listBackupPlansRetry;
   }
 
+  public Retry getGetBackupPlanRevisionRetry() {
+    return this.getBackupPlanRevisionRetry;
+  }
+
+  public void setGetBackupPlanRevisionRetry(Retry getBackupPlanRevisionRetry) {
+    this.getBackupPlanRevisionRetry = getBackupPlanRevisionRetry;
+  }
+
+  public Retry getListBackupPlanRevisionsRetry() {
+    return this.listBackupPlanRevisionsRetry;
+  }
+
+  public void setListBackupPlanRevisionsRetry(Retry listBackupPlanRevisionsRetry) {
+    this.listBackupPlanRevisionsRetry = listBackupPlanRevisionsRetry;
+  }
+
   public Retry getGetBackupPlanAssociationRetry() {
     return this.getBackupPlanAssociationRetry;
   }
@@ -272,6 +314,34 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
 
   public void setListBackupPlanAssociationsRetry(Retry listBackupPlanAssociationsRetry) {
     this.listBackupPlanAssociationsRetry = listBackupPlanAssociationsRetry;
+  }
+
+  public Retry getFetchBackupPlanAssociationsForResourceTypeRetry() {
+    return this.fetchBackupPlanAssociationsForResourceTypeRetry;
+  }
+
+  public void setFetchBackupPlanAssociationsForResourceTypeRetry(
+      Retry fetchBackupPlanAssociationsForResourceTypeRetry) {
+    this.fetchBackupPlanAssociationsForResourceTypeRetry =
+        fetchBackupPlanAssociationsForResourceTypeRetry;
+  }
+
+  public Retry getGetDataSourceReferenceRetry() {
+    return this.getDataSourceReferenceRetry;
+  }
+
+  public void setGetDataSourceReferenceRetry(Retry getDataSourceReferenceRetry) {
+    this.getDataSourceReferenceRetry = getDataSourceReferenceRetry;
+  }
+
+  public Retry getFetchDataSourceReferencesForResourceTypeRetry() {
+    return this.fetchDataSourceReferencesForResourceTypeRetry;
+  }
+
+  public void setFetchDataSourceReferencesForResourceTypeRetry(
+      Retry fetchDataSourceReferencesForResourceTypeRetry) {
+    this.fetchDataSourceReferencesForResourceTypeRetry =
+        fetchDataSourceReferencesForResourceTypeRetry;
   }
 
   public Retry getListLocationsRetry() {

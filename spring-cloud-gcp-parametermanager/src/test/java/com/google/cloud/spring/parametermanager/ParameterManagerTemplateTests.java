@@ -24,11 +24,16 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.api.gax.grpc.GrpcStatusCode;
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.parametermanager.v1.CreateParameterRequest;
 import com.google.cloud.parametermanager.v1.CreateParameterVersionRequest;
 import com.google.cloud.parametermanager.v1.DeleteParameterRequest;
 import com.google.cloud.parametermanager.v1.DeleteParameterVersionRequest;
+import com.google.cloud.parametermanager.v1.GetParameterRequest;
+import com.google.cloud.parametermanager.v1.GetParameterVersionRequest;
 import com.google.cloud.parametermanager.v1.LocationName;
 import com.google.cloud.parametermanager.v1.Parameter;
 import com.google.cloud.parametermanager.v1.ParameterFormat;
@@ -37,9 +42,12 @@ import com.google.cloud.parametermanager.v1.ParameterName;
 import com.google.cloud.parametermanager.v1.ParameterVersion;
 import com.google.cloud.parametermanager.v1.ParameterVersionName;
 import com.google.cloud.parametermanager.v1.ParameterVersionPayload;
+import com.google.cloud.parametermanager.v1.RenderParameterVersionResponse;
 import com.google.cloud.parametermanager.v1.UpdateParameterVersionRequest;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.util.FieldMaskUtil;
+import io.grpc.Status;
+import java.lang.reflect.Method;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -432,6 +440,259 @@ class ParameterManagerTemplateTests {
         "custom-project", "custom-location", parameterId, versionId);
     verifyEnableDisableParameterVersionRequest(
         parameterId, versionId, "custom-project", "custom-location", true);
+  }
+
+  @Test
+  void testGetRenderedParameterByteString_withParameterIdentifier() {
+    String parameterIdentifier = "pm@global/my-parameter/v1";
+    ByteString expectedData = ByteString.copyFromUtf8("rendered parameter data");
+
+    ParameterVersionName parameterVersionName = ParameterVersionName.of(
+        "my-project", "global", "my-parameter", "v1");
+
+    RenderParameterVersionResponse mockResponse = mock(RenderParameterVersionResponse.class);
+    when(mockResponse.getRenderedPayload()).thenReturn(expectedData);
+
+    when(client.renderParameterVersion(parameterVersionName))
+        .thenReturn(mockResponse);
+
+    byte[] result = this.parameterManagerTemplate.renderedParameterVersionBytes(parameterIdentifier);
+
+    assertThat(result).isEqualTo(expectedData.toByteArray());
+  }
+
+  @Test
+  void testGetRenderedParameterByteString_withParameterVersionName() {
+    ParameterVersionName parameterVersionName = ParameterVersionName.of(
+        "my-project", "global", "my-parameter", "v1");
+    ByteString expectedData = ByteString.copyFromUtf8("rendered parameter data");
+
+    RenderParameterVersionResponse mockResponse = mock(RenderParameterVersionResponse.class);
+    when(mockResponse.getRenderedPayload()).thenReturn(expectedData);
+
+    when(client.renderParameterVersion(parameterVersionName))
+        .thenReturn(mockResponse);
+
+    ByteString result = invokeGetRenderedParameterByteString(parameterVersionName);
+
+    assertThat(result).isEqualTo(expectedData);
+  }
+
+  @Test
+  void testGetRenderedParameterByteString_notFoundAndDefaultNotAllowed() {
+    ParameterVersionName parameterVersionName = ParameterVersionName.of(
+        "my-project", "global", "non-existent-parameter", "v1");
+
+    NotFoundException notFoundException = new NotFoundException(
+        "Parameter not found",
+        new RuntimeException("Not found"),
+        GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
+        false);
+
+    when(client.renderParameterVersion(parameterVersionName))
+        .thenThrow(notFoundException);
+
+    this.parameterManagerTemplate.setAllowDefaultParameterValue(false);
+
+    assertThatThrownBy(() -> invokeGetRenderedParameterByteString(parameterVersionName))
+        .isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  void testGetRenderedParameterByteString_notFoundAndDefaultAllowed() {
+    ParameterVersionName parameterVersionName = ParameterVersionName.of(
+        "my-project", "global", "non-existent-parameter", "v1");
+
+    NotFoundException notFoundException = new NotFoundException(
+        "Parameter not found",
+        new RuntimeException("Not found"),
+        GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
+        false);
+
+    when(client.renderParameterVersion(parameterVersionName))
+        .thenThrow(notFoundException);
+
+    this.parameterManagerTemplate.setAllowDefaultParameterValue(true);
+
+    ByteString result = invokeGetRenderedParameterByteString(parameterVersionName);
+
+    assertThat(result).isNull();
+  }
+
+  @Test
+  void testParameterExists_withLocationAndParameterId() {
+    String locationId = "global";
+    String parameterId = "my-parameter";
+    String projectId = "my-project";
+
+    ParameterName parameterName = ParameterName.of(projectId, locationId, parameterId);
+
+    when(client.getParameter(parameterName)).thenReturn(Parameter.newBuilder().build());
+
+    boolean result = parameterManagerTemplate.parameterExists(locationId, parameterId);
+
+    assertThat(result).isTrue();
+    verify(client).getParameter(parameterName);
+  }
+
+  @Test
+  void testParameterExists_withProjectLocationAndParameterId() {
+    String locationId = "global";
+    String parameterId = "my-parameter";
+    String projectId = "my-project";
+
+    ParameterName parameterName = ParameterName.of(projectId, locationId, parameterId);
+
+    when(client.getParameter(parameterName)).thenReturn(Parameter.newBuilder().build());
+
+    boolean result = parameterManagerTemplate.parameterExists(projectId, locationId, parameterId);
+
+    assertThat(result).isTrue();
+    verify(client).getParameter(parameterName);
+  }
+
+  @Test
+  void testParameterVersionExists_withLocationParameterAndVersionId() {
+    String locationId = "global";
+    String parameterId = "my-parameter";
+    String versionId = "v1";
+    String projectId = "my-project";
+
+    ParameterVersionName parameterVersionName = ParameterVersionName.of(
+        projectId, locationId, parameterId, versionId);
+    GetParameterVersionRequest request = GetParameterVersionRequest.newBuilder()
+        .setName(parameterVersionName.toString())
+        .build();
+
+    when(client.getParameterVersion(request)).thenReturn(ParameterVersion.newBuilder().build());
+
+    boolean result = parameterManagerTemplate.parameterVersionExists(locationId, parameterId, versionId);
+
+    assertThat(result).isTrue();
+    verify(client).getParameterVersion(request);
+  }
+
+  @Test
+  void testParameterVersionExists_withProjectLocationParameterAndVersionId() {
+    String projectId = "custom-project";
+    String locationId = "global";
+    String parameterId = "my-parameter";
+    String versionId = "v1";
+
+    ParameterVersionName parameterVersionName = ParameterVersionName.of(
+        projectId, locationId, parameterId, versionId);
+    GetParameterVersionRequest request = GetParameterVersionRequest.newBuilder()
+        .setName(parameterVersionName.toString())
+        .build();
+
+    when(client.getParameterVersion(request)).thenReturn(ParameterVersion.newBuilder().build());
+
+    boolean result = parameterManagerTemplate.parameterVersionExists(
+        projectId, locationId, parameterId, versionId);
+
+    assertThat(result).isTrue();
+    verify(client).getParameterVersion(request);
+  }
+
+  @Test
+  void testRenderedParameterVersionString() {
+    String parameterIdentifier = "pm@global/my-parameter/v1";
+    String expectedValue = "test-value";
+    ByteString byteString = ByteString.copyFromUtf8(expectedValue);
+
+    ParameterVersionName parameterVersionName = ParameterVersionName.of(
+        "my-project", "global", "my-parameter", "v1");
+
+    RenderParameterVersionResponse mockResponse = mock(RenderParameterVersionResponse.class);
+    when(mockResponse.getRenderedPayload()).thenReturn(byteString);
+
+    when(client.renderParameterVersion(parameterVersionName))
+        .thenReturn(mockResponse);
+
+    String result = parameterManagerTemplate.renderedParameterVersionString(parameterIdentifier);
+
+    assertThat(result).isEqualTo(expectedValue);
+  }
+
+  @Test
+  void testRenderedParameterVersionString_returnsNullWhenByteStringIsNull() {
+    String parameterIdentifier = "pm@global/non-existent-parameter/v1";
+
+    ParameterVersionName parameterVersionName = ParameterVersionName.of(
+        "my-project", "global", "non-existent-parameter", "v1");
+
+    NotFoundException notFoundException = new NotFoundException(
+        "Parameter not found",
+        new RuntimeException("Not found"),
+        GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
+        false);
+
+    when(client.renderParameterVersion(parameterVersionName))
+        .thenThrow(notFoundException);
+
+    parameterManagerTemplate.setAllowDefaultParameterValue(true);
+
+    String result = parameterManagerTemplate.renderedParameterVersionString(parameterIdentifier);
+
+    assertThat(result).isNull();
+  }
+
+  @Test
+  void testRenderedParameterVersionBytes() {
+    String parameterIdentifier = "pm@global/my-parameter/v1";
+    String valueString = "test-value";
+    ByteString byteString = ByteString.copyFromUtf8(valueString);
+    byte[] expectedBytes = byteString.toByteArray();
+
+    ParameterVersionName parameterVersionName = ParameterVersionName.of(
+        "my-project", "global", "my-parameter", "v1");
+
+    RenderParameterVersionResponse mockResponse = mock(RenderParameterVersionResponse.class);
+    when(mockResponse.getRenderedPayload()).thenReturn(byteString);
+
+    when(client.renderParameterVersion(parameterVersionName))
+        .thenReturn(mockResponse);
+
+    byte[] result = parameterManagerTemplate.renderedParameterVersionBytes(parameterIdentifier);
+
+    assertThat(result).isEqualTo(expectedBytes);
+  }
+
+  @Test
+  void testRenderedParameterVersionBytes_returnsNullWhenByteStringIsNull() {
+    String parameterIdentifier = "pm@global/non-existent-parameter/v1";
+
+    ParameterVersionName parameterVersionName = ParameterVersionName.of(
+        "my-project", "global", "non-existent-parameter", "v1");
+
+    NotFoundException notFoundException = new NotFoundException(
+        "Parameter not found",
+        new RuntimeException("Not found"),
+        GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
+        false);
+
+    when(client.renderParameterVersion(parameterVersionName))
+        .thenThrow(notFoundException);
+
+    parameterManagerTemplate.setAllowDefaultParameterValue(true);
+
+    byte[] result = parameterManagerTemplate.renderedParameterVersionBytes(parameterIdentifier);
+
+    assertThat(result).isNull();
+  }
+
+  private ByteString invokeGetRenderedParameterByteString(ParameterVersionName parameterVersionName) {
+    try {
+      Method method = ParameterManagerTemplate.class.getDeclaredMethod(
+          "getRenderedParameterByteString", ParameterVersionName.class);
+      method.setAccessible(true);
+      return (ByteString) method.invoke(parameterManagerTemplate, parameterVersionName);
+    } catch (Exception e) {
+      if (e.getCause() instanceof RuntimeException) {
+        throw (RuntimeException) e.getCause();
+      }
+      throw new RuntimeException("Failed to invoke getRenderedParameterByteString", e);
+    }
   }
 
   private void verifyCreateParameterRequest(

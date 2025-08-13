@@ -1,6 +1,12 @@
 {
   "properties": [
     {
+      "name": "com.google.cloud.discoveryengine.v1.assistant-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/AssistantService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.discoveryengine.v1.cmek-config-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud discoveryengine/CmekConfigService components.",
@@ -94,6 +100,12 @@
       "name": "com.google.cloud.discoveryengine.v1.serving-config-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud discoveryengine/ServingConfigService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.discoveryengine.v1.session-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud discoveryengine/SessionService components.",
       "defaultValue": true
     },
     {
