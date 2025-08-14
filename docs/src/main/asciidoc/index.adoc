@@ -73,6 +73,8 @@ include::kotlin.adoc[]
 
 include::alloydb.adoc[]
 
+include::parametermanager.adoc[]
+
 == Configuration properties
 
 To see the list of all Google Cloud related configuration properties please check link:appendix.html[the Appendix page].
