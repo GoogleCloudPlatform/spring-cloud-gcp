@@ -57,21 +57,23 @@ class ParameterManagerConfigDataLocationResolverUnitTests {
     @Test
     void isResolvableReturnsFalseWithIncorrectPrefix() {
       assertThat(resolver.isResolvable(context, ConfigDataLocation.of("test://"))).isFalse();
-      assertThat(resolver.isResolvable(context, ConfigDataLocation.of("sm:"))).isFalse();
+      assertThat(resolver.isResolvable(context, ConfigDataLocation.of("pm:"))).isFalse();
     }
 
+    @Test
     void isResolvableReturnsFalseWithCorrectPrefix() {
-      assertThat(resolver.isResolvable(context, ConfigDataLocation.of("sm@"))).isTrue();
+      assertThat(resolver.isResolvable(context, ConfigDataLocation.of("pm@"))).isTrue();
     }
 
+    @Test
     void resolveReturnsConfigDataLocation() {
       List<ParameterManagerConfigDataResource> locations =
-          resolver.resolve(context, ConfigDataLocation.of("sm@my-parameter"));
+          resolver.resolve(context, ConfigDataLocation.of("pm@my-parameter"));
       assertThat(locations).hasSize(1);
       assertThat(locations)
           .first()
           .extracting("location")
-          .isEqualTo(ConfigDataLocation.of("sm@my-parameter"));
+          .isEqualTo(ConfigDataLocation.of("pm@my-parameter"));
       ConfigurableApplicationContext applicationContext =
           mock(ConfigurableApplicationContext.class);
       when(applicationContext.getBeanFactory()).thenReturn(new DefaultListableBeanFactory());
@@ -152,21 +154,23 @@ class ParameterManagerConfigDataLocationResolverUnitTests {
     @Test
     void isResolvableReturnsFalseWithIncorrectPrefix() {
       assertThat(resolver.isResolvable(context, ConfigDataLocation.of("test://"))).isFalse();
-      assertThat(resolver.isResolvable(context, ConfigDataLocation.of("sm:"))).isFalse();
+      assertThat(resolver.isResolvable(context, ConfigDataLocation.of("pm:"))).isFalse();
     }
 
+    @Test
     void isResolvableReturnsFalseWithCorrectPrefix() {
-      assertThat(resolver.isResolvable(context, ConfigDataLocation.of("sm@"))).isTrue();
+      assertThat(resolver.isResolvable(context, ConfigDataLocation.of("pm@"))).isTrue();
     }
 
+    @Test
     void resolveReturnsConfigDataLocation() {
       List<ParameterManagerConfigDataResource> locations =
-          resolver.resolve(context, ConfigDataLocation.of("sm@my-parameter"));
+          resolver.resolve(context, ConfigDataLocation.of("pm@my-parameter"));
       assertThat(locations).hasSize(1);
       assertThat(locations)
           .first()
           .extracting("location")
-          .isEqualTo(ConfigDataLocation.of("sm@my-parameter"));
+          .isEqualTo(ConfigDataLocation.of("pm@my-parameter"));
       ConfigurableApplicationContext applicationContext =
           mock(ConfigurableApplicationContext.class);
       when(applicationContext.getBeanFactory()).thenReturn(new DefaultListableBeanFactory());
