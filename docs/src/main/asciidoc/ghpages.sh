@@ -153,6 +153,13 @@ function copy_docs_for_current_version() {
                 git add -A "${ROOT_FOLDER}/$file"
             fi
         done
+
+        echo -e "Updating root documentation to point to version [${VERSION}]"
+        for f in "${ROOT_FOLDER}"/docs/target/generated-docs/\*; do
+          file=${f#${ROOT_FOLDER}/docs/target/generated-docs/\*}
+          copy_docs_for_branch "${file}" "${DESTINATION_REPO_FOLDER}"
+        done
+
         COMMIT_CHANGES="yes"
     else
         echo -e "Current branch is [${CURRENT_BRANCH}]"
