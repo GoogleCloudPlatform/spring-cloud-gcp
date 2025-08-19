@@ -189,10 +189,18 @@ function copy_docs_for_provided_version() {
     local FOLDER=${DESTINATION_REPO_FOLDER}/${VERSION}
     mkdir -p "${FOLDER}"
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
-    for f in "${ROOT_FOLDER}"/docs/target/generated-docs/*; do
-        file=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
+    echo -e "Also updating root documentation to point to version [${VERSION}]"
+
+    for f in "${ROOT_FOLDER}"/docs/target/generated-docs/\*; do
+        file=${f#${ROOT_FOLDER}/docs/target/generated-docs/\*}
+
+        # Copy to the version-specific folder
         copy_docs_for_branch "${file}" "${FOLDER}"
+
+        # Copy to the root folder
+        copy_docs_for_branch "${file}" "${DESTINATION_REPO_FOLDER}"
     done
+
     COMMIT_CHANGES="yes"
     CURRENT_BRANCH="v${VERSION}"
 }
