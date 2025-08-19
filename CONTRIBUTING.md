@@ -62,8 +62,9 @@ Consult
    messages ([commit message best practices](https://chris.beams.io/posts/git-commit/))
 4. Ensure that your code adheres to the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html).
 5. Ensure your code has an appropriate set of unit tests which all pass.
-6. If you haven’t already done so, sign a [Contributor License Agreement](https://cla.developers.google.com/).
-7. Create a [pull request](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pulls) with the proposed code change,
+6. Ensure that your changes meet the code coverage requirement of 80% or higher on new code.
+7. If you haven’t already done so, sign a [Contributor License Agreement](https://cla.developers.google.com/).
+8. Create a [pull request](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pulls) with the proposed code change,
    to be reviewed by a member of the team.
 
 ## Code Style
