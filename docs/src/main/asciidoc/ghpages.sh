@@ -191,8 +191,8 @@ function copy_docs_for_provided_version() {
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
     echo -e "Also updating root documentation to point to version [${VERSION}]"
 
-    for f in "${ROOT_FOLDER}"/docs/target/generated-docs/\*; do
-        file=${f#${ROOT_FOLDER}/docs/target/generated-docs/\*}
+    for f in "${ROOT_FOLDER}"/docs/target/generated-docs/*; do
+        file=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
 
         # Copy to the version-specific folder
         copy_docs_for_branch "${file}" "${FOLDER}"
