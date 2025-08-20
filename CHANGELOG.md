@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.3.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.3.1...v6.3.2) (2025-08-19)
+
+
+### Bug Fixes
+
+* **spanner:** check for empty before delete ([#4047](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4047)) ([#4077](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4077)) ([cb1f687](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cb1f6877ca42e9c4ebe736819a6c7c8179f4126d)), closes [#4046](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4046)
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.65.0 to 26.66.0 ([#4067](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4067)) ([970c11c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/970c11ca847ab9f4ceade3bb0276e3e7f56a0f23))
+
 ## [6.3.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.3.0...v6.3.1) (2025-08-02)
 
 
