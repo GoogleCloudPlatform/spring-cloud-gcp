@@ -65,6 +65,8 @@ include::secretmanager.adoc[]
 
 include::kms.adoc[]
 
+include::parameter.adoc[]
+
 include::config.adoc[]
 
 include::cloudfoundry.adoc[]
