@@ -14,6 +14,29 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.2.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.1.0...v7.2.0) (2025-08-19)
+
+
+### Features
+
+* Update root reference docs with latest version ([#4081](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4081)) ([20c45f9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/20c45f926e057b65074afdd3a19278aa5b17b829))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.api:gapic-generator-java-bom to v2.61.0 ([#4071](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4071)) ([f96a628](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f96a628b2d8e2c49f90941924ce7740cdad249b6))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.66.0 ([#4070](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4070)) ([4aa58cd](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4aa58cdeec8dbc5cae149dc6e8a9f6d2ab8e72d8))
+* **doc:** fix secret manager section header levels ([#4060](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4060)) ([82df717](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/82df717715e092ee013c5324d67ce502c7d5fe88)), closes [#4072](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4072)
+* **docs:** add missing parameter.adoc to documentation index ([#4069](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4069)) ([23dc9ae](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/23dc9ae7651e0f388908b1afcde0dc69f0b68527))
+* remove unnecessary backslashes ([#4083](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4083)) ([0cfe9d9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0cfe9d909ae7df9dba3fe894a013aaa5da6b2cfd))
+* **spanner:** check for empty before delete ([#4047](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4047)) ([b50c092](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b50c092c7e7ac8b78e6fb9569e266bb1cb82a4cc))
+
+
+### Documentation
+
+* Add 80% test coverage requirement for new code ([#4062](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4062)) ([092a1dd](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/092a1dd0ddda35914a0dfbd11957afe891e00f51))
+* update reference documentation links to the latest ([#4049](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4049)) ([4e66678](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4e666789df18f072c325dbcac2286bbe3f387ae8))
+
 ## [7.1.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.0.0...v7.1.0) (2025-08-01)
 
 
