@@ -363,6 +363,7 @@
 			<module>spring-cloud-gcp-storage</module>
 			<module>spring-cloud-gcp-vision</module>
 			<module>spring-cloud-gcp-data-spanner</module>
+			<module>spring-cloud-gcp-parametermanager</module>
 			<module>spring-cloud-gcp-secretmanager</module>
 			<module>spring-cloud-gcp-kms</module>
 			<module>spring-cloud-gcp-data-datastore</module>
@@ -403,6 +404,7 @@
 							<it.datastore>true</it.datastore>
 							<it.firestore>true</it.firestore>
 							<it.bigquery>true</it.bigquery>
+							<it.parametermanager>true</it.parametermanager>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>
@@ -464,6 +466,7 @@
 				<module>spring-cloud-gcp-data-firestore</module>
 				<module>spring-cloud-gcp-data-spanner</module>
 				<module>spring-cloud-gcp-logging</module>
+				<module>spring-cloud-gcp-parametermanager</module>
 				<module>spring-cloud-gcp-pubsub</module>
 				<module>spring-cloud-gcp-pubsub-stream-binder</module>
 				<module>spring-cloud-gcp-security-iap</module>
@@ -497,6 +500,7 @@
 				<module>spring-cloud-gcp-data-firestore</module>
 				<module>spring-cloud-gcp-data-spanner</module>
 				<module>spring-cloud-gcp-logging</module>
+				<module>spring-cloud-gcp-parametermanager</module>
 				<module>spring-cloud-gcp-pubsub</module>
 				<module>spring-cloud-gcp-pubsub-stream-binder</module>
 				<module>spring-cloud-gcp-security-iap</module>
@@ -719,6 +723,7 @@
 				<module>spring-cloud-gcp-data-firestore</module>
 				<module>spring-cloud-gcp-data-spanner</module>
 				<module>spring-cloud-gcp-logging</module>
+				<module>spring-cloud-gcp-parametermanager</module>
 				<module>spring-cloud-gcp-pubsub</module>
 				<module>spring-cloud-gcp-pubsub-stream-binder</module>
 				<module>spring-cloud-gcp-security-iap</module>
