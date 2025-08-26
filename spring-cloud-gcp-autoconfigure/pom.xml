@@ -275,6 +275,17 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Parameter Manager -->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>spring-cloud-gcp-parametermanager</artifactId>
+            <!-- A few starters need this dependency to validate parameter -->
+            <!-- using ParameterManagerSyntaxUtils. Making it optional produces runtime failures -->
+            <!-- of the kind ClassNotFoundError. -->
+            <optional>false</optional>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Secret Manager -->
         <dependency>
             <groupId>com.google.cloud</groupId>
