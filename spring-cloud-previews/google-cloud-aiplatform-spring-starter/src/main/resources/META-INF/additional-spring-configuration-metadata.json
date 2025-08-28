@@ -1,6 +1,12 @@
 {
   "properties": [
     {
+      "name": "com.google.cloud.aiplatform.v1.data-foundry-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud aiplatform/DataFoundryService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.aiplatform.v1.dataset-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud aiplatform/DatasetService components.",
