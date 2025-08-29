@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.13.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.13.2...v5.13.3) (2025-08-28)
+
+
+### Bug Fixes
+
+* **pubsub-bus-sample:** use Spring Cloud 2023.x dependencies ([#4097](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4097)) ([b3a8be6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b3a8be6e6b3de350b62e8f2c012b8b26d708127e))
+
+
+### Dependencies
+
+* Update libraries-bom to v26.67.0 ([#4102](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4102)) ([afba3f9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/afba3f980294d351d610e89375f406959cf11bf1))
+
 ## [5.13.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.13.1...v5.13.2) (2025-08-20)
 
 
