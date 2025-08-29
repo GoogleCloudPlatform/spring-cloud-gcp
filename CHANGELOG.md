@@ -14,6 +14,19 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.3.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.2.0...v7.3.0) (2025-08-29)
+
+
+### Features
+
+* **parametermanager:** add support for gcp parameter manager service ([#3699](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3699)) ([c0748f1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c0748f1a560324b990baaa82a22a74166387f147))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.67.0 ([#4104](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4104)) ([e8aec00](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e8aec00b403962478258b42334654540e13f61cc))
+* **deps:** update gapic-generator-java-bom.version to v2.62.0 ([#4099](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4099)) ([8a91c2c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8a91c2cbff3a13ae418a6654b58a8bb531a0257d))
+
 ## [7.2.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.1.0...v7.2.0) (2025-08-19)
 
 
