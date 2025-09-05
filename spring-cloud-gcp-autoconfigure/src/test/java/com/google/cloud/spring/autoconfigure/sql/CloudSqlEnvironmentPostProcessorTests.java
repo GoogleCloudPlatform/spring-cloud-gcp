@@ -100,6 +100,24 @@ class CloudSqlEnvironmentPostProcessorTests {
             });
   }
 
+    @Test
+    void testCloudSqlDataSourceWithDnsName() {
+        this.contextRunner
+                .withPropertyValues(
+                        "spring.cloud.gcp.sql.dns-name=myinstance.example.com",
+                        "spring.datasource.password=")
+                .run(
+                        context -> {
+                            HikariDataSource dataSource = (HikariDataSource) context.getBean(DataSource.class);
+                            assertThat(dataSource.getDriverClassName()).matches("com.mysql.cj.jdbc.Driver");
+                            assertThat(dataSource.getJdbcUrl())
+                                    .isEqualTo(
+                                            "jdbc:mysql://myinstance.example.com/test-database?"
+                                                    + "socketFactory=com.google.cloud.sql.mysql.SocketFactory");
+                            assertThat(dataSource.getUsername()).matches("root");
+                            assertThat(dataSource.getPassword()).isNull();
+                        });
+    }
   @Test
   void testCloudSqlDataSourceWithIgnoredProvidedUrl() {
     this.contextRunner
