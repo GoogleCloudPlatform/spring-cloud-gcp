@@ -28,6 +28,9 @@ public class GcpCloudSqlProperties {
   /** Cloud SQL instance connection name. [GCP_PROJECT_ID]:[INSTANCE_REGION]:[INSTANCE_NAME]. */
   private String instanceConnectionName;
 
+  /** The DNS name for the instance, for example mydb.example.com. */
+  private String dnsName;
+
   /** A comma delimited list of preferred IP types for connecting to the Cloud SQL instance. */
   private String ipTypes;
 
@@ -89,6 +92,14 @@ public class GcpCloudSqlProperties {
 
   public void setInstanceConnectionName(String instanceConnectionName) {
     this.instanceConnectionName = instanceConnectionName;
+  }
+
+  public String getDnsName() {
+    return dnsName;
+  }
+
+  public void setDnsName(String dnsName) {
+    this.dnsName = dnsName;
   }
 
   public String getIpTypes() {
