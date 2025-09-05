@@ -35,6 +35,7 @@ import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
+import com.google.cloud.spring.pubsub.core.subscriber.SubscriberCustomizer;
 import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
@@ -1359,6 +1360,30 @@ class GcpPubSubAutoConfigurationTests {
   }
 
   @Test
+  void createSubscriberWithCustomizer() {
+    contextRunner
+        .withUserConfiguration(SubscriberCustomizerConfig.class)
+        .run(ctx -> {
+          DefaultSubscriberFactory subscriberFactory =
+              ctx.getBean("defaultSubscriberFactory", DefaultSubscriberFactory.class);
+          List<SubscriberCustomizer> customizers =
+              (List<SubscriberCustomizer>) FieldUtils.readField(subscriberFactory, "customizers", true);
+          assertThat(customizers)
+              .hasSize(3);
+          assertThat(customizers.get(0)).isInstanceOf(NoopSubscriberCustomizer.class);
+          assertThat(customizers.get(1)).isInstanceOf(NoopSubscriberCustomizer.class);
+          // DefaultSubscriberFactory applies highest priority last
+          assertThat(customizers.get(2)).isInstanceOf(EndpointCustomizer.class);
+
+          Subscriber subscriber =
+              subscriberFactory.createSubscriber("subscription-name", (message, consumer) -> {
+              });
+          assertThat(subscriber.getFlowControlSettings())
+              .isEqualTo(Subscriber.Builder.getDefaultFlowControlSettings());
+        });
+  }
+
+  @Test
   void createPublisherWithCustomizer() {
     contextRunner
         .withUserConfiguration(CustomizerConfig.class)
@@ -1497,6 +1522,42 @@ class GcpPubSubAutoConfigurationTests {
     @Override
     public void apply(Publisher.Builder publisherBuilder, String topic) {
       publisherBuilder.setBatchingSettings(TEST_BATCHING_SETTINGS);
+    }
+  }
+
+  @Configuration
+  static class SubscriberCustomizerConfig {
+
+    @Bean
+    NoopSubscriberCustomizer noopSub1() {
+      return new NoopSubscriberCustomizer();
+    }
+
+    @Bean
+    NoopSubscriberCustomizer noopSub2() {
+      return new NoopSubscriberCustomizer();
+    }
+
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @Bean
+    EndpointCustomizer endpointCustomizer() {
+      return new EndpointCustomizer();
+    }
+  }
+
+  static class NoopSubscriberCustomizer implements SubscriberCustomizer {
+
+    @Override
+    public void apply(Subscriber.Builder subscriberBuilder, String topic) {
+      // do nothing
+    }
+  }
+
+  static class EndpointCustomizer implements SubscriberCustomizer {
+
+    @Override
+    public void apply(Subscriber.Builder subscriberBuilder, String subscription) {
+      subscriberBuilder.setEndpoint("https://example.com");
     }
   }
 
