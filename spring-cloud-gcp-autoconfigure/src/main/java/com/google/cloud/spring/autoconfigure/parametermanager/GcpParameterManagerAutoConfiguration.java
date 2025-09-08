@@ -72,7 +72,7 @@ public class GcpParameterManagerAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public ParameterManagerClientFactory clientFactory(ParameterManagerClient client) {
+  public ParameterManagerClientFactory parameterClientFactory(ParameterManagerClient client) {
     return new DefaultParameterManagerClientFactory(this.credentialsProvider, client);
   }
 
