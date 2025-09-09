@@ -22,6 +22,7 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerAutoConfiguration;
 import com.google.cloud.spring.parametermanager.ParameterManagerClientFactory;
 import com.google.cloud.spring.parametermanager.ParameterManagerTemplate;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +42,13 @@ class GcpParameterManagerAutoConfigurationUnitTests {
             GcpContextAutoConfiguration.class))
         .withPropertyValues("spring.cloud.gcp.project-id=globalProject")
         .withUserConfiguration(TestConfig.class);
+  }
+
+  @Test
+  void testParameterManagerDependencyWithoutConfigImportShouldNotCrash() {
+    contextRunner
+        .withConfiguration(AutoConfigurations.of(GcpSecretManagerAutoConfiguration.class))
+        .run(ctx -> assertThat(ctx).hasSingleBean(ParameterManagerClientFactory.class));
   }
 
   @Test

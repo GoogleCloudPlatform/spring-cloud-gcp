@@ -22,6 +22,7 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.parametermanager.GcpParameterManagerAutoConfiguration;
 import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +42,13 @@ class GcpSecretManagerAutoConfigurationUnitTests {
             GcpContextAutoConfiguration.class))
         .withPropertyValues("spring.cloud.gcp.project-id=globalProject")
         .withUserConfiguration(TestConfig.class);
+  }
+
+  @Test
+  void testSecretManagerDependencyWithoutConfigImportShouldNotCrash() {
+    contextRunner
+        .withConfiguration(AutoConfigurations.of(GcpParameterManagerAutoConfiguration.class))
+        .run(ctx -> assertThat(ctx).hasSingleBean(SecretManagerServiceClientFactory.class));
   }
 
   @Test
