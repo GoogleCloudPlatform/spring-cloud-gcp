@@ -25,6 +25,7 @@ import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.secretmanager.GcpSecretManagerAutoConfiguration;
 import com.google.cloud.spring.parametermanager.ParameterManagerClientFactory;
 import com.google.cloud.spring.parametermanager.ParameterManagerTemplate;
+import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -49,6 +50,16 @@ class GcpParameterManagerAutoConfigurationUnitTests {
     contextRunner
         .withConfiguration(AutoConfigurations.of(GcpSecretManagerAutoConfiguration.class))
         .run(ctx -> assertThat(ctx).hasSingleBean(ParameterManagerClientFactory.class));
+  }
+
+  @Test
+  void testParameterManagerDependencyWithoutConfigImportShouldHaveSingletonBeanForPmAndSm() {
+    contextRunner
+        .withConfiguration(AutoConfigurations.of(GcpSecretManagerAutoConfiguration.class))
+        .run(ctx -> {
+          assertThat(ctx).hasSingleBean(ParameterManagerClientFactory.class);
+          assertThat(ctx).hasSingleBean(SecretManagerServiceClientFactory.class);
+        });
   }
 
   @Test
