@@ -28,7 +28,6 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-parametermanager</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
