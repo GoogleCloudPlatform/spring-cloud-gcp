@@ -78,4 +78,10 @@ public class GcpSecretManagerAutoConfiguration {
     return new SecretManagerTemplate(client, this.gcpProjectIdProvider)
         .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
   }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public SecretManagerServiceClientFactory secretManagerClientFactory() {
+    return new DefaultSecretManagerServiceClientFactory(this.credentialsProvider);
+  }
 }
