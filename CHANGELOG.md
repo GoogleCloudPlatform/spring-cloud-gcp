@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.3.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.3.0...v7.3.1) (2025-09-12)
+
+
+### Bug Fixes
+
+* **parametermanager:** fix invalid bean definition named 'clientFactory' ([#4127](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4127)) ([1c98540](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1c985408dc6bafd500b640f1cf035c8d01005ad3))
+
 ## [7.3.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.2.0...v7.3.0) (2025-08-29)
 
 
