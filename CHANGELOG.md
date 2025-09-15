@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [5.13.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.13.3...v5.13.4) (2025-09-15)
+
+
+### Dependencies
+
+* Update libraries-bom to v26.68.0 ([#4138](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4138)) ([3539fee](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3539feec0b445731a2c6bfbd294fa667f5bd2802))
+
 ## [5.13.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v5.13.2...v5.13.3) (2025-08-28)
 
 
