@@ -1,4 +1,5 @@
 com.google.cloud.networkconnectivity.v1.spring.CrossNetworkAutomationServiceSpringAutoConfiguration
+com.google.cloud.networkconnectivity.v1.spring.DataTransferServiceSpringAutoConfiguration
 com.google.cloud.networkconnectivity.v1.spring.HubServiceSpringAutoConfiguration
 com.google.cloud.networkconnectivity.v1.spring.InternalRangeServiceSpringAutoConfiguration
 com.google.cloud.networkconnectivity.v1.spring.PolicyBasedRoutingServiceSpringAutoConfiguration

@@ -174,6 +174,14 @@ public class VmMigrationSpringAutoConfiguration {
               clientSettingsBuilder.fetchInventorySettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.fetchInventorySettings().setRetrySettings(fetchInventoryRetrySettings);
 
+      RetrySettings fetchStorageInventoryRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchStorageInventorySettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .fetchStorageInventorySettings()
+          .setRetrySettings(fetchStorageInventoryRetrySettings);
+
       RetrySettings listUtilizationReportsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listUtilizationReportsSettings().getRetrySettings(),
@@ -279,6 +287,47 @@ public class VmMigrationSpringAutoConfiguration {
           .getReplicationCycleSettings()
           .setRetrySettings(getReplicationCycleRetrySettings);
 
+      RetrySettings listImageImportsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listImageImportsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listImageImportsSettings()
+          .setRetrySettings(listImageImportsRetrySettings);
+
+      RetrySettings getImageImportRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getImageImportSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getImageImportSettings().setRetrySettings(getImageImportRetrySettings);
+
+      RetrySettings listImageImportJobsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listImageImportJobsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listImageImportJobsSettings()
+          .setRetrySettings(listImageImportJobsRetrySettings);
+
+      RetrySettings getImageImportJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getImageImportJobSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getImageImportJobSettings()
+          .setRetrySettings(getImageImportJobRetrySettings);
+
+      RetrySettings listDiskMigrationJobsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDiskMigrationJobsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listDiskMigrationJobsSettings()
+          .setRetrySettings(listDiskMigrationJobsRetrySettings);
+
+      RetrySettings getDiskMigrationJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDiskMigrationJobSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getDiskMigrationJobSettings()
+          .setRetrySettings(getDiskMigrationJobRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -322,6 +371,20 @@ public class VmMigrationSpringAutoConfiguration {
       clientSettingsBuilder.fetchInventorySettings().setRetrySettings(fetchInventoryRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for fetchInventory from properties.");
+      }
+    }
+    Retry fetchStorageInventoryRetry = clientProperties.getFetchStorageInventoryRetry();
+    if (fetchStorageInventoryRetry != null) {
+      RetrySettings fetchStorageInventoryRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchStorageInventorySettings().getRetrySettings(),
+              fetchStorageInventoryRetry);
+      clientSettingsBuilder
+          .fetchStorageInventorySettings()
+          .setRetrySettings(fetchStorageInventoryRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for fetchStorageInventory from properties.");
       }
     }
     Retry listUtilizationReportsRetry = clientProperties.getListUtilizationReportsRetry();
@@ -522,6 +585,87 @@ public class VmMigrationSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getReplicationCycle from properties.");
+      }
+    }
+    Retry listImageImportsRetry = clientProperties.getListImageImportsRetry();
+    if (listImageImportsRetry != null) {
+      RetrySettings listImageImportsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listImageImportsSettings().getRetrySettings(),
+              listImageImportsRetry);
+      clientSettingsBuilder
+          .listImageImportsSettings()
+          .setRetrySettings(listImageImportsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listImageImports from properties.");
+      }
+    }
+    Retry getImageImportRetry = clientProperties.getGetImageImportRetry();
+    if (getImageImportRetry != null) {
+      RetrySettings getImageImportRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getImageImportSettings().getRetrySettings(),
+              getImageImportRetry);
+      clientSettingsBuilder.getImageImportSettings().setRetrySettings(getImageImportRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getImageImport from properties.");
+      }
+    }
+    Retry listImageImportJobsRetry = clientProperties.getListImageImportJobsRetry();
+    if (listImageImportJobsRetry != null) {
+      RetrySettings listImageImportJobsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listImageImportJobsSettings().getRetrySettings(),
+              listImageImportJobsRetry);
+      clientSettingsBuilder
+          .listImageImportJobsSettings()
+          .setRetrySettings(listImageImportJobsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listImageImportJobs from properties.");
+      }
+    }
+    Retry getImageImportJobRetry = clientProperties.getGetImageImportJobRetry();
+    if (getImageImportJobRetry != null) {
+      RetrySettings getImageImportJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getImageImportJobSettings().getRetrySettings(),
+              getImageImportJobRetry);
+      clientSettingsBuilder
+          .getImageImportJobSettings()
+          .setRetrySettings(getImageImportJobRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getImageImportJob from properties.");
+      }
+    }
+    Retry listDiskMigrationJobsRetry = clientProperties.getListDiskMigrationJobsRetry();
+    if (listDiskMigrationJobsRetry != null) {
+      RetrySettings listDiskMigrationJobsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDiskMigrationJobsSettings().getRetrySettings(),
+              listDiskMigrationJobsRetry);
+      clientSettingsBuilder
+          .listDiskMigrationJobsSettings()
+          .setRetrySettings(listDiskMigrationJobsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listDiskMigrationJobs from properties.");
+      }
+    }
+    Retry getDiskMigrationJobRetry = clientProperties.getGetDiskMigrationJobRetry();
+    if (getDiskMigrationJobRetry != null) {
+      RetrySettings getDiskMigrationJobRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDiskMigrationJobSettings().getRetrySettings(),
+              getDiskMigrationJobRetry);
+      clientSettingsBuilder
+          .getDiskMigrationJobSettings()
+          .setRetrySettings(getDiskMigrationJobRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getDiskMigrationJob from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
