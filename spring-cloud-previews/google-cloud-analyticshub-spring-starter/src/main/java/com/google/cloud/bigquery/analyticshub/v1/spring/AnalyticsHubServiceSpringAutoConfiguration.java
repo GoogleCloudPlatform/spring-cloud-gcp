@@ -282,6 +282,56 @@ public class AnalyticsHubServiceSpringAutoConfiguration {
           .testIamPermissionsSettings()
           .setRetrySettings(testIamPermissionsRetrySettings);
 
+      RetrySettings createQueryTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createQueryTemplateSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .createQueryTemplateSettings()
+          .setRetrySettings(createQueryTemplateRetrySettings);
+
+      RetrySettings getQueryTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getQueryTemplateSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getQueryTemplateSettings()
+          .setRetrySettings(getQueryTemplateRetrySettings);
+
+      RetrySettings listQueryTemplatesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listQueryTemplatesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listQueryTemplatesSettings()
+          .setRetrySettings(listQueryTemplatesRetrySettings);
+
+      RetrySettings updateQueryTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateQueryTemplateSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .updateQueryTemplateSettings()
+          .setRetrySettings(updateQueryTemplateRetrySettings);
+
+      RetrySettings deleteQueryTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteQueryTemplateSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .deleteQueryTemplateSettings()
+          .setRetrySettings(deleteQueryTemplateRetrySettings);
+
+      RetrySettings submitQueryTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.submitQueryTemplateSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .submitQueryTemplateSettings()
+          .setRetrySettings(submitQueryTemplateRetrySettings);
+
+      RetrySettings approveQueryTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.approveQueryTemplateSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .approveQueryTemplateSettings()
+          .setRetrySettings(approveQueryTemplateRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -521,6 +571,104 @@ public class AnalyticsHubServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for testIamPermissions from properties.");
+      }
+    }
+    Retry createQueryTemplateRetry = clientProperties.getCreateQueryTemplateRetry();
+    if (createQueryTemplateRetry != null) {
+      RetrySettings createQueryTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createQueryTemplateSettings().getRetrySettings(),
+              createQueryTemplateRetry);
+      clientSettingsBuilder
+          .createQueryTemplateSettings()
+          .setRetrySettings(createQueryTemplateRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createQueryTemplate from properties.");
+      }
+    }
+    Retry getQueryTemplateRetry = clientProperties.getGetQueryTemplateRetry();
+    if (getQueryTemplateRetry != null) {
+      RetrySettings getQueryTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getQueryTemplateSettings().getRetrySettings(),
+              getQueryTemplateRetry);
+      clientSettingsBuilder
+          .getQueryTemplateSettings()
+          .setRetrySettings(getQueryTemplateRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getQueryTemplate from properties.");
+      }
+    }
+    Retry listQueryTemplatesRetry = clientProperties.getListQueryTemplatesRetry();
+    if (listQueryTemplatesRetry != null) {
+      RetrySettings listQueryTemplatesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listQueryTemplatesSettings().getRetrySettings(),
+              listQueryTemplatesRetry);
+      clientSettingsBuilder
+          .listQueryTemplatesSettings()
+          .setRetrySettings(listQueryTemplatesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listQueryTemplates from properties.");
+      }
+    }
+    Retry updateQueryTemplateRetry = clientProperties.getUpdateQueryTemplateRetry();
+    if (updateQueryTemplateRetry != null) {
+      RetrySettings updateQueryTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateQueryTemplateSettings().getRetrySettings(),
+              updateQueryTemplateRetry);
+      clientSettingsBuilder
+          .updateQueryTemplateSettings()
+          .setRetrySettings(updateQueryTemplateRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateQueryTemplate from properties.");
+      }
+    }
+    Retry deleteQueryTemplateRetry = clientProperties.getDeleteQueryTemplateRetry();
+    if (deleteQueryTemplateRetry != null) {
+      RetrySettings deleteQueryTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteQueryTemplateSettings().getRetrySettings(),
+              deleteQueryTemplateRetry);
+      clientSettingsBuilder
+          .deleteQueryTemplateSettings()
+          .setRetrySettings(deleteQueryTemplateRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteQueryTemplate from properties.");
+      }
+    }
+    Retry submitQueryTemplateRetry = clientProperties.getSubmitQueryTemplateRetry();
+    if (submitQueryTemplateRetry != null) {
+      RetrySettings submitQueryTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.submitQueryTemplateSettings().getRetrySettings(),
+              submitQueryTemplateRetry);
+      clientSettingsBuilder
+          .submitQueryTemplateSettings()
+          .setRetrySettings(submitQueryTemplateRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for submitQueryTemplate from properties.");
+      }
+    }
+    Retry approveQueryTemplateRetry = clientProperties.getApproveQueryTemplateRetry();
+    if (approveQueryTemplateRetry != null) {
+      RetrySettings approveQueryTemplateRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.approveQueryTemplateSettings().getRetrySettings(),
+              approveQueryTemplateRetry);
+      clientSettingsBuilder
+          .approveQueryTemplateSettings()
+          .setRetrySettings(approveQueryTemplateRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for approveQueryTemplate from properties.");
       }
     }
     return clientSettingsBuilder.build();

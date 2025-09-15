@@ -139,6 +139,41 @@ public class AnalyticsHubServiceSpringProperties implements CredentialsSupplier 
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry testIamPermissionsRetry;
+  /**
+   * Allow override of retry settings at method-level for createQueryTemplate. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createQueryTemplateRetry;
+  /**
+   * Allow override of retry settings at method-level for getQueryTemplate. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getQueryTemplateRetry;
+  /**
+   * Allow override of retry settings at method-level for listQueryTemplates. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listQueryTemplatesRetry;
+  /**
+   * Allow override of retry settings at method-level for updateQueryTemplate. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateQueryTemplateRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteQueryTemplate. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteQueryTemplateRetry;
+  /**
+   * Allow override of retry settings at method-level for submitQueryTemplate. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry submitQueryTemplateRetry;
+  /**
+   * Allow override of retry settings at method-level for approveQueryTemplate. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry approveQueryTemplateRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -327,5 +362,61 @@ public class AnalyticsHubServiceSpringProperties implements CredentialsSupplier 
 
   public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
     this.testIamPermissionsRetry = testIamPermissionsRetry;
+  }
+
+  public Retry getCreateQueryTemplateRetry() {
+    return this.createQueryTemplateRetry;
+  }
+
+  public void setCreateQueryTemplateRetry(Retry createQueryTemplateRetry) {
+    this.createQueryTemplateRetry = createQueryTemplateRetry;
+  }
+
+  public Retry getGetQueryTemplateRetry() {
+    return this.getQueryTemplateRetry;
+  }
+
+  public void setGetQueryTemplateRetry(Retry getQueryTemplateRetry) {
+    this.getQueryTemplateRetry = getQueryTemplateRetry;
+  }
+
+  public Retry getListQueryTemplatesRetry() {
+    return this.listQueryTemplatesRetry;
+  }
+
+  public void setListQueryTemplatesRetry(Retry listQueryTemplatesRetry) {
+    this.listQueryTemplatesRetry = listQueryTemplatesRetry;
+  }
+
+  public Retry getUpdateQueryTemplateRetry() {
+    return this.updateQueryTemplateRetry;
+  }
+
+  public void setUpdateQueryTemplateRetry(Retry updateQueryTemplateRetry) {
+    this.updateQueryTemplateRetry = updateQueryTemplateRetry;
+  }
+
+  public Retry getDeleteQueryTemplateRetry() {
+    return this.deleteQueryTemplateRetry;
+  }
+
+  public void setDeleteQueryTemplateRetry(Retry deleteQueryTemplateRetry) {
+    this.deleteQueryTemplateRetry = deleteQueryTemplateRetry;
+  }
+
+  public Retry getSubmitQueryTemplateRetry() {
+    return this.submitQueryTemplateRetry;
+  }
+
+  public void setSubmitQueryTemplateRetry(Retry submitQueryTemplateRetry) {
+    this.submitQueryTemplateRetry = submitQueryTemplateRetry;
+  }
+
+  public Retry getApproveQueryTemplateRetry() {
+    return this.approveQueryTemplateRetry;
+  }
+
+  public void setApproveQueryTemplateRetry(Retry approveQueryTemplateRetry) {
+    this.approveQueryTemplateRetry = approveQueryTemplateRetry;
   }
 }
