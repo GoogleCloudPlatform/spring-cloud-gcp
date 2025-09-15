@@ -123,6 +123,21 @@ public class CatalogServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry cancelMetadataJobRetry;
   /**
+   * Allow override of retry settings at method-level for createEntryLink. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createEntryLinkRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteEntryLink. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteEntryLinkRetry;
+  /**
+   * Allow override of retry settings at method-level for getEntryLink. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getEntryLinkRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -296,6 +311,30 @@ public class CatalogServiceSpringProperties implements CredentialsSupplier {
 
   public void setCancelMetadataJobRetry(Retry cancelMetadataJobRetry) {
     this.cancelMetadataJobRetry = cancelMetadataJobRetry;
+  }
+
+  public Retry getCreateEntryLinkRetry() {
+    return this.createEntryLinkRetry;
+  }
+
+  public void setCreateEntryLinkRetry(Retry createEntryLinkRetry) {
+    this.createEntryLinkRetry = createEntryLinkRetry;
+  }
+
+  public Retry getDeleteEntryLinkRetry() {
+    return this.deleteEntryLinkRetry;
+  }
+
+  public void setDeleteEntryLinkRetry(Retry deleteEntryLinkRetry) {
+    this.deleteEntryLinkRetry = deleteEntryLinkRetry;
+  }
+
+  public Retry getGetEntryLinkRetry() {
+    return this.getEntryLinkRetry;
+  }
+
+  public void setGetEntryLinkRetry(Retry getEntryLinkRetry) {
+    this.getEntryLinkRetry = getEntryLinkRetry;
   }
 
   public Retry getListLocationsRetry() {

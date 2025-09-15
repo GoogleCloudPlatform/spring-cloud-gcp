@@ -1,6 +1,18 @@
 {
   "properties": [
     {
+      "name": "com.google.cloud.networksecurity.v1.address-group-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud networksecurity/AddressGroupService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.networksecurity.v1.organization-address-group-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud networksecurity/OrganizationAddressGroupService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.networksecurity.v1.network-security.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud networksecurity/NetworkSecurity components.",
