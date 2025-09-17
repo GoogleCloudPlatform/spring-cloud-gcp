@@ -16,10 +16,13 @@
 
 package com.google.cloud.spring.autoconfigure.sql;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.google.common.base.Strings;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -39,10 +42,10 @@ public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider
     this.properties = properties;
     this.databaseType = databaseType;
     Assert.hasText(this.properties.getDatabaseName(), "A database name must be provided.");
-    Assert.hasText(
-        properties.getInstanceConnectionName(),
-        "An instance connection name must be provided in the format"
-            + " <PROJECT_ID>:<REGION>:<INSTANCE_ID>.");
+    if (!StringUtils.hasLength(properties.getDnsName()) && ! StringUtils.hasLength(properties.getInstanceConnectionName())) {
+      throw new IllegalArgumentException("A DNS name or instance connection name must be provided. "
+          + "Instance connection should be in the format <PROJECT_ID>:<REGION>:<INSTANCE_ID>.");
+    }
   }
 
   @Override
@@ -52,14 +55,19 @@ public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider
 
   @Override
   public String getJdbcUrl() {
+    String dnsName = StringUtils.hasLength(this.properties.getDnsName()) ? this.properties.getDnsName() : "google";
     String jdbcUrl =
         String.format(
             this.databaseType.getJdbcUrlTemplate(),
+            dnsName,
             this.properties.getDatabaseName(),
             this.properties.getInstanceConnectionName());
 
     // Build additional JDBC url parameters from the configuration.
     Map<String, String> urlParams = new LinkedHashMap<>();
+    if (StringUtils.hasText(properties.getInstanceConnectionName())) {
+      urlParams.put("cloudSqlInstance", properties.getInstanceConnectionName());
+    }
     if (StringUtils.hasText(properties.getIpTypes())) {
       urlParams.put("ipTypes", properties.getIpTypes());
     }
@@ -94,8 +102,20 @@ public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider
     String urlParamsString =
         urlParams.entrySet().stream()
             .map(
-                entry ->
-                    URLEncoder.encode(entry.getKey()) + "=" + URLEncoder.encode(entry.getValue()))
+                entry -> {
+                    try {
+                        if("cloudSqlInstance".equals(entry.getKey())) {
+                          // for consistency with the past implementation, don't encode the instance connection name.
+                          return URLEncoder.encode(entry.getKey(), "UTF-8") + "=" + entry.getValue();
+                        } else {
+                          return URLEncoder.encode(entry.getKey(), "UTF-8") + "=" + URLEncoder.encode(entry.getValue());
+                        }
+                    } catch (UnsupportedEncodingException e) {
+                      // this should never happen, but we need to support JDK 8.
+                      // When we drop JDK8 support, switch to URLEncoder.encode(String,CharSet)
+                        throw new RuntimeException("UTF-8 charset missing.", e);
+                    }
+                })
             .collect(Collectors.joining("&"));
 
     // Append url parameters to the JDBC URL.
