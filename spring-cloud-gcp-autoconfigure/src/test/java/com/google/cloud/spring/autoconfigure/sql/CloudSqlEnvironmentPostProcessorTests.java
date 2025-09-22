@@ -38,8 +38,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.PropertySource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-/** Tests for Cloud SQL {@link CloudSqlEnvironmentPostProcessor}. */
+/**
+ * Tests for Cloud SQL {@link CloudSqlEnvironmentPostProcessor}.
+ */
 class CloudSqlEnvironmentPostProcessorTests {
+
   private CloudSqlEnvironmentPostProcessor initializer = new CloudSqlEnvironmentPostProcessor();
 
   private ApplicationContextRunner contextRunner =
@@ -100,24 +103,25 @@ class CloudSqlEnvironmentPostProcessorTests {
             });
   }
 
-    @Test
-    void testCloudSqlDataSourceWithDnsName() {
-        this.contextRunner
-                .withPropertyValues(
-                        "spring.cloud.gcp.sql.dns-name=myinstance.example.com",
-                        "spring.datasource.password=")
-                .run(
-                        context -> {
-                            HikariDataSource dataSource = (HikariDataSource) context.getBean(DataSource.class);
-                            assertThat(dataSource.getDriverClassName()).matches("com.mysql.cj.jdbc.Driver");
-                            assertThat(dataSource.getJdbcUrl())
-                                    .isEqualTo(
-                                            "jdbc:mysql://myinstance.example.com/test-database?"
-                                                    + "socketFactory=com.google.cloud.sql.mysql.SocketFactory");
-                            assertThat(dataSource.getUsername()).matches("root");
-                            assertThat(dataSource.getPassword()).isNull();
-                        });
-    }
+  @Test
+  void testCloudSqlDataSourceWithDnsName() {
+    this.contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.sql.dns-name=myinstance.example.com",
+            "spring.datasource.password=")
+        .run(
+            context -> {
+              HikariDataSource dataSource = (HikariDataSource) context.getBean(DataSource.class);
+              assertThat(dataSource.getDriverClassName()).matches("com.mysql.cj.jdbc.Driver");
+              assertThat(dataSource.getJdbcUrl())
+                  .isEqualTo(
+                      "jdbc:mysql://myinstance.example.com/test-database?"
+                          + "socketFactory=com.google.cloud.sql.mysql.SocketFactory");
+              assertThat(dataSource.getUsername()).matches("root");
+              assertThat(dataSource.getPassword()).isNull();
+            });
+  }
+
   @Test
   void testCloudSqlDataSourceWithIgnoredProvidedUrl() {
     this.contextRunner
@@ -363,11 +367,11 @@ class CloudSqlEnvironmentPostProcessorTests {
         .run(
             context -> {
               assertThat(
-                      context
-                          .getEnvironment()
-                          .getPropertySources()
-                          .get("CLOUD_SQL_DATA_SOURCE_URL")
-                          .getProperty("spring.datasource.url"))
+                  context
+                      .getEnvironment()
+                      .getPropertySources()
+                      .get("CLOUD_SQL_DATA_SOURCE_URL")
+                      .getProperty("spring.datasource.url"))
                   .isEqualTo(
                       "jdbc:mysql://google/${sm://my-db}?"
                           + "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
@@ -385,11 +389,11 @@ class CloudSqlEnvironmentPostProcessorTests {
         .run(
             context -> {
               assertThat(
-                      context
-                          .getEnvironment()
-                          .getPropertySources()
-                          .get("CLOUD_SQL_DATA_SOURCE_URL")
-                          .getProperty("spring.datasource.url"))
+                  context
+                      .getEnvironment()
+                      .getPropertySources()
+                      .get("CLOUD_SQL_DATA_SOURCE_URL")
+                      .getProperty("spring.datasource.url"))
                   .isEqualTo(
                       "jdbc:mysql://google/mydb?"
                           + "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
