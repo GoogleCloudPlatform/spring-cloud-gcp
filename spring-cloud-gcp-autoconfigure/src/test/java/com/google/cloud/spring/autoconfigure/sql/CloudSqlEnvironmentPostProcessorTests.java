@@ -21,6 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.zaxxer.hikari.HikariDataSource;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.sql.DataSource;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
@@ -76,6 +80,46 @@ class CloudSqlEnvironmentPostProcessorTests {
   }
 
   @Test
+  void testCloudSqlDataSourcePostgres() {
+    this.contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.sql.instance-connection-name=tubular-bells:singapore:test-instance",
+            "spring.datasource.password=")
+        .withClassLoader(new FilteredClassLoader("com.mysql.cj.jdbc.Driver"))
+        .run(
+            context -> {
+              HikariDataSource dataSource = (HikariDataSource) context.getBean(DataSource.class);
+              assertThat(dataSource.getDriverClassName()).matches("org.postgresql.Driver");
+              assertThat(dataSource.getJdbcUrl())
+                  .isEqualTo(
+                      "jdbc:postgresql://google/test-database?"
+                          + "socketFactory=com.google.cloud.sql.postgres.SocketFactory"
+                          + "&cloudSqlInstance=tubular-bells:singapore:test-instance");
+              assertThat(dataSource.getUsername()).matches("postgres");
+              assertThat(dataSource.getPassword()).isNull();
+            });
+  }
+
+  @Test
+  void testCloudSqlDataSourceWithDnsName() {
+    this.contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.sql.dns-name=db.example.com",
+            "spring.datasource.password=")
+        .run(
+            context -> {
+              HikariDataSource dataSource = (HikariDataSource) context.getBean(DataSource.class);
+              assertThat(dataSource.getDriverClassName()).matches("com.mysql.cj.jdbc.Driver");
+              assertThat(dataSource.getJdbcUrl())
+                  .isEqualTo(
+                      "jdbc:mysql://db.example.com/test-database?"
+                          + "socketFactory=com.google.cloud.sql.mysql.SocketFactory");
+              assertThat(dataSource.getUsername()).matches("root");
+              assertThat(dataSource.getPassword()).isNull();
+            });
+  }
+
+  @Test
   void testCloudSqlSpringDataSourceUrlPropertyOverride() {
     this.contextRunner
         .withPropertyValues(
@@ -104,9 +148,10 @@ class CloudSqlEnvironmentPostProcessorTests {
   }
 
   @Test
-  void testCloudSqlDataSourceWithDnsName() {
+  void testCloudSqlDataSourceWithDnsNameAndInstanceName() {
     this.contextRunner
         .withPropertyValues(
+            "spring.cloud.gcp.sql.instance-connection-name=tubular-bells:singapore:test-instance",
             "spring.cloud.gcp.sql.dns-name=myinstance.example.com",
             "spring.datasource.password=")
         .run(
@@ -116,7 +161,8 @@ class CloudSqlEnvironmentPostProcessorTests {
               assertThat(dataSource.getJdbcUrl())
                   .isEqualTo(
                       "jdbc:mysql://myinstance.example.com/test-database?"
-                          + "socketFactory=com.google.cloud.sql.mysql.SocketFactory");
+                          + "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
+                          + "&cloudSqlInstance=tubular-bells:singapore:test-instance");
               assertThat(dataSource.getUsername()).matches("root");
               assertThat(dataSource.getPassword()).isNull();
             });
@@ -463,4 +509,5 @@ class CloudSqlEnvironmentPostProcessorTests {
       return NoCredentialsProvider.create();
     }
   }
+
 }
