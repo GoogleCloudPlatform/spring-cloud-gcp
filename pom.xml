@@ -54,7 +54,7 @@
 		<maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<native-maven-plugin.version>0.10.5</native-maven-plugin.version>
+		<native-maven-plugin.version>0.11.1</native-maven-plugin.version>
 		<errorprone.version>2.38.0</errorprone.version>
 
 		<!-- All checks except for javadoc enforced by default -->
