@@ -27,6 +27,8 @@ import org.springframework.context.annotation.ImportRuntimeHints;
 @ImportRuntimeHints(CredentialsRuntimeHints.class)
 public class GcpProperties implements CredentialsSupplier {
 
+  public static final String CORE_PROPERTY_PREFIX = "spring.cloud.gcp";
+
   /** GCP project ID where services are running. */
   private String projectId;
 

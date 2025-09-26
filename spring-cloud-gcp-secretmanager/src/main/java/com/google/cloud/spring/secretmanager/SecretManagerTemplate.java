@@ -46,6 +46,11 @@ public class SecretManagerTemplate implements SecretManagerOperations {
    */
   public static final String LATEST_VERSION = "latest";
 
+  /**
+   * Global location for secrets.
+   */
+  public static final String GLOBAL_LOCATION = "global";
+
   private static final Log LOGGER = LogFactory.getLog(SecretManagerTemplate.class);
   private final SecretManagerServiceClient secretManagerServiceClient;
   private final GcpProjectIdProvider projectIdProvider;
