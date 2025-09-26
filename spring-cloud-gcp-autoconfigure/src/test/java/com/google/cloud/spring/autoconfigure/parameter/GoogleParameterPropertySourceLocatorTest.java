@@ -34,6 +34,7 @@ import com.google.cloud.parametermanager.v1.RenderParameterVersionResponse;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -170,7 +171,7 @@ class GoogleParameterPropertySourceLocatorTest {
                 .setRenderedPayload(
                     ByteString.copyFromUtf8("property-int: 10\nproperty-bool: true\nnested_property:\n   nested_int: 5"))
                 .build());
-    Map<String, Object> expectedMap = Map.of("nested_int", 5);
+    Map<String, Object> expectedMap = Collections.singletonMap("nested_int", 5);
 
     this.googleParameterPropertySourceLocator =
         spy(

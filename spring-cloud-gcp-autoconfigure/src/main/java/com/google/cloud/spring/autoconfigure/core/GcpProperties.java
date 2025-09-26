@@ -25,6 +25,8 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties("spring.cloud.gcp")
 public class GcpProperties implements CredentialsSupplier {
 
+  public static final String CORE_PROPERTY_PREFIX = "spring.cloud.gcp";
+
   /** GCP project ID where services are running. */
   private String projectId;
 

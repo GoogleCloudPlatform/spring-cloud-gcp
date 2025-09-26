@@ -31,7 +31,7 @@ import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 import org.yaml.snakeyaml.Yaml;
@@ -102,7 +102,7 @@ public class GoogleParameterPropertySourceLocator implements PropertySourceLocat
 
       if (response == null) {
         throw new HttpClientErrorException(
-          HttpStatusCode.valueOf(500), "Invalid response from Parameter Manager API");
+          HttpStatus.INTERNAL_SERVER_ERROR, "Invalid response from Parameter Manager API");
       }
       return response;
     } catch (Exception ex) {
