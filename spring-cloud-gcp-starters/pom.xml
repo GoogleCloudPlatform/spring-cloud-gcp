@@ -25,6 +25,7 @@
 		<module>spring-cloud-gcp-starter-cloudfoundry</module>
 		<module>spring-cloud-gcp-starter-pubsub</module>
 		<module>spring-cloud-gcp-starter-config</module>
+		<module>spring-cloud-gcp-starter-parameter</module>
 		<module>spring-cloud-gcp-starter-storage</module>
 		<module>spring-cloud-gcp-starter-data-spanner</module>
 		<module>spring-cloud-gcp-starter-data-datastore</module>
@@ -32,6 +33,7 @@
 		<module>spring-cloud-gcp-starter-trace</module>
 		<module>spring-cloud-gcp-starter-logging</module>
 		<module>spring-cloud-gcp-starter-metrics</module>
+		<module>spring-cloud-gcp-starter-parametermanager</module>
 		<module>spring-cloud-gcp-starter-sql-mysql</module>
 		<module>spring-cloud-gcp-starter-sql-postgresql</module>
 		<module>spring-cloud-gcp-starter-sql-postgres-r2dbc</module>

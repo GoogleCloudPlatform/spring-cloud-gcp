@@ -11,6 +11,7 @@ com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreEmulatorAutoConfigur
 com.google.cloud.spring.autoconfigure.firestore.FirestoreRepositoriesAutoConfiguration
 com.google.cloud.spring.autoconfigure.kms.GcpKmsAutoConfiguration
 com.google.cloud.spring.autoconfigure.metrics.GcpStackdriverMetricsAutoConfiguration
+com.google.cloud.spring.autoconfigure.parametermanager.GcpParameterManagerAutoConfiguration
 com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration
 com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubEmulatorAutoConfiguration
 com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubReactiveAutoConfiguration
