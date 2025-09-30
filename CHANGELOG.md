@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.4.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.3.4...v6.4.0) (2025-09-30)
+
+
+### Features
+
+* Backport parameter manager changes to 6.x ([#4157](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4157)) ([e2708e6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e2708e64e60b3f22ce24f8a1a784044029b63f14))
+
+
+### Dependencies
+
+* Update libraries-bom to v26.69.0 ([#4164](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4164)) ([965d979](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/965d9793ea332c0a51587ce05913cf38cb179822))
+
 ## [6.3.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.3.3...v6.3.4) (2025-09-15)
 
 
