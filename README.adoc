@@ -185,3 +185,20 @@ These properties are optional and, if not specified, Spring Boot will attempt to
 For details on how Spring Boot finds these properties, refer to the link:https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html[documentation].
 
 NOTE: If your app is running on Google App Engine or Google Compute Engine, in most cases, you should omit the `spring.cloud.gcp.credentials.location` property and, instead, let the Spring Framework on Google Cloud Core Starter find the correct credentials for those environments.
+
+== Test Section
+
+This is a test section to debug the variable rendering.
+
+Test 1: Simple variable substitution
+:my-test-version: 1.2.3
+This should be 1.2.3: {my-test-version}
+
+Test 2: Variable in a link
+link:https://example.com/{my-test-version}[Link with version {my-test-version}]
+
+Test 3: URL with variable
+https://example.com/{my-test-version}[URL with version {my-test-version}]
+
+Test 4: Using the existing version variables
+This should be 6.4.0: {version-6}
