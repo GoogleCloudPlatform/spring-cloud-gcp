@@ -2,6 +2,10 @@ image:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/workflows/Unit%20T
 image:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/workflows/Integration%20Tests/badge.svg?branch=main["HEAD Integration Tests", link="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/actions?query=branch%3Amain+workflow%3A%22Integration+Tests%22"]
 image:https://github.com/GoogleCloudPlatform/spring-cloud-gcp/workflows/SonarCloud%20Analysis/badge.svg?branch=main["HEAD SonarCloud Analysis", link="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/actions?query=branch%3Amain+workflow%3A%22SonarCloud+Analysis%22"]
 image:https://sonarcloud.io/api/project_badges/measure?project=GoogleCloudPlatform_spring-cloud-gcp&metric=alert_status["Quality Gate Status", link="https://sonarcloud.io/dashboard?id=GoogleCloudPlatform_spring-cloud-gcp"]
+:version-6: 6.4.0
+:version-5: 5.13.5
+:version-4: 4.11.3
+:version-3: 3.9.11
 
 == Spring Framework on Google Cloud
 
@@ -11,13 +15,14 @@ You can check our project website https://spring.io/projects/spring-cloud-gcp[he
 For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation or Javadocs:
 
 Google Cloud Reference Documentation:
+
 // {x-version-update-start:spring-cloud-gcp:released}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/7.3.2/reference/html/index.html[Spring Framework on Google Cloud 7.3.0 (Latest)]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/7.3.2/reference/html/index.html[Spring Framework on Google Cloud (Latest)]
 // {x-version-update-end}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/6.3.3/reference/html/index.html[Spring Framework on Google Cloud 6.3.3]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/5.13.3/reference/html/index.html[Spring Framework on Google Cloud 5.13.3]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.11.3/reference/html/index.html[Spring Framework on Google Cloud 4.11.3]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.9.9/reference/html/index.html[Spring Framework on Google Cloud 3.9.9]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/{version-6}/reference/html/index.html[Spring Framework on Google Cloud {version-6}]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/{version-5}/reference/html/index.html[Spring Framework on Google Cloud {version-5}]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/{version-4}/reference/html/index.html[Spring Framework on Google Cloud {version-4}]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/{version-3}/reference/html/index.html[Spring Framework on Google Cloud {version-3}]
 
 Javadocs: https://googleapis.dev/java/spring-cloud-gcp/latest/index.html
 
