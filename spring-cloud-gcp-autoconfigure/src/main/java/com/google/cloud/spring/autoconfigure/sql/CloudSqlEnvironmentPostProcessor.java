@@ -32,6 +32,7 @@ import org.springframework.util.ClassUtils;
  * and instance connection name.
  */
 public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcessor {
+
   private static final Log LOGGER = LogFactory.getLog(CloudSqlEnvironmentPostProcessor.class);
 
   @Override
@@ -80,7 +81,8 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
           .getPropertySources()
           .addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
 
-      CredentialsPropertiesSetter.setCredentials(sqlProperties, propertiesRetriever.getGcpProperties());
+      CredentialsPropertiesSetter.setCredentials(sqlProperties,
+          propertiesRetriever.getGcpProperties());
 
       // support usage metrics
       ConnectorRegistry.addArtifactId(
