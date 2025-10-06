@@ -21,18 +21,16 @@ public enum DatabaseType {
   /** MySQL constants. */
   MYSQL(
       "com.mysql.cj.jdbc.Driver",
-      "jdbc:mysql://google/%s?"
-          + "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
-          + "&cloudSqlInstance=%s",
+      "jdbc:mysql://%s/%s?"
+          + "socketFactory=com.google.cloud.sql.mysql.SocketFactory",
       "r2dbc:gcp:mysql://%s/%s",
       "root"),
 
   /** Postgresql constants. */
   POSTGRESQL(
       "org.postgresql.Driver",
-      "jdbc:postgresql://google/%s?"
-          + "socketFactory=com.google.cloud.sql.postgres.SocketFactory"
-          + "&cloudSqlInstance=%s",
+      "jdbc:postgresql://%s/%s?"
+          + "socketFactory=com.google.cloud.sql.postgres.SocketFactory",
       "r2dbc:gcp:postgres://%s/%s",
       "postgres");
 
