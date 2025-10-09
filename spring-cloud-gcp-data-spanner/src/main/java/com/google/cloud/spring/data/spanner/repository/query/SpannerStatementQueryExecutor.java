@@ -34,6 +34,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.Where;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -494,7 +495,10 @@ public final class SpannerStatementQueryExecutor {
       SpannerPersistentEntity<?> spannerPersistentEntity,
       SpannerMappingContext mappingContext,
       boolean fetchInterleaved) {
-    final String sql = String.join(", ", spannerPersistentEntity.columns());
+    // To assure the columns are deterministic, sort them here.
+    ArrayList<String> sortedColumns = new ArrayList<>(spannerPersistentEntity.columns());
+    Collections.sort(sortedColumns);
+    final String sql = String.join(", ", sortedColumns);
     return fetchInterleaved
         ? sql + getChildrenSubquery(spannerPersistentEntity, mappingContext)
         : sql;

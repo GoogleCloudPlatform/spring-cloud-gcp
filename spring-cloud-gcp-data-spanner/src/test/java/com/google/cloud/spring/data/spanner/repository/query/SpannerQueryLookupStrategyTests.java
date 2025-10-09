@@ -196,7 +196,7 @@ class SpannerQueryLookupStrategyTests {
             this.spannerMappingContext);
     assertThat(statement.getSql())
         .isEqualTo(
-            "SELECT deleted, id3, id, id_2 FROM child_test_table WHERE ((id = @tag0 AND id_2 ="
+            "SELECT deleted, id, id3, id_2 FROM child_test_table WHERE ((id = @tag0 AND id_2 ="
                 + " @tag1)) AND (deleted = false)");
     assertThat(statement.getParameters()).hasSize(2);
     assertThat(statement.getParameters().get("tag0").getString()).isEqualTo("key");
@@ -218,7 +218,7 @@ class SpannerQueryLookupStrategyTests {
 
     assertThat(columnsStringForSelect)
         .isEqualTo(
-            "other, deleted, id, custom_col, id_2, ARRAY (SELECT AS STRUCT deleted, id3, id, id_2"
+            "custom_col, deleted, id, id_2, other, ARRAY (SELECT AS STRUCT deleted, id, id3, id_2"
                 + " FROM child_test_table WHERE (child_test_table.id = custom_test_table.id AND"
                 + " child_test_table.id_2 = custom_test_table.id_2) AND (deleted = false)) AS"
                 + " childEntities");
@@ -245,7 +245,7 @@ class SpannerQueryLookupStrategyTests {
 
     assertThat(childrenRowsQuery.getSql())
         .isEqualTo(
-            "SELECT other, deleted, id, custom_col, id_2, ARRAY (SELECT AS STRUCT deleted, id3, id,"
+            "SELECT custom_col, deleted, id, id_2, other, ARRAY (SELECT AS STRUCT deleted, id, id3,"
                 + " id_2 FROM child_test_table WHERE (child_test_table.id = custom_test_table.id"
                 + " AND child_test_table.id_2 = custom_test_table.id_2) AND (deleted = false)) AS"
                 + " childEntities FROM custom_test_table WHERE ((id = @tag0 AND id_2 = @tag1) OR"

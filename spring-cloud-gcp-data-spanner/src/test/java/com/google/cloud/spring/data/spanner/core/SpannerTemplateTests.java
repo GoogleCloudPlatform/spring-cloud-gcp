@@ -539,7 +539,7 @@ class SpannerTemplateTests {
     spyTemplate.read(ParentEntity.class, keys);
     Statement statement =
         Statement.newBuilder(
-                "SELECT other, id, custom_col, id_2, ARRAY (SELECT AS STRUCT deleted, id3, id, id_2"
+                "SELECT custom_col, id, id_2, other, ARRAY (SELECT AS STRUCT deleted, id, id3, id_2"
                     + " FROM child_test_table WHERE (child_test_table.id = parent_test_table.id AND"
                     + " child_test_table.id_2 = parent_test_table.id_2) AND (deleted = false)) AS"
                     + " childEntities FROM parent_test_table WHERE (id = @tag0) OR (id_2 = @tag1)")
@@ -558,7 +558,7 @@ class SpannerTemplateTests {
     spyTemplate.readAll(ParentEntity.class);
     Statement statement =
         Statement.newBuilder(
-                "SELECT other, id, custom_col, id_2, ARRAY (SELECT AS STRUCT deleted, id3, id, id_2"
+                "SELECT custom_col, id, id_2, other, ARRAY (SELECT AS STRUCT deleted, id, id3, id_2"
                     + " FROM child_test_table WHERE (child_test_table.id = parent_test_table.id AND"
                     + " child_test_table.id_2 = parent_test_table.id_2) AND (deleted = false)) AS"
                     + " childEntities FROM parent_test_table")
