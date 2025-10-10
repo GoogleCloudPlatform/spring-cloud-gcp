@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.5.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.4.0...v6.5.0) (2025-10-10)
+
+
+### Features
+
+* Add support for configuring the Cloud SQL JDBC connection using a DNS name ([dd3b9b6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/dd3b9b6ada9389c05a1018e2314122d747283789))
+
+
+### Dependencies
+
+* **6.x:** upgrade libraries-bom to 26.70.0 ([#4189](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4189)) ([204530b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/204530bbca863afe631ff399c2b9ae86ebf88b10))
+
 ## [6.4.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.3.4...v6.4.0) (2025-09-30)
 
 
