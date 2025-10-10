@@ -14,6 +14,29 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.4.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.3.2...v7.4.0) (2025-10-10)
+
+
+### Features
+
+* add script to update versions in README.adoc ([#4176](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4176)) ([1a05f04](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1a05f04f7606b576397cb68c8cd04534436dc9ef))
+* Add support for configuring the Cloud SQL JDBC connection using a DNS name ([#4123](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4123)) ([e45ca49](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e45ca49bbd37923d20fc5d374d94c5fa2a48631e)), closes [#4114](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4114)
+
+
+### Bug Fixes
+
+* **deps:** update gapic-generator-java-bom.version to v2.62.3 ([#4192](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4192)) ([4d0df06](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4d0df0652722df2a7d3b425e8345938fa50e0c18))
+
+
+### Dependencies
+
+* upgrade libraries-bom to 26.70.0 ([#4188](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4188)) ([f0d3321](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f0d33214740577139013c3749d0ea7f9d4a5a37e))
+
+
+### Documentation
+
+* update latest versions in README.adoc ([#4177](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4177)) ([1acd575](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1acd5751adc10c8011016da46815769b646db0cb))
+
 ## [7.3.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.3.1...v7.3.2) (2025-09-30)
 
 
