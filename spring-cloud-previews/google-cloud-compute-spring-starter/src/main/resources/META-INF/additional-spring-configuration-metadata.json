@@ -277,9 +277,21 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.organization-security-policies.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/OrganizationSecurityPolicies components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.packet-mirrorings.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/PacketMirrorings components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.preview-features.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/PreviewFeatures components.",
       "defaultValue": true
     },
     {
