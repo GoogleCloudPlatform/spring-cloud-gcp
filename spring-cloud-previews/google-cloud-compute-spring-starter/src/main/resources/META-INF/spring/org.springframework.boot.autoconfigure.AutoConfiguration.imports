@@ -44,7 +44,9 @@ com.google.cloud.compute.v1.spring.NetworksSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.NodeGroupsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.NodeTemplatesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.NodeTypesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.OrganizationSecurityPoliciesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.PacketMirroringsSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.PreviewFeaturesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ProjectsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.PublicAdvertisedPrefixesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.PublicDelegatedPrefixesSpringAutoConfiguration
