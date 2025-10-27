@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.5.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.5.0...v6.5.1) (2025-10-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.71.0 ([#4223](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4223)) ([13b1543](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/13b1543a8736f3765df2cac6a72f16da0a74762d))
+
+
+### Dependencies
+
+* bump org.springframework.boot:spring-boot-starter-parent from 3.4.7 to 3.4.11 ([#4215](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4215)) ([21cacc9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/21cacc9d4a295e762d5c9fce7e6349fd38a29ae4))
+
 ## [6.5.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.4.0...v6.5.0) (2025-10-10)
 
 
