@@ -51,6 +51,11 @@ public class FeatureOnlineStoreServiceSpringProperties implements CredentialsSup
    */
   @NestedConfigurationProperty private Retry searchNearestEntitiesRetry;
   /**
+   * Allow override of retry settings at method-level for generateFetchAccessToken. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry generateFetchAccessTokenRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -119,6 +124,14 @@ public class FeatureOnlineStoreServiceSpringProperties implements CredentialsSup
 
   public void setSearchNearestEntitiesRetry(Retry searchNearestEntitiesRetry) {
     this.searchNearestEntitiesRetry = searchNearestEntitiesRetry;
+  }
+
+  public Retry getGenerateFetchAccessTokenRetry() {
+    return this.generateFetchAccessTokenRetry;
+  }
+
+  public void setGenerateFetchAccessTokenRetry(Retry generateFetchAccessTokenRetry) {
+    this.generateFetchAccessTokenRetry = generateFetchAccessTokenRetry;
   }
 
   public Retry getListLocationsRetry() {
