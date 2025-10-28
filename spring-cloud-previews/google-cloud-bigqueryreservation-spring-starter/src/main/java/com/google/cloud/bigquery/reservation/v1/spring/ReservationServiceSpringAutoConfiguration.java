@@ -319,6 +319,54 @@ public class ReservationServiceSpringAutoConfiguration {
           .updateBiReservationSettings()
           .setRetrySettings(updateBiReservationRetrySettings);
 
+      RetrySettings getIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIamPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
+
+      RetrySettings setIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.setIamPolicySettings().setRetrySettings(setIamPolicyRetrySettings);
+
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
+
+      RetrySettings createReservationGroupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createReservationGroupSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .createReservationGroupSettings()
+          .setRetrySettings(createReservationGroupRetrySettings);
+
+      RetrySettings getReservationGroupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getReservationGroupSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getReservationGroupSettings()
+          .setRetrySettings(getReservationGroupRetrySettings);
+
+      RetrySettings deleteReservationGroupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteReservationGroupSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .deleteReservationGroupSettings()
+          .setRetrySettings(deleteReservationGroupRetrySettings);
+
+      RetrySettings listReservationGroupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listReservationGroupsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listReservationGroupsSettings()
+          .setRetrySettings(listReservationGroupsRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -622,6 +670,96 @@ public class ReservationServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for updateBiReservation from properties.");
+      }
+    }
+    Retry getIamPolicyRetry = clientProperties.getGetIamPolicyRetry();
+    if (getIamPolicyRetry != null) {
+      RetrySettings getIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIamPolicySettings().getRetrySettings(), getIamPolicyRetry);
+      clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getIamPolicy from properties.");
+      }
+    }
+    Retry setIamPolicyRetry = clientProperties.getSetIamPolicyRetry();
+    if (setIamPolicyRetry != null) {
+      RetrySettings setIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), setIamPolicyRetry);
+      clientSettingsBuilder.setIamPolicySettings().setRetrySettings(setIamPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for setIamPolicy from properties.");
+      }
+    }
+    Retry testIamPermissionsRetry = clientProperties.getTestIamPermissionsRetry();
+    if (testIamPermissionsRetry != null) {
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(),
+              testIamPermissionsRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for testIamPermissions from properties.");
+      }
+    }
+    Retry createReservationGroupRetry = clientProperties.getCreateReservationGroupRetry();
+    if (createReservationGroupRetry != null) {
+      RetrySettings createReservationGroupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createReservationGroupSettings().getRetrySettings(),
+              createReservationGroupRetry);
+      clientSettingsBuilder
+          .createReservationGroupSettings()
+          .setRetrySettings(createReservationGroupRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createReservationGroup from properties.");
+      }
+    }
+    Retry getReservationGroupRetry = clientProperties.getGetReservationGroupRetry();
+    if (getReservationGroupRetry != null) {
+      RetrySettings getReservationGroupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getReservationGroupSettings().getRetrySettings(),
+              getReservationGroupRetry);
+      clientSettingsBuilder
+          .getReservationGroupSettings()
+          .setRetrySettings(getReservationGroupRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getReservationGroup from properties.");
+      }
+    }
+    Retry deleteReservationGroupRetry = clientProperties.getDeleteReservationGroupRetry();
+    if (deleteReservationGroupRetry != null) {
+      RetrySettings deleteReservationGroupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteReservationGroupSettings().getRetrySettings(),
+              deleteReservationGroupRetry);
+      clientSettingsBuilder
+          .deleteReservationGroupSettings()
+          .setRetrySettings(deleteReservationGroupRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteReservationGroup from properties.");
+      }
+    }
+    Retry listReservationGroupsRetry = clientProperties.getListReservationGroupsRetry();
+    if (listReservationGroupsRetry != null) {
+      RetrySettings listReservationGroupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listReservationGroupsSettings().getRetrySettings(),
+              listReservationGroupsRetry);
+      clientSettingsBuilder
+          .listReservationGroupsSettings()
+          .setRetrySettings(listReservationGroupsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listReservationGroups from properties.");
       }
     }
     return clientSettingsBuilder.build();

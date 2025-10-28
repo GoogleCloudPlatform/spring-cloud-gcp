@@ -167,6 +167,14 @@ public class FeatureOnlineStoreServiceSpringAutoConfiguration {
           .searchNearestEntitiesSettings()
           .setRetrySettings(searchNearestEntitiesRetrySettings);
 
+      RetrySettings generateFetchAccessTokenRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateFetchAccessTokenSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .generateFetchAccessTokenSettings()
+          .setRetrySettings(generateFetchAccessTokenRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -224,6 +232,20 @@ public class FeatureOnlineStoreServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for searchNearestEntities from properties.");
+      }
+    }
+    Retry generateFetchAccessTokenRetry = clientProperties.getGenerateFetchAccessTokenRetry();
+    if (generateFetchAccessTokenRetry != null) {
+      RetrySettings generateFetchAccessTokenRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.generateFetchAccessTokenSettings().getRetrySettings(),
+              generateFetchAccessTokenRetry);
+      clientSettingsBuilder
+          .generateFetchAccessTokenSettings()
+          .setRetrySettings(generateFetchAccessTokenRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for generateFetchAccessToken from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

@@ -53,6 +53,11 @@ public class BackendServicesSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getRetry;
   /**
+   * Allow override of retry settings at method-level for getEffectiveSecurityPolicies. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getEffectiveSecurityPoliciesRetry;
+  /**
    * Allow override of retry settings at method-level for getHealth. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -126,6 +131,14 @@ public class BackendServicesSpringProperties implements CredentialsSupplier {
 
   public void setGetRetry(Retry getRetry) {
     this.getRetry = getRetry;
+  }
+
+  public Retry getGetEffectiveSecurityPoliciesRetry() {
+    return this.getEffectiveSecurityPoliciesRetry;
+  }
+
+  public void setGetEffectiveSecurityPoliciesRetry(Retry getEffectiveSecurityPoliciesRetry) {
+    this.getEffectiveSecurityPoliciesRetry = getEffectiveSecurityPoliciesRetry;
   }
 
   public Retry getGetHealthRetry() {

@@ -169,6 +169,13 @@ public class InstanceGroupsSpringAutoConfiguration {
               clientSettingsBuilder.listInstancesSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listInstancesSettings().setRetrySettings(listInstancesRetrySettings);
 
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -212,6 +219,20 @@ public class InstanceGroupsSpringAutoConfiguration {
       clientSettingsBuilder.listInstancesSettings().setRetrySettings(listInstancesRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listInstances from properties.");
+      }
+    }
+    Retry testIamPermissionsRetry = clientProperties.getTestIamPermissionsRetry();
+    if (testIamPermissionsRetry != null) {
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(),
+              testIamPermissionsRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for testIamPermissions from properties.");
       }
     }
     return clientSettingsBuilder.build();
