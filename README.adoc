@@ -11,6 +11,7 @@ You can check our project website https://spring.io/projects/spring-cloud-gcp[he
 For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation or Javadocs:
 
 Google Cloud Reference Documentation:
+
 // {x-version-update-start:spring-cloud-gcp:released}
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/7.4.1/reference/html/index.html[Spring Framework on Google Cloud 7.3.0 (Latest)]
 // {x-version-update-end}
