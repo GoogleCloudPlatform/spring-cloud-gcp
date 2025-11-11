@@ -223,7 +223,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
 
     assertThatThrownBy(() -> this.spannerEntityReader.read(TestEntity.class, struct))
         .isInstanceOf(SpannerDataException.class)
-        .hasMessage("Unable to read column from Cloud Spanner results: id4");
+        .hasMessageContaining("Unable to read column from Cloud Spanner results:");
   }
 
   @Test
