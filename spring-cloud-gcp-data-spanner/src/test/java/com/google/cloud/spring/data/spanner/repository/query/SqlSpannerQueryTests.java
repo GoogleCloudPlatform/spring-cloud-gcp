@@ -175,8 +175,8 @@ class SqlSpannerQueryTests {
             + ":com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Trade:";
     // @formatter:off
     String entityResolvedSql =
-        "SELECT *, ARRAY (SELECT AS STRUCT disabled, id, childId, value, ARRAY (SELECT AS STRUCT"
-            + " canceled, documentId, id, childId, content FROM documents WHERE (documents.id ="
+        "SELECT *, ARRAY (SELECT AS STRUCT childId, disabled, id, value, ARRAY (SELECT AS STRUCT"
+            + " canceled, childId, content, documentId, id FROM documents WHERE (documents.id ="
             + " children.id AND documents.childId = children.childId) AND (canceled = false)) AS"
             + " documents FROM children WHERE (children.id = trades.id) AND (disabled = false)) AS"
             + " children FROM (SELECT DISTINCT * FROM trades) trades";
@@ -229,7 +229,7 @@ class SqlSpannerQueryTests {
             + " WHERE id = @id AND trader_id = @trader_id";
     // @formatter:off
     String entityResolvedSql =
-        "SELECT *, ARRAY (SELECT AS STRUCT canceled, documentId, id, childId, content FROM"
+        "SELECT *, ARRAY (SELECT AS STRUCT canceled, childId, content, documentId, id FROM"
             + " documents WHERE (documents.id = children.id AND documents.childId ="
             + " children.childId) AND (canceled = false)) AS documents FROM (SELECT * FROM children"
             + " WHERE id = @id AND trader_id = @trader_id) children WHERE disabled = false ORDER BY"
@@ -294,7 +294,7 @@ class SqlSpannerQueryTests {
             + " WHERE id = @id AND trader_id = @trader_id";
     // @formatter:off
     String entityResolvedSql =
-        "SELECT *, ARRAY (SELECT AS STRUCT canceled, documentId, id, childId, content FROM"
+        "SELECT *, ARRAY (SELECT AS STRUCT canceled, childId, content, documentId, id FROM"
             + " documents WHERE (documents.id = children.id AND documents.childId ="
             + " children.childId) AND (canceled = false)) AS documents FROM (SELECT * FROM children"
             + " WHERE id = @id AND trader_id = @trader_id) children WHERE disabled = false ORDER BY"
@@ -358,7 +358,7 @@ class SqlSpannerQueryTests {
             + " WHERE id = @id AND trader_id = @trader_id";
     // @formatter:off
     String entityResolvedSql =
-        "SELECT *, ARRAY (SELECT AS STRUCT canceled, documentId, id, childId, content FROM"
+        "SELECT *, ARRAY (SELECT AS STRUCT canceled, childId, content, documentId, id FROM"
             + " documents WHERE (documents.id = children.id AND documents.childId ="
             + " children.childId) AND (canceled = false)) AS documents FROM (SELECT * FROM children"
             + " WHERE id = @id AND trader_id = @trader_id) children WHERE disabled = false ORDER BY"
@@ -431,8 +431,8 @@ class SqlSpannerQueryTests {
 
     // @formatter:off
     String entityResolvedSql =
-        "SELECT *, ARRAY (SELECT AS STRUCT disabled, id, childId, value, ARRAY (SELECT AS STRUCT"
-            + " canceled, documentId, id, childId, content FROM documents WHERE (documents.id ="
+        "SELECT *, ARRAY (SELECT AS STRUCT childId, disabled, id, value, ARRAY (SELECT AS STRUCT"
+            + " canceled, childId, content, documentId, id FROM documents WHERE (documents.id ="
             + " children.id AND documents.childId = children.childId) AND (canceled = false)) AS"
             + " documents FROM children WHERE (children.id = trades.id) AND (disabled = false)) AS"
             + " children FROM (SELECT DISTINCT * FROM trades@{index=fakeindex} WHERE"

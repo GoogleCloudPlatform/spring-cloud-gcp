@@ -119,7 +119,7 @@ class SpannerStatementQueryTests {
               Statement statement = invocation.getArgument(1);
 
               String expectedQuery =
-                  "SELECT DISTINCT shares, trader_id, ticker, price, action, id, value FROM trades"
+                  "SELECT DISTINCT action, id, price, shares, ticker, trader_id, value FROM trades"
                       + " WHERE ( LOWER(action)=LOWER(@tag0) AND ticker=@tag1 ) OR ("
                       + " trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND id IS NOT NULL AND"
                       + " trader_id=NULL AND trader_id LIKE @tag7 AND price=TRUE AND price=FALSE"
@@ -230,7 +230,7 @@ class SpannerStatementQueryTests {
               Statement statement = invocation.getArgument(1);
 
               String expectedSql =
-                  "SELECT EXISTS(SELECT DISTINCT shares, trader_id, ticker, price, action, id,"
+                  "SELECT EXISTS(SELECT DISTINCT action, id, price, shares, ticker, trader_id,"
                       + " value FROM trades WHERE ( LOWER(action)=LOWER(@tag0) AND ticker=@tag1 )"
                       + " OR ( trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND id IS NOT NULL AND"
                       + " trader_id=NULL AND trader_id LIKE @tag7 AND price=TRUE AND price=FALSE"
@@ -267,7 +267,7 @@ class SpannerStatementQueryTests {
     Object[] params = new Object[] {8.88, PageRequest.of(1, 10, Sort.by("traderId"))};
     Method method = QueryHolder.class.getMethod("repositoryMethod5", Double.class, Pageable.class);
     String expectedSql =
-        "SELECT shares, trader_id, ticker, price, action, id, value "
+        "SELECT action, id, price, shares, ticker, trader_id, value "
             + "FROM trades WHERE ( price<@tag0 ) "
             + "ORDER BY trader_id ASC LIMIT 10 OFFSET 10";
 
@@ -282,7 +282,7 @@ class SpannerStatementQueryTests {
         };
     Method method = QueryHolder.class.getMethod("repositoryMethod6", Double.class, Sort.class);
     String expectedSql =
-        "SELECT shares, trader_id, ticker, price, action, id, value "
+        "SELECT action, id, price, shares, ticker, trader_id, value "
             + "FROM trades WHERE ( price<@tag0 ) "
             + "ORDER BY trader_id DESC , price ASC , action DESC";
 
@@ -329,7 +329,7 @@ class SpannerStatementQueryTests {
 
     when(this.queryMethod.getQueryMethod()).thenReturn(method);
     String expectedSql =
-        "SELECT shares, trader_id, ticker, price, action, id, value "
+        "SELECT action, id, price, shares, ticker, trader_id, value "
             + "FROM trades "
             + "WHERE ( action=@tag0 AND ticker=@tag1 ) "
             + "ORDER BY trader_id ASC LIMIT 10 OFFSET 10";
