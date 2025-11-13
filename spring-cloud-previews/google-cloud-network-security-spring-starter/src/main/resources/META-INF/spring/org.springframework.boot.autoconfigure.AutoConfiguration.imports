@@ -1,1 +1,3 @@
+com.google.cloud.networksecurity.v1.spring.AddressGroupServiceSpringAutoConfiguration
+com.google.cloud.networksecurity.v1.spring.OrganizationAddressGroupServiceSpringAutoConfiguration
 com.google.cloud.networksecurity.v1.spring.NetworkSecuritySpringAutoConfiguration

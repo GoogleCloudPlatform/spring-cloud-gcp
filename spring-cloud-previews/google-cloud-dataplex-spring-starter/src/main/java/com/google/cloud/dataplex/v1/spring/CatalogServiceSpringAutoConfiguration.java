@@ -248,6 +248,25 @@ public class CatalogServiceSpringAutoConfiguration {
           .cancelMetadataJobSettings()
           .setRetrySettings(cancelMetadataJobRetrySettings);
 
+      RetrySettings createEntryLinkRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createEntryLinkSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .createEntryLinkSettings()
+          .setRetrySettings(createEntryLinkRetrySettings);
+
+      RetrySettings deleteEntryLinkRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteEntryLinkSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .deleteEntryLinkSettings()
+          .setRetrySettings(deleteEntryLinkRetrySettings);
+
+      RetrySettings getEntryLinkRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getEntryLinkSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getEntryLinkSettings().setRetrySettings(getEntryLinkRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -436,6 +455,42 @@ public class CatalogServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for cancelMetadataJob from properties.");
+      }
+    }
+    Retry createEntryLinkRetry = clientProperties.getCreateEntryLinkRetry();
+    if (createEntryLinkRetry != null) {
+      RetrySettings createEntryLinkRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createEntryLinkSettings().getRetrySettings(),
+              createEntryLinkRetry);
+      clientSettingsBuilder
+          .createEntryLinkSettings()
+          .setRetrySettings(createEntryLinkRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for createEntryLink from properties.");
+      }
+    }
+    Retry deleteEntryLinkRetry = clientProperties.getDeleteEntryLinkRetry();
+    if (deleteEntryLinkRetry != null) {
+      RetrySettings deleteEntryLinkRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteEntryLinkSettings().getRetrySettings(),
+              deleteEntryLinkRetry);
+      clientSettingsBuilder
+          .deleteEntryLinkSettings()
+          .setRetrySettings(deleteEntryLinkRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for deleteEntryLink from properties.");
+      }
+    }
+    Retry getEntryLinkRetry = clientProperties.getGetEntryLinkRetry();
+    if (getEntryLinkRetry != null) {
+      RetrySettings getEntryLinkRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getEntryLinkSettings().getRetrySettings(), getEntryLinkRetry);
+      clientSettingsBuilder.getEntryLinkSettings().setRetrySettings(getEntryLinkRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getEntryLink from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

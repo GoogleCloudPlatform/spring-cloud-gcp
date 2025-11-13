@@ -159,6 +159,14 @@ public class BackendServicesSpringAutoConfiguration {
               clientSettingsBuilder.getSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getSettings().setRetrySettings(getRetrySettings);
 
+      RetrySettings getEffectiveSecurityPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getEffectiveSecurityPoliciesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getEffectiveSecurityPoliciesSettings()
+          .setRetrySettings(getEffectiveSecurityPoliciesRetrySettings);
+
       RetrySettings getHealthRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getHealthSettings().getRetrySettings(), serviceRetry);
@@ -214,6 +222,21 @@ public class BackendServicesSpringAutoConfiguration {
       clientSettingsBuilder.getSettings().setRetrySettings(getRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for get from properties.");
+      }
+    }
+    Retry getEffectiveSecurityPoliciesRetry =
+        clientProperties.getGetEffectiveSecurityPoliciesRetry();
+    if (getEffectiveSecurityPoliciesRetry != null) {
+      RetrySettings getEffectiveSecurityPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getEffectiveSecurityPoliciesSettings().getRetrySettings(),
+              getEffectiveSecurityPoliciesRetry);
+      clientSettingsBuilder
+          .getEffectiveSecurityPoliciesSettings()
+          .setRetrySettings(getEffectiveSecurityPoliciesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getEffectiveSecurityPolicies from properties.");
       }
     }
     Retry getHealthRetry = clientProperties.getGetHealthRetry();

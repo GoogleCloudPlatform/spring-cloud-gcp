@@ -154,6 +154,41 @@ public class ReservationServiceSpringProperties implements CredentialsSupplier {
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateBiReservationRetry;
+  /**
+   * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getIamPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry setIamPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry testIamPermissionsRetry;
+  /**
+   * Allow override of retry settings at method-level for createReservationGroup. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createReservationGroupRetry;
+  /**
+   * Allow override of retry settings at method-level for getReservationGroup. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getReservationGroupRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteReservationGroup. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteReservationGroupRetry;
+  /**
+   * Allow override of retry settings at method-level for listReservationGroups. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listReservationGroupsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -366,5 +401,61 @@ public class ReservationServiceSpringProperties implements CredentialsSupplier {
 
   public void setUpdateBiReservationRetry(Retry updateBiReservationRetry) {
     this.updateBiReservationRetry = updateBiReservationRetry;
+  }
+
+  public Retry getGetIamPolicyRetry() {
+    return this.getIamPolicyRetry;
+  }
+
+  public void setGetIamPolicyRetry(Retry getIamPolicyRetry) {
+    this.getIamPolicyRetry = getIamPolicyRetry;
+  }
+
+  public Retry getSetIamPolicyRetry() {
+    return this.setIamPolicyRetry;
+  }
+
+  public void setSetIamPolicyRetry(Retry setIamPolicyRetry) {
+    this.setIamPolicyRetry = setIamPolicyRetry;
+  }
+
+  public Retry getTestIamPermissionsRetry() {
+    return this.testIamPermissionsRetry;
+  }
+
+  public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
+    this.testIamPermissionsRetry = testIamPermissionsRetry;
+  }
+
+  public Retry getCreateReservationGroupRetry() {
+    return this.createReservationGroupRetry;
+  }
+
+  public void setCreateReservationGroupRetry(Retry createReservationGroupRetry) {
+    this.createReservationGroupRetry = createReservationGroupRetry;
+  }
+
+  public Retry getGetReservationGroupRetry() {
+    return this.getReservationGroupRetry;
+  }
+
+  public void setGetReservationGroupRetry(Retry getReservationGroupRetry) {
+    this.getReservationGroupRetry = getReservationGroupRetry;
+  }
+
+  public Retry getDeleteReservationGroupRetry() {
+    return this.deleteReservationGroupRetry;
+  }
+
+  public void setDeleteReservationGroupRetry(Retry deleteReservationGroupRetry) {
+    this.deleteReservationGroupRetry = deleteReservationGroupRetry;
+  }
+
+  public Retry getListReservationGroupsRetry() {
+    return this.listReservationGroupsRetry;
+  }
+
+  public void setListReservationGroupsRetry(Retry listReservationGroupsRetry) {
+    this.listReservationGroupsRetry = listReservationGroupsRetry;
   }
 }

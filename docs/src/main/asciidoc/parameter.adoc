@@ -106,7 +106,7 @@ When your Spring application starts, the `username` field value will be set to `
 
 === Refreshing the configuration at runtime
 
-https://cloud.spring.io/spring-cloud-static/docs/1.0.x/spring-cloud.html#_endpoints[Spring Cloud] provides support to have configuration parameters be reloadable with the POST request to `/actuator/refresh` endpoint.
+https://docs.spring.io/spring-cloud-commons/docs/current/reference/html/#endpoints[Spring Cloud] provides support to have configuration parameters be reloadable with the POST request to `/actuator/refresh` endpoint.
 
 1.  Add the Spring Boot Actuator dependency:
 +

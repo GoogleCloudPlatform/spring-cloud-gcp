@@ -58,6 +58,11 @@ public class VmMigrationSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry fetchInventoryRetry;
   /**
+   * Allow override of retry settings at method-level for fetchStorageInventory. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchStorageInventoryRetry;
+  /**
    * Allow override of retry settings at method-level for listUtilizationReports. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -138,6 +143,36 @@ public class VmMigrationSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getReplicationCycleRetry;
   /**
+   * Allow override of retry settings at method-level for listImageImports. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listImageImportsRetry;
+  /**
+   * Allow override of retry settings at method-level for getImageImport. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getImageImportRetry;
+  /**
+   * Allow override of retry settings at method-level for listImageImportJobs. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listImageImportJobsRetry;
+  /**
+   * Allow override of retry settings at method-level for getImageImportJob. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getImageImportJobRetry;
+  /**
+   * Allow override of retry settings at method-level for listDiskMigrationJobs. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listDiskMigrationJobsRetry;
+  /**
+   * Allow override of retry settings at method-level for getDiskMigrationJob. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getDiskMigrationJobRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -207,6 +242,14 @@ public class VmMigrationSpringProperties implements CredentialsSupplier {
 
   public void setFetchInventoryRetry(Retry fetchInventoryRetry) {
     this.fetchInventoryRetry = fetchInventoryRetry;
+  }
+
+  public Retry getFetchStorageInventoryRetry() {
+    return this.fetchStorageInventoryRetry;
+  }
+
+  public void setFetchStorageInventoryRetry(Retry fetchStorageInventoryRetry) {
+    this.fetchStorageInventoryRetry = fetchStorageInventoryRetry;
   }
 
   public Retry getListUtilizationReportsRetry() {
@@ -335,6 +378,54 @@ public class VmMigrationSpringProperties implements CredentialsSupplier {
 
   public void setGetReplicationCycleRetry(Retry getReplicationCycleRetry) {
     this.getReplicationCycleRetry = getReplicationCycleRetry;
+  }
+
+  public Retry getListImageImportsRetry() {
+    return this.listImageImportsRetry;
+  }
+
+  public void setListImageImportsRetry(Retry listImageImportsRetry) {
+    this.listImageImportsRetry = listImageImportsRetry;
+  }
+
+  public Retry getGetImageImportRetry() {
+    return this.getImageImportRetry;
+  }
+
+  public void setGetImageImportRetry(Retry getImageImportRetry) {
+    this.getImageImportRetry = getImageImportRetry;
+  }
+
+  public Retry getListImageImportJobsRetry() {
+    return this.listImageImportJobsRetry;
+  }
+
+  public void setListImageImportJobsRetry(Retry listImageImportJobsRetry) {
+    this.listImageImportJobsRetry = listImageImportJobsRetry;
+  }
+
+  public Retry getGetImageImportJobRetry() {
+    return this.getImageImportJobRetry;
+  }
+
+  public void setGetImageImportJobRetry(Retry getImageImportJobRetry) {
+    this.getImageImportJobRetry = getImageImportJobRetry;
+  }
+
+  public Retry getListDiskMigrationJobsRetry() {
+    return this.listDiskMigrationJobsRetry;
+  }
+
+  public void setListDiskMigrationJobsRetry(Retry listDiskMigrationJobsRetry) {
+    this.listDiskMigrationJobsRetry = listDiskMigrationJobsRetry;
+  }
+
+  public Retry getGetDiskMigrationJobRetry() {
+    return this.getDiskMigrationJobRetry;
+  }
+
+  public void setGetDiskMigrationJobRetry(Retry getDiskMigrationJobRetry) {
+    this.getDiskMigrationJobRetry = getDiskMigrationJobRetry;
   }
 
   public Retry getListLocationsRetry() {

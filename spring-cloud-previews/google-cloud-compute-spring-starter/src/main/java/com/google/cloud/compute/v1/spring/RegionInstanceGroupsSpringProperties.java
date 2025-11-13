@@ -57,6 +57,11 @@ public class RegionInstanceGroupsSpringProperties implements CredentialsSupplier
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listInstancesRetry;
+  /**
+   * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry testIamPermissionsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -109,5 +114,13 @@ public class RegionInstanceGroupsSpringProperties implements CredentialsSupplier
 
   public void setListInstancesRetry(Retry listInstancesRetry) {
     this.listInstancesRetry = listInstancesRetry;
+  }
+
+  public Retry getTestIamPermissionsRetry() {
+    return this.testIamPermissionsRetry;
+  }
+
+  public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
+    this.testIamPermissionsRetry = testIamPermissionsRetry;
   }
 }
