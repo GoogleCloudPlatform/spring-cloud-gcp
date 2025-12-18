@@ -185,6 +185,11 @@ public class PredictionServiceSpringAutoConfiguration {
           .generateContentSettings()
           .setRetrySettings(generateContentRetrySettings);
 
+      RetrySettings embedContentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.embedContentSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.embedContentSettings().setRetrySettings(embedContentRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -281,6 +286,16 @@ public class PredictionServiceSpringAutoConfiguration {
           .setRetrySettings(generateContentRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for generateContent from properties.");
+      }
+    }
+    Retry embedContentRetry = clientProperties.getEmbedContentRetry();
+    if (embedContentRetry != null) {
+      RetrySettings embedContentRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.embedContentSettings().getRetrySettings(), embedContentRetry);
+      clientSettingsBuilder.embedContentSettings().setRetrySettings(embedContentRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for embedContent from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
