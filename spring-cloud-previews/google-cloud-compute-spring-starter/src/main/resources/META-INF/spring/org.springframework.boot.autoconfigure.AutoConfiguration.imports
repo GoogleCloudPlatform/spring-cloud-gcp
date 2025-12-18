@@ -1,14 +1,17 @@
 com.google.cloud.compute.v1.spring.AcceleratorTypesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.AddressesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.AdviceSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.AutoscalersSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.BackendBucketsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.BackendServicesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.CrossSiteNetworksSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.DiskTypesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.DisksSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ExternalVpnGatewaysSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.FirewallPoliciesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.FirewallsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ForwardingRulesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.FutureReservationsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.GlobalAddressesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.GlobalForwardingRulesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.GlobalNetworkEndpointGroupsSpringAutoConfiguration
@@ -101,5 +104,6 @@ com.google.cloud.compute.v1.spring.TargetVpnGatewaysSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.UrlMapsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.VpnGatewaysSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.VpnTunnelsSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.WireGroupsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ZoneOperationsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ZonesSpringAutoConfiguration

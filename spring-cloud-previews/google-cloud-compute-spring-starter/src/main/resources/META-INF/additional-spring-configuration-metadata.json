@@ -13,6 +13,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.advice.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/Advice components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.autoscalers.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/Autoscalers components.",
@@ -28,6 +34,12 @@
       "name": "com.google.cloud.compute.v1.backend-services.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/BackendServices components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.cross-site-networks.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/CrossSiteNetworks components.",
       "defaultValue": true
     },
     {
@@ -64,6 +76,12 @@
       "name": "com.google.cloud.compute.v1.forwarding-rules.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/ForwardingRules components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.future-reservations.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/FutureReservations components.",
       "defaultValue": true
     },
     {
@@ -616,6 +634,12 @@
       "name": "com.google.cloud.compute.v1.vpn-tunnels.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/VpnTunnels components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.wire-groups.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/WireGroups components.",
       "defaultValue": true
     },
     {
