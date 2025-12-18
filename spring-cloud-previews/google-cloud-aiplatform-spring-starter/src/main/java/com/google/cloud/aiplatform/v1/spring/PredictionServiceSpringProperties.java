@@ -73,6 +73,11 @@ public class PredictionServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry generateContentRetry;
   /**
+   * Allow override of retry settings at method-level for embedContent. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry embedContentRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -173,6 +178,14 @@ public class PredictionServiceSpringProperties implements CredentialsSupplier {
 
   public void setGenerateContentRetry(Retry generateContentRetry) {
     this.generateContentRetry = generateContentRetry;
+  }
+
+  public Retry getEmbedContentRetry() {
+    return this.embedContentRetry;
+  }
+
+  public void setEmbedContentRetry(Retry embedContentRetry) {
+    this.embedContentRetry = embedContentRetry;
   }
 
   public Retry getListLocationsRetry() {

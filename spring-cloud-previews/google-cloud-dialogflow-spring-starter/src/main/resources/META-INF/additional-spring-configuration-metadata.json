@@ -79,6 +79,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.dialogflow.v2.generator-evaluations.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dialogflow/GeneratorEvaluations components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.dialogflow.v2.intents.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud dialogflow/Intents components.",
@@ -106,6 +112,18 @@
       "name": "com.google.cloud.dialogflow.v2.session-entity-types.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud dialogflow/SessionEntityTypes components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.dialogflow.v2.sip-trunks.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dialogflow/SipTrunks components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.dialogflow.v2.tools.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dialogflow/Tools components.",
       "defaultValue": true
     },
     {
