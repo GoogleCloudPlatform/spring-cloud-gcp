@@ -142,9 +142,7 @@ public class PubSubChannelProvisioner
   }
 
   Subscription ensureSubscriptionExists(
-      String subscriptionName,
-      String topicName,
-      PubSubConsumerProperties properties) {
+      String subscriptionName, String topicName, PubSubConsumerProperties properties) {
     Subscription subscription = this.pubSubAdmin.getSubscription(subscriptionName);
     if (subscription == null) {
       return createSubscription(subscriptionName, topicName, properties);
@@ -153,11 +151,11 @@ public class PubSubChannelProvisioner
   }
 
   private Subscription createSubscription(
-      String subscriptionName,
-      String topicName,
-      PubSubConsumerProperties properties) {
+      String subscriptionName, String topicName, PubSubConsumerProperties properties) {
     Subscription.Builder builder =
         Subscription.newBuilder().setName(subscriptionName).setTopic(topicName);
+
+    PubSubConsumerProperties.ExpirationPolicy expirationPolicy = properties.getExpirationPolicy();
 
     PubSubConsumerProperties.DeadLetterPolicy deadLetterPolicy = properties.getDeadLetterPolicy();
     if (deadLetterPolicy != null) {
@@ -165,6 +163,32 @@ public class PubSubChannelProvisioner
       Assert.hasText(dlTopicName, "Dead letter policy cannot have null or empty topic");
 
       Topic dlTopic = ensureTopicExists(dlTopicName, properties.isAutoCreateResources());
+
+      String dltSubscriptionName = subscriptionName + ".DLT";
+      Subscription dltSubscription = this.pubSubAdmin.getSubscription(dltSubscriptionName);
+
+      if (dltSubscription == null) {
+        try {
+          Subscription.Builder dltSubBuilder =
+              Subscription.newBuilder().setName(dltSubscriptionName).setTopic(dlTopic.getName());
+
+          ExpirationPolicy builtExpirationPolicy = buildExpirationPolicy(expirationPolicy);
+          if (builtExpirationPolicy != null) {
+            dltSubBuilder.setExpirationPolicy(builtExpirationPolicy);
+          }
+
+          this.pubSubAdmin.createSubscription(dltSubBuilder);
+          LOGGER.info(
+              "Created DLT subscription '"
+                  + dltSubscriptionName
+                  + "' for dead-letter topic '"
+                  + dlTopic.getName()
+                  + "'");
+        } catch (AlreadyExistsException ex) {
+          // Safe race condition handling
+          LOGGER.debug("DLT subscription '" + dltSubscriptionName + "' already exists.");
+        }
+      }
 
       DeadLetterPolicy.Builder dlpBuilder =
           DeadLetterPolicy.newBuilder().setDeadLetterTopic(dlTopic.getName());
@@ -174,21 +198,35 @@ public class PubSubChannelProvisioner
         dlpBuilder.setMaxDeliveryAttempts(maxAttempts);
       }
       builder.setDeadLetterPolicy(dlpBuilder);
+
+      LOGGER.warn(
+          "Dead Letter Topic is configured, but IAM roles are NOT validated or auto-provisioned. "
+              + "Ensure the Pub/Sub service agent has roles/pubsub.publisher on '"
+              + dlTopic.getName()
+              + "' and consumers have roles/pubsub.subscriber on '"
+              + dltSubscriptionName
+              + "'. Missing IAM will cause runtime failures or endless retries.");
     }
 
-    PubSubConsumerProperties.ExpirationPolicy expirationPolicy = properties.getExpirationPolicy();
-    if (expirationPolicy != null) {
-      ExpirationPolicy.Builder epBuilder = ExpirationPolicy.newBuilder();
-
-      if (expirationPolicy.getTtl() != null) {
-        long desiredSeconds = expirationPolicy.getTtl().getSeconds();
-        epBuilder.setTtl(
-            com.google.protobuf.Duration.newBuilder().setSeconds(desiredSeconds).build());
-      }
-
-      builder.setExpirationPolicy(epBuilder);
+    ExpirationPolicy builtExpirationPolicy = buildExpirationPolicy(expirationPolicy);
+    if (builtExpirationPolicy != null) {
+      builder.setExpirationPolicy(builtExpirationPolicy);
     }
-
     return this.pubSubAdmin.createSubscription(builder);
+  }
+
+  private ExpirationPolicy buildExpirationPolicy(
+      PubSubConsumerProperties.ExpirationPolicy expirationPolicy) {
+    if (expirationPolicy == null) {
+      return null;
+    }
+    ExpirationPolicy.Builder epBuilder = ExpirationPolicy.newBuilder();
+
+    if (expirationPolicy.getTtl() != null) {
+      long desiredSeconds = expirationPolicy.getTtl().getSeconds();
+      epBuilder.setTtl(
+          com.google.protobuf.Duration.newBuilder().setSeconds(desiredSeconds).build());
+    }
+    return epBuilder.build();
   }
 }
