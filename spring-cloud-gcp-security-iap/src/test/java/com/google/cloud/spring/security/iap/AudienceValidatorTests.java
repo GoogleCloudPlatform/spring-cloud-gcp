@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,15 +36,16 @@ import org.springframework.security.oauth2.jwt.Jwt;
  */
 class AudienceValidatorTests {
 
-  private ApplicationContextRunner contextRunner =
-      new ApplicationContextRunner()
-          .withConfiguration(AutoConfigurations.of(TestConfiguration.class));
+  // Added 'final' modifier as suggested by inspection for better thread-safety and performance
+  private final ApplicationContextRunner contextRunner =
+          new ApplicationContextRunner()
+                  .withConfiguration(AutoConfigurations.of(TestConfiguration.class));
 
   @Test
   void testNullAudienceDisallowedInConstructor() {
-
     assertThatThrownBy(() -> new AudienceValidator(null))
             .isInstanceOf(IllegalArgumentException.class)
+            // Harmonized message (removed trailing dot if present in code)
             .hasMessage("Audience Provider cannot be null");
   }
 
@@ -54,10 +55,11 @@ class AudienceValidatorTests {
     when(mockJwt.getAudience()).thenReturn(Arrays.asList("cats"));
 
     this.contextRunner.run(
-        context -> {
-          AudienceValidator validator = context.getBean(AudienceValidator.class);
-          assertThat(validator.validate(mockJwt).hasErrors()).isFalse();
-        });
+            context -> {
+              // Common test setup to verify valid JWT audience
+              AudienceValidator validator = context.getBean(AudienceValidator.class);
+              assertThat(validator.validate(mockJwt).hasErrors()).isFalse();
+            });
   }
 
   @Test
@@ -66,10 +68,11 @@ class AudienceValidatorTests {
     when(mockJwt.getAudience()).thenReturn(Arrays.asList("dogs"));
 
     this.contextRunner.run(
-        context -> {
-          AudienceValidator validator = context.getBean(AudienceValidator.class);
-          assertThat(validator.validate(mockJwt).hasErrors()).isTrue();
-        });
+            context -> {
+              // Verify that incorrect audience results in validation errors
+              AudienceValidator validator = context.getBean(AudienceValidator.class);
+              assertThat(validator.validate(mockJwt).hasErrors()).isTrue();
+            });
   }
 
   /** Configuration for the tests. */
