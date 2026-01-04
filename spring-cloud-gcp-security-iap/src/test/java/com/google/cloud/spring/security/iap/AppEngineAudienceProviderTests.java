@@ -41,7 +41,7 @@ class AppEngineAudienceProviderTests {
 
   @BeforeEach
   void setUp() {
-    // Initialisation commune pour la plupart des tests
+    // Common initialization for most tests
     this.provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
   }
 
