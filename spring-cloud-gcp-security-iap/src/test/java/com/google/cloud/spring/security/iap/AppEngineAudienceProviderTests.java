@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,10 +16,6 @@
 
 package com.google.cloud.spring.security.iap;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
-
 import com.google.cloud.resourcemanager.Project;
 import com.google.cloud.resourcemanager.ResourceManager;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
@@ -29,70 +25,75 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
 /** Tests for the AppEngine Audience Provider. */
 @ExtendWith(MockitoExtension.class)
 class AppEngineAudienceProviderTests {
 
-  @Mock GcpProjectIdProvider mockProjectIdProvider;
+  @Mock private GcpProjectIdProvider mockProjectIdProvider;
+  @Mock private ResourceManager mockResourceManager;
+  @Mock private Project mockProject;
 
-  @Mock ResourceManager mockResourceManager;
+  private AppEngineAudienceProvider provider;
 
-  @Mock Project mockProject;
+  @BeforeEach
+  void setUp() {
+    // Initialisation commune pour la plupart des tests
+    this.provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
+  }
 
   @Test
   void testNullProjectIdProviderDisallowed() {
-
     assertThatThrownBy(() -> new AppEngineAudienceProvider(null))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("GcpProjectIdProvider cannot be null.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("GcpProjectIdProvider cannot be null.");
   }
 
   @Test
   void testNullResourceManagerDisallowed() {
-    AppEngineAudienceProvider audienceProvider =
-        new AppEngineAudienceProvider(this.mockProjectIdProvider);
-    assertThatThrownBy(() -> audienceProvider.setResourceManager(null))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("ResourceManager cannot be null.");
+    assertThatThrownBy(() -> provider.setResourceManager(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("ResourceManager cannot be null.");
   }
 
   @Test
   void testNullProjectDisallowed() {
     when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
-    AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
     provider.setResourceManager(this.mockResourceManager);
+
     assertThatThrownBy(provider::getAudience)
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessageStartingWith(
-            "Project expected not to be null. Is Cloud Resource Manager API enabled");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageStartingWith("Project expected not to be null. Is Cloud Resource Manager API enabled");
   }
 
   @Test
   void testNullProjectNumberDisallowed() {
     when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
-    when(mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
     when(this.mockResourceManager.get("steal-spaceship")).thenReturn(this.mockProject);
     when(this.mockProject.getProjectNumber()).thenReturn(null);
 
-    AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
     provider.setResourceManager(this.mockResourceManager);
+
     assertThatThrownBy(provider::getAudience)
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Project Number expected not to be null.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Project Number expected not to be null.");
   }
 
   @Test
   void testNullProjectIdDisallowed() {
-    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
-    when(mockProjectIdProvider.getProjectId()).thenReturn(null);
+    // On simule un cas où le provider de projet renvoie null
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn(null);
     when(this.mockResourceManager.get(null)).thenReturn(this.mockProject);
     when(this.mockProject.getProjectNumber()).thenReturn(42L);
 
-    AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
     provider.setResourceManager(this.mockResourceManager);
+
     assertThatThrownBy(provider::getAudience)
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Project Id expected not to be null.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Project Id expected not to be null.");
   }
 
   @Test
@@ -101,7 +102,6 @@ class AppEngineAudienceProviderTests {
     when(this.mockResourceManager.get("steal-spaceship")).thenReturn(this.mockProject);
     when(this.mockProject.getProjectNumber()).thenReturn(42L);
 
-    AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
     provider.setResourceManager(this.mockResourceManager);
 
     assertThat(provider.getAudience()).isEqualTo("/projects/42/apps/steal-spaceship");
