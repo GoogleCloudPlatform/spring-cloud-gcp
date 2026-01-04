@@ -1,19 +1,3 @@
-/*
- * Copyright 2017-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.google.cloud.spring.security.iap;
 
 import com.google.cloud.resourcemanager.Project;
@@ -49,14 +33,14 @@ class AppEngineAudienceProviderTests {
   void testNullProjectIdProviderDisallowed() {
     assertThatThrownBy(() -> new AppEngineAudienceProvider(null))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("GcpProjectIdProvider cannot be null.");
+            .hasMessage("ProjectIdProvider cannot be null");
   }
 
   @Test
   void testNullResourceManagerDisallowed() {
     assertThatThrownBy(() -> provider.setResourceManager(null))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("ResourceManager cannot be null.");
+            .hasMessage("ResourceManager cannot be null");
   }
 
   @Test
@@ -79,12 +63,11 @@ class AppEngineAudienceProviderTests {
 
     assertThatThrownBy(provider::getAudience)
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Project Number expected not to be null.");
+            .hasMessage("Project Number expected not to be null");
   }
 
   @Test
   void testNullProjectIdDisallowed() {
-    // On simule un cas où le provider de projet renvoie null
     when(this.mockProjectIdProvider.getProjectId()).thenReturn(null);
     when(this.mockResourceManager.get(null)).thenReturn(this.mockProject);
     when(this.mockProject.getProjectNumber()).thenReturn(42L);
@@ -93,7 +76,7 @@ class AppEngineAudienceProviderTests {
 
     assertThatThrownBy(provider::getAudience)
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Project Id expected not to be null.");
+            .hasMessage("Project Id expected not to be null");
   }
 
   @Test
