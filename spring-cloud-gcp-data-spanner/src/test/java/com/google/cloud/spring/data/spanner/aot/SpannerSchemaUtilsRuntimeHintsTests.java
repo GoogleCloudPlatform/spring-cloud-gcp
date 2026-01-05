@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.RuntimeHints;
 
 class SpannerSchemaUtilsRuntimeHintsTests {
+
   @Test
   void registerString() {
     RuntimeHints runtimeHints = new RuntimeHints();

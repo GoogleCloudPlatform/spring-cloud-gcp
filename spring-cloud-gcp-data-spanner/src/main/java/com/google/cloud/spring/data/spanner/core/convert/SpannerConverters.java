@@ -41,9 +41,12 @@ import org.springframework.util.Assert;
  */
 public final class SpannerConverters {
 
-  private SpannerConverters() {}
+  private SpannerConverters() {
+  }
 
-  /** A converter from {@link java.sql.Date} to the Spanner date type. */
+  /**
+   * A converter from {@link java.sql.Date} to the Spanner date type.
+   */
   // @formatter:off
   public static final Converter<Date, com.google.cloud.Date> JAVA_SQL_TO_SPANNER_DATE_CONVERTER =
       new Converter<java.sql.Date, com.google.cloud.Date>() {
@@ -58,7 +61,9 @@ public final class SpannerConverters {
         }
       };
 
-  /** A converter from the Spanner date type to {@link Date}. */
+  /**
+   * A converter from the Spanner date type to {@link Date}.
+   */
   // @formatter:off
   public static final Converter<com.google.cloud.Date, java.sql.Date>
       SPANNER_TO_JAVA_SQL_DATE_CONVERTER =
@@ -73,7 +78,9 @@ public final class SpannerConverters {
             }
           };
 
-  /** A converter from {@link LocalDate} to the Spanner date type. */
+  /**
+   * A converter from {@link LocalDate} to the Spanner date type.
+   */
   // @formatter:off
   public static final Converter<LocalDate, com.google.cloud.Date> LOCAL_DATE_TIMESTAMP_CONVERTER =
       new Converter<LocalDate, com.google.cloud.Date>() {
@@ -86,7 +93,9 @@ public final class SpannerConverters {
         }
       };
 
-  /** A converter from the Spanner date type to {@link LocalDate}. */
+  /**
+   * A converter from the Spanner date type to {@link LocalDate}.
+   */
   // @formatter:off
   public static final Converter<com.google.cloud.Date, LocalDate> TIMESTAMP_LOCAL_DATE_CONVERTER =
       new Converter<com.google.cloud.Date, LocalDate>() {
@@ -98,13 +107,18 @@ public final class SpannerConverters {
         }
       };
 
-  /** A converter from {@link LocalDateTime} to the Spanner timestamp type. */
+  /**
+   * A converter from {@link LocalDateTime} to the Spanner timestamp type.
+   */
   public static final Converter<LocalDateTime, Timestamp> LOCAL_DATE_TIME_TIMESTAMP_CONVERTER =
       new CommitTimestampDecorator<LocalDateTime>(
           Value.COMMIT_TIMESTAMP.toSqlTimestamp().toLocalDateTime(),
-          l -> toTimestamp(java.sql.Timestamp.valueOf(l))) {};
+          l -> toTimestamp(java.sql.Timestamp.valueOf(l))) {
+      };
 
-  /** A converter from the Spanner timestamp type to {@link LocalDateTime}. */
+  /**
+   * A converter from the Spanner timestamp type to {@link LocalDateTime}.
+   */
   // @formatter:off
   public static final Converter<Timestamp, LocalDateTime> TIMESTAMP_LOCAL_DATE_TIME_CONVERTER =
       new Converter<Timestamp, LocalDateTime>() {
@@ -118,7 +132,9 @@ public final class SpannerConverters {
         }
       };
 
-  /** A converter from {@link java.util.Date} to the Spanner timestamp type. */
+  /**
+   * A converter from {@link java.util.Date} to the Spanner timestamp type.
+   */
   public static final Converter<java.util.Date, Timestamp> DATE_TIMESTAMP_CONVERTER =
       new CommitTimestampDecorator<java.util.Date>(
           Value.COMMIT_TIMESTAMP.toDate(),
@@ -127,9 +143,12 @@ public final class SpannerConverters {
             long secs = Math.floorDiv(time, 1000L);
             int nanos = Math.toIntExact((time - secs * 1000L) * 1000000L);
             return Timestamp.ofTimeSecondsAndNanos(secs, nanos);
-          }) {};
+          }) {
+      };
 
-  /** A converter from the Spanner timestamp type to {@link java.util.Date}. */
+  /**
+   * A converter from the Spanner timestamp type to {@link java.util.Date}.
+   */
   // @formatter:off
   public static final Converter<Timestamp, java.util.Date> TIMESTAMP_DATE_CONVERTER =
       new Converter<Timestamp, java.util.Date>() {
@@ -140,14 +159,19 @@ public final class SpannerConverters {
           return timestamp.toDate();
         }
       };
-  /** A converter from {@link Instant} to the Spanner instantaneous time type. */
+  /**
+   * A converter from {@link Instant} to the Spanner instantaneous time type.
+   */
   public static final Converter<Instant, Timestamp> INSTANT_TIMESTAMP_CONVERTER =
       new CommitTimestampDecorator<Instant>(
           Instant.ofEpochSecond(
               Value.COMMIT_TIMESTAMP.getSeconds(), Value.COMMIT_TIMESTAMP.getNanos()),
-          i -> Timestamp.ofTimeSecondsAndNanos(i.getEpochSecond(), i.getNano())) {};
+          i -> Timestamp.ofTimeSecondsAndNanos(i.getEpochSecond(), i.getNano())) {
+      };
 
-  /** A converter from the Spanner instantaneous time type to {@link Instant}. */
+  /**
+   * A converter from the Spanner instantaneous time type to {@link Instant}.
+   */
   // @formatter:off
   public static final Converter<Timestamp, Instant> TIMESTAMP_INSTANT_CONVERTER =
       new Converter<Timestamp, Instant>() {
@@ -159,12 +183,17 @@ public final class SpannerConverters {
         }
       };
 
-  /** A converter from {@link java.sql.Timestamp} to the Spanner instantaneous time type. */
+  /**
+   * A converter from {@link java.sql.Timestamp} to the Spanner instantaneous time type.
+   */
   public static final Converter<java.sql.Timestamp, Timestamp> JAVA_TO_SPANNER_TIMESTAMP_CONVERTER =
       new CommitTimestampDecorator<java.sql.Timestamp>(
-          Value.COMMIT_TIMESTAMP.toSqlTimestamp(), SpannerConverters::toTimestamp) {};
+          Value.COMMIT_TIMESTAMP.toSqlTimestamp(), SpannerConverters::toTimestamp) {
+      };
 
-  /** A converter from the Spanner instantaneous time type to {@link java.sql.Timestamp}. */
+  /**
+   * A converter from the Spanner instantaneous time type to {@link java.sql.Timestamp}.
+   */
   // @formatter:off
   public static final Converter<Timestamp, java.sql.Timestamp> SPANNER_TO_JAVA_TIMESTAMP_CONVERTER =
       new Converter<Timestamp, java.sql.Timestamp>() {
@@ -176,7 +205,9 @@ public final class SpannerConverters {
         }
       };
 
-  /** A converter from a byte array to the Spanner bytes type. */
+  /**
+   * A converter from a byte array to the Spanner bytes type.
+   */
   // @formatter:off
   public static final Converter<byte[], ByteArray> JAVA_TO_SPANNER_BYTE_ARRAY_CONVERTER =
       new Converter<byte[], ByteArray>() {
@@ -188,7 +219,9 @@ public final class SpannerConverters {
         }
       };
 
-  /** A converter from the Spanner bytes type to a byte array. */
+  /**
+   * A converter from the Spanner bytes type to a byte array.
+   */
   // @formatter:off
   public static final Converter<ByteArray, byte[]> SPANNER_TO_JAVA_BYTE_ARRAY_CONVERTER =
       new Converter<ByteArray, byte[]>() {
@@ -200,7 +233,9 @@ public final class SpannerConverters {
         }
       };
 
-  /** Converters from common types to those used by Spanner. */
+  /**
+   * Converters from common types to those used by Spanner.
+   */
   public static final Collection<Converter> DEFAULT_SPANNER_WRITE_CONVERTERS =
       Collections.unmodifiableCollection(
           Arrays.asList(
@@ -212,7 +247,9 @@ public final class SpannerConverters {
               LOCAL_DATE_TIMESTAMP_CONVERTER,
               LOCAL_DATE_TIME_TIMESTAMP_CONVERTER));
 
-  /** Converters from common types to those used by Spanner. */
+  /**
+   * Converters from common types to those used by Spanner.
+   */
   public static final Collection<Converter> DEFAULT_SPANNER_READ_CONVERTERS =
       Collections.unmodifiableCollection(
           Arrays.asList(

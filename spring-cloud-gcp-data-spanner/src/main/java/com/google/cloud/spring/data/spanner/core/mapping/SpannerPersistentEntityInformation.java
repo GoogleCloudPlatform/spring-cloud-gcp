@@ -30,8 +30,8 @@ public class SpannerPersistentEntityInformation<T> extends AbstractEntityInforma
   private final SpannerPersistentEntity<T> persistentEntity;
 
   /**
-   * Creates a new {@link SpannerPersistentEntityInformation} for the given {@link
-   * SpannerPersistentEntity}.
+   * Creates a new {@link SpannerPersistentEntityInformation} for the given
+   * {@link SpannerPersistentEntity}.
    *
    * @param entity must not be {@literal null}.
    */

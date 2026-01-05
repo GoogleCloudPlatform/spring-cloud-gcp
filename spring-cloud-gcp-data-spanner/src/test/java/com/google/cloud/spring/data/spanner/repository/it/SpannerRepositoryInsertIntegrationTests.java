@@ -34,20 +34,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/** Integration tests for Spanner Repository. */
+/**
+ * Integration tests for Spanner Repository.
+ */
 
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {IntegrationTestConfiguration.class})
 class SpannerRepositoryInsertIntegrationTests {
 
-  @Autowired SingerRepository singerRepository;
+  @Autowired
+  SingerRepository singerRepository;
 
-  @Autowired SpannerTemplate spannerTemplate;
+  @Autowired
+  SpannerTemplate spannerTemplate;
 
-  @Autowired protected SpannerSchemaUtils spannerSchemaUtils;
+  @Autowired
+  protected SpannerSchemaUtils spannerSchemaUtils;
 
-  @Autowired SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
+  @Autowired
+  SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
 
   @BeforeEach
   void setUp() {

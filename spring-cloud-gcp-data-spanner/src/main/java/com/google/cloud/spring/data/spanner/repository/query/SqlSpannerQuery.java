@@ -105,9 +105,9 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
   }
 
   /**
-   * @deprecated Use {@link
-   *     SpannerQueryLookupStrategy#SpannerQueryLookupStrategy(SpannerMappingContext,
-   *     SpannerTemplate, ValueExpressionDelegate, SpelExpressionParser)} instead.
+   * @deprecated Use
+   * {@link SpannerQueryLookupStrategy#SpannerQueryLookupStrategy(SpannerMappingContext,
+   * SpannerTemplate, ValueExpressionDelegate, SpelExpressionParser)} instead.
    */
   @Deprecated
   SqlSpannerQuery(
@@ -185,7 +185,8 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
       return this.evaluationContextProvider.getEvaluationContext(
           this.queryMethod.getParameters(), queryTagValue.rawParams);
     }
-    return this.valueExpressionDelegate.getEvaluationContextAccessor().create(this.queryMethod.getParameters())
+    return this.valueExpressionDelegate.getEvaluationContextAccessor()
+        .create(this.queryMethod.getParameters())
         .getEvaluationContext(queryTagValue.rawParams).getEvaluationContext();
   }
 
@@ -240,7 +241,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 
     return this.isDml
         ? Collections.singletonList(
-            this.spannerTemplate.executeDmlStatement(buildStatementFromQueryAndTags(queryTagValue)))
+        this.spannerTemplate.executeDmlStatement(buildStatementFromQueryAndTags(queryTagValue)))
         : executeReadSql(paramAccessor.getPageable(), paramAccessor.getSort(), queryTagValue);
   }
 
@@ -315,7 +316,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
     Expression expression =
         this.expressionParser.parseExpression(sql, ParserContext.TEMPLATE_EXPRESSION);
     if (expression instanceof LiteralExpression) {
-      return new Expression[] {expression};
+      return new Expression[]{expression};
     } else if (expression instanceof CompositeStringExpression) {
       return ((CompositeStringExpression) expression).getExpressions();
     } else {

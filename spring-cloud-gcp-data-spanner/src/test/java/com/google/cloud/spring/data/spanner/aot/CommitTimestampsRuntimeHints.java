@@ -23,6 +23,7 @@ import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
 
 public class CommitTimestampsRuntimeHints implements RuntimeHintsRegistrar {
+
   @Override
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
     hints

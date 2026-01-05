@@ -127,7 +127,7 @@ public interface SpannerPersistentEntity<T>
    * parents or an empty string when no annotation found.
    *
    * @return the value of the {@link Where} from the entity's class or inherited from parents or an
-   *     empty string when no annotation found.
+   * empty string when no annotation found.
    * @see #hasWhere()
    */
   String getWhere();

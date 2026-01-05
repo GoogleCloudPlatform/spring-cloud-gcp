@@ -20,7 +20,9 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
 import java.util.Objects;
 
-/** This event is published immediately following a read-by-query operation on Cloud Spanner. */
+/**
+ * This event is published immediately following a read-by-query operation on Cloud Spanner.
+ */
 public class AfterQueryEvent extends LoadEvent {
 
   private final Statement query;
@@ -30,10 +32,11 @@ public class AfterQueryEvent extends LoadEvent {
   /**
    * Constructor.
    *
-   * @param source The entities that were read from Cloud Spanner.This is never {@code null}.
-   * @param query the read query that was run.
-   * @param spannerQueryOptions the options that were used to conduct the query. This may be {@code
-   *     null} if the operation was a key-based read.
+   * @param source              The entities that were read from Cloud Spanner.This is never
+   *                            {@code null}.
+   * @param query               the read query that was run.
+   * @param spannerQueryOptions the options that were used to conduct the query. This may be
+   *                            {@code null} if the operation was a key-based read.
    */
   public AfterQueryEvent(
       Iterable source, Statement query, SpannerQueryOptions spannerQueryOptions) {

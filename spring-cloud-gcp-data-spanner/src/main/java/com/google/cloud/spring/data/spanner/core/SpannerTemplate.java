@@ -147,7 +147,7 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
 
   @Override
   public long executePartitionedDmlStatement(Statement statement) {
-    return executePartitionedDmlStatement(statement, new UpdateOption[] {});
+    return executePartitionedDmlStatement(statement, new UpdateOption[]{});
   }
 
   @Override
@@ -227,13 +227,13 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
   }
 
   /**
-   * In many cases {@link KeySet} with {@link SpannerReadOptions} are compatible with {@link
-   * SpannerQueryOptions}. The method throws exception when it is impossible.
+   * In many cases {@link KeySet} with {@link SpannerReadOptions} are compatible with
+   * {@link SpannerQueryOptions}. The method throws exception when it is impossible.
    *
    * @param options read-parameters
    * @return query-parameters
-   * @throws IllegalArgumentException when {@link SpannerReadOptions} can't be converted to {@link
-   *     SpannerQueryOptions} or {@code keys} have "ranges".
+   * @throws IllegalArgumentException when {@link SpannerReadOptions} can't be converted to
+   *                                  {@link SpannerQueryOptions} or {@code keys} have "ranges".
    * @see SpannerReadOptions#toQueryOptions()
    */
   private static SpannerQueryOptions toQueryOption(KeySet keys, SpannerReadOptions options)
@@ -284,7 +284,7 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
     String sql =
         "SELECT "
             + SpannerStatementQueryExecutor.getColumnsStringForSelect(
-                entity, this.mappingContext, true)
+            entity, this.mappingContext, true)
             + " FROM "
             + entity.tableName()
             + SpannerStatementQueryExecutor.buildWhere(entity);
@@ -486,8 +486,8 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
           try (ReadOnlyTransaction readOnlyTransaction =
               (options.getTimestampBound() != null)
                   ? this.databaseClientProvider
-                      .get()
-                      .readOnlyTransaction(options.getTimestampBound())
+                  .get()
+                  .readOnlyTransaction(options.getTimestampBound())
                   : this.databaseClientProvider.get().readOnlyTransaction()) {
             return operations.apply(
                 new ReadOnlyTransactionSpannerTemplate(
@@ -536,8 +536,8 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
     } else {
       resultSet =
           ((options.getTimestampBound() != null)
-                  ? getReadContext(options.getTimestampBound())
-                  : getReadContext())
+              ? getReadContext(options.getTimestampBound())
+              : getReadContext())
               .executeQuery(statement, options.getOptions());
     }
     return resultSet;

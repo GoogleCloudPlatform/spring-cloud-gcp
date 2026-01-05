@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,10 +20,9 @@ import com.google.cloud.spanner.Statement;
 import java.util.Objects;
 
 /**
- * This event is published immediately after a DML statement is executed. It contains the DML
- * statement as well as the number of rows affected.
+ * This event is published immediately after a DML statement is executed.
  */
-public class AfterExecuteDmlEvent extends ExecuteDmlEvent {
+public final class AfterExecuteDmlEvent extends ExecuteDmlEvent {
 
   private final long numberOfRowsAffected;
 
@@ -31,11 +30,11 @@ public class AfterExecuteDmlEvent extends ExecuteDmlEvent {
    * Constructor.
    *
    * @param statement the DML statement that was executed.
-   * @param numberOfRowsAffected the number of rows affected.
+   * @param rowsAffected the number of rows affected.
    */
-  public AfterExecuteDmlEvent(Statement statement, long numberOfRowsAffected) {
+  public AfterExecuteDmlEvent(final Statement statement, final long rowsAffected) {
     super(statement);
-    this.numberOfRowsAffected = numberOfRowsAffected;
+    this.numberOfRowsAffected = rowsAffected;
   }
 
   /**
@@ -48,7 +47,7 @@ public class AfterExecuteDmlEvent extends ExecuteDmlEvent {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) {
       return true;
     }

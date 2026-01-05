@@ -14,5 +14,7 @@
  * limitations under the License.
  */
 
-/** Cloud Spanner support for Spring Data. */
+/**
+ * Cloud Spanner support for Spring Data.
+ */
 package com.google.cloud.spring.data.spanner;

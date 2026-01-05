@@ -59,27 +59,32 @@ import org.springframework.test.context.TestExecutionListeners;
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public abstract class AbstractSpannerIntegrationTest {
 
-  @Autowired protected SpannerOperations spannerOperations;
+  @Autowired
+  protected SpannerOperations spannerOperations;
 
-  @Autowired protected ApplicationContext applicationContext;
+  @Autowired
+  protected ApplicationContext applicationContext;
 
-  @Autowired SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
+  @Autowired
+  SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
 
-  @Autowired protected SpannerSchemaUtils spannerSchemaUtils;
+  @Autowired
+  protected SpannerSchemaUtils spannerSchemaUtils;
 
-  @Autowired SpannerMappingContext spannerMappingContext;
+  @Autowired
+  SpannerMappingContext spannerMappingContext;
 
   @Test
   public void tableCreatedTest() {
     assertThat(
-            this.spannerDatabaseAdminTemplate.tableExists(
-                this.spannerMappingContext.getPersistentEntityOrFail(Trade.class).tableName()))
+        this.spannerDatabaseAdminTemplate.tableExists(
+            this.spannerMappingContext.getPersistentEntityOrFail(Trade.class).tableName()))
         .isTrue();
     assertThat(
-            this.spannerDatabaseAdminTemplate.tableExists(
-                this.spannerMappingContext
-                    .getPersistentEntityOrFail(CommitTimestamps.class)
-                    .tableName()))
+        this.spannerDatabaseAdminTemplate.tableExists(
+            this.spannerMappingContext
+                .getPersistentEntityOrFail(CommitTimestamps.class)
+                .tableName()))
         .isTrue();
   }
 }

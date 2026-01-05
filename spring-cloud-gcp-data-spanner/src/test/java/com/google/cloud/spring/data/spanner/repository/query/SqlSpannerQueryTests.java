@@ -82,7 +82,9 @@ import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-/** Tests Spanner SQL Query Methods. */
+/**
+ * Tests Spanner SQL Query Methods.
+ */
 class SqlSpannerQueryTests {
 
   private static final Offset<Double> DELTA = Offset.offset(0.00001);
@@ -131,7 +133,8 @@ class SqlSpannerQueryTests {
     this.evaluationContextProvider = mock(QueryMethodEvaluationContextProvider.class);
 
     this.valueExpressionDelegate = mock(ValueExpressionDelegate.class);
-    QueryMethodValueEvaluationContextAccessor evaluationContextAccessor = mock(QueryMethodValueEvaluationContextAccessor.class);
+    QueryMethodValueEvaluationContextAccessor evaluationContextAccessor = mock(
+        QueryMethodValueEvaluationContextAccessor.class);
     ValueEvaluationContextProvider evaluationContextProvider =
         mock(ValueEvaluationContextProvider.class);
     this.valueEvaluationContext = mock(ValueEvaluationContext.class);
@@ -144,7 +147,8 @@ class SqlSpannerQueryTests {
   }
 
   @SuppressWarnings("deprecation")
-  private <T> SqlSpannerQuery<T> createQuery(String sql, Class<T> theClass, boolean isDml, boolean useValueExpressionDelegate) {
+  private <T> SqlSpannerQuery<T> createQuery(String sql, Class<T> theClass, boolean isDml,
+      boolean useValueExpressionDelegate) {
     if (useValueExpressionDelegate) {
       return new SqlSpannerQuery<T>(
           theClass,
@@ -193,15 +197,15 @@ class SqlSpannerQueryTests {
     SqlSpannerQuery sqlSpannerQuery = createQuery(sql, toReturn, false, useValueExpressionDelegate);
 
     doAnswer(
-            invocation -> {
-              Statement statement = invocation.getArgument(0);
-              SpannerQueryOptions queryOptions = invocation.getArgument(1);
-              assertThat(queryOptions.isAllowPartialRead()).isTrue();
+        invocation -> {
+          Statement statement = invocation.getArgument(0);
+          SpannerQueryOptions queryOptions = invocation.getArgument(1);
+          assertThat(queryOptions.isAllowPartialRead()).isTrue();
 
-              assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
+          assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
 
-              return null;
-            })
+          return null;
+        })
         .when(this.spannerTemplate)
         .executeQuery(any(), any());
 
@@ -212,7 +216,7 @@ class SqlSpannerQueryTests {
     Mockito.<Parameters>when(this.queryMethod.getParameters())
         .thenReturn(new DefaultParameters(ParametersSource.of(method)));
 
-    sqlSpannerQuery.execute(new Object[] {});
+    sqlSpannerQuery.execute(new Object[]{});
 
     verify(this.spannerTemplate, times(1)).executeQuery(any(), any());
     verify(this.spannerTemplate, times(1))
@@ -237,8 +241,8 @@ class SqlSpannerQueryTests {
     // @formatter:on
 
     Object[] params =
-        new Object[] {"ID", "TRADER_ID", PageRequest.of(3, 10, Sort.by(Order.asc("trader_id")))};
-    String[] paramNames = new String[] {"id", "trader_id", "ignoredPageable"};
+        new Object[]{"ID", "TRADER_ID", PageRequest.of(3, 10, Sort.by(Order.asc("trader_id")))};
+    String[] paramNames = new String[]{"id", "trader_id", "ignoredPageable"};
 
     when(queryMethod.isCollectionQuery()).thenReturn(false);
     when(queryMethod.getReturnedObjectType()).thenReturn((Class) Child.class);
@@ -250,24 +254,25 @@ class SqlSpannerQueryTests {
     when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
         .thenReturn(evaluationContext);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false, useValueExpressionDelegate);
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false,
+        useValueExpressionDelegate);
 
     doAnswer(
-            invocation -> {
-              Statement statement = invocation.getArgument(0);
-              SpannerQueryOptions queryOptions = invocation.getArgument(1);
-              assertThat(queryOptions.isAllowPartialRead()).isTrue();
+        invocation -> {
+          Statement statement = invocation.getArgument(0);
+          SpannerQueryOptions queryOptions = invocation.getArgument(1);
+          assertThat(queryOptions.isAllowPartialRead()).isTrue();
 
-              assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
+          assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
 
-              Map<String, Value> paramMap = statement.getParameters();
+          Map<String, Value> paramMap = statement.getParameters();
 
-              assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
-              assertThat(paramMap.get("traderId").getString()).isEqualTo(params[1]);
-              assertThat(paramMap.get("ignoredPageable")).isNull();
+          assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
+          assertThat(paramMap.get("traderId").getString()).isEqualTo(params[1]);
+          assertThat(paramMap.get("ignoredPageable")).isNull();
 
-              return null;
-            })
+          return null;
+        })
         .when(this.spannerTemplate)
         .executeQuery(any(), any());
 
@@ -301,8 +306,8 @@ class SqlSpannerQueryTests {
             + " trader_id ASC";
     // @formatter:on
 
-    Object[] params = new Object[] {"ID", "TRADER_ID", Sort.by(Order.asc("trader_id"))};
-    String[] paramNames = new String[] {"id", "trader_id", "ignoredSort"};
+    Object[] params = new Object[]{"ID", "TRADER_ID", Sort.by(Order.asc("trader_id"))};
+    String[] paramNames = new String[]{"id", "trader_id", "ignoredSort"};
 
     when(queryMethod.isCollectionQuery()).thenReturn(false);
     when(queryMethod.getReturnedObjectType()).thenReturn((Class) Child.class);
@@ -314,24 +319,25 @@ class SqlSpannerQueryTests {
     when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
         .thenReturn(evaluationContext);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false, useValueExpressionDelegate);
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false,
+        useValueExpressionDelegate);
 
     doAnswer(
-            invocation -> {
-              Statement statement = invocation.getArgument(0);
-              SpannerQueryOptions queryOptions = invocation.getArgument(1);
-              assertThat(queryOptions.isAllowPartialRead()).isTrue();
+        invocation -> {
+          Statement statement = invocation.getArgument(0);
+          SpannerQueryOptions queryOptions = invocation.getArgument(1);
+          assertThat(queryOptions.isAllowPartialRead()).isTrue();
 
-              assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
+          assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
 
-              Map<String, Value> paramMap = statement.getParameters();
+          Map<String, Value> paramMap = statement.getParameters();
 
-              assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
-              assertThat(paramMap.get("traderId").getString()).isEqualTo(params[1]);
-              assertThat(paramMap.get("ignoredSort")).isNull();
+          assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
+          assertThat(paramMap.get("traderId").getString()).isEqualTo(params[1]);
+          assertThat(paramMap.get("ignoredSort")).isNull();
 
-              return null;
-            })
+          return null;
+        })
         .when(this.spannerTemplate)
         .executeQuery(any(), any());
 
@@ -366,8 +372,8 @@ class SqlSpannerQueryTests {
     // @formatter:on
 
     Object[] params =
-        new Object[] {"ID", "TRADER_ID", Sort.by(Order.asc("trader_id")), PageRequest.of(1, 2)};
-    String[] paramNames = new String[] {"id", "trader_id", "ignoredSort", "pageable"};
+        new Object[]{"ID", "TRADER_ID", Sort.by(Order.asc("trader_id")), PageRequest.of(1, 2)};
+    String[] paramNames = new String[]{"id", "trader_id", "ignoredSort", "pageable"};
 
     when(queryMethod.isCollectionQuery()).thenReturn(false);
     when(queryMethod.getReturnedObjectType()).thenReturn((Class) Child.class);
@@ -379,25 +385,26 @@ class SqlSpannerQueryTests {
     when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
         .thenReturn(evaluationContext);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false, useValueExpressionDelegate);
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Child.class, false,
+        useValueExpressionDelegate);
 
     doAnswer(
-            invocation -> {
-              Statement statement = invocation.getArgument(0);
-              SpannerQueryOptions queryOptions = invocation.getArgument(1);
-              assertThat(queryOptions.isAllowPartialRead()).isTrue();
+        invocation -> {
+          Statement statement = invocation.getArgument(0);
+          SpannerQueryOptions queryOptions = invocation.getArgument(1);
+          assertThat(queryOptions.isAllowPartialRead()).isTrue();
 
-              assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
+          assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
 
-              Map<String, Value> paramMap = statement.getParameters();
+          Map<String, Value> paramMap = statement.getParameters();
 
-              assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
-              assertThat(paramMap.get("traderId").getString()).isEqualTo(params[1]);
-              assertThat(paramMap.get("ignoredSort")).isNull();
-              assertThat(paramMap.get("pageable")).isNull();
+          assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
+          assertThat(paramMap.get("traderId").getString()).isEqualTo(params[1]);
+          assertThat(paramMap.get("ignoredSort")).isNull();
+          assertThat(paramMap.get("pageable")).isNull();
 
-              return null;
-            })
+          return null;
+        })
         .when(this.spannerTemplate)
         .executeQuery(any(), any());
 
@@ -445,35 +452,35 @@ class SqlSpannerQueryTests {
     // @formatter:on
 
     Object[] params =
-        new Object[] {
-          "BUY",
-          this.pageable,
-          "abcd",
-          "abc123",
-          8.88,
-          3.33,
-          "blahblah",
-          1.11,
-          2.22,
-          Struct.newBuilder().set("symbol").to("ABCD").set("action").to("BUY").build(),
-          new SymbolAction("ABCD", "BUY"),
-          Arrays.asList("a", "b")
+        new Object[]{
+            "BUY",
+            this.pageable,
+            "abcd",
+            "abc123",
+            8.88,
+            3.33,
+            "blahblah",
+            1.11,
+            2.22,
+            Struct.newBuilder().set("symbol").to("ABCD").set("action").to("BUY").build(),
+            new SymbolAction("ABCD", "BUY"),
+            Arrays.asList("a", "b")
         };
 
     String[] paramNames =
-        new String[] {
-          "tag0",
-          "ignoredPageable",
-          "tag1",
-          "tag2",
-          "tag3",
-          "tag4",
-          "tag5",
-          "tag6",
-          "tag7",
-          "tag8",
-          "tag9",
-          "tag10"
+        new String[]{
+            "tag0",
+            "ignoredPageable",
+            "tag1",
+            "tag2",
+            "tag3",
+            "tag4",
+            "tag5",
+            "tag6",
+            "tag7",
+            "tag8",
+            "tag9",
+            "tag10"
         };
 
     when(queryMethod.isCollectionQuery()).thenReturn(false);
@@ -487,37 +494,38 @@ class SqlSpannerQueryTests {
     when(this.evaluationContextProvider.getEvaluationContext(any(), any()))
         .thenReturn(evaluationContext);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Trade.class, false, useValueExpressionDelegate);
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Trade.class, false,
+        useValueExpressionDelegate);
 
     doAnswer(
-            invocation -> {
-              Statement statement = invocation.getArgument(0);
-              SpannerQueryOptions queryOptions = invocation.getArgument(1);
-              assertThat(queryOptions.isAllowPartialRead()).isTrue();
+        invocation -> {
+          Statement statement = invocation.getArgument(0);
+          SpannerQueryOptions queryOptions = invocation.getArgument(1);
+          assertThat(queryOptions.isAllowPartialRead()).isTrue();
 
-              assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
+          assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
 
-              Map<String, Value> paramMap = statement.getParameters();
+          Map<String, Value> paramMap = statement.getParameters();
 
-              assertThat(paramMap.get("tag0").getString()).isEqualTo(params[0]);
-              // params[1] is this.pageable that is ignored, hence no synthetic tag is created for
-              // it
-              assertThat(paramMap.get("tag1").getString()).isEqualTo(params[2]);
-              assertThat(paramMap.get("tag2").getString()).isEqualTo(params[3]);
-              assertThat(paramMap.get("tag3").getFloat64()).isEqualTo(params[4]);
-              assertThat(paramMap.get("tag4").getFloat64()).isEqualTo(params[5]);
-              assertThat(paramMap.get("tag5").getString()).isEqualTo(params[6]);
-              assertThat(paramMap.get("tag6").getFloat64()).isEqualTo(params[7]);
-              assertThat(paramMap.get("tag7").getFloat64()).isEqualTo(params[8]);
-              assertThat(paramMap.get("tag8").getStruct()).isEqualTo(params[9]);
-              assertThat(paramMap.get("tag10").getStringArray()).isEqualTo(params[11]);
-              verify(this.spannerEntityProcessor, times(1)).write(same(params[10]), any());
+          assertThat(paramMap.get("tag0").getString()).isEqualTo(params[0]);
+          // params[1] is this.pageable that is ignored, hence no synthetic tag is created for
+          // it
+          assertThat(paramMap.get("tag1").getString()).isEqualTo(params[2]);
+          assertThat(paramMap.get("tag2").getString()).isEqualTo(params[3]);
+          assertThat(paramMap.get("tag3").getFloat64()).isEqualTo(params[4]);
+          assertThat(paramMap.get("tag4").getFloat64()).isEqualTo(params[5]);
+          assertThat(paramMap.get("tag5").getString()).isEqualTo(params[6]);
+          assertThat(paramMap.get("tag6").getFloat64()).isEqualTo(params[7]);
+          assertThat(paramMap.get("tag7").getFloat64()).isEqualTo(params[8]);
+          assertThat(paramMap.get("tag8").getStruct()).isEqualTo(params[9]);
+          assertThat(paramMap.get("tag10").getStringArray()).isEqualTo(params[11]);
+          verify(this.spannerEntityProcessor, times(1)).write(same(params[10]), any());
 
-              assertThat(paramMap.get("SpELtag1").getFloat64()).isEqualTo(-8.88, DELTA);
-              assertThat(paramMap.get("SpELtag2").getFloat64()).isEqualTo(-3.33, DELTA);
+          assertThat(paramMap.get("SpELtag1").getFloat64()).isEqualTo(-8.88, DELTA);
+          assertThat(paramMap.get("SpELtag2").getFloat64()).isEqualTo(-3.33, DELTA);
 
-              return null;
-            })
+          return null;
+        })
         .when(this.spannerTemplate)
         .executeQuery(any(), any());
 
@@ -569,12 +577,13 @@ class SqlSpannerQueryTests {
     Mockito.<Parameters>when(this.queryMethod.getParameters())
         .thenReturn(new DefaultParameters(ParametersSource.of(method)));
 
-    SqlSpannerQuery sqlSpannerQuery = spy(createQuery(sql, Trade.class, true, useValueExpressionDelegate));
+    SqlSpannerQuery sqlSpannerQuery = spy(
+        createQuery(sql, Trade.class, true, useValueExpressionDelegate));
 
     doReturn(long.class).when(sqlSpannerQuery).getReturnedSimpleConvertableItemType();
     doReturn(null).when(sqlSpannerQuery).convertToSimpleReturnType(any(), any());
 
-    sqlSpannerQuery.execute(new Object[] {});
+    sqlSpannerQuery.execute(new Object[]{});
 
     verify(this.spannerTemplate, times(1)).executeDmlStatement(any());
   }
@@ -590,13 +599,14 @@ class SqlSpannerQueryTests {
     String entityResolvedSql =
         "SELECT count(1) FROM children WHERE id = @id AND trader_id = @trader_id";
 
-    Object[] params = new Object[] {"ID", "TRADER_ID"};
-    String[] paramNames = new String[] {"id", "trader_id"};
+    Object[] params = new Object[]{"ID", "TRADER_ID"};
+    String[] paramNames = new String[]{"id", "trader_id"};
 
     when(queryMethod.isCollectionQuery()).thenReturn(false);
     when(queryMethod.getReturnedObjectType()).thenReturn((Class) long.class);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, long.class, false, useValueExpressionDelegate);
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, long.class, false,
+        useValueExpressionDelegate);
 
     Struct row = mock(Struct.class);
     when(row.getType())
@@ -609,19 +619,19 @@ class SqlSpannerQueryTests {
     when(resultSet.getCurrentRowAsStruct()).thenReturn(row);
 
     doAnswer(
-            invocation -> {
-              Statement statement = invocation.getArgument(0);
-              SpannerQueryOptions queryOptions = invocation.getArgument(1);
-              assertThat(queryOptions.isAllowPartialRead()).isTrue();
+        invocation -> {
+          Statement statement = invocation.getArgument(0);
+          SpannerQueryOptions queryOptions = invocation.getArgument(1);
+          assertThat(queryOptions.isAllowPartialRead()).isTrue();
 
-              assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
+          assertThat(statement.getSql()).isEqualTo(entityResolvedSql);
 
-              Map<String, Value> paramMap = statement.getParameters();
+          Map<String, Value> paramMap = statement.getParameters();
 
-              assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
-              assertThat(paramMap.get("traderId").getString()).isEqualTo(params[1]);
-              return resultSet;
-            })
+          assertThat(paramMap.get("id").getString()).isEqualTo(params[0]);
+          assertThat(paramMap.get("traderId").getString()).isEqualTo(params[1]);
+          return resultSet;
+        })
         .when(this.spannerTemplate)
         .executeQuery(any(), any());
 
@@ -642,11 +652,12 @@ class SqlSpannerQueryTests {
 
   @ParameterizedTest
   @ValueSource(booleans = {true, false})
-  void sqlReturnTypeIsJsonFieldTest(boolean useValueExpressionDelegate) throws NoSuchMethodException {
+  void sqlReturnTypeIsJsonFieldTest(boolean useValueExpressionDelegate)
+      throws NoSuchMethodException {
     String sql = "SELECT details from singer where stageName = @stageName";
 
-    Object[] params = new Object[] {"STAGENAME"};
-    String[] paramNames = new String[] {"stageName"};
+    Object[] params = new Object[]{"STAGENAME"};
+    String[] paramNames = new String[]{"stageName"};
 
     when(queryMethod.isCollectionQuery()).thenReturn(true);
     ResultProcessor resultProcessor = mock(ResultProcessor.class);
@@ -655,17 +666,18 @@ class SqlSpannerQueryTests {
     when(resultProcessor.getReturnedType()).thenReturn(returnedType);
     when(returnedType.getReturnedType()).thenReturn((Class) Detail.class);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false, useValueExpressionDelegate);
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false,
+        useValueExpressionDelegate);
 
     doAnswer(
-            invocation -> {
-              Statement statement = invocation.getArgument(1);
-              assertThat(statement.getSql()).isEqualTo(sql);
-              Map<String, Value> paramMap = statement.getParameters();
-              assertThat(paramMap.get("stageName").getString()).isEqualTo(params[0]);
+        invocation -> {
+          Statement statement = invocation.getArgument(1);
+          assertThat(statement.getSql()).isEqualTo(sql);
+          Map<String, Value> paramMap = statement.getParameters();
+          assertThat(paramMap.get("stageName").getString()).isEqualTo(params[0]);
 
-              return null;
-            })
+          return null;
+        })
         .when(this.spannerTemplate)
         .query((Function<Struct, Object>) any(), any(), any());
 
@@ -700,11 +712,12 @@ class SqlSpannerQueryTests {
 
   @ParameterizedTest
   @ValueSource(booleans = {true, false})
-  void sqlReturnTypeIsArrayJsonFieldTest(boolean useValueExpressionDelegate) throws NoSuchMethodException {
+  void sqlReturnTypeIsArrayJsonFieldTest(boolean useValueExpressionDelegate)
+      throws NoSuchMethodException {
     String sql = "SELECT detailsList from singer where stageName = @stageName";
 
-    Object[] params = new Object[] {"STAGENAME"};
-    String[] paramNames = new String[] {"stageName"};
+    Object[] params = new Object[]{"STAGENAME"};
+    String[] paramNames = new String[]{"stageName"};
 
     when(queryMethod.isCollectionQuery()).thenReturn(true);
     ResultProcessor resultProcessor = mock(ResultProcessor.class);
@@ -713,17 +726,18 @@ class SqlSpannerQueryTests {
     when(resultProcessor.getReturnedType()).thenReturn(returnedType);
     when(returnedType.getReturnedType()).thenReturn((Class) Detail.class);
 
-    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false, useValueExpressionDelegate);
+    SqlSpannerQuery sqlSpannerQuery = createQuery(sql, Singer.class, false,
+        useValueExpressionDelegate);
 
     doAnswer(
-            invocation -> {
-              Statement statement = invocation.getArgument(1);
-              assertThat(statement.getSql()).isEqualTo(sql);
-              Map<String, Value> paramMap = statement.getParameters();
-              assertThat(paramMap.get("stageName").getString()).isEqualTo(params[0]);
+        invocation -> {
+          Statement statement = invocation.getArgument(1);
+          assertThat(statement.getSql()).isEqualTo(sql);
+          Map<String, Value> paramMap = statement.getParameters();
+          assertThat(paramMap.get("stageName").getString()).isEqualTo(params[0]);
 
-              return null;
-            })
+          return null;
+        })
         .when(this.spannerTemplate)
         .query((Function<Struct, Object>) any(), any(), any());
 
@@ -764,7 +778,9 @@ class SqlSpannerQueryTests {
   }
 
   private static class Singer {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     String stageName;
 
@@ -776,6 +792,7 @@ class SqlSpannerQueryTests {
   }
 
   private class Detail {
+
     String p1;
 
     String p2;
@@ -804,6 +821,7 @@ class SqlSpannerQueryTests {
   }
 
   private static class SymbolAction {
+
     String symbol;
 
     String action;
@@ -816,7 +834,9 @@ class SqlSpannerQueryTests {
 
   @Table(name = "trades")
   private static class Trade {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     String action;
 
@@ -830,12 +850,14 @@ class SqlSpannerQueryTests {
     @Column(name = "trader_id")
     String traderId;
 
-    @Interleaved List<Child> children;
+    @Interleaved
+    List<Child> children;
   }
 
   @Table(name = "children")
   @Where("disabled = false")
   private static class Child {
+
     @PrimaryKey(keyOrder = 1)
     String id;
 
@@ -846,12 +868,14 @@ class SqlSpannerQueryTests {
 
     boolean disabled;
 
-    @Interleaved List<Document> documents;
+    @Interleaved
+    List<Document> documents;
   }
 
   @Table(name = "documents")
   @Where("canceled = false")
   private static class Document {
+
     @PrimaryKey(keyOrder = 1)
     String id;
 
@@ -867,6 +891,7 @@ class SqlSpannerQueryTests {
   }
 
   private static class QueryHolder {
+
     public long dummyMethod(
         Object tag0,
         Pageable pageable,
@@ -912,7 +937,8 @@ class SqlSpannerQueryTests {
       return null;
     }
 
-    public void noParamMethod() {}
+    public void noParamMethod() {
+    }
 
     public List<Child> sortAndPageable(String id, String traderId, Sort sort, Pageable pageable) {
       return null;

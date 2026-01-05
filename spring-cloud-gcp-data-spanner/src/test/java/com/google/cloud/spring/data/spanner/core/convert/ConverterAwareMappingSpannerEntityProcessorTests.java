@@ -47,7 +47,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
 
-/** Tests for Spanner mapping and converting. */
+/**
+ * Tests for Spanner mapping and converting.
+ */
 class ConverterAwareMappingSpannerEntityProcessorTests {
 
   private static final Offset<Double> DELTA = Offset.offset(0.00001);
@@ -58,7 +60,8 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
 
         @Override
         public JavaType convert(SpannerType source) {
-          return new JavaType() {};
+          return new JavaType() {
+          };
         }
       };
 
@@ -67,7 +70,8 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
 
         @Override
         public SpannerType convert(@NonNull JavaType source) {
-          return new SpannerType() {};
+          return new SpannerType() {
+          };
         }
       };
 
@@ -197,7 +201,8 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
             Timestamp.ofTimeSecondsAndNanos(222, 0),
             Timestamp.ofTimeSecondsAndNanos(333, 0));
     List<Interval> intervals = Collections.singletonList(Interval.ofSeconds(1L));
-    List<UUID> uuids = Collections.singletonList(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
+    List<UUID> uuids = Collections.singletonList(
+        UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
 
     Struct struct1 =
         Struct.newBuilder()
@@ -222,21 +227,21 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
             .set("doubleField")
             .to(Value.float64(3.33))
             .set("doubleArray")
-            .to(Value.float64Array(new double[] {3.33, 3.33, 3.33}))
+            .to(Value.float64Array(new double[]{3.33, 3.33, 3.33}))
             .set("doubleList")
             .to(Value.float64Array(doubleList))
             .set("floatField")
             .to(Value.float32(3.33F))
             .set("floatArray")
-            .to(Value.float32Array(new float[] {3.33F, 3.33F, 3.33F}))
+            .to(Value.float32Array(new float[]{3.33F, 3.33F, 3.33F}))
             .set("floatList")
             .to(Value.float32Array(floatList))
             .set("stringList")
             .to(Value.stringArray(stringList))
             .set("booleanList")
-            .to(Value.boolArray(new boolean[] {}))
+            .to(Value.boolArray(new boolean[]{}))
             .set("longList")
-            .to(Value.int64Array(new long[] {}))
+            .to(Value.int64Array(new long[]{}))
             .set("timestampList")
             .to(Value.timestampArray(new ArrayList<>()))
             .set("dateList")
@@ -290,21 +295,21 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
             .set("doubleField")
             .to(Value.float64(5.55))
             .set("doubleArray")
-            .to(Value.float64Array(new double[] {5.55, 5.55}))
+            .to(Value.float64Array(new double[]{5.55, 5.55}))
             .set("doubleList")
             .to(Value.float64Array(doubleList))
             .set("floatField")
             .to(Value.float32(5.55F))
             .set("floatArray")
-            .to(Value.float32Array(new float[] {5.55F, 5.55F}))
+            .to(Value.float32Array(new float[]{5.55F, 5.55F}))
             .set("floatList")
             .to(Value.float32Array(floatList))
             .set("stringList")
             .to(Value.stringArray(stringList))
             .set("booleanList")
-            .to(Value.boolArray(new boolean[] {}))
+            .to(Value.boolArray(new boolean[]{}))
             .set("longList")
-            .to(Value.int64Array(new long[] {}))
+            .to(Value.int64Array(new long[]{}))
             .set("timestampList")
             .to(Value.timestampArray(new ArrayList<>()))
             .set("dateList")
@@ -377,8 +382,8 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
     assertThat(t1.intervalField).isEqualTo(Interval.ofSeconds(100L));
     assertThat(t1.intervalList).containsExactly(Interval.ofSeconds(1L));
     assertThat(t1.uuidField).isEqualTo(UUID.fromString("a1b2c3d4-e5f6-7890-1234-567890abcdef"));
-    assertThat(t1.uuidList).containsExactly(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
-
+    assertThat(t1.uuidList).containsExactly(
+        UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
 
     assertThat(t2)
         .hasFieldOrPropertyWithValue("id", "key12")
@@ -409,7 +414,8 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
     assertThat(t2.intervalField).isEqualTo(Interval.ofSeconds(200L));
     assertThat(t2.intervalList).containsExactly(Interval.ofSeconds(1L));
     assertThat(t2.uuidField).isEqualTo(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
-    assertThat(t2.uuidList).containsExactly(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
+    assertThat(t2.uuidList).containsExactly(
+        UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
   }
 
   @Test
@@ -473,12 +479,19 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
     assertThat(t2.stringList).isNull();
   }
 
-  private interface SpannerType {}
+  private interface SpannerType {
 
-  private interface JavaType {}
+  }
 
-  /** A mock results class for mocked queries. */
+  private interface JavaType {
+
+  }
+
+  /**
+   * A mock results class for mocked queries.
+   */
   static class MockResults {
+
     List<Struct> structs;
 
     int counter = -1;

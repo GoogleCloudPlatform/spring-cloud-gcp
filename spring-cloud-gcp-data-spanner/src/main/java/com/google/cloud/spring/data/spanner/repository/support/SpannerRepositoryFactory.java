@@ -64,8 +64,10 @@ public class SpannerRepositoryFactory extends RepositoryFactorySupport
   /**
    * Constructor.
    *
-   * @param spannerMappingContext the mapping context used to get mapping metadata for entity types.
-   * @param spannerTemplate the Cloud Spanner operations object used by Cloud Spanner repositories.
+   * @param spannerMappingContext the mapping context used to get mapping metadata for entity
+   *                              types.
+   * @param spannerTemplate       the Cloud Spanner operations object used by Cloud Spanner
+   *                              repositories.
    */
   SpannerRepositoryFactory(
       SpannerMappingContext spannerMappingContext, SpannerTemplate spannerTemplate) {
