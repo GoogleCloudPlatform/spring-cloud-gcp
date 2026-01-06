@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,17 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * An event that is published just before a save operation.
+ * An event that is published just before a save operation is sent to Cloud Spanner.
  */
-public final class BeforeSaveEvent extends SaveEvent {
+public class BeforeSaveEvent extends SaveEvent {
 
   /**
    * Constructor.
    *
-   * @param entities the target entities that need to be mutated.
-   * @param includeProps the set of properties to include in the save operation.
+   * @param targetEntities the target entities that need to be mutated.
+   * @param includeProperties the set of properties to include in the save operation.
    */
-  public BeforeSaveEvent(final Iterable entities, final Set<String> includeProps) {
-    super(Collections.emptyList(), entities, includeProps);
+  public BeforeSaveEvent(Iterable<?> targetEntities, Set<String> includeProperties) {
+    super(Collections.emptyList(), targetEntities, includeProperties);
   }
 }
