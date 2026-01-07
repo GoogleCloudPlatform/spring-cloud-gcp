@@ -1,11 +1,11 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +20,10 @@ import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreException;
 import com.google.cloud.datastore.Transaction;
 import com.google.datastore.v1.TransactionOptions;
+import com.google.protobuf.ByteString;
 import java.util.function.Supplier;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionSystemException;
@@ -34,10 +37,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * @since 1.1
  */
 public class DatastoreTransactionManager extends AbstractPlatformTransactionManager {
-  private static final TransactionOptions READ_ONLY_OPTIONS =
-      TransactionOptions.newBuilder()
-          .setReadOnly(TransactionOptions.ReadOnly.newBuilder().build())
-          .build();
 
   private final Supplier<Datastore> datastore;
 
@@ -46,21 +45,21 @@ public class DatastoreTransactionManager extends AbstractPlatformTransactionMana
   }
 
   @Override
+  @NonNull
   protected Object doGetTransaction() throws TransactionException {
     Tx tx = (Tx) TransactionSynchronizationManager.getResource(datastore.get());
     if (tx != null && tx.transaction != null && tx.transaction.isActive()) {
       return tx;
     }
-    tx = new Tx(datastore.get());
-    return tx;
+    return new Tx(datastore.get());
   }
 
   @Override
-  protected void doBegin(Object transactionObject, TransactionDefinition transactionDefinition)
+  protected void doBegin(@Nullable Object transactionObject, @NonNull TransactionDefinition transactionDefinition)
       throws TransactionException {
     if (transactionDefinition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT
         && transactionDefinition.getIsolationLevel()
-            != TransactionDefinition.ISOLATION_SERIALIZABLE) {
+        != TransactionDefinition.ISOLATION_SERIALIZABLE) {
       throw new IllegalStateException(
           "DatastoreTransactionManager supports only isolation level "
               + "TransactionDefinition.ISOLATION_DEFAULT or ISOLATION_SERIALIZABLE");
@@ -71,22 +70,43 @@ public class DatastoreTransactionManager extends AbstractPlatformTransactionMana
           "DatastoreTransactionManager supports only propagation behavior "
               + "TransactionDefinition.PROPAGATION_REQUIRED");
     }
+
+    // Cast and verify the transaction object to meet nullability requirements
     Tx tx = (Tx) transactionObject;
+    if (tx == null) {
+      throw new IllegalStateException("Transaction object must not be null.");
+    }
+
+    // Building TransactionOptions dynamically to support previous transaction ID
+    TransactionOptions.Builder optionsBuilder = TransactionOptions.newBuilder();
+
     if (transactionDefinition.isReadOnly()) {
-      tx.transaction = tx.datastore.newTransaction(READ_ONLY_OPTIONS);
+      optionsBuilder.setReadOnly(TransactionOptions.ReadOnly.getDefaultInstance());
     } else {
-      tx.transaction = tx.datastore.newTransaction();
+      TransactionOptions.ReadWrite.Builder readWriteBuilder = TransactionOptions.ReadWrite.newBuilder();
+
+      // Support for previous transaction ID for idempotency or sequential transactions
+      if (tx.getPreviousTransactionId() != null) {
+        readWriteBuilder.setPreviousTransaction(tx.getPreviousTransactionId());
+      }
+      optionsBuilder.setReadWrite(readWriteBuilder.build());
+    }
+
+    try {
+      tx.transaction = tx.datastore.newTransaction(optionsBuilder.build());
+    } catch (DatastoreException ex) {
+      throw new TransactionSystemException("Could not create Cloud Datastore transaction", ex);
     }
 
     TransactionSynchronizationManager.bindResource(tx.datastore, tx);
   }
 
   @Override
-  protected void doCommit(DefaultTransactionStatus defaultTransactionStatus)
+  protected void doCommit(@NonNull DefaultTransactionStatus defaultTransactionStatus)
       throws TransactionException {
     Tx tx = (Tx) defaultTransactionStatus.getTransaction();
     try {
-      if (tx.transaction.isActive()) {
+      if (tx.transaction != null && tx.transaction.isActive()) {
         tx.transaction.commit();
       } else {
         this.logger.debug("Transaction was not committed because it is no longer active.");
@@ -97,11 +117,11 @@ public class DatastoreTransactionManager extends AbstractPlatformTransactionMana
   }
 
   @Override
-  protected void doRollback(DefaultTransactionStatus defaultTransactionStatus)
+  protected void doRollback(@NonNull DefaultTransactionStatus defaultTransactionStatus)
       throws TransactionException {
     Tx tx = (Tx) defaultTransactionStatus.getTransaction();
     try {
-      if (tx.transaction.isActive()) {
+      if (tx.transaction != null && tx.transaction.isActive()) {
         tx.transaction.rollback();
       } else {
         this.logger.debug("Transaction was not rolled back because it is no longer active.");
@@ -112,20 +132,22 @@ public class DatastoreTransactionManager extends AbstractPlatformTransactionMana
   }
 
   @Override
-  protected boolean isExistingTransaction(Object transaction) {
-    return ((Tx) transaction).transaction != null;
+  protected boolean isExistingTransaction(@Nullable Object transaction) {
+    return transaction != null && ((Tx) transaction).transaction != null;
   }
 
   @Override
-  protected void doCleanupAfterCompletion(Object transaction) {
-    Tx tx = (Tx) transaction;
-    TransactionSynchronizationManager.unbindResource(tx.datastore);
+  protected void doCleanupAfterCompletion(@Nullable Object transaction) {
+    if (transaction instanceof Tx tx) {
+      TransactionSynchronizationManager.unbindResource(tx.datastore);
+    }
   }
 
   /** A class to contain the transaction context. */
   public static class Tx {
     private Transaction transaction;
-    private Datastore datastore;
+    private final Datastore datastore;
+    private ByteString previousTransactionId;
 
     public Tx(Datastore datastore) {
       this.datastore = datastore;
@@ -141,6 +163,22 @@ public class DatastoreTransactionManager extends AbstractPlatformTransactionMana
 
     public Datastore getDatastore() {
       return datastore;
+    }
+
+    /**
+     * Gets the previous transaction ID.
+     * @return the previous transaction ID as ByteString.
+     */
+    public ByteString getPreviousTransactionId() {
+      return previousTransactionId;
+    }
+
+    /**
+     * Sets the previous transaction ID to be used when starting this transaction.
+     * @param previousTransactionId the transaction ID to resume.
+     */
+    public void setPreviousTransactionId(ByteString previousTransactionId) {
+      this.previousTransactionId = previousTransactionId;
     }
   }
 }
