@@ -16,13 +16,13 @@ You can use the `gsutil` command that comes with the Cloud SDK.
 +
 ```
 $ BUCKET=spring-bucket-$USER
-$ gsutil makebucket gs://$BUCKET
+$ gcloud storage buckets create gs://$BUCKET
 ```
 
 3. Transfer the local `my-file.txt` file to the bucket.
 +
 ```
-$ gsutil copy my-file.txt gs://$BUCKET
+$ gcloud storage cp my-file.txt gs://$BUCKET
 ```
 
 4. Run `$ mvn clean install` from the root directory of the project.
