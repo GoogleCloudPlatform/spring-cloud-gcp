@@ -40,7 +40,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-/** Tests for the Spanner schema utils. */
+/**
+ * Tests for the Spanner schema utils.
+ */
 class SpannerSchemaUtilsTests {
 
   private SpannerSchemaUtils spannerSchemaUtils;
@@ -198,8 +200,8 @@ class SpannerSchemaUtilsTests {
 
     when(spannerPersistentProperty.getAnnotatedColumnItemType()).thenReturn(code);
     assertThat(
-            this.spannerSchemaUtils.getColumnDdlString(
-                spannerPersistentProperty, this.spannerEntityProcessor))
+        this.spannerSchemaUtils.getColumnDdlString(
+            spannerPersistentProperty, this.spannerEntityProcessor))
         .isEqualTo(expectedDdl);
   }
 
@@ -248,6 +250,7 @@ class SpannerSchemaUtilsTests {
 
   @Table(name = "custom_test_table")
   private static class TestEntity {
+
     @PrimaryKey(keyOrder = 1)
     String id;
 
@@ -308,11 +311,13 @@ class SpannerSchemaUtilsTests {
   }
 
   private static class JsonColumn {
+
     String param1;
     String param2;
   }
 
   private static class EmbeddedColumns {
+
     @PrimaryKey
     @Column(name = "id_2")
     String id2;
@@ -336,13 +341,16 @@ class SpannerSchemaUtilsTests {
     @Column(name = "")
     String other;
 
-    @Interleaved List<ChildEntity> childEntities;
+    @Interleaved
+    List<ChildEntity> childEntities;
 
-    @Interleaved List<ChildEntity> childEntities2;
+    @Interleaved
+    List<ChildEntity> childEntities2;
   }
 
   @Table(name = "child_test_table")
   private static class ChildEntity {
+
     @PrimaryKey(keyOrder = 1)
     String id;
 
@@ -353,13 +361,16 @@ class SpannerSchemaUtilsTests {
     @PrimaryKey(keyOrder = 3)
     String id3;
 
-    @Interleaved List<GrandChildEntity> childEntities;
+    @Interleaved
+    List<GrandChildEntity> childEntities;
 
-    @Interleaved List<GrandChildEntity> childEntities2;
+    @Interleaved
+    List<GrandChildEntity> childEntities2;
   }
 
   @Table(name = "grand_child_test_table")
   private static class GrandChildEntity {
+
     @PrimaryKey(keyOrder = 1)
     String id;
 

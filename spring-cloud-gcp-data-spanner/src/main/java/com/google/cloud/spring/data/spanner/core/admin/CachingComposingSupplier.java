@@ -39,7 +39,7 @@ public class CachingComposingSupplier<T, U> implements Supplier<T> {
    * Constructor.
    *
    * @param inputProvider the provider that gives inputs for each product of this provider.
-   * @param producer the function that returns products of this provider given inputs.
+   * @param producer      the function that returns products of this provider given inputs.
    */
   public CachingComposingSupplier(Supplier<U> inputProvider, Function<U, T> producer) {
     this.inputProvider = inputProvider;

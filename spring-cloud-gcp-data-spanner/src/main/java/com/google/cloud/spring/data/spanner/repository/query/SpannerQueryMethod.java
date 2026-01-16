@@ -40,8 +40,8 @@ public class SpannerQueryMethod extends QueryMethod {
    * for following invocations of the method given.
    *
    * @param queryMethod must not be {@literal null}.
-   * @param metadata must not be {@literal null}.
-   * @param factory must not be {@literal null}.
+   * @param metadata    must not be {@literal null}.
+   * @param factory     must not be {@literal null}.
    */
   public SpannerQueryMethod(
       Method queryMethod, RepositoryMetadata metadata, ProjectionFactory factory) {

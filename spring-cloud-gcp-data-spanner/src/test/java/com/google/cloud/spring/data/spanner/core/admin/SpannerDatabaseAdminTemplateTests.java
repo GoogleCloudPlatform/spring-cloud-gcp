@@ -44,7 +44,9 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** Tests for the Spanner database admin template. */
+/**
+ * Tests for the Spanner database admin template.
+ */
 class SpannerDatabaseAdminTemplateTests {
 
   private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
@@ -223,7 +225,7 @@ class SpannerDatabaseAdminTemplateTests {
     assertThat(this.spannerDatabaseAdminTemplate.isInterleaved("parent_b", "child"))
         .as("verify not parent-child relationship")
         .isFalse();
-    
+
     assertThat(this.spannerDatabaseAdminTemplate
         .isInterleaved("my_schema.grandpa", "my_schema.dad"))
         .as("verify my-schema grand-child relationship")
@@ -275,6 +277,7 @@ class SpannerDatabaseAdminTemplateTests {
   }
 
   private static class MockResults {
+
     List<Struct> structs;
 
     int counter = -1;

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,8 +20,10 @@ import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spring.data.spanner.core.SpannerReadOptions;
 import java.util.Objects;
 
-/** This event read operation on Cloud Spanner. */
-public class AfterReadEvent extends LoadEvent {
+/**
+ * This event read operation on Cloud Spanner.
+ */
+public final class AfterReadEvent extends LoadEvent {
 
   private final SpannerReadOptions spannerReadOptions;
 
@@ -30,21 +32,21 @@ public class AfterReadEvent extends LoadEvent {
   /**
    * Constructor.
    *
-   * @param source The entities that were read from Cloud Spanner.This is never {@code null}.
-   * @param keySet the keys that were read.
-   * @param spannerReadOptions the options that were used to conduct the read. This may be {@code
-   *     null} if the read operation wasn't a key-based read.
+   * @param source The entities that were read from Cloud Spanner.
+   * @param keys the keys that were read.
+   * @param options the options that were used to conduct the read.
    */
-  public AfterReadEvent(Iterable source, KeySet keySet, SpannerReadOptions spannerReadOptions) {
+  public AfterReadEvent(
+      final Iterable source, final KeySet keys, final SpannerReadOptions options) {
     super(source);
-    this.spannerReadOptions = spannerReadOptions;
-    this.keySet = keySet;
+    this.keySet = keys;
+    this.spannerReadOptions = options;
   }
 
   /**
    * Get the options that were used to conduct the read.
    *
-   * @return This may be {@code null} if the read operation wasn't a key-based read.
+   * @return the read options.
    */
   public SpannerReadOptions getSpannerReadOptions() {
     return this.spannerReadOptions;
@@ -60,7 +62,7 @@ public class AfterReadEvent extends LoadEvent {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) {
       return true;
     }

@@ -32,13 +32,19 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-/** Test entities for Spanner tests that hit many features and situations. */
+/**
+ * Test entities for Spanner tests that hit many features and situations.
+ */
 class TestEntities {
 
-  /** Test domain type holding properties with many types and key components. */
+  /**
+   * Test domain type holding properties with many types and key components.
+   */
   @Table(name = "custom_test_table")
   static class TestEntity {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     @PrimaryKey(keyOrder = 3)
     String id4;
@@ -99,7 +105,9 @@ class TestEntities {
     @Interleaved(lazy = true)
     List<ChildTestEntity> childTestEntities;
 
-    /** A enum used to test conversion and storage. */
+    /**
+     * A enum used to test conversion and storage.
+     */
     enum Color {
       WHITE,
       BLACK
@@ -121,9 +129,13 @@ class TestEntities {
     List<UUID> uuidList;
   }
 
-  /** A test entity that acts as a child of another entity. */
+  /**
+   * A test entity that acts as a child of another entity.
+   */
   static class ChildTestEntity {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     @PrimaryKey(keyOrder = 3)
     String id4;
@@ -136,9 +148,13 @@ class TestEntities {
     String id5;
   }
 
-  /** A test class that holds key components while being embedded. */
+  /**
+   * A test class that holds key components while being embedded.
+   */
   static class TestEmbeddedColumns {
-    @PrimaryKey String id2;
+
+    @PrimaryKey
+    String id2;
 
     @PrimaryKey(keyOrder = 2)
     String id3;
@@ -146,87 +162,131 @@ class TestEntities {
     int intField2;
   }
 
-  /** A fault class with a bad property type. */
+  /**
+   * A fault class with a bad property type.
+   */
   @Table(name = "faulty_test_table")
   static class FaultyTestEntity {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     TestEntity fieldWithUnsupportedType;
   }
 
-  /** A fault class with unsupported list property type. */
+  /**
+   * A fault class with unsupported list property type.
+   */
   @Table(name = "faulty_test_table_2")
   static class FaultyTestEntity2 {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     List<TestEntity> listWithUnsupportedInnerType;
   }
 
-  /** A test class that holds an inner collection of entities. */
+  /**
+   * A test class that holds an inner collection of entities.
+   */
   @Table(name = "outer_test_entity")
   static class OuterTestEntity {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     List<InnerTestEntity> innerTestEntities;
   }
 
-  /** A test class that holds Structs inside. */
+  /**
+   * A test class that holds Structs inside.
+   */
   @Table(name = "outer_test_entity")
   static class OuterTestHoldingStructsEntity {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     List<Struct> innerStructs;
   }
 
-  /** A test class that holds a single inner Struct. */
+  /**
+   * A test class that holds a single inner Struct.
+   */
   @Table(name = "outer_test_entity")
   static class OuterTestHoldingStructEntity {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     Struct innerStruct;
   }
 
-  /** A test class that holds a single inner simple type collection property. */
+  /**
+   * A test class that holds a single inner simple type collection property.
+   */
   @Table(name = "outer_test_entity_flat")
   static class OuterTestEntityFlat {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     List<Integer> innerLengths;
   }
 
-  /** A test class that holds a single simple property. */
+  /**
+   * A test class that holds a single simple property.
+   */
   @Table(name = "outer_test_entity_flat_faulty")
   static class OuterTestEntityFlatFaulty {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     Integer innerLengths;
   }
 
-  /** A test entity that tests a single property without a value. */
+  /**
+   * A test entity that tests a single property without a value.
+   */
   static class InnerTestEntity {
-    @PrimaryKey String value;
+
+    @PrimaryKey
+    String value;
 
     String missingColumnValue;
   }
 
-  /** A test class to test Spring Data's constructor support. */
+  /**
+   * A test class to test Spring Data's constructor support.
+   */
   static class SimpleConstructorTester {
-    @PrimaryKey final String id;
+
+    @PrimaryKey
+    final String id;
 
     SimpleConstructorTester(String id) {
       this.id = id;
     }
   }
 
-  /** A class with a list that doesn't have an explicit param type. */
+  /**
+   * A class with a list that doesn't have an explicit param type.
+   */
   static class TestEntityWithListWithZeroTypeArgs {
-    @PrimaryKey List zeroArgsListOfObjects;
+
+    @PrimaryKey
+    List zeroArgsListOfObjects;
   }
 
-  /** A test classs that uses a complex constructor. */
+  /**
+   * A test classs that uses a complex constructor.
+   */
   @Table(name = "outer_test_entity")
   static class OuterTestEntityWithConstructor {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     List<InnerTestEntity> innerTestEntities;
 
@@ -236,10 +296,14 @@ class TestEntities {
     }
   }
 
-  /** A test class with a partial constructor meant to test Spring Data's constructor support. */
+  /**
+   * A test class with a partial constructor meant to test Spring Data's constructor support.
+   */
   @Table(name = "custom_test_table")
   static class PartialConstructor {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     @Column(name = "custom_col")
     String stringField;
@@ -258,10 +322,14 @@ class TestEntities {
     }
   }
 
-  /** A test class with Json field. */
+  /**
+   * A test class with Json field.
+   */
   @Table(name = "json_test_table")
   static class TestEntityJson {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     @Column(spannerType = TypeCode.JSON)
     Params params;
@@ -272,10 +340,14 @@ class TestEntities {
     }
   }
 
-  /** A test class with Json Array field. */
+  /**
+   * A test class with Json Array field.
+   */
   @Table(name = "jsonarray_test_table2")
   static class TestEntityJsonArray {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     @Column(spannerType = TypeCode.JSON)
     List<Params> paramsList;
@@ -286,10 +358,14 @@ class TestEntities {
     }
   }
 
-  /** A test class with Json field. */
+  /**
+   * A test class with Json field.
+   */
   @Table(name = "json_test_table")
   static class TestEntityInstantInJson {
-    @PrimaryKey String id;
+
+    @PrimaryKey
+    String id;
 
     @Column(spannerType = TypeCode.JSON)
     InstantParam params;
@@ -301,6 +377,7 @@ class TestEntities {
   }
 
   static class Params {
+
     String p1;
 
     String p2;
@@ -312,6 +389,7 @@ class TestEntities {
   }
 
   static class InstantParam {
+
     Instant instant;
 
     InstantParam(Instant instant) {

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.time.Instant;
 
 public class InstantTypeAdapter extends TypeAdapter<Instant> {
+
   @Override
   public void write(JsonWriter jsonWriter, Instant instant) throws IOException {
     if (instant == null) {

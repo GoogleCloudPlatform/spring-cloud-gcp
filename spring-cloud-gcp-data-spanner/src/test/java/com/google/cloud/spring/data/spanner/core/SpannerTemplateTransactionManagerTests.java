@@ -57,11 +57,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-/** Tests for Spanner Template when using transactional annotation. */
+/**
+ * Tests for Spanner Template when using transactional annotation.
+ */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
 @DisabledInAotMode
 class SpannerTemplateTransactionManagerTests {
+
   private static final List<Mutation> INSERT_MUTATION =
       Arrays.asList(Mutation.newInsertBuilder("custom_test_table").build());
 
@@ -75,17 +78,22 @@ class SpannerTemplateTransactionManagerTests {
   private final AtomicReference<TransactionManager.TransactionState> transactionState =
       new AtomicReference<>();
 
-  @MockBean DatabaseClient databaseClient;
+  @MockBean
+  DatabaseClient databaseClient;
 
-  @MockBean ReadContext readContext;
+  @MockBean
+  ReadContext readContext;
 
-  @MockBean TransactionContext transactionContext;
+  @MockBean
+  TransactionContext transactionContext;
 
-  @Autowired TransactionalService transactionalService;
+  @Autowired
+  TransactionalService transactionalService;
 
   TransactionManager transactionManager;
 
-  @Mock ReadOnlyTransaction readOnlyTransaction;
+  @Mock
+  ReadOnlyTransaction readOnlyTransaction;
 
   @BeforeEach
   void setUp() {
@@ -210,28 +218,30 @@ class SpannerTemplateTransactionManagerTests {
   @Test
   void readOnlySaveTest() {
     assertThatThrownBy(() -> this.transactionalService.writingInReadOnly(new TestEntity()))
-            .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
+        .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
   }
 
   @Test
   void readOnlyDeleteTest() {
     assertThatThrownBy(() -> this.transactionalService.deleteInReadOnly(new TestEntity()))
-            .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
+        .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
   }
 
   @Test
   void readOnlyDmlTest() {
     assertThatThrownBy(() -> this.transactionalService.dmlInReadOnly())
-            .hasMessage("Spanner transaction cannot execute DML because it is in readonly mode");
+        .hasMessage("Spanner transaction cannot execute DML because it is in readonly mode");
   }
 
   @Test
   void partitionedDmlInTransactionTest() {
     assertThatThrownBy(() -> this.transactionalService.partitionedDmlInTransaction())
-            .hasMessage("Cannot execute partitioned DML in a transaction.");
+        .hasMessage("Cannot execute partitioned DML in a transaction.");
   }
 
-  /** Spring config for the tests. */
+  /**
+   * Spring config for the tests.
+   */
   @Configuration
   @EnableTransactionManagement
   static class Config {
@@ -262,9 +272,13 @@ class SpannerTemplateTransactionManagerTests {
     }
   }
 
-  /** A mock transactional service to execute methods annotated as transactional. */
+  /**
+   * A mock transactional service to execute methods annotated as transactional.
+   */
   public static class TransactionalService {
-    @Autowired SpannerTemplate spannerTemplate;
+
+    @Autowired
+    SpannerTemplate spannerTemplate;
 
     @Transactional
     public void doInTransaction(TestEntity entity1, TestEntity entity2) {
@@ -323,6 +337,7 @@ class SpannerTemplateTransactionManagerTests {
 
   @Table(name = "custom_test_table")
   private static class TestEntity {
+
     @PrimaryKey(keyOrder = 1)
     String id;
 

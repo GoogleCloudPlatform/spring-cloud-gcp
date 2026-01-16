@@ -28,7 +28,9 @@ import java.util.HashSet;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-/** Tests to check for new mapping methods that appear in the Spanner client lib. */
+/**
+ * Tests to check for new mapping methods that appear in the Spanner client lib.
+ */
 class SpannerStructReadMethodCoverageTests {
 
   private static final Set<String> DISREGARDED_METHOD_NAMES =

@@ -30,8 +30,8 @@ public interface SpannerEntityWriter extends EntityWriter<Object, MultipleValueB
   /**
    * Writes an object's properties to the sink.
    *
-   * @param source the object to write
-   * @param sink the sink to which to write
+   * @param source         the object to write
+   * @param sink           the sink to which to write
    * @param includeColumns the properties/columns to write. If null, then all columns are written.
    */
   void write(Object source, MultipleValueBinder sink, Set<String> includeColumns);
@@ -40,7 +40,7 @@ public interface SpannerEntityWriter extends EntityWriter<Object, MultipleValueB
    * Convert a given object to a Cloud Spanner key.
    *
    * @param key the object containing the key values. This can already be a Cloud Spanner key, a
-   *     single key component, or an array of key components.
+   *            single key component, or an array of key components.
    * @return the Cloud Spanner key.
    */
   Key convertToKey(Object key);

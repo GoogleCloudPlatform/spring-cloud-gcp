@@ -133,9 +133,9 @@ public @interface EnableSpannerRepositories {
   String spannerTemplateRef() default "spannerTemplate";
 
   /**
-   * Configures the name of the {@link
-   * com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext} bean to be used by
-   * default with the repositories detected.
+   * Configures the name of the
+   * {@link com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext} bean to be used
+   * by default with the repositories detected.
    *
    * @return the name of the Cloud Spanner mapping context class
    */

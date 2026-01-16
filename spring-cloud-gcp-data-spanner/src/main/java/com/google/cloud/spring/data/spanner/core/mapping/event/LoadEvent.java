@@ -19,7 +19,9 @@ package com.google.cloud.spring.data.spanner.core.mapping.event;
 import java.util.Objects;
 import org.springframework.context.ApplicationEvent;
 
-/** This event read operation on Cloud Spanner. */
+/**
+ * This event read operation on Cloud Spanner.
+ */
 public class LoadEvent extends ApplicationEvent {
 
   /**

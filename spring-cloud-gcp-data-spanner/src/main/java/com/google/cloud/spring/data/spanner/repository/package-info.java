@@ -14,5 +14,7 @@
  * limitations under the License.
  */
 
-/** Spring Data Repositories support in Cloud Spanner. */
+/**
+ * Spring Data Repositories support in Cloud Spanner.
+ */
 package com.google.cloud.spring.data.spanner.repository;

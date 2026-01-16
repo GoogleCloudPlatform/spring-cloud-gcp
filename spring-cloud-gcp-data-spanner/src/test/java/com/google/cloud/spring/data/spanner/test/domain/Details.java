@@ -19,6 +19,7 @@ package com.google.cloud.spring.data.spanner.test.domain;
 import java.util.Objects;
 
 public class Details {
+
   String p1;
 
   String p2;

@@ -93,11 +93,12 @@ public class SpannerPersistentEntityImpl<T>
   /**
    * Creates a {@link SpannerPersistentEntityImpl}.
    *
-   * @param information type information about the underlying entity type.
-   * @param spannerMappingContext a mapping context that can be used to create persistent entities
-   *     from properties of this entity
+   * @param information            type information about the underlying entity type.
+   * @param spannerMappingContext  a mapping context that can be used to create persistent entities
+   *                               from properties of this entity
    * @param spannerEntityProcessor an entity processor used to create keys by converting and
-   *     combining id properties, as well as to convert keys to property values
+   *                               combining id properties, as well as to convert keys to property
+   *                               values
    */
   public SpannerPersistentEntityImpl(
       TypeInformation<T> information,
@@ -426,8 +427,8 @@ public class SpannerPersistentEntityImpl<T>
     SpannerPersistentProperty primaryKeyProperty = getPrimaryKeyProperties()[0];
     return primaryKeyProperty.isEmbedded()
         ? this.spannerMappingContext
-            .getPersistentEntityOrFail(primaryKeyProperty.getType())
-            .getPrimaryKeyColumnName()
+        .getPersistentEntityOrFail(primaryKeyProperty.getType())
+        .getPrimaryKeyColumnName()
         : primaryKeyProperty.getColumnName();
   }
 

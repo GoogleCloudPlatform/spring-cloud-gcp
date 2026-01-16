@@ -22,24 +22,40 @@ import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
-/** A test object for testing {@link CommitTimestamp} features. */
+/**
+ * A test object for testing {@link CommitTimestamp} features.
+ */
 @Table(name = "#{'commit_timestamps_'.concat(tableNameSuffix)}")
 public class CommitTimestamps {
-  /** A primary key. */
-  @PrimaryKey public String id;
 
-  /** A cloud Timestamp field. */
+  /**
+   * A primary key.
+   */
+  @PrimaryKey
+  public String id;
+
+  /**
+   * A cloud Timestamp field.
+   */
   public com.google.cloud.Timestamp cloudTimestamp;
 
-  /** An sql Timestamp field. */
+  /**
+   * An sql Timestamp field.
+   */
   public java.sql.Timestamp sqlTimestamp;
 
-  /** A LocalDateTime field. */
+  /**
+   * A LocalDateTime field.
+   */
   public LocalDateTime localDateTime;
 
-  /** An Instant field. */
+  /**
+   * An Instant field.
+   */
   public Instant instant;
 
-  /** A java Date field. */
+  /**
+   * A java Date field.
+   */
   public java.util.Date utilDate;
 }

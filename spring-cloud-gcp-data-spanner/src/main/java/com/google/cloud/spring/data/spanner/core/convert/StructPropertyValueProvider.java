@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
 import org.springframework.data.mapping.model.PropertyValueProvider;
 
 /**
- * A {@link PropertyValueProvider} based on a Struct that uses the {@link
- * ConverterAwareMappingSpannerEntityReader} to convert resulting values from the {@link
- * StructAccessor}.
+ * A {@link PropertyValueProvider} based on a Struct that uses the
+ * {@link ConverterAwareMappingSpannerEntityReader} to convert resulting values from the
+ * {@link StructAccessor}.
  *
  * @since 1.1
  */
@@ -46,9 +46,9 @@ class StructPropertyValueProvider implements PropertyValueProvider<SpannerPersis
    * object properties is not allowed.
    *
    * @param structAccessor an accessor used to obtain column values from the struct.
-   * @param readConverter a converter used to convert between struct column types and the required
-   *     java types.
-   * @param entityReader a reader used to access the data from each column of the struct.
+   * @param readConverter  a converter used to convert between struct column types and the required
+   *                       java types.
+   * @param entityReader   a reader used to access the data from each column of the struct.
    */
   StructPropertyValueProvider(
       StructAccessor structAccessor,
@@ -60,13 +60,13 @@ class StructPropertyValueProvider implements PropertyValueProvider<SpannerPersis
   /**
    * Constructor.
    *
-   * @param structAccessor an accessor used to obtain column values from the struct.
-   * @param readConverter a converter used to convert between struct column types and the required
-   *     java types.
-   * @param entityReader a reader used to access the data from each column of the struct.
+   * @param structAccessor      an accessor used to obtain column values from the struct.
+   * @param readConverter       a converter used to convert between struct column types and the
+   *                            required java types.
+   * @param entityReader        a reader used to access the data from each column of the struct.
    * @param allowMissingColumns if a nested struct is within this struct's column, then if true
-   *     missing columns in the nested struct are also allowed for the corresponding nested Java
-   *     object.
+   *                            missing columns in the nested struct are also allowed for the
+   *                            corresponding nested Java object.
    */
   StructPropertyValueProvider(
       StructAccessor structAccessor,
@@ -139,7 +139,7 @@ class StructPropertyValueProvider implements PropertyValueProvider<SpannerPersis
   private <T> T convertOrRead(Class<T> targetType, Object sourceValue) {
     Class<?> sourceClass = sourceValue.getClass();
     return (Struct.class.isAssignableFrom(sourceClass)
-            && !this.readConverter.canConvert(sourceClass, targetType))
+        && !this.readConverter.canConvert(sourceClass, targetType))
         ? this.entityReader.read(targetType, (Struct) sourceValue, null, this.allowMissingColumns)
         : this.readConverter.convert(sourceValue, targetType);
   }

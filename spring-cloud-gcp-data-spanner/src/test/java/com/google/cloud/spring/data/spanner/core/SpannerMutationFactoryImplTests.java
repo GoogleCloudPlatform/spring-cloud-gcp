@@ -42,7 +42,9 @@ import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** Tests for the Spanner mutation factory implementation. */
+/**
+ * Tests for the Spanner mutation factory implementation.
+ */
 class SpannerMutationFactoryImplTests {
 
   private SpannerMappingContext mappingContext;
@@ -150,12 +152,13 @@ class SpannerMutationFactoryImplTests {
     // throws exception because child entity's id column does not match that of its
     // parent.
     assertThatThrownBy(() -> this.spannerMutationFactory.insert(t))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("A child entity's common primary key parts with its parent must have the same values."
-                    + " Primary key component 1 does not match for entities: class"
-                    + " com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$TestEntity"
-                    + " class"
-                    + " com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$ChildEntity");
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage(
+            "A child entity's common primary key parts with its parent must have the same values."
+                + " Primary key component 1 does not match for entities: class"
+                + " com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$TestEntity"
+                + " class"
+                + " com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImplTests$ChildEntity");
   }
 
   @Test
@@ -257,6 +260,7 @@ class SpannerMutationFactoryImplTests {
 
   @Table(name = "custom_test_table")
   private static class TestEntity {
+
     @PrimaryKey(keyOrder = 1)
     String id;
 
@@ -266,17 +270,20 @@ class SpannerMutationFactoryImplTests {
     @Column(name = "")
     String other;
 
-    @Interleaved List<ChildEntity> childEntities;
+    @Interleaved
+    List<ChildEntity> childEntities;
   }
 
   @Table(name = "child_test_table")
   private static class ChildEntity {
+
     @Embedded
     @PrimaryKey(keyOrder = 1)
     EmbeddedKeyComponents keyComponents;
   }
 
   private static class EmbeddedKeyComponents {
+
     @PrimaryKey(keyOrder = 1)
     String id;
 
@@ -286,6 +293,7 @@ class SpannerMutationFactoryImplTests {
 
   @Table
   private static class Parent {
+
     @PrimaryKey
     @Column
     String keyOne;
@@ -300,6 +308,7 @@ class SpannerMutationFactoryImplTests {
 
   @Table
   private static class Child {
+
     @PrimaryKey
     @Column
     String keyOne;

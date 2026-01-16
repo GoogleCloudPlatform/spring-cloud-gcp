@@ -1,11 +1,11 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,18 +19,18 @@ package com.google.cloud.spring.data.spanner.core.mapping.event;
 import java.util.Collections;
 import java.util.Set;
 
-/** An event that is published just before a save operation is sent to Cloud Spanner. */
+/**
+ * An event that is published just before a save operation is sent to Cloud Spanner.
+ */
 public class BeforeSaveEvent extends SaveEvent {
 
   /**
-   * Constructor. {@code BeforeSaveEvent} does not hold mutations because this event gives the
-   * opportunity to modify the entities from which mutations are ultimately generated.
+   * Constructor.
    *
-   * @param targetEntities the target entities that need to be mutated. This may be {@code null}
-   *     depending on the original request.
+   * @param targetEntities the target entities that need to be mutated.
    * @param includeProperties the set of properties to include in the save operation.
    */
-  public BeforeSaveEvent(Iterable targetEntities, Set<String> includeProperties) {
+  public BeforeSaveEvent(Iterable<?> targetEntities, Set<String> includeProperties) {
     super(Collections.emptyList(), targetEntities, includeProperties);
   }
 }

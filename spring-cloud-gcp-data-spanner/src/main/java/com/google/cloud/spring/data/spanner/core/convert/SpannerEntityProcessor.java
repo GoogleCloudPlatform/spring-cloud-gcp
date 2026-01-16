@@ -31,9 +31,9 @@ public interface SpannerEntityProcessor extends SpannerEntityReader, SpannerEnti
   /**
    * Converts a set of Spanner {@link ResultSet} into a list of objects.
    *
-   * @param resultSet the Spanner results to convert. The ResultSet will be exhausted and closed.
+   * @param resultSet   the Spanner results to convert. The ResultSet will be exhausted and closed.
    * @param entityClass the type of the objects the Spanner results represent.
-   * @param <T> the type of the objects the Spanner results represent.
+   * @param <T>         the type of the objects the Spanner results represent.
    * @return a list of objects.
    */
   <T> List<T> mapToList(ResultSet resultSet, Class<T> entityClass);
@@ -41,13 +41,14 @@ public interface SpannerEntityProcessor extends SpannerEntityReader, SpannerEnti
   /**
    * Converts a Spanner {@link ResultSet} into a list of objects.
    *
-   * @param resultSet the Spanner results to convert. The ResultSet will be exhausted and closed.
-   * @param entityClass the type of the objects the Spanner results represent.
-   * @param <T> the type of the objects the Spanner results represent.
-   * @param includeColumns the Set of columns to read. If this param is null then all columns will
-   *     be read.
+   * @param resultSet           the Spanner results to convert. The ResultSet will be exhausted and
+   *                            closed.
+   * @param entityClass         the type of the objects the Spanner results represent.
+   * @param <T>                 the type of the objects the Spanner results represent.
+   * @param includeColumns      the Set of columns to read. If this param is null then all columns
+   *                            will be read.
    * @param allowMissingColumns if true, then properties with no corresponding column are not
-   *     mapped. If false, then an exception is thrown.
+   *                            mapped. If false, then an exception is thrown.
    * @return a list of objects.
    */
   <T> List<T> mapToList(
@@ -59,9 +60,10 @@ public interface SpannerEntityProcessor extends SpannerEntityReader, SpannerEnti
   /**
    * Converts a set of Spanner {@link ResultSet} into a list of objects.
    *
-   * @param resultSet the Spanner results to convert. The ResultSet will be exhausted and closed.
-   * @param entityClass the type of the objects the Spanner results represent.
-   * @param <T> the type of the objects the Spanner results represent.
+   * @param resultSet      the Spanner results to convert. The ResultSet will be exhausted and
+   *                       closed.
+   * @param entityClass    the type of the objects the Spanner results represent.
+   * @param <T>            the type of the objects the Spanner results represent.
    * @param includeColumns the columns to read. If none are provided then all columns are read.
    * @return a list of objects.
    */
@@ -70,9 +72,10 @@ public interface SpannerEntityProcessor extends SpannerEntityReader, SpannerEnti
   /**
    * Gets the type that will work for both read and writes with Spanner directly.
    *
-   * @param originalType the original type that is possibly convertable by this converter.
+   * @param originalType        the original type that is possibly convertable by this converter.
    * @param isIterableInnerType true if the given type refers to an inner type. This is significant
-   *     because Spanner does not support the same types as singular items and as array elements.
+   *                            because Spanner does not support the same types as singular items
+   *                            and as array elements.
    * @return the Java type that works directly with Spanner.
    */
   Class<?> getCorrespondingSpannerJavaType(Class originalType, boolean isIterableInnerType);

@@ -54,7 +54,9 @@ import org.springframework.data.repository.query.QueryMethodEvaluationContextPro
 import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
-/** Tests Spanner Query Method lookups. */
+/**
+ * Tests Spanner Query Method lookups.
+ */
 class SpannerQueryLookupStrategyTests {
 
   private SpannerTemplate spannerTemplate;
@@ -152,7 +154,8 @@ class SpannerQueryLookupStrategyTests {
         .createPartTreeSpannerQuery(eq(Object.class), same(this.queryMethod));
   }
 
-  private SpannerQueryLookupStrategy getSpannerQueryLookupStrategy(boolean useValueExpressionDelegate) {
+  private SpannerQueryLookupStrategy getSpannerQueryLookupStrategy(
+      boolean useValueExpressionDelegate) {
     SpannerQueryLookupStrategy spannerQueryLookupStrategy;
     if (useValueExpressionDelegate) {
       spannerQueryLookupStrategy =
@@ -255,6 +258,7 @@ class SpannerQueryLookupStrategyTests {
   @Table(name = "custom_test_table")
   @Where("deleted = false")
   private static class TestEntity {
+
     @PrimaryKey(keyOrder = 1)
     String id;
 
@@ -277,6 +281,7 @@ class SpannerQueryLookupStrategyTests {
 
   @Table(name = "child_test_table")
   private static class ChildEntity {
+
     @PrimaryKey(keyOrder = 1)
     String id;
 

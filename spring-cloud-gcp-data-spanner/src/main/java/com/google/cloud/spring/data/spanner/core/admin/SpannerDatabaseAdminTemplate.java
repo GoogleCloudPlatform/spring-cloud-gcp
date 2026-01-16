@@ -43,7 +43,7 @@ import org.springframework.util.Assert;
 public class SpannerDatabaseAdminTemplate {
 
   private static final String TABLE_SCHEMA_COL_NAME = "table_schema";
-  
+
   private static final String TABLE_NAME_COL_NAME = "table_name";
 
   private static final String PARENT_TABLE_NAME_COL_NAME = "parent_table_name";
@@ -65,16 +65,16 @@ public class SpannerDatabaseAdminTemplate {
   private final Supplier<DatabaseClient> databaseClientProvider;
 
   /**
-   * Constructor that takes in the database admin client used to perform operations and the {@link
-   * DatabaseId} object holding the project, instance, and database IDs used for all operations.
-   * While operations can be optionally performed for a database that does not yet exist, the
-   * project and instance IDs must already exist for Spanner.
+   * Constructor that takes in the database admin client used to perform operations and the
+   * {@link DatabaseId} object holding the project, instance, and database IDs used for all
+   * operations. While operations can be optionally performed for a database that does not yet
+   * exist, the project and instance IDs must already exist for Spanner.
    *
-   * @param databaseAdminClient the client used to create databases and execute DDL statements.
+   * @param databaseAdminClient    the client used to create databases and execute DDL statements.
    * @param databaseClientProvider the client used to access schema information tables.
-   * @param databaseIdProvider the combination of Cloud Spanner Instance Id and Database Id. While
-   *     databases can be created automatically by this template, instances determine billing and
-   *     are not created automatically.
+   * @param databaseIdProvider     the combination of Cloud Spanner Instance Id and Database Id.
+   *                               While databases can be created automatically by this template,
+   *                               instances determine billing and are not created automatically.
    */
   public SpannerDatabaseAdminTemplate(
       DatabaseAdminClient databaseAdminClient,
@@ -91,9 +91,10 @@ public class SpannerDatabaseAdminTemplate {
   /**
    * Execute the given DDL strings in order and creates the database if it does not exist.
    *
-   * @param ddlStrings the DDL strings
+   * @param ddlStrings     the DDL strings
    * @param createDatabase if {@code true}, then the database is created at the same time as the
-   *     tables using the DDL strings. if {@code false}, then the database must already exist.
+   *                       tables using the DDL strings. if {@code false}, then the database must
+   *                       already exist.
    */
   public void executeDdlStrings(Iterable<String> ddlStrings, boolean createDatabase) {
     try {
@@ -171,14 +172,14 @@ public class SpannerDatabaseAdminTemplate {
       return relationships;
     }
   }
-  
+
   private String getQualifiedTableName(String schema, String table) {
     if (schema == null || Objects.equals(schema, getDefaultSchemaName())) {
       return table;
     }
     return schema + "." + table;
   }
-  
+
   private String getDefaultSchemaName() {
     // TODO: Get the default schema directly from the dialect when this is supported in the Spanner
     //       Java client.
@@ -192,9 +193,9 @@ public class SpannerDatabaseAdminTemplate {
    * Return true if the given table names are interleaved as ancestor and descendant. These may be
    * separated by more than one generation.
    *
-   * @param ancestor the name of the ancestor table
+   * @param ancestor   the name of the ancestor table
    * @param descendant the name of the descendant table. this may be a direct child or further down
-   *     in the family tree.
+   *                   in the family tree.
    * @return true the descendant is indeed a descendant table. false otherwise.
    */
   public boolean isInterleaved(String ancestor, String descendant) {
@@ -215,7 +216,7 @@ public class SpannerDatabaseAdminTemplate {
    * Return a map of parent and child table relationships in the database at the moment.
    *
    * @return a map where the keys are parent table names, and the value is a set of that parent's
-   *     children.
+   * children.
    */
   public Map<String, Set<String>> getParentChildTablesMap() {
     Map<String, Set<String>> relationships = new HashMap<>();

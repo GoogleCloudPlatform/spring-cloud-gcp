@@ -21,7 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.cloud.spanner.Statement;
 import org.junit.jupiter.api.Test;
 
-/** Tests for DML before-execution event. */
+/**
+ * Tests for DML before-execution event.
+ */
 class BeforeExecuteDmlEventTest {
 
   @Test

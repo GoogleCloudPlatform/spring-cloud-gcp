@@ -53,16 +53,16 @@ public @interface EnableSpannerAuditing {
   boolean setDates() default true;
 
   /**
-   * Configures whether the entity shall be marked as modified on creation. Defaults to {@literal
-   * true}.
+   * Configures whether the entity shall be marked as modified on creation. Defaults to
+   * {@literal true}.
    *
    * @return whether an entity is marked as modified when it is created.
    */
   boolean modifyOnCreate() default true;
 
   /**
-   * Configures a {@link DateTimeProvider} bean name that allows customizing the {@link
-   * java.time.LocalDateTime} to be used for setting creation and modification dates.
+   * Configures a {@link DateTimeProvider} bean name that allows customizing the
+   * {@link java.time.LocalDateTime} to be used for setting creation and modification dates.
    *
    * @return the name of the custom time provider. If blank then one will be looked up bean type.
    */
