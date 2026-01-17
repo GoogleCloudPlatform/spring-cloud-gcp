@@ -24,6 +24,8 @@ import org.springframework.core.convert.ConversionException;
 import org.springframework.data.mapping.model.PropertyValueProvider;
 import org.springframework.data.util.TypeInformation;
 
+import static java.util.Optional.of;
+
 /**
  * A {@link PropertyValueProvider} for Datastore entities.
  *
@@ -36,10 +38,7 @@ public class EntityPropertyValueProvider
   private final ReadWriteConversions conversion;
 
   public EntityPropertyValueProvider(BaseEntity entity, ReadWriteConversions readWriteConversions) {
-    if (entity == null) {
-      throw new DatastoreDataException("A non-null entity is required");
-    }
-    this.entity = entity;
+    this.entity = of(entity).orElseThrow(()->new DatastoreDataException("A non-null entity is required"));
     this.conversion = readWriteConversions;
   }
 

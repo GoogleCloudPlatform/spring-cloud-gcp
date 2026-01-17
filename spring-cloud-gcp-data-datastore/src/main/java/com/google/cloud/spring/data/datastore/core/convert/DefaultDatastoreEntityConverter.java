@@ -120,10 +120,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
   @Override
   public <T, R> Map<T, R> readAsMap(
       Class<T> keyType, TypeInformation<R> componentType, BaseEntity entity) {
-    if (entity == null) {
-      return null;
-    }
-    return readAsMap(entity, TypeInformation.of(HashMap.class));
+    return entity != null ? readAsMap(entity, TypeInformation.of(HashMap.class)) : null;
   }
 
   public <T> DatastorePersistentEntity<T> getDiscriminationPersistentEntity(
