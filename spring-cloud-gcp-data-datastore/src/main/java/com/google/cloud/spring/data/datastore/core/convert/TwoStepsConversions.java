@@ -235,12 +235,7 @@ public class TwoStepsConversions implements ReadWriteConversions {
         && this.internalConversionService.canConvert(sourceType, targetType)) {
       result = this.internalConversionService.convert(val, targetType);
     }
-
-    if (result != null) {
-      return (T) result;
-    } else {
-      throw new DatastoreDataException("Unable to convert " + val.getClass() + " to " + targetType);
-    }
+    return Optional.ofNullable((T)result).orElseThrow(()->new DatastoreDataException("Unable to convert " + val.getClass() + " to " + targetType));
   }
 
   @Override
@@ -395,7 +390,7 @@ public class TwoStepsConversions implements ReadWriteConversions {
   }
 
   @Override
-  public Optional<Class<?>> getDatastoreCompatibleType(Class inputType) {
+  public Optional<Class<?>> getDatastoreCompatibleType(Class<?> inputType) {
     if (DatastoreNativeTypes.DATASTORE_NATIVE_TYPES.contains(inputType)) {
       return Optional.of(inputType);
     }

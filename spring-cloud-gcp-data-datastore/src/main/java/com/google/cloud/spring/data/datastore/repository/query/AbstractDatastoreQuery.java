@@ -20,7 +20,7 @@ import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import java.lang.reflect.Array;
 import java.util.List;
-import java.util.stream.Collectors;
+
 import org.springframework.data.repository.query.QueryMethod;
 import org.springframework.data.repository.query.RepositoryQuery;
 
@@ -64,7 +64,7 @@ public abstract class AbstractDatastoreQuery<T> implements RepositoryQuery {
    * @return an array of a compatible type.
    */
   protected Object[] convertCollectionParamToCompatibleArray(List<?> param) {
-    List converted =
+    List<Object> converted =
         param.stream()
             .map(
                 x ->
@@ -72,8 +72,7 @@ public abstract class AbstractDatastoreQuery<T> implements RepositoryQuery {
                         .getDatastoreEntityConverter()
                         .getConversions()
                         .convertOnWriteSingle(x)
-                        .get())
-            .collect(Collectors.toList());
+                        .get()).toList();
     return converted.toArray(
         (Object[])
             Array.newInstance(
