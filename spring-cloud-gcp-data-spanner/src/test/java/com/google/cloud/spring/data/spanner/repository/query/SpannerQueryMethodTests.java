@@ -77,6 +77,7 @@ class SpannerQueryMethodTests {
   }
 
   static class Example {
+
     @Query("select something")
     public String someAnnotatedMethod() {
       return "I'm annotated";

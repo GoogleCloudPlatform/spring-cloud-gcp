@@ -25,12 +25,16 @@ import com.google.cloud.spring.data.spanner.core.mapping.Where;
 import java.util.List;
 import java.util.Objects;
 
-/** An interleaved child of {@link Trade}. */
+/**
+ * An interleaved child of {@link Trade}.
+ */
 @Table(name = "#{'sub_trades_'.concat(tableNameSuffix)}")
 @Where("disabled = false")
 public class SubTrade {
 
-  @Embedded @PrimaryKey TradeIdentifier tradeIdentifier;
+  @Embedded
+  @PrimaryKey
+  TradeIdentifier tradeIdentifier;
 
   @PrimaryKey(keyOrder = 2)
   String subTradeId;
@@ -39,9 +43,11 @@ public class SubTrade {
   @Where("disabled = false")
   List<SubTradeComponent> subTradeComponentList;
 
-  @Column boolean disabled;
+  @Column
+  boolean disabled;
 
-  public SubTrade() {}
+  public SubTrade() {
+  }
 
   public SubTrade(String id, String traderId, String subTradeId) {
     TradeIdentifier tradeIdentifier = new TradeIdentifier();
@@ -88,10 +94,10 @@ public class SubTrade {
         && Objects.equals(this.disabled, subTrade.disabled)
         && Objects.equals(getSubTradeId(), subTrade.getSubTradeId())
         && (Objects.equals(getSubTradeComponentList(), subTrade.getSubTradeComponentList())
-            || (getSubTradeComponentList() == null
-                && subTrade.getSubTradeComponentList().size() == 0)
-            || (subTrade.getSubTradeComponentList() == null
-                && getSubTradeComponentList().size() == 0));
+        || (getSubTradeComponentList() == null
+        && subTrade.getSubTradeComponentList().size() == 0)
+        || (subTrade.getSubTradeComponentList() == null
+        && getSubTradeComponentList().size() == 0));
   }
 
   @Override

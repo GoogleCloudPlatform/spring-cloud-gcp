@@ -26,6 +26,7 @@ import java.util.List;
  * @since 1.2.4
  */
 class SqlStringAndPlaceholders {
+
   private String sql;
 
   private List<String> placeholders;

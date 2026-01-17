@@ -52,16 +52,20 @@ public class SpannerSchemaUtils {
   private final boolean createInterleavedTableDdlOnDeleteCascade;
 
   /**
-   * Constructor. Generates create-table DDL statements that cascade deletes for interleaved tables.
+   * Constructor. Generates create-table DDL statements that cascade deletes for interleaved
+   * tables.
    *
-   * @param mappingContext a mapping context used to obtain persistent entity metadata for
-   *     generating DDL statements.
-   * @param spannerEntityProcessor an entity processor that is queried for types that it can convert
-   *     for determining compatible column types when generating DDL statements.
+   * @param mappingContext                           a mapping context used to obtain persistent
+   *                                                 entity metadata for generating DDL statements.
+   * @param spannerEntityProcessor                   an entity processor that is queried for types
+   *                                                 that it can convert for determining compatible
+   *                                                 column types when generating DDL statements.
    * @param createInterleavedTableDdlOnDeleteCascade if {@code true} will generate create-table
-   *     statements that specify cascade on delete for interleaved tables. If {@code false}, then
-   *     the deletes among interleaved tables do not cascade and require manual deletion of all
-   *     children before parents.
+   *                                                 statements that specify cascade on delete for
+   *                                                 interleaved tables. If {@code false}, then the
+   *                                                 deletes among interleaved tables do not cascade
+   *                                                 and require manual deletion of all children
+   *                                                 before parents.
    */
   public SpannerSchemaUtils(
       SpannerMappingContext mappingContext,
@@ -104,7 +108,7 @@ public class SpannerSchemaUtils {
    * this SpannerOperations and will be compatible with those methods.
    *
    * @param entityClass the entity type.
-   * @param <T> the type of the entity class
+   * @param <T>         the type of the entity class
    * @return the DDL string.
    */
   @SuppressWarnings("unchecked")
@@ -183,11 +187,11 @@ public class SpannerSchemaUtils {
       }
       return columnName
           + getTypeDdlString(
-              spannerColumnType,
-              true,
-              spannerPersistentProperty.getMaxColumnLength(),
-              spannerPersistentProperty.isGenerateSchemaNotNull(),
-              spannerPersistentProperty.isCommitTimestamp());
+          spannerColumnType,
+          true,
+          spannerPersistentProperty.getMaxColumnLength(),
+          spannerPersistentProperty.isGenerateSchemaNotNull(),
+          spannerPersistentProperty.isCommitTimestamp());
     }
     if (spannerColumnType == Type.Code.JSON) {
       spannerJavaType = columnType;
@@ -217,11 +221,11 @@ public class SpannerSchemaUtils {
 
     return columnName
         + getTypeDdlString(
-            spannerColumnType,
-            spannerJavaType.isArray(),
-            spannerPersistentProperty.getMaxColumnLength(),
-            spannerPersistentProperty.isGenerateSchemaNotNull(),
-            spannerPersistentProperty.isCommitTimestamp());
+        spannerColumnType,
+        spannerJavaType.isArray(),
+        spannerPersistentProperty.getMaxColumnLength(),
+        spannerPersistentProperty.isGenerateSchemaNotNull(),
+        spannerPersistentProperty.isCommitTimestamp());
   }
 
   private <T> void addPrimaryKeyColumnNames(

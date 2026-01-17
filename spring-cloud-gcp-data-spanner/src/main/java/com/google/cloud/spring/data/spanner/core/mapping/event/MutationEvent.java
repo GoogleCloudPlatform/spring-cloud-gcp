@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.context.ApplicationEvent;
 
-/** An event holding mutations that are submitted to Cloud Spanner. */
+/**
+ * An event holding mutations that are submitted to Cloud Spanner.
+ */
 public class MutationEvent extends ApplicationEvent {
 
   private final Iterable targetEntities;
@@ -29,9 +31,9 @@ public class MutationEvent extends ApplicationEvent {
   /**
    * Constructor.
    *
-   * @param source the mutations for the event initially occurred. (never {@code null})
+   * @param source         the mutations for the event initially occurred. (never {@code null})
    * @param targetEntities the target entities that need to be mutated. This may be {@code null}
-   *     depending on the type of delete request.
+   *                       depending on the type of delete request.
    */
   public MutationEvent(List<Mutation> source, Iterable targetEntities) {
     super(source);

@@ -37,7 +37,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/** A test domain object using many features. */
+/**
+ * A test domain object using many features.
+ */
 @Table(name = "#{'trades_'.concat(tableNameSuffix)}")
 public class Trade {
 
@@ -56,7 +58,9 @@ public class Trade {
 
   private String symbol;
 
-  @Embedded @PrimaryKey private TradeDetail tradeDetail;
+  @Embedded
+  @PrimaryKey
+  private TradeDetail tradeDetail;
 
   @PrimaryKey(keyOrder = 2)
   @Column(name = "trader_id")
@@ -84,7 +88,7 @@ public class Trade {
   /**
    * Partial constructor. Intentionally tests a field that is left null sometimes.
    *
-   * @param symbol the symbol.
+   * @param symbol         the symbol.
    * @param executionTimes the list of execution times.
    */
   public Trade(String symbol, List<Instant> executionTimes) {

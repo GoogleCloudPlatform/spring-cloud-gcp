@@ -31,9 +31,12 @@ import java.util.Collections;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-/** Tests for converting Spanner keys. */
+/**
+ * Tests for converting Spanner keys.
+ */
 
 class KeyConversionTests {
+
   private final SpannerWriteConverter writeConverter;
 
   private final ConverterAwareMappingSpannerEntityWriter spannerEntityWriter;
@@ -48,44 +51,44 @@ class KeyConversionTests {
 
   static Collection<Object[]> types() {
     return Arrays.asList(
-        new Object[][] {
-          {"single boolean", true, Key.of(true)},
-          {"single int", 1, Key.of(1)},
-          {"single long", 23123123L, Key.of(23123123L)},
-          {"single float", .223f, Key.of(.223f)},
-          {"single double", 3.14, Key.of(3.14)},
-          {"single string", "hello", Key.of("hello")},
-          {"single bytearray", ByteArray.copyFrom("world"), Key.of(ByteArray.copyFrom("world"))},
-          {
-            "single timestamp",
-            Timestamp.ofTimeMicroseconds(123132),
-            Key.of(Timestamp.ofTimeMicroseconds(123132))
-          },
-          {"single date", Date.parseDate("2018-04-20"), Key.of(Date.parseDate("2018-04-20"))},
-          {
-            "mixed array",
-            new Object[] {1, true, false, "hello", ByteArray.copyFrom("world")},
-            Key.of(1, true, false, "hello", ByteArray.copyFrom("world"))
-          },
-          {
-            "mixed list",
-            Arrays.asList(1, true, false, "hello", ByteArray.copyFrom("world")),
-            Key.of(1, true, false, "hello", ByteArray.copyFrom("world"))
-          },
-          {
-            "converted default type (date)",
-            java.util.Date.from(Instant.ofEpochSecond(123)),
-            Key.of(
-                SpannerConverters.JAVA_TO_SPANNER_TIMESTAMP_CONVERTER.convert(
-                    java.sql.Timestamp.from(Instant.ofEpochSecond(123))))
-          },
-          {
-            "unsupported type (TestEntity)",
-            new TestEntities.TestEntity(),
-            SpannerDataException.class
-          },
-          {"empty key (Object[])", new Object[] {}, SpannerDataException.class},
-          {"empty key (List{})", Collections.emptyList(), SpannerDataException.class},
+        new Object[][]{
+            {"single boolean", true, Key.of(true)},
+            {"single int", 1, Key.of(1)},
+            {"single long", 23123123L, Key.of(23123123L)},
+            {"single float", .223f, Key.of(.223f)},
+            {"single double", 3.14, Key.of(3.14)},
+            {"single string", "hello", Key.of("hello")},
+            {"single bytearray", ByteArray.copyFrom("world"), Key.of(ByteArray.copyFrom("world"))},
+            {
+                "single timestamp",
+                Timestamp.ofTimeMicroseconds(123132),
+                Key.of(Timestamp.ofTimeMicroseconds(123132))
+            },
+            {"single date", Date.parseDate("2018-04-20"), Key.of(Date.parseDate("2018-04-20"))},
+            {
+                "mixed array",
+                new Object[]{1, true, false, "hello", ByteArray.copyFrom("world")},
+                Key.of(1, true, false, "hello", ByteArray.copyFrom("world"))
+            },
+            {
+                "mixed list",
+                Arrays.asList(1, true, false, "hello", ByteArray.copyFrom("world")),
+                Key.of(1, true, false, "hello", ByteArray.copyFrom("world"))
+            },
+            {
+                "converted default type (date)",
+                java.util.Date.from(Instant.ofEpochSecond(123)),
+                Key.of(
+                    SpannerConverters.JAVA_TO_SPANNER_TIMESTAMP_CONVERTER.convert(
+                        java.sql.Timestamp.from(Instant.ofEpochSecond(123))))
+            },
+            {
+                "unsupported type (TestEntity)",
+                new TestEntities.TestEntity(),
+                SpannerDataException.class
+            },
+            {"empty key (Object[])", new Object[]{}, SpannerDataException.class},
+            {"empty key (List{})", Collections.emptyList(), SpannerDataException.class},
         });
   }
 

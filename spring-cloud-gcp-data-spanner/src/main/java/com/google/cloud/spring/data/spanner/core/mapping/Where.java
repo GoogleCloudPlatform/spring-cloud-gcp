@@ -34,6 +34,7 @@ import java.lang.annotation.Target;
 @Target({TYPE, FIELD})
 @Retention(RUNTIME)
 public @interface Where {
+
   /**
    * The where-clause predicate.
    *

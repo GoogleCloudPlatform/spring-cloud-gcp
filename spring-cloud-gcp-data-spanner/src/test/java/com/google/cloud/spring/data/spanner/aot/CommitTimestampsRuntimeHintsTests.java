@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.RuntimeHints;
 
 class CommitTimestampsRuntimeHintsTests {
+
   @Test
   void registerCommitTimestamps() {
     RuntimeHints runtimeHints = new RuntimeHints();

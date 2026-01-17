@@ -56,7 +56,7 @@ public @interface Column {
    * If the column's schema should be NOT NULL when generating a schema based on an entity class.
    *
    * @return {@code false} if the column should be NOT NULL in generated DDL. {@code true}
-   *     otherwise.
+   * otherwise.
    */
   boolean nullable() default true;
 

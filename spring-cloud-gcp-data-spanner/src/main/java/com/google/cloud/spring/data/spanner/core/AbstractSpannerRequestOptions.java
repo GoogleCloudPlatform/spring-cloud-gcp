@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-/** Abstract class of common Read and Query request settings. */
+/**
+ * Abstract class of common Read and Query request settings.
+ */
 public class AbstractSpannerRequestOptions<A> implements Serializable {
 
   protected transient List<A> requestOptions = new ArrayList<>();

@@ -23,11 +23,15 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.spanner.v1.TypeCode;
 
-/** A child interleaved table of {@link SubTrade} and a grand-child of {@link Trade}. */
+/**
+ * A child interleaved table of {@link SubTrade} and a grand-child of {@link Trade}.
+ */
 @Table(name = "#{'sub_trade_component'.concat(tableNameSuffix)}")
 public class SubTradeComponent {
 
-  @PrimaryKey @Embedded SubTradeIdentifier subTradeIdentifier;
+  @PrimaryKey
+  @Embedded
+  SubTradeIdentifier subTradeIdentifier;
 
   @PrimaryKey(keyOrder = 2)
   String componentIdPartA;
@@ -41,9 +45,11 @@ public class SubTradeComponent {
   @Column(spannerCommitTimestamp = true)
   Timestamp commitTimestamp;
 
-  @Column boolean disabled;
+  @Column
+  boolean disabled;
 
-  public SubTradeComponent() {}
+  public SubTradeComponent() {
+  }
 
   public SubTradeComponent(
       String id,

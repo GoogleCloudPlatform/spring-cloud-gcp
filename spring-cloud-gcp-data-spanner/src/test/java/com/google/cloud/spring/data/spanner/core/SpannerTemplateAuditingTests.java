@@ -44,7 +44,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/** Tests the auditing features of the template. */
+/**
+ * Tests the auditing features of the template.
+ */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
 @DisabledInAotMode
@@ -55,7 +57,8 @@ class SpannerTemplateAuditingTests {
 
   private static final Instant LONG_AGO = Instant.parse("2000-01-01T00:00:00.00Z");
 
-  @Autowired SpannerTemplate spannerTemplate;
+  @Autowired
+  SpannerTemplate spannerTemplate;
 
   @Test
   void testModifiedNullProperties() {
@@ -80,7 +83,9 @@ class SpannerTemplateAuditingTests {
     assertThat(testEntity.lastUser).isNotEqualTo("person");
   }
 
-  /** Spring config for the tests. */
+  /**
+   * Spring config for the tests.
+   */
   @Configuration
   @EnableSpannerAuditing
   static class Config {
@@ -129,10 +134,14 @@ class SpannerTemplateAuditingTests {
 
   @Table(name = "custom_test_table")
   private static class TestEntity {
-    @PrimaryKey String id;
 
-    @LastModifiedBy String lastUser;
+    @PrimaryKey
+    String id;
 
-    @LastModifiedDate Instant lastTouched;
+    @LastModifiedBy
+    String lastUser;
+
+    @LastModifiedDate
+    Instant lastTouched;
   }
 }

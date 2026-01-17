@@ -27,7 +27,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
-/** Tests Spanner repository factory bean. */
+/**
+ * Tests Spanner repository factory bean.
+ */
 class SpannerRepositoryFactoryBeanTests {
 
   private SpannerRepositoryFactoryBean<SpannerRepository<Object, Key>, Object, Key>

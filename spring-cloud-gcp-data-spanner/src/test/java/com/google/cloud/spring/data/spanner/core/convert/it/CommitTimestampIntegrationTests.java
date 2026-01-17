@@ -45,15 +45,20 @@ import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/** Integration tests for the {@link CommitTimestamp} feature. */
+/**
+ * Integration tests for the {@link CommitTimestamp} feature.
+ */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ImportRuntimeHints(CommitTimestampsRuntimeHints.class)
 class CommitTimestampIntegrationTests extends AbstractSpannerIntegrationTest {
 
-  @Autowired private SpannerOperations spannerOperations;
-  @Autowired private DatabaseClient databaseClient;
-  @Autowired private SpannerMutationFactory mutationFactory;
+  @Autowired
+  private SpannerOperations spannerOperations;
+  @Autowired
+  private DatabaseClient databaseClient;
+  @Autowired
+  private SpannerMutationFactory mutationFactory;
 
   @Test
   void testCommitTimestamp() {

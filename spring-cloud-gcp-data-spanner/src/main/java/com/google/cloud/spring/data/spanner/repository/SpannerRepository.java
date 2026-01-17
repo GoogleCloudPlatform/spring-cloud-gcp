@@ -43,8 +43,8 @@ public interface SpannerRepository<T, I> extends PagingAndSortingRepository<T, I
    * Performs multiple read and write operations in a single transaction.
    *
    * @param operations the function representing the operations to perform using a SpannerRepository
-   *     based on a single transaction.
-   * @param <A> the final return type of the operations.
+   *                   based on a single transaction.
+   * @param <A>        the final return type of the operations.
    * @return the final result of the transaction.
    */
   <A> A performReadWriteTransaction(Function<SpannerRepository<T, I>, A> operations);
@@ -53,8 +53,8 @@ public interface SpannerRepository<T, I> extends PagingAndSortingRepository<T, I
    * Performs multiple read-only operations in a single transaction.
    *
    * @param operations the function representing the operations to perform using a SpannerRepository
-   *     based on a single transaction.
-   * @param <A> the final return type of the operations.
+   *                   based on a single transaction.
+   * @param <A>        the final return type of the operations.
    * @return the final result of the transaction.
    */
   <A> A performReadOnlyTransaction(Function<SpannerRepository<T, I>, A> operations);

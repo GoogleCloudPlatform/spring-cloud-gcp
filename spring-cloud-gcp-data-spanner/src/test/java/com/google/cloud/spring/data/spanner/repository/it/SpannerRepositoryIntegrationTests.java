@@ -60,20 +60,27 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-/** Integration tests for Spanner Repository that uses many features. */
+/**
+ * Integration tests for Spanner Repository that uses many features.
+ */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
 public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
 
-  @Autowired TradeRepository tradeRepository;
+  @Autowired
+  TradeRepository tradeRepository;
 
-  @Autowired SubTradeRepository subTradeRepository;
+  @Autowired
+  SubTradeRepository subTradeRepository;
 
-  @Autowired SubTradeComponentRepository subTradeComponentRepository;
+  @Autowired
+  SubTradeComponentRepository subTradeComponentRepository;
 
-  @Autowired TradeRepositoryTransactionalService tradeRepositoryTransactionalService;
+  @Autowired
+  TradeRepositoryTransactionalService tradeRepositoryTransactionalService;
 
-  @Autowired SpannerMappingContext spannerMappingContext;
+  @Autowired
+  SpannerMappingContext spannerMappingContext;
 
   @BeforeEach
   @AfterEach
@@ -258,38 +265,38 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
     assertThat(trader2TradesRetrieved).containsExactlyInAnyOrderElementsOf(trader2Trades);
 
     assertThat(
-            this.tradeRepository.findByTraderId(
-                "trader2", PageRequest.of(0, 2, Sort.by("tradeTime"))))
+        this.tradeRepository.findByTraderId(
+            "trader2", PageRequest.of(0, 2, Sort.by("tradeTime"))))
         .containsExactlyInAnyOrder(trader2Trades.get(0), trader2Trades.get(1));
 
     assertThat(
-            this.tradeRepository.findByTraderId(
-                "trader2", PageRequest.of(1, 2, Sort.by("tradeTime"))))
+        this.tradeRepository.findByTraderId(
+            "trader2", PageRequest.of(1, 2, Sort.by("tradeTime"))))
         .containsExactlyInAnyOrder(trader2Trades.get(2));
 
     assertThat(
-            this.tradeRepository.findByTraderId(
-                "trader2", PageRequest.of(0, 2, Sort.by(Direction.DESC, "tradeTime"))))
+        this.tradeRepository.findByTraderId(
+            "trader2", PageRequest.of(0, 2, Sort.by(Direction.DESC, "tradeTime"))))
         .containsExactlyInAnyOrder(trader2Trades.get(2), trader2Trades.get(1));
 
     assertThat(
-            this.tradeRepository.findByTraderId(
-                "trader2", PageRequest.of(1, 2, Sort.by(Direction.DESC, "tradeTime"))))
+        this.tradeRepository.findByTraderId(
+            "trader2", PageRequest.of(1, 2, Sort.by(Direction.DESC, "tradeTime"))))
         .containsExactlyInAnyOrder(trader2Trades.get(0));
 
     assertThat(
-            this.tradeRepository.findTop2ByTraderIdOrderByTradeTimeAsc(
-                "trader2", Pageable.unpaged()))
+        this.tradeRepository.findTop2ByTraderIdOrderByTradeTimeAsc(
+            "trader2", Pageable.unpaged()))
         .containsExactlyInAnyOrder(trader2Trades.get(0), trader2Trades.get(1));
 
     assertThat(
-            this.tradeRepository.findTop2ByTraderIdOrderByTradeTimeAsc(
-                "trader2", PageRequest.of(0, 1)))
+        this.tradeRepository.findTop2ByTraderIdOrderByTradeTimeAsc(
+            "trader2", PageRequest.of(0, 1)))
         .containsExactlyInAnyOrder(trader2Trades.get(0));
 
     assertThat(
-            this.tradeRepository.findTop2ByTraderIdOrderByTradeTimeAsc(
-                "trader2", PageRequest.of(0, 1, Sort.by(Direction.DESC, "tradeTime"))))
+        this.tradeRepository.findTop2ByTraderIdOrderByTradeTimeAsc(
+            "trader2", PageRequest.of(0, 1, Sort.by(Direction.DESC, "tradeTime"))))
         .containsExactlyInAnyOrder(trader2Trades.get(2));
   }
 
@@ -370,8 +377,8 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
     assertThat(this.tradeRepository.findBySymbolAndActionPojo(new SymbolAction("ABCD", "BUY")))
         .hasSize(3);
     assertThat(
-            this.tradeRepository.findBySymbolAndActionStruct(
-                Struct.newBuilder().set("symbol").to("ABCD").set("action").to("BUY").build()))
+        this.tradeRepository.findBySymbolAndActionStruct(
+            Struct.newBuilder().set("symbol").to("ABCD").set("action").to("BUY").build()))
         .hasSize(3);
   }
 
@@ -663,10 +670,13 @@ public class SpannerRepositoryIntegrationTests extends AbstractSpannerIntegratio
     return t;
   }
 
-  /** A service that executes methods annotated as transactional. */
+  /**
+   * A service that executes methods annotated as transactional.
+   */
   public static class TradeRepositoryTransactionalService {
 
-    @Autowired TradeRepository tradeRepository;
+    @Autowired
+    TradeRepository tradeRepository;
 
     @Transactional
     public void testTransactionalAnnotation(int numSubTrades) {

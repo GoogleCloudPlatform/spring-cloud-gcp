@@ -58,8 +58,8 @@ public class SpannerAuditingRegistrar extends AuditingBeanDefinitionRegistrarSup
   protected BeanDefinitionBuilder getAuditHandlerBeanDefinitionBuilder(
       AuditingConfiguration configuration) {
     return configureDefaultAuditHandlerAttributes(
-            configuration, BeanDefinitionBuilder.rootBeanDefinition(AuditingHandler.class))
-            .addConstructorArgValue(PersistentEntities.of(new SpannerMappingContext()));
+        configuration, BeanDefinitionBuilder.rootBeanDefinition(AuditingHandler.class))
+        .addConstructorArgValue(PersistentEntities.of(new SpannerMappingContext()));
   }
 
   @Override

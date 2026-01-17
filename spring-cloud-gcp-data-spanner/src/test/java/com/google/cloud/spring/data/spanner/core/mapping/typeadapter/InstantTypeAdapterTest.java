@@ -11,6 +11,7 @@ import java.time.Instant;
 import org.junit.Test;
 
 public class InstantTypeAdapterTest {
+
   InstantTypeAdapter instantTypeAdapter = new InstantTypeAdapter();
   StringWriter stringWriter = new StringWriter();
   JsonWriter jsonWriter = new JsonWriter(stringWriter);

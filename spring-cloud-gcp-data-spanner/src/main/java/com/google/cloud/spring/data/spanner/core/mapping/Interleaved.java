@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 public @interface Interleaved {
 
   /**
-   * Controls whether the referenced entity should be loaded lazily. This defaults to {@literal
-   * false}.
+   * Controls whether the referenced entity should be loaded lazily. This defaults to
+   * {@literal false}.
    *
    * @return whether the interleaved property is retrieved lazily.
    */

@@ -25,4 +25,6 @@ import java.util.function.Supplier;
  *
  * @since 1.2
  */
-public interface DatabaseIdProvider extends Supplier<DatabaseId> {}
+public interface DatabaseIdProvider extends Supplier<DatabaseId> {
+
+}

@@ -26,6 +26,7 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
  * @since 1.1
  */
 public class SpannerRepositoriesRegistrar extends RepositoryBeanDefinitionRegistrarSupport {
+
   @Override
   protected Class<? extends Annotation> getAnnotation() {
     return EnableSpannerRepositories.class;

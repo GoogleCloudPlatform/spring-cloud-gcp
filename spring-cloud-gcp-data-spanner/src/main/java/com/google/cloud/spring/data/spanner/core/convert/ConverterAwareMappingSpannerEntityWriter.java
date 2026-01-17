@@ -70,7 +70,9 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
                   BigDecimal.class,
                   UUID.class)));
 
-  /** A map of types to functions that binds them to `ValueBinder` objects. */
+  /**
+   * A map of types to functions that binds them to `ValueBinder` objects.
+   */
   public static final Map<Class<?>, BiFunction<ValueBinder, ?, ?>>
       singleItemTypeValueBinderMethodMap;
 
@@ -153,8 +155,8 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
   /**
    * Writes an object's properties to the sink.
    *
-   * @param source the object to write
-   * @param sink the sink to which to write
+   * @param source         the object to write
+   * @param sink           the sink to which to write
    * @param includeColumns the columns to write. If null, then all columns are written.
    */
   public void write(Object source, MultipleValueBinder sink, Set<String> includeColumns) {
@@ -206,10 +208,10 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
   /**
    * Bind an iterable value to a ValueBinder.
    *
-   * @param value the value to bind.
-   * @param valueBinder the binder that accepts the value.
+   * @param value          the value to bind.
+   * @param valueBinder    the binder that accepts the value.
    * @param writeConverter the converter to use to convert the values.
-   * @param innerType the type of the items in the iterable.
+   * @param innerType      the type of the items in the iterable.
    * @return {@code true} if the binding was successful.
    */
   public static boolean attemptSetIterableValueOnBinder(
@@ -242,9 +244,9 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
   /**
    * Bind a value to a ValueBinder.
    *
-   * @param propertyValue the value to bind.
-   * @param propertyType the type of the value to bind.
-   * @param valueBinder the binder.
+   * @param propertyValue          the value to bind.
+   * @param propertyType           the type of the value to bind.
+   * @param valueBinder            the binder.
    * @param spannerCustomConverter the converter used to convert if necessary.
    * @return {@code true} if the value was bound successfully.
    */

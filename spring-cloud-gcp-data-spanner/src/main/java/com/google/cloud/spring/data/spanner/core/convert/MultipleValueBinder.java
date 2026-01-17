@@ -18,7 +18,9 @@ package com.google.cloud.spring.data.spanner.core.convert;
 
 import com.google.cloud.spanner.ValueBinder;
 
-/** An interface that allows multiple values to be bound for Cloud Spanner. */
+/**
+ * An interface that allows multiple values to be bound for Cloud Spanner.
+ */
 public interface MultipleValueBinder {
 
   /**

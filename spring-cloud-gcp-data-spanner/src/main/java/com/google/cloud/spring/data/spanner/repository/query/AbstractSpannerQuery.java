@@ -42,9 +42,9 @@ abstract class AbstractSpannerQuery<T> implements RepositoryQuery {
   /**
    * Constructor.
    *
-   * @param type the underlying entity type
-   * @param queryMethod the underlying query method to support.
-   * @param spannerTemplate used for executing queries.
+   * @param type                  the underlying entity type
+   * @param queryMethod           the underlying query method to support.
+   * @param spannerTemplate       used for executing queries.
    * @param spannerMappingContext used for getting metadata about entities.
    */
   AbstractSpannerQuery(
@@ -76,13 +76,13 @@ abstract class AbstractSpannerQuery<T> implements RepositoryQuery {
   Object convertToSimpleReturnType(List<?> results, Class<?> simpleConvertedType) {
     return this.queryMethod.isCollectionQuery()
         ? results.stream()
-            .map(
-                x ->
-                    this.spannerTemplate
-                        .getSpannerEntityProcessor()
-                        .getReadConverter()
-                        .convert(x, simpleConvertedType))
-            .collect(Collectors.toList())
+        .map(
+            x ->
+                this.spannerTemplate
+                    .getSpannerEntityProcessor()
+                    .getReadConverter()
+                    .convert(x, simpleConvertedType))
+        .collect(Collectors.toList())
         : this.spannerTemplate
             .getSpannerEntityProcessor()
             .getReadConverter()

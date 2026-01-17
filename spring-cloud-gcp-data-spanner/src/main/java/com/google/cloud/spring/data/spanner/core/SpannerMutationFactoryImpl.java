@@ -54,9 +54,9 @@ public class SpannerMutationFactoryImpl implements SpannerMutationFactory {
    * Constructor.
    *
    * @param spannerEntityProcessor the object mapper used to convert between objects and Spanner
-   *     data types.
-   * @param spannerMappingContext the mapping context used to get metadata from entity types.
-   * @param spannerSchemaUtils the schema utility to use
+   *                               data types.
+   * @param spannerMappingContext  the mapping context used to get metadata from entity types.
+   * @param spannerSchemaUtils     the schema utility to use
    */
   public SpannerMutationFactoryImpl(
       SpannerEntityProcessor spannerEntityProcessor,
@@ -164,7 +164,8 @@ public class SpannerMutationFactoryImpl implements SpannerMutationFactory {
     Iterator childKeyParts = this.spannerSchemaUtils.getKey(childObject).getParts().iterator();
     int partNum = 1;
     while (parentKeyParts.hasNext()) {
-      if (!childKeyParts.hasNext() || !Objects.equals(parentKeyParts.next(), childKeyParts.next())) {
+      if (!childKeyParts.hasNext() || !Objects.equals(parentKeyParts.next(),
+          childKeyParts.next())) {
         throw new SpannerDataException(
             "A child entity's common primary key parts with its parent must "
                 + "have the same values. Primary key component "

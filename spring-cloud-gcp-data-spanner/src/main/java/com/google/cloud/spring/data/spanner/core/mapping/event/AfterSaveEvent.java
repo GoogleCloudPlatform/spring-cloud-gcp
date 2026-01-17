@@ -20,14 +20,17 @@ import com.google.cloud.spanner.Mutation;
 import java.util.List;
 import java.util.Set;
 
-/** An event that is published after a save operation to Cloud Spanner. */
+/**
+ * An event that is published after a save operation to Cloud Spanner.
+ */
 public class AfterSaveEvent extends SaveEvent {
+
   /**
    * Constructor.
    *
-   * @param source the mutations for the event initially occurred. (never {@code null})
-   * @param targetEntities the target entities that need to be mutated. This may be {@code null}
-   *     depending on the original request.
+   * @param source            the mutations for the event initially occurred. (never {@code null})
+   * @param targetEntities    the target entities that need to be mutated. This may be {@code null}
+   *                          depending on the original request.
    * @param includeProperties the set of properties to include in the save operation.
    */
   public AfterSaveEvent(

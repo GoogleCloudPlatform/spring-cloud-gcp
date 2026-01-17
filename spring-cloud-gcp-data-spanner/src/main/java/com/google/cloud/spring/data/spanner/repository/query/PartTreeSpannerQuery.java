@@ -39,9 +39,9 @@ public class PartTreeSpannerQuery<T> extends AbstractSpannerQuery<T> {
   /**
    * Constructor.
    *
-   * @param type the underlying entity type
-   * @param queryMethod the underlying query method to support.
-   * @param spannerTemplate used for executing queries.
+   * @param type                  the underlying entity type
+   * @param queryMethod           the underlying query method to support.
+   * @param spannerTemplate       used for executing queries.
    * @param spannerMappingContext used for getting metadata about entities.
    */
   public PartTreeSpannerQuery(
