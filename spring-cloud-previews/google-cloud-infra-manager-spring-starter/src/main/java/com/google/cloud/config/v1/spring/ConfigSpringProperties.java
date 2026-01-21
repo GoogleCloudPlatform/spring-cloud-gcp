@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,6 +142,11 @@ public class ConfigSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getResourceDriftRetry;
+  /**
+   * Allow override of retry settings at method-level for getAutoMigrationConfig. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getAutoMigrationConfigRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -363,6 +368,14 @@ public class ConfigSpringProperties implements CredentialsSupplier {
 
   public void setGetResourceDriftRetry(Retry getResourceDriftRetry) {
     this.getResourceDriftRetry = getResourceDriftRetry;
+  }
+
+  public Retry getGetAutoMigrationConfigRetry() {
+    return this.getAutoMigrationConfigRetry;
+  }
+
+  public void setGetAutoMigrationConfigRetry(Retry getAutoMigrationConfigRetry) {
+    this.getAutoMigrationConfigRetry = getAutoMigrationConfigRetry;
   }
 
   public Retry getListLocationsRetry() {
