@@ -36,7 +36,8 @@ import java.util.UUID;
  */
 public final class SpannerTypeMapper {
 
-  private SpannerTypeMapper() {}
+  private SpannerTypeMapper() {
+  }
 
   private static final Map<Class, Type.Code> JAVA_TYPE_TO_SPANNER_SIMPLE_COLUMN_TYPE_MAPPING;
 
@@ -55,7 +56,7 @@ public final class SpannerTypeMapper {
           .put(Type.Code.STRUCT, Struct.class)
           .put(Type.Code.TIMESTAMP, Timestamp.class)
           .put(Type.Code.INTERVAL, Interval.class)
-              .put(Type.Code.UUID, UUID.class)
+          .put(Type.Code.UUID, UUID.class)
           .build();
 
   private static final Map<Type.Code, Class> SPANNER_ARRAY_COLUMN_CODES_TO_JAVA_TYPE_MAPPING =
@@ -71,7 +72,7 @@ public final class SpannerTypeMapper {
           .put(Type.Code.STRUCT, Struct[].class)
           .put(Type.Code.TIMESTAMP, Timestamp[].class)
           .put(Type.Code.INTERVAL, Interval[].class)
-              .put(Code.UUID, UUID[].class)
+          .put(Code.UUID, UUID[].class)
           .build();
 
   static {

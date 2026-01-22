@@ -67,7 +67,9 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** Tests for the conversion and mapping of entities for write. */
+/**
+ * Tests for the conversion and mapping of entities for write.
+ */
 class ConverterAwareMappingSpannerEntityWriterTests {
 
   private SpannerEntityWriter spannerEntityWriter;
@@ -96,11 +98,11 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     t.intField = 123;
     t.longField = 3L;
     t.doubleField = 3.33;
-    t.doubleArray = new double[] {3.33, 3.33, 3.33};
+    t.doubleArray = new double[]{3.33, 3.33, 3.33};
     t.doubleList = new ArrayList<>();
     t.doubleList.add(3.33);
     t.floatField = 3.33F;
-    t.floatArray = new float[] {3.33F, 3.33F, 3.33F};
+    t.floatArray = new float[]{3.33F, 3.33F, 3.33F};
     t.floatList = new ArrayList<>();
     t.floatList.add(3.33F);
     t.stringList = new ArrayList<>();
@@ -519,7 +521,7 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     WriteBuilder writeBuilder = Mutation.newInsertBuilder("faulty_test_table");
 
     assertThatThrownBy(
-            () -> this.spannerEntityWriter.write(userSetUnconvertableColumnType, writeBuilder::set))
+        () -> this.spannerEntityWriter.write(userSetUnconvertableColumnType, writeBuilder::set))
         .isInstanceOf(SpannerDataException.class)
         .hasMessage("Unsupported mapping for type: boolean");
   }
@@ -537,16 +539,19 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     this.spannerEntityWriter.write(entity, writeBuilder::set);
     Mutation mutation = writeBuilder.build();
     assertThat(
-            mutation.asMap().entrySet().stream()
-                .filter(e -> !"id".equals(e.getKey()))
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList()))
+        mutation.asMap().entrySet().stream()
+            .filter(e -> !"id".equals(e.getKey()))
+            .map(Map.Entry::getValue)
+            .collect(Collectors.toList()))
         .isNotEmpty()
         .allMatch(Value::isCommitTimestamp);
   }
 
-  /** A test type that cannot be converted. */
+  /**
+   * A test type that cannot be converted.
+   */
   static class UserSetUnconvertableColumnType {
+
     @PrimaryKey
     @Column(spannerType = TypeCode.DATE)
     boolean id;

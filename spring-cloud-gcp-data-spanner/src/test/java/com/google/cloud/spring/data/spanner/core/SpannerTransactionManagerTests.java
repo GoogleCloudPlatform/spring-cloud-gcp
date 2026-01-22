@@ -50,16 +50,22 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-/** Tests for the Spanner transaction manager. */
+/**
+ * Tests for the Spanner transaction manager.
+ */
 class SpannerTransactionManagerTests {
 
-  @Mock DatabaseClient databaseClient;
+  @Mock
+  DatabaseClient databaseClient;
 
-  @Mock TransactionContext transactionContext;
+  @Mock
+  TransactionContext transactionContext;
 
-  @Mock TransactionManager transactionManager;
+  @Mock
+  TransactionManager transactionManager;
 
-  @Mock DefaultTransactionStatus status;
+  @Mock
+  DefaultTransactionStatus status;
 
   SpannerTransactionManager.Tx tx;
 

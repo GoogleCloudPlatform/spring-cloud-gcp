@@ -157,7 +157,7 @@ public class ConverterAwareMappingSpannerEntityProcessor implements SpannerEntit
    * Writes each of the source properties to the sink.
    *
    * @param source entity to be written
-   * @param sink the stateful multiple-value-binder as a target for writing.
+   * @param sink   the stateful multiple-value-binder as a target for writing.
    */
   @Override
   public void write(Object source, MultipleValueBinder sink) {

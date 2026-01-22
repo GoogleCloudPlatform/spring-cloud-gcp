@@ -27,31 +27,34 @@ import org.springframework.lang.Nullable;
 
 /**
  * The factory method {@link #of(Class)} should be used to resolve a specific value of a pointed
- * class which is converted then to the {@link Value#COMMIT_TIMESTAMP} by {@link
- * CommitTimestampDecorator}. It should be used when a database column has type of Timestamp with an
- * option "allow_commit_timestamp" and the business logic needs to manage in runtime when the
- * PENDING_COMMIT_TIMESTAMP should be stored into this field.
+ * class which is converted then to the {@link Value#COMMIT_TIMESTAMP} by
+ * {@link CommitTimestampDecorator}. It should be used when a database column has type of Timestamp
+ * with an option "allow_commit_timestamp" and the business logic needs to manage in runtime when
+ * the PENDING_COMMIT_TIMESTAMP should be stored into this field.
  *
  * @since 1.2.2
  */
 public final class CommitTimestamp {
+
   private static final Map<Object, Object> VALUES = new ConcurrentHashMap<>();
 
   static {
     VALUES.put(com.google.cloud.Timestamp.class, Value.COMMIT_TIMESTAMP);
   }
 
-  private CommitTimestamp() {}
+  private CommitTimestamp() {
+  }
 
   /**
    * Creates a value for {@link Value#COMMIT_TIMESTAMP}.
    *
    * @param timestampClass a class to be presented as a Timestamp in the database column.
-   * @param <T> type of the class. Supported by-default types are: {@link
-   *     com.google.cloud.Timestamp}, {@link java.sql.Timestamp}, {@link java.time.LocalDateTime},
-   *     {@link java.time.Instant}, {@link java.util.Date}.
-   * @return a value that will be converted to {@link Value#COMMIT_TIMESTAMP} by {@link
-   *     SpannerConverters}
+   * @param <T>            type of the class. Supported by-default types are:
+   *                       {@link com.google.cloud.Timestamp}, {@link java.sql.Timestamp},
+   *                       {@link java.time.LocalDateTime}, {@link java.time.Instant},
+   *                       {@link java.util.Date}.
+   * @return a value that will be converted to {@link Value#COMMIT_TIMESTAMP} by
+   * {@link SpannerConverters}
    * @throws IllegalArgumentException when the {@code timestampClass} was not registered.
    */
   @SuppressWarnings("unchecked")
@@ -88,14 +91,15 @@ public final class CommitTimestamp {
     }
 
     /**
-     * The method is used to register a custom "commitTimestamp" value within {@link
-     * CommitTimestampDecorator} converter.
+     * The method is used to register a custom "commitTimestamp" value within
+     * {@link CommitTimestampDecorator} converter.
      *
      * @param commitTimestamp the "commitTimestamp" value.
-     * @param <C> the type of "commitTimestamp".
+     * @param <C>             the type of "commitTimestamp".
      * @throws IllegalStateException when the "commitTimestamp" withe same type is already
-     *     registered. It is impossible to overwrite existing registrations because it could affect
-     *     the core converters of the {@link SpannerConverters} class.
+     *                               registered. It is impossible to overwrite existing
+     *                               registrations because it could affect the core converters of
+     *                               the {@link SpannerConverters} class.
      */
     private static <C> void register(C commitTimestamp) {
       VALUES.compute(

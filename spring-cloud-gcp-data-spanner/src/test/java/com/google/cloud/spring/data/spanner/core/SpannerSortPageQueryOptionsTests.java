@@ -26,7 +26,9 @@ import java.util.Collections;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-/** Tests for the Spanner sort and page query options. */
+/**
+ * Tests for the Spanner sort and page query options.
+ */
 class SpannerSortPageQueryOptionsTests {
 
   @Test
@@ -34,8 +36,8 @@ class SpannerSortPageQueryOptionsTests {
 
     SpannerQueryOptions testSpannerQueryOptions = new SpannerQueryOptions();
     assertThatThrownBy(() -> testSpannerQueryOptions.addQueryOption(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Valid query option is required!");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Valid query option is required!");
   }
 
   @Test

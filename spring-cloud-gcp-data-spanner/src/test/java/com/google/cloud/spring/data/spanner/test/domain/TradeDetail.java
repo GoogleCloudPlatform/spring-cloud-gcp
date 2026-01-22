@@ -19,10 +19,13 @@ package com.google.cloud.spring.data.spanner.test.domain;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import java.util.Objects;
 
-/** An embedded grouping of columns. */
+/**
+ * An embedded grouping of columns.
+ */
 public class TradeDetail {
 
-  @PrimaryKey String id;
+  @PrimaryKey
+  String id;
 
   Double price;
 

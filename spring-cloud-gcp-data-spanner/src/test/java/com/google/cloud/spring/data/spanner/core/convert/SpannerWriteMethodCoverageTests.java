@@ -27,7 +27,9 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
-/** Tests to check for new mapping methods that appear in the Spanner client lib. */
+/**
+ * Tests to check for new mapping methods that appear in the Spanner client lib.
+ */
 class SpannerWriteMethodCoverageTests {
 
   // Checks that the converter is aware of all Cloud Spanner mutation binder types
@@ -38,8 +40,8 @@ class SpannerWriteMethodCoverageTests {
       // Until this is implemented, ignore the new column types by ignoring the methods
       // that have the new column types as a parameter
       if (Arrays.stream(method.getParameterTypes()).map(Class::getName)
-              .anyMatch(x -> x.contains("ProtocolMessageEnum")
-                      || x.contains("AbstractMessage"))) {
+          .anyMatch(x -> x.contains("ProtocolMessageEnum")
+              || x.contains("AbstractMessage"))) {
         continue;
       }
 

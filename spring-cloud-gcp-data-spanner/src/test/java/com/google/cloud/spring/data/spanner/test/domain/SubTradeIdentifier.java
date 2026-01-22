@@ -28,7 +28,9 @@ import java.util.Objects;
  */
 public class SubTradeIdentifier {
 
-  @PrimaryKey @Embedded TradeIdentifier tradeIdentifier;
+  @PrimaryKey
+  @Embedded
+  TradeIdentifier tradeIdentifier;
 
   @PrimaryKey(keyOrder = 2)
   @Column(name = "subTradeId")

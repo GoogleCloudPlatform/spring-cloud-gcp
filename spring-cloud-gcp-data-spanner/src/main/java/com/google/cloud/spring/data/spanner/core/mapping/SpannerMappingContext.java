@@ -53,7 +53,8 @@ public class SpannerMappingContext
 
   private Gson gson;
 
-  public SpannerMappingContext() {}
+  public SpannerMappingContext() {
+  }
 
   public SpannerMappingContext(Gson gson) {
     Assert.notNull(gson, "A non-null gson is required.");
@@ -69,7 +70,7 @@ public class SpannerMappingContext
    * Set the field naming strategy used when creating persistent properties.
    *
    * @param fieldNamingStrategy the field naming strategy passed used by created persistent
-   *     properties get column names.
+   *                            properties get column names.
    */
   public void setFieldNamingStrategy(FieldNamingStrategy fieldNamingStrategy) {
     this.fieldNamingStrategy =

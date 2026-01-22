@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,28 +16,14 @@
 
 package com.google.cloud.spring.data.spanner.test;
 
-import com.google.cloud.spanner.DatabaseAdminClient;
-import com.google.cloud.spanner.DatabaseClient;
-import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.SessionPoolOptions;
-import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
-import com.google.cloud.spring.data.spanner.core.SpannerMutationFactory;
-import com.google.cloud.spring.data.spanner.core.SpannerMutationFactoryImpl;
-import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
-import com.google.cloud.spring.data.spanner.core.SpannerTransactionManager;
-import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
-import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
-import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityProcessor;
-import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.it.SpannerTemplateIntegrationTests.TemplateTransactionalService;
-import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.repository.config.EnableSpannerRepositories;
 import com.google.cloud.spring.data.spanner.repository.it.SpannerRepositoryIntegrationTests.TradeRepositoryTransactionalService;
-import com.google.gson.Gson;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +31,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-/** Configuration for integration tets for Spanner. */
+/**
+ * Configuration for integration tests for Spanner.
+ */
 @Configuration
 @EnableTransactionManagement
 @PropertySource("application-test.properties")
@@ -72,11 +60,17 @@ public class IntegrationTestConfiguration {
 
   @Bean
   public String getProjectId() {
-    return new DefaultGcpProjectIdProvider().getProjectId();
+    String projectId = new DefaultGcpProjectIdProvider().getProjectId();
+    return (projectId != null) ? projectId : "test-project";
   }
 
   @Bean
   public com.google.auth.Credentials getCredentials() {
+    // If the emulator host is set, we use NoCredentials to avoid looking for local ADC.
+    if (System.getProperty("spring.cloud.gcp.spanner.emulator-host") != null
+        || System.getenv("SPANNER_EMULATOR_HOST") != null) {
+      return com.google.cloud.NoCredentials.getInstance();
+    }
 
     try {
       return new DefaultCredentialsProvider(Credentials::new).getCredentials();
@@ -97,94 +91,25 @@ public class IntegrationTestConfiguration {
 
   @Bean
   public SpannerOptions spannerOptions() {
-    return SpannerOptions.newBuilder()
+    String emulatorHost = System.getProperty("spring.cloud.gcp.spanner.emulator-host");
+    if (emulatorHost == null) {
+      emulatorHost = System.getenv("SPANNER_EMULATOR_HOST");
+    }
+
+    SpannerOptions.Builder builder = SpannerOptions.newBuilder()
         .setProjectId(getProjectId())
         .setSessionPoolOption(SessionPoolOptions.newBuilder().setMaxSessions(10).build())
-        .setCredentials(getCredentials())
-        .build();
-  }
+        .setCredentials(getCredentials());
 
-  @Bean
-  public DatabaseId databaseId() {
-    return DatabaseId.of(getProjectId(), this.instanceId, this.databaseName);
-  }
+    if (emulatorHost != null) {
+      String hostWithProtocol =
+          emulatorHost.startsWith("http") ? emulatorHost : "http://" + emulatorHost;
+      builder.setHost(hostWithProtocol);
 
-  @Bean
-  public Spanner spanner(SpannerOptions spannerOptions) {
-    return spannerOptions.getService();
-  }
+      String hostRaw = emulatorHost.replace("http://", "").replace("https://", "");
+      builder.setEmulatorHost(hostRaw);
+    }
 
-  @Bean
-  public DatabaseClient spannerDatabaseClient(Spanner spanner, DatabaseId databaseId) {
-    return spanner.getDatabaseClient(databaseId);
-  }
-
-  @Bean
-  public Gson gson() {
-    return new Gson();
-  }
-
-  @Bean
-  public SpannerMappingContext spannerMappingContext(Gson gson) {
-    return new SpannerMappingContext(gson);
-  }
-
-  @Bean
-  public SpannerTemplate spannerTemplate(
-      DatabaseClient databaseClient,
-      SpannerMappingContext mappingContext,
-      SpannerEntityProcessor spannerEntityProcessor,
-      SpannerMutationFactory spannerMutationFactory,
-      SpannerSchemaUtils spannerSchemaUtils) {
-    return new SpannerTemplate(
-        () -> databaseClient,
-        mappingContext,
-        spannerEntityProcessor,
-        spannerMutationFactory,
-        spannerSchemaUtils);
-  }
-
-  @Bean
-  public SpannerEntityProcessor spannerConverter(SpannerMappingContext mappingContext) {
-    return new ConverterAwareMappingSpannerEntityProcessor(mappingContext);
-  }
-
-  @Bean
-  public SpannerTransactionManager spannerTransactionManager(DatabaseClient databaseClient) {
-    return new SpannerTransactionManager(() -> databaseClient);
-  }
-
-  @Bean
-  public SpannerMutationFactory spannerMutationFactory(
-      SpannerEntityProcessor spannerEntityProcessor,
-      SpannerMappingContext spannerMappingContext,
-      SpannerSchemaUtils spannerSchemaUtils) {
-    return new SpannerMutationFactoryImpl(
-        spannerEntityProcessor, spannerMappingContext, spannerSchemaUtils);
-  }
-
-  @Bean
-  public DatabaseAdminClient databaseAdminClient(Spanner spanner) {
-    return spanner.getDatabaseAdminClient();
-  }
-
-  @Bean
-  public SpannerSchemaUtils spannerSchemaUtils(
-      SpannerMappingContext spannerMappingContext, SpannerEntityProcessor spannerEntityProcessor) {
-    return new SpannerSchemaUtils(spannerMappingContext, spannerEntityProcessor, true);
-  }
-
-  @Bean
-  public SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate(
-      DatabaseAdminClient databaseAdminClient,
-      DatabaseClient databaseClient,
-      DatabaseId databaseId) {
-    return new SpannerDatabaseAdminTemplate(
-        databaseAdminClient, () -> databaseClient, () -> databaseId);
-  }
-
-  @Bean
-  String tableNameSuffix() {
-    return TABLE_SUFFIX;
+    return builder.build();
   }
 }

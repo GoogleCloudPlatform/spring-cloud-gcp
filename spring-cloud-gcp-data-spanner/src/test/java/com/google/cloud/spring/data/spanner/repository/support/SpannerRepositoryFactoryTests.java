@@ -38,7 +38,9 @@ import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.ValueExpressionDelegate;
 
-/** Tests for the Spanner repository factory. */
+/**
+ * Tests for the Spanner repository factory.
+ */
 class SpannerRepositoryFactoryTests {
 
   private SpannerRepositoryFactory spannerRepositoryFactory;
@@ -73,10 +75,10 @@ class SpannerRepositoryFactoryTests {
         new SpannerRepositoryFactory(mock(SpannerMappingContext.class), this.spannerTemplate);
 
     assertThatThrownBy(() -> factory.getEntityInformation(TestEntity.class))
-            .isInstanceOf(MappingException.class)
-            .hasMessage("Could not lookup mapping metadata for domain "
-                    + "class com.google.cloud.spring.data.spanner.repository.support."
-                    + "SpannerRepositoryFactoryTests$TestEntity!");
+        .isInstanceOf(MappingException.class)
+        .hasMessage("Could not lookup mapping metadata for domain "
+            + "class com.google.cloud.spring.data.spanner.repository.support."
+            + "SpannerRepositoryFactoryTests$TestEntity!");
   }
 
   @Test
@@ -111,6 +113,7 @@ class SpannerRepositoryFactoryTests {
 
   @Table(name = "custom_test_table")
   private static class TestEntity {
+
     @PrimaryKey(keyOrder = 1)
     String id;
 

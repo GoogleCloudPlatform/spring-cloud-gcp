@@ -51,6 +51,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * @since 1.1
  */
 public class SpannerTransactionManager extends AbstractPlatformTransactionManager {
+
   private final Supplier<DatabaseClient> databaseClientProvider;
 
   public SpannerTransactionManager(final Supplier databaseClientProvider) {
@@ -63,9 +64,9 @@ public class SpannerTransactionManager extends AbstractPlatformTransactionManage
     if (tx != null
         && tx.getTransactionContext() != null
         && (tx.getTransactionManager() != null
-                && tx.getTransactionManager().getState()
-                    == TransactionManager.TransactionState.STARTED
-            || tx.isReadOnly())) {
+        && tx.getTransactionManager().getState()
+        == TransactionManager.TransactionState.STARTED
+        || tx.isReadOnly())) {
       return tx;
     }
     return new Tx(databaseClientProvider.get());
@@ -260,8 +261,8 @@ public class SpannerTransactionManager extends AbstractPlatformTransactionManage
     Tx tx = (Tx) defaultTransactionStatus.getTransaction();
     if (tx.getTransactionManager() != null
         && (tx.getTransactionManager().getState() == TransactionManager.TransactionState.STARTED
-            || tx.getTransactionManager().getState()
-                == TransactionManager.TransactionState.ABORTED)) {
+        || tx.getTransactionManager().getState()
+        == TransactionManager.TransactionState.ABORTED)) {
       tx.getTransactionManager().rollback();
     }
     if (tx.isReadOnly()) {
@@ -283,8 +284,11 @@ public class SpannerTransactionManager extends AbstractPlatformTransactionManage
     tx.isReadOnly = false;
   }
 
-  /** A transaction object that holds the transaction context. */
+  /**
+   * A transaction object that holds the transaction context.
+   */
   public static class Tx {
+
     TransactionManager transactionManager;
 
     TransactionContext transactionContext;
