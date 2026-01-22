@@ -40,12 +40,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-/** Integration tests that use many features of the Spanner Template. */
+/**
+ * Integration tests that use many features of the Spanner Template.
+ */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
 public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationTest {
 
-  @Autowired TemplateTransactionalService transactionalService;
+  @Autowired
+  TemplateTransactionalService transactionalService;
 
   @Test
   void testReadOnlyOperation() {
@@ -188,23 +191,27 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
 
     Trade trade = Trade.makeTrade();
 
-    Function<SpannerTemplate, Void> operation =  transactionOperations -> {
+    Function<SpannerTemplate, Void> operation = transactionOperations -> {
       // cannot do mutate in a read-only transaction
       transactionOperations.insert(trade);
       return null;
     };
     SpannerReadOptions readOptions = new SpannerReadOptions();
 
-    assertThatThrownBy(() -> this.spannerOperations.performReadOnlyTransaction(operation, readOptions))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("A read-only transaction template cannot perform mutations.");
+    assertThatThrownBy(
+        () -> this.spannerOperations.performReadOnlyTransaction(operation, readOptions))
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("A read-only transaction template cannot perform mutations.");
 
   }
 
-  /** a transactional service for testing annotated transaction methods. */
+  /**
+   * a transactional service for testing annotated transaction methods.
+   */
   public static class TemplateTransactionalService {
 
-    @Autowired SpannerTemplate spannerTemplate;
+    @Autowired
+    SpannerTemplate spannerTemplate;
 
     @Transactional
     public void testTransactionalAnnotation() {

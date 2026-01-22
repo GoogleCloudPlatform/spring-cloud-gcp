@@ -50,9 +50,9 @@ public class SpannerPersistentPropertyImpl
   /**
    * Creates a new {@link SpannerPersistentPropertyImpl}.
    *
-   * @param property the property to store
-   * @param owner the entity to which this property belongs
-   * @param simpleTypeHolder the type holder
+   * @param property            the property to store
+   * @param owner               the entity to which this property belongs
+   * @param simpleTypeHolder    the type holder
    * @param fieldNamingStrategy the naming strategy used to get the column name of this property
    */
   SpannerPersistentPropertyImpl(
@@ -67,11 +67,14 @@ public class SpannerPersistentPropertyImpl
             : PropertyNameFieldNamingStrategy.INSTANCE;
   }
 
-  /** Only provides types that are also annotated with {@link Table}. */
+  /**
+   * Only provides types that are also annotated with {@link Table}.
+   */
   @Override
   @NonNull
   public Iterable<? extends TypeInformation<?>> getPersistentEntityTypeInformation() {
-    return StreamUtils.createStreamFromIterator(super.getPersistentEntityTypeInformation().iterator())
+    return StreamUtils.createStreamFromIterator(
+            super.getPersistentEntityTypeInformation().iterator())
         .filter(typeInfo -> typeInfo.getType().isAnnotationPresent(Table.class))
         .toList();
   }
@@ -84,8 +87,8 @@ public class SpannerPersistentPropertyImpl
 
   /**
    * Gets the name of the column in the Cloud Spanner table mapped to this property. The column name
-   * is resolved using the {@link FieldNamingStrategy} passed in to the {@link
-   * SpannerPersistentPropertyImpl#SpannerPersistentPropertyImpl(Property, PersistentEntity,
+   * is resolved using the {@link FieldNamingStrategy} passed in to the
+   * {@link SpannerPersistentPropertyImpl#SpannerPersistentPropertyImpl(Property, PersistentEntity,
    * SimpleTypeHolder, FieldNamingStrategy)} constructor. This is by default the by default
    *
    * @return the name of the column.

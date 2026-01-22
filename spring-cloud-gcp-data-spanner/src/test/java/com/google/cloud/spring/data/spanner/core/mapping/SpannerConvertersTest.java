@@ -27,15 +27,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
-/** Tests for common Spanner custom converters. */
+/**
+ * Tests for common Spanner custom converters.
+ */
 class SpannerConvertersTest {
 
   @Test
   void localDateTimeConversionTest() {
     LocalDateTime dateTime = LocalDateTime.now();
     assertThat(
-            SpannerConverters.TIMESTAMP_LOCAL_DATE_TIME_CONVERTER.convert(
-                SpannerConverters.LOCAL_DATE_TIME_TIMESTAMP_CONVERTER.convert(dateTime)))
+        SpannerConverters.TIMESTAMP_LOCAL_DATE_TIME_CONVERTER.convert(
+            SpannerConverters.LOCAL_DATE_TIME_TIMESTAMP_CONVERTER.convert(dateTime)))
         .isEqualTo(dateTime);
   }
 
@@ -43,8 +45,8 @@ class SpannerConvertersTest {
   void localDateTimeConversionPreEpochTest() {
     LocalDateTime dateTime = LocalDateTime.of(600, 12, 1, 2, 3, 4, 5);
     assertThat(
-            SpannerConverters.TIMESTAMP_LOCAL_DATE_TIME_CONVERTER.convert(
-                SpannerConverters.LOCAL_DATE_TIME_TIMESTAMP_CONVERTER.convert(dateTime)))
+        SpannerConverters.TIMESTAMP_LOCAL_DATE_TIME_CONVERTER.convert(
+            SpannerConverters.LOCAL_DATE_TIME_TIMESTAMP_CONVERTER.convert(dateTime)))
         .isEqualTo(dateTime);
   }
 
@@ -52,8 +54,8 @@ class SpannerConvertersTest {
   void dateConversionTest() {
     Timestamp timestamp = Timestamp.now();
     assertThat(
-            SpannerConverters.DATE_TIMESTAMP_CONVERTER.convert(
-                SpannerConverters.TIMESTAMP_DATE_CONVERTER.convert(timestamp)))
+        SpannerConverters.DATE_TIMESTAMP_CONVERTER.convert(
+            SpannerConverters.TIMESTAMP_DATE_CONVERTER.convert(timestamp)))
         .isEqualTo(timestamp);
   }
 
@@ -61,8 +63,8 @@ class SpannerConvertersTest {
   void dateConversionPreEpochTest() {
     java.util.Date timestamp = java.util.Date.from(Instant.ofEpochSecond(-12345678, -123));
     assertThat(
-            SpannerConverters.TIMESTAMP_DATE_CONVERTER.convert(
-                SpannerConverters.DATE_TIMESTAMP_CONVERTER.convert(timestamp)))
+        SpannerConverters.TIMESTAMP_DATE_CONVERTER.convert(
+            SpannerConverters.DATE_TIMESTAMP_CONVERTER.convert(timestamp)))
         .isEqualTo(timestamp);
   }
 
@@ -70,8 +72,8 @@ class SpannerConvertersTest {
   void localDateConversionTest() {
     LocalDate localDate = LocalDate.now();
     assertThat(
-            SpannerConverters.TIMESTAMP_LOCAL_DATE_CONVERTER.convert(
-                SpannerConverters.LOCAL_DATE_TIMESTAMP_CONVERTER.convert(localDate)))
+        SpannerConverters.TIMESTAMP_LOCAL_DATE_CONVERTER.convert(
+            SpannerConverters.LOCAL_DATE_TIMESTAMP_CONVERTER.convert(localDate)))
         .isEqualTo(localDate);
   }
 
@@ -79,8 +81,8 @@ class SpannerConvertersTest {
   void localDateConversionPreEpochTest() {
     LocalDate localDate = LocalDate.of(600, 12, 1);
     assertThat(
-            SpannerConverters.TIMESTAMP_LOCAL_DATE_CONVERTER.convert(
-                SpannerConverters.LOCAL_DATE_TIMESTAMP_CONVERTER.convert(localDate)))
+        SpannerConverters.TIMESTAMP_LOCAL_DATE_CONVERTER.convert(
+            SpannerConverters.LOCAL_DATE_TIMESTAMP_CONVERTER.convert(localDate)))
         .isEqualTo(localDate);
   }
 
@@ -88,8 +90,8 @@ class SpannerConvertersTest {
   void sqlDateConversionTest() {
     Date date = Date.fromYearMonthDay(2018, 3, 29);
     assertThat(
-            SpannerConverters.JAVA_SQL_TO_SPANNER_DATE_CONVERTER.convert(
-                SpannerConverters.SPANNER_TO_JAVA_SQL_DATE_CONVERTER.convert(date)))
+        SpannerConverters.JAVA_SQL_TO_SPANNER_DATE_CONVERTER.convert(
+            SpannerConverters.SPANNER_TO_JAVA_SQL_DATE_CONVERTER.convert(date)))
         .isEqualTo(date);
   }
 
@@ -97,8 +99,8 @@ class SpannerConvertersTest {
   void timestampInstantConversionTest() {
     Timestamp timestamp = Timestamp.ofTimeMicroseconds(12345678);
     assertThat(
-            SpannerConverters.INSTANT_TIMESTAMP_CONVERTER.convert(
-                SpannerConverters.TIMESTAMP_INSTANT_CONVERTER.convert(timestamp)))
+        SpannerConverters.INSTANT_TIMESTAMP_CONVERTER.convert(
+            SpannerConverters.TIMESTAMP_INSTANT_CONVERTER.convert(timestamp)))
         .isEqualTo(timestamp);
   }
 
@@ -106,8 +108,8 @@ class SpannerConvertersTest {
   void timestampConversionTest() {
     Timestamp timestamp = Timestamp.ofTimeMicroseconds(-12345678);
     assertThat(
-            SpannerConverters.JAVA_TO_SPANNER_TIMESTAMP_CONVERTER.convert(
-                SpannerConverters.SPANNER_TO_JAVA_TIMESTAMP_CONVERTER.convert(timestamp)))
+        SpannerConverters.JAVA_TO_SPANNER_TIMESTAMP_CONVERTER.convert(
+            SpannerConverters.SPANNER_TO_JAVA_TIMESTAMP_CONVERTER.convert(timestamp)))
         .isEqualTo(timestamp);
   }
 
@@ -115,8 +117,8 @@ class SpannerConvertersTest {
   void bytesConversionTest() {
     ByteArray byteArray = ByteArray.copyFrom("some bytes");
     assertThat(
-            SpannerConverters.JAVA_TO_SPANNER_BYTE_ARRAY_CONVERTER.convert(
-                SpannerConverters.SPANNER_TO_JAVA_BYTE_ARRAY_CONVERTER.convert(byteArray)))
+        SpannerConverters.JAVA_TO_SPANNER_BYTE_ARRAY_CONVERTER.convert(
+            SpannerConverters.SPANNER_TO_JAVA_BYTE_ARRAY_CONVERTER.convert(byteArray)))
         .isEqualTo(byteArray);
   }
 }

@@ -50,7 +50,9 @@ import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 
-/** Tests for converting and reading Spanner entities and objects. */
+/**
+ * Tests for converting and reading Spanner entities and objects.
+ */
 class ConverterAwareMappingSpannerEntityReaderTests {
 
   private SpannerEntityReader spannerEntityReader;
@@ -182,16 +184,16 @@ class ConverterAwareMappingSpannerEntityReaderTests {
 
     OuterTestEntityFlat result =
         new ConverterAwareMappingSpannerEntityReader(
-                new SpannerMappingContext(),
-                new SpannerReadConverter(
-                    List.of(
-                        new Converter<Struct, Integer>() {
-                          @Nullable
-                          @Override
-                          public Integer convert(Struct source) {
-                            return source.getString("string_col").length();
-                          }
-                        })))
+            new SpannerMappingContext(),
+            new SpannerReadConverter(
+                List.of(
+                    new Converter<Struct, Integer>() {
+                      @Nullable
+                      @Override
+                      public Integer convert(Struct source) {
+                        return source.getString("string_col").length();
+                      }
+                    })))
             .read(OuterTestEntityFlat.class, rowStruct);
     assertThat(result.id).isEqualTo("key1");
     assertThat(result.innerLengths).hasSize(1);
@@ -212,7 +214,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
             .set("longField")
             .to(Value.int64(3L))
             .set("doubleArray")
-            .to(Value.float64Array(new double[] {3.33, 3.33, 3.33}))
+            .to(Value.float64Array(new double[]{3.33, 3.33, 3.33}))
             .set("dateField")
             .to(Value.date(Date.fromYearMonthDay(2018, 11, 22)))
             .set("timestampField")
@@ -250,7 +252,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
             .set("doubleField")
             .to(Value.string("UNCONVERTABLE VALUE"))
             .set("doubleArray")
-            .to(Value.float64Array(new double[] {3.33, 3.33, 3.33}))
+            .to(Value.float64Array(new double[]{3.33, 3.33, 3.33}))
             .set("dateField")
             .to(Value.date(Date.fromYearMonthDay(2018, 11, 22)))
             .set("timestampField")
@@ -358,7 +360,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
             .build();
 
     assertThatThrownBy(
-            () -> this.spannerEntityReader.read(TestEntities.PartialConstructor.class, struct))
+        () -> this.spannerEntityReader.read(TestEntities.PartialConstructor.class, struct))
         .isInstanceOf(SpannerDataException.class)
         .hasMessage("Column not found: custom_col");
   }

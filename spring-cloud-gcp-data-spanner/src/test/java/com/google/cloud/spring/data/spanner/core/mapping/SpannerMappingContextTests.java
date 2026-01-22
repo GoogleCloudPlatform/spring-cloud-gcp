@@ -31,7 +31,9 @@ import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
 import org.springframework.data.util.TypeInformation;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/** Tests for the Spanner mapping context. */
+/**
+ * Tests for the Spanner mapping context.
+ */
 @ExtendWith(SpringExtension.class)
 class SpannerMappingContextTests {
 

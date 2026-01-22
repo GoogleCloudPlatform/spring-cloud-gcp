@@ -33,14 +33,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/** Tests multiple threads using a single repository instance. */
+/**
+ * Tests multiple threads using a single repository instance.
+ */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 @ExtendWith(SpringExtension.class)
 class ParallelSpannerRepositoryIntegrationTests extends AbstractSpannerIntegrationTest {
 
   private static final int PARALLEL_OPERATIONS = 2;
 
-  @Autowired TradeRepository tradeRepository;
+  @Autowired
+  TradeRepository tradeRepository;
 
   @BeforeEach
   @AfterEach

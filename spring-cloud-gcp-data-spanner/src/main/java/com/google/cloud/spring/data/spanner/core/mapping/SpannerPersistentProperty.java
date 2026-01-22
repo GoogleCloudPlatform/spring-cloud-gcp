@@ -78,7 +78,7 @@ public interface SpannerPersistentProperty extends PersistentProperty<SpannerPer
    * True if property is a collection of child entities. False otherwise.
    *
    * @return true if property is a collection of child entities corresponding to an interleaved
-   *     child table. False otherwise.
+   * child table. False otherwise.
    */
   boolean isInterleaved();
 
@@ -86,7 +86,7 @@ public interface SpannerPersistentProperty extends PersistentProperty<SpannerPer
    * If the column's schema should be NOT NULL when generating a schema based on an entity class.
    *
    * @return {@code true} if the column should be NOT NULL in generated DDL. {@code false }
-   *     otherwise.
+   * otherwise.
    */
   boolean isGenerateSchemaNotNull();
 
@@ -95,7 +95,7 @@ public interface SpannerPersistentProperty extends PersistentProperty<SpannerPer
    * always stored in Cloud Spanner as a Timestamp, and will update based on the latest commit.
    *
    * @return {@code true} if the property is an auto-populated commit timestamp. {@code false}
-   *     otherwise.
+   * otherwise.
    */
   boolean isCommitTimestamp();
 

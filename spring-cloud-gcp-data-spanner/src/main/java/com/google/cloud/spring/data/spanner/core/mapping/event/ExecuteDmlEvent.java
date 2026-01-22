@@ -19,7 +19,9 @@ package com.google.cloud.spring.data.spanner.core.mapping.event;
 import com.google.cloud.spanner.Statement;
 import org.springframework.context.ApplicationEvent;
 
-/** An event holding a DML statement. */
+/**
+ * An event holding a DML statement.
+ */
 public class ExecuteDmlEvent extends ApplicationEvent {
 
   /**

@@ -22,7 +22,9 @@ import java.util.Objects;
 
 @Table(name = "singers_list")
 public class Singer {
-  @PrimaryKey Integer singerId;
+
+  @PrimaryKey
+  Integer singerId;
 
   String firstName;
 

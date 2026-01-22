@@ -28,15 +28,17 @@ import java.util.Collections;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-/** Tests for the Spanner read options. */
+/**
+ * Tests for the Spanner read options.
+ */
 class SpannerReadOptionsTests {
 
   @Test
   void addNullReadOptionTest() {
     SpannerReadOptions testSpannerReadOptions = new SpannerReadOptions();
     assertThatThrownBy(() -> testSpannerReadOptions.addReadOption(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Valid read option is required!");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Valid read option is required!");
   }
 
   @Test
@@ -64,8 +66,8 @@ class SpannerReadOptionsTests {
     ReadOption r1 = mock(ReadOption.class);
     spannerReadOptions.addReadOption(r1);
     assertThatThrownBy(spannerReadOptions::toQueryOptions)
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("Can't convert");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Can't convert");
   }
 
   @Test

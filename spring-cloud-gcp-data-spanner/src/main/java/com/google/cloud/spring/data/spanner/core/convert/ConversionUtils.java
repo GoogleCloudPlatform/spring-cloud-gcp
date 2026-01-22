@@ -33,7 +33,8 @@ import org.springframework.util.Assert;
  */
 public final class ConversionUtils {
 
-  private ConversionUtils() {}
+  private ConversionUtils() {
+  }
 
   static Class boxIfNeeded(Class propertyType) {
     if (propertyType == null) {
@@ -60,7 +61,7 @@ public final class ConversionUtils {
     return (T)
         Proxy.newProxyInstance(
             type.getClassLoader(),
-            new Class[] {type},
+            new Class[]{type},
             new SimpleLazyDynamicInvocationHandler<>(supplierFunc));
   }
 

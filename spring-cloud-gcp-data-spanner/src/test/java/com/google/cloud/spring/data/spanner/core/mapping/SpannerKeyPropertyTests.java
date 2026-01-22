@@ -26,7 +26,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.util.TypeInformation;
 
-/** Tests for the Spanner custom key property. */
+/**
+ * Tests for the Spanner custom key property.
+ */
 class SpannerKeyPropertyTests {
 
   private SpannerCompositeKeyProperty spannerKeyProperty;
@@ -38,23 +40,24 @@ class SpannerKeyPropertyTests {
     this.spannerPersistentEntity = mock(SpannerPersistentEntity.class);
     this.spannerKeyProperty =
         new SpannerCompositeKeyProperty(
-            this.spannerPersistentEntity, new SpannerPersistentProperty[] {});
+            this.spannerPersistentEntity, new SpannerPersistentProperty[]{});
   }
 
   @Test
   void nullSpannerPersistentEntityTest() {
 
-    assertThatThrownBy(() -> new SpannerCompositeKeyProperty(null, new SpannerPersistentProperty[] {}))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("A valid Cloud Spanner persistent entity is required.");
+    assertThatThrownBy(
+        () -> new SpannerCompositeKeyProperty(null, new SpannerPersistentProperty[]{}))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A valid Cloud Spanner persistent entity is required.");
   }
 
   @Test
   void nullPropertiesTest() {
 
     assertThatThrownBy(() -> new SpannerCompositeKeyProperty(this.spannerPersistentEntity, null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("A valid array of primary key properties is required.");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A valid array of primary key properties is required.");
 
   }
 
