@@ -14,6 +14,20 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.4.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.2...v7.4.3) (2026-01-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.74.0 ([#4282](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4282)) ([f7f3d7f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f7f3d7f45d3e216cd067a7e00d14d674c9f01292))
+* **deps:** update gapic-generator-java-bom.version to v2.65.1 ([#4283](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4283)) ([150913d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/150913d0e7f12f621a3d943547ebb69fdef73c9b))
+* Use ADC in NativeTests ([#4280](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4280)) ([c9b3a19](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c9b3a1974b791602e03b7f497778ac9917c183c1))
+
+
+### Documentation
+
+* update latest versions in README.adoc ([#4263](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4263)) ([ffda1d8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ffda1d81724a956b7f5728245e501c8ae231ff86))
+
 ## [7.4.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.1...v7.4.2) (2025-12-18)
 
 
