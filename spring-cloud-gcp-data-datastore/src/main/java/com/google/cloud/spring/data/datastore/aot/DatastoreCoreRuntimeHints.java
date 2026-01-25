@@ -16,11 +16,13 @@
 
 package com.google.cloud.spring.data.datastore.aot;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import org.springframework.aot.hint.MemberCategory;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
+
+import static java.util.List.of;
 
 public class DatastoreCoreRuntimeHints implements RuntimeHintsRegistrar {
 
@@ -29,8 +31,7 @@ public class DatastoreCoreRuntimeHints implements RuntimeHintsRegistrar {
     hints
         .reflection()
         .registerTypes(
-            Arrays.asList(
-                TypeReference.of(java.util.HashMap.class)),
+                of(TypeReference.of(HashMap.class)),
             hint ->
                 hint.withMembers(
                     MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,

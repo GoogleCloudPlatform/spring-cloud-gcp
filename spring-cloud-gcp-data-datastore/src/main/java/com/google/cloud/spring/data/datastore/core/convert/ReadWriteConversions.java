@@ -70,13 +70,7 @@ public interface ReadWriteConversions {
    */
   Value convertOnWriteSingle(Object obj);
 
-  /**
-   * Get the Cloud Datastore-compatible native Java type that can be used to store the given type.
-   *
-   * @param inputType the given type to test.
-   * @return the Cloud Datastore-compatible native Java type, if it exists.
-   */
-  Optional<Class<?>> getDatastoreCompatibleType(Class inputType);
+  Optional<Class<?>> getDatastoreCompatibleType(Class<?> inputType);
 
   /**
    * Registers {@link DatastoreEntityConverter} to be used for embedded entities.
