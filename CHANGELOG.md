@@ -14,6 +14,14 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.4.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.3...v7.4.4) (2026-02-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.75.0 ([#4296](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4296)) ([34e21e3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/34e21e3db346d604267b98c97d6c7b8f0c7f6271))
+* **deps:** update gapic-generator-java-bom.version to v2.66.0 ([#4301](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4301)) ([64ab3b2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/64ab3b2669d233886bfd60bb1d3fcc1e5ead9f72))
+
 ## [7.4.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.2...v7.4.3) (2026-01-22)
 
 
