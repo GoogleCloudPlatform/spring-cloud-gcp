@@ -287,4 +287,36 @@ class PubSubInboundChannelAdapterTests {
     assertThat(headers)
         .containsEntry(GcpPubSubHeaders.ORIGINAL_MESSAGE, mockAcknowledgeableMessage);
   }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void testConsumeMessageWithNullPayload() {
+    // Setup: Simulate a message where getPayload() returns null,
+    // which happens when the Pub/Sub message body is empty.
+    when(this.mockMessageChannel.send(any())).thenReturn(true);
+    when(mockAcknowledgeableMessage.getPubsubMessage())
+        .thenReturn(PubsubMessage.newBuilder().build());
+    when(mockAcknowledgeableMessage.getPayload()).thenReturn(null);
+
+    // Mock the subscriber to trigger the consumer callback
+    when(this.mockPubSubSubscriberOperations.subscribeAndConvert(
+        anyString(), any(Consumer.class), any(Class.class)))
+        .then(invocation -> {
+          Consumer<ConvertedBasicAcknowledgeablePubsubMessage> consumer = invocation.getArgument(1);
+          consumer.accept(mockAcknowledgeableMessage);
+          return null;
+        });
+
+    // Start the adapter: it should NOT throw an IllegalArgumentException
+    // despite the null payload, thanks to our fix.
+    this.adapter.start();
+
+    // Verify that a message was actually sent to the output channel
+    ArgumentCaptor<Message<?>> argument = ArgumentCaptor.forClass(Message.class);
+    verify(this.mockMessageChannel).send(argument.capture());
+
+    // Verify that the payload was converted to an empty byte array (byte[0])
+    assertThat(argument.getValue().getPayload()).isExactlyInstanceOf(byte[].class);
+    assertThat((byte[]) argument.getValue().getPayload()).isEmpty();
+  }
 }
