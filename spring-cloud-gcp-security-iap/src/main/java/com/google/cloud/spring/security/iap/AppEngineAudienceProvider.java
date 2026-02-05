@@ -38,7 +38,7 @@ public class AppEngineAudienceProvider implements AudienceProvider {
       ResourceManagerOptions.getDefaultInstance().getService();
 
   public AppEngineAudienceProvider(GcpProjectIdProvider projectIdProvider) {
-    Assert.notNull(projectIdProvider, "GcpProjectIdProvider cannot be null.");
+    Assert.notNull(projectIdProvider, "ProjectIdProvider cannot be null");
 
     this.projectIdProvider = projectIdProvider;
   }
@@ -49,7 +49,7 @@ public class AppEngineAudienceProvider implements AudienceProvider {
     Assert.notNull(
         project,
         "Project expected not to be null. Is Cloud Resource Manager API enabled?"
-            + " (https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com)");
+            + " (https://console.cloud.google.com/apis/library/cloudresourcemanager.googleapis.com)");
     Assert.notNull(project.getProjectNumber(), "Project Number expected not to be null.");
 
     String projectId = this.projectIdProvider.getProjectId();
