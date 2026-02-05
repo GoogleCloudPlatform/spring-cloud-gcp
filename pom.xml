@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>7.4.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>8.0.0-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -32,8 +32,8 @@
 	<properties>
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
-		<spring-cloud-dependencies.version>2025.0.0</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>3.5.3</spring-boot-dependencies.version>
+		<spring-cloud-dependencies.version>2025.1.0</spring-cloud-dependencies.version>
+		<spring-boot-dependencies.version>4.0.0</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>2.3.0</zipkin-gcp.version>
 		<java-cfenv.version>2.5.0</java-cfenv.version>
