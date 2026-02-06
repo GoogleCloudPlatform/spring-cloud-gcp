@@ -47,7 +47,7 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.data.convert.CustomConversions;
 import org.springframework.data.mapping.PersistentEntity;
-import org.springframework.data.util.TypeInformation;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 

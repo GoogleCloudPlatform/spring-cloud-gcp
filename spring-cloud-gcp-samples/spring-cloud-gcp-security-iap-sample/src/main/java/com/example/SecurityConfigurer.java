@@ -40,14 +40,11 @@ public class SecurityConfigurer {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests()
-        .requestMatchers("/topsecret")
-        .authenticated()
-        .and()
-        .oauth2ResourceServer()
-        .jwt()
-        .and()
-        .authenticationEntryPoint(new Http403ForbiddenEntryPoint());
+    http.authorizeHttpRequests(
+            auth -> auth.requestMatchers("/topsecret").authenticated().anyRequest().permitAll())
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}))
+        .exceptionHandling(
+            exceptions -> exceptions.authenticationEntryPoint(new Http403ForbiddenEntryPoint()));
 
     return http.build();
   }

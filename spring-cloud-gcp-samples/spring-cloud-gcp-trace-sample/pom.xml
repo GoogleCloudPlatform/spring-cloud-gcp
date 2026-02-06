@@ -10,7 +10,7 @@
         <!-- Your own application should inherit from spring-boot-starter-parent -->
         <artifactId>spring-cloud-gcp-samples</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>7.4.5-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>8.0.0-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
 
     <!-- The Spring Framework on Google Cloud BOM will manage spring-cloud-gcp version numbers for you. -->
@@ -30,6 +30,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-restclient</artifactId>
         </dependency>
 
         <!-- Starter for Stackdriver Trace -->
@@ -67,6 +72,21 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-micrometer-tracing-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-micrometer-metrics-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-resttestclient</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

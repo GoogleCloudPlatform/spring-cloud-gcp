@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.parameter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
@@ -37,6 +36,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Custom {@link PropertySourceLocator} for Google Cloud Parameter Manager API.

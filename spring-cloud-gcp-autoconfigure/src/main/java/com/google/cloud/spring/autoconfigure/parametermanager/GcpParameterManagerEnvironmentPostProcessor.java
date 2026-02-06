@@ -17,8 +17,8 @@
 package com.google.cloud.spring.autoconfigure.parametermanager;
 
 import com.google.protobuf.ByteString;
+import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.ConfigurableEnvironment;
 

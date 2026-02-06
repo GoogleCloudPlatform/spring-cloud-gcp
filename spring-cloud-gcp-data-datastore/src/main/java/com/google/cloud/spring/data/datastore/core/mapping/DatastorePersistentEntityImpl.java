@@ -29,7 +29,7 @@ import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.data.mapping.model.BasicPersistentEntity;
-import org.springframework.data.util.TypeInformation;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.ParserContext;
