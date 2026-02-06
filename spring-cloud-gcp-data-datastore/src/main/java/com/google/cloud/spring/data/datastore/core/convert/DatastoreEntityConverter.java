@@ -21,7 +21,7 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEn
 import java.util.Map;
 import org.springframework.data.convert.EntityReader;
 import org.springframework.data.convert.EntityWriter;
-import org.springframework.data.util.TypeInformation;
+import org.springframework.data.core.TypeInformation;
 
 /**
  * An interface for converting objects to Datastore Entities and vice versa.

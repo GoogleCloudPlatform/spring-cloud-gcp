@@ -34,21 +34,21 @@ import io.grpc.CallOptions;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
+import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.PreDestroy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.tracing.zipkin.ZipkinAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.micrometer.tracing.brave.autoconfigure.BraveAutoConfiguration;
+import org.springframework.boot.micrometer.tracing.brave.autoconfigure.zipkin.ZipkinWithBraveTracingAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import zipkin2.reporter.BytesEncoder;
@@ -66,7 +66,7 @@ import zipkin2.reporter.stackdriver.brave.StackdriverV2Encoder;
     value = {"spring.cloud.gcp.trace.enabled"},
     matchIfMissing = true)
 @ConditionalOnClass(StackdriverSender.class)
-@AutoConfigureBefore({BraveAutoConfiguration.class, ZipkinAutoConfiguration.class})
+@AutoConfigureBefore({BraveAutoConfiguration.class, ZipkinWithBraveTracingAutoConfiguration .class})
 public class StackdriverTraceAutoConfiguration {
 
   private static final Log LOGGER = LogFactory.getLog(StackdriverTraceAutoConfiguration.class);

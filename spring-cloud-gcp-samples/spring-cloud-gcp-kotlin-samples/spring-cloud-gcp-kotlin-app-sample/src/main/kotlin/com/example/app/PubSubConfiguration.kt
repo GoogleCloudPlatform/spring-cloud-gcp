@@ -18,7 +18,7 @@ package com.example.app
 
 import com.example.data.Person
 import com.example.data.PersonRepository
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.ObjectMapper
 import com.google.cloud.spring.pubsub.core.PubSubTemplate
 import com.google.cloud.spring.pubsub.integration.AckMode
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter
@@ -71,9 +71,9 @@ class PubSubConfiguration {
 			pubSubTemplate: PubSubTemplate): PubSubInboundChannelAdapter {
 
 		val adapter = PubSubInboundChannelAdapter(pubSubTemplate, REGISTRANT_SUBSCRIPTION)
-		adapter.outputChannel = inputChannel
-		adapter.ackMode = AckMode.MANUAL
-		adapter.payloadType = Person::class.java
+		adapter.setOutputChannel(inputChannel)
+		adapter.setAckMode(AckMode.MANUAL)
+		adapter.setPayloadType(Person::class.java)
 		return adapter
 	}
 

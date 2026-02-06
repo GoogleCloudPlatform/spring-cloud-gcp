@@ -22,7 +22,7 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentPr
 import com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType;
 import org.springframework.core.convert.ConversionException;
 import org.springframework.data.mapping.model.PropertyValueProvider;
-import org.springframework.data.util.TypeInformation;
+import org.springframework.data.core.TypeInformation;
 
 /**
  * A {@link PropertyValueProvider} for Datastore entities.

@@ -25,23 +25,15 @@ import java.util.Optional;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.expression.BeanFactoryAccessor;
-import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.data.mapping.MappingException;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
-import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryLookupStrategy.Key;
-import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.ValueExpressionDelegate;
-import org.springframework.data.spel.EvaluationContextProvider;
-import org.springframework.data.spel.ExpressionDependencies;
-import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -111,60 +103,6 @@ public class SpannerRepositoryFactory extends RepositoryFactorySupport
             this.spannerTemplate,
             valueExpressionDelegate,
             EXPRESSION_PARSER));
-  }
-
-  /**
-   * @deprecated Use {@link #getQueryLookupStrategy(Key, ValueExpressionDelegate)} instead.
-   */
-  @Override
-  @Deprecated
-  protected Optional<QueryLookupStrategy> getQueryLookupStrategy(
-      @Nullable Key key, QueryMethodEvaluationContextProvider evaluationContextProvider) {
-
-    return Optional.of(
-        new SpannerQueryLookupStrategy(
-            this.spannerMappingContext,
-            this.spannerTemplate,
-            delegateContextProvider(evaluationContextProvider),
-            EXPRESSION_PARSER));
-  }
-
-  private QueryMethodEvaluationContextProvider delegateContextProvider(
-      QueryMethodEvaluationContextProvider evaluationContextProvider) {
-    return new QueryMethodEvaluationContextProvider() {
-      @Override
-      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
-          T parameters, Object[] parameterValues) {
-        StandardEvaluationContext evaluationContext =
-            (StandardEvaluationContext)
-                evaluationContextProvider.getEvaluationContext(parameters, parameterValues);
-        evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
-        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
-        evaluationContext.setBeanResolver(
-            new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
-        return evaluationContext;
-      }
-
-      @Override
-      public <T extends Parameters<?, ?>> EvaluationContext getEvaluationContext(
-          T parameters, Object[] parameterValues, ExpressionDependencies expressionDependencies) {
-        StandardEvaluationContext evaluationContext =
-            (StandardEvaluationContext)
-                evaluationContextProvider.getEvaluationContext(
-                    parameters, parameterValues, expressionDependencies);
-
-        evaluationContext.setRootObject(SpannerRepositoryFactory.this.applicationContext);
-        evaluationContext.addPropertyAccessor(new BeanFactoryAccessor());
-        evaluationContext.setBeanResolver(
-            new BeanFactoryResolver(SpannerRepositoryFactory.this.applicationContext));
-        return evaluationContext;
-      }
-
-      @Override
-      public EvaluationContextProvider getEvaluationContextProvider() {
-        return (EvaluationContextProvider) evaluationContextProvider;
-      }
-    };
   }
 
   @Override

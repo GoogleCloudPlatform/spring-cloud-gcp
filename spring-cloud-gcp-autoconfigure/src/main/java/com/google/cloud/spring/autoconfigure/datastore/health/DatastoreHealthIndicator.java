@@ -18,9 +18,9 @@ package com.google.cloud.spring.autoconfigure.datastore.health;
 
 import com.google.cloud.datastore.Query;
 import com.google.cloud.spring.autoconfigure.datastore.DatastoreProvider;
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health;
-import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+import org.springframework.boot.health.contributor.Health;
+import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 

@@ -105,7 +105,7 @@ public class GoogleConfigPropertySourceLocator implements PropertySourceLocator 
 
     credentialHeaders.forEach((key, values) -> values.forEach(value -> headers.add(key, value)));
 
-    Assert.isTrue(headers.containsKey(AUTHORIZATION_HEADER), "Authorization header required");
+    Assert.isTrue(headers.containsHeader(AUTHORIZATION_HEADER), "Authorization header required");
 
     // Adds product version header for usage metrics
     new UserAgentHeaderProvider(this.getClass()).getHeaders().forEach(headers::add);
