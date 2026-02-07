@@ -1,11 +1,11 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,10 @@
 
 package com.google.cloud.spring.data.datastore.core.mapping;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.model.AnnotationBasedPersistentProperty;
@@ -31,8 +35,8 @@ import org.springframework.util.StringUtils;
  * @since 1.1
  */
 public class DatastorePersistentPropertyImpl
-    extends AnnotationBasedPersistentProperty<DatastorePersistentProperty>
-    implements DatastorePersistentProperty {
+        extends AnnotationBasedPersistentProperty<DatastorePersistentProperty>
+        implements DatastorePersistentProperty {
 
   private static final String KEY_FIELD_NAME = "__key__";
 
@@ -49,16 +53,16 @@ public class DatastorePersistentPropertyImpl
    * @param fieldNamingStrategy the naming strategy used to get the column name of this property
    */
   DatastorePersistentPropertyImpl(
-      Property property,
-      PersistentEntity<?, DatastorePersistentProperty> owner,
-      SimpleTypeHolder simpleTypeHolder,
-      FieldNamingStrategy fieldNamingStrategy,
-      boolean isSkipNullValue) {
+          Property property,
+          PersistentEntity<?, DatastorePersistentProperty> owner,
+          SimpleTypeHolder simpleTypeHolder,
+          FieldNamingStrategy fieldNamingStrategy,
+          boolean isSkipNullValue) {
     super(property, owner, simpleTypeHolder);
     this.fieldNamingStrategy =
-        (fieldNamingStrategy != null)
-            ? fieldNamingStrategy
-            : PropertyNameFieldNamingStrategy.INSTANCE;
+            (fieldNamingStrategy != null)
+                    ? fieldNamingStrategy
+                    : PropertyNameFieldNamingStrategy.INSTANCE;
     this.isSkipNullValue = isSkipNullValue;
     verify();
   }
@@ -66,17 +70,17 @@ public class DatastorePersistentPropertyImpl
   private void verify() {
     if (hasFieldAnnotation() && (isDescendants() || isAssociation())) {
       throw new DatastoreDataException(
-          "Property cannot be annotated as @Field if it is annotated @Descendants or @Reference: "
-              + getFieldName());
+              "Property cannot be annotated as @Field if it is annotated @Descendants or @Reference: "
+                      + getFieldName());
     }
     if (isDescendants() && isAssociation()) {
       throw new DatastoreDataException(
-          "Property cannot be annotated both @Descendants and @Reference: " + getFieldName());
+              "Property cannot be annotated both @Descendants and @Reference: " + getFieldName());
     }
     if (isDescendants() && !isCollectionLike()) {
       throw new DatastoreDataException(
-          "Only collection-like properties can contain the "
-              + "descendant entity objects can be annotated @Descendants.");
+              "Only collection-like properties can contain the "
+                      + "descendant entity objects can be annotated @Descendants.");
     }
   }
 
@@ -139,5 +143,25 @@ public class DatastorePersistentPropertyImpl
   @Override
   public boolean isSkipNullValue() {
     return isSkipNullValue;
+  }
+
+  @Override
+  public boolean isCreatedByProperty() {
+    return isAnnotationPresent(CreatedBy.class);
+  }
+
+  @Override
+  public boolean isCreatedDateProperty() {
+    return isAnnotationPresent(CreatedDate.class);
+  }
+
+  @Override
+  public boolean isLastModifiedByProperty() {
+    return isAnnotationPresent(LastModifiedBy.class);
+  }
+
+  @Override
+  public boolean isLastModifiedDateProperty() {
+    return isAnnotationPresent(LastModifiedDate.class);
   }
 }
