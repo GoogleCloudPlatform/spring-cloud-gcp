@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.4.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.4...v7.4.5) (2026-02-10)
+
+
+### Documentation
+
+* Add note about Postgres username truncation for IAM auth ([#4315](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4315)) ([2458afb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2458afbfbb6d85bda611c270d633737b578c6ff2))
+
 ## [7.4.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.3...v7.4.4) (2026-02-03)
 
 
