@@ -25,7 +25,6 @@ import java.util.List;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.CustomConversions;
 import org.springframework.data.convert.Jsr310Converters;
-import org.springframework.lang.NonNull;
 
 /**
  * Value object to capture custom conversion. {@link DatastoreCustomConversions}
@@ -39,44 +38,35 @@ public class DatastoreCustomConversions extends CustomConversions {
   private static final List<Converter<?, ?>> STORE_CONVERTERS;
 
   static {
-    ArrayList<Converter<?, ?>> converters = new ArrayList<>();
-    converters.addAll(Jsr310Converters.getConvertersToRegister());
-    converters.add(
-        new Converter<BaseKey, Long>() {
-          @Override
-          public Long convert(@NonNull BaseKey baseKey) {
-            Long id = null;
-            // embedded entities have IncompleteKey, and have no inner value
-            if (baseKey instanceof Key key) {
-              id = key.getId();
-              if (id == null) {
-                throw new DatastoreDataException(
-                    "The given key doesn't have a numeric ID but a conversion"
-                        + " to Long was attempted: "
-                        + key);
+      ArrayList<Converter<?, ?>> converters = new ArrayList<>(Jsr310Converters.getConvertersToRegister());
+    converters.add((Converter<BaseKey, Long>) baseKey -> {
+              Long id = null;
+              // embedded entities have IncompleteKey, and have no inner value
+              if (baseKey instanceof Key key) {
+                id = key.getId();
+                if (id == null) {
+                  throw new DatastoreDataException(
+                      "The given key doesn't have a numeric ID but a conversion"
+                          + " to Long was attempted: "
+                          + key);
+                }
               }
-            }
-            return id;
-          }
-        });
-    converters.add(
-        new Converter<BaseKey, String>() {
-          @Override
-          public String convert(@NonNull BaseKey baseKey) {
-            String name = null;
-            // embedded entities have IncompleteKey, and have no inner value
-            if (baseKey instanceof Key key) {
-              name = key.getName();
-              if (name == null) {
-                throw new DatastoreDataException(
-                    "The given key doesn't have a String name value but "
-                        + "a conversion to String was attempted: "
-                        + key);
+              return id;
+            });
+    converters.add((Converter<BaseKey, String>) baseKey -> {
+              String name = null;
+              // embedded entities have IncompleteKey, and have no inner value
+              if (baseKey instanceof Key key) {
+                name = key.getName();
+                if (name == null) {
+                  throw new DatastoreDataException(
+                      "The given key doesn't have a String name value but "
+                          + "a conversion to String was attempted: "
+                          + key);
+                }
               }
-            }
-            return name;
-          }
-        });
+              return name;
+            });
     STORE_CONVERTERS = Collections.unmodifiableList(converters);
 
     STORE_CONVERSIONS = StoreConversions.of(DatastoreNativeTypes.HOLDER, STORE_CONVERTERS);
