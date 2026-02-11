@@ -42,11 +42,15 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
+import com.google.cloud.spring.pubsub.core.subscriber.SubscriberCustomizer;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PullRequest;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -856,5 +860,35 @@ class DefaultSubscriberFactoryTests {
     verify(healthTrackerRegistry).isTracked(subscriptionName);
     verify(healthTrackerRegistry).wrap(any(), any());
     verify(healthTrackerRegistry).addListener(any());
+  }
+
+  @Test
+  void createSubscriberUsesCustomizersInOrder() {
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
+
+    final AtomicInteger counter = new AtomicInteger(1);
+
+    SubscriberCustomizer c1 = (pb, t) -> {
+      assertThat(counter.getAndIncrement()).isEqualTo(1);
+    };
+    SubscriberCustomizer c2 = (pb, t) -> {
+      assertThat(counter.getAndIncrement()).isEqualTo(2);
+    };
+    SubscriberCustomizer c3 = (pb, t) -> {
+      assertThat(counter.getAndIncrement()).isEqualTo(3);
+    };
+
+    factory.setCustomizers(Arrays.asList(c1, c2, c3));
+    factory.createSubscriber("midnight cowboy", (message, consumer) -> {});
+
+    assertThat(counter).hasValue(4);
+  }
+
+  @Test
+  void createSubscriberWithExplicitNullCustomizersFails() {
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", pubSubConfig);
+    Assertions.assertThatThrownBy(() -> factory.setCustomizers(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Non-null customizers expected");
   }
 }
