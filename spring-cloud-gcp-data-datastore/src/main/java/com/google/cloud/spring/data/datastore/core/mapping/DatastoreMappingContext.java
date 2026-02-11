@@ -1,11 +1,11 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,21 +38,22 @@ import org.springframework.lang.NonNull;
  * @since 1.1
  */
 public class DatastoreMappingContext
-    extends AbstractMappingContext<DatastorePersistentEntity<?>, DatastorePersistentProperty>
-    implements ApplicationContextAware {
+        extends AbstractMappingContext<DatastorePersistentEntity<?>, DatastorePersistentProperty>
+        implements ApplicationContextAware {
 
   private static final FieldNamingStrategy DEFAULT_NAMING_STRATEGY =
-      PropertyNameFieldNamingStrategy.INSTANCE;
+          PropertyNameFieldNamingStrategy.INSTANCE;
 
   private static final FieldNamingStrategy FIELD_NAMING_STRATEGY = DEFAULT_NAMING_STRATEGY;
 
   private ApplicationContext applicationContext;
 
-  // Maps a given class to the set of other classes with which it shares the same Datastore
-  // Kind and that are subclasses of the given class.
   private static final Map<Class, Set<Class>> discriminationFamilies = new ConcurrentHashMap<>();
 
   private final boolean skipNullValue;
+
+  // Added for auditing support (Issue #534)
+  private boolean auditingEnabled = false;
 
   public DatastoreMappingContext() {
     this(false);
@@ -69,51 +70,52 @@ public class DatastoreMappingContext
   }
 
   /**
-   * Registers in the DatastoreMappingContext that two classes are discriminated from the same
-   * Datastore Kind.
-   *
-   * @param parentClass the superclass.
-   * @param subClass the subclass.
+   * Returns whether auditing is enabled.
+   * @return true if auditing is enabled.
    */
+  public boolean isAuditingEnabled() {
+    return this.auditingEnabled;
+  }
+
+  /**
+   * Sets whether auditing is enabled.
+   * @param auditingEnabled the auditing status.
+   */
+  public void setAuditingEnabled(boolean auditingEnabled) {
+    this.auditingEnabled = auditingEnabled;
+  }
+
   public static void addDiscriminationClassConnection(Class parentClass, Class subClass) {
     Set<Class> setParent =
-        discriminationFamilies.computeIfAbsent(parentClass, unused -> new HashSet<>());
+            discriminationFamilies.computeIfAbsent(parentClass, unused -> new HashSet<>());
     Set<Class> setSubClass =
-        discriminationFamilies.computeIfAbsent(subClass, unused -> new HashSet<>());
+            discriminationFamilies.computeIfAbsent(subClass, unused -> new HashSet<>());
     setParent.add(subClass);
 
     setSubClass.forEach(
-        x -> {
-          if (!discriminationFamilies.get(parentClass).contains(x)) {
-            addDiscriminationClassConnection(parentClass, x);
-          }
-        });
+            x -> {
+              if (!discriminationFamilies.get(parentClass).contains(x)) {
+                addDiscriminationClassConnection(parentClass, x);
+              }
+            });
     Class grandParent = parentClass.getSuperclass();
     if (grandParent != null) {
       addDiscriminationClassConnection(grandParent, subClass);
     }
   }
 
-  /**
-   * Get the set of other classes that share the same underlying Datastore Kind and that are
-   * subclasses of the given class.
-   *
-   * @param clazz the class to look up.
-   * @return a {@code Set} of other classes that share the same Kind that are subclasses. Will be
-   *     {@code null} if this class is not discriminated from a set of other classes.
-   */
   public static Set<Class> getDiscriminationFamily(Class clazz) {
     return discriminationFamilies.get(clazz);
   }
 
   protected <T> DatastorePersistentEntityImpl<T> constructPersistentEntity(
-      TypeInformation<T> typeInformation) {
+          TypeInformation<T> typeInformation) {
     return new DatastorePersistentEntityImpl<>(typeInformation, this);
   }
 
   @Override
   protected <T> DatastorePersistentEntity<?> createPersistentEntity(
-      TypeInformation<T> typeInformation) {
+          TypeInformation<T> typeInformation) {
     DatastorePersistentEntityImpl<T> persistentEntity = constructPersistentEntity(typeInformation);
     if (this.applicationContext != null) {
       persistentEntity.setApplicationContext(this.applicationContext);
@@ -123,19 +125,11 @@ public class DatastoreMappingContext
 
   @Override
   protected DatastorePersistentProperty createPersistentProperty(
-      Property property, DatastorePersistentEntity<?> owner, SimpleTypeHolder simpleTypeHolder) {
+          Property property, DatastorePersistentEntity<?> owner, SimpleTypeHolder simpleTypeHolder) {
     return new DatastorePersistentPropertyImpl(
-        property, owner, simpleTypeHolder, FIELD_NAMING_STRATEGY, skipNullValue);
+            property, owner, simpleTypeHolder, FIELD_NAMING_STRATEGY, skipNullValue);
   }
 
-  /**
-   * A non-null version of the {@link MappingContext#getPersistentEntity(Class)}.
-   *
-   * @param entityClass the entity type.
-   * @return the {@link DatastorePersistentEntity} for the provided type.
-   * @throws DatastoreDataException if unable to retrieve a DatastorePersistentEntity for the
-   *     provided type.
-   */
   @NonNull
   public DatastorePersistentEntity<?> getDatastorePersistentEntity(Class<?> entityClass) {
     DatastorePersistentEntity<?> persistentEntity = this.getPersistentEntity(entityClass);
@@ -143,7 +137,7 @@ public class DatastoreMappingContext
       return persistentEntity;
     } else {
       throw new DatastoreDataException(
-          "Unable to find a DatastorePersistentEntity for: " + entityClass);
+              "Unable to find a DatastorePersistentEntity for: " + entityClass);
     }
   }
 
