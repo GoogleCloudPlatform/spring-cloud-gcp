@@ -23,8 +23,8 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
-import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
+import org.springframework.boot.transaction.autoconfigure.TransactionAutoConfiguration;
+import org.springframework.boot.transaction.autoconfigure.TransactionManagerCustomizers;
 import org.springframework.context.annotation.Bean;
 
 /**

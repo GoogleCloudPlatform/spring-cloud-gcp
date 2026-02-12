@@ -17,7 +17,6 @@
 package com.example;
 
 import com.example.model.UserMessage;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.function.Consumer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,6 +24,7 @@ import org.springframework.cloud.function.context.config.JsonMessageConverter;
 import org.springframework.cloud.function.json.JacksonMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Spring Cloud Stream sink that receives {@link UserMessage} objects and acts on them.

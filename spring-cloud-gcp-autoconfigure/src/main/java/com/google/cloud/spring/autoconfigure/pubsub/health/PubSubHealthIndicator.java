@@ -28,13 +28,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+import org.springframework.boot.health.contributor.Health;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * Default implementation of {@link org.springframework.boot.actuate.health.HealthIndicator} for
+ * Default implementation of {@link org.springframework.boot.health.contributor.HealthIndicator} for
  * Pub/Sub. Validates if connection is successful by pulling messages from the pubSubTemplate using
  * {@link PubSubTemplate#pullAsync(String, Integer, Boolean)}.
  *
