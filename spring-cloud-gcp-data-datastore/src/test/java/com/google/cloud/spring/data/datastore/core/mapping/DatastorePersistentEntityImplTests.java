@@ -28,7 +28,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.data.mapping.SimplePropertyHandler;
-import org.springframework.data.util.TypeInformation;
+import org.springframework.data.mapping.MappingException;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.expression.spel.SpelEvaluationException;
 
 /** Tests for the Datastore Persistent Entity. */
@@ -164,6 +165,8 @@ class DatastorePersistentEntityImplTests {
   void testConflictingDiscriminationFieldNames() {
 
     assertThatThrownBy(() -> this.datastoreMappingContext.getPersistentEntity(DiscrimEntityB.class))
+            .isInstanceOf(MappingException.class)
+            .cause()
             .isInstanceOf(DatastoreDataException.class)
             .hasMessageContaining("This class and its super class both have "
                     + "discrimination fields but they are different fields: ");

@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.spring.data.firestore.Document;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.util.TypeInformation;
+import org.springframework.data.core.TypeInformation;
 
 /** Tests for {@link FirestorePersistentEntityImpl}. */
 class FirestorePersistentEntityImplTests {

@@ -51,7 +51,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -61,6 +62,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
 @ExtendWith(SpringExtension.class)
 @ExtendWith(OutputCaptureExtension.class)
+@AutoConfigureTestRestTemplate
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {PubSubApplication.class})
@@ -233,7 +235,7 @@ class PubSubSampleApplicationIntegrationTests {
 
   private void createTopic(String topicName) {
     String url =
-        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/createTopic")
+        UriComponentsBuilder.fromUriString(this.appUrl + "/createTopic")
             .queryParam("topicName", topicName)
             .toUriString();
     this.testRestTemplate.postForEntity(url, null, String.class);
@@ -250,7 +252,7 @@ class PubSubSampleApplicationIntegrationTests {
 
   private void deleteTopic(String topicName) {
     String url =
-        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/deleteTopic")
+        UriComponentsBuilder.fromUriString(this.appUrl + "/deleteTopic")
             .queryParam("topic", topicName)
             .toUriString();
     this.testRestTemplate.postForEntity(url, null, String.class);
@@ -268,7 +270,7 @@ class PubSubSampleApplicationIntegrationTests {
 
   private void createSubscription(String subscriptionName, String topicName) {
     String url =
-        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/createSubscription")
+        UriComponentsBuilder.fromUriString(this.appUrl + "/createSubscription")
             .queryParam("topicName", topicName)
             .queryParam("subscriptionName", subscriptionName)
             .toUriString();
@@ -286,7 +288,7 @@ class PubSubSampleApplicationIntegrationTests {
 
   private void deleteSubscription(String subscriptionName) {
     String url =
-        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/deleteSubscription")
+        UriComponentsBuilder.fromUriString(this.appUrl + "/deleteSubscription")
             .queryParam("subscription", subscriptionName)
             .toUriString();
     this.testRestTemplate.postForEntity(url, null, String.class);
@@ -304,7 +306,7 @@ class PubSubSampleApplicationIntegrationTests {
 
   private void subscribe(String subscriptionName) {
     String url =
-        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/subscribe")
+        UriComponentsBuilder.fromUriString(this.appUrl + "/subscribe")
             .queryParam("subscription", subscriptionName)
             .toUriString();
     this.testRestTemplate.getForEntity(url, null, String.class);
@@ -312,7 +314,7 @@ class PubSubSampleApplicationIntegrationTests {
 
   private void postMessage(String message, String topicName) {
     String url =
-        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/postMessage")
+        UriComponentsBuilder.fromUriString(this.appUrl + "/postMessage")
             .queryParam("message", message)
             .queryParam("topicName", topicName)
             .queryParam("count", 1)
@@ -322,7 +324,7 @@ class PubSubSampleApplicationIntegrationTests {
 
   private void multiPull(String subscription1, String subscription2) {
     String url =
-        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/multipull")
+        UriComponentsBuilder.fromUriString(this.appUrl + "/multipull")
             .queryParam("subscription1", subscription1)
             .queryParam("subscription2", subscription2)
             .toUriString();

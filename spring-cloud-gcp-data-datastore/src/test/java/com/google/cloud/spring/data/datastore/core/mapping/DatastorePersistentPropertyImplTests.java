@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mapping.MappingException;
 import org.springframework.data.mapping.PropertyHandler;
 
 /** Tests for the Datastore persistent property. */
@@ -90,6 +91,8 @@ class DatastorePersistentPropertyImplTests {
   void referenceDescendantAnnotatedTest() {
 
     assertThatThrownBy(() -> this.datastoreMappingContext.getPersistentEntity(DescendantReferenceAnnotatedEntity.class))
+            .isInstanceOf(MappingException.class)
+            .cause()
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Property cannot be annotated both @Descendants and " + "@Reference: subEntity");
   }
@@ -98,6 +101,8 @@ class DatastorePersistentPropertyImplTests {
   void fieldDescendantAnnotatedTest() {
 
     assertThatThrownBy(() -> this.datastoreMappingContext.getPersistentEntity(DescendantFieldAnnotatedEntity.class))
+            .isInstanceOf(MappingException.class)
+            .cause()
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Property cannot be annotated as @Field if it is "
                     + "annotated @Descendants or @Reference: name");
@@ -107,6 +112,8 @@ class DatastorePersistentPropertyImplTests {
   void fieldReferenceAnnotatedTest() {
 
     assertThatThrownBy(() -> this.datastoreMappingContext.getPersistentEntity(FieldReferenceAnnotatedEntity.class))
+            .isInstanceOf(MappingException.class)
+            .cause()
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Property cannot be annotated as @Field if it is "
                     + "annotated @Descendants or @Reference: name");
@@ -117,6 +124,8 @@ class DatastorePersistentPropertyImplTests {
   void fieldReferencedAnnotatedTest() {
 
     assertThatThrownBy(() -> this.datastoreMappingContext.getPersistentEntity(FieldReferencedAnnotatedEntity.class))
+            .isInstanceOf(MappingException.class)
+            .cause()
             .isInstanceOf(DatastoreDataException.class)
             .hasMessage("Property cannot be annotated as @Field if it is "
                     + "annotated @Descendants or @Reference: name");

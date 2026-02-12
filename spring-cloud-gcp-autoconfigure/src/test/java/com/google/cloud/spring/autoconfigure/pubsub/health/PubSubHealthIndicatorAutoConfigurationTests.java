@@ -39,9 +39,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.boot.actuate.health.CompositeHealthContributor;
-import org.springframework.boot.actuate.health.NamedContributor;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.health.contributor.CompositeHealthContributor;
+import org.springframework.boot.health.contributor.HealthContributor;
+import org.springframework.boot.health.contributor.HealthContributors;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 /** Tests for Pub/Sub Health Indicator autoconfiguration. */
@@ -67,12 +68,19 @@ class PubSubHealthIndicatorAutoConfigurationTests {
         .withBean("pubSubTemplate", PubSubTemplate.class, () -> mockPubSubTemplate)
         .run(
             ctx -> {
-              PubSubHealthIndicator healthIndicator = ctx.getBean(PubSubHealthIndicator.class);
+              HealthContributor healthIndicator = ctx.getBean(HealthContributor.class);
               assertThat(healthIndicator).isNotNull();
-              assertThat(healthIndicator.getSubscription()).matches(UUID_PATTERN);
-              assertThat(healthIndicator.getTimeoutMillis()).isEqualTo(5000);
-              assertThat(healthIndicator.isAcknowledgeMessages()).isFalse();
-              assertThat(healthIndicator.isSpecifiedSubscription()).isFalse();
+              PubSubHealthIndicator indicator;
+              if (healthIndicator instanceof CompositeHealthContributor composite) {
+                indicator = (PubSubHealthIndicator) composite.getContributor("pubSubTemplate");
+              } else {
+                indicator = (PubSubHealthIndicator) healthIndicator;
+              }
+              assertThat(indicator).isNotNull();
+              assertThat(indicator.getSubscription()).matches(UUID_PATTERN);
+              assertThat(indicator.getTimeoutMillis()).isEqualTo(5000);
+              assertThat(indicator.isAcknowledgeMessages()).isFalse();
+              assertThat(indicator.isSpecifiedSubscription()).isFalse();
             });
   }
 
@@ -90,7 +98,14 @@ class PubSubHealthIndicatorAutoConfigurationTests {
             "spring.cloud.gcp.pubsub.health.acknowledgeMessages=true")
         .run(
             ctx -> {
-              PubSubHealthIndicator healthIndicator = ctx.getBean(PubSubHealthIndicator.class);
+              HealthContributor healthContributor = ctx.getBean(HealthContributor.class);
+              assertThat(healthContributor).isNotNull();
+              PubSubHealthIndicator healthIndicator;
+              if (healthContributor instanceof CompositeHealthContributor composite) {
+                healthIndicator = (PubSubHealthIndicator) composite.getContributor("pubSubTemplate");
+              } else {
+                healthIndicator = (PubSubHealthIndicator) healthContributor;
+              }
               assertThat(healthIndicator).isNotNull();
               assertThat(healthIndicator.getSubscription()).isEqualTo("test");
               assertThat(healthIndicator.getTimeoutMillis()).isEqualTo(1500);
@@ -127,7 +142,7 @@ class PubSubHealthIndicatorAutoConfigurationTests {
                   ctx.getBean("pubSubHealthContributor", CompositeHealthContributor.class);
               assertThat(healthContributor).isNotNull();
               assertThat(healthContributor.stream()).hasSize(2);
-              assertThat(healthContributor.stream().map(NamedContributor::getName))
+              assertThat(healthContributor.stream().map(HealthContributors.Entry::name))
                   .containsExactlyInAnyOrder("pubSubTemplate1", "pubSubTemplate2");
             });
   }

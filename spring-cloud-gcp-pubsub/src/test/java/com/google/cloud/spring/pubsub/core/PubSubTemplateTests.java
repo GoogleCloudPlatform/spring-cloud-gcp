@@ -29,8 +29,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.google.api.core.ApiService;
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.pubsub.v1.MessageReceiver;
@@ -80,8 +81,8 @@ class PubSubTemplateTests {
   private PubSubPublisherTemplate createPublisherTemplate() {
     PubSubPublisherTemplate pubSubPublisherTemplate =
         new PubSubPublisherTemplate(this.mockPublisherFactory);
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
+    ObjectMapper objectMapper =
+        JsonMapper.builder().configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true).build();
     pubSubPublisherTemplate.setMessageConverter(
         new JacksonPubSubMessageConverter(objectMapper));
     return pubSubPublisherTemplate;
