@@ -31,12 +31,12 @@ import com.google.cloud.pubsub.v1.TopicAdminSettings;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
+import java.time.Duration;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
-import org.threeten.bp.Duration;
 
 /** Tests for the Pub/Sub emulator config. */
 class GcpPubSubEmulatorAutoConfigurationTests {
@@ -78,6 +78,7 @@ class GcpPubSubEmulatorAutoConfigurationTests {
               "spring.cloud.gcp.pubsub.publisher.batching.element-Count-threshold=21",
               "spring.cloud.gcp.pubsub.publisher.batching.request-byte-threshold=22",
               "spring.cloud.gcp.pubsub.publisher.batching.delay-threshold-seconds=23",
+              "spring.cloud.gcp.pubsub.publisher.batching.delay-threshold-duration=24s",
               "spring.cloud.gcp.pubsub.publisher.batching.enabled=true")
           .withConfiguration(
               AutoConfigurations.of(
@@ -141,15 +142,15 @@ class GcpPubSubEmulatorAutoConfigurationTests {
     this.contextRunner.run(
         context -> {
           RetrySettings settings = context.getBean("publisherRetrySettings", RetrySettings.class);
-          assertThat(settings.getTotalTimeout()).isEqualTo(Duration.ofSeconds(9));
-          assertThat(settings.getInitialRetryDelay()).isEqualTo(Duration.ofSeconds(10));
+          assertThat(settings.getTotalTimeoutDuration()).isEqualTo(Duration.ofSeconds(9));
+          assertThat(settings.getInitialRetryDelayDuration()).isEqualTo(Duration.ofSeconds(10));
           assertThat(settings.getRetryDelayMultiplier()).isEqualTo(11, DELTA);
-          assertThat(settings.getMaxRetryDelay()).isEqualTo(Duration.ofSeconds(12));
+          assertThat(settings.getMaxRetryDelayDuration()).isEqualTo(Duration.ofSeconds(12));
           assertThat(settings.getMaxAttempts()).isEqualTo(13);
           assertThat(settings.isJittered()).isTrue();
-          assertThat(settings.getInitialRpcTimeout()).isEqualTo(Duration.ofSeconds(14));
+          assertThat(settings.getInitialRpcTimeoutDuration()).isEqualTo(Duration.ofSeconds(14));
           assertThat(settings.getRpcTimeoutMultiplier()).isEqualTo(15, DELTA);
-          assertThat(settings.getMaxRpcTimeout()).isEqualTo(Duration.ofSeconds(16));
+          assertThat(settings.getMaxRpcTimeoutDuration()).isEqualTo(Duration.ofSeconds(16));
         });
   }
 
@@ -180,7 +181,7 @@ class GcpPubSubEmulatorAutoConfigurationTests {
               .isEqualTo(LimitExceededBehavior.Ignore);
           assertThat(settings.getElementCountThreshold()).isEqualTo(21);
           assertThat(settings.getRequestByteThreshold()).isEqualTo(22);
-          assertThat(settings.getDelayThreshold()).isEqualTo(Duration.ofSeconds(23));
+          assertThat(settings.getDelayThresholdDuration()).isEqualTo(Duration.ofSeconds(24));
           assertThat(settings.getIsEnabled()).isTrue();
         });
   }

@@ -22,6 +22,7 @@ import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.pubsub.v1.ProjectSubscriptionName;
+import java.time.Duration;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -551,6 +552,7 @@ class PubSubConfigurationTests {
     assertThat(batching.getElementCountThreshold()).isNull();
     assertThat(batching.getRequestByteThreshold()).isNull();
     assertThat(batching.getDelayThresholdSeconds()).isNull();
+    assertThat(batching.getDelayThresholdDuration()).isNull();
     assertThat(batching.getEnabled()).isNull();
     assertThat(batching.getFlowControl().getLimitExceededBehavior()).isNull();
     assertThat(batching.getFlowControl().getMaxOutstandingElementCount()).isNull();
@@ -591,6 +593,7 @@ class PubSubConfigurationTests {
     batching.setElementCountThreshold(1L);
     batching.setRequestByteThreshold(5L);
     batching.setDelayThresholdSeconds(3L);
+    batching.setDelayThresholdDuration(Duration.ofMillis(100));
     batching.setEnabled(true);
     PubSubConfiguration.FlowControl flowControl = publisher.getBatching().getFlowControl();
     flowControl.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Ignore);
@@ -602,6 +605,7 @@ class PubSubConfigurationTests {
     assertThat(batching.getElementCountThreshold()).isEqualTo(1L);
     assertThat(batching.getRequestByteThreshold()).isEqualTo(5L);
     assertThat(batching.getDelayThresholdSeconds()).isEqualTo(3L);
+    assertThat(batching.getDelayThresholdDuration()).isEqualTo(Duration.ofMillis(100));
     assertThat(batching.getEnabled()).isTrue();
     assertThat(batching.getFlowControl().getLimitExceededBehavior())
         .isEqualTo(FlowController.LimitExceededBehavior.Ignore);

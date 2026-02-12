@@ -52,6 +52,7 @@
 |spring.cloud.gcp.pubsub.keep-alive-interval-minutes | 5 | How often to ping the server to keep the channel alive.
 |spring.cloud.gcp.pubsub.project-id |  | Overrides the Google Cloud project ID specified in the Core module.
 |spring.cloud.gcp.pubsub.publisher.batching.delay-threshold-seconds |  | The delay threshold to use for batching. After this amount of time has elapsed (counting from the first element added), the elements will be wrapped up in a batch and sent.
+|spring.cloud.gcp.pubsub.publisher.batching.delay-threshold-duration |  | The delay threshold to use for batching. After this amount of time has elapsed (counting from the first element added), the elements will be wrapped up in a batch and sent.
 |spring.cloud.gcp.pubsub.publisher.batching.element-count-threshold |  | The element count threshold to use for batching.
 |spring.cloud.gcp.pubsub.publisher.batching.enabled |  | Enables batching if true.
 |spring.cloud.gcp.pubsub.publisher.batching.flow-control.limit-exceeded-behavior |  | The behavior when the specified limits are exceeded.
