@@ -68,13 +68,13 @@ class PubSubHealthIndicatorAutoConfigurationTests {
         .withBean("pubSubTemplate", PubSubTemplate.class, () -> mockPubSubTemplate)
         .run(
             ctx -> {
-              HealthContributor healthIndicator = ctx.getBean(HealthContributor.class);
-              assertThat(healthIndicator).isNotNull();
+              HealthContributor healthContributor = ctx.getBean(HealthContributor.class);
+              assertThat(healthContributor).isNotNull();
               PubSubHealthIndicator indicator;
-              if (healthIndicator instanceof CompositeHealthContributor composite) {
+              if (healthContributor instanceof CompositeHealthContributor composite) {
                 indicator = (PubSubHealthIndicator) composite.getContributor("pubSubTemplate");
               } else {
-                indicator = (PubSubHealthIndicator) healthIndicator;
+                indicator = (PubSubHealthIndicator) healthContributor;
               }
               assertThat(indicator).isNotNull();
               assertThat(indicator.getSubscription()).matches(UUID_PATTERN);
