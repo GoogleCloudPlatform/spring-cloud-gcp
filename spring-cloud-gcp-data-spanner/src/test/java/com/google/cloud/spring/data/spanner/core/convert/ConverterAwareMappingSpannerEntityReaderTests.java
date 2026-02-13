@@ -273,9 +273,15 @@ class ConverterAwareMappingSpannerEntityReaderTests {
     Struct struct =
         Struct.newBuilder().set("fieldWithUnsupportedType").to(Value.string("key1")).build();
 
-    assertThatThrownBy(() -> this.spannerEntityReader.read(FaultyTestEntity.class, struct))
+    assertThatThrownBy(() -> this.spannerEntityReader.read(
+        FaultyTestEntity.class,
+        struct,
+        java.util.Set.of("id"),
+        false
+    ))
         .isInstanceOf(SpannerDataException.class)
-        .hasMessage("Unable to read column from Cloud Spanner results: id");
+        .hasMessageContaining("Unable to read column from Cloud Spanner results")
+        .hasMessageEndingWith(": id");
   }
 
   @Test
