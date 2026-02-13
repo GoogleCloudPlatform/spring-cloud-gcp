@@ -48,12 +48,15 @@ class SpannerPersistentPropertyImplTests {
     context.setFieldNamingStrategy(namingStrat);
 
     assertThatThrownBy(() -> context.getPersistentEntity(TestEntity.class))
-            .hasMessageContaining("Invalid (null or empty) field name returned for ")
-            .hasMessageContaining("com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentPropertyImplTests$TestEntity")
-                .satisfies(t -> {
-                  String msg = t.getMessage();
-                  assertThat(msg).matches("(?s).*SpannerPersistentPropertyImplTests\\$TestEntity\\.(id|doubleList|other)\\b.*");
-                });
+        .satisfies(
+            t -> {
+              assertThat(t.getCause()).isNotNull();
+              assertThat(t.getCause().getMessage())
+                  .contains("Invalid (null or empty) field name returned for ").contains(
+                      "com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentPropertyImplTests$TestEntity");
+              assertThat(t.getCause().getMessage())
+                  .matches("(?s).*SpannerPersistentPropertyImplTests\\$TestEntity\\.(id|doubleList|other)\\b.*");
+            });
   }
 
 

@@ -18,7 +18,7 @@ package com.google.cloud.spring.pubsub.support.converter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import com.google.pubsub.v1.PubsubMessage;
 import java.util.Collections;
