@@ -68,19 +68,12 @@ class PubSubHealthIndicatorAutoConfigurationTests {
         .withBean("pubSubTemplate", PubSubTemplate.class, () -> mockPubSubTemplate)
         .run(
             ctx -> {
-              HealthContributor healthContributor = ctx.getBean(HealthContributor.class);
-              assertThat(healthContributor).isNotNull();
-              PubSubHealthIndicator indicator;
-              if (healthContributor instanceof CompositeHealthContributor composite) {
-                indicator = (PubSubHealthIndicator) composite.getContributor("pubSubTemplate");
-              } else {
-                indicator = (PubSubHealthIndicator) healthContributor;
-              }
-              assertThat(indicator).isNotNull();
-              assertThat(indicator.getSubscription()).matches(UUID_PATTERN);
-              assertThat(indicator.getTimeoutMillis()).isEqualTo(5000);
-              assertThat(indicator.isAcknowledgeMessages()).isFalse();
-              assertThat(indicator.isSpecifiedSubscription()).isFalse();
+              PubSubHealthIndicator healthIndicator = ctx.getBean(PubSubHealthIndicator.class);
+              assertThat(healthIndicator).isNotNull();
+              assertThat(healthIndicator.getSubscription()).matches(UUID_PATTERN);
+              assertThat(healthIndicator.getTimeoutMillis()).isEqualTo(5000);
+              assertThat(healthIndicator.isAcknowledgeMessages()).isFalse();
+              assertThat(healthIndicator.isSpecifiedSubscription()).isFalse();
             });
   }
 
@@ -98,14 +91,7 @@ class PubSubHealthIndicatorAutoConfigurationTests {
             "spring.cloud.gcp.pubsub.health.acknowledgeMessages=true")
         .run(
             ctx -> {
-              HealthContributor healthContributor = ctx.getBean(HealthContributor.class);
-              assertThat(healthContributor).isNotNull();
-              PubSubHealthIndicator healthIndicator;
-              if (healthContributor instanceof CompositeHealthContributor composite) {
-                healthIndicator = (PubSubHealthIndicator) composite.getContributor("pubSubTemplate");
-              } else {
-                healthIndicator = (PubSubHealthIndicator) healthContributor;
-              }
+              PubSubHealthIndicator healthIndicator = ctx.getBean(PubSubHealthIndicator.class);
               assertThat(healthIndicator).isNotNull();
               assertThat(healthIndicator.getSubscription()).isEqualTo("test");
               assertThat(healthIndicator.getTimeoutMillis()).isEqualTo(1500);

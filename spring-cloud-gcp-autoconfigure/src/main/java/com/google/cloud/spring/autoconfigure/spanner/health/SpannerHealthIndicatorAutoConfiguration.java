@@ -62,6 +62,6 @@ public class SpannerHealthIndicatorAutoConfiguration
   @ConditionalOnMissingBean(name = {"spannerHealthIndicator", "spannerHealthContributor"})
   public HealthContributor spannerHealthContributor(Map<String, SpannerTemplate> spannerTemplates) {
     Assert.notNull(spannerTemplates, "SpannerTemplates must be provided");
-    return createComposite(spannerTemplates);
+    return createContributor(spannerTemplates);
   }
 }

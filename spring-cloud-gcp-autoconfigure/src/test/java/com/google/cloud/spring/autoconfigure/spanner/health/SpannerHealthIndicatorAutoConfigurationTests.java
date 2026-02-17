@@ -28,9 +28,8 @@ import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.spanner.GcpSpannerAutoConfiguration;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.health.contributor.CompositeHealthContributor;
-import org.springframework.boot.health.contributor.HealthContributor;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,13 +59,7 @@ class SpannerHealthIndicatorAutoConfigurationTests {
     final String defaultQuery = "SELECT 1";
     this.contextRunner.run(
         context -> {
-          HealthContributor contributor = context.getBean(HealthContributor.class);
-          SpannerHealthIndicator indicator;
-          if (contributor instanceof CompositeHealthContributor composite) {
-            indicator = (SpannerHealthIndicator) composite.getContributor("spannerTemplate");
-          } else {
-            indicator = (SpannerHealthIndicator) contributor;
-          }
+          SpannerHealthIndicator indicator = context.getBean(SpannerHealthIndicator.class);
           assertThat(indicator).isNotNull();
           assertThat(indicator)
               .hasFieldOrPropertyWithValue("validationStatement", Statement.of(defaultQuery));
@@ -80,13 +73,7 @@ class SpannerHealthIndicatorAutoConfigurationTests {
         .withPropertyValues("spring.cloud.gcp.spanner.health.query=" + customQuery)
         .run(
             context -> {
-              HealthContributor contributor = context.getBean(HealthContributor.class);
-              SpannerHealthIndicator indicator;
-              if (contributor instanceof CompositeHealthContributor composite) {
-                indicator = (SpannerHealthIndicator) composite.getContributor("spannerTemplate");
-              } else {
-                indicator = (SpannerHealthIndicator) contributor;
-              }
+              SpannerHealthIndicator indicator = context.getBean(SpannerHealthIndicator.class);
               assertThat(indicator).isNotNull();
               assertThat(indicator)
                   .hasFieldOrPropertyWithValue("validationStatement", Statement.of(customQuery));
@@ -95,9 +82,11 @@ class SpannerHealthIndicatorAutoConfigurationTests {
 
   @Test
   void testSpannerHealthIndicatorNotCreated() {
-    this.contextRunner.withPropertyValues("management.health.spanner.enabled=false")
-        .run(context -> {assertThat(context).doesNotHaveBean(HealthContributor.class);
-            });
+    ApplicationContextRunner contextRunnerNew =
+        this.contextRunner.withPropertyValues("management.health.spanner.enabled=false");
+    assertThatThrownBy(
+            () -> contextRunnerNew.run(context -> context.getBean(SpannerHealthIndicator.class)))
+        .isInstanceOf(NoSuchBeanDefinitionException.class);
   }
 
   /** Spring Boot config for tests. */

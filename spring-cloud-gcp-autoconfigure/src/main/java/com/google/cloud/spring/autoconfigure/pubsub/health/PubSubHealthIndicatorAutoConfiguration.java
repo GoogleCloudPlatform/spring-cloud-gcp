@@ -63,6 +63,6 @@ public class PubSubHealthIndicatorAutoConfiguration
   @ConditionalOnMissingBean(name = {"pubSubHealthIndicator", "pubSubHealthContributor"})
   public HealthContributor pubSubHealthContributor(Map<String, PubSubTemplate> pubSubTemplates) {
     Assert.notNull(pubSubTemplates, "pubSubTemplates must be provided");
-    return createComposite(pubSubTemplates);
+    return createContributor(pubSubTemplates);
   }
 }
