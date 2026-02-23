@@ -48,6 +48,11 @@ public class GkeHubSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry listMembershipsRetry;
   /**
+   * Allow override of retry settings at method-level for listBoundMemberships. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listBoundMembershipsRetry;
+  /**
    * Allow override of retry settings at method-level for listFeatures. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -67,6 +72,76 @@ public class GkeHubSpringProperties implements CredentialsSupplier {
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry generateConnectManifestRetry;
+  /**
+   * Allow override of retry settings at method-level for getFleet. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getFleetRetry;
+  /**
+   * Allow override of retry settings at method-level for listFleets. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listFleetsRetry;
+  /**
+   * Allow override of retry settings at method-level for getScopeNamespace. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getScopeNamespaceRetry;
+  /**
+   * Allow override of retry settings at method-level for listScopeNamespaces. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listScopeNamespacesRetry;
+  /**
+   * Allow override of retry settings at method-level for getScopeRBACRoleBinding. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getScopeRBACRoleBindingRetry;
+  /**
+   * Allow override of retry settings at method-level for listScopeRBACRoleBindings. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listScopeRBACRoleBindingsRetry;
+  /**
+   * Allow override of retry settings at method-level for getScope. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getScopeRetry;
+  /**
+   * Allow override of retry settings at method-level for listScopes. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listScopesRetry;
+  /**
+   * Allow override of retry settings at method-level for listPermittedScopes. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listPermittedScopesRetry;
+  /**
+   * Allow override of retry settings at method-level for getMembershipBinding. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getMembershipBindingRetry;
+  /**
+   * Allow override of retry settings at method-level for listMembershipBindings. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listMembershipBindingsRetry;
+  /**
+   * Allow override of retry settings at method-level for getMembershipRBACRoleBinding. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getMembershipRBACRoleBindingRetry;
+  /**
+   * Allow override of retry settings at method-level for listMembershipRBACRoleBindings. If
+   * defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listMembershipRBACRoleBindingsRetry;
+  /**
+   * Allow override of retry settings at method-level for generateMembershipRBACRoleBindingYAML. If
+   * defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry generateMembershipRBACRoleBindingYAMLRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -113,6 +188,14 @@ public class GkeHubSpringProperties implements CredentialsSupplier {
     this.listMembershipsRetry = listMembershipsRetry;
   }
 
+  public Retry getListBoundMembershipsRetry() {
+    return this.listBoundMembershipsRetry;
+  }
+
+  public void setListBoundMembershipsRetry(Retry listBoundMembershipsRetry) {
+    this.listBoundMembershipsRetry = listBoundMembershipsRetry;
+  }
+
   public Retry getListFeaturesRetry() {
     return this.listFeaturesRetry;
   }
@@ -143,5 +226,118 @@ public class GkeHubSpringProperties implements CredentialsSupplier {
 
   public void setGenerateConnectManifestRetry(Retry generateConnectManifestRetry) {
     this.generateConnectManifestRetry = generateConnectManifestRetry;
+  }
+
+  public Retry getGetFleetRetry() {
+    return this.getFleetRetry;
+  }
+
+  public void setGetFleetRetry(Retry getFleetRetry) {
+    this.getFleetRetry = getFleetRetry;
+  }
+
+  public Retry getListFleetsRetry() {
+    return this.listFleetsRetry;
+  }
+
+  public void setListFleetsRetry(Retry listFleetsRetry) {
+    this.listFleetsRetry = listFleetsRetry;
+  }
+
+  public Retry getGetScopeNamespaceRetry() {
+    return this.getScopeNamespaceRetry;
+  }
+
+  public void setGetScopeNamespaceRetry(Retry getScopeNamespaceRetry) {
+    this.getScopeNamespaceRetry = getScopeNamespaceRetry;
+  }
+
+  public Retry getListScopeNamespacesRetry() {
+    return this.listScopeNamespacesRetry;
+  }
+
+  public void setListScopeNamespacesRetry(Retry listScopeNamespacesRetry) {
+    this.listScopeNamespacesRetry = listScopeNamespacesRetry;
+  }
+
+  public Retry getGetScopeRBACRoleBindingRetry() {
+    return this.getScopeRBACRoleBindingRetry;
+  }
+
+  public void setGetScopeRBACRoleBindingRetry(Retry getScopeRBACRoleBindingRetry) {
+    this.getScopeRBACRoleBindingRetry = getScopeRBACRoleBindingRetry;
+  }
+
+  public Retry getListScopeRBACRoleBindingsRetry() {
+    return this.listScopeRBACRoleBindingsRetry;
+  }
+
+  public void setListScopeRBACRoleBindingsRetry(Retry listScopeRBACRoleBindingsRetry) {
+    this.listScopeRBACRoleBindingsRetry = listScopeRBACRoleBindingsRetry;
+  }
+
+  public Retry getGetScopeRetry() {
+    return this.getScopeRetry;
+  }
+
+  public void setGetScopeRetry(Retry getScopeRetry) {
+    this.getScopeRetry = getScopeRetry;
+  }
+
+  public Retry getListScopesRetry() {
+    return this.listScopesRetry;
+  }
+
+  public void setListScopesRetry(Retry listScopesRetry) {
+    this.listScopesRetry = listScopesRetry;
+  }
+
+  public Retry getListPermittedScopesRetry() {
+    return this.listPermittedScopesRetry;
+  }
+
+  public void setListPermittedScopesRetry(Retry listPermittedScopesRetry) {
+    this.listPermittedScopesRetry = listPermittedScopesRetry;
+  }
+
+  public Retry getGetMembershipBindingRetry() {
+    return this.getMembershipBindingRetry;
+  }
+
+  public void setGetMembershipBindingRetry(Retry getMembershipBindingRetry) {
+    this.getMembershipBindingRetry = getMembershipBindingRetry;
+  }
+
+  public Retry getListMembershipBindingsRetry() {
+    return this.listMembershipBindingsRetry;
+  }
+
+  public void setListMembershipBindingsRetry(Retry listMembershipBindingsRetry) {
+    this.listMembershipBindingsRetry = listMembershipBindingsRetry;
+  }
+
+  public Retry getGetMembershipRBACRoleBindingRetry() {
+    return this.getMembershipRBACRoleBindingRetry;
+  }
+
+  public void setGetMembershipRBACRoleBindingRetry(Retry getMembershipRBACRoleBindingRetry) {
+    this.getMembershipRBACRoleBindingRetry = getMembershipRBACRoleBindingRetry;
+  }
+
+  public Retry getListMembershipRBACRoleBindingsRetry() {
+    return this.listMembershipRBACRoleBindingsRetry;
+  }
+
+  public void setListMembershipRBACRoleBindingsRetry(Retry listMembershipRBACRoleBindingsRetry) {
+    this.listMembershipRBACRoleBindingsRetry = listMembershipRBACRoleBindingsRetry;
+  }
+
+  public Retry getGenerateMembershipRBACRoleBindingYAMLRetry() {
+    return this.generateMembershipRBACRoleBindingYAMLRetry;
+  }
+
+  public void setGenerateMembershipRBACRoleBindingYAMLRetry(
+      Retry generateMembershipRBACRoleBindingYAMLRetry) {
+    this.generateMembershipRBACRoleBindingYAMLRetry = generateMembershipRBACRoleBindingYAMLRetry;
   }
 }
