@@ -32,6 +32,7 @@ import com.google.spanner.v1.TypeCode;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.data.core.TypeInformation;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
@@ -132,8 +133,9 @@ class SpannerPersistentEntityImplTests {
     assertThatThrownBy(runnable::run)
         .satisfies(
             t -> {
-              assertThat(t.getCause()).isInstanceOf(SpannerDataException.class);
-              assertThat(t.getCause().getMessage()).isEqualTo(expectedMessage);
+              Throwable cause = NestedExceptionUtils.getMostSpecificCause(t);
+              assertThat(cause).isInstanceOf(SpannerDataException.class);
+              assertThat(cause.getMessage()).isEqualTo(expectedMessage);
             });
   }
 
@@ -303,8 +305,10 @@ class SpannerPersistentEntityImplTests {
   void testEmbeddedCollection() {
 
     assertThatThrownBy(() -> this.spannerMappingContext.getPersistentEntity(ChildCollectionEmbedded.class))
-        .satisfies(t -> {assertThat(t.getCause()).isInstanceOf(SpannerDataException.class);
-              assertThat(t.getCause().getMessage())
+        .satisfies(t -> {
+              Throwable cause = NestedExceptionUtils.getMostSpecificCause(t);
+              assertThat(cause).isInstanceOf(SpannerDataException.class);
+              assertThat(cause.getMessage())
                   .contains("Embedded properties cannot be collections: ");});
   }
 
