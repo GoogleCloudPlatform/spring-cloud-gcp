@@ -2,8 +2,8 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import com.google.cloud.ServiceOptions;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
@@ -61,7 +61,7 @@ class SpringDataR2dbcAppIntegrationTest {
   }
 
   @Test
-  void testBasicWebEndpoints() throws JsonProcessingException {
+  void testBasicWebEndpoints() throws JacksonException {
 
     // initially empty table
     this.webTestClient

@@ -18,8 +18,8 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,7 +40,8 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,7 @@ import org.springframework.util.MultiValueMap;
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
+@AutoConfigureTestRestTemplate
 @SpringBootTest(
     classes = {DatastoreRepositoryExample.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

@@ -25,14 +25,14 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
-import org.springframework.data.util.TypeInformation;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests for {@link FirestorePersistentPropertyImpl}. */
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class FirestorePersistentPropertyImplTest {
 
   @Mock Property mockProperty;

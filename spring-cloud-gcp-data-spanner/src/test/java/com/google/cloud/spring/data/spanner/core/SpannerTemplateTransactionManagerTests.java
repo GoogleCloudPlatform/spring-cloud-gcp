@@ -48,7 +48,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
@@ -75,17 +75,17 @@ class SpannerTemplateTransactionManagerTests {
   private final AtomicReference<TransactionManager.TransactionState> transactionState =
       new AtomicReference<>();
 
-  @MockBean DatabaseClient databaseClient;
+  @MockitoBean DatabaseClient databaseClient;
 
-  @MockBean ReadContext readContext;
+  @MockitoBean ReadContext readContext;
 
-  @MockBean TransactionContext transactionContext;
+  @MockitoBean TransactionContext transactionContext;
+
+  @MockitoBean ReadOnlyTransaction readOnlyTransaction;
 
   @Autowired TransactionalService transactionalService;
 
   TransactionManager transactionManager;
-
-  @Mock ReadOnlyTransaction readOnlyTransaction;
 
   @BeforeEach
   void setUp() {
@@ -119,6 +119,12 @@ class SpannerTemplateTransactionManagerTests {
 
     when(this.databaseClient.transactionManager()).thenReturn(this.transactionManager);
     when(this.databaseClient.readOnlyTransaction()).thenReturn(this.readOnlyTransaction);
+    when(this.readOnlyTransaction.read(
+            Mockito.anyString(),
+            Mockito.any(),
+            Mockito.any(Iterable.class),
+            Mockito.any()))
+        .thenReturn(Mockito.mock(com.google.cloud.spanner.ResultSet.class));
     when(this.transactionManager.begin()).thenReturn(this.transactionContext);
   }
 

@@ -74,7 +74,7 @@ import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.data.repository.core.support.DefaultRepositoryMetadata;
 import org.springframework.data.repository.query.DefaultParameters;
 import org.springframework.data.repository.query.ParametersSource;
-import org.springframework.data.util.TypeInformation;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.lang.Nullable;
 
 /** Tests for Part-Tree Datastore Query Methods. */

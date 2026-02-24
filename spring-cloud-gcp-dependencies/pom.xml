@@ -129,6 +129,11 @@
 				<version>${project.version}</version>
 			</dependency>
 
+			<!-- Jackson 3 -->
+			<dependency>
+				<groupId>tools.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+			</dependency>
 			<!--Starters-->
 			<dependency>
 				<groupId>com.google.cloud</groupId>
@@ -249,6 +254,48 @@
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-spanner-spring-data-r2dbc</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+
+			<!-- Spring Boot granular starters -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-restclient</artifactId>
+				<version>4.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-jackson</artifactId>
+				<version>4.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-classic</artifactId>
+				<version>4.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-jdbc</artifactId>
+				<version>4.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-webmvc-test</artifactId>
+				<version>4.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-micrometer-metrics-test</artifactId>
+				<version>4.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-micrometer-tracing-test</artifactId>
+				<version>4.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-resttestclient</artifactId>
+				<version>4.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.cloud</groupId>

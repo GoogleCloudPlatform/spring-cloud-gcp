@@ -35,7 +35,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -48,6 +49,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @EnabledIfSystemProperty(named = "it.storage", matches = "true")
 @ExtendWith(SpringExtension.class)
+@AutoConfigureTestRestTemplate
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {GcsApplication.class})
@@ -83,7 +85,7 @@ class GcsSampleApplicationIntegrationTests {
 
     // Verify the contents of the uploaded file.
     String getUrl =
-        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/")
+        UriComponentsBuilder.fromUriString(this.appUrl + "/")
             .queryParam("filename", filename)
             .toUriString();
     Awaitility.await()
@@ -96,7 +98,7 @@ class GcsSampleApplicationIntegrationTests {
 
     // Update the contents of the uploaded file and verify.
     String postUrl =
-        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/")
+        UriComponentsBuilder.fromUriString(this.appUrl + "/")
             .queryParam("filename", filename)
             .toUriString();
     this.testRestTemplate.postForObject(postUrl, "Good Night!", String.class);

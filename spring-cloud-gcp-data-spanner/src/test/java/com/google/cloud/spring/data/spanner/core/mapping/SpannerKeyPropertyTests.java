@@ -24,7 +24,7 @@ import com.google.cloud.spanner.Key;
 import java.lang.annotation.Annotation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.util.TypeInformation;
+import org.springframework.data.core.TypeInformation;
 
 /** Tests for the Spanner custom key property. */
 class SpannerKeyPropertyTests {

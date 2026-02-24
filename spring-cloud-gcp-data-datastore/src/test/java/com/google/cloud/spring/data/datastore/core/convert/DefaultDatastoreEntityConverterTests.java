@@ -42,6 +42,7 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingConte
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorField;
 import com.google.cloud.spring.data.datastore.core.mapping.DiscriminatorValue;
 import com.google.cloud.spring.data.datastore.entities.CustomMap;
+import org.springframework.data.mapping.MappingException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -198,6 +199,8 @@ class DefaultDatastoreEntityConverterTests {
             .build();
 
     assertThatThrownBy(() -> ENTITY_CONVERTER.read(DiscrimEntityY.class, entityY))
+            .isInstanceOf(MappingException.class)
+            .cause()
             .isInstanceOf(DatastoreDataException.class)
             .hasMessageContaining("More than one class in an inheritance hierarchy " + "has the same DiscriminatorValue: ");
   }

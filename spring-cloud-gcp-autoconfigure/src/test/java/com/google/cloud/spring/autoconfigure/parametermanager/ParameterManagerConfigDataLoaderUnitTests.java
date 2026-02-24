@@ -26,7 +26,7 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.parametermanager.ParameterManagerTemplate;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.boot.ConfigurableBootstrapContext;
+import org.springframework.boot.bootstrap.ConfigurableBootstrapContext;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
 import org.springframework.boot.context.config.ConfigDataLocation;
 

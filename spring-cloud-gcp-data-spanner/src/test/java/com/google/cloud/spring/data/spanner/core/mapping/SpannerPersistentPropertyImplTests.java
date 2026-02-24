@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -48,12 +49,16 @@ class SpannerPersistentPropertyImplTests {
     context.setFieldNamingStrategy(namingStrat);
 
     assertThatThrownBy(() -> context.getPersistentEntity(TestEntity.class))
-            .hasMessageContaining("Invalid (null or empty) field name returned for ")
-            .hasMessageContaining("com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentPropertyImplTests$TestEntity")
-                .satisfies(t -> {
-                  String msg = t.getMessage();
-                  assertThat(msg).matches("(?s).*SpannerPersistentPropertyImplTests\\$TestEntity\\.(id|doubleList|other)\\b.*");
-                });
+        .satisfies(
+            t -> {
+              Throwable cause = NestedExceptionUtils.getMostSpecificCause(t);
+              assertThat(cause).isNotNull();
+              assertThat(cause.getMessage())
+                  .contains("Invalid (null or empty) field name returned for ").contains(
+                      "com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentPropertyImplTests$TestEntity");
+              assertThat(cause.getMessage())
+                  .matches("(?s).*SpannerPersistentPropertyImplTests\\$TestEntity\\.(id|doubleList|other)\\b.*");
+            });
   }
 
 

@@ -32,11 +32,12 @@ import com.google.spanner.v1.TypeCode;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.data.mapping.SimplePropertyHandler;
-import org.springframework.data.util.TypeInformation;
 
 /** Tests for the Spanner persistent entity. */
 class SpannerPersistentEntityImplTests {
@@ -114,9 +115,8 @@ class SpannerPersistentEntityImplTests {
   void testDuplicatePrimaryKeyOrder() {
 
     SpannerMappingContext spannerMappingContext = new SpannerMappingContext();
-    assertThatThrownBy(() -> spannerMappingContext.getPersistentEntity(EntityWithDuplicatePrimaryKeyOrder.class))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("Two properties were annotated with the same primary key order: id2 and id in EntityWithDuplicatePrimaryKeyOrder.");
+    assertThatMappingExceptionCause(() -> spannerMappingContext.getPersistentEntity(EntityWithDuplicatePrimaryKeyOrder.class),
+        "Two properties were annotated with the same primary key order: id2 and id in EntityWithDuplicatePrimaryKeyOrder.");
   }
 
   @Test
@@ -124,10 +124,19 @@ class SpannerPersistentEntityImplTests {
 
     SpannerMappingContext spannerMappingContext = new SpannerMappingContext();
 
-    assertThatThrownBy(() -> spannerMappingContext.getPersistentEntity(EntityWithWronglyOrderedKeys.class))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("The primary key columns were not given a consecutive order. There is no property annotated with order 2 in EntityWithWronglyOrderedKeys.");
+    assertThatMappingExceptionCause(
+        () -> spannerMappingContext.getPersistentEntity(EntityWithWronglyOrderedKeys.class),
+        "The primary key columns were not given a consecutive order. There is no property annotated with order 2 in EntityWithWronglyOrderedKeys.");
+  }
 
+  private void assertThatMappingExceptionCause(Runnable runnable, String expectedMessage) {
+    assertThatThrownBy(runnable::run)
+        .satisfies(
+            t -> {
+              Throwable cause = NestedExceptionUtils.getMostSpecificCause(t);
+              assertThat(cause).isInstanceOf(SpannerDataException.class);
+              assertThat(cause.getMessage()).isEqualTo(expectedMessage);
+            });
   }
 
   @Test
@@ -252,11 +261,9 @@ class SpannerPersistentEntityImplTests {
   @Test
   void testDuplicateEmbeddedColumnName() {
 
-
-    assertThatThrownBy(() ->   this.spannerMappingContext.getPersistentEntity(EmbeddedParentDuplicateColumn.class))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("Two properties resolve to the same column name: other in EmbeddedParentDuplicateColumn");
-
+    assertThatMappingExceptionCause(
+        () -> this.spannerMappingContext.getPersistentEntity(EmbeddedParentDuplicateColumn.class),
+        "Two properties resolve to the same column name: other in EmbeddedParentDuplicateColumn");
   }
 
   @Test
@@ -298,8 +305,11 @@ class SpannerPersistentEntityImplTests {
   void testEmbeddedCollection() {
 
     assertThatThrownBy(() -> this.spannerMappingContext.getPersistentEntity(ChildCollectionEmbedded.class))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessageContaining("Embedded properties cannot be collections: ");
+        .satisfies(t -> {
+              Throwable cause = NestedExceptionUtils.getMostSpecificCause(t);
+              assertThat(cause).isInstanceOf(SpannerDataException.class);
+              assertThat(cause.getMessage())
+                  .contains("Embedded properties cannot be collections: ");});
   }
 
   @Test
@@ -328,10 +338,9 @@ class SpannerPersistentEntityImplTests {
   @Test
   void testParentChildPkNamesMismatch() {
 
-    assertThatThrownBy(() ->   this.spannerMappingContext.getPersistentEntity(ParentInRelationshipMismatchedKeyName.class))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("The child primary key column (ChildBinRelationship.id) at position 1 does not match that "
-                    + "of its parent (ParentInRelationshipMismatchedKeyName.idNameDifferentThanChildren).");
+    assertThatMappingExceptionCause(() ->  this.spannerMappingContext.getPersistentEntity(ParentInRelationshipMismatchedKeyName.class),
+        "The child primary key column (ChildBinRelationship.id) at position 1 does not match that "
+            + "of its parent (ParentInRelationshipMismatchedKeyName.idNameDifferentThanChildren).");
   }
 
   @Test

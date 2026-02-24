@@ -82,10 +82,10 @@ class SpannerHealthIndicatorAutoConfigurationTests {
 
   @Test
   void testSpannerHealthIndicatorNotCreated() {
-
-    ApplicationContextRunner contextRunnerNew = this.contextRunner.withPropertyValues("management.health.spanner.enabled=false");
-    assertThatThrownBy(() -> contextRunnerNew
-        .run(context -> context.getBean(SpannerHealthIndicator.class)))
+    ApplicationContextRunner contextRunnerNew =
+        this.contextRunner.withPropertyValues("management.health.spanner.enabled=false");
+    assertThatThrownBy(
+            () -> contextRunnerNew.run(context -> context.getBean(SpannerHealthIndicator.class)))
         .isInstanceOf(NoSuchBeanDefinitionException.class);
   }
 

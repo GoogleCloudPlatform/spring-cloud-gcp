@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import com.google.cloud.Timestamp;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.util.TypeInformation;
+import org.springframework.data.core.TypeInformation;
 
 /** Tests for the `DatastoreMappingContext`. */
 class DatastoreMappingContextTests {
