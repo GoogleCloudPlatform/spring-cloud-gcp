@@ -47,7 +47,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
     properties.setDatabaseName("my-database");
     properties.setInstanceConnectionName("my-instance-connection-name");
     String r2dbcUrl = r2dbcPostProcessor.createUrl(DatabaseType.POSTGRESQL, properties);
-    assertThat(r2dbcUrl).isEqualTo("r2dbc:gcp:postgres://my-instance-connection-name/my-database");
+    assertThat(r2dbcUrl).isEqualTo("r2dbc:gcp:postgres://my-instance-connection-name/my-database?sslMode=disable");
   }
 
   @Test
@@ -60,7 +60,7 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
         .run(
             context -> {
               assertThat(context.getEnvironment().getProperty("spring.r2dbc.url"))
-                  .isEqualTo("r2dbc:gcp:postgres://my-project:region:my-instance/my-database");
+                  .isEqualTo("r2dbc:gcp:postgres://my-project:region:my-instance/my-database?sslMode=disable");
               assertThat(context.getEnvironment().getProperty("spring.r2dbc.username"))
                   .isEqualTo("postgres");
             });
@@ -76,8 +76,10 @@ class R2dbcCloudSqlEnvironmentPostProcessorTests {
             "spring.cloud.gcp.sql.enable-iam-auth=true")
         .withClassLoader(excludeDriverPackages(new String[] {"io.r2dbc.postgresql"}))
         .run(
-            context -> assertThat(context.getEnvironment().getProperty("spring.r2dbc.properties", Map.class, Map.of()))
-                .isEqualTo(Map.of("ENABLE_IAM_AUTH", "true")));
+            context -> {
+              assertThat(context.getEnvironment().getProperty("spring.r2dbc.properties.ENABLE_IAM_AUTH"))
+                  .isEqualTo("true");
+            });
   }
 
   @Test

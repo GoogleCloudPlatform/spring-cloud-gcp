@@ -17,9 +17,11 @@
 package com.example;
 
 import java.util.UUID;
+import java.util.concurrent.ThreadPoolExecutor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @TestConfiguration
 public class GcsSpringIntegrationTestConfiguration {
@@ -34,5 +36,14 @@ public class GcsSpringIntegrationTestConfiguration {
   @Bean("localDirectoryName")
   public String uniqueDirectory() {
     return uniqueDirectory;
+  }
+
+  @Bean
+  public ThreadPoolTaskScheduler taskScheduler() {
+    ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+    scheduler.setPoolSize(1);
+    scheduler.setThreadNamePrefix("test-task-scheduler-");
+    scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+    return scheduler;
   }
 }

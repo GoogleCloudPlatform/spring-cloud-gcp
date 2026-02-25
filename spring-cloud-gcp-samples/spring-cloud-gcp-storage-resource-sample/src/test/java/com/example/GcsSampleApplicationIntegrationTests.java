@@ -26,9 +26,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
-import org.junit.AfterClass;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {GcsApplication.class})
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GcsSampleApplicationIntegrationTests {
 
   private final String filename = String.format("file-%s.txt", UUID.randomUUID());
@@ -68,7 +70,7 @@ class GcsSampleApplicationIntegrationTests {
     this.appUrl = "http://localhost:" + this.port;
   }
 
-  @AfterClass
+  @AfterAll
   void cleanupCloudStorage() {
     BlobId blobId = BlobId.of(this.bucketName, filename);
     Blob blob = storage.get(blobId);

@@ -35,12 +35,18 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.config.EnableIntegration;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /** Provides autoconfiguration for the BigQuery integration tests. */
 @SpringBootConfiguration
 @EnableIntegration
 public class BigQueryTestConfiguration {
+
+  @Bean
+  public TaskScheduler taskScheduler() {
+    return new ThreadPoolTaskScheduler();
+  }
 
   /** The BigQuery Dataset name used for the integration tests. */
   public static final String DATASET_NAME = "test_dataset";

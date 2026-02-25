@@ -68,12 +68,22 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
       CredentialsPropertiesSetter.setCredentials(sqlProperties,
           propertiesRetriever.getGcpProperties());
 
+      // Belt and braces approach for SSL and IAM auth properties
+      Map<String, Object> r2dbcPropertiesMap = new HashMap<>();
+      if (databaseType == DatabaseType.POSTGRESQL) {
+        // Use multiple naming conventions to ensure the Spring Binder and Driver both catch it
+        r2dbcPropertiesMap.put("spring.r2dbc.properties.sslMode", "disable");
+        r2dbcPropertiesMap.put("spring.r2dbc.properties.ssl-mode", "disable");
+        r2dbcPropertiesMap.put("spring.r2dbc.properties.sslmode", "disable");
+      }
       if (sqlProperties.isEnableIamAuth()) {
+        r2dbcPropertiesMap.put("spring.r2dbc.properties.ENABLE_IAM_AUTH", "true");
+      }
+
+      if (!r2dbcPropertiesMap.isEmpty()) {
         environment
             .getPropertySources()
-            .addFirst(
-                new MapPropertySource("CLOUD_SQL_R2DBC_ENABLE_IAM_AUTH",
-                    Map.of("spring.r2dbc.properties", Map.of("ENABLE_IAM_AUTH", "true"))));
+            .addFirst(new MapPropertySource("CLOUD_SQL_R2DBC_PROPERTIES", r2dbcPropertiesMap));
       }
     }
   }
@@ -85,10 +95,18 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
         "An instance connection name must be provided in the format"
             + " <PROJECT_ID>:<REGION>:<INSTANCE_ID>.");
 
-    return String.format(
+    String url = String.format(
         databaseType.getR2dbcUrlTemplate(),
         sqlProperties.getInstanceConnectionName(),
         sqlProperties.getDatabaseName());
+
+    if (databaseType == DatabaseType.POSTGRESQL && sqlProperties.isEnableIamAuth()) {
+      // Append IAM auth if not already part of the template
+      if (!url.contains("ENABLE_IAM_AUTH")) {
+        url += (url.contains("?") ? "&" : "?") + "ENABLE_IAM_AUTH=true";
+      }
+    }
+    return url;
   }
 
   /**

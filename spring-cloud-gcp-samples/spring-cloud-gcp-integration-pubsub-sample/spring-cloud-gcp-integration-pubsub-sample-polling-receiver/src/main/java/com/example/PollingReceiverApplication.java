@@ -34,6 +34,8 @@ import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.core.MessageSource;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
  * Spring Boot Application demonstrating receiving PubSub messages via synchronous pull.
@@ -47,6 +49,11 @@ public class PollingReceiverApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(PollingReceiverApplication.class, args);
+  }
+
+  @Bean
+  public TaskScheduler pollingReceiverTaskScheduler() {
+    return new ThreadPoolTaskScheduler();
   }
 
   @Bean

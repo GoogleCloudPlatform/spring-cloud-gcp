@@ -31,7 +31,7 @@ public enum DatabaseType {
       "org.postgresql.Driver",
       "jdbc:postgresql://%s/%s?"
           + "socketFactory=com.google.cloud.sql.postgres.SocketFactory",
-      "r2dbc:gcp:postgres://%s/%s",
+      "r2dbc:gcp:postgres://%s/%s?sslMode=disable",
       "postgres");
 
   private final String jdbcDriverName;

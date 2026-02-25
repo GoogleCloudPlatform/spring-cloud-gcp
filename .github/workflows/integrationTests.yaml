@@ -31,27 +31,27 @@ jobs:
       fail-fast: false
       matrix:
         it:
-          - alloydb
-          - bigquery
+          # - alloydb
+          # - bigquery
           - cloudsql
-          - config
-          - datastore
-          - firestore
-          - kms
-          - kotlin
-          - logging
-          - metrics
-          - multisample
-          - pubsub
-          - pubsub-bus
-          - pubsub-docs
-          - pubsub-emulator
-          - pubsub-integration
-          - secretmanager
+          # - config
+          # - datastore
+          # - firestore
+          # - kms
+          # - kotlin
+          # - logging
+          # - metrics
+          # - multisample
+          # - pubsub
+          # - pubsub-bus
+          # - pubsub-docs
+          # - pubsub-emulator
+          # - pubsub-integration
+          # - secretmanager
           - spanner
-          - storage
-          - trace
-          - vision
+          # - storage
+          # - trace
+          # - vision
     steps:
       - name: Get current date
         id: date

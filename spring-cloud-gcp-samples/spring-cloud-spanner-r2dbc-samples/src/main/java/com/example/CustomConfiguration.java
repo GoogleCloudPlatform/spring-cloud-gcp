@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
@@ -38,9 +39,11 @@ public class CustomConfiguration extends AbstractR2dbcConfiguration {
 
   @Autowired ApplicationContext applicationContext;
 
+  @Autowired @Lazy ConnectionFactory connectionFactory;
+
   @Override
   public ConnectionFactory connectionFactory() {
-    return null;
+    return this.connectionFactory;
   }
 
   @Bean

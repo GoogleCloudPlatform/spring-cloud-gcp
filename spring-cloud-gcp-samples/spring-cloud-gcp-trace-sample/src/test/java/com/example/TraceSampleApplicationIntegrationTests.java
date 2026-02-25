@@ -70,18 +70,35 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import java.util.concurrent.ThreadPoolExecutor;
+
 /** Verifies that the logged Traces on the sample application appear in StackDriver. */
 // Please use "-Dit.trace=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.trace", matches = "true")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
-    classes = {Application.class})
+    classes = {Application.class, TraceSampleApplicationIntegrationTests.TestConfig.class})
 @AutoConfigureMetrics
 @AutoConfigureTracing
 @ImportRuntimeHints(TestRuntimeHints.class)
 @AutoConfigureTestRestTemplate
 class TraceSampleApplicationIntegrationTests {
+
+  @Configuration
+  static class TestConfig {
+    @Bean
+    public ThreadPoolTaskScheduler taskScheduler() {
+      ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+      scheduler.setPoolSize(1);
+      scheduler.setThreadNamePrefix("test-task-scheduler-");
+      scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+      return scheduler;
+    }
+  }
 
   @DynamicPropertySource
   static void registerProperties(DynamicPropertyRegistry registry) {

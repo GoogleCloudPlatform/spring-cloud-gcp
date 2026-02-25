@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.Instant;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InstantTypeAdapterTest {
   InstantTypeAdapter instantTypeAdapter = new InstantTypeAdapter();
