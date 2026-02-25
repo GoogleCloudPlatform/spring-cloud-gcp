@@ -32,11 +32,18 @@ import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.gateway.GatewayProxyFactoryBean;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /** Sample configuration for using BigQuery with Spring Integration. */
 @Configuration
 @EnableIntegration
 public class BigQuerySampleConfiguration {
+
+  @Bean
+  public TaskScheduler taskScheduler() {
+    return new ThreadPoolTaskScheduler();
+  }
 
   @Bean
   public DirectChannel bigQueryWriteDataChannel() {

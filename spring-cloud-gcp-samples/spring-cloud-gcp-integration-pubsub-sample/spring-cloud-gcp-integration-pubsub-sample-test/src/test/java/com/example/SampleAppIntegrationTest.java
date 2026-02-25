@@ -23,15 +23,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * These tests verifies that the pubsub-integration-sample works.
@@ -39,13 +41,24 @@ import org.springframework.web.client.RestTemplate;
  * @since 1.1
  */
 @EnabledIfSystemProperty(named = "it.pubsub-integration", matches = "true")
-@ExtendWith(OutputCaptureExtension.class)
-@RunWith(SpringRunner.class)
+@ExtendWith({OutputCaptureExtension.class, SpringExtension.class})
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
     properties = {"server.port=8082"},
-    classes = {SenderReceiverApplication.class})
+    classes = {SenderReceiverApplication.class, SampleAppIntegrationTest.TestConfig.class})
 class SampleAppIntegrationTest {
+
+  @Configuration
+  static class TestConfig {
+    @Bean
+    public ThreadPoolTaskScheduler taskScheduler() {
+      ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+      scheduler.setPoolSize(1);
+      scheduler.setThreadNamePrefix("test-task-scheduler-");
+      scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+      return scheduler;
+    }
+  }
 
   private RestTemplate restTemplate = new RestTemplate();
 

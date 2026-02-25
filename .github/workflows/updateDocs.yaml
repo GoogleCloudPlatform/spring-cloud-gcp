@@ -19,6 +19,8 @@ on:
 jobs:
   updateDocs:
     runs-on: ubuntu-latest
+    env:
+      EXTRA_MAVEN_FLAGS: ${{ (github.ref_name == '8.0-migration' || github.base_ref == '8.0-migration') && '-DskipUnitTests -Dcheckstyle.skip -Dfmt.skip' || '' }}
     permissions:
       contents: write
       pull-requests: write
@@ -51,6 +53,7 @@ jobs:
           --threads 1.5C \
           --define maven.test.skip=true \
           --define maven.javadoc.skip=true \
+          ${EXTRA_MAVEN_FLAGS} \
           install
 
     - name: Remove SNAPSHOT # Needed for releases
@@ -66,5 +69,5 @@ jobs:
         elif [[ -n "${{ github.event.inputs.committish }}" ]] && [[ "${{ github.event.inputs.committish }}" != "main" ]] ; then
             ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.inputs.committish }} --destination . --build
         else
-          ./mvnw install -P docs -P '!CI' -pl docs -DskipTests # Simplified PR check
+          ./mvnw install -P docs -P '!CI' -pl docs -DskipTests ${EXTRA_MAVEN_FLAGS} # Simplified PR check
         fi

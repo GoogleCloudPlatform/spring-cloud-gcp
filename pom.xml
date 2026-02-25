@@ -54,7 +54,7 @@
 		<maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
 		<checkstyle-rules.version>9.3</checkstyle-rules.version>
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
-		<native-maven-plugin.version>0.10.5</native-maven-plugin.version>
+		<native-maven-plugin.version>0.11.3</native-maven-plugin.version>
 		<errorprone.version>2.38.0</errorprone.version>
 
 		<!-- All checks except for javadoc enforced by default -->
@@ -208,16 +208,6 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.vintage</groupId>
-			<artifactId>junit-vintage-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -459,7 +449,7 @@
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>${spring-boot-dependencies.version}</version>
+					<version>4.0.0</version>
 					<executions>
 						<execution>
 							<id>process-test-aot</id>

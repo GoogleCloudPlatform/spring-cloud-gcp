@@ -25,13 +25,13 @@ import com.google.api.generator.test.protoloader.TestProtoLoader;
 import com.google.showcase.v1beta1.EchoOuterClass;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SpringWriterTest {
   private GapicContext context;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.context = TestUtils.parseShowcaseEcho();
   }

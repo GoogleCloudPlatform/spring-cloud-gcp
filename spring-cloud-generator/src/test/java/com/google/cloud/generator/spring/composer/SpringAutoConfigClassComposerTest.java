@@ -25,8 +25,8 @@ import com.google.api.generator.gapic.model.Transport;
 import com.google.api.generator.test.framework.Assert;
 import com.google.api.generator.test.protoloader.GrpcRestTestProtoLoader;
 import com.google.cloud.generator.spring.TestUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SpringAutoConfigClassComposerTest {
   private GapicContext echoContext;
@@ -39,7 +39,7 @@ public class SpringAutoConfigClassComposerTest {
   private Service echoRestProtoService;
   private Service wickedProtoService;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.echoContext = TestUtils.parseShowcaseEcho();
     this.echoProtoService = this.echoContext.services().get(0);
