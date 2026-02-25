@@ -46,6 +46,9 @@
 //         Newly supported Spring Boot max version for compatibilityRange 
 //         (e.g., "4.1.0-M1"). This is used exclusively when creating the 
 //         Spring Initializr pull request for the main branch.
+//     -interactive
+//         Ask for confirmation before proceeding to each step. When enabled,
+//         the release process for branches runs sequentially rather than in parallel.
 //
 // Requirements:
 //   - The GitHub CLI (`gh`) must be installed and authenticated. Run `gh auth login`
@@ -68,6 +71,7 @@ import (
 
 var emailOpt string
 var bootMaxOpt string
+var interactiveOpt bool
 
 // main is the entry point of the script. It parses flags, sets up the parallel release process
 // for the specified branches, and handles the sequential README update for the main branch.
@@ -75,10 +79,17 @@ func main() {
 	branchesOpt := flag.String("branches", "main,3.x,5.x,6.x", "Comma-separated list of branches to release")
 	flag.StringVar(&emailOpt, "email", "", "Email address to send notifications to (requires LOAS/gcert)")
 	flag.StringVar(&bootMaxOpt, "boot-max", "", "Newly supported Spring Boot max version for compatibilityRange (e.g. 4.1.0-M1)")
+	flag.BoolVar(&interactiveOpt, "interactive", false, "Ask for confirmation before proceeding to each step")
 	flag.Parse()
 
 	branches := strings.Split(*branchesOpt, ",")
-	fmt.Printf("🚀 Starting automated release process in parallel for branches: %v\n\n", branches)
+	
+	if interactiveOpt {
+		fmt.Printf("🚀 Starting automated release process sequentially for branches: %v\n", branches)
+		fmt.Println("⚠️ Interactive mode enabled. Releases will run sequentially to allow for user input.\n")
+	} else {
+		fmt.Printf("🚀 Starting automated release process in parallel for branches: %v\n\n", branches)
+	}
 
 	if emailOpt != "" {
 		fmt.Printf("🔔 Notifications will be sent to: %s\n\n", emailOpt)
@@ -98,24 +109,35 @@ func main() {
 			includesMain = true
 		}
 
-		wg.Add(1)
-		go func(br string) {
-			defer wg.Done()
-			if br == "main" {
+		if interactiveOpt {
+			if branch == "main" {
 				runReleaseForMain()
 			} else {
-				runReleaseForBranch(br)
+				runReleaseForBranch(branch)
 			}
-		}(branch)
+		} else {
+			wg.Add(1)
+			go func(br string) {
+				defer wg.Done()
+				if br == "main" {
+					runReleaseForMain()
+				} else {
+					runReleaseForBranch(br)
+				}
+			}(branch)
+		}
 	}
 
-	// Wait for all branch releases to finish
-	wg.Wait()
+	// Wait for all branch releases to finish if running in parallel
+	if !interactiveOpt {
+		wg.Wait()
+	}
 	fmt.Println("\n🎉 All requested branch releases have finished completely!")
 
 	// Run the README.adoc update sequentially after all parallel releases are done.
 	// We only trigger this if 'main' was part of the run.
 	if includesMain {
+		confirmStep("main", "Update README.adoc with latest versions from Maven Central")
 		updateReadmeAdoc(10)
 	}
 }
@@ -127,6 +149,7 @@ func runReleaseForMain() {
 	step := 1
 
 	// Merge gapic-generator-java-bom PR
+	confirmStep(branch, "Find and merge gapic-generator-java-bom upgrade PR")
 	fmt.Printf("%s ▶️ STEP %d: Finding gapic-generator-java-bom upgrade PR...\n", prefix, step)
 	gapicPR := findPR(branch, "gapic-generator-java-bom in:title is:open")
 	if gapicPR == "" {
@@ -140,6 +163,7 @@ func runReleaseForMain() {
 	step++
 
 	// Find libraries-bom PR and Trigger Rebase
+	confirmStep(branch, "Find libraries-bom PR and trigger rebase")
 	fmt.Printf("\n%s ▶️ STEP %d: Finding libraries-bom PR and triggering rebase...\n", prefix, step)
 	bomPR := findPR(branch, "libraries-bom in:title is:open")
 	if bomPR == "" {
@@ -150,6 +174,7 @@ func runReleaseForMain() {
 	step++
 
 	// Trigger AutoConfigs Workflow
+	confirmStep(branch, "Trigger Generate Spring Auto-Configurations workflow")
 	fmt.Printf("\n%s ▶️ STEP %d: Triggering Generate Spring Auto-Configurations workflow...\n", prefix, step)
 	triggerAutoConfigs(branch, bomPR)
 	waitForBotCommit(branch, bomPR)
@@ -157,6 +182,7 @@ func runReleaseForMain() {
 	step++
 
 	// Merge the libraries-bom PR
+	confirmStep(branch, "Merge the completed libraries-bom PR")
 	fmt.Printf("\n%s ▶️ STEP %d: Merging the completed libraries-bom PR...\n", prefix, step)
 	approveWorkflowRuns(branch, bomPR)
 	approvePR(branch, bomPR)
@@ -165,6 +191,7 @@ func runReleaseForMain() {
 	step++
 
 	// Wait for and merge Release PR (and Snapshot)
+	confirmStep(branch, "Wait for release-please to create the release PR and merge it")
 	fmt.Printf("\n%s ▶️ STEP %d: Waiting for release-please to create the release PR...\n", prefix, step)
 	releasePR := pollForPR(branch, "chore(main): release in:title is:open author:app/release-please", true)
 	version := getVersionFromPR(releasePR)
@@ -173,6 +200,7 @@ func runReleaseForMain() {
 	waitForMerge(branch, releasePR)
 	step++
 
+	confirmStep(branch, "Wait for post-release SNAPSHOT PR and merge it")
 	fmt.Printf("\n%s ▶️ STEP %d: Waiting for post-release SNAPSHOT PR...\n", prefix, step)
 	snapshotPR := pollForPR(branch, "SNAPSHOT in:title is:open author:app/release-please", false)
 	approvePR(branch, snapshotPR)
@@ -180,14 +208,17 @@ func runReleaseForMain() {
 	step++
 
 	// Verify Maven Central
+	confirmStep(branch, "Verify release on Maven Central")
 	fmt.Printf("\n%s ▶️ STEP %d: Verifying release %s on Maven Central...\n", prefix, step, version)
 	verifyMavenCentral(branch, version)
 	step++
 	
+	confirmStep(branch, "Verify Documentation and Javadocs")
 	verifyDocumentation(branch, version, step)
 	step++
 
 	// Create PR on Spring Initializr
+	confirmStep(branch, "Create PR for Spring Initializr")
 	createInitializrPR(version, bootMaxOpt, step)
 
 }
@@ -198,6 +229,7 @@ func runReleaseForBranch(branch string) {
 	step := 1
 
 	// Merge gapic-generator-java-bom PR
+	confirmStep(branch, "Find and merge libraries-bom upgrade PR")
 	fmt.Printf("%s ▶️ STEP %d: Finding libraries-bom upgrade PR...\n", prefix, step)
 	bomPR := findPR(branch, "libraries-bom in:title is:open")
 	if bomPR == "" {
@@ -210,6 +242,7 @@ func runReleaseForBranch(branch string) {
 	step++
 
 	// Merge libraries-bom PR
+	confirmStep(branch, "Wait for release PR to be created by release-please and merge it")
 	fmt.Printf("\n%s ▶️ STEP %d: Waiting for release PR to be created by release-please...\n", prefix, step)
 	releasePR := pollForPR(branch, "chore("+branch+"): release in:title is:open author:app/release-please", true)
 	version := getVersionFromPR(releasePR)
@@ -220,6 +253,7 @@ func runReleaseForBranch(branch string) {
 	step++
 
 	// Wait for and merge Release PR (and Snapshot)
+	confirmStep(branch, "Wait for post-release SNAPSHOT PR and merge it")
 	fmt.Printf("\n%s ▶️ STEP %d: Waiting for post-release SNAPSHOT PR...\n", prefix, step)
 	snapshotPR := pollForPR(branch, "SNAPSHOT in:title is:open author:app/release-please", false)
 	approvePR(branch, snapshotPR)
@@ -227,11 +261,37 @@ func runReleaseForBranch(branch string) {
 	step++
 
 	// Verify Maven Central
+	confirmStep(branch, "Verify release on Maven Central")
 	fmt.Printf("\n%s ▶️ STEP %d: Verifying release %s on Maven Central...\n", prefix, step, version)
 	verifyMavenCentral(branch, version)
 	step++
 	
+	confirmStep(branch, "Verify Documentation and Javadocs")
 	verifyDocumentation(branch, version, step)
+}
+
+// confirmStep prompts the user for confirmation before proceeding to the next step if interactive mode is enabled.
+func confirmStep(branch, description string) {
+	if !interactiveOpt {
+		return
+	}
+	for {
+		fmt.Printf("\n[%s] ⏸️ Continue to next step (%s)? (y/n): ", branch, description)
+		reader := bufio.NewReader(os.Stdin)
+		text, err := reader.ReadString('\n')
+		if err != nil {
+			fatalError(branch, "Failed to read input: %v", err)
+		}
+		text = strings.TrimSpace(strings.ToLower(text))
+		if text == "y" || text == "yes" {
+			return
+		} else if text == "n" || text == "no" {
+			fmt.Printf("[%s] 🛑 Aborting by user request.\n", branch)
+			os.Exit(0)
+		} else {
+			fmt.Println("Please answer 'y' or 'n'.")
+		}
+	}
 }
 
 // --- Specific Main Branch Helper Functions ---
