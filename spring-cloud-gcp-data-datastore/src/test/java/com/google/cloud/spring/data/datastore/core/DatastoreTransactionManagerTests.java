@@ -18,6 +18,7 @@ package com.google.cloud.spring.data.datastore.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -34,6 +35,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.support.RetrySynchronizationManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -45,6 +48,8 @@ class DatastoreTransactionManagerTests {
   @Mock Datastore datastore;
 
   @Mock Transaction transaction;
+
+  @Mock RetryContext retryContext;
 
   private Tx tx;
 
@@ -61,6 +66,7 @@ class DatastoreTransactionManagerTests {
 
     when(this.datastore.newTransaction()).thenReturn(this.transaction);
     when(this.status.getTransaction()).thenReturn(this.tx);
+    RetrySynchronizationManager.register(retryContext);
   }
 
   @Test
@@ -147,5 +153,37 @@ class DatastoreTransactionManagerTests {
     this.tx.setTransaction(this.transaction);
     this.manager.doRollback(this.status);
     verify(this.transaction, never()).rollback();
+  }
+
+  @Test
+  void testFailCommitSetsPreviousTransactionId() {
+    DatastoreException exception = new DatastoreException(0, "", "");
+    when(this.transaction.isActive()).thenReturn(true);
+    when(this.transaction.commit()).thenThrow(exception);
+    this.tx.setTransaction(this.transaction);
+
+    assertThatThrownBy(() -> this.manager.doCommit(this.status))
+            .isInstanceOf(TransactionSystemException.class)
+            .hasMessage("Cloud Datastore transaction failed to commit.")
+            .hasCause(exception);
+    verify(retryContext, times(1)).setAttribute(any(), any());
+  }
+
+  @Test
+  void testFailCommitRespectsIgnoringRetry() {
+    this.manager = new DatastoreTransactionManager(() -> datastore, false);
+    this.tx = (Tx) manager.doGetTransaction();
+    when(this.status.getTransaction()).thenReturn(this.tx);
+
+    DatastoreException exception = new DatastoreException(0, "", "");
+    when(this.transaction.isActive()).thenReturn(true);
+    when(this.transaction.commit()).thenThrow(exception);
+    this.tx.setTransaction(this.transaction);
+
+    assertThatThrownBy(() -> this.manager.doCommit(this.status))
+            .isInstanceOf(TransactionSystemException.class)
+            .hasMessage("Cloud Datastore transaction failed to commit.")
+            .hasCause(exception);
+    verify(retryContext, never()).setAttribute(any(), any());
   }
 }

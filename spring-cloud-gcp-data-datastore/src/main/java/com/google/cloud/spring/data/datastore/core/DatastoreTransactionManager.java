@@ -39,7 +39,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  */
 public class DatastoreTransactionManager extends AbstractPlatformTransactionManager {
 
-  private static final String PREVIOUS_TRANSACTION_ID_ATTRIBUTE = "datastore-transaction-id";
+  static final String PREVIOUS_TRANSACTION_ID_ATTRIBUTE = "datastore-transaction-id";
 
   private static final TransactionOptions READ_ONLY_OPTIONS =
       TransactionOptions.newBuilder()
@@ -47,9 +47,16 @@ public class DatastoreTransactionManager extends AbstractPlatformTransactionMana
           .build();
 
   private final Supplier<Datastore> datastore;
+  
+  private final boolean previousTransactionRetryEnabled;
 
   public DatastoreTransactionManager(final Supplier<Datastore> datastore) {
+    this(datastore, true);
+  }
+
+  public DatastoreTransactionManager(final Supplier<Datastore> datastore, boolean previousTransactionRetryEnabled) {
     this.datastore = datastore;
+    this.previousTransactionRetryEnabled = previousTransactionRetryEnabled;
   }
 
   @Override
@@ -82,7 +89,7 @@ public class DatastoreTransactionManager extends AbstractPlatformTransactionMana
     Tx tx = (Tx) transactionObject;
     if (transactionDefinition.isReadOnly()) {
       tx.transaction = tx.datastore.newTransaction(READ_ONLY_OPTIONS);
-    } else if (retryContext != null && retryContext.hasAttribute(PREVIOUS_TRANSACTION_ID_ATTRIBUTE)) {
+    } else if (this.previousTransactionRetryEnabled && retryContext != null && retryContext.hasAttribute(PREVIOUS_TRANSACTION_ID_ATTRIBUTE)) {
       tx.transaction = tx.datastore.newTransaction(
           TransactionOptions.newBuilder()
               .setReadWrite(ReadWrite.newBuilder().setPreviousTransaction(
@@ -110,7 +117,7 @@ public class DatastoreTransactionManager extends AbstractPlatformTransactionMana
         this.logger.debug("Transaction was not committed because it is no longer active.");
       }
     } catch (DatastoreException ex) {
-      if (retryContext != null) {
+      if (this.previousTransactionRetryEnabled && retryContext != null) {
         retryContext.setAttribute(PREVIOUS_TRANSACTION_ID_ATTRIBUTE, tx.transaction.getTransactionId());
       }
       throw new TransactionSystemException("Cloud Datastore transaction failed to commit.", ex);

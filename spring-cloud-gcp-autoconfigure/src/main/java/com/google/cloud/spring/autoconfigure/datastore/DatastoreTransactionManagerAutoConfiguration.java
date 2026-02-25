@@ -25,6 +25,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -44,24 +45,29 @@ public class DatastoreTransactionManagerAutoConfiguration {
 
   /** Configuration class. */
   @AutoConfiguration
+  @EnableConfigurationProperties(GcpDatastoreProperties.class)
   static class DatastoreTransactionManagerConfiguration {
 
     private final DatastoreProvider datastore;
 
     private final TransactionManagerCustomizers transactionManagerCustomizers;
 
+    private final boolean previousTransactionRetryEnabled;
+
     DatastoreTransactionManagerConfiguration(
+        GcpDatastoreProperties gcpDatastoreProperties,
         DatastoreProvider datastore,
         ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
       this.datastore = datastore;
       this.transactionManagerCustomizers = transactionManagerCustomizers.getIfAvailable();
+      this.previousTransactionRetryEnabled = gcpDatastoreProperties.isPreviousTransactionRetryEnabled();
     }
 
     @Bean
     @ConditionalOnMissingBean
     public DatastoreTransactionManager datastoreTransactionManager() {
       DatastoreTransactionManager transactionManager =
-          new DatastoreTransactionManager(this.datastore);
+          new DatastoreTransactionManager(this.datastore, this.previousTransactionRetryEnabled);
       if (this.transactionManagerCustomizers != null) {
         this.transactionManagerCustomizers.customize(transactionManager);
       }
