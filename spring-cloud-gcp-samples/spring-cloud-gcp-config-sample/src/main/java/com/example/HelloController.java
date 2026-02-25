@@ -16,6 +16,7 @@
 
 package com.example;
 
+import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +31,9 @@ public class HelloController {
   }
 
   @GetMapping("/")
-  public MyAppProperties json() {
-    return this.sampleConfig;
+  public Map<String, Object> json() {
+    return Map.of(
+        "queueSize", this.sampleConfig.getQueueSize(),
+        "featureXEnabled", this.sampleConfig.isFeatureXEnabled());
   }
 }

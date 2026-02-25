@@ -28,6 +28,7 @@ import org.springframework.data.relational.core.dialect.AbstractDialect;
 import org.springframework.data.relational.core.dialect.ArrayColumns;
 import org.springframework.data.relational.core.dialect.LimitClause;
 import org.springframework.data.relational.core.dialect.LockClause;
+import org.springframework.data.relational.core.sql.IdentifierProcessing;
 import org.springframework.data.relational.core.sql.LockOptions;
 import org.springframework.r2dbc.core.binding.BindMarkersFactory;
 
@@ -117,6 +118,12 @@ public class SpannerR2dbcDialect extends AbstractDialect implements R2dbcDialect
   @Override
   public ArrayColumns getArraySupport() {
     return new SpannerArrayColumns();
+  }
+
+  @Override
+  public IdentifierProcessing getIdentifierProcessing() {
+    return IdentifierProcessing.create(
+        new IdentifierProcessing.Quoting("`"), IdentifierProcessing.LetterCasing.AS_IS);
   }
 
 }

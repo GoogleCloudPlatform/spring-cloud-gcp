@@ -20,10 +20,12 @@ import com.google.cloud.spring.pubsub.support.converter.JacksonPubSubMessageConv
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.integration.config.EnableIntegration;
 import tools.jackson.databind.ObjectMapper;
 
 /** Entry point into the sample application. */
 @SpringBootApplication
+@EnableIntegration
 public class PubSubJsonPayloadApplication {
 
   public static void main(String[] args) {

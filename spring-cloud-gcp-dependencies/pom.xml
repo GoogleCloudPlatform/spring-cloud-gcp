@@ -39,10 +39,17 @@
 		<r2dbc-postgres-driver.version>1.0.7.RELEASE</r2dbc-postgres-driver.version>
 		<cloud-spanner-r2dbc.version>1.3.0</cloud-spanner-r2dbc.version>
 		<alloydb-jdbc-connector.version>1.2.0</alloydb-jdbc-connector.version>
+		<jakarta-annotation-api.version>2.1.1</jakarta-annotation-api.version>
+		<spring-boot-dependencies.version>4.0.0</spring-boot-dependencies.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>jakarta.annotation</groupId>
+				<artifactId>jakarta.annotation-api</artifactId>
+				<version>${jakarta-annotation-api.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.google.cloud</groupId>
 				<artifactId>spring-cloud-gcp-core</artifactId>
@@ -134,6 +141,19 @@
 				<groupId>tools.jackson.core</groupId>
 				<artifactId>jackson-core</artifactId>
 			</dependency>
+			<dependency>
+				<groupId>tools.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>tools.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>tools.jackson.dataformat</groupId>
+				<artifactId>jackson-dataformat-yaml</artifactId>
+			</dependency>
+
 			<!--Starters-->
 			<dependency>
 				<groupId>com.google.cloud</groupId>
@@ -260,42 +280,42 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-restclient</artifactId>
-				<version>4.0.0</version>
+				<version>${spring-boot-dependencies.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-jackson</artifactId>
-				<version>4.0.0</version>
+				<version>${spring-boot-dependencies.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-classic</artifactId>
-				<version>4.0.0</version>
+				<version>${spring-boot-dependencies.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-jdbc</artifactId>
-				<version>4.0.0</version>
+				<version>${spring-boot-dependencies.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-webmvc-test</artifactId>
-				<version>4.0.0</version>
+				<version>${spring-boot-dependencies.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-micrometer-metrics-test</artifactId>
-				<version>4.0.0</version>
+				<version>${spring-boot-dependencies.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-micrometer-tracing-test</artifactId>
-				<version>4.0.0</version>
+				<version>${spring-boot-dependencies.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-resttestclient</artifactId>
-				<version>4.0.0</version>
+				<version>${spring-boot-dependencies.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.cloud</groupId>

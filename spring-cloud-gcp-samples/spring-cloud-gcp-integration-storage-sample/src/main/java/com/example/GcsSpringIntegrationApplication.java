@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.InboundChannelAdapter;
 import org.springframework.integration.annotation.Poller;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.file.FileHeaders;
@@ -42,6 +43,7 @@ import org.springframework.messaging.MessageHandler;
 
 /** Storage Spring Integration sample app. */
 @SpringBootApplication
+@EnableIntegration
 public class GcsSpringIntegrationApplication {
 
   private static final Log LOGGER = LogFactory.getLog(GcsSpringIntegrationApplication.class);
