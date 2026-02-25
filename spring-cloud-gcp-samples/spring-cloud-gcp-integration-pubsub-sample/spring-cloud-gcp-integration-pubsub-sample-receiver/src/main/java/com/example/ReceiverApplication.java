@@ -31,6 +31,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.handler.annotation.Header;
 
@@ -40,6 +41,7 @@ import org.springframework.messaging.handler.annotation.Header;
  * @since 1.1
  */
 @SpringBootApplication
+@EnableIntegration
 public class ReceiverApplication {
 
   private static final Log LOGGER = LogFactory.getLog(ReceiverApplication.class);

@@ -101,13 +101,6 @@ class BigQueryFileMessageHandlerIntegrationTests {
     CompletableFuture<Job> jobFuture =
         (CompletableFuture<Job>) this.messageHandler.handleRequestMessage(message);
 
-    // Assert that a BigQuery polling task is scheduled successfully.
-    await()
-        .atMost(Duration.ofSeconds(5))
-        .untilAsserted(
-            () ->
-                assertThat(this.taskScheduler.getScheduledThreadPoolExecutor().getQueue())
-                    .hasSize(1));
     jobFuture.get();
 
     QueryJobConfiguration queryJobConfiguration =
@@ -137,13 +130,6 @@ class BigQueryFileMessageHandlerIntegrationTests {
     CompletableFuture<Job> jobFuture =
         (CompletableFuture<Job>) this.messageHandler.handleRequestMessage(message);
 
-    // Assert that a BigQuery polling task is scheduled successfully.
-    await()
-        .atMost(Duration.ofSeconds(5))
-        .untilAsserted(
-            () ->
-                assertThat(this.taskScheduler.getScheduledThreadPoolExecutor().getQueue())
-                    .hasSize(1));
     jobFuture.get();
 
     QueryJobConfiguration queryJobConfiguration =

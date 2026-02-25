@@ -67,6 +67,8 @@ class SpannerRepositoryIntegrationTests {
 
   @Autowired private SpannerRepositoryExample spannerRepositoryExample;
 
+  @Autowired private TestRestTemplate testRestTemplate;
+
   @BeforeEach
   @AfterEach
   void cleanupAndSetupTables() {
@@ -79,10 +81,9 @@ class SpannerRepositoryIntegrationTests {
   void testRestEndpoint() {
     this.spannerRepositoryExample.runExample();
 
-    TestRestTemplate testRestTemplate = new TestRestTemplate();
     ResponseEntity<PagedModel<Trade>> tradesResponse =
-        testRestTemplate.exchange(
-            String.format("http://localhost:%s/trades", this.port),
+        this.testRestTemplate.exchange(
+            "/trades",
             HttpMethod.GET,
             null,
             new ParameterizedTypeReference<>() {});
@@ -93,13 +94,12 @@ class SpannerRepositoryIntegrationTests {
   void testRestEndpointPut() {
     this.spannerRepositoryExample.runExample();
 
-    TestRestTemplate testRestTemplate = new TestRestTemplate();
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
     ResponseEntity<Trader> tradesResponse =
-        testRestTemplate.exchange(
-            String.format("http://localhost:%s/traders/t123", this.port),
+        this.testRestTemplate.exchange(
+            "/traders/t123",
             HttpMethod.PUT,
             new HttpEntity<>(
                 "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"createdOn\": \"2000-01-02"

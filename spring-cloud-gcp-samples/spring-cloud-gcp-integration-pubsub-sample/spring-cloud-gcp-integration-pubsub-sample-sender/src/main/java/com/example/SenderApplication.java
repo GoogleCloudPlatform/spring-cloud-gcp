@@ -27,10 +27,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.MessageHandler;
 
 /** Spring Integration Channel Adapters for Google Cloud Pub/Sub code sample. */
 @SpringBootApplication
+@EnableIntegration
 public class SenderApplication {
 
   private static final Log LOGGER = LogFactory.getLog(SenderApplication.class);
