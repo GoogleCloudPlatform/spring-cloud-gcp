@@ -56,13 +56,15 @@ run_sample_tests () {
       -Pnative -Pnative-sample-config \
       --define skipTests \
       --define org.slf4j.simpleLogger.showDateTime=true \
-      --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
+      --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
+      ${EXTRA_MAVEN_FLAGS}
     mvn test \
       -Pnative-sample-config -PnativeTest \
       --define notAllModules=true \
       --define maven.javadoc.skip=true \
       --define org.slf4j.simpleLogger.showDateTime=true \
-      --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
+      --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
+      ${EXTRA_MAVEN_FLAGS}
     popd
     filtered_project_names="$(echo "${filtered_modules[@]}" | sed 's/ /,/g')"
     mvn clean test \
@@ -71,7 +73,8 @@ run_sample_tests () {
       --define maven.javadoc.skip=true \
       -pl="${filtered_project_names}" \
       --define org.slf4j.simpleLogger.showDateTime=true \
-      --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
+      --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
+      ${EXTRA_MAVEN_FLAGS}
 
   else
     project_names="$(echo "${module_samples[@]}" | sed 's/ /,/g')"
@@ -85,7 +88,8 @@ run_sample_tests () {
       -pl="${project_names}" \
       --define org.slf4j.simpleLogger.showDateTime=true \
       --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
-      --define spring-boot.run.arguments="--spring.cloud.refresh.enabled=false"
+      --define spring-boot.run.arguments="--spring.cloud.refresh.enabled=false" \
+      ${EXTRA_MAVEN_FLAGS}
   fi
   popd
 }
@@ -103,7 +107,8 @@ run_module_tests() {
     -Pspring-native,!default \
     -pl="${project_names}" \
     --define org.slf4j.simpleLogger.showDateTime=true \
-    --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS
+    --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
+    ${EXTRA_MAVEN_FLAGS}
 }
 
 
