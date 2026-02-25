@@ -13,12 +13,12 @@ For a deep dive into the project, refer to the Spring Framework on Google Cloud 
 Google Cloud Reference Documentation:
 
 // {x-version-update-start:spring-cloud-gcp:released}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/7.4.5/reference/html/index.html[Spring Framework on Google Cloud 7.3.0 (Latest)]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/7.4.5/reference/html/index.html[Spring Framework on Google Cloud 7.4.5 (Latest)]
 // {x-version-update-end}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/6.5.4/reference/html/index.html[Spring Framework on Google Cloud 6.5.4]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/5.13.10/reference/html/index.html[Spring Framework on Google Cloud 5.13.10]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/6.5.5/reference/html/index.html[Spring Framework on Google Cloud 6.5.5]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/5.13.11/reference/html/index.html[Spring Framework on Google Cloud 5.13.11]
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/4.11.3/reference/html/index.html[Spring Framework on Google Cloud 4.11.3]
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.9.16/reference/html/index.html[Spring Framework on Google Cloud 3.9.16]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/3.9.17/reference/html/index.html[Spring Framework on Google Cloud 3.9.17]
 
 Javadocs: https://googleapis.dev/java/spring-cloud-gcp/latest/index.html
 
