@@ -23,6 +23,7 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.parametermanager.GcpParameterManagerAutoConfiguration;
+import com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerSanitizingFunction;
 import com.google.cloud.spring.parametermanager.ParameterManagerClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
@@ -97,6 +98,12 @@ class GcpSecretManagerAutoConfigurationUnitTests {
     contextRunner.run(
         ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class))
             .isNotNull());
+  }
+
+  @Test
+  void testSanitizingFunctionBeanRegistered() {
+    contextRunner.run(
+        ctx -> assertThat(ctx).hasSingleBean(SecretManagerSanitizingFunction.class));
   }
 
   static class TestConfig {

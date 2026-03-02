@@ -26,6 +26,7 @@ import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.io.IOException;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.actuate.endpoint.SanitizingFunction;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -96,6 +97,13 @@ public class GcpSecretManagerAutoConfiguration {
       return new SecretManagerTemplate(client, this.gcpProjectIdProvider)
           .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
     }
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  @ConditionalOnClass(SanitizingFunction.class)
+  public SecretManagerSanitizingFunction secretManagerSanitizingFunction() {
+    return new SecretManagerSanitizingFunction();
   }
 
 }
