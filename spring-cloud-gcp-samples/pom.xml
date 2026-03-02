@@ -185,13 +185,18 @@
 								<enabled>true</enabled>
 							</metadataRepository>
 							<buildArgs>
-								<buildArg>--initialize-at-build-time=org.junit.jupiter.engine.discovery.MethodSegmentResolver</buildArg>
 								<buildArg>--initialize-at-build-time=org.apache.commons.logging.impl.WeakHashtable</buildArg>
 								<buildArg>--initialize-at-run-time=org.springframework.test</buildArg>
 								<buildArg>--initialize-at-run-time=org.springframework.boot.test</buildArg>
 								<buildArg>--initialize-at-build-time=org.springframework.test.context.aot.AotTestContextInitializers__Generated</buildArg>
 								<buildArg>--initialize-at-build-time=org.springframework.test.context.aot.AotTestAttributes__Generated</buildArg>
 							</buildArgs>
+							<exclusions>
+								<exclusion>
+									<groupId>org.junit.vintage</groupId>
+									<artifactId>junit-vintage-engine</artifactId>
+								</exclusion>
+							</exclusions>
 						</configuration>
 						<executions>
 							<execution>
@@ -206,7 +211,6 @@
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>4.0.0</version>
 						<executions>
 							<execution>
 								<id>process-test-aot</id>
