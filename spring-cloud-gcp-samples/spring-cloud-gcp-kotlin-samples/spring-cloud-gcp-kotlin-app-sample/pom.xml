@@ -79,7 +79,7 @@
 		</dependency>
 
 		<dependency>
-			<artifactId>kotlin-test-junit</artifactId>
+			<artifactId>kotlin-test-junit5</artifactId>
 			<groupId>org.jetbrains.kotlin</groupId>
 			<version>${kotlin.version}</version>
 			<scope>test</scope>
@@ -89,11 +89,6 @@
 			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
 			<version>4.3.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

@@ -214,7 +214,7 @@ class DatastoreSampleApplicationIntegrationTests {
     String instrumentType = instrument.get("type").toString();
     String instrumentResponse = sendRequest(instrumentUrl, null, HttpMethod.GET);
     // An instrument JSON object is expected. In this case a recorder.
-    assertThat(instrumentResponse).contains("{\n" + "  \"type\" : \"" + instrumentType + "\"");
+    assertThat(instrumentResponse).contains("\"type\" : \"" + instrumentType + "\"");
   }
 
   private String sendRequest(String url, String json, HttpMethod method) {

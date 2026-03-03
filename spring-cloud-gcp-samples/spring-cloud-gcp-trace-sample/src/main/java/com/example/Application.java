@@ -37,6 +37,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
@@ -49,6 +50,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /** Sample spring boot application. */
 @AutoConfiguration
 @SpringBootApplication
+@EnableIntegration
 @ImportRuntimeHints(SampleRuntimeHints.class)
 public class Application implements WebMvcConfigurer {
   private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);

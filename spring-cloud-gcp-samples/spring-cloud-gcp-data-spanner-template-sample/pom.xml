@@ -30,17 +30,16 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-starter-data-spanner</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-gson</artifactId>
+        </dependency>
 
         <!-- Test-related dependencies. -->
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <version>4.3.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

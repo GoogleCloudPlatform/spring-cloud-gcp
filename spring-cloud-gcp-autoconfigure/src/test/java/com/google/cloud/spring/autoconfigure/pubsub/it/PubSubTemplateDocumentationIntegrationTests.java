@@ -51,6 +51,7 @@ import org.springframework.boot.test.context.assertj.AssertableApplicationContex
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.support.GenericMessage;
 
 /** Documentation tests for Pub/Sub. */
@@ -356,6 +357,7 @@ class PubSubTemplateDocumentationIntegrationTests {
   }
 
   @Configuration
+  @EnableIntegration
   static class MessageHandlerTestConfiguration {
 
     // This bean needs to go through a proper @Configuration class because it has an package-private

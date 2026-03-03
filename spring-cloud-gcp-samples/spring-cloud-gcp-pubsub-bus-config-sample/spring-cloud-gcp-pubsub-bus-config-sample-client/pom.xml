@@ -32,7 +32,6 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-bootstrap</artifactId>
-      <version>${spring-cloud-config.version}</version>
     </dependency>
 
   </dependencies>

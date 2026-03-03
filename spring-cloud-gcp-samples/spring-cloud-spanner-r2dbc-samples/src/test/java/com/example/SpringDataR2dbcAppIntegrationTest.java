@@ -7,16 +7,19 @@ import tools.jackson.databind.ObjectMapper;
 import com.google.cloud.ServiceOptions;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -26,18 +29,26 @@ class SpringDataR2dbcAppIntegrationTest {
 
   @DynamicPropertySource
   static void registerProperties(DynamicPropertyRegistry registry) {
-    registry.add(
-        "gcp.project",
-        () -> System.getProperty("gcp.project", ServiceOptions.getDefaultProjectId()));
-    registry.add("spanner.database", () -> System.getProperty("spanner.database", "testdb"));
-    registry.add("spanner.instance", () -> System.getProperty("spanner.instance", "reactivetest"));
+    registry.add("gcp.project", () -> System.getProperty("gcp.project", "spring-cloud-gcp-ci"));
+    registry.add("spanner.database", () -> System.getProperty("spanner.database", "trades"));
+    registry.add("spanner.instance", () -> System.getProperty("spanner.instance", "spring-demo"));
   }
 
-  @Autowired private WebTestClient webTestClient;
+  @LocalServerPort
+  private int port;
+
+  private WebTestClient webTestClient;
 
   @Autowired private BookRepository bookRepository;
 
   @Autowired private ObjectMapper objectMapper;
+
+  @BeforeEach
+  void setUp() {
+    this.webTestClient = WebTestClient.bindToServer()
+        .baseUrl("http://localhost:" + port)
+        .build();
+  }
 
   @AfterEach
   void deleteRecords() {
