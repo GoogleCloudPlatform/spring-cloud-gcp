@@ -21,8 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 import org.springframework.core.io.Resource;
 
-/** Credentials configuration. */
-public class Credentials {
+/**
+ * Credentials configuration.
+ */
+public final class Credentials {
 
   /** Overrides OAuth2 scopes list used by the credentials. */
   private List<String> scopes = new ArrayList<>();
@@ -30,42 +32,85 @@ public class Credentials {
   /**
    * Location of the OAuth2 credentials private key.
    *
-   * <p>Since this is a Resource, the private key can be in a multitude of locations, such as a
-   * local file system, classpath, URL, etc.
+   * <p>Since this is a Resource, the private key can be in a multitude of
+   * locations, such as a local file system, classpath, URL, etc.
    */
   private Resource location;
 
-  /** The base64 encoded contents of an OAuth2 account private key, on the JSON format. */
+  /**
+   * The base64 encoded contents of an OAuth2 account private key, on the
+   * JSON format.
+   */
   private String encodedKey;
 
-  public Credentials(String... defaultScopes) {
+  /**
+   * Constructor.
+   *
+   * @param defaultScopes default scopes to use
+   */
+  public Credentials(final String... defaultScopes) {
     this.scopes.addAll(Arrays.asList(defaultScopes));
   }
 
+  /**
+   * Returns the list of scopes.
+   *
+   * @return the list of scopes
+   */
   public List<String> getScopes() {
     return this.scopes;
   }
 
-  public void setScopes(List<String> scopes) {
-    this.scopes = scopes;
+  /**
+   * Sets the list of scopes.
+   *
+   * @param scopesList the list of scopes
+   */
+  public void setScopes(final List<String> scopesList) {
+    this.scopes = scopesList;
   }
 
+  /**
+   * Returns the location of the credentials file.
+   *
+   * @return the location of the credentials file
+   */
   public Resource getLocation() {
     return this.location;
   }
 
-  public void setLocation(Resource location) {
-    this.location = location;
+  /**
+   * Sets the location of the credentials file.
+   *
+   * @param locationResource the location of the credentials file
+   */
+  public void setLocation(final Resource locationResource) {
+    this.location = locationResource;
   }
 
+  /**
+   * Returns the encoded credentials JSON.
+   *
+   * @return the encoded credentials JSON
+   */
   public String getEncodedKey() {
     return this.encodedKey;
   }
 
-  public void setEncodedKey(String encodedKey) {
-    this.encodedKey = encodedKey;
+  /**
+   * Sets the encoded credentials JSON.
+   *
+   * @param encodedKeyString the encoded credentials JSON
+   */
+  public void setEncodedKey(final String encodedKeyString) {
+    this.encodedKey = encodedKeyString;
   }
 
+  /**
+   * Checks if credentials key or location is set.
+   *
+   * @return true if encodedKey or location is not null
+   */
   public boolean hasKey() {
     return this.encodedKey != null || this.location != null;
   }

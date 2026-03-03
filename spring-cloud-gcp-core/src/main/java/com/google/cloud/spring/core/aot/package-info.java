@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.spring.core;
-
-import com.google.cloud.MetadataConfig;
-
 /**
- * A wrapper around the static MetadataConfig.
- *
- * @since 1.1
+ * AOT support for Spring Cloud GCP.
  */
-public final class DefaultGcpMetadataProvider implements MetadataProvider {
-
-  @Override
-  public String getAttribute(final String attributeName) {
-    return MetadataConfig.getAttribute(attributeName);
-  }
-}
+package com.google.cloud.spring.core.aot;

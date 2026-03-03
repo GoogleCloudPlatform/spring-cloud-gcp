@@ -20,14 +20,15 @@ import com.google.cloud.MetadataConfig;
 import com.google.cloud.ServiceOptions;
 
 /**
- * Environment-specific implementation determining whether the current GCP environment matches the
- * passed in parameter.
+ * Environment-specific implementation determining whether the current GCP
+ * environment matches the passed in parameter.
  *
  * <p>Delegates the decision to {@link GcpEnvironment}.
  *
  * @since 1.1
  */
-public class DefaultGcpEnvironmentProvider implements GcpEnvironmentProvider {
+public final class DefaultGcpEnvironmentProvider
+    implements GcpEnvironmentProvider {
 
   @Override
   public GcpEnvironment getCurrentEnvironment() {

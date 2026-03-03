@@ -23,5 +23,11 @@ package com.google.cloud.spring.core;
  */
 public interface MetadataProvider {
 
+  /**
+   * Returns the value of the specified metadata attribute.
+   *
+   * @param attributeName the name of the attribute to retrieve
+   * @return the attribute value
+   */
   String getAttribute(String attributeName);
 }

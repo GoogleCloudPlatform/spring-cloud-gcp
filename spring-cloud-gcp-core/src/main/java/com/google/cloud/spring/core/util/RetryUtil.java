@@ -22,19 +22,21 @@ import com.google.cloud.spring.core.Retry;
 
 /** Utility methods for retry settings. */
 @InternalApi
-public class RetryUtil {
+public final class RetryUtil {
 
-  private RetryUtil() {}
+  private RetryUtil() {
+  }
 
   /**
    * Updates a {@link RetrySettings} based on configuration properties.
    *
    * @param oldRetrySettings the existing {@link RetrySettings} object to update
-   * @param newRetry the {@link Retry} object containing configured property override values
+   * @param newRetry the {@link Retry} object containing configured
+   *     property override values
    * @return the updated {@link RetrySettings} object
    */
   public static RetrySettings updateRetrySettings(
-      RetrySettings oldRetrySettings, Retry newRetry) {
+      final RetrySettings oldRetrySettings, final Retry newRetry) {
     RetrySettings.Builder builder = oldRetrySettings.toBuilder();
     if (newRetry.getTotalTimeout() != null) {
       builder.setTotalTimeout(newRetry.getTotalTimeout());

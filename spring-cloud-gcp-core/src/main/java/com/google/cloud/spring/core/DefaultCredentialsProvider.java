@@ -41,19 +41,26 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * A {@link CredentialsProvider} implementation that wraps credentials based on user-provided
- * properties and defaults.
+ * A {@link CredentialsProvider} implementation that wraps credentials
+ * based on user-provided properties and defaults.
  */
-public class DefaultCredentialsProvider implements CredentialsProvider {
+public final class DefaultCredentialsProvider implements CredentialsProvider {
 
-  private static final Log LOGGER = LogFactory.getLog(DefaultCredentialsProvider.class);
+  /** The logger. */
+  private static final Log LOGGER =
+      LogFactory.getLog(DefaultCredentialsProvider.class);
 
+  /** The placeholder for default scopes. */
   private static final String DEFAULT_SCOPES_PLACEHOLDER = "DEFAULT_SCOPES";
 
+  /** The list of all GCP credential scopes. */
   private static final List<String> CREDENTIALS_SCOPES_LIST =
       Collections.unmodifiableList(
-          Arrays.stream(GcpScope.values()).map(GcpScope::getUrl).collect(Collectors.toList()));
+          Arrays.stream(GcpScope.values())
+              .map(GcpScope::getUrl)
+              .collect(Collectors.toList()));
 
+  /** The wrapped credentials provider. */
   private CredentialsProvider wrappedCredentialsProvider;
 
   @Override
@@ -62,43 +69,56 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
   }
 
   /**
-   * The credentials provided by this object originate from the following sources:
+   * The credentials provided by this object originate from the following
+   * sources:
    *
    * <ul>
-   *   <li>*.credentials.location: Credentials built from JSON content inside the file pointed to by
-   *       this property,
-   *   <li>*.credentials.encoded-key: Credentials built from JSON String, encoded on base64,
+   *   <li>*.credentials.location: Credentials built from JSON content inside
+   *       the file pointed to by this property,
+   *   <li>*.credentials.encoded-key: Credentials built from JSON String,
+   *       encoded on base64,
    *   <li>Google Cloud Client Libraries default credentials provider.
    * </ul>
    *
-   * <p>If credentials are provided by one source, the next sources are discarded.
+   * <p>If credentials are provided by one source, the next sources are
+   * discarded.
    *
-   * @param credentialsSupplier provides properties that can override OAuth2 scopes list used by the
-   *     credentials, and the location of the OAuth2 credentials private key.
-   * @throws IOException if an issue occurs creating the DefaultCredentialsProvider
+   * @param credentialsSupplier provides properties that can override OAuth2
+   *     scopes list used by the credentials, and the location of the
+   *     OAuth2 credentials private key.
+   * @throws IOException if an issue occurs creating the
+   *     DefaultCredentialsProvider
    */
-  public DefaultCredentialsProvider(CredentialsSupplier credentialsSupplier) throws IOException {
-    List<String> scopes = resolveScopes(credentialsSupplier.getCredentials().getScopes());
-    Resource providedLocation = credentialsSupplier.getCredentials().getLocation();
+  public DefaultCredentialsProvider(
+      final CredentialsSupplier credentialsSupplier) throws IOException {
+    List<String> scopes = resolveScopes(
+        credentialsSupplier.getCredentials().getScopes());
+    Resource providedLocation =
+        credentialsSupplier.getCredentials().getLocation();
     String encodedKey = credentialsSupplier.getCredentials().getEncodedKey();
 
     if (providedLocation != null) {
       this.wrappedCredentialsProvider =
           FixedCredentialsProvider.create(
-              GoogleCredentials.fromStream(providedLocation.getInputStream()).createScoped(scopes));
+              GoogleCredentials.fromStream(providedLocation.getInputStream())
+                  .createScoped(scopes));
     } else if (StringUtils.hasText(encodedKey)) {
       this.wrappedCredentialsProvider =
           FixedCredentialsProvider.create(
               GoogleCredentials.fromStream(
-                      new ByteArrayInputStream(Base64.getDecoder().decode(encodedKey)))
+                      new ByteArrayInputStream(
+                          Base64.getDecoder().decode(encodedKey)))
                   .createScoped(scopes));
     } else {
       this.wrappedCredentialsProvider =
-          GoogleCredentialsProvider.newBuilder().setScopesToApply(scopes).build();
+          GoogleCredentialsProvider.newBuilder()
+              .setScopesToApply(scopes)
+              .build();
     }
 
     try {
-      Credentials credentials = this.wrappedCredentialsProvider.getCredentials();
+      Credentials credentials =
+          this.wrappedCredentialsProvider.getCredentials();
 
       if (LOGGER.isInfoEnabled()) {
         if (credentials instanceof UserCredentials) {
@@ -110,20 +130,21 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
               "Default credentials provider for service account "
                   + ((ServiceAccountCredentials) credentials).getClientEmail());
         } else if (credentials instanceof ComputeEngineCredentials) {
-          LOGGER.info("Default credentials provider for Google Compute Engine.");
+          LOGGER.info(
+              "Default credentials provider for Google Compute Engine.");
         }
-        LOGGER.info("Scopes in use by default credentials: " + scopes.toString());
+        LOGGER.info("Scopes in use by default credentials: " + scopes);
       }
     } catch (IOException ioe) {
       LOGGER.warn(
           "No core credentials are set. Service-specific credentials "
-              + "(e.g., spring.cloud.gcp.pubsub.credentials.*) should be used if your app uses "
-              + "services that require credentials.",
+              + "(e.g., spring.cloud.gcp.pubsub.credentials.*) should be "
+              + "used if your app uses services that require credentials.",
           ioe);
     }
   }
 
-  static List<String> resolveScopes(List<String> scopes) {
+  static List<String> resolveScopes(final List<String> scopes) {
     if (!ObjectUtils.isEmpty(scopes)) {
       Set<String> resolvedScopes = new HashSet<>();
       scopes.forEach(

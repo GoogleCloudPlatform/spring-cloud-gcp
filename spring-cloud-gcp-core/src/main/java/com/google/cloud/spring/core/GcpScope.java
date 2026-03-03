@@ -57,12 +57,18 @@ public enum GcpScope {
   /** scope for Cloud Monitoring. */
   CLOUD_MONITORING_WRITE("https://www.googleapis.com/auth/monitoring.write");
 
-  private String url;
+  /** The URL of the scope. */
+  private final String url;
 
-  GcpScope(String url) {
-    this.url = url;
+  GcpScope(final String scopeUrl) {
+    this.url = scopeUrl;
   }
 
+  /**
+   * Returns the scope URL.
+   *
+   * @return the scope URL
+   */
   public String getUrl() {
     return this.url;
   }

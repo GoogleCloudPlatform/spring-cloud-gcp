@@ -26,10 +26,11 @@ import org.springframework.util.ClassUtils;
 /**
  * Runtime hints for Spring Cloud GCP.
  */
-public class GcpRuntimeHints implements RuntimeHintsRegistrar {
+public final class GcpRuntimeHints implements RuntimeHintsRegistrar {
 
   @Override
-  public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+  public void registerHints(
+      final RuntimeHints hints, final ClassLoader classLoader) {
     Stream.of(
         "org.springframework.data.domain.AbstractPageRequest",
         "org.springframework.data.domain.PageRequest",
@@ -44,7 +45,8 @@ public class GcpRuntimeHints implements RuntimeHintsRegistrar {
       if (ClassUtils.isPresent(className, classLoader)) {
         hints.reflection().registerType(
             TypeReference.of(className),
-            hint -> hint.withMembers(MemberCategory.INVOKE_PUBLIC_METHODS));
+            hint -> hint.withMembers(
+                MemberCategory.INVOKE_PUBLIC_METHODS));
       }
     });
   }

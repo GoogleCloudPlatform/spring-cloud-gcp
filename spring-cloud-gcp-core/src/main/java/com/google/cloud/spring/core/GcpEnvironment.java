@@ -32,7 +32,9 @@ public enum GcpEnvironment {
   /** Matches App Engine Standard instances. */
   APP_ENGINE_STANDARD,
 
-  /** Matches instances of Compute Engine that are not also AppEngine Flexible. */
+  /**
+   * Matches instances of Compute Engine that are not also AppEngine Flexible.
+   */
   COMPUTE_ENGINE,
 
   /** Matches nothing; environment cannot be identified. */

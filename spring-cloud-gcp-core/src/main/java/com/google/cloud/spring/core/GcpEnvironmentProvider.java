@@ -17,11 +17,17 @@
 package com.google.cloud.spring.core;
 
 /**
- * Interface for determining whether the current GCP environment matches the passed in parameter.
+ * Interface for determining whether the current GCP environment matches
+ * the passed in parameter.
  *
  * @since 1.1
  */
 public interface GcpEnvironmentProvider {
 
+  /**
+   * Returns the current GCP environment.
+   *
+   * @return the current GCP environment
+   */
   GcpEnvironment getCurrentEnvironment();
 }

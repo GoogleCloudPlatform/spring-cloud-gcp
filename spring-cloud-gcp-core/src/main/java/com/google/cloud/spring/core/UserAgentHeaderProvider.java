@@ -22,25 +22,34 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Provides the user-agent header to signal to the Google Cloud Client Libraries that requests
- * originate from a Spring Integration.
+ * Provides the user-agent header to signal to the Google Cloud Client
+ * Libraries that requests originate from a Spring Integration.
  */
-public class UserAgentHeaderProvider implements HeaderProvider, Serializable {
+public final class UserAgentHeaderProvider
+    implements HeaderProvider, Serializable {
 
   private static final long serialVersionUID = 4928605135114708652L;
 
+  /** The user agent string. */
   private String userAgent;
 
+  /** The map of headers. */
   private final Map<String, String> headers;
 
-  public UserAgentHeaderProvider(Class<?> clazz) {
+  /**
+   * Constructs a new UserAgentHeaderProvider.
+   *
+   * @param clazz the class to compute the user agent from
+   */
+  public UserAgentHeaderProvider(final Class<?> clazz) {
     this.userAgent = computeUserAgent(clazz);
     this.headers = Collections.singletonMap("user-agent", this.userAgent);
   }
 
   /**
-   * Returns the "user-agent" header whose value should be added to the google-cloud-java REST API
-   * calls. e.g., {@code user-agent: Spring/1.0.0.RELEASE spring-cloud-gcp-pubsub/1.0.0.RELEASE}.
+   * Returns the "user-agent" header whose value should be added to the
+   * google-cloud-java REST API calls. e.g., {@code user-agent:
+   * Spring/1.0.0.RELEASE spring-cloud-gcp-pubsub/1.0.0.RELEASE}.
    */
   @Override
   public Map<String, String> getHeaders() {
@@ -48,8 +57,9 @@ public class UserAgentHeaderProvider implements HeaderProvider, Serializable {
   }
 
   /**
-   * Returns the "user-agent" header value which should be added to the google-cloud-java REST API
-   * calls. e.g., {@code Spring/1.0.0.RELEASE spring-cloud-gcp-pubsub/1.0.0.RELEASE}.
+   * Returns the "user-agent" header value which should be added to the
+   * google-cloud-java REST API calls. e.g., {@code Spring/1.0.0.RELEASE
+   * spring-cloud-gcp-pubsub/1.0.0.RELEASE}.
    *
    * @return the user agent string.
    */
@@ -57,10 +67,12 @@ public class UserAgentHeaderProvider implements HeaderProvider, Serializable {
     return this.userAgent;
   }
 
-  private String computeUserAgent(Class<?> clazz) {
+  private String computeUserAgent(final Class<?> clazz) {
     String[] packageTokens = clazz.getPackage().getName().split("\\.");
-    String springLibrary = "spring-cloud-gcp-" + packageTokens[packageTokens.length - 1];
-    String version = this.getClass().getPackage().getImplementationVersion();
+    String springLibrary =
+        "spring-cloud-gcp-" + packageTokens[packageTokens.length - 1];
+    String version =
+        this.getClass().getPackage().getImplementationVersion();
 
     return "Spring/" + version + " " + springLibrary + "/" + version;
   }
