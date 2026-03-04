@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,10 +17,18 @@
 package com.example;
 
 import java.util.List;
+import org.springframework.data.annotation.Version;
 
 public class User {
   private String name;
   private List<Phone> phones;
+
+  /**
+   * Le champ version permet le verrouillage optimiste.
+   * Spring Data incrémente cette valeur automatiquement à chaque mise à jour.
+   */
+  @Version
+  private Long version;
 
   public User() {}
 
@@ -45,9 +53,21 @@ public class User {
     this.phones = phones;
   }
 
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
+
   @Override
   public String toString() {
-    return "User{" + "name='" + this.name + '\'' + ", phones=" + this.phones + '}';
+    return "User{" +
+        "name='" + this.name + '\'' +
+        ", phones=" + this.phones +
+        ", version=" + this.version +
+        '}';
   }
 }
 

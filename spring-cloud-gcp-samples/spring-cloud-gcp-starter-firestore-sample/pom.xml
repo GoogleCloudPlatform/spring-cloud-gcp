@@ -56,5 +56,9 @@
             <version>2.18.0</version>
             <scope>test</scope>
         </dependency>
+      <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-commons</artifactId>
+      </dependency>
     </dependencies>
 </project>

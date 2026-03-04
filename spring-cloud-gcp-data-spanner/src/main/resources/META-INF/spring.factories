@@ -1,1 +1,0 @@
-org.springframework.data.repository.core.support.RepositoryFactorySupport=com.google.cloud.spring.data.spanner.repository.support.SpannerRepositoryFactory
