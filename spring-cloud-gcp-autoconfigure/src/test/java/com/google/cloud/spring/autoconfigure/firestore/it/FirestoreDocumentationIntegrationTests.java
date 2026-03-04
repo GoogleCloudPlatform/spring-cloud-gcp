@@ -110,6 +110,7 @@ class FirestoreExample {
 
     LOGGER.info("Update time: " + writeResult.getUpdateTime());
   }
+
   // end::write[]
 
   // tag::read[]

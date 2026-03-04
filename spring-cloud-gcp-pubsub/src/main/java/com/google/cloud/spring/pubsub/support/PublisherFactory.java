@@ -28,5 +28,4 @@ public interface PublisherFactory {
    * @return fully configured publisher
    */
   Publisher createPublisher(String topic);
-
 }

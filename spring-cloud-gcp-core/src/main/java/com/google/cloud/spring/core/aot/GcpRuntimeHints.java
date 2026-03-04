@@ -23,29 +23,30 @@ import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
 import org.springframework.util.ClassUtils;
 
-/**
- * Runtime hints for Spring Cloud GCP.
- */
+/** Runtime hints for Spring Cloud GCP. */
 public class GcpRuntimeHints implements RuntimeHintsRegistrar {
 
   @Override
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
     Stream.of(
-        "org.springframework.data.domain.AbstractPageRequest",
-        "org.springframework.data.domain.PageRequest",
-        "org.springframework.data.domain.PageImpl",
-        "org.springframework.data.domain.Page",
-        "org.springframework.data.domain.Slice",
-        "org.springframework.data.domain.Pageable",
-        "org.springframework.data.domain.Sort",
-        "org.springframework.data.domain.Sort$Order",
-        "org.springframework.data.domain.Chunk"
-    ).forEach(className -> {
-      if (ClassUtils.isPresent(className, classLoader)) {
-        hints.reflection().registerType(
-            TypeReference.of(className),
-            hint -> hint.withMembers(MemberCategory.INVOKE_PUBLIC_METHODS));
-      }
-    });
+            "org.springframework.data.domain.AbstractPageRequest",
+            "org.springframework.data.domain.PageRequest",
+            "org.springframework.data.domain.PageImpl",
+            "org.springframework.data.domain.Page",
+            "org.springframework.data.domain.Slice",
+            "org.springframework.data.domain.Pageable",
+            "org.springframework.data.domain.Sort",
+            "org.springframework.data.domain.Sort$Order",
+            "org.springframework.data.domain.Chunk")
+        .forEach(
+            className -> {
+              if (ClassUtils.isPresent(className, classLoader)) {
+                hints
+                    .reflection()
+                    .registerType(
+                        TypeReference.of(className),
+                        hint -> hint.withMembers(MemberCategory.INVOKE_PUBLIC_METHODS));
+              }
+            });
   }
 }

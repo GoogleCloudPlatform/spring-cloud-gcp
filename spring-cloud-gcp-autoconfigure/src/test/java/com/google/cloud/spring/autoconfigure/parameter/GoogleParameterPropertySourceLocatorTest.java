@@ -42,9 +42,7 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.StandardEnvironment;
 
-/**
- * Tests for the parameter property source locator.
- */
+/** Tests for the parameter property source locator. */
 class GoogleParameterPropertySourceLocatorTest {
 
   private GcpParameterProperties gcpParameterProperties;
@@ -79,10 +77,11 @@ class GoogleParameterPropertySourceLocatorTest {
 
   @Test
   void locateReturnsMapPropertySourceJson() throws Exception {
-    RenderParameterVersionResponse version = RenderParameterVersionResponse.newBuilder()
-        .setRenderedPayload(
-            ByteString.copyFromUtf8("{\"property-int\": 10, \"property-bool\": true}"))
-        .build();
+    RenderParameterVersionResponse version =
+        RenderParameterVersionResponse.newBuilder()
+            .setRenderedPayload(
+                ByteString.copyFromUtf8("{\"property-int\": 10, \"property-bool\": true}"))
+            .build();
     when(this.parameterManagerClient.renderParameterVersion(any(ParameterVersionName.class)))
         .thenReturn(
             RenderParameterVersionResponse.newBuilder()
@@ -93,10 +92,11 @@ class GoogleParameterPropertySourceLocatorTest {
     this.googleParameterPropertySourceLocator =
         spy(
             new GoogleParameterPropertySourceLocator(
-                this.projectIdProvider, this.credentialsProvider, this.gcpParameterProperties, this.parameterManagerClient));
-    doReturn(version)
-        .when(this.googleParameterPropertySourceLocator)
-        .getRemoteEnvironment();
+                this.projectIdProvider,
+                this.credentialsProvider,
+                this.gcpParameterProperties,
+                this.parameterManagerClient));
+    doReturn(version).when(this.googleParameterPropertySourceLocator).getRemoteEnvironment();
     PropertySource<?> propertySource =
         this.googleParameterPropertySourceLocator.locate(new StandardEnvironment());
     assertThat(propertySource.getName()).isEqualTo("spring-cloud-gcp");
@@ -107,51 +107,52 @@ class GoogleParameterPropertySourceLocatorTest {
 
   @Test
   void locateReturnsMapPropertySourceUnformatted() throws Exception {
-    RenderParameterVersionResponse version = RenderParameterVersionResponse.newBuilder()
-        .setRenderedPayload(
-            ByteString.copyFromUtf8("This is unformatted payload"))
-        .build();
+    RenderParameterVersionResponse version =
+        RenderParameterVersionResponse.newBuilder()
+            .setRenderedPayload(ByteString.copyFromUtf8("This is unformatted payload"))
+            .build();
     when(this.parameterManagerClient.renderParameterVersion(any(ParameterVersionName.class)))
         .thenReturn(
             RenderParameterVersionResponse.newBuilder()
-                .setRenderedPayload(
-                    ByteString.copyFromUtf8("This is unformatted payload"))
+                .setRenderedPayload(ByteString.copyFromUtf8("This is unformatted payload"))
                 .build());
 
     this.googleParameterPropertySourceLocator =
         spy(
             new GoogleParameterPropertySourceLocator(
-                this.projectIdProvider, this.credentialsProvider, this.gcpParameterProperties, this.parameterManagerClient));
-    doReturn(version)
-        .when(this.googleParameterPropertySourceLocator)
-        .getRemoteEnvironment();
+                this.projectIdProvider,
+                this.credentialsProvider,
+                this.gcpParameterProperties,
+                this.parameterManagerClient));
+    doReturn(version).when(this.googleParameterPropertySourceLocator).getRemoteEnvironment();
     assertThatExceptionOfType(RuntimeException.class)
-        .isThrownBy(() -> this.googleParameterPropertySourceLocator.locate(new StandardEnvironment()))
+        .isThrownBy(
+            () -> this.googleParameterPropertySourceLocator.locate(new StandardEnvironment()))
         .withMessageContaining("Error loading configuration");
   }
 
   @Test
   void locateReturnsMapPropertySource_disabled() throws Exception {
-    RenderParameterVersionResponse version = RenderParameterVersionResponse.newBuilder()
-        .setRenderedPayload(
-            ByteString.copyFromUtf8("get after it."))
-        .build();
+    RenderParameterVersionResponse version =
+        RenderParameterVersionResponse.newBuilder()
+            .setRenderedPayload(ByteString.copyFromUtf8("get after it."))
+            .build();
     when(this.gcpParameterProperties.isEnabled()).thenReturn(false);
     when(this.parameterManagerClient.renderParameterVersion(any(ParameterVersionName.class)))
         .thenReturn(
             RenderParameterVersionResponse.newBuilder()
-                .setRenderedPayload(
-                    ByteString.copyFromUtf8("get after it."))
+                .setRenderedPayload(ByteString.copyFromUtf8("get after it."))
                 .build());
 
     // Configure the behavior of the mock objects
     this.googleParameterPropertySourceLocator =
         spy(
             new GoogleParameterPropertySourceLocator(
-                this.projectIdProvider, this.credentialsProvider, this.gcpParameterProperties, this.parameterManagerClient));
-    doReturn(version)
-        .when(this.googleParameterPropertySourceLocator)
-        .getRemoteEnvironment();
+                this.projectIdProvider,
+                this.credentialsProvider,
+                this.gcpParameterProperties,
+                this.parameterManagerClient));
+    doReturn(version).when(this.googleParameterPropertySourceLocator).getRemoteEnvironment();
     PropertySource<?> propertySource =
         this.googleParameterPropertySourceLocator.locate(new StandardEnvironment());
     assertThat(propertySource.getName()).isEqualTo("spring-cloud-gcp");
@@ -160,25 +161,29 @@ class GoogleParameterPropertySourceLocatorTest {
 
   @Test
   void locateReturnsMapPropertySourceYaml() throws Exception {
-    RenderParameterVersionResponse version = RenderParameterVersionResponse.newBuilder()
-        .setRenderedPayload(
-            ByteString.copyFromUtf8("property-int: 10\nproperty-bool: true\nnested_property:\n   nested_int: 5"))
-        .build();
+    RenderParameterVersionResponse version =
+        RenderParameterVersionResponse.newBuilder()
+            .setRenderedPayload(
+                ByteString.copyFromUtf8(
+                    "property-int: 10\nproperty-bool: true\nnested_property:\n   nested_int: 5"))
+            .build();
     when(this.parameterManagerClient.renderParameterVersion(any(ParameterVersionName.class)))
         .thenReturn(
             RenderParameterVersionResponse.newBuilder()
                 .setRenderedPayload(
-                    ByteString.copyFromUtf8("property-int: 10\nproperty-bool: true\nnested_property:\n   nested_int: 5"))
+                    ByteString.copyFromUtf8(
+                        "property-int: 10\nproperty-bool: true\nnested_property:\n   nested_int: 5"))
                 .build());
     Map<String, Object> expectedMap = Map.of("nested_int", 5);
 
     this.googleParameterPropertySourceLocator =
         spy(
             new GoogleParameterPropertySourceLocator(
-                this.projectIdProvider, this.credentialsProvider, this.gcpParameterProperties, this.parameterManagerClient));
-    doReturn(version)
-        .when(this.googleParameterPropertySourceLocator)
-        .getRemoteEnvironment();
+                this.projectIdProvider,
+                this.credentialsProvider,
+                this.gcpParameterProperties,
+                this.parameterManagerClient));
+    doReturn(version).when(this.googleParameterPropertySourceLocator).getRemoteEnvironment();
     PropertySource<?> propertySource =
         this.googleParameterPropertySourceLocator.locate(new StandardEnvironment());
     assertThat(propertySource.getName()).isEqualTo("spring-cloud-gcp");
@@ -194,7 +199,10 @@ class GoogleParameterPropertySourceLocatorTest {
     this.googleParameterPropertySourceLocator =
         spy(
             new GoogleParameterPropertySourceLocator(
-                this.projectIdProvider, this.credentialsProvider, this.gcpParameterProperties, this.parameterManagerClient));
+                this.projectIdProvider,
+                this.credentialsProvider,
+                this.gcpParameterProperties,
+                this.parameterManagerClient));
     this.googleParameterPropertySourceLocator.locate(new StandardEnvironment());
     verify(this.googleParameterPropertySourceLocator, never()).getRemoteEnvironment();
   }
@@ -203,7 +211,9 @@ class GoogleParameterPropertySourceLocatorTest {
   void disabledPropertySourceAvoidChecks() throws Exception {
     when(this.gcpParameterProperties.isEnabled()).thenReturn(false);
     this.googleParameterPropertySourceLocator =
-        spy(new GoogleParameterPropertySourceLocator(null, null, this.gcpParameterProperties, this.parameterManagerClient));
+        spy(
+            new GoogleParameterPropertySourceLocator(
+                null, null, this.gcpParameterProperties, this.parameterManagerClient));
     this.googleParameterPropertySourceLocator.locate(new StandardEnvironment());
     verify(this.googleParameterPropertySourceLocator, never()).getRemoteEnvironment();
   }
@@ -213,7 +223,10 @@ class GoogleParameterPropertySourceLocatorTest {
     when(this.gcpParameterProperties.getProjectId()).thenReturn("pariah");
     this.googleParameterPropertySourceLocator =
         new GoogleParameterPropertySourceLocator(
-            this.projectIdProvider, this.credentialsProvider, this.gcpParameterProperties, this.parameterManagerClient);
+            this.projectIdProvider,
+            this.credentialsProvider,
+            this.gcpParameterProperties,
+            this.parameterManagerClient);
 
     assertThat(this.googleParameterPropertySourceLocator.getProjectId()).isEqualTo("pariah");
   }

@@ -84,15 +84,18 @@ class DefaultPublisherFactoryTests {
   void createPublisherUsesCustomizersInOrder() {
     final AtomicInteger counter = new AtomicInteger(1);
 
-    PublisherCustomizer c1 = (pb, t) -> {
-      assertThat(counter.getAndIncrement()).isEqualTo(1);
-    };
-    PublisherCustomizer c2 = (pb, t) -> {
-      assertThat(counter.getAndIncrement()).isEqualTo(2);
-    };
-    PublisherCustomizer c3 = (pb, t) -> {
-      assertThat(counter.getAndIncrement()).isEqualTo(3);
-    };
+    PublisherCustomizer c1 =
+        (pb, t) -> {
+          assertThat(counter.getAndIncrement()).isEqualTo(1);
+        };
+    PublisherCustomizer c2 =
+        (pb, t) -> {
+          assertThat(counter.getAndIncrement()).isEqualTo(2);
+        };
+    PublisherCustomizer c3 =
+        (pb, t) -> {
+          assertThat(counter.getAndIncrement()).isEqualTo(3);
+        };
 
     factory.setCustomizers(Arrays.asList(c1, c2, c3));
     factory.createPublisher("testtopic");
@@ -105,9 +108,10 @@ class DefaultPublisherFactoryTests {
 
     Publisher publisher = factory.createPublisher("testtopic");
 
-    Publisher defaultPublisher = Publisher.newBuilder("projects/testproject/topics/testtopic")
-        .setCredentialsProvider(NoCredentialsProvider.create())
-        .build();
+    Publisher defaultPublisher =
+        Publisher.newBuilder("projects/testproject/topics/testtopic")
+            .setCredentialsProvider(NoCredentialsProvider.create())
+            .build();
     assertThat(publisher.getBatchingSettings()).isSameAs(defaultPublisher.getBatchingSettings());
   }
 

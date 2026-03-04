@@ -40,7 +40,8 @@ class DocumentOcrTemplateTests {
   void setupDocumentTemplateMocks() {
     this.storage = Mockito.mock(Storage.class);
     this.imageAnnotatorClient = Mockito.mock(ImageAnnotatorClient.class);
-    this.documentOcrTemplate = new DocumentOcrTemplate(imageAnnotatorClient, storage, Runnable::run, 10);
+    this.documentOcrTemplate =
+        new DocumentOcrTemplate(imageAnnotatorClient, storage, Runnable::run, 10);
   }
 
   @Test

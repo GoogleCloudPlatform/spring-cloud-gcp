@@ -60,7 +60,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -328,8 +327,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPull_AndManualAck()
-      throws InterruptedException, ExecutionException, TimeoutException {
+  void testPull_AndManualAck() throws InterruptedException, ExecutionException, TimeoutException {
 
     List<AcknowledgeablePubsubMessage> result = this.pubSubSubscriberTemplate.pull("sub2", 1, true);
 
@@ -356,8 +354,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPull_AndManualNack()
-      throws InterruptedException, ExecutionException, TimeoutException {
+  void testPull_AndManualNack() throws InterruptedException, ExecutionException, TimeoutException {
     List<AcknowledgeablePubsubMessage> result = this.pubSubSubscriberTemplate.pull("sub2", 1, true);
 
     assertThat(result).hasSize(1);
@@ -430,8 +427,7 @@ class PubSubSubscriberTemplateTests {
     AcknowledgeablePubsubMessage acknowledgeablePubsubMessage = result.get(0);
     assertThat(acknowledgeablePubsubMessage.getAckId()).isNotNull();
 
-    TestCompletableFutureCallback completableFutureCallback =
-        new TestCompletableFutureCallback();
+    TestCompletableFutureCallback completableFutureCallback = new TestCompletableFutureCallback();
 
     CompletableFuture<Void> completableFuture = this.pubSubSubscriberTemplate.ack(result);
 
@@ -470,8 +466,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPullAndAckAsync()
-      throws InterruptedException, ExecutionException, TimeoutException {
+  void testPullAndAckAsync() throws InterruptedException, ExecutionException, TimeoutException {
     CompletableFuture<List<PubsubMessage>> asyncResult =
         this.pubSubSubscriberTemplate.pullAndAckAsync("sub2", 1, true);
 
@@ -516,8 +511,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPullAndConvertAsync()
-      throws InterruptedException, ExecutionException, TimeoutException {
+  void testPullAndConvertAsync() throws InterruptedException, ExecutionException, TimeoutException {
     CompletableFuture<List<ConvertedAcknowledgeablePubsubMessage<BigInteger>>> asyncResult =
         this.pubSubSubscriberTemplate.pullAndConvertAsync("sub2", 1, true, BigInteger.class);
 
@@ -536,9 +530,10 @@ class PubSubSubscriberTemplateTests {
   @Test
   @Timeout(value = 5, unit = TimeUnit.SECONDS)
   void testPullAndConvertAsync_publishesConvertException() {
-    when(this.messageConverter.fromPubSubMessage(this.pubsubMessage, BigInteger.class)).thenThrow(new NullPointerException());
+    when(this.messageConverter.fromPubSubMessage(this.pubsubMessage, BigInteger.class))
+        .thenThrow(new NullPointerException());
     CompletableFuture<List<ConvertedAcknowledgeablePubsubMessage<BigInteger>>> asyncResult =
-            this.pubSubSubscriberTemplate.pullAndConvertAsync("sub2", 1, true, BigInteger.class);
+        this.pubSubSubscriberTemplate.pullAndConvertAsync("sub2", 1, true, BigInteger.class);
 
     ExecutionException e = assertThrows(ExecutionException.class, asyncResult::get);
     assertThat(e.getCause()).isInstanceOf(NullPointerException.class);
@@ -569,8 +564,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPullNextAsync()
-      throws InterruptedException, ExecutionException, TimeoutException {
+  void testPullNextAsync() throws InterruptedException, ExecutionException, TimeoutException {
     CompletableFuture<PubsubMessage> asyncResult =
         this.pubSubSubscriberTemplate.pullNextAsync("sub2");
 
@@ -609,8 +603,6 @@ class PubSubSubscriberTemplateTests {
     }
 
     @Override
-    public void accept(Void unused, Throwable throwable) {
-
-    }
+    public void accept(Void unused, Throwable throwable) {}
   }
 }

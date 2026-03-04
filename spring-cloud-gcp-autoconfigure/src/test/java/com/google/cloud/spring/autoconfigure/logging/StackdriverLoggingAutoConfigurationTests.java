@@ -39,11 +39,12 @@ class StackdriverLoggingAutoConfigurationTests {
 
   @BeforeEach
   void init() {
-    contextRunner = new WebApplicationContextRunner()
-        .withUserConfiguration(TestConfiguration.class)
-        .withConfiguration(
-            AutoConfigurations.of(
-                StackdriverLoggingAutoConfiguration.class, GcpContextAutoConfiguration.class));
+    contextRunner =
+        new WebApplicationContextRunner()
+            .withUserConfiguration(TestConfiguration.class)
+            .withConfiguration(
+                AutoConfigurations.of(
+                    StackdriverLoggingAutoConfiguration.class, GcpContextAutoConfiguration.class));
   }
 
   @Test

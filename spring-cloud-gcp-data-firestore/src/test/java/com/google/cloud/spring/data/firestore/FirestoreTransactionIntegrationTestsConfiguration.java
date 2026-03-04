@@ -116,7 +116,7 @@ public class FirestoreTransactionIntegrationTestsConfiguration {
     }
     return MetadataUtils.newAttachHeadersInterceptor(routingHeader);
   }
-  
+
   @Bean
   @ConditionalOnMissingBean
   public ReactiveFirestoreTransactionManager firestoreTransactionManager(

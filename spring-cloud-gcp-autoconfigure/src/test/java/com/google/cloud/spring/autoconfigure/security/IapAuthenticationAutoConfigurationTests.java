@@ -94,12 +94,13 @@ class IapAuthenticationAutoConfigurationTests {
   @Test
   void testAutoconfiguredBeansMissingWhenGatingPropertyFalse() {
 
-    ApplicationContextRunner contextRunnerNew = this.contextRunner.withPropertyValues("spring.cloud.gcp.security.iap.enabled=false");
+    ApplicationContextRunner contextRunnerNew =
+        this.contextRunner.withPropertyValues("spring.cloud.gcp.security.iap.enabled=false");
     assertThatThrownBy(() -> contextRunnerNew.run(context -> context.getBean(JwtDecoder.class)))
-            .isInstanceOf(NoSuchBeanDefinitionException.class)
-            .hasMessage("No qualifying bean of type "
-                    + "'org.springframework.security.oauth2.jwt.JwtDecoder' available");
-
+        .isInstanceOf(NoSuchBeanDefinitionException.class)
+        .hasMessage(
+            "No qualifying bean of type "
+                + "'org.springframework.security.oauth2.jwt.JwtDecoder' available");
   }
 
   @Test

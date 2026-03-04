@@ -18,9 +18,7 @@ package com.google.cloud.spanner.r2dbc.springdata.it.entities;
 
 import org.springframework.data.relational.core.mapping.Column;
 
-/**
- * Example entity.
- */
+/** Example entity. */
 public class President {
 
   @Column("NAME")
@@ -52,10 +50,6 @@ public class President {
 
   @Override
   public String toString() {
-    return "President{"
-        + "name='"
-        + this.name + '\''
-        + ", startYear="
-        + this.startYear + '}';
+    return "President{" + "name='" + this.name + '\'' + ", startYear=" + this.startYear + '}';
   }
 }

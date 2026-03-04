@@ -35,44 +35,55 @@ public class BinauthzManagementServiceV1SpringProperties implements CredentialsS
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for getPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for updatePolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updatePolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for createAttestor. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createAttestorRetry;
+
   /**
    * Allow override of retry settings at method-level for getAttestor. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getAttestorRetry;
+
   /**
    * Allow override of retry settings at method-level for updateAttestor. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateAttestorRetry;
+
   /**
    * Allow override of retry settings at method-level for listAttestors. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAttestorsRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteAttestor. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

@@ -34,10 +34,10 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -60,8 +60,10 @@ class GcsSampleApplicationIntegrationTests {
   private final String filename = String.format("file-%s.txt", UUID.randomUUID());
   @Autowired private Storage storage;
   @Autowired private TestRestTemplate testRestTemplate;
+
   @Value("${gcs-resource-test-bucket}")
   private String bucketName;
+
   @LocalServerPort private int port;
   private String appUrl;
 

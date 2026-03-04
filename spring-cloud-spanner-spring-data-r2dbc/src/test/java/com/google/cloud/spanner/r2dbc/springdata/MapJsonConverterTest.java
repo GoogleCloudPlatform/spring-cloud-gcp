@@ -45,10 +45,9 @@ class MapJsonConverterTest {
         .containsEntry("d", true);
 
     // Convert should fail: duplicate keys not allowed
-    JsonWrapper invalidJsonToConvert = JsonWrapper.of("{\"a\":\"a string\","
-            + " \"a\":\"another string\"}");
-    assertThatThrownBy(
-            () -> jsonToMapConverter.convert(invalidJsonToConvert))
+    JsonWrapper invalidJsonToConvert =
+        JsonWrapper.of("{\"a\":\"a string\"," + " \"a\":\"another string\"}");
+    assertThatThrownBy(() -> jsonToMapConverter.convert(invalidJsonToConvert))
         .isInstanceOf(JsonSyntaxException.class);
   }
 

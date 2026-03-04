@@ -52,8 +52,7 @@ class PubSubHealthIndicatorTests {
 
   @Mock private PubSubTemplate pubSubTemplate;
 
-  @Mock
-  CompletableFuture<List<AcknowledgeablePubsubMessage>> future;
+  @Mock CompletableFuture<List<AcknowledgeablePubsubMessage>> future;
 
   @Test
   void healthUp_customSubscription() throws Exception {
@@ -152,5 +151,4 @@ class PubSubHealthIndicatorTests {
     Exception e = new RuntimeException("Runtime error");
     testHealth(e, "testSubscription", Status.DOWN);
   }
-
 }

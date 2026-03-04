@@ -119,9 +119,7 @@ class GcpSpannerEmulatorAutoConfigurationTests {
             });
   }
 
-  /**
-   * Spring Boot config for tests.
-   */
+  /** Spring Boot config for tests. */
   @Configuration
   static class TestConfiguration {
 

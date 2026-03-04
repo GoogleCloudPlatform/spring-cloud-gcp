@@ -122,8 +122,8 @@ class PubSubMessageHandlerTests {
   void testSetPublishTimeoutExpressionStringWithNull() {
 
     assertThatThrownBy(() -> this.adapter.setPublishTimeoutExpressionString(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Publish timeout expression can't be null.");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Publish timeout expression can't be null.");
   }
 
   @Test
@@ -163,9 +163,8 @@ class PubSubMessageHandlerTests {
   void testTopicWithNull() {
 
     assertThatThrownBy(() -> this.adapter.setTopic(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("The topic can't be null or empty");
-
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("The topic can't be null or empty");
   }
 
   @Test
@@ -191,9 +190,9 @@ class PubSubMessageHandlerTests {
   @Test
   void testSetHeaderMapperWithNull() {
 
-    assertThatThrownBy(() ->  this.adapter.setHeaderMapper(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("The header mapper can't be null.");
+    assertThatThrownBy(() -> this.adapter.setHeaderMapper(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("The header mapper can't be null.");
   }
 
   @Test
@@ -233,9 +232,9 @@ class PubSubMessageHandlerTests {
         });
 
     this.adapter.setFailureCallback(
-            (exception, message) -> {
-              failureCauseRef.set(exception);
-            });
+        (exception, message) -> {
+          failureCauseRef.set(exception);
+        });
 
     this.adapter.handleMessage(testMessage);
     Awaitility.await().atMost(Duration.ofSeconds(1)).untilAtomic(messageIdRef, notNullValue());
@@ -261,9 +260,9 @@ class PubSubMessageHandlerTests {
     AtomicReference<String> messageIdRef = new AtomicReference<>();
 
     this.adapter.setSuccessCallback(
-            (ackId, message) -> {
-              ackIdRef.set(ackId);
-            });
+        (ackId, message) -> {
+          ackIdRef.set(ackId);
+        });
 
     this.adapter.setFailureCallback(
         (exception, message) -> {

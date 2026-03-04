@@ -26,22 +26,21 @@ import org.springframework.boot.context.config.ConfigDataLoader;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 
-public class SecretManagerConfigDataLoader implements
-    ConfigDataLoader<SecretManagerConfigDataResource> {
+public class SecretManagerConfigDataLoader
+    implements ConfigDataLoader<SecretManagerConfigDataResource> {
 
   @Override
-  public ConfigData load(
-      ConfigDataLoaderContext context,
-      SecretManagerConfigDataResource resource)
+  public ConfigData load(ConfigDataLoaderContext context, SecretManagerConfigDataResource resource)
       throws IOException, ConfigDataResourceNotFoundException {
-    SecretManagerTemplate secretManagerTemplate = context.getBootstrapContext()
-        .get(SecretManagerTemplate.class);
+    SecretManagerTemplate secretManagerTemplate =
+        context.getBootstrapContext().get(SecretManagerTemplate.class);
 
-    GcpProjectIdProvider projectIdProvider = context.getBootstrapContext()
-        .get(GcpProjectIdProvider.class);
+    GcpProjectIdProvider projectIdProvider =
+        context.getBootstrapContext().get(GcpProjectIdProvider.class);
 
-    SecretManagerPropertySource secretManagerPropertySource = new SecretManagerPropertySource(
-        "spring-cloud-gcp-secret-manager", secretManagerTemplate, projectIdProvider);
+    SecretManagerPropertySource secretManagerPropertySource =
+        new SecretManagerPropertySource(
+            "spring-cloud-gcp-secret-manager", secretManagerTemplate, projectIdProvider);
     return new ConfigData(Collections.singleton(secretManagerPropertySource));
   }
 }

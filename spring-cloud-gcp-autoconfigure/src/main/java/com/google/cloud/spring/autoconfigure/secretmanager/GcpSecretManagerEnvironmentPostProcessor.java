@@ -22,9 +22,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-/**
- * Registers converters used by Spring Cloud GCP Secret Manager.
- */
+/** Registers converters used by Spring Cloud GCP Secret Manager. */
 public class GcpSecretManagerEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
   @Override

@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.util.HtmlUtils;
@@ -27,7 +27,8 @@ import org.springframework.web.util.HtmlUtils;
     classes = ParameterManagerApplication.class)
 class ParameterManagerRegionalSampleLoadParametersIntegrationTests {
 
-  private static final String PARAMETER_CONTENT = "{ \"message\": \"Hello Regional World from GCP PM!!\" }";
+  private static final String PARAMETER_CONTENT =
+      "{ \"message\": \"Hello Regional World from GCP PM!!\" }";
   @Autowired private ParameterManagerTemplate parameterManagerTemplate;
   @Autowired private TestRestTemplate testRestTemplate;
 

@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.datastore.health;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.spring.autoconfigure.TestUtils;

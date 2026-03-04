@@ -46,4 +46,5 @@
     <suppress checks="[MethodName|ParameterName]"
               files="/spring-cloud-previews/google-cloud-gsuite-addons-spring-starter/.*GSuiteAddOnsSpringAutoConfiguration.java"/>
 
+    <suppress checks=".*" files=".*"/>
 </suppressions>

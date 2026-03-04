@@ -34,39 +34,49 @@ public class ApiGatewayServiceSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listGateways. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listGatewaysRetry;
+
   /**
    * Allow override of retry settings at method-level for getGateway. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getGatewayRetry;
+
   /**
    * Allow override of retry settings at method-level for listApis. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listApisRetry;
+
   /**
    * Allow override of retry settings at method-level for getApi. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getApiRetry;
+
   /**
    * Allow override of retry settings at method-level for listApiConfigs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listApiConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for getApiConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

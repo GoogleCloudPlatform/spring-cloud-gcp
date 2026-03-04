@@ -51,12 +51,13 @@ public class PubSubHealthIndicatorAutoConfiguration
 
   public PubSubHealthIndicatorAutoConfiguration(
       PubSubHealthIndicatorProperties pubSubHealthProperties) {
-    super(pubSubTemplate ->
-        new PubSubHealthIndicator(
-            pubSubTemplate,
-            pubSubHealthProperties.getSubscription(),
-            pubSubHealthProperties.getTimeoutMillis(),
-            pubSubHealthProperties.isAcknowledgeMessages()));
+    super(
+        pubSubTemplate ->
+            new PubSubHealthIndicator(
+                pubSubTemplate,
+                pubSubHealthProperties.getSubscription(),
+                pubSubHealthProperties.getTimeoutMillis(),
+                pubSubHealthProperties.isAcknowledgeMessages()));
   }
 
   @Bean

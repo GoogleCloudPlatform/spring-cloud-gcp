@@ -58,8 +58,7 @@ class TraceHelperTests extends PubSubTestBase {
     TraceHelper traceHelper = new TraceHelper(pubSubTracing);
     PubsubMessage instrumentedMessage;
     try (Scope scope = currentTraceContext.newScope(parent)) {
-      instrumentedMessage =
-          traceHelper.instrumentMessage(producerMessage.build(), TEST_TOPIC);
+      instrumentedMessage = traceHelper.instrumentMessage(producerMessage.build(), TEST_TOPIC);
     }
 
     MutableSpan producerSpan = spans.get(0);
@@ -76,8 +75,7 @@ class TraceHelperTests extends PubSubTestBase {
 
     pubSubTracing.producerInjector.inject(parent, new PubSubProducerRequest(message, "myTopic"));
 
-    PubsubMessage instrumentedMessage =
-        traceHelper.instrumentMessage(message.build(), TEST_TOPIC);
+    PubsubMessage instrumentedMessage = traceHelper.instrumentMessage(message.build(), TEST_TOPIC);
 
     MutableSpan producerSpan = spans.get(0);
     assertThat(producerSpan.kind()).isEqualTo(PRODUCER);
@@ -121,6 +119,4 @@ class TraceHelperTests extends PubSubTestBase {
     assertThat(producerSpan.kind()).isEqualTo(PRODUCER);
     assertThat(producerSpan.tags()).isEmpty();
   }
-
-
 }

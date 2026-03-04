@@ -18,13 +18,13 @@ package com.google.cloud.spring.pubsub.support.converter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import tools.jackson.databind.ObjectMapper;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import com.google.pubsub.v1.PubsubMessage;
 import java.util.Collections;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Tests for the Jackson message converter.

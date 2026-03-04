@@ -20,17 +20,17 @@ import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
 
-/**
- * Runtime hints for the BigQuery sample.
- */
+/** Runtime hints for the BigQuery sample. */
 public class BigQuerySampleRuntimeHints implements RuntimeHintsRegistrar {
 
   @Override
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-    hints.proxies().registerJdkProxy(
-        TypeReference.of(BigQuerySampleConfiguration.BigQueryFileGateway.class),
-        TypeReference.of("org.springframework.aop.SpringProxy"),
-        TypeReference.of("org.springframework.aop.framework.Advised"),
-        TypeReference.of("org.springframework.core.DecoratingProxy"));
+    hints
+        .proxies()
+        .registerJdkProxy(
+            TypeReference.of(BigQuerySampleConfiguration.BigQueryFileGateway.class),
+            TypeReference.of("org.springframework.aop.SpringProxy"),
+            TypeReference.of("org.springframework.aop.framework.Advised"),
+            TypeReference.of("org.springframework.core.DecoratingProxy"));
   }
 }

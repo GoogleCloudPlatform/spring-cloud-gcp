@@ -34,64 +34,79 @@ public class CatalogServiceSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listCatalogs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listCatalogsRetry;
+
   /**
    * Allow override of retry settings at method-level for updateCatalog. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateCatalogRetry;
+
   /**
    * Allow override of retry settings at method-level for setDefaultBranch. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setDefaultBranchRetry;
+
   /**
    * Allow override of retry settings at method-level for getDefaultBranch. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDefaultBranchRetry;
+
   /**
    * Allow override of retry settings at method-level for getCompletionConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getCompletionConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for updateCompletionConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateCompletionConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for getAttributesConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getAttributesConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for updateAttributesConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateAttributesConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for addCatalogAttribute. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry addCatalogAttributeRetry;
+
   /**
    * Allow override of retry settings at method-level for removeCatalogAttribute. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry removeCatalogAttributeRetry;
+
   /**
    * Allow override of retry settings at method-level for replaceCatalogAttribute. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

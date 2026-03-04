@@ -34,97 +34,118 @@ public class VideoStitcherServiceSpringProperties implements CredentialsSupplier
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listCdnKeys. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listCdnKeysRetry;
+
   /**
    * Allow override of retry settings at method-level for getCdnKey. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getCdnKeyRetry;
+
   /**
    * Allow override of retry settings at method-level for createVodSession. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createVodSessionRetry;
+
   /**
    * Allow override of retry settings at method-level for getVodSession. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getVodSessionRetry;
+
   /**
    * Allow override of retry settings at method-level for listVodStitchDetails. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listVodStitchDetailsRetry;
+
   /**
    * Allow override of retry settings at method-level for getVodStitchDetail. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getVodStitchDetailRetry;
+
   /**
    * Allow override of retry settings at method-level for listVodAdTagDetails. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listVodAdTagDetailsRetry;
+
   /**
    * Allow override of retry settings at method-level for getVodAdTagDetail. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getVodAdTagDetailRetry;
+
   /**
    * Allow override of retry settings at method-level for listLiveAdTagDetails. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLiveAdTagDetailsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLiveAdTagDetail. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLiveAdTagDetailRetry;
+
   /**
    * Allow override of retry settings at method-level for listSlates. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSlatesRetry;
+
   /**
    * Allow override of retry settings at method-level for getSlate. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getSlateRetry;
+
   /**
    * Allow override of retry settings at method-level for createLiveSession. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createLiveSessionRetry;
+
   /**
    * Allow override of retry settings at method-level for getLiveSession. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLiveSessionRetry;
+
   /**
    * Allow override of retry settings at method-level for listLiveConfigs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLiveConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLiveConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLiveConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for listVodConfigs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listVodConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for getVodConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

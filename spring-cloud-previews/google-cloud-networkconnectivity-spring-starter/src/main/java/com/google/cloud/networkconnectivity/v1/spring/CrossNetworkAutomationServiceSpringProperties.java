@@ -34,72 +34,88 @@ public class CrossNetworkAutomationServiceSpringProperties implements Credential
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listServiceConnectionMaps. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listServiceConnectionMapsRetry;
+
   /**
    * Allow override of retry settings at method-level for getServiceConnectionMap. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getServiceConnectionMapRetry;
+
   /**
    * Allow override of retry settings at method-level for listServiceConnectionPolicies. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listServiceConnectionPoliciesRetry;
+
   /**
    * Allow override of retry settings at method-level for getServiceConnectionPolicy. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getServiceConnectionPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for listServiceClasses. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listServiceClassesRetry;
+
   /**
    * Allow override of retry settings at method-level for getServiceClass. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getServiceClassRetry;
+
   /**
    * Allow override of retry settings at method-level for getServiceConnectionToken. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getServiceConnectionTokenRetry;
+
   /**
    * Allow override of retry settings at method-level for listServiceConnectionTokens. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listServiceConnectionTokensRetry;
+
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLocationRetry;
+
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

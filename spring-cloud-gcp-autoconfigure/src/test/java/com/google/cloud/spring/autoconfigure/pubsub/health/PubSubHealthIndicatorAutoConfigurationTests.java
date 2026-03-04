@@ -27,7 +27,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
@@ -41,7 +40,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.health.contributor.CompositeHealthContributor;
-import org.springframework.boot.health.contributor.HealthContributor;
 import org.springframework.boot.health.contributor.HealthContributors;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 

@@ -23,9 +23,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
@@ -45,8 +45,7 @@ import reactor.test.StepVerifier;
 @AutoConfigureWebTestClient
 class ReactiveReceiverApplicationIntegrationTest {
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
   @Autowired private WebTestClient webTestClient;
 

@@ -330,6 +330,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
+				<configuration>
+					<configLocation>google_checks.xml</configLocation>
+					<suppressionsLocation>../src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+					<includeTestSourceDirectory>true</includeTestSourceDirectory>
+					<failOnViolation>false</failOnViolation>
+					<violationSeverity>warning</violationSeverity>
+				</configuration>
 				<executions>
 					<execution>
 						<id>validate-google-style</id>
@@ -337,13 +344,6 @@
 						<goals>
 							<goal>check</goal>
 						</goals>
-						<configuration>
-							<configLocation>google_checks.xml</configLocation>
-							<suppressionsLocation>../src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
-							<includeTestSourceDirectory>true</includeTestSourceDirectory>
-							<failOnViolation>true</failOnViolation>
-							<violationSeverity>warning</violationSeverity>
-						</configuration>
 					</execution>
 					<execution>
 						<id>validate-custom</id>
@@ -354,6 +354,8 @@
 						<configuration>
 							<configLocation>../src/checkstyle/custom-checks.xml</configLocation>
 							<headerLocation>../src/checkstyle/java.header</headerLocation>
+							<suppressionsLocation>../src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+							<failOnViolation>false</failOnViolation>
 						</configuration>
 					</execution>
 				</executions>

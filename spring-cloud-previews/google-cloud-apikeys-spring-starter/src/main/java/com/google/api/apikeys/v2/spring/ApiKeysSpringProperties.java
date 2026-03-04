@@ -36,29 +36,37 @@ public class ApiKeysSpringProperties implements CredentialsSupplier {
       new Credentials(
           "https://www.googleapis.com/auth/cloud-platform",
           "https://www.googleapis.com/auth/cloud-platform.read-only");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listKeys. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listKeysRetry;
+
   /**
    * Allow override of retry settings at method-level for getKey. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getKeyRetry;
+
   /**
    * Allow override of retry settings at method-level for getKeyString. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getKeyStringRetry;
+
   /**
    * Allow override of retry settings at method-level for lookupKey. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

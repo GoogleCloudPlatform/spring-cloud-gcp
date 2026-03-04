@@ -31,7 +31,6 @@ class AlloyDbRuntimeHintsTest {
     assertThat(runtimeHints).matches(reflection().onType(AlloyDbProperties.class));
     assertThat(runtimeHints)
         .matches(reflection().onField(AlloyDbProperties.class, "instanceConnectionUri"));
-    assertThat(runtimeHints)
-        .matches(reflection().onField(AlloyDbProperties.class, "databaseName"));
+    assertThat(runtimeHints).matches(reflection().onField(AlloyDbProperties.class, "databaseName"));
   }
 }

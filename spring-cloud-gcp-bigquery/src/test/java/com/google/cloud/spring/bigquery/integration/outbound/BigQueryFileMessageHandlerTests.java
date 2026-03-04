@@ -58,8 +58,8 @@ class BigQueryFileMessageHandlerTests {
   void setup() {
     bigQueryTemplate = mock(BigQueryTemplate.class);
     completableFuture.complete(mock(Job.class));
-    when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any())).thenReturn(
-        completableFuture);
+    when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any()))
+        .thenReturn(completableFuture);
     messageHandler = new BigQueryFileMessageHandler(bigQueryTemplate);
     messageHandler.setTableName("testTable");
     messageHandler.setFormatOptions(FormatOptions.csv());
@@ -125,10 +125,9 @@ class BigQueryFileMessageHandlerTests {
   void testHandleMessage_ThrowsExecutionExceptionTest()
       throws ExecutionException, InterruptedException, TimeoutException {
     CompletableFuture<Job> mockCompletableFuture = mock(CompletableFuture.class);
-    when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any())).thenReturn(
-        mockCompletableFuture);
-    when(mockCompletableFuture.get(1L, TimeUnit.SECONDS))
-        .thenThrow(ExecutionException.class);
+    when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any()))
+        .thenReturn(mockCompletableFuture);
+    when(mockCompletableFuture.get(1L, TimeUnit.SECONDS)).thenThrow(ExecutionException.class);
     messageHandler.setSync(true);
     messageHandler.setTableSchemaExpression(new ValueExpression<>(Schema.of()));
     messageHandler.setTimeout(Duration.ofSeconds(1));
@@ -145,10 +144,9 @@ class BigQueryFileMessageHandlerTests {
   void testHandleMessage_ThrowsInterruptedExceptionTest()
       throws ExecutionException, InterruptedException, TimeoutException {
     CompletableFuture<Job> mockCompletableFuture = mock(CompletableFuture.class);
-    when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any())).thenReturn(
-        mockCompletableFuture);
-    when(mockCompletableFuture.get(1L, TimeUnit.SECONDS))
-        .thenThrow(InterruptedException.class);
+    when(bigQueryTemplate.writeDataToTable(any(), any(), any(), any()))
+        .thenReturn(mockCompletableFuture);
+    when(mockCompletableFuture.get(1L, TimeUnit.SECONDS)).thenThrow(InterruptedException.class);
     messageHandler.setSync(true);
     messageHandler.setTableSchemaExpression(new ValueExpression<>(Schema.of()));
     messageHandler.setTimeout(Duration.ofSeconds(1));
@@ -158,7 +156,8 @@ class BigQueryFileMessageHandlerTests {
 
     assertThatCode(() -> messageHandler.handleRequestMessage(message))
         .isInstanceOf(MessageHandlingException.class)
-        .hasStackTraceContaining("Failed to wait for BigQuery Job (interrupted) in message handler");
+        .hasStackTraceContaining(
+            "Failed to wait for BigQuery Job (interrupted) in message handler");
   }
 
   @Test
@@ -172,11 +171,12 @@ class BigQueryFileMessageHandlerTests {
 
     assertThatCode(() -> messageHandler.handleRequestMessage(message))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage(String.format(
-            "Unsupported message payload type: %s. The supported payload types "
-                + "are: java.io.File, byte[], org.springframework.core.io.Resource, "
-                + "and java.io.InputStream.",
-            payload.getClass().getName()));
+        .hasMessage(
+            String.format(
+                "Unsupported message payload type: %s. The supported payload types "
+                    + "are: java.io.File, byte[], org.springframework.core.io.Resource, "
+                    + "and java.io.InputStream.",
+                payload.getClass().getName()));
   }
 
   @Test
@@ -214,7 +214,6 @@ class BigQueryFileMessageHandlerTests {
 
   @Test
   void setTimeOutTest() {
-    assertThatCode(() -> messageHandler.setTimeout(Duration.ZERO))
-        .doesNotThrowAnyException();
+    assertThatCode(() -> messageHandler.setTimeout(Duration.ZERO)).doesNotThrowAnyException();
   }
 }

@@ -76,9 +76,7 @@ public class SpringComposer {
         .map(
             gapicClass -> {
               ClassDefinition classWithHeader =
-                  gapicClass
-                      .classDefinition()
-                      .toBuilder()
+                  gapicClass.classDefinition().toBuilder()
                       .setFileHeader(CommentComposer.APACHE_LICENSE_COMMENT)
                       .build();
               return GapicClass.create(gapicClass.kind(), classWithHeader);
@@ -91,9 +89,7 @@ public class SpringComposer {
         .map(
             gapicClass -> {
               ClassDefinition classWithUpdatedAnnotations =
-                  gapicClass
-                      .classDefinition()
-                      .toBuilder()
+                  gapicClass.classDefinition().toBuilder()
                       .setAnnotations(
                           prependExtraAnnotations(gapicClass.classDefinition().annotations()))
                       .build();
@@ -105,9 +101,7 @@ public class SpringComposer {
 
   protected static GapicPackageInfo addExtraClassAnnotations(GapicPackageInfo gapicPackageInfo) {
     return GapicPackageInfo.with(
-        gapicPackageInfo
-            .packageInfo()
-            .toBuilder()
+        gapicPackageInfo.packageInfo().toBuilder()
             .setAnnotations(prependExtraAnnotations(gapicPackageInfo.packageInfo().annotations()))
             .build());
   }
@@ -123,9 +117,7 @@ public class SpringComposer {
 
   private static GapicPackageInfo addApacheLicense(GapicPackageInfo gapicPackageInfo) {
     return GapicPackageInfo.with(
-        gapicPackageInfo
-            .packageInfo()
-            .toBuilder()
+        gapicPackageInfo.packageInfo().toBuilder()
             .setFileHeader(CommentComposer.APACHE_LICENSE_COMMENT)
             .build());
   }

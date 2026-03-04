@@ -90,46 +90,60 @@ class DatastorePersistentPropertyImplTests {
   @Test
   void referenceDescendantAnnotatedTest() {
 
-    assertThatThrownBy(() -> this.datastoreMappingContext.getPersistentEntity(DescendantReferenceAnnotatedEntity.class))
-            .isInstanceOf(MappingException.class)
-            .cause()
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Property cannot be annotated both @Descendants and " + "@Reference: subEntity");
+    assertThatThrownBy(
+            () ->
+                this.datastoreMappingContext.getPersistentEntity(
+                    DescendantReferenceAnnotatedEntity.class))
+        .isInstanceOf(MappingException.class)
+        .cause()
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessage(
+            "Property cannot be annotated both @Descendants and " + "@Reference: subEntity");
   }
 
   @Test
   void fieldDescendantAnnotatedTest() {
 
-    assertThatThrownBy(() -> this.datastoreMappingContext.getPersistentEntity(DescendantFieldAnnotatedEntity.class))
-            .isInstanceOf(MappingException.class)
-            .cause()
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Property cannot be annotated as @Field if it is "
-                    + "annotated @Descendants or @Reference: name");
+    assertThatThrownBy(
+            () ->
+                this.datastoreMappingContext.getPersistentEntity(
+                    DescendantFieldAnnotatedEntity.class))
+        .isInstanceOf(MappingException.class)
+        .cause()
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessage(
+            "Property cannot be annotated as @Field if it is "
+                + "annotated @Descendants or @Reference: name");
   }
 
   @Test
   void fieldReferenceAnnotatedTest() {
 
-    assertThatThrownBy(() -> this.datastoreMappingContext.getPersistentEntity(FieldReferenceAnnotatedEntity.class))
-            .isInstanceOf(MappingException.class)
-            .cause()
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Property cannot be annotated as @Field if it is "
-                    + "annotated @Descendants or @Reference: name");
-
+    assertThatThrownBy(
+            () ->
+                this.datastoreMappingContext.getPersistentEntity(
+                    FieldReferenceAnnotatedEntity.class))
+        .isInstanceOf(MappingException.class)
+        .cause()
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessage(
+            "Property cannot be annotated as @Field if it is "
+                + "annotated @Descendants or @Reference: name");
   }
 
   @Test
   void fieldReferencedAnnotatedTest() {
 
-    assertThatThrownBy(() -> this.datastoreMappingContext.getPersistentEntity(FieldReferencedAnnotatedEntity.class))
-            .isInstanceOf(MappingException.class)
-            .cause()
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Property cannot be annotated as @Field if it is "
-                    + "annotated @Descendants or @Reference: name");
-
+    assertThatThrownBy(
+            () ->
+                this.datastoreMappingContext.getPersistentEntity(
+                    FieldReferencedAnnotatedEntity.class))
+        .isInstanceOf(MappingException.class)
+        .cause()
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessage(
+            "Property cannot be annotated as @Field if it is "
+                + "annotated @Descendants or @Reference: name");
   }
 
   @Entity(name = "custom_test_kind")

@@ -34,64 +34,79 @@ public class DataprocMetastoreSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listServices. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listServicesRetry;
+
   /**
    * Allow override of retry settings at method-level for getService. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getServiceRetry;
+
   /**
    * Allow override of retry settings at method-level for listMetadataImports. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listMetadataImportsRetry;
+
   /**
    * Allow override of retry settings at method-level for getMetadataImport. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getMetadataImportRetry;
+
   /**
    * Allow override of retry settings at method-level for listBackups. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBackupsRetry;
+
   /**
    * Allow override of retry settings at method-level for getBackup. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBackupRetry;
+
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLocationRetry;
+
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

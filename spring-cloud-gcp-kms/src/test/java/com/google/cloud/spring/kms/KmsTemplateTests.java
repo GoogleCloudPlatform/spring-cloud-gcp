@@ -77,8 +77,7 @@ class KmsTemplateTests {
     String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/key-id";
 
     assertThatThrownBy(() -> kmsTemplate.encryptText(cryptoKeyNameStr, "1234"))
-            .isInstanceOf(com.google.cloud.spring.kms.KmsException.class);
-
+        .isInstanceOf(com.google.cloud.spring.kms.KmsException.class);
   }
 
   @Test
@@ -94,7 +93,7 @@ class KmsTemplateTests {
     String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/key-id";
 
     assertThatThrownBy(() -> kmsTemplate.decryptText(cryptoKeyNameStr, "1234".getBytes()))
-            .isInstanceOf(com.google.cloud.spring.kms.KmsException.class);
+        .isInstanceOf(com.google.cloud.spring.kms.KmsException.class);
   }
 
   @Test
@@ -109,7 +108,7 @@ class KmsTemplateTests {
     byte[] encryptedBytes = kmsTemplate.encryptText(cryptoKeyNameStr, "1234");
 
     assertThatThrownBy(() -> kmsTemplate.decryptText(cryptoKeyNameStr, encryptedBytes))
-            .isInstanceOf(com.google.api.gax.rpc.InvalidArgumentException.class);
+        .isInstanceOf(com.google.api.gax.rpc.InvalidArgumentException.class);
   }
 
   @Test
@@ -119,8 +118,7 @@ class KmsTemplateTests {
     String cryptoKeyNameStr = "test-project/europe-west2/no-access/key-id";
 
     assertThatThrownBy(() -> kmsTemplate.encryptText(cryptoKeyNameStr, "1234"))
-            .isInstanceOf(com.google.api.gax.rpc.PermissionDeniedException.class);
-
+        .isInstanceOf(com.google.api.gax.rpc.PermissionDeniedException.class);
   }
 
   @Test
@@ -130,8 +128,7 @@ class KmsTemplateTests {
     String cryptoKeyNameStr = "test-project/europe-west2/key-ring-id/not-found";
 
     assertThatThrownBy(() -> kmsTemplate.encryptText(cryptoKeyNameStr, "1234"))
-            .isInstanceOf(com.google.api.gax.rpc.NotFoundException.class);
-
+        .isInstanceOf(com.google.api.gax.rpc.NotFoundException.class);
   }
 
   private DecryptResponse createDecryptResponse() {

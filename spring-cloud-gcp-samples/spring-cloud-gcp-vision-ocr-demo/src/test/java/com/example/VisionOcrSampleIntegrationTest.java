@@ -22,13 +22,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-//Please use "-Dit.vision=true" to enable the tests
+// Please use "-Dit.vision=true" to enable the tests
 @EnabledIfSystemProperty(named = "it.vision", matches = "true")
 @ExtendWith(SpringExtension.class)
 @AutoConfigureTestRestTemplate

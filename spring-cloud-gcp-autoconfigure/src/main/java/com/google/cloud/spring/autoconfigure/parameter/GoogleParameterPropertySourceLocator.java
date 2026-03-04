@@ -100,11 +100,12 @@ public class GoogleParameterPropertySourceLocator implements PropertySourceLocat
     try {
       ParameterVersionName parameterVersionName =
           ParameterVersionName.of(projectId, this.location, this.name, this.profile);
-      RenderParameterVersionResponse response = this.parameterManagerClient.renderParameterVersion(parameterVersionName.toString());
+      RenderParameterVersionResponse response =
+          this.parameterManagerClient.renderParameterVersion(parameterVersionName.toString());
 
       if (response == null) {
         throw new HttpClientErrorException(
-          HttpStatusCode.valueOf(500), "Invalid response from Parameter Manager API");
+            HttpStatusCode.valueOf(500), "Invalid response from Parameter Manager API");
       }
       return response;
     } catch (Exception ex) {
@@ -123,8 +124,7 @@ public class GoogleParameterPropertySourceLocator implements PropertySourceLocat
       config = convertStringToMap(googleParameterEnvironment.getRenderedPayload().toStringUtf8());
       Assert.notNull(googleParameterEnvironment, "Configuration not in expected format.");
     } catch (Exception ex) {
-      String message =
-          "Error loading configuration";
+      String message = "Error loading configuration";
       throw new RuntimeException(message, ex);
     }
     return new MapPropertySource(PROPERTY_SOURCE_NAME, config);

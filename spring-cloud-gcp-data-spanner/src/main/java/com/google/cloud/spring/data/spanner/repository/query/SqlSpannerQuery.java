@@ -154,8 +154,11 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
   }
 
   private EvaluationContext getEvaluationContext(QueryTagValue queryTagValue) {
-    return this.valueExpressionDelegate.getEvaluationContextAccessor().create(this.queryMethod.getParameters())
-        .getEvaluationContext(queryTagValue.rawParams).getEvaluationContext();
+    return this.valueExpressionDelegate
+        .getEvaluationContextAccessor()
+        .create(this.queryMethod.getParameters())
+        .getEvaluationContext(queryTagValue.rawParams)
+        .getEvaluationContext();
   }
 
   private void resolveSpelTags(QueryTagValue queryTagValue) {
@@ -243,11 +246,13 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
       return this.spannerTemplate.query(
           struct -> new StructAccessor(struct).getSingleValue(0), statement, spannerQueryOptions);
     }
-    // check if returnedType is a field annotated as json or is inner-type of a field annotated as json
+    // check if returnedType is a field annotated as json or is inner-type of a field annotated as
+    // json
     if (isJsonFieldType(returnedType)) {
       return this.spannerTemplate.query(
-          struct -> new StructAccessor(struct,
-              this.spannerMappingContext.getGson()).getJsonValue(0, returnedType),
+          struct ->
+              new StructAccessor(struct, this.spannerMappingContext.getGson())
+                  .getJsonValue(0, returnedType),
           statement,
           spannerQueryOptions);
     }

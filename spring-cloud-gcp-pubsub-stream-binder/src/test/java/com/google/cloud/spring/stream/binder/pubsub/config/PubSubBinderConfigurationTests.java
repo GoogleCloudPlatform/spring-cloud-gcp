@@ -18,11 +18,8 @@ package com.google.cloud.spring.stream.binder.pubsub.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.CredentialTypeForMetrics;
-import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;

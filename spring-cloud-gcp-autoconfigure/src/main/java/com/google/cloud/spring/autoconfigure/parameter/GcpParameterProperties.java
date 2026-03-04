@@ -38,14 +38,11 @@ public class GcpParameterProperties implements CredentialsSupplier, EnvironmentA
   private final Credentials credentials = new Credentials(GcpScope.CLOUD_PLATFORM.getUrl());
 
   public static final String PREFIX = "spring.cloud.gcp.parameter";
-  /**
-   * Enables Spring Cloud GCP Parameter.
-   */
+
+  /** Enables Spring Cloud GCP Parameter. */
   private boolean enabled;
 
-  /**
-   * Name of the application.
-   */
+  /** Name of the application. */
   @Value("${spring.application.name:application}")
   private String name;
 
@@ -56,14 +53,10 @@ public class GcpParameterProperties implements CredentialsSupplier, EnvironmentA
    */
   private String profile;
 
-  /**
-   * Overrides the GCP project ID specified in the Core module.
-   */
+  /** Overrides the GCP project ID specified in the Core module. */
   private String location;
 
-  /**
-   * Overrides the GCP project ID specified in the Core module.
-   */
+  /** Overrides the GCP project ID specified in the Core module. */
   private String projectId;
 
   public void setEnabled(boolean enabled) {

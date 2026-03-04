@@ -35,17 +35,15 @@ class ParameterManagerConfigDataLoaderUnitTests {
   private final ConfigDataLoaderContext loaderContext = mock(ConfigDataLoaderContext.class);
   private final GcpProjectIdProvider idProvider = mock(GcpProjectIdProvider.class);
   private final ParameterManagerTemplate template = mock(ParameterManagerTemplate.class);
-  private final GcpParameterManagerProperties properties = mock(GcpParameterManagerProperties.class);
+  private final GcpParameterManagerProperties properties =
+      mock(GcpParameterManagerProperties.class);
   private final CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
-  private final ConfigurableBootstrapContext bootstrapContext = mock(
-      ConfigurableBootstrapContext.class);
+  private final ConfigurableBootstrapContext bootstrapContext =
+      mock(ConfigurableBootstrapContext.class);
   private final ParameterManagerConfigDataLoader loader = new ParameterManagerConfigDataLoader();
 
   @ParameterizedTest
-  @CsvSource({
-      "regional-fake, us-central1",
-      "fake, "
-  })
+  @CsvSource({"regional-fake, us-central1", "fake, "})
   void loadIncorrectResourceThrowsException(String resourceName, String location) {
     when(loaderContext.getBootstrapContext()).thenReturn(bootstrapContext);
     when(bootstrapContext.get(GcpProjectIdProvider.class)).thenReturn(idProvider);

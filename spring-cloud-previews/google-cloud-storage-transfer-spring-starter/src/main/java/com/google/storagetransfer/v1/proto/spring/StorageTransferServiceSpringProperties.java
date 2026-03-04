@@ -34,74 +34,91 @@ public class StorageTransferServiceSpringProperties implements CredentialsSuppli
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for getGoogleServiceAccount. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getGoogleServiceAccountRetry;
+
   /**
    * Allow override of retry settings at method-level for createTransferJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createTransferJobRetry;
+
   /**
    * Allow override of retry settings at method-level for updateTransferJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateTransferJobRetry;
+
   /**
    * Allow override of retry settings at method-level for getTransferJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getTransferJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listTransferJobs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTransferJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for pauseTransferOperation. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry pauseTransferOperationRetry;
+
   /**
    * Allow override of retry settings at method-level for resumeTransferOperation. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry resumeTransferOperationRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteTransferJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteTransferJobRetry;
+
   /**
    * Allow override of retry settings at method-level for createAgentPool. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createAgentPoolRetry;
+
   /**
    * Allow override of retry settings at method-level for updateAgentPool. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateAgentPoolRetry;
+
   /**
    * Allow override of retry settings at method-level for getAgentPool. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getAgentPoolRetry;
+
   /**
    * Allow override of retry settings at method-level for listAgentPools. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAgentPoolsRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteAgentPool. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

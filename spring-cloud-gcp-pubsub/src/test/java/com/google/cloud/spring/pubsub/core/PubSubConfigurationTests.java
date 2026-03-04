@@ -28,7 +28,8 @@ import org.junit.jupiter.api.Test;
 
 class PubSubConfigurationTests {
 
-  static final String QUALIFIED_SUBSCRIPTION_NAME = "projects/projectId/subscriptions/subscription-name";
+  static final String QUALIFIED_SUBSCRIPTION_NAME =
+      "projects/projectId/subscriptions/subscription-name";
 
   private PubSubConfiguration pubSubConfiguration;
   private PubSubConfiguration.Subscriber subscriber;
@@ -177,7 +178,8 @@ class PubSubConfigurationTests {
 
     pubSubConfiguration.initialize("projectId");
 
-    ProjectSubscriptionName projectSubscriptionName = ProjectSubscriptionName.of("projectId", "subscription-name");
+    ProjectSubscriptionName projectSubscriptionName =
+        ProjectSubscriptionName.of("projectId", "subscription-name");
     PubSubConfiguration.FlowControl result =
         pubSubConfiguration.computeSubscriberFlowControlSettings(projectSubscriptionName);
 
@@ -457,8 +459,9 @@ class PubSubConfigurationTests {
     assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).isEmpty();
     assertThat(
             pubSubConfiguration
-                .getSubscriptionProperties(PubSubSubscriptionUtils
-                    .toProjectSubscriptionName("subscription-name", "projectId"))
+                .getSubscriptionProperties(
+                    PubSubSubscriptionUtils.toProjectSubscriptionName(
+                        "subscription-name", "projectId"))
                 .getExecutorThreads())
         .isNull();
     assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).isEmpty();
@@ -468,15 +471,15 @@ class PubSubConfigurationTests {
   void testSubscriberMapProperties_subscriptionName_returnCustom() {
     subscriber.setExecutorThreads(8);
 
-    pubSubConfiguration.setSubscription(
-        Collections.singletonMap("subscription-name", subscriber));
+    pubSubConfiguration.setSubscription(Collections.singletonMap("subscription-name", subscriber));
     pubSubConfiguration.initialize("projectId");
 
     assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(1);
     assertThat(
             pubSubConfiguration
-                .getSubscriptionProperties(PubSubSubscriptionUtils
-                    .toProjectSubscriptionName("subscription-name", "projectId"))
+                .getSubscriptionProperties(
+                    PubSubSubscriptionUtils.toProjectSubscriptionName(
+                        "subscription-name", "projectId"))
                 .getExecutorThreads())
         .isEqualTo(8);
     // asserts that map did not change from a getter. Might not be needed now that map is immutable.
@@ -500,8 +503,9 @@ class PubSubConfigurationTests {
     assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(1);
     assertThat(
             pubSubConfiguration
-                .getSubscriptionProperties(PubSubSubscriptionUtils
-                    .toProjectSubscriptionName(QUALIFIED_SUBSCRIPTION_NAME, "projectId"))
+                .getSubscriptionProperties(
+                    PubSubSubscriptionUtils.toProjectSubscriptionName(
+                        QUALIFIED_SUBSCRIPTION_NAME, "projectId"))
                 .getExecutorThreads())
         .isEqualTo(8);
     assertThat(
@@ -516,21 +520,25 @@ class PubSubConfigurationTests {
   void testSubscriberMapProperties_fullNamePresentInMap_projectIdIgnored_returnCustom() {
     subscriber.setExecutorThreads(8);
 
-    pubSubConfiguration.setSubscription(Collections.singletonMap(
-        "projects/otherProjectId/subscriptions/subscription-name", subscriber));
+    pubSubConfiguration.setSubscription(
+        Collections.singletonMap(
+            "projects/otherProjectId/subscriptions/subscription-name", subscriber));
     pubSubConfiguration.initialize("projectId");
 
     assertThat(pubSubConfiguration.getFullyQualifiedSubscriberProperties()).hasSize(1);
     assertThat(
             pubSubConfiguration
-                .getSubscriptionProperties(PubSubSubscriptionUtils
-                    .toProjectSubscriptionName("projects/otherProjectId/subscriptions/subscription-name", "projectId"))
+                .getSubscriptionProperties(
+                    PubSubSubscriptionUtils.toProjectSubscriptionName(
+                        "projects/otherProjectId/subscriptions/subscription-name", "projectId"))
                 .getExecutorThreads())
         .isEqualTo(8);
     assertThat(
             pubSubConfiguration
                 .getFullyQualifiedSubscriberProperties()
-                .get(ProjectSubscriptionName.parse("projects/otherProjectId/subscriptions/subscription-name"))
+                .get(
+                    ProjectSubscriptionName.parse(
+                        "projects/otherProjectId/subscriptions/subscription-name"))
                 .getExecutorThreads())
         .isEqualTo(8);
   }

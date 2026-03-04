@@ -238,7 +238,8 @@ class PubSubAdminTests {
         .getSubscription("fooSubscription");
     verify(this.mockSubscriptionAdminClient)
         .getSubscription(
-            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project").toString());
+            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project")
+                .toString());
   }
 
   @Test
@@ -263,7 +264,8 @@ class PubSubAdminTests {
         .isNull();
     verify(this.mockSubscriptionAdminClient)
         .getSubscription(
-            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project").toString());
+            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project")
+                .toString());
   }
 
   @Test
@@ -279,7 +281,8 @@ class PubSubAdminTests {
         .isThrownBy(() -> psa.getSubscription("fooSubscription"));
     verify(this.mockSubscriptionAdminClient)
         .getSubscription(
-            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project").toString());
+            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project")
+                .toString());
   }
 
   @Test
@@ -289,7 +292,8 @@ class PubSubAdminTests {
         .deleteSubscription("fooSubscription");
     verify(this.mockSubscriptionAdminClient)
         .deleteSubscription(
-            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project").toString());
+            PubSubSubscriptionUtils.toProjectSubscriptionName("fooSubscription", "test-project")
+                .toString());
   }
 
   @Test
