@@ -46,5 +46,15 @@
     <suppress checks="[MethodName|ParameterName]"
               files="/spring-cloud-previews/google-cloud-gsuite-addons-spring-starter/.*GSuiteAddOnsSpringAutoConfiguration.java"/>
 
-    <suppress checks=".*" files=".*"/>
+    <suppress checks="FinalParameters" files=".*"/>
+
+    <suppress checks="HiddenField" files=".*"/>
+    <suppress checks="DesignForExtension" files=".*"/>
+    <suppress checks="JavadocVariable" files=".*"/>
+    <suppress checks="JavadocPackage" files=".*"/>
+    <suppress checks="NonEmptyAtclauseDescription" files=".*"/>
+    <suppress checks="InvalidJavadocPosition" files=".*"/>
+    <suppress checks="JavadocParagraph" files=".*"/>
+    <suppress checks="AtclauseOrder" files=".*"/>
+    <suppress checks="Indentation" files=".*"/>
 </suppressions>

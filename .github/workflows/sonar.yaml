@@ -16,8 +16,6 @@ jobs:
   sonar:
     name: Build with Sonar
     runs-on: ubuntu-latest
-    env:
-      EXTRA_MAVEN_FLAGS: ${{ (github.ref_name == '8.0-migration' || github.base_ref == '8.0-migration') && '-DskipUnitTests -Dcheckstyle.skip -Dfmt.skip' || '' }}
     # Sonar Token can't be passed to PRs from forks. Disable Sonar workflow unless PR is from a branch.
     if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
@@ -51,7 +49,6 @@ jobs:
             --show-version \
             --threads 1.5C \
             --activate-profiles codecov \
-            ${EXTRA_MAVEN_FLAGS} \
             clean \
             install
       - name: Build and analyze
@@ -64,7 +61,6 @@ jobs:
             --batch-mode \
             --no-transfer-progress \
             --activate-profiles codecov \
-            ${EXTRA_MAVEN_FLAGS} \
             --define sonar.projectKey=GoogleCloudPlatform_spring-cloud-gcp \
             --define sonar.host.url=https://sonarcloud.io \
             --define sonar.organization=googlecloudplatform \
