@@ -19,8 +19,10 @@ package com.google.cloud.spring.stream.binder.pubsub.provisioning;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,6 +37,7 @@ import com.google.cloud.spring.stream.binder.pubsub.properties.PubSubProducerPro
 import com.google.pubsub.v1.DeadLetterPolicy;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.Topic;
+import java.util.List;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -184,6 +187,89 @@ class PubSubChannelProvisionerTests {
     when(this.pubSubAdminMock.createTopic("deadLetterTopic"))
         .thenReturn(
             Topic.newBuilder().setName("projects/test-project/topics/deadLetterTopic").build());
+
+    this.pubSubChannelProvisioner.provisionConsumerDestination(
+        "topic_A", "group_A", this.extendedConsumerProperties);
+
+    ArgumentCaptor<Subscription.Builder> argCaptor =
+        ArgumentCaptor.forClass(Subscription.Builder.class);
+    verify(this.pubSubAdminMock, times(2)).createSubscription(argCaptor.capture());
+    List<Subscription.Builder> captured = argCaptor.getAllValues();
+    Subscription.Builder sb1 = captured.get(0);
+    assertThat(sb1.getName()).isEqualTo("topic_A.group_A.DLT");
+    assertThat(sb1.getTopic()).isEqualTo("projects/test-project/topics/deadLetterTopic");
+    assertThat(sb1.getDeadLetterPolicy()).isNotNull();
+    DeadLetterPolicy policy1 = sb1.getDeadLetterPolicy();
+    assertThat(policy1.getDeadLetterTopic()).isBlank();
+    assertThat(policy1.getMaxDeliveryAttempts()).isEqualTo(0);
+
+    Subscription.Builder sb2 = captured.get(1);
+    assertThat(sb2.getName()).isEqualTo("topic_A.group_A");
+    assertThat(sb2.getTopic()).isEqualTo("topic_A");
+    assertThat(sb2.getDeadLetterPolicy()).isNotNull();
+    DeadLetterPolicy policy2 = sb2.getDeadLetterPolicy();
+    assertThat(policy2.getDeadLetterTopic())
+        .isEqualTo("projects/test-project/topics/deadLetterTopic");
+    assertThat(policy2.getMaxDeliveryAttempts()).isEqualTo(12);
+  }
+
+
+  @Test
+  void testProvisionConsumerDestination_subscriptionRaceCondition() {
+    PubSubConsumerProperties.DeadLetterPolicy dlp = new PubSubConsumerProperties.DeadLetterPolicy();
+    dlp.setDeadLetterTopic("deadLetterTopic");
+    when(this.pubSubConsumerProperties.getDeadLetterPolicy()).thenReturn(dlp);
+    when(this.pubSubConsumerProperties.getExpirationPolicy()).thenReturn(new PubSubConsumerProperties.ExpirationPolicy());
+
+    when(this.pubSubAdminMock.getTopic("deadLetterTopic")).thenReturn(null);
+    when(this.pubSubAdminMock.createTopic("deadLetterTopic"))
+            .thenReturn(
+                    Topic.newBuilder().setName("projects/test-project/topics/deadLetterTopic").build());
+    when(this.pubSubAdminMock.getSubscription("topic_A.group_A.DLT")).thenReturn(null);
+
+    doThrow(AlreadyExistsException.class)
+            .when(pubSubAdminMock)
+            .createSubscription(argThat(sb -> sb.getName().equals("topic_A.group_A.DLT")));
+
+    this.pubSubChannelProvisioner.provisionConsumerDestination(
+            "topic_A", "group_A", this.extendedConsumerProperties);
+
+    ArgumentCaptor<Subscription.Builder> argCaptor =
+            ArgumentCaptor.forClass(Subscription.Builder.class);
+    verify(this.pubSubAdminMock, times(2)).createSubscription(argCaptor.capture());
+    List<Subscription.Builder> captured = argCaptor.getAllValues();
+    Subscription.Builder sb1 = captured.get(0);
+    assertThat(sb1.getName()).isEqualTo("topic_A.group_A.DLT");
+    assertThat(sb1.getTopic()).isEqualTo("projects/test-project/topics/deadLetterTopic");
+    assertThat(sb1.getDeadLetterPolicy()).isNotNull();
+    DeadLetterPolicy policy1 = sb1.getDeadLetterPolicy();
+    assertThat(policy1.getDeadLetterTopic()).isBlank();
+    assertThat(policy1.getMaxDeliveryAttempts()).isEqualTo(0);
+
+    Subscription.Builder sb2 = captured.get(1);
+    assertThat(sb2.getName()).isEqualTo("topic_A.group_A");
+    assertThat(sb2.getTopic()).isEqualTo("topic_A");
+    assertThat(sb2.getDeadLetterPolicy()).isNotNull();
+    DeadLetterPolicy policy2 = sb2.getDeadLetterPolicy();
+    assertThat(policy2.getDeadLetterTopic())
+            .isEqualTo("projects/test-project/topics/deadLetterTopic");
+    assertThat(policy2.getMaxDeliveryAttempts()).isEqualTo(0);
+  }
+
+  @Test
+  void testProvisionConsumerDestination_deadLetterQueue_subscriptionExists() {
+    PubSubConsumerProperties.DeadLetterPolicy dlp = new PubSubConsumerProperties.DeadLetterPolicy();
+    dlp.setDeadLetterTopic("deadLetterTopic");
+    dlp.setMaxDeliveryAttempts(12);
+    when(this.pubSubConsumerProperties.getDeadLetterPolicy()).thenReturn(dlp);
+
+    when(this.pubSubAdminMock.getTopic("deadLetterTopic")).thenReturn(null);
+    when(this.pubSubAdminMock.createTopic("deadLetterTopic"))
+        .thenReturn(
+            Topic.newBuilder().setName("projects/test-project/topics/deadLetterTopic").build());
+    when(this.pubSubAdminMock.getSubscription("topic_A.group_A.DLT"))
+        .thenReturn(
+            Subscription.newBuilder().setName("topic_A.group_A.DLT").setTopic("topic_A").build());
 
     this.pubSubChannelProvisioner.provisionConsumerDestination(
         "topic_A", "group_A", this.extendedConsumerProperties);
@@ -349,8 +435,7 @@ class PubSubChannelProvisionerTests {
             Subscription.newBuilder().setTopic("topic_A").setName("subscription_A").build());
 
     Subscription subscription =
-        this.pubSubChannelProvisioner.ensureSubscriptionExists(
-            "subscription_A", "topic_A", null);
+        this.pubSubChannelProvisioner.ensureSubscriptionExists("subscription_A", "topic_A", null);
 
     assertThat(subscription.getName()).isEqualTo("subscription_A");
     assertThat(subscription.getTopic()).isEqualTo("topic_A");
