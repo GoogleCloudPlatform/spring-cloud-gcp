@@ -14,6 +14,20 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.4.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.4...v7.4.5) (2026-02-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.76.0 ([#4319](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4319)) ([929a693](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/929a6939a69e95bd34ef974b63bdfb93ff589063))
+* **deps:** update gapic-generator-java-bom.version to v2.67.0 ([#4320](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4320)) ([77d48cf](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/77d48cfe77c5fd8c69b3f99fca2faaa8ed50a7fa))
+* remove main from dependabot ([#4323](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4323)) ([ac5d188](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ac5d188600359c05d2d8088f3b877fe261bf6111))
+
+
+### Documentation
+
+* Add note about Postgres username truncation for IAM auth ([#4315](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4315)) ([2458afb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2458afbfbb6d85bda611c270d633737b578c6ff2))
+
 ## [7.4.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.3...v7.4.4) (2026-02-03)
 
 

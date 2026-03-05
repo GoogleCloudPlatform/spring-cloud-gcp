@@ -162,6 +162,14 @@ public class GkeHubSpringAutoConfiguration {
           .listMembershipsSettings()
           .setRetrySettings(listMembershipsRetrySettings);
 
+      RetrySettings listBoundMembershipsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBoundMembershipsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listBoundMembershipsSettings()
+          .setRetrySettings(listBoundMembershipsRetrySettings);
+
       RetrySettings listFeaturesRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listFeaturesSettings().getRetrySettings(), serviceRetry);
@@ -185,6 +193,105 @@ public class GkeHubSpringAutoConfiguration {
           .generateConnectManifestSettings()
           .setRetrySettings(generateConnectManifestRetrySettings);
 
+      RetrySettings getFleetRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getFleetSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getFleetSettings().setRetrySettings(getFleetRetrySettings);
+
+      RetrySettings listFleetsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listFleetsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listFleetsSettings().setRetrySettings(listFleetsRetrySettings);
+
+      RetrySettings getScopeNamespaceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getScopeNamespaceSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getScopeNamespaceSettings()
+          .setRetrySettings(getScopeNamespaceRetrySettings);
+
+      RetrySettings listScopeNamespacesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listScopeNamespacesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listScopeNamespacesSettings()
+          .setRetrySettings(listScopeNamespacesRetrySettings);
+
+      RetrySettings getScopeRBACRoleBindingRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getScopeRBACRoleBindingSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getScopeRBACRoleBindingSettings()
+          .setRetrySettings(getScopeRBACRoleBindingRetrySettings);
+
+      RetrySettings listScopeRBACRoleBindingsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listScopeRBACRoleBindingsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listScopeRBACRoleBindingsSettings()
+          .setRetrySettings(listScopeRBACRoleBindingsRetrySettings);
+
+      RetrySettings getScopeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getScopeSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getScopeSettings().setRetrySettings(getScopeRetrySettings);
+
+      RetrySettings listScopesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listScopesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listScopesSettings().setRetrySettings(listScopesRetrySettings);
+
+      RetrySettings listPermittedScopesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPermittedScopesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listPermittedScopesSettings()
+          .setRetrySettings(listPermittedScopesRetrySettings);
+
+      RetrySettings getMembershipBindingRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMembershipBindingSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getMembershipBindingSettings()
+          .setRetrySettings(getMembershipBindingRetrySettings);
+
+      RetrySettings listMembershipBindingsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMembershipBindingsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listMembershipBindingsSettings()
+          .setRetrySettings(listMembershipBindingsRetrySettings);
+
+      RetrySettings getMembershipRBACRoleBindingRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMembershipRBACRoleBindingSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getMembershipRBACRoleBindingSettings()
+          .setRetrySettings(getMembershipRBACRoleBindingRetrySettings);
+
+      RetrySettings listMembershipRBACRoleBindingsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMembershipRBACRoleBindingsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listMembershipRBACRoleBindingsSettings()
+          .setRetrySettings(listMembershipRBACRoleBindingsRetrySettings);
+
+      RetrySettings generateMembershipRBACRoleBindingYAMLRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder
+                  .generateMembershipRBACRoleBindingYAMLSettings()
+                  .getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .generateMembershipRBACRoleBindingYAMLSettings()
+          .setRetrySettings(generateMembershipRBACRoleBindingYAMLRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -200,6 +307,20 @@ public class GkeHubSpringAutoConfiguration {
           .setRetrySettings(listMembershipsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listMemberships from properties.");
+      }
+    }
+    Retry listBoundMembershipsRetry = clientProperties.getListBoundMembershipsRetry();
+    if (listBoundMembershipsRetry != null) {
+      RetrySettings listBoundMembershipsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBoundMembershipsSettings().getRetrySettings(),
+              listBoundMembershipsRetry);
+      clientSettingsBuilder
+          .listBoundMembershipsSettings()
+          .setRetrySettings(listBoundMembershipsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listBoundMemberships from properties.");
       }
     }
     Retry listFeaturesRetry = clientProperties.getListFeaturesRetry();
@@ -244,6 +365,191 @@ public class GkeHubSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for generateConnectManifest from properties.");
+      }
+    }
+    Retry getFleetRetry = clientProperties.getGetFleetRetry();
+    if (getFleetRetry != null) {
+      RetrySettings getFleetRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getFleetSettings().getRetrySettings(), getFleetRetry);
+      clientSettingsBuilder.getFleetSettings().setRetrySettings(getFleetRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getFleet from properties.");
+      }
+    }
+    Retry listFleetsRetry = clientProperties.getListFleetsRetry();
+    if (listFleetsRetry != null) {
+      RetrySettings listFleetsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listFleetsSettings().getRetrySettings(), listFleetsRetry);
+      clientSettingsBuilder.listFleetsSettings().setRetrySettings(listFleetsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listFleets from properties.");
+      }
+    }
+    Retry getScopeNamespaceRetry = clientProperties.getGetScopeNamespaceRetry();
+    if (getScopeNamespaceRetry != null) {
+      RetrySettings getScopeNamespaceRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getScopeNamespaceSettings().getRetrySettings(),
+              getScopeNamespaceRetry);
+      clientSettingsBuilder
+          .getScopeNamespaceSettings()
+          .setRetrySettings(getScopeNamespaceRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getScopeNamespace from properties.");
+      }
+    }
+    Retry listScopeNamespacesRetry = clientProperties.getListScopeNamespacesRetry();
+    if (listScopeNamespacesRetry != null) {
+      RetrySettings listScopeNamespacesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listScopeNamespacesSettings().getRetrySettings(),
+              listScopeNamespacesRetry);
+      clientSettingsBuilder
+          .listScopeNamespacesSettings()
+          .setRetrySettings(listScopeNamespacesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listScopeNamespaces from properties.");
+      }
+    }
+    Retry getScopeRBACRoleBindingRetry = clientProperties.getGetScopeRBACRoleBindingRetry();
+    if (getScopeRBACRoleBindingRetry != null) {
+      RetrySettings getScopeRBACRoleBindingRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getScopeRBACRoleBindingSettings().getRetrySettings(),
+              getScopeRBACRoleBindingRetry);
+      clientSettingsBuilder
+          .getScopeRBACRoleBindingSettings()
+          .setRetrySettings(getScopeRBACRoleBindingRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getScopeRBACRoleBinding from properties.");
+      }
+    }
+    Retry listScopeRBACRoleBindingsRetry = clientProperties.getListScopeRBACRoleBindingsRetry();
+    if (listScopeRBACRoleBindingsRetry != null) {
+      RetrySettings listScopeRBACRoleBindingsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listScopeRBACRoleBindingsSettings().getRetrySettings(),
+              listScopeRBACRoleBindingsRetry);
+      clientSettingsBuilder
+          .listScopeRBACRoleBindingsSettings()
+          .setRetrySettings(listScopeRBACRoleBindingsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listScopeRBACRoleBindings from properties.");
+      }
+    }
+    Retry getScopeRetry = clientProperties.getGetScopeRetry();
+    if (getScopeRetry != null) {
+      RetrySettings getScopeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getScopeSettings().getRetrySettings(), getScopeRetry);
+      clientSettingsBuilder.getScopeSettings().setRetrySettings(getScopeRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getScope from properties.");
+      }
+    }
+    Retry listScopesRetry = clientProperties.getListScopesRetry();
+    if (listScopesRetry != null) {
+      RetrySettings listScopesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listScopesSettings().getRetrySettings(), listScopesRetry);
+      clientSettingsBuilder.listScopesSettings().setRetrySettings(listScopesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listScopes from properties.");
+      }
+    }
+    Retry listPermittedScopesRetry = clientProperties.getListPermittedScopesRetry();
+    if (listPermittedScopesRetry != null) {
+      RetrySettings listPermittedScopesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listPermittedScopesSettings().getRetrySettings(),
+              listPermittedScopesRetry);
+      clientSettingsBuilder
+          .listPermittedScopesSettings()
+          .setRetrySettings(listPermittedScopesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listPermittedScopes from properties.");
+      }
+    }
+    Retry getMembershipBindingRetry = clientProperties.getGetMembershipBindingRetry();
+    if (getMembershipBindingRetry != null) {
+      RetrySettings getMembershipBindingRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMembershipBindingSettings().getRetrySettings(),
+              getMembershipBindingRetry);
+      clientSettingsBuilder
+          .getMembershipBindingSettings()
+          .setRetrySettings(getMembershipBindingRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getMembershipBinding from properties.");
+      }
+    }
+    Retry listMembershipBindingsRetry = clientProperties.getListMembershipBindingsRetry();
+    if (listMembershipBindingsRetry != null) {
+      RetrySettings listMembershipBindingsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMembershipBindingsSettings().getRetrySettings(),
+              listMembershipBindingsRetry);
+      clientSettingsBuilder
+          .listMembershipBindingsSettings()
+          .setRetrySettings(listMembershipBindingsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listMembershipBindings from properties.");
+      }
+    }
+    Retry getMembershipRBACRoleBindingRetry =
+        clientProperties.getGetMembershipRBACRoleBindingRetry();
+    if (getMembershipRBACRoleBindingRetry != null) {
+      RetrySettings getMembershipRBACRoleBindingRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMembershipRBACRoleBindingSettings().getRetrySettings(),
+              getMembershipRBACRoleBindingRetry);
+      clientSettingsBuilder
+          .getMembershipRBACRoleBindingSettings()
+          .setRetrySettings(getMembershipRBACRoleBindingRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getMembershipRBACRoleBinding from properties.");
+      }
+    }
+    Retry listMembershipRBACRoleBindingsRetry =
+        clientProperties.getListMembershipRBACRoleBindingsRetry();
+    if (listMembershipRBACRoleBindingsRetry != null) {
+      RetrySettings listMembershipRBACRoleBindingsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMembershipRBACRoleBindingsSettings().getRetrySettings(),
+              listMembershipRBACRoleBindingsRetry);
+      clientSettingsBuilder
+          .listMembershipRBACRoleBindingsSettings()
+          .setRetrySettings(listMembershipRBACRoleBindingsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listMembershipRBACRoleBindings from properties.");
+      }
+    }
+    Retry generateMembershipRBACRoleBindingYAMLRetry =
+        clientProperties.getGenerateMembershipRBACRoleBindingYAMLRetry();
+    if (generateMembershipRBACRoleBindingYAMLRetry != null) {
+      RetrySettings generateMembershipRBACRoleBindingYAMLRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder
+                  .generateMembershipRBACRoleBindingYAMLSettings()
+                  .getRetrySettings(),
+              generateMembershipRBACRoleBindingYAMLRetry);
+      clientSettingsBuilder
+          .generateMembershipRBACRoleBindingYAMLSettings()
+          .setRetrySettings(generateMembershipRBACRoleBindingYAMLRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for generateMembershipRBACRoleBindingYAML from properties.");
       }
     }
     return clientSettingsBuilder.build();
