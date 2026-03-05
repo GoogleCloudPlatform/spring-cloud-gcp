@@ -77,25 +77,24 @@ class PubSubInboundChannelAdapterTests {
         new PubSubInboundChannelAdapter(this.mockPubSubSubscriberOperations, "testSubscription");
     this.adapter.setOutputChannel(this.mockMessageChannel);
     this.adapter.setBeanFactory(this.context);
-
   }
 
   private void setupSubscribeAndConvert() {
     when(this.mockMessageChannel.send(any())).thenReturn(true);
 
     when(mockAcknowledgeableMessage.getPubsubMessage())
-            .thenReturn(PubsubMessage.newBuilder().build());
+        .thenReturn(PubsubMessage.newBuilder().build());
     when(mockAcknowledgeableMessage.getPayload()).thenReturn("Test message payload.");
 
     when(this.mockPubSubSubscriberOperations.subscribeAndConvert(
             anyString(), any(Consumer.class), any(Class.class)))
-            .then(
-                    invocationOnMock -> {
-                      Consumer<ConvertedBasicAcknowledgeablePubsubMessage> messageConsumer =
-                              invocationOnMock.getArgument(1);
-                      messageConsumer.accept(mockAcknowledgeableMessage);
-                      return null;
-                    });
+        .then(
+            invocationOnMock -> {
+              Consumer<ConvertedBasicAcknowledgeablePubsubMessage> messageConsumer =
+                  invocationOnMock.getArgument(1);
+              messageConsumer.accept(mockAcknowledgeableMessage);
+              return null;
+            });
   }
 
   @AfterEach
@@ -127,11 +126,14 @@ class PubSubInboundChannelAdapterTests {
 
     verify(mockAcknowledgeableMessage).nack();
 
-    assertThat(capturedOutput).contains("failed; message nacked automatically").contains(EXCEPTION_MESSAGE);
+    assertThat(capturedOutput)
+        .contains("failed; message nacked automatically")
+        .contains(EXCEPTION_MESSAGE);
   }
 
   @Test
-  void testAckModeAuto_nacksWhenDownstreamProcessingFailsWhenContextShutdown(CapturedOutput capturedOutput) {
+  void testAckModeAuto_nacksWhenDownstreamProcessingFailsWhenContextShutdown(
+      CapturedOutput capturedOutput) {
 
     setupSubscribeAndConvert();
     this.adapter.setAckMode(AckMode.AUTO);
@@ -173,7 +175,8 @@ class PubSubInboundChannelAdapterTests {
   }
 
   @Test
-  void testAckModeAutoAck_neitherAcksNorNacksWhenMessageProcessingFails(CapturedOutput capturedOutput) {
+  void testAckModeAutoAck_neitherAcksNorNacksWhenMessageProcessingFails(
+      CapturedOutput capturedOutput) {
 
     setupSubscribeAndConvert();
     when(this.mockMessageChannel.send(any())).thenThrow(new RuntimeException(EXCEPTION_MESSAGE));
@@ -186,7 +189,9 @@ class PubSubInboundChannelAdapterTests {
     verify(mockAcknowledgeableMessage, times(0)).ack();
     verify(mockAcknowledgeableMessage, times(0)).nack();
 
-    assertThat(capturedOutput).contains("failed; message neither acked nor nacked").contains(EXCEPTION_MESSAGE);
+    assertThat(capturedOutput)
+        .contains("failed; message neither acked nor nacked")
+        .contains(EXCEPTION_MESSAGE);
   }
 
   @Test
@@ -197,7 +202,6 @@ class PubSubInboundChannelAdapterTests {
     adapter.setHealthTrackerRegistry(healthTrackerRegistry);
     adapter.doStart();
     verify(healthTrackerRegistry).registerTracker("testSubscription");
-
   }
 
   @Test
@@ -213,7 +217,6 @@ class PubSubInboundChannelAdapterTests {
     this.mockMessageChannel.send(new GenericMessage<>("test-message"));
 
     verify(healthTrackerRegistry, times(1)).processedMessage(any());
-
   }
 
   @Test
@@ -224,7 +227,6 @@ class PubSubInboundChannelAdapterTests {
     adapter.setHealthTrackerRegistry(healthTrackerRegistry);
     adapter.doStart();
     verify(healthTrackerRegistry, times(1)).addListener(any());
-
   }
 
   @Test
@@ -253,7 +255,6 @@ class PubSubInboundChannelAdapterTests {
     this.adapter.setAckMode(AckMode.MANUAL);
     this.adapter.start();
     verifyOriginalMessage();
-
   }
 
   @Test
@@ -263,7 +264,6 @@ class PubSubInboundChannelAdapterTests {
     this.adapter.setAckMode(AckMode.AUTO);
     this.adapter.start();
     verifyOriginalMessage();
-
   }
 
   @Test
@@ -273,7 +273,6 @@ class PubSubInboundChannelAdapterTests {
     this.adapter.setAckMode(AckMode.AUTO_ACK);
     this.adapter.start();
     verifyOriginalMessage();
-
   }
 
   @SuppressWarnings("unchecked")

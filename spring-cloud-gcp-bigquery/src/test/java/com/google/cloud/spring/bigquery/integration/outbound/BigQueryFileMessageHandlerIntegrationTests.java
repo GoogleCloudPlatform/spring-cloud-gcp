@@ -33,7 +33,6 @@ import com.google.cloud.bigquery.TableResult;
 import com.google.cloud.spring.bigquery.core.BigQueryTestConfiguration;
 import com.google.cloud.spring.bigquery.integration.BigQuerySpringMessageHeaders;
 import java.io.File;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -62,14 +61,11 @@ class BigQueryFileMessageHandlerIntegrationTests {
 
   private String tableName;
 
-  @Autowired
-  private ThreadPoolTaskScheduler taskScheduler;
+  @Autowired private ThreadPoolTaskScheduler taskScheduler;
 
-  @Autowired
-  private BigQuery bigquery;
+  @Autowired private BigQuery bigquery;
 
-  @Autowired
-  private BigQueryFileMessageHandler messageHandler;
+  @Autowired private BigQueryFileMessageHandler messageHandler;
 
   @BeforeEach
   @AfterEach

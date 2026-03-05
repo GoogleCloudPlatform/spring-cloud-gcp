@@ -28,9 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.annotation.UserConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-/**
- * Abstract base for Spanner R2DBC integration tests of {@link SpannerR2dbcDialect}.
- */
+/** Abstract base for Spanner R2DBC integration tests of {@link SpannerR2dbcDialect}. */
 abstract class AbstractBaseSpannerR2dbcIntegrationTest {
   private static final Logger log =
       LoggerFactory.getLogger(AbstractBaseSpannerR2dbcIntegrationTest.class);
@@ -53,14 +51,11 @@ abstract class AbstractBaseSpannerR2dbcIntegrationTest {
       this.contextRunner =
           new ApplicationContextRunner()
               .withPropertyValues("testDatabase=" + testDatabase)
-              .withConfiguration(
-                  UserConfigurations.of(
-                      configurationClass));
+              .withConfiguration(UserConfigurations.of(configurationClass));
     }
 
     log.info("Creating database {}", testDatabase);
-    spanner.getDatabaseAdminClient().createDatabase(
-        TEST_INSTANCE, testDatabase, List.of(tableDdl));
+    spanner.getDatabaseAdminClient().createDatabase(TEST_INSTANCE, testDatabase, List.of(tableDdl));
     log.info("Done creating database {}", testDatabase);
   }
 

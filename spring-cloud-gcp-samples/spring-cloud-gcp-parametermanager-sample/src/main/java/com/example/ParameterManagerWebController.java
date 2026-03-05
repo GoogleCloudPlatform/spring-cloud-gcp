@@ -34,7 +34,8 @@ public class ParameterManagerWebController {
 
   private static final String INDEX_PAGE = "index.html";
   private static final String APPLICATION_PARAMETER_FROM_VALUE = "applicationParameterFromValue";
-  private static final String APPLICATION_REGIONAL_PARAMETER_FROM_VALUE = "applicationRegionalParameterFromValue";
+  private static final String APPLICATION_REGIONAL_PARAMETER_FROM_VALUE =
+      "applicationRegionalParameterFromValue";
 
   private final ParameterManagerTemplate parameterManagerTemplate;
   // Application parameters can be accessed from the configuration properties class,
@@ -65,7 +66,9 @@ public class ParameterManagerWebController {
     map.put(APPLICATION_PARAMETER_FROM_VALUE, appParameterFromValue);
     map.put(APPLICATION_REGIONAL_PARAMETER_FROM_VALUE, appRegionalParameterFromValue);
     map.put("applicationParameterFromConfigurationProperties", configuration.getParameter());
-    map.put("applicationRegionalParameterFromConfigurationProperties", configuration.getRegionalParameter());
+    map.put(
+        "applicationRegionalParameterFromConfigurationProperties",
+        configuration.getRegionalParameter());
     return new ModelAndView(INDEX_PAGE, map);
   }
 
@@ -109,7 +112,8 @@ public class ParameterManagerWebController {
       parameterIdentifier =
           "pm@" + projectId + "/" + locationId + "/" + parameterId + "/" + versionId;
     }
-    parameterPayload = this.parameterManagerTemplate.renderedParameterVersionString(parameterIdentifier);
+    parameterPayload =
+        this.parameterManagerTemplate.renderedParameterVersionString(parameterIdentifier);
     return "Parameter Version ID: "
         + HtmlUtils.htmlEscape(versionId)
         + " | Value: "

@@ -36,7 +36,6 @@ import org.springframework.util.ObjectUtils;
  * <p>This factory provides a caching layer for {@link SecretManagerServiceClient} instances.
  * Clients are created using the provided {@link CredentialsProvider} and a {@link
  * UserAgentHeaderProvider} that adds the Spring Cloud GCP agent header to the client.
- *
  */
 @Component
 public class DefaultSecretManagerServiceClientFactory implements SecretManagerServiceClientFactory {
@@ -53,19 +52,23 @@ public class DefaultSecretManagerServiceClientFactory implements SecretManagerSe
     if (ObjectUtils.isEmpty(location)) {
       location = GLOBAL_LOCATION;
     }
-    return clientCache.computeIfAbsent(location, loc -> {
-      try {
-        SecretManagerServiceSettings.Builder settings = SecretManagerServiceSettings.newBuilder()
-            .setCredentialsProvider(credentialsProvider)
-            .setHeaderProvider(new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class));
-        if (!loc.equals(GLOBAL_LOCATION)) {
-          settings.setEndpoint(String.format("secretmanager.%s.rep.googleapis.com:443", loc));
-        }
-        return SecretManagerServiceClient.create(settings.build());
-      } catch (IOException e) {
-        throw new RuntimeException(
-            "Failed to create SecretManagerServiceClient for location: " + loc, e);
-      }
-    });
+    return clientCache.computeIfAbsent(
+        location,
+        loc -> {
+          try {
+            SecretManagerServiceSettings.Builder settings =
+                SecretManagerServiceSettings.newBuilder()
+                    .setCredentialsProvider(credentialsProvider)
+                    .setHeaderProvider(
+                        new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class));
+            if (!loc.equals(GLOBAL_LOCATION)) {
+              settings.setEndpoint(String.format("secretmanager.%s.rep.googleapis.com:443", loc));
+            }
+            return SecretManagerServiceClient.create(settings.build());
+          } catch (IOException e) {
+            throw new RuntimeException(
+                "Failed to create SecretManagerServiceClient for location: " + loc, e);
+          }
+        });
   }
 }

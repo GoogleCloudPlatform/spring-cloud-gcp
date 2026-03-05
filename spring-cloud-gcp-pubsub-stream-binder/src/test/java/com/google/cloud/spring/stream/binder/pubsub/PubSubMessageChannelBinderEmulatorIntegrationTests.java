@@ -93,31 +93,44 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
 
   @Test
   void testSendAndReceiveWithHeaderMappingsConsumer() throws Exception {
-    //This test is checking if the consumer headerMapper is working fine. The message has two headers built in it,
-    //producer allows both of them to be mapped but the consumer only allows one of them. So when we receive the
-    //message on the inputChannel, only one header should be mapped, the one which consumer allows (firstHeader in this case)
+    // This test is checking if the consumer headerMapper is working fine. The message has two
+    // headers built in it,
+    // producer allows both of them to be mapped but the consumer only allows one of them. So when
+    // we receive the
+    // message on the inputChannel, only one header should be mapped, the one which consumer allows
+    // (firstHeader in this case)
 
     PubSubTestBinder binder = this.getBinder();
 
     ExtendedConsumerProperties<PubSubConsumerProperties> consumerProps = createConsumerProperties();
-    consumerProps.getExtension().setAllowedHeaders(new String[]{"firstHeader"});
+    consumerProps.getExtension().setAllowedHeaders(new String[] {"firstHeader"});
 
-    ExtendedProducerProperties<PubSubProducerProperties> producerProps = createProducerProperties(testInfo);
-    producerProps.getExtension().setAllowedHeaders(new String[]{"firstHeader", "secondHeader"});
+    ExtendedProducerProperties<PubSubProducerProperties> producerProps =
+        createProducerProperties(testInfo);
+    producerProps.getExtension().setAllowedHeaders(new String[] {"firstHeader", "secondHeader"});
 
     BindingProperties outputBindingProperties = createProducerBindingProperties(producerProps);
-    DirectChannel moduleOutputChannel = createBindableChannel("output-consumer-mapping", outputBindingProperties);
+    DirectChannel moduleOutputChannel =
+        createBindableChannel("output-consumer-mapping", outputBindingProperties);
 
     BindingProperties inputBindingProperties = createConsumerBindingProperties(consumerProps);
-    DirectChannel moduleInputChannel = createBindableChannel("input-consumer-mapping", inputBindingProperties);
+    DirectChannel moduleInputChannel =
+        createBindableChannel("input-consumer-mapping", inputBindingProperties);
 
-    Binding<MessageChannel> producerBinding = binder.bindProducer(String.format("foo%s0", getDestinationNameDelimiter()),
-            moduleOutputChannel, producerProps);
-    Binding<MessageChannel> consumerBinding = binder.bindConsumer(String.format("foo%s0", getDestinationNameDelimiter()),
-            "test-group-consumer", moduleInputChannel,
+    Binding<MessageChannel> producerBinding =
+        binder.bindProducer(
+            String.format("foo%s0", getDestinationNameDelimiter()),
+            moduleOutputChannel,
+            producerProps);
+    Binding<MessageChannel> consumerBinding =
+        binder.bindConsumer(
+            String.format("foo%s0", getDestinationNameDelimiter()),
+            "test-group-consumer",
+            moduleInputChannel,
             consumerProps);
 
-    Message<?> message = MessageBuilder.withPayload("insert some random stuff here")
+    Message<?> message =
+        MessageBuilder.withPayload("insert some random stuff here")
             .setHeader("firstHeader", "firstHeaderValue")
             .setHeader("secondHeader", "secondHeaderValue")
             .build();
@@ -125,20 +138,23 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
     binderBindUnbindLatency();
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<Message<byte[]>> inboundMessageRef = new AtomicReference<>();
-    moduleInputChannel.subscribe(message1 -> {
-      try {
-        inboundMessageRef.set((Message<byte[]>) message1);
-      } finally {
-        latch.countDown();
-      }
-    });
+    moduleInputChannel.subscribe(
+        message1 -> {
+          try {
+            inboundMessageRef.set((Message<byte[]>) message1);
+          } finally {
+            latch.countDown();
+          }
+        });
 
     moduleOutputChannel.send(message);
     Assert.isTrue(latch.await(5, TimeUnit.SECONDS), "Failed to receive message");
 
-    assertThat(inboundMessageRef.get().getPayload()).isEqualTo("insert some random stuff here".getBytes());
+    assertThat(inboundMessageRef.get().getPayload())
+        .isEqualTo("insert some random stuff here".getBytes());
     assertThat(inboundMessageRef.get().getHeaders().get("secondHeader")).isNull();
-    assertThat(inboundMessageRef.get().getHeaders().get("firstHeader")).hasToString("firstHeaderValue");
+    assertThat(inboundMessageRef.get().getHeaders().get("firstHeader"))
+        .hasToString("firstHeaderValue");
 
     producerBinding.unbind();
     consumerBinding.unbind();
@@ -146,31 +162,44 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
 
   @Test
   void testSendAndReceiveWithHeaderMappingsProducer() throws Exception {
-    //This test is checking if the producer headerMapper is working fine. The message has two headers built in it,
-    //producer allows only one of them to be mapped and the consumer allows both of them. So when we receive the
-    //message on the inputChannel, only one header should be mapped, the one which producer allows (secondHeader in this case)
+    // This test is checking if the producer headerMapper is working fine. The message has two
+    // headers built in it,
+    // producer allows only one of them to be mapped and the consumer allows both of them. So when
+    // we receive the
+    // message on the inputChannel, only one header should be mapped, the one which producer allows
+    // (secondHeader in this case)
 
     PubSubTestBinder binder = this.getBinder();
 
     ExtendedConsumerProperties<PubSubConsumerProperties> consumerProps = createConsumerProperties();
-    consumerProps.getExtension().setAllowedHeaders(new String[]{"firstHeader", "secondHeader"});
+    consumerProps.getExtension().setAllowedHeaders(new String[] {"firstHeader", "secondHeader"});
 
-    ExtendedProducerProperties<PubSubProducerProperties> producerProps = createProducerProperties(testInfo);
-    producerProps.getExtension().setAllowedHeaders(new String[]{"secondHeader"});
+    ExtendedProducerProperties<PubSubProducerProperties> producerProps =
+        createProducerProperties(testInfo);
+    producerProps.getExtension().setAllowedHeaders(new String[] {"secondHeader"});
 
     BindingProperties outputBindingProperties = createProducerBindingProperties(producerProps);
-    DirectChannel moduleOutputChannel = createBindableChannel("output-producer-mapping", outputBindingProperties);
+    DirectChannel moduleOutputChannel =
+        createBindableChannel("output-producer-mapping", outputBindingProperties);
 
     BindingProperties inputBindingProperties = createConsumerBindingProperties(consumerProps);
-    DirectChannel moduleInputChannel = createBindableChannel("input-producer-mapping", inputBindingProperties);
+    DirectChannel moduleInputChannel =
+        createBindableChannel("input-producer-mapping", inputBindingProperties);
 
-    Binding<MessageChannel> producerBinding = binder.bindProducer(String.format("foo%s0", getDestinationNameDelimiter()),
-            moduleOutputChannel, producerProps);
-    Binding<MessageChannel> consumerBinding = binder.bindConsumer(String.format("foo%s0", getDestinationNameDelimiter()),
-            "test-group-producer", moduleInputChannel,
+    Binding<MessageChannel> producerBinding =
+        binder.bindProducer(
+            String.format("foo%s0", getDestinationNameDelimiter()),
+            moduleOutputChannel,
+            producerProps);
+    Binding<MessageChannel> consumerBinding =
+        binder.bindConsumer(
+            String.format("foo%s0", getDestinationNameDelimiter()),
+            "test-group-producer",
+            moduleInputChannel,
             consumerProps);
 
-    Message<?> message = MessageBuilder.withPayload("insert some random stuff here")
+    Message<?> message =
+        MessageBuilder.withPayload("insert some random stuff here")
             .setHeader("firstHeader", "firstHeaderValue")
             .setHeader("secondHeader", "secondHeaderValue")
             .build();
@@ -178,20 +207,23 @@ class PubSubMessageChannelBinderEmulatorIntegrationTests
     binderBindUnbindLatency();
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<Message<byte[]>> inboundMessageRef = new AtomicReference<>();
-    moduleInputChannel.subscribe(message1 -> {
-      try {
-        inboundMessageRef.set((Message<byte[]>) message1);
-      } finally {
-        latch.countDown();
-      }
-    });
+    moduleInputChannel.subscribe(
+        message1 -> {
+          try {
+            inboundMessageRef.set((Message<byte[]>) message1);
+          } finally {
+            latch.countDown();
+          }
+        });
 
     moduleOutputChannel.send(message);
     Assert.isTrue(latch.await(5, TimeUnit.SECONDS), "Failed to receive message");
 
-    assertThat(inboundMessageRef.get().getPayload()).isEqualTo("insert some random stuff here".getBytes());
+    assertThat(inboundMessageRef.get().getPayload())
+        .isEqualTo("insert some random stuff here".getBytes());
     assertThat(inboundMessageRef.get().getHeaders().get("firstHeader")).isNull();
-    assertThat(inboundMessageRef.get().getHeaders().get("secondHeader")).hasToString("secondHeaderValue");
+    assertThat(inboundMessageRef.get().getHeaders().get("secondHeader"))
+        .hasToString("secondHeaderValue");
 
     producerBinding.unbind();
     consumerBinding.unbind();

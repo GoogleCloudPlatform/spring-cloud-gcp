@@ -25,9 +25,9 @@ import static org.mockito.Mockito.mock;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.RepositoryMetadata;
-import org.springframework.data.core.TypeInformation;
 
 class SpannerQueryMethodTests {
 
@@ -39,7 +39,8 @@ class SpannerQueryMethodTests {
     this.mockMetadata = mock(RepositoryMetadata.class);
     this.mockProjectionFactory = mock(ProjectionFactory.class);
     doReturn(TypeInformation.fromReturnTypeOf(Example.class.getMethod("someAnnotatedMethod")))
-        .when(mockMetadata).getReturnType(any());
+        .when(mockMetadata)
+        .getReturnType(any());
     doAnswer(a -> String.class).when(mockMetadata).getReturnedDomainClass(any());
   }
 

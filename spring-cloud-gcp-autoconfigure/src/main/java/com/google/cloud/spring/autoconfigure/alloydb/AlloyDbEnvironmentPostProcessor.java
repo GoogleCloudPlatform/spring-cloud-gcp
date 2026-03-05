@@ -33,12 +33,13 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * Provides Google AlloyDB instance connectivity through Spring JDBC by
- * providing only a database and instance connection URI.
+ * Provides Google AlloyDB instance connectivity through Spring JDBC by providing only a database
+ * and instance connection URI.
  */
 public class AlloyDbEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
-  private static final String JDBC_URL_TEMPLATE = "jdbc:postgresql:///%s?socketFactory=com.google.cloud.alloydb.SocketFactory";
+  private static final String JDBC_URL_TEMPLATE =
+      "jdbc:postgresql:///%s?socketFactory=com.google.cloud.alloydb.SocketFactory";
   private static final String JDBC_DRIVER_CLASS = "org.postgresql.Driver";
   private static final String DEFAULT_USERNAME = "postgres";
 
@@ -52,20 +53,23 @@ public class AlloyDbEnvironmentPostProcessor implements EnvironmentPostProcessor
       return;
     }
 
-    boolean isAlloyDbEnabled = Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.alloydb.enabled", "true"));
+    boolean isAlloyDbEnabled =
+        Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.alloydb.enabled", "true"));
     if (!isAlloyDbEnabled) {
       return;
     }
 
-    String propertiesPrefix = AlloyDbProperties.class.getAnnotation(ConfigurationProperties.class).value();
-    AlloyDbProperties alloyDbProperties = new Binder(
-        ConfigurationPropertySources.get(environment),
-        new NonSecretsManagerPropertiesPlaceholdersResolver(environment),
-        null,
-        null,
-        null)
-        .bind(propertiesPrefix, AlloyDbProperties.class)
-        .orElse(new AlloyDbProperties());
+    String propertiesPrefix =
+        AlloyDbProperties.class.getAnnotation(ConfigurationProperties.class).value();
+    AlloyDbProperties alloyDbProperties =
+        new Binder(
+                ConfigurationPropertySources.get(environment),
+                new NonSecretsManagerPropertiesPlaceholdersResolver(environment),
+                null,
+                null,
+                null)
+            .bind(propertiesPrefix, AlloyDbProperties.class)
+            .orElse(new AlloyDbProperties());
 
     if (isOnClasspath("com.google.cloud.alloydb.SocketFactory")
         && isOnClasspath(JDBC_DRIVER_CLASS)) {
@@ -73,8 +77,7 @@ public class AlloyDbEnvironmentPostProcessor implements EnvironmentPostProcessor
       // specified
       Map<String, Object> fallbackMap = new HashMap<>();
       fallbackMap.put("spring.datasource.username", DEFAULT_USERNAME);
-      fallbackMap.put(
-          "spring.datasource.driver-class-name", JDBC_DRIVER_CLASS);
+      fallbackMap.put("spring.datasource.driver-class-name", JDBC_DRIVER_CLASS);
       environment
           .getPropertySources()
           .addLast(new MapPropertySource("ALLOYDB_DATA_SOURCE_FALLBACK", fallbackMap));

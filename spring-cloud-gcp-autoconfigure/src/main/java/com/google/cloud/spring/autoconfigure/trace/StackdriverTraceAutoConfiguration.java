@@ -66,13 +66,14 @@ import zipkin2.reporter.stackdriver.brave.StackdriverV2Encoder;
     value = {"spring.cloud.gcp.trace.enabled"},
     matchIfMissing = true)
 @ConditionalOnClass(StackdriverSender.class)
-@AutoConfigureBefore({BraveAutoConfiguration.class, ZipkinWithBraveTracingAutoConfiguration .class})
+@AutoConfigureBefore({BraveAutoConfiguration.class, ZipkinWithBraveTracingAutoConfiguration.class})
 public class StackdriverTraceAutoConfiguration {
 
   private static final Log LOGGER = LogFactory.getLog(StackdriverTraceAutoConfiguration.class);
 
   /**
-   * Stackdriver encoder bean name. Name of the bean matters for supporting multiple tracing systems.
+   * Stackdriver encoder bean name. Name of the bean matters for supporting multiple tracing
+   * systems.
    */
   public static final String ENCODER_BEAN_NAME = "stackdriverEncoder";
 
@@ -97,7 +98,8 @@ public class StackdriverTraceAutoConfiguration {
 
   private final CredentialsProvider finalCredentialsProvider;
 
-  private final UserAgentHeaderProvider headerProvider = new UserAgentHeaderProvider(this.getClass());
+  private final UserAgentHeaderProvider headerProvider =
+      new UserAgentHeaderProvider(this.getClass());
 
   private ThreadPoolTaskScheduler defaultTraceSenderThreadPool;
 

@@ -27,8 +27,7 @@ import javax.annotation.PreDestroy;
  */
 public class CachingPublisherFactory implements PublisherFactory {
   /** {@link Publisher} cache, enforces only one {@link Publisher} per Pub/Sub topic exists. */
-  private final ConcurrentHashMap<String, Publisher> publishers =
-      new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, Publisher> publishers = new ConcurrentHashMap<>();
 
   private final PublisherFactory delegate;
 
@@ -55,9 +54,7 @@ public class CachingPublisherFactory implements PublisherFactory {
     return delegate;
   }
 
-  /**
-   * Shutdown all cached {@link Publisher} gracefully.
-   */
+  /** Shutdown all cached {@link Publisher} gracefully. */
   @PreDestroy
   public void shutdown() {
     publishers.forEachValue(1L, Publisher::shutdown);

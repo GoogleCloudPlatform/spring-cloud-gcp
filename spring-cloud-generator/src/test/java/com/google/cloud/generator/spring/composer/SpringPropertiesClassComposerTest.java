@@ -42,7 +42,8 @@ public class SpringPropertiesClassComposerTest {
   public void setUp() {
     this.echoContext = TestUtils.parseShowcaseEcho();
     this.echoProtoService = this.echoContext.services().get(0);
-    this.echoGrpcRestContext = this.echoContext.toBuilder().setTransport(Transport.GRPC_REST).build();
+    this.echoGrpcRestContext =
+        this.echoContext.toBuilder().setTransport(Transport.GRPC_REST).build();
     this.echoGrpcRestProtoService = this.echoGrpcRestContext.services().get(0);
     this.echoRestContext = this.echoContext.toBuilder().setTransport(Transport.REST).build();
     this.echoRestProtoService = this.echoRestContext.services().get(0);

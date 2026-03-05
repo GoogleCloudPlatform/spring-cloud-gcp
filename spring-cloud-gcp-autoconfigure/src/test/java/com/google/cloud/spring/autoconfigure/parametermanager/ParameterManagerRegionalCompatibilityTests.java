@@ -38,13 +38,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-
 /** Unit tests to check compatibility of Parameter Manager. */
 class ParameterManagerRegionalCompatibilityTests {
 
-  /**
-   * Default value for the latest version of the parameter.
-   */
+  /** Default value for the latest version of the parameter. */
   public static final String GLOBAL_LOCATION = "global";
 
   private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
@@ -55,17 +52,19 @@ class ParameterManagerRegionalCompatibilityTests {
 
   @BeforeEach
   void init() {
-    application = new SpringApplicationBuilder(ParameterManagerCompatibilityTests.class)
-        .web(WebApplicationType.NONE)
-        .properties(
-            "spring.cloud.gcp.parametermanager.project-id=" + PROJECT_NAME,
-            "spring.cloud.gcp.sql.enabled=false");
+    application =
+        new SpringApplicationBuilder(ParameterManagerCompatibilityTests.class)
+            .web(WebApplicationType.NONE)
+            .properties(
+                "spring.cloud.gcp.parametermanager.project-id=" + PROJECT_NAME,
+                "spring.cloud.gcp.sql.enabled=false");
 
     client = mock(ParameterManagerClient.class);
     ParameterManagerClient parameterManagerServiceClient = mock(ParameterManagerClient.class);
     parameterManagerClientFactory = mock(ParameterManagerClientFactory.class);
     when(parameterManagerClientFactory.getClient(GLOBAL_LOCATION)).thenReturn(client);
-    when(parameterManagerClientFactory.getClient(LOCATION)).thenReturn(parameterManagerServiceClient);
+    when(parameterManagerClientFactory.getClient(LOCATION))
+        .thenReturn(parameterManagerServiceClient);
     ParameterVersionName parameterVersionName =
         ParameterVersionName.of(PROJECT_NAME, LOCATION, "my-param", "v1");
     when(client.getParameterVersion(parameterVersionName))
@@ -82,8 +81,8 @@ class ParameterManagerRegionalCompatibilityTests {
 
   /**
    * Users with the new configuration (i.e., using `spring.config.import`) should get {@link
-   * com.google.cloud.spring.parametermanager.ParameterManagerTemplate} autoconfiguration and properties
-   * resolved.
+   * com.google.cloud.spring.parametermanager.ParameterManagerTemplate} autoconfiguration and
+   * properties resolved.
    */
   void testConfigurationWhenDefaultParameterIsNotAllowed(String projectIdPropertyName) {
     application

@@ -27,10 +27,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
-import org.springframework.data.core.TypeInformation;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 

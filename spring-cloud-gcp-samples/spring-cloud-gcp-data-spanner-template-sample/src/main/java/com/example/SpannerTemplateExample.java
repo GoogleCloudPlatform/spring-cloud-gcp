@@ -80,12 +80,14 @@ public class SpannerTemplateExample {
   void createTablesIfNotExists() {
     if (!this.spannerDatabaseAdminTemplate.tableExists("trades_template")) {
       this.spannerDatabaseAdminTemplate.executeDdlStrings(
-          Collections.singletonList(this.spannerSchemaUtils.getCreateTableDdlString(Trade.class)), true);
+          Collections.singletonList(this.spannerSchemaUtils.getCreateTableDdlString(Trade.class)),
+          true);
     }
 
     if (!this.spannerDatabaseAdminTemplate.tableExists("traders_template")) {
       this.spannerDatabaseAdminTemplate.executeDdlStrings(
-          Collections.singletonList(this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
+          Collections.singletonList(this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)),
+          true);
     }
   }
 

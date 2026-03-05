@@ -27,9 +27,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -86,68 +86,98 @@ class DatastoreBookshelfExampleIntegrationTests {
 
   @Test
   void findAllBooksTest() {
-    Awaitility.await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
-      String responseBody = sendRequest("/findAllBooks", null, HttpMethod.GET);
-      assertThat(responseBody)
-          .contains("title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
-          .contains("title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
-          .contains("title='The Crack in Space', author='Philip K. Dick', year=1966")
-          .contains("title='Ubik', author='Philip K. Dick', year=1969");
-    });
+    Awaitility.await()
+        .atMost(15, TimeUnit.SECONDS)
+        .untilAsserted(
+            () -> {
+              String responseBody = sendRequest("/findAllBooks", null, HttpMethod.GET);
+              assertThat(responseBody)
+                  .contains(
+                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
+                  .contains(
+                      "title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
+                  .contains("title='The Crack in Space', author='Philip K. Dick', year=1966")
+                  .contains("title='Ubik', author='Philip K. Dick', year=1969");
+            });
   }
 
   @Test
   void findByAuthorTest() {
-    Awaitility.await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
-      String responseBody = sendRequest("/findByAuthor?author=Robert A. Heinlein", null, HttpMethod.GET);
-      assertThat(responseBody)
-          .contains("title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
-          .contains("title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
-          .doesNotContain("title='The Crack in Space', author='Philip K. Dick', year=1966")
-          .doesNotContain("title='Ubik', author='Philip K. Dick', year=1969");
-    });
+    Awaitility.await()
+        .atMost(15, TimeUnit.SECONDS)
+        .untilAsserted(
+            () -> {
+              String responseBody =
+                  sendRequest("/findByAuthor?author=Robert A. Heinlein", null, HttpMethod.GET);
+              assertThat(responseBody)
+                  .contains(
+                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
+                  .contains(
+                      "title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
+                  .doesNotContain("title='The Crack in Space', author='Philip K. Dick', year=1966")
+                  .doesNotContain("title='Ubik', author='Philip K. Dick', year=1969");
+            });
   }
 
   @Test
   void findByYearGreaterThanTest() {
-    Awaitility.await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
-      String responseBody = sendRequest("/findByYearGreaterThan?year=1967", null, HttpMethod.GET);
-      assertThat(responseBody)
-          .doesNotContain("title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
-          .doesNotContain("title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
-          .doesNotContain("title='The Crack in Space', author='Philip K. Dick', year=1966")
-          .contains("title='Ubik', author='Philip K. Dick', year=1969");
-    });
+    Awaitility.await()
+        .atMost(15, TimeUnit.SECONDS)
+        .untilAsserted(
+            () -> {
+              String responseBody =
+                  sendRequest("/findByYearGreaterThan?year=1967", null, HttpMethod.GET);
+              assertThat(responseBody)
+                  .doesNotContain(
+                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
+                  .doesNotContain(
+                      "title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
+                  .doesNotContain("title='The Crack in Space', author='Philip K. Dick', year=1966")
+                  .contains("title='Ubik', author='Philip K. Dick', year=1969");
+            });
   }
 
   @Test
   void findByAuthorYearTest() {
-    Awaitility.await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
-      String responseBody = sendRequest("/findByAuthorYear?author=Philip K. Dick&year=1966", null, HttpMethod.GET);
-      assertThat(responseBody)
-          .doesNotContain("title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
-          .doesNotContain("title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
-          .contains("title='The Crack in Space', author='Philip K. Dick', year=1966")
-          .doesNotContain("title='Ubik', author='Philip K. Dick', year=1969");
-    });
+    Awaitility.await()
+        .atMost(15, TimeUnit.SECONDS)
+        .untilAsserted(
+            () -> {
+              String responseBody =
+                  sendRequest(
+                      "/findByAuthorYear?author=Philip K. Dick&year=1966", null, HttpMethod.GET);
+              assertThat(responseBody)
+                  .doesNotContain(
+                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
+                  .doesNotContain(
+                      "title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
+                  .contains("title='The Crack in Space', author='Philip K. Dick', year=1966")
+                  .doesNotContain("title='Ubik', author='Philip K. Dick', year=1969");
+            });
   }
 
   @Test
   void removeAllBooksTest() {
     sendRequest("/removeAllBooks", null, HttpMethod.DELETE);
-    Awaitility.await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
-      String responseBody = sendRequest("/findAllBooks", null, HttpMethod.GET);
-      assertThat(responseBody)
-          .doesNotContain("title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
-          .doesNotContain("title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
-          .doesNotContain("title='The Crack in Space', author='Philip K. Dick', year=1966")
-          .doesNotContain("title='Ubik', author='Philip K. Dick', year=1969");
-    });
+    Awaitility.await()
+        .atMost(15, TimeUnit.SECONDS)
+        .untilAsserted(
+            () -> {
+              String responseBody = sendRequest("/findAllBooks", null, HttpMethod.GET);
+              assertThat(responseBody)
+                  .doesNotContain(
+                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
+                  .doesNotContain(
+                      "title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
+                  .doesNotContain("title='The Crack in Space', author='Philip K. Dick', year=1966")
+                  .doesNotContain("title='Ubik', author='Philip K. Dick', year=1969");
+            });
   }
 
   @Test
   void findByAuthorNotEqualsTest() {
-    String responseBody = sendRequest("/findByAuthorNotEquals?author=Philip K. Dick", null, HttpMethod.GET);
+    String responseBody =
+        sendRequest("/findByAuthorNotEquals?author=Philip K. Dick", null, HttpMethod.GET);
     assertThat(responseBody)
         .contains("title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
         .contains("title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")

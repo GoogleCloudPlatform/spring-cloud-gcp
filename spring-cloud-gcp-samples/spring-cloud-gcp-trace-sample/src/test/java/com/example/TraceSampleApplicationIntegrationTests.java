@@ -44,6 +44,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -62,18 +63,16 @@ import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRe
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /** Verifies that the logged Traces on the sample application appear in StackDriver. */
 // Please use "-Dit.trace=true" to enable the tests
@@ -108,12 +107,11 @@ class TraceSampleApplicationIntegrationTests {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
   private static GcpProjectIdProvider projectIdProvider;
 
-  @Autowired private  CredentialsProvider credentialsProvider;
+  @Autowired private CredentialsProvider credentialsProvider;
 
   private String url;
 
@@ -141,7 +139,6 @@ class TraceSampleApplicationIntegrationTests {
 
     pubSubAdmin.createTopic(SAMPLE_TOPIC);
     pubSubAdmin.createSubscription(SAMPLE_SUBSCRIPTION, SAMPLE_TOPIC);
-
   }
 
   @AfterAll

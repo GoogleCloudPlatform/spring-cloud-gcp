@@ -57,8 +57,7 @@ public class ReactiveFirestoreRepositoryFactory extends ReactiveRepositoryFactor
   public <T, I> EntityInformation<T, I> getEntityInformation(Class<T> clazz) {
     return (EntityInformation<T, I>)
         new FirestorePersistentEntityInformation<>(
-            (FirestorePersistentEntity<T>)
-                this.firestoreMappingContext.getPersistentEntity(clazz));
+            (FirestorePersistentEntity<T>) this.firestoreMappingContext.getPersistentEntity(clazz));
   }
 
   @Override

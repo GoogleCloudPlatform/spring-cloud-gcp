@@ -148,8 +148,7 @@ public class WebController {
       CompletableFuture<Void> ackFuture = this.pubSubTemplate.ack(messages);
       ackFuture.get();
       returnView =
-          buildStatusView(
-              String.format("Pulled and acked %s message(s)", messages.size()));
+          buildStatusView(String.format("Pulled and acked %s message(s)", messages.size()));
     } catch (Exception ex) {
       LOGGER.warn("Acking failed.", ex);
       returnView = buildStatusView("Acking failed");

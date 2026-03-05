@@ -33,9 +33,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-/**
- * Tests for Firestore Emulator autoconfiguration.
- */
+/** Tests for Firestore Emulator autoconfiguration. */
 class GcpFirestoreEmulatorAutoConfigurationTests {
 
   ApplicationContextRunner contextRunner =
@@ -59,7 +57,7 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
               FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
               String endpoint =
                   ((InstantiatingGrpcChannelProvider)
-                      firestoreOptions.getTransportChannelProvider())
+                          firestoreOptions.getTransportChannelProvider())
                       .getEndpoint();
               assertThat(endpoint).isEqualTo("localhost:9000");
 
@@ -76,7 +74,8 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
             context -> {
               FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
               String endpoint =
-                  ((InstantiatingGrpcChannelProvider) firestoreOptions.getTransportChannelProvider())
+                  ((InstantiatingGrpcChannelProvider)
+                          firestoreOptions.getTransportChannelProvider())
                       .getEndpoint();
               assertThat(endpoint).isEqualTo("firestore.googleapis.com:443");
             });
@@ -145,8 +144,8 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
         .run(
             context -> {
               FirestoreTemplate template = context.getBean(FirestoreTemplate.class);
-              assertThat("projects/demo/databases/testdb/documents").isEqualTo(
-                  ReflectionTestUtils.getField(template, "parent"));
+              assertThat("projects/demo/databases/testdb/documents")
+                  .isEqualTo(ReflectionTestUtils.getField(template, "parent"));
             });
   }
 
@@ -161,8 +160,8 @@ class GcpFirestoreEmulatorAutoConfigurationTests {
             context -> {
               FirestoreOptions firestoreOptions = context.getBean(FirestoreOptions.class);
               Credentials credentials = firestoreOptions.getCredentials();
-              List<String> header = credentials.getRequestMetadata()
-                  .get("google-cloud-resource-prefix");
+              List<String> header =
+                  credentials.getRequestMetadata().get("google-cloud-resource-prefix");
               assertThat(header).isEqualTo(List.of("projects/demo/databases/testdb"));
             });
   }

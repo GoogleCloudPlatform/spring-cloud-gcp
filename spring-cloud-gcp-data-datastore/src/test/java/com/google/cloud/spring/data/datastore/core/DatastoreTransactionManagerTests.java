@@ -106,9 +106,9 @@ class DatastoreTransactionManagerTests {
     this.tx.setTransaction(this.transaction);
 
     assertThatThrownBy(() -> this.manager.doCommit(this.status))
-            .isInstanceOf(TransactionSystemException.class)
-            .hasMessage("Cloud Datastore transaction failed to commit.")
-            .hasCause(exception);
+        .isInstanceOf(TransactionSystemException.class)
+        .hasMessage("Cloud Datastore transaction failed to commit.")
+        .hasCause(exception);
   }
 
   @Test
@@ -135,9 +135,9 @@ class DatastoreTransactionManagerTests {
     this.tx.setTransaction(this.transaction);
 
     assertThatThrownBy(() -> this.manager.doRollback(this.status))
-            .isInstanceOf(TransactionSystemException.class)
-            .hasMessage("Cloud Datastore transaction failed to rollback.")
-            .hasCause(exception);
+        .isInstanceOf(TransactionSystemException.class)
+        .hasMessage("Cloud Datastore transaction failed to rollback.")
+        .hasCause(exception);
   }
 
   @Test

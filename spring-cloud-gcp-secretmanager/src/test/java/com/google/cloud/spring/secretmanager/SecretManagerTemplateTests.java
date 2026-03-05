@@ -55,8 +55,7 @@ class SecretManagerTemplateTests {
                     SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("get after it.")))
                 .build());
 
-    this.secretManagerTemplate =
-        new SecretManagerTemplate(this.client, () -> "my-project");
+    this.secretManagerTemplate = new SecretManagerTemplate(this.client, () -> "my-project");
   }
 
   @Test
@@ -201,8 +200,7 @@ class SecretManagerTemplateTests {
     when(this.client.accessSecretVersion(any(SecretVersionName.class)))
         .thenThrow(NotFoundException.class);
     this.secretManagerTemplate =
-        new SecretManagerTemplate(this.client, () -> "my-project")
-            .setAllowDefaultSecretValue(true);
+        new SecretManagerTemplate(this.client, () -> "my-project").setAllowDefaultSecretValue(true);
     String result = this.secretManagerTemplate.getSecretString("sm://fake-secret");
     assertThat(result).isNull();
   }

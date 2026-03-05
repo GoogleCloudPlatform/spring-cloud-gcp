@@ -84,7 +84,8 @@ class DatastoreQueryLookupStrategyTests {
 
     when(namedQueries.hasQuery(queryName)).thenReturn(true);
     when(namedQueries.getQuery(queryName)).thenReturn(query);
-    when(valueExpressionDelegate.getEvaluationContextAccessor()).thenReturn(mock(QueryMethodValueEvaluationContextAccessor.class));
+    when(valueExpressionDelegate.getEvaluationContextAccessor())
+        .thenReturn(mock(QueryMethodValueEvaluationContextAccessor.class));
 
     lookupStrategy.resolveQuery(null, null, null, namedQueries);
 
@@ -102,11 +103,10 @@ class DatastoreQueryLookupStrategyTests {
     return prepareDatastoreQueryLookupStrategy(lookupStrategy);
   }
 
-  private DatastoreQueryLookupStrategy prepareDatastoreQueryLookupStrategy(DatastoreQueryLookupStrategy base) {
+  private DatastoreQueryLookupStrategy prepareDatastoreQueryLookupStrategy(
+      DatastoreQueryLookupStrategy base) {
     doReturn(Object.class).when(base).getEntityType(any());
-    doReturn(this.queryMethod)
-        .when(base)
-        .createQueryMethod(any(), any(), any());
+    doReturn(this.queryMethod).when(base).createQueryMethod(any(), any(), any());
     return base;
   }
 }

@@ -1,7 +1,6 @@
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -14,11 +13,7 @@ import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
 import org.springframework.boot.context.properties.bind.Binder;
 
-
-/**
- * Unit tests for {@link SecretManagerConfigDataLocationResolverLoader}.
- */
-
+/** Unit tests for {@link SecretManagerConfigDataLocationResolverLoader}. */
 public class SecretManagerConfigDataLocationResolverLoaderUnitTests {
   private ConfigDataLocationResolverContext resolverContext;
   private SecretManagerConfigDataLocationResolverLoader resolverLoader;
@@ -32,12 +27,9 @@ public class SecretManagerConfigDataLocationResolverLoaderUnitTests {
     when(resolverContext.getBinder()).thenReturn(mockBinder);
     resolverLoader = new SecretManagerConfigDataLocationResolverLoader();
   }
-    
+
   @ParameterizedTest
-  @CsvSource({
-      "sm@test-location, true",
-      "invalid-location, false"
-  })
+  @CsvSource({"sm@test-location, true", "invalid-location, false"})
   void isResolvableTest(String locationString, boolean expected) {
     ConfigDataLocation location = ConfigDataLocation.of(locationString);
     boolean result = resolverLoader.isResolvable(resolverContext, location);
@@ -46,7 +38,9 @@ public class SecretManagerConfigDataLocationResolverLoaderUnitTests {
 
   @Test
   void testIsClassPresent_classExists() throws Exception {
-    Method isClassPresentMethod = SecretManagerConfigDataLocationResolverLoader.class.getDeclaredMethod("isClassPresent", String.class);
+    Method isClassPresentMethod =
+        SecretManagerConfigDataLocationResolverLoader.class.getDeclaredMethod(
+            "isClassPresent", String.class);
     isClassPresentMethod.setAccessible(true);
 
     boolean result = (boolean) isClassPresentMethod.invoke(null, "java.lang.String");
@@ -55,7 +49,9 @@ public class SecretManagerConfigDataLocationResolverLoaderUnitTests {
 
   @Test
   void testIsClassPresent_classDoesNotExist() throws Exception {
-    Method isClassPresentMethod = SecretManagerConfigDataLocationResolverLoader.class.getDeclaredMethod("isClassPresent", String.class);
+    Method isClassPresentMethod =
+        SecretManagerConfigDataLocationResolverLoader.class.getDeclaredMethod(
+            "isClassPresent", String.class);
     isClassPresentMethod.setAccessible(true);
 
     boolean result = (boolean) isClassPresentMethod.invoke(null, "non.existent.ClassName");

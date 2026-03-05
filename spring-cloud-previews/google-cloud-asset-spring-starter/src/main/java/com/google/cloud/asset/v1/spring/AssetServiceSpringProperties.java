@@ -34,114 +34,139 @@ public class AssetServiceSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listAssets. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAssetsRetry;
+
   /**
    * Allow override of retry settings at method-level for batchGetAssetsHistory. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry batchGetAssetsHistoryRetry;
+
   /**
    * Allow override of retry settings at method-level for createFeed. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createFeedRetry;
+
   /**
    * Allow override of retry settings at method-level for getFeed. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getFeedRetry;
+
   /**
    * Allow override of retry settings at method-level for listFeeds. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listFeedsRetry;
+
   /**
    * Allow override of retry settings at method-level for updateFeed. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateFeedRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteFeed. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteFeedRetry;
+
   /**
    * Allow override of retry settings at method-level for searchAllResources. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchAllResourcesRetry;
+
   /**
    * Allow override of retry settings at method-level for searchAllIamPolicies. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchAllIamPoliciesRetry;
+
   /**
    * Allow override of retry settings at method-level for analyzeIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry analyzeIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for analyzeMove. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry analyzeMoveRetry;
+
   /**
    * Allow override of retry settings at method-level for queryAssets. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry queryAssetsRetry;
+
   /**
    * Allow override of retry settings at method-level for createSavedQuery. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createSavedQueryRetry;
+
   /**
    * Allow override of retry settings at method-level for getSavedQuery. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getSavedQueryRetry;
+
   /**
    * Allow override of retry settings at method-level for listSavedQueries. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSavedQueriesRetry;
+
   /**
    * Allow override of retry settings at method-level for updateSavedQuery. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateSavedQueryRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteSavedQuery. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteSavedQueryRetry;
+
   /**
    * Allow override of retry settings at method-level for batchGetEffectiveIamPolicies. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry batchGetEffectiveIamPoliciesRetry;
+
   /**
    * Allow override of retry settings at method-level for analyzeOrgPolicies. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry analyzeOrgPoliciesRetry;
+
   /**
    * Allow override of retry settings at method-level for analyzeOrgPolicyGovernedContainers. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry analyzeOrgPolicyGovernedContainersRetry;
+
   /**
    * Allow override of retry settings at method-level for analyzeOrgPolicyGovernedAssets. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.

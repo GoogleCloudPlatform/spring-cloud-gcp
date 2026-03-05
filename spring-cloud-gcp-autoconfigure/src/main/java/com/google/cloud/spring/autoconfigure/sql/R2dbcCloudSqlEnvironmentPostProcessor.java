@@ -65,14 +65,15 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
           .getPropertySources()
           .addFirst(new MapPropertySource("CLOUD_SQL_R2DBC_URL", primaryMap));
 
-      CredentialsPropertiesSetter.setCredentials(sqlProperties,
-          propertiesRetriever.getGcpProperties());
+      CredentialsPropertiesSetter.setCredentials(
+          sqlProperties, propertiesRetriever.getGcpProperties());
 
       if (sqlProperties.isEnableIamAuth()) {
         environment
             .getPropertySources()
             .addFirst(
-                new MapPropertySource("CLOUD_SQL_R2DBC_ENABLE_IAM_AUTH",
+                new MapPropertySource(
+                    "CLOUD_SQL_R2DBC_ENABLE_IAM_AUTH",
                     Map.of("spring.r2dbc.properties", Map.of("ENABLE_IAM_AUTH", "true"))));
       }
     }
@@ -92,10 +93,10 @@ public class R2dbcCloudSqlEnvironmentPostProcessor implements EnvironmentPostPro
   }
 
   /**
-   * Returns {@link DatabaseType} constant based on whether postgresSQL R2DBC driver and
-   * connector dependencies are present on the classpath. Returns null if Cloud SQL is not enabled
-   * in Spring Cloud GCP, CredentialFactory is not present or ConnectionFactory (which is used to
-   * enable Spring R2DBC autoconfiguration) is not present.
+   * Returns {@link DatabaseType} constant based on whether postgresSQL R2DBC driver and connector
+   * dependencies are present on the classpath. Returns null if Cloud SQL is not enabled in Spring
+   * Cloud GCP, CredentialFactory is not present or ConnectionFactory (which is used to enable
+   * Spring R2DBC autoconfiguration) is not present.
    *
    * @param environment environment to post-process
    * @return database type

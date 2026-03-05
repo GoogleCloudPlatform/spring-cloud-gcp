@@ -59,5 +59,4 @@ class SpannerBindMarkerFactoryProviderTest {
     BindMarkersFactory factory = provider.getBindMarkers(cf);
     assertThat(factory).isNull();
   }
-
 }

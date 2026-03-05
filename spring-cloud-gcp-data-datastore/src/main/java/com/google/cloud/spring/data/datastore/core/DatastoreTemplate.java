@@ -82,6 +82,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.annotation.ImportRuntimeHints;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.NullHandler;
@@ -92,7 +93,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.AssociationHandler;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
-import org.springframework.data.core.TypeInformation;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -176,7 +176,8 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
     return entities;
   }
 
-  private <T> void insertOrSaveEntities(Iterable<T> iterable, Key[] ancestors, Consumer<FullEntity<?>[]> consumer) {
+  private <T> void insertOrSaveEntities(
+      Iterable<T> iterable, Key[] ancestors, Consumer<FullEntity<?>[]> consumer) {
     List<T> instances;
     if (iterable instanceof List) {
       instances = (List<T>) iterable;
@@ -255,16 +256,17 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
 
   @Override
   public long count(Class<?> entityClass) {
-    KeyQuery baseQuery = Query.newKeyQueryBuilder()
-        .setKind(getPersistentEntity(entityClass).kindName())
-        .build();
+    KeyQuery baseQuery =
+        Query.newKeyQueryBuilder().setKind(getPersistentEntity(entityClass).kindName()).build();
 
-    AggregationQuery countAggregationQuery = Query.newAggregationQueryBuilder()
-        .over(baseQuery)
-        .addAggregation(Aggregation.count().as("total_count"))
-        .build();
+    AggregationQuery countAggregationQuery =
+        Query.newAggregationQueryBuilder()
+            .over(baseQuery)
+            .addAggregation(Aggregation.count().as("total_count"))
+            .build();
 
-    AggregationResults aggregationResults = getDatastoreReadWriter().runAggregation(countAggregationQuery);
+    AggregationResults aggregationResults =
+        getDatastoreReadWriter().runAggregation(countAggregationQuery);
     maybeEmitEvent(new AfterQueryEvent(aggregationResults, countAggregationQuery));
     AggregationResult aggregationResult = Iterables.getOnlyElement(aggregationResults);
     return aggregationResult.get("total_count");

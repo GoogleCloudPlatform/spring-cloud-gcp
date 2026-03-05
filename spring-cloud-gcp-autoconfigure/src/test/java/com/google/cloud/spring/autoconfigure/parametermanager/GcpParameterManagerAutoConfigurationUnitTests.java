@@ -37,12 +37,13 @@ class GcpParameterManagerAutoConfigurationUnitTests {
 
   @BeforeEach
   void init() {
-    contextRunner = new ApplicationContextRunner()
-        .withConfiguration(AutoConfigurations.of(
-            GcpParameterManagerAutoConfiguration.class,
-            GcpContextAutoConfiguration.class))
-        .withPropertyValues("spring.cloud.gcp.project-id=globalProject")
-        .withUserConfiguration(TestConfig.class);
+    contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpParameterManagerAutoConfiguration.class, GcpContextAutoConfiguration.class))
+            .withPropertyValues("spring.cloud.gcp.project-id=globalProject")
+            .withUserConfiguration(TestConfig.class);
   }
 
   @Test
@@ -56,10 +57,11 @@ class GcpParameterManagerAutoConfigurationUnitTests {
   void testParameterManagerDependencyWithoutConfigImportShouldHaveSingletonBeanForPmAndSm() {
     contextRunner
         .withConfiguration(AutoConfigurations.of(GcpSecretManagerAutoConfiguration.class))
-        .run(ctx -> {
-          assertThat(ctx).hasSingleBean(ParameterManagerClientFactory.class);
-          assertThat(ctx).hasSingleBean(SecretManagerServiceClientFactory.class);
-        });
+        .run(
+            ctx -> {
+              assertThat(ctx).hasSingleBean(ParameterManagerClientFactory.class);
+              assertThat(ctx).hasSingleBean(SecretManagerServiceClientFactory.class);
+            });
   }
 
   @Test
@@ -67,36 +69,33 @@ class GcpParameterManagerAutoConfigurationUnitTests {
     contextRunner
         .withPropertyValues("spring.cloud.gcp.parametermanager.project-id=parameterManagerProject")
         .run(
-            ctx -> assertThat(ctx.getBean(ParameterManagerTemplate.class)
-                   .getProjectId()).isEqualTo("parameterManagerProject"));
+            ctx ->
+                assertThat(ctx.getBean(ParameterManagerTemplate.class).getProjectId())
+                    .isEqualTo("parameterManagerProject"));
   }
 
   @Test
   void testProjectIdWithGcpProperties() {
     contextRunner.run(
-        ctx -> assertThat(ctx.getBean(ParameterManagerTemplate.class)
-            .getProjectId()).isEqualTo("globalProject"));
+        ctx ->
+            assertThat(ctx.getBean(ParameterManagerTemplate.class).getProjectId())
+                .isEqualTo("globalProject"));
   }
 
   @Test
   void testParameterManagerClientExists() {
-    contextRunner.run(
-        ctx -> assertThat(ctx.getBean(ParameterManagerClient.class))
-            .isNotNull());
+    contextRunner.run(ctx -> assertThat(ctx.getBean(ParameterManagerClient.class)).isNotNull());
   }
 
   @Test
   void testParameterManagerClientFactoryExists() {
     contextRunner.run(
-        ctx -> assertThat(ctx.getBean(ParameterManagerClientFactory.class))
-            .isNotNull());
+        ctx -> assertThat(ctx.getBean(ParameterManagerClientFactory.class)).isNotNull());
   }
 
   @Test
   void testParameterManagerTemplateExists() {
-    contextRunner.run(
-        ctx -> assertThat(ctx.getBean(ParameterManagerTemplate.class))
-            .isNotNull());
+    contextRunner.run(ctx -> assertThat(ctx.getBean(ParameterManagerTemplate.class)).isNotNull());
   }
 
   static class TestConfig {

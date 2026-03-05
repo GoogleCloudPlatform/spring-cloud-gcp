@@ -72,19 +72,19 @@ class GcsMessageHandlerTests {
     testFile.createNewFile();
 
     BlobInfo expectedCreateBlobInfo =
-            BlobInfo.newBuilder(BlobId.of("testGcsBucket", "benfica.writing")).build();
+        BlobInfo.newBuilder(BlobId.of("testGcsBucket", "benfica.writing")).build();
     WriteChannel writeChannel = mock(WriteChannel.class);
     willAnswer(invocationOnMock -> writeChannel).given(GCS).writer(expectedCreateBlobInfo);
     willAnswer(invocationOnMock -> 10).given(writeChannel).write(isA(ByteBuffer.class));
 
     CopyWriter copyWriter = mock(CopyWriter.class);
     ArgumentCaptor<Storage.CopyRequest> copyRequestCaptor =
-            ArgumentCaptor.forClass(Storage.CopyRequest.class);
+        ArgumentCaptor.forClass(Storage.CopyRequest.class);
     willAnswer(invocationOnMock -> copyWriter).given(GCS).copy(isA(Storage.CopyRequest.class));
 
     willAnswer(invocationOnMock -> true)
-            .given(GCS)
-            .delete(BlobId.of("testGcsBucket", "benfica.writing"));
+        .given(GCS)
+        .delete(BlobId.of("testGcsBucket", "benfica.writing"));
 
     this.channel.send(new GenericMessage<Object>(testFile));
 
@@ -94,9 +94,9 @@ class GcsMessageHandlerTests {
 
     Storage.CopyRequest expectedCopyRequest = copyRequestCaptor.getValue();
     assertThat(expectedCopyRequest.getSource())
-            .isEqualTo(BlobId.of("testGcsBucket", "benfica.writing"));
+        .isEqualTo(BlobId.of("testGcsBucket", "benfica.writing"));
     assertThat(expectedCopyRequest.getTarget().getBlobId())
-            .isEqualTo(BlobId.of("testGcsBucket", "benfica"));
+        .isEqualTo(BlobId.of("testGcsBucket", "benfica"));
   }
 
   /** Spring config for the tests. */

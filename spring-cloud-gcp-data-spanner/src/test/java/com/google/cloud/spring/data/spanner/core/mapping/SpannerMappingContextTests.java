@@ -26,9 +26,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
-import org.springframework.data.core.TypeInformation;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Tests for the Spanner mapping context. */

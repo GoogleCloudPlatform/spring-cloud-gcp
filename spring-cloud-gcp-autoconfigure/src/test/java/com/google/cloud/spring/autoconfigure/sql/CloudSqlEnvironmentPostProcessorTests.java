@@ -21,10 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.zaxxer.hikari.HikariDataSource;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import javax.sql.DataSource;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
@@ -42,9 +38,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.PropertySource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-/**
- * Tests for Cloud SQL {@link CloudSqlEnvironmentPostProcessor}.
- */
+/** Tests for Cloud SQL {@link CloudSqlEnvironmentPostProcessor}. */
 class CloudSqlEnvironmentPostProcessorTests {
 
   private CloudSqlEnvironmentPostProcessor initializer = new CloudSqlEnvironmentPostProcessor();
@@ -104,8 +98,7 @@ class CloudSqlEnvironmentPostProcessorTests {
   void testCloudSqlDataSourceWithDnsName() {
     this.contextRunner
         .withPropertyValues(
-            "spring.cloud.gcp.sql.dns-name=db.example.com",
-            "spring.datasource.password=")
+            "spring.cloud.gcp.sql.dns-name=db.example.com", "spring.datasource.password=")
         .run(
             context -> {
               HikariDataSource dataSource = (HikariDataSource) context.getBean(DataSource.class);
@@ -413,11 +406,11 @@ class CloudSqlEnvironmentPostProcessorTests {
         .run(
             context -> {
               assertThat(
-                  context
-                      .getEnvironment()
-                      .getPropertySources()
-                      .get("CLOUD_SQL_DATA_SOURCE_URL")
-                      .getProperty("spring.datasource.url"))
+                      context
+                          .getEnvironment()
+                          .getPropertySources()
+                          .get("CLOUD_SQL_DATA_SOURCE_URL")
+                          .getProperty("spring.datasource.url"))
                   .isEqualTo(
                       "jdbc:mysql://google/${sm://my-db}?"
                           + "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
@@ -435,11 +428,11 @@ class CloudSqlEnvironmentPostProcessorTests {
         .run(
             context -> {
               assertThat(
-                  context
-                      .getEnvironment()
-                      .getPropertySources()
-                      .get("CLOUD_SQL_DATA_SOURCE_URL")
-                      .getProperty("spring.datasource.url"))
+                      context
+                          .getEnvironment()
+                          .getPropertySources()
+                          .get("CLOUD_SQL_DATA_SOURCE_URL")
+                          .getProperty("spring.datasource.url"))
                   .isEqualTo(
                       "jdbc:mysql://google/mydb?"
                           + "socketFactory=com.google.cloud.sql.mysql.SocketFactory"
@@ -509,5 +502,4 @@ class CloudSqlEnvironmentPostProcessorTests {
       return NoCredentialsProvider.create();
     }
   }
-
 }

@@ -18,7 +18,6 @@ package com.google.cloud.spring.autoconfigure.trace.pubsub;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -42,8 +41,6 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.micrometer.observation.autoconfigure.ObservationAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
-import zipkin2.reporter.Reporter;
-import zipkin2.reporter.Sender;
 import zipkin2.reporter.stackdriver.StackdriverSender;
 
 /** Tests for Trace Pub/Sub auto-config. */
@@ -67,8 +64,7 @@ class TracePubSubAutoConfigurationTest {
                 StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
                 SpanHandler.class,
                 () -> SpanHandler.NOOP)
-            .withPropertyValues(
-                "spring.cloud.gcp.project-id=proj");
+            .withPropertyValues("spring.cloud.gcp.project-id=proj");
   }
 
   @Test
@@ -76,7 +72,8 @@ class TracePubSubAutoConfigurationTest {
     this.contextRunner.run(
         context -> {
           assertThat(
-                  context.getBean(StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class))
+                  context.getBean(
+                      StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class))
               .isNotNull();
           assertThat(context.getBean(ManagedChannel.class)).isNotNull();
         });
@@ -84,13 +81,12 @@ class TracePubSubAutoConfigurationTest {
 
   @Test
   void testPubSubTracingDisabledByDefault() {
-    this.contextRunner
-        .run(
-            context -> {
-              assertThat(context.getBeansOfType(TracePubSubBeanPostProcessor.class)).isEmpty();
-              assertThat(context.getBeansOfType(PubSubTracing.class)).isEmpty();
-              assertThat(context.getBeansOfType(MessagingTracing.class)).isEmpty();
-            });
+    this.contextRunner.run(
+        context -> {
+          assertThat(context.getBeansOfType(TracePubSubBeanPostProcessor.class)).isEmpty();
+          assertThat(context.getBeansOfType(PubSubTracing.class)).isEmpty();
+          assertThat(context.getBeansOfType(MessagingTracing.class)).isEmpty();
+        });
   }
 
   @Test
@@ -117,21 +113,23 @@ class TracePubSubAutoConfigurationTest {
         .withBean(Tracing.class, () -> tracing)
         .withBean(MessagingTracing.class, () -> MessagingTracing.newBuilder(tracing).build())
         .withBean(PublisherCustomizer.class, () -> noopCustomizer)
-        .run(context -> {
-          ObjectProvider<PublisherCustomizer> customizersProvider =
-              context.getBeanProvider(PublisherCustomizer.class);
-          List<PublisherCustomizer> customizers =
-              customizersProvider.orderedStream().collect(Collectors.toList());
-          assertThat(customizers).hasSize(2);
+        .run(
+            context -> {
+              ObjectProvider<PublisherCustomizer> customizersProvider =
+                  context.getBeanProvider(PublisherCustomizer.class);
+              List<PublisherCustomizer> customizers =
+                  customizersProvider.orderedStream().collect(Collectors.toList());
+              assertThat(customizers).hasSize(2);
 
-          // Object provider lists the highest priority first, so default priority `noopCustomizer`
-          // will be second
-          assertThat(customizers.get(1)).isSameAs(noopCustomizer);
+              // Object provider lists the highest priority first, so default priority
+              // `noopCustomizer`
+              // will be second
+              assertThat(customizers.get(1)).isSameAs(noopCustomizer);
 
-          PublisherCustomizer traceCustomizer = customizers.get(0);
-          Publisher.Builder spyBuilder = spy(Publisher.newBuilder("test"));
-          traceCustomizer.apply(spyBuilder, "test");
-          verify(spyBuilder).setTransform(any(ApiFunction.class));
-        });
+              PublisherCustomizer traceCustomizer = customizers.get(0);
+              Publisher.Builder spyBuilder = spy(Publisher.newBuilder("test"));
+              traceCustomizer.apply(spyBuilder, "test");
+              verify(spyBuilder).setTransform(any(ApiFunction.class));
+            });
   }
 }

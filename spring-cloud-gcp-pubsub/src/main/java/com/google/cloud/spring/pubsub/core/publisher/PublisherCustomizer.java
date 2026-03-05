@@ -19,8 +19,8 @@ package com.google.cloud.spring.pubsub.core.publisher;
 import com.google.cloud.pubsub.v1.Publisher;
 
 /**
- * A customizer of {@link Publisher.Builder} objects.
- * Can be implemented as a lambda accepting a {@link Publisher.Builder} and a `String` topic.
+ * A customizer of {@link Publisher.Builder} objects. Can be implemented as a lambda accepting a
+ * {@link Publisher.Builder} and a `String` topic.
  */
 public interface PublisherCustomizer {
   void apply(Publisher.Builder publisherBuilder, String topic);

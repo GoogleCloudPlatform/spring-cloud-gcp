@@ -35,8 +35,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.util.Assert;
 
 /**
- * {@link HealthContributorAutoConfiguration Auto-configuration} for
- * {@link SpannerHealthIndicator}.
+ * {@link HealthContributorAutoConfiguration Auto-configuration} for {@link SpannerHealthIndicator}.
  *
  * @since 2.0.6
  */
@@ -52,10 +51,9 @@ public class SpannerHealthIndicatorAutoConfiguration
 
   public SpannerHealthIndicatorAutoConfiguration(
       SpannerHealthIndicatorProperties spannerHealthProperties) {
-    super(spannerTemplate ->
-        new SpannerHealthIndicator(
-            spannerTemplate,
-            spannerHealthProperties.getQuery()));
+    super(
+        spannerTemplate ->
+            new SpannerHealthIndicator(spannerTemplate, spannerHealthProperties.getQuery()));
   }
 
   @Bean

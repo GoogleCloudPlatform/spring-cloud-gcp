@@ -22,9 +22,7 @@ import java.util.Optional;
 import org.springframework.data.r2dbc.dialect.DialectResolver.R2dbcDialectProvider;
 import org.springframework.data.r2dbc.dialect.R2dbcDialect;
 
-/**
- * Provides the {@link SpannerR2dbcDialect} for Spring Data.
- */
+/** Provides the {@link SpannerR2dbcDialect} for Spring Data. */
 public class SpannerR2dbcDialectProvider implements R2dbcDialectProvider {
 
   @Override

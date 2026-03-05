@@ -84,7 +84,8 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 
   private final ValueExpressionDelegate valueExpressionDelegate;
 
-  private ValueExpressionQueryRewriter.EvaluatingValueExpressionQueryRewriter valueExpressionQueryRewriter;
+  private ValueExpressionQueryRewriter.EvaluatingValueExpressionQueryRewriter
+      valueExpressionQueryRewriter;
 
   /**
    * Constructor.
@@ -314,18 +315,20 @@ public class GqlDatastoreQuery<T> extends AbstractDatastoreQuery<T> {
 
   private void setEvaluatingValueExpressionQueryRewriter() {
     Set<String> originalTags = new HashSet<>(GqlDatastoreQuery.this.originalParamTags);
-    BiFunction<Integer, String, String> parameterNameSource = (Integer counter, String spelExpression) -> {
-      String newTag;
-      do {
-        counter++;
-        newTag = "@SpELtag" + counter;
-      } while (originalTags.contains(newTag));
-      originalTags.add(newTag);
-      return newTag;
-    };
-      GqlDatastoreQuery.this.valueExpressionQueryRewriter = ValueExpressionQueryRewriter.of(valueExpressionDelegate,
-              parameterNameSource, (left, right) -> right)
-              .withEvaluationContextAccessor(valueExpressionDelegate.getEvaluationContextAccessor());
+    BiFunction<Integer, String, String> parameterNameSource =
+        (Integer counter, String spelExpression) -> {
+          String newTag;
+          do {
+            counter++;
+            newTag = "@SpELtag" + counter;
+          } while (originalTags.contains(newTag));
+          originalTags.add(newTag);
+          return newTag;
+        };
+    GqlDatastoreQuery.this.valueExpressionQueryRewriter =
+        ValueExpressionQueryRewriter.of(
+                valueExpressionDelegate, parameterNameSource, (left, right) -> right)
+            .withEvaluationContextAccessor(valueExpressionDelegate.getEvaluationContextAccessor());
   }
 
   // Convenience class to hold a grouping of GQL, tags, and parameter values.

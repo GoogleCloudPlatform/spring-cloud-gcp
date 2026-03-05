@@ -69,7 +69,6 @@ public class ReceiverApplication {
     return new DirectChannel();
   }
 
-
   @Bean
   public PubSubInboundChannelAdapter messageChannelAdapter(
       @Qualifier("pubsubInputChannel") MessageChannel inputChannel,

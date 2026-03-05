@@ -63,8 +63,8 @@ class DatastoreHealthIndicatorTests {
     Health.Builder builder = new Health.Builder();
 
     assertThatThrownBy(() -> datastoreHealthIndicator.doHealthCheck(builder))
-            .isInstanceOf(RuntimeException.class)
-            .hasMessage("Cloud Datastore is down!!!");
+        .isInstanceOf(RuntimeException.class)
+        .hasMessage("Cloud Datastore is down!!!");
   }
 
   @Test

@@ -52,8 +52,7 @@ class MetricsSampleApplicationIntegrationTests {
 
   @Autowired private TestRestTemplate testRestTemplate;
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
   private MetricServiceClient metricClient;
 

@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -75,11 +75,12 @@ class FirestoreSampleApplicationIntegrationTests {
     testUserClient.saveUser(BETA_USER, emptyList());
     testUserClient.saveUser(DELTA_USER, emptyList());
     User savedUser = testUserClient.saveUser(NULL_NAME_USER, emptyList());
-    //ensures that a user saved with null id has an id assigned by firestore
+    // ensures that a user saved with null id has an id assigned by firestore
     assertThat(savedUser.getName()).isNotNull();
 
     List<User> allUsers = testUserClient.listUsers();
-    assertThat(allUsers).map(User::getName)
+    assertThat(allUsers)
+        .map(User::getName)
         .containsExactlyInAnyOrder("Alpha", "Beta", "Delta", savedUser.getName());
 
     List<User> users49 = testUserClient.findUsersByAge(49);

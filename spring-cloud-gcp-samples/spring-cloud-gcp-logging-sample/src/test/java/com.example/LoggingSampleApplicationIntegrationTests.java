@@ -65,8 +65,7 @@ class LoggingSampleApplicationIntegrationTests {
 
   @Autowired private TestRestTemplate testRestTemplate;
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
   private Logging logClient;
 

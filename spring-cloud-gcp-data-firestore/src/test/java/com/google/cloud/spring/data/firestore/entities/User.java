@@ -87,6 +87,7 @@ public class User {
   public void setAge(Integer age) {
     this.age = age;
   }
+
   // end::class_definition[]
 
   // tag::embedded_class_collections[]
@@ -123,6 +124,7 @@ public class User {
   public void setHomeAddress(Address homeAddress) {
     this.homeAddress = homeAddress;
   }
+
   // end::embedded_class_collections[]
 
   @Override
@@ -172,6 +174,7 @@ public class User {
     String country;
 
     public Address() {}
+
     // end::embedded_class_collections[]
 
     public Address(String streetAddress, String country) {

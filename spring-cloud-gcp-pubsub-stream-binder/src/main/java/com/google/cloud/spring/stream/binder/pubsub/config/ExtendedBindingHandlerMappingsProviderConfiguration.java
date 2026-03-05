@@ -22,16 +22,15 @@ import org.springframework.cloud.stream.config.BindingHandlerAdvise.MappingsProv
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Configuration for extended binding metadata.
- */
+/** Configuration for extended binding metadata. */
 @Configuration(proxyBeanMethods = false)
 public class ExtendedBindingHandlerMappingsProviderConfiguration {
 
   @Bean
   public MappingsProvider pubSubExtendedPropertiesDefaultMappingsProvider() {
-    return () -> Collections.singletonMap(
-        ConfigurationPropertyName.of("spring.cloud.stream.gcp.pubsub.bindings"),
-        ConfigurationPropertyName.of("spring.cloud.stream.gcp.pubsub.default"));
+    return () ->
+        Collections.singletonMap(
+            ConfigurationPropertyName.of("spring.cloud.stream.gcp.pubsub.bindings"),
+            ConfigurationPropertyName.of("spring.cloud.stream.gcp.pubsub.default"));
   }
 }

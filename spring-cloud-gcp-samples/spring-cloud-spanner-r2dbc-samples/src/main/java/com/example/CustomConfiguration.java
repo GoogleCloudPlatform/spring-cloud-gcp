@@ -61,15 +61,21 @@ public class CustomConfiguration extends AbstractR2dbcConfiguration {
   @Override
   @Bean
   public ConnectionFactory connectionFactory() {
-    String url = String.format("r2dbc:cloudspanner://spanner.googleapis.com:443/projects/%s/instances/%s/databases/%s",
-        this.project, this.instance, this.database);
+    String url =
+        String.format(
+            "r2dbc:cloudspanner://spanner.googleapis.com:443/projects/%s/instances/%s/databases/%s",
+            this.project, this.instance, this.database);
     return ConnectionFactories.get(url);
   }
 
   @Bean
   @Override
-  public R2dbcMappingContext r2dbcMappingContext(Optional<NamingStrategy> namingStrategy, R2dbcCustomConversions r2dbcCustomConversions, RelationalManagedTypes managedTypes) {
-    R2dbcMappingContext context = super.r2dbcMappingContext(namingStrategy, r2dbcCustomConversions, managedTypes);
+  public R2dbcMappingContext r2dbcMappingContext(
+      Optional<NamingStrategy> namingStrategy,
+      R2dbcCustomConversions r2dbcCustomConversions,
+      RelationalManagedTypes managedTypes) {
+    R2dbcMappingContext context =
+        super.r2dbcMappingContext(namingStrategy, r2dbcCustomConversions, managedTypes);
     context.setForceQuote(false);
     return context;
   }

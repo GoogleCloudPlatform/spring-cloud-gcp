@@ -38,9 +38,7 @@ import org.springframework.context.annotation.Bean;
 @AutoConfigureBefore(TransactionAutoConfiguration.class)
 public class DatastoreTransactionManagerAutoConfiguration {
 
-  private DatastoreTransactionManagerAutoConfiguration() {
-
-  }
+  private DatastoreTransactionManagerAutoConfiguration() {}
 
   /** Configuration class. */
   @AutoConfiguration

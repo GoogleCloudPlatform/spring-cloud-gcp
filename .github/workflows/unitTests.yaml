@@ -19,8 +19,6 @@ env:
 jobs:
   unitTests:
     runs-on: ubuntu-latest
-    env:
-      EXTRA_MAVEN_FLAGS: ${{ (github.ref_name == '8.0-migration' || github.base_ref == '8.0-migration') && '-DskipUnitTests -Dcheckstyle.skip -Dfmt.skip' || '' }}
     strategy:
       fail-fast: false
       matrix:
@@ -53,7 +51,6 @@ jobs:
           --threads 1.5C \
           --define maven.test.skip=true \
           --define maven.javadoc.skip=true \
-          ${EXTRA_MAVEN_FLAGS} \
           install
 
     - name: Retry install on failure
@@ -66,7 +63,6 @@ jobs:
           --threads 1.5C \
           --define maven.test.skip=true \
           --define maven.javadoc.skip=true \
-          ${EXTRA_MAVEN_FLAGS} \
           install
 
     - name: Unit Tests
@@ -75,7 +71,6 @@ jobs:
           --batch-mode \
           --fail-at-end \
           --threads 1.5C \
-          ${EXTRA_MAVEN_FLAGS} \
           test
 
     - name: Aggregate Report

@@ -34,34 +34,43 @@ public class GkeHubSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listMemberships. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listMembershipsRetry;
+
   /**
    * Allow override of retry settings at method-level for listFeatures. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listFeaturesRetry;
+
   /**
    * Allow override of retry settings at method-level for getMembership. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getMembershipRetry;
+
   /**
    * Allow override of retry settings at method-level for getFeature. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getFeatureRetry;
+
   /**
    * Allow override of retry settings at method-level for generateConnectManifest. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

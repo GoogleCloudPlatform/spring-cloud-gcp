@@ -39,15 +39,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-
-/**
- * Unit tests to check compatibility of Secret Manager for regional endpoints.
- */
+/** Unit tests to check compatibility of Secret Manager for regional endpoints. */
 class SecretManagerRegionalCompatibilityTests {
 
-  /**
-   * Default value for the latest version of the secret.
-   */
+  /** Default value for the latest version of the secret. */
   public static final String GLOBAL_LOCATION = "global";
 
   private static final String PROJECT_NAME = "regional-secret-manager-project";
@@ -58,18 +53,20 @@ class SecretManagerRegionalCompatibilityTests {
 
   @BeforeEach
   void init() {
-    application = new SpringApplicationBuilder(SecretManagerRegionalCompatibilityTests.class)
-        .web(WebApplicationType.NONE)
-        .properties(
-            "spring.cloud.gcp.secretmanager.project-id=" + PROJECT_NAME,
-            "spring.cloud.gcp.sql.enabled=false")
-        .sources(TestConfig.class);
+    application =
+        new SpringApplicationBuilder(SecretManagerRegionalCompatibilityTests.class)
+            .web(WebApplicationType.NONE)
+            .properties(
+                "spring.cloud.gcp.secretmanager.project-id=" + PROJECT_NAME,
+                "spring.cloud.gcp.sql.enabled=false")
+            .sources(TestConfig.class);
 
     client = mock(SecretManagerServiceClient.class);
     SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
     secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
     when(secretManagerServiceClientFactory.getClient(GLOBAL_LOCATION)).thenReturn(client);
-    when(secretManagerServiceClientFactory.getClient(LOCATION)).thenReturn(secretManagerServiceClient);
+    when(secretManagerServiceClientFactory.getClient(LOCATION))
+        .thenReturn(secretManagerServiceClient);
 
     SecretVersionName secretVersionName =
         SecretVersionName.newProjectLocationSecretSecretVersionBuilder()
@@ -78,7 +75,9 @@ class SecretManagerRegionalCompatibilityTests {
             .setSecret("my-reg-secret")
             .setSecretVersion("latest")
             .build();
-    when(secretManagerServiceClientFactory.getClient(LOCATION).accessSecretVersion(secretVersionName))
+    when(secretManagerServiceClientFactory
+            .getClient(LOCATION)
+            .accessSecretVersion(secretVersionName))
         .thenReturn(
             AccessSecretVersionResponse.newBuilder()
                 .setPayload(
@@ -91,7 +90,9 @@ class SecretManagerRegionalCompatibilityTests {
             .setSecret("fake-reg-secret")
             .setSecretVersion("latest")
             .build();
-    when(secretManagerServiceClientFactory.getClient(LOCATION).accessSecretVersion(secretVersionName))
+    when(secretManagerServiceClientFactory
+            .getClient(LOCATION)
+            .accessSecretVersion(secretVersionName))
         .thenThrow(NotFoundException.class);
   }
 
@@ -102,50 +103,57 @@ class SecretManagerRegionalCompatibilityTests {
    */
   @Test
   void testRegionalConfigurationWhenDefaultSecretIsNotAllowed() {
-    application.properties(
-            "spring.config.import=sm://")
+    application
+        .properties("spring.config.import=sm://")
         .addBootstrapRegistryInitializer(
-            (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClientFactory.class,
-                InstanceSupplier.of(secretManagerServiceClientFactory)
-            )
-        )
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClientFactory.class,
+                    InstanceSupplier.of(secretManagerServiceClientFactory)))
         .addBootstrapRegistryInitializer(
-            (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClient.class,
-                InstanceSupplier.of(client)
-            )
-        );
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClient.class, InstanceSupplier.of(client)));
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
-      assertThat(environment.getProperty("sm://projects/regional-secret-manager-project/locations/us-central1/secrets/my-reg-secret/versions/latest")).isEqualTo("newRegSecret");
-      assertThatThrownBy(() -> environment.getProperty("sm://projects/regional-secret-manager-project/locations/us-central1/secrets/fake-reg-secret/versions/latest"))
+      assertThat(
+              environment.getProperty(
+                  "sm://projects/regional-secret-manager-project/locations/us-central1/secrets/my-reg-secret/versions/latest"))
+          .isEqualTo("newRegSecret");
+      assertThatThrownBy(
+              () ->
+                  environment.getProperty(
+                      "sm://projects/regional-secret-manager-project/locations/us-central1/secrets/fake-reg-secret/versions/latest"))
           .isExactlyInstanceOf(NotFoundException.class);
     }
   }
 
   @Test
   void testRegionalConfigurationWhenDefaultSecretIsAllowed() {
-    application.properties(
+    application
+        .properties(
             "spring.cloud.gcp.secretmanager.allow-default-secret=true",
             "spring.config.import=sm://")
         .addBootstrapRegistryInitializer(
-            (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClientFactory.class,
-                InstanceSupplier.of(secretManagerServiceClientFactory)
-            )
-        )
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClientFactory.class,
+                    InstanceSupplier.of(secretManagerServiceClientFactory)))
         .addBootstrapRegistryInitializer(
-            (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClient.class,
-                InstanceSupplier.of(client)
-            )
-        );
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClient.class, InstanceSupplier.of(client)));
     application.sources(TestConfig.class);
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
-      assertThat(environment.getProperty("sm://projects/regional-secret-manager-project/locations/us-central1/secrets/my-reg-secret/versions/latest")).isEqualTo("newRegSecret");
-      assertThat(environment.getProperty("sm://projects/regional-secret-manager-project/locations/us-central1/secrets/fake-reg-secret/versions/latest")).isNull();
+      assertThat(
+              environment.getProperty(
+                  "sm://projects/regional-secret-manager-project/locations/us-central1/secrets/my-reg-secret/versions/latest"))
+          .isEqualTo("newRegSecret");
+      assertThat(
+              environment.getProperty(
+                  "sm://projects/regional-secret-manager-project/locations/us-central1/secrets/fake-reg-secret/versions/latest"))
+          .isNull();
     }
   }
 

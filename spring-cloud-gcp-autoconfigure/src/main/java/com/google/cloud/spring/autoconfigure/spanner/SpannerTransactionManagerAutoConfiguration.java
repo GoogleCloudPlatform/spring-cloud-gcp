@@ -40,9 +40,7 @@ import org.springframework.context.annotation.Bean;
 @AutoConfigureBefore(TransactionAutoConfiguration.class)
 public class SpannerTransactionManagerAutoConfiguration {
 
-  private SpannerTransactionManagerAutoConfiguration() {
-
-  }
+  private SpannerTransactionManagerAutoConfiguration() {}
 
   /** Config settings. */
   @AutoConfiguration

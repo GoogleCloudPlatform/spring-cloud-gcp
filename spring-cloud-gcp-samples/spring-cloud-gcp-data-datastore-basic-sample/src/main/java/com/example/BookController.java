@@ -58,8 +58,7 @@ public class BookController {
   }
 
   @GetMapping("/findByAuthorNotEquals")
-  public String findByAuthorNotEquals(
-      @RequestParam("author") String author) {
+  public String findByAuthorNotEquals(@RequestParam("author") String author) {
     List<Book> books = this.bookRepository.findByAuthorNot(author);
     return books.toString();
   }
@@ -72,8 +71,7 @@ public class BookController {
 
   @GetMapping("/findByAuthorYear")
   public String findByAuthorYear(
-      @RequestParam("author") String author,
-      @RequestParam("year") Optional<Integer> year) {
+      @RequestParam("author") String author, @RequestParam("year") Optional<Integer> year) {
     List<Book> books = this.bookRepository.findByAuthorAndYear(author, year.orElse(0));
     return books.toString();
   }

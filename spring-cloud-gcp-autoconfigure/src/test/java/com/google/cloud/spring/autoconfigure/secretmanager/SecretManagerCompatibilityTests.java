@@ -23,17 +23,14 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-/**
- * Unit tests to check compatibility of Secret Manager.
- */
+/** Unit tests to check compatibility of Secret Manager. */
 class SecretManagerCompatibilityTests {
 
   private static final String PROJECT_NAME = "hollow-light-of-the-sealed-land";
   private SpringApplicationBuilder application;
   private SecretManagerServiceClient client;
-  /**
-   * A static client factory to avoid creating another client after refreshing.
-   */
+
+  /** A static client factory to avoid creating another client after refreshing. */
   private static SecretManagerServiceClientFactory secretManagerServiceClientFactory;
 
   static Stream<Arguments> prefixes() {
@@ -46,10 +43,10 @@ class SecretManagerCompatibilityTests {
 
   @BeforeEach
   void init() {
-    application = new SpringApplicationBuilder(SecretManagerCompatibilityTests.class)
-        .web(WebApplicationType.NONE)
-        .properties(
-            "spring.cloud.gcp.sql.enabled=false");
+    application =
+        new SpringApplicationBuilder(SecretManagerCompatibilityTests.class)
+            .web(WebApplicationType.NONE)
+            .properties("spring.cloud.gcp.sql.enabled=false");
 
     client = mock(SecretManagerServiceClient.class);
     secretManagerServiceClientFactory = mock(SecretManagerServiceClientFactory.class);
@@ -88,17 +85,14 @@ class SecretManagerCompatibilityTests {
     application
         .properties(projectIdPropertyName + PROJECT_NAME, "spring.config.import=" + prefix)
         .addBootstrapRegistryInitializer(
-            (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClientFactory.class,
-                InstanceSupplier.of(secretManagerServiceClientFactory)
-            )
-        )
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClientFactory.class,
+                    InstanceSupplier.of(secretManagerServiceClientFactory)))
         .addBootstrapRegistryInitializer(
-            (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClient.class,
-                InstanceSupplier.of(client)
-            )
-        );
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClient.class, InstanceSupplier.of(client)));
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
       assertThat(environment.getProperty(prefix + "my-secret")).isEqualTo("newSecret");
@@ -116,17 +110,14 @@ class SecretManagerCompatibilityTests {
             "spring.cloud.gcp.secretmanager.allow-default-secret=true",
             "spring.config.import=" + prefix)
         .addBootstrapRegistryInitializer(
-            (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClientFactory.class,
-                InstanceSupplier.of(secretManagerServiceClientFactory)
-            )
-        )
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClientFactory.class,
+                    InstanceSupplier.of(secretManagerServiceClientFactory)))
         .addBootstrapRegistryInitializer(
-            (registry) -> registry.registerIfAbsent(
-                SecretManagerServiceClient.class,
-                InstanceSupplier.of(client)
-            )
-        );
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClient.class, InstanceSupplier.of(client)));
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       ConfigurableEnvironment environment = applicationContext.getEnvironment();
       assertThat(environment.getProperty(prefix + "my-secret")).isEqualTo("newSecret");

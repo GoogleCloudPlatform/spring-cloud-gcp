@@ -34,9 +34,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
@@ -56,8 +56,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SpannerRepositoryIntegrationTests {
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
   @Autowired private TraderRepository traderRepository;
 
@@ -83,10 +82,7 @@ class SpannerRepositoryIntegrationTests {
 
     ResponseEntity<PagedModel<Trade>> tradesResponse =
         this.testRestTemplate.exchange(
-            "/trades",
-            HttpMethod.GET,
-            null,
-            new ParameterizedTypeReference<>() {});
+            "/trades", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
     assertThat(tradesResponse.getBody().getMetadata().getTotalElements()).isEqualTo(8);
   }
 
@@ -141,10 +137,8 @@ class SpannerRepositoryIntegrationTests {
 
     assertThat(this.tradeRepository.findAll()).hasSize(8);
 
-    assertThat(this.tradeRepository.findByActionAndSymbol(PageRequest.of(0, 1),
-        "BUY",
-        "STOCK1"
-    )).hasSize(1);
+    assertThat(this.tradeRepository.findByActionAndSymbol(PageRequest.of(0, 1), "BUY", "STOCK1"))
+        .hasSize(1);
 
     Set<String> tradeSpannerKeys = new HashSet<>();
     this.tradeRepository
@@ -172,8 +166,8 @@ class SpannerRepositoryIntegrationTests {
   void testJsonAndArrayJsonFieldReadWrite() {
 
     Address address = new Address(5L, "address line", true);
-    Trader trader = new Trader("demo_trader1", "John", "Doe",
-        Arrays.asList(address, address, address));
+    Trader trader =
+        new Trader("demo_trader1", "John", "Doe", Arrays.asList(address, address, address));
     trader.setHomeAddress(address);
     this.traderRepository.save(trader);
 
