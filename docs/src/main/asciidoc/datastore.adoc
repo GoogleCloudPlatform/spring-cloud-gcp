@@ -82,7 +82,7 @@ The following configuration options are available:
 | `spring.cloud.gcp.datastore.emulator.firestore-in-datastore-mode` | Configures whether the emulator runs in "Cloud Firestore in Datastore Mode" | No | `false`
 | `spring.cloud.gcp.datastore.skip-null-value` | Whether skip inserting `null` values. | No | The default value is `false`.
 If configured to `true`, `null` value will not be inserted into the datastore.
-
+| `spring.cloud.gcp.datastore.previous-transaction-retry-enabled` | Whether to retry a transactions with previous transaction when combined with Retriable. | No | `true`
 |===
 
 ==== Repository settings

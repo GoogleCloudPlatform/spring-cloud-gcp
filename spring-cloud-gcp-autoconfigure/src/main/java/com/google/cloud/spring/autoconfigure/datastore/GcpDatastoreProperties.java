@@ -49,6 +49,9 @@ public class GcpDatastoreProperties implements CredentialsSupplier {
   /** Whether skip the insertion if the value is null */
   private boolean skipNullValue;
 
+  /** Whether to retry a transactions with previous transaction when combined with Retriable. */
+  private boolean previousTransactionRetryEnabled = true;
+
   @Override
   public Credentials getCredentials() {
     return this.credentials;
@@ -96,5 +99,13 @@ public class GcpDatastoreProperties implements CredentialsSupplier {
 
   public void setSkipNullValue(boolean skipNullValue) {
     this.skipNullValue = skipNullValue;
+  }
+
+  public boolean isPreviousTransactionRetryEnabled() {
+    return previousTransactionRetryEnabled;
+  }
+
+  public void setPreviousTransactionRetryEnabled(boolean previousTransactionRetryEnabled) {
+    this.previousTransactionRetryEnabled = previousTransactionRetryEnabled;
   }
 }

@@ -20,7 +20,11 @@ import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreException;
 import com.google.cloud.datastore.Transaction;
 import com.google.datastore.v1.TransactionOptions;
+import com.google.datastore.v1.TransactionOptions.ReadWrite;
+import com.google.protobuf.ByteString;
 import java.util.function.Supplier;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.support.RetrySynchronizationManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionSystemException;
@@ -34,15 +38,25 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * @since 1.1
  */
 public class DatastoreTransactionManager extends AbstractPlatformTransactionManager {
+
+  static final String PREVIOUS_TRANSACTION_ID_ATTRIBUTE = "datastore-transaction-id";
+
   private static final TransactionOptions READ_ONLY_OPTIONS =
       TransactionOptions.newBuilder()
           .setReadOnly(TransactionOptions.ReadOnly.newBuilder().build())
           .build();
 
   private final Supplier<Datastore> datastore;
+  
+  private final boolean previousTransactionRetryEnabled;
 
   public DatastoreTransactionManager(final Supplier<Datastore> datastore) {
+    this(datastore, true);
+  }
+
+  public DatastoreTransactionManager(final Supplier<Datastore> datastore, boolean previousTransactionRetryEnabled) {
     this.datastore = datastore;
+    this.previousTransactionRetryEnabled = previousTransactionRetryEnabled;
   }
 
   @Override
@@ -71,9 +85,16 @@ public class DatastoreTransactionManager extends AbstractPlatformTransactionMana
           "DatastoreTransactionManager supports only propagation behavior "
               + "TransactionDefinition.PROPAGATION_REQUIRED");
     }
+    RetryContext retryContext = RetrySynchronizationManager.getContext();
     Tx tx = (Tx) transactionObject;
     if (transactionDefinition.isReadOnly()) {
       tx.transaction = tx.datastore.newTransaction(READ_ONLY_OPTIONS);
+    } else if (this.previousTransactionRetryEnabled && retryContext != null && retryContext.hasAttribute(PREVIOUS_TRANSACTION_ID_ATTRIBUTE)) {
+      tx.transaction = tx.datastore.newTransaction(
+          TransactionOptions.newBuilder()
+              .setReadWrite(ReadWrite.newBuilder().setPreviousTransaction(
+                  (ByteString) retryContext.getAttribute(PREVIOUS_TRANSACTION_ID_ATTRIBUTE)))
+              .build());
     } else {
       tx.transaction = tx.datastore.newTransaction();
     }
@@ -85,13 +106,20 @@ public class DatastoreTransactionManager extends AbstractPlatformTransactionMana
   protected void doCommit(DefaultTransactionStatus defaultTransactionStatus)
       throws TransactionException {
     Tx tx = (Tx) defaultTransactionStatus.getTransaction();
+    RetryContext retryContext = RetrySynchronizationManager.getContext();
     try {
       if (tx.transaction.isActive()) {
         tx.transaction.commit();
+        if (retryContext != null) {
+          retryContext.removeAttribute(PREVIOUS_TRANSACTION_ID_ATTRIBUTE);
+        }
       } else {
         this.logger.debug("Transaction was not committed because it is no longer active.");
       }
     } catch (DatastoreException ex) {
+      if (this.previousTransactionRetryEnabled && retryContext != null) {
+        retryContext.setAttribute(PREVIOUS_TRANSACTION_ID_ATTRIBUTE, tx.transaction.getTransactionId());
+      }
       throw new TransactionSystemException("Cloud Datastore transaction failed to commit.", ex);
     }
   }
@@ -100,6 +128,10 @@ public class DatastoreTransactionManager extends AbstractPlatformTransactionMana
   protected void doRollback(DefaultTransactionStatus defaultTransactionStatus)
       throws TransactionException {
     Tx tx = (Tx) defaultTransactionStatus.getTransaction();
+    RetryContext retryContext = RetrySynchronizationManager.getContext();
+    if (retryContext != null) {
+      retryContext.removeAttribute(PREVIOUS_TRANSACTION_ID_ATTRIBUTE);
+    }
     try {
       if (tx.transaction.isActive()) {
         tx.transaction.rollback();
