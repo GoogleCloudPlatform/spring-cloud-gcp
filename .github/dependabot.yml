@@ -39,6 +39,21 @@ updates:
     # Prefix all commit messages with "deps: "
     prefix: "deps"
   open-pull-requests-limit: 30
+  target-branch: "7.x"
+  labels:
+    - "7.x dependencies"
+  allow:
+    # ONLY allow the libraries-bom update
+    - dependency-name: "com.google.cloud:libraries-bom"
+
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  commit-message:
+    # Prefix all commit messages with "deps: "
+    prefix: "deps"
+  open-pull-requests-limit: 30
   target-branch: "6.x"
   labels:
     - "6.x dependencies"
