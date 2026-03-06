@@ -14,6 +14,37 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+
+## [8.0.0-SNAPSHOT] Spring Boot 4.0 / Spring 7 Migration
+
+This release marks a major architectural upgrade, moving the project baseline to **Java 17** (with **JDK 25** for Native Image) and **Jakarta EE 11**.
+This version focuses on achieving compatibility with the new modular architecture of Spring Boot 4.0, the refactored SpEL evaluation engine in Spring Data 2025.1, and enhanced AOT support for GraalVM.
+For a comprehensive overview of upstream changes, please refer to the official [Spring Boot 4.0 Migration Guide](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide).
+
+### ⚠️ Breaking Changes
+
+* **Spring Data 4.0 (SpEL Evaluation):** Multiple constructors removed due to the removal of `QueryMethodEvaluationContextProvider`. Users must migrate to constructors accepting `ValueExpressionDelegate`.
+  * **Affected Classes:** `DatastoreQueryLookupStrategy`, `GqlDatastoreQuery`, `SpannerQueryLookupStrategy`, `SqlSpannerQuery`.
+  * **User Action:** If you manually instantiate these classes (e.g., in custom repository implementations), you must replace the `QueryMethodEvaluationContextProvider` parameter with `ValueExpressionDelegate`.
+* **Mapping Exceptions:** In Spring Data 4.0 (2025.1), metadata discovery and entity mapping failures are now uniformly wrapped in a top-level `org.springframework.data.mapping.MappingException`.
+  * **Impact:** Previously caught module-specific exceptions (e.g., `SpannerDataException`) may now be nested inside a `MappingException`.
+  * **User Action:** Update error handling logic to check for the underlying cause. "Use `NestedExceptionUtils.getMostSpecificCause()` to retrieve specific error message details.."
+* **Nested Exceptions:** Following Spring Framework 7.0's changes to `NestedRuntimeException`, nested exception messages are no longer automatically appended to the top-level `getMessage()` output.
+  * **User Action:** When constructing custom error messages, you must now explicitly access the cause. "Use `NestedExceptionUtils.getMostSpecificCause()` to retrieve specific error message details."
+* **Actuator Health API:** [The Actuator Health API](https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.health) has been restructured to support better grouping through the `org.springframework.boot.health.contributor` package. `PubSubHealthIndicator` and `SpannerHealthIndicator` are now registered as `HealthContributor` beans.
+  * **User Action:** These indicators are now **always** wrapped into a `CompositeHealthContributor` by the framework's auto-configuration. Users who previously injected `PubSubHealthIndicator` or `HealthIndicator` directly must now inject `HealthContributor` and navigate the composite hierarchy if direct access is needed.
+
+### Dependencies
+
+* bump `org.springframework.boot:spring-boot-dependencies` from `3.5.3` to `4.0.0`
+* bump `org.springframework.cloud:spring-cloud-dependencies` from `2025.0.0` to `2025.1.0`
+* bump `com.google.cloud:cloud-sql-socket-factory-bom` from `1.25.0` to `1.28.0`
+* bump `io.r2dbc:r2dbc-postgresql` from `1.0.7.RELEASE` to `1.1.1.RELEASE`
+* bump `org.graalvm.buildtools:native-maven-plugin` from `0.10.5` to `0.11.3`
+* bump `jakarta.annotation:jakarta.annotation-api` from `1.3.5` to `2.1.1`
+* bump `com.fasterxml.jackson:jackson-bom` from `2.18.2` to `3.0.2` (via `tools.jackson`)
+
+
 ## [7.4.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.4...v7.4.5) (2026-02-21)
 
 
