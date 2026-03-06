@@ -16,5 +16,9 @@ branches:
     extraFiles: ["README.adoc"]
   - releaseType: java-yoshi
     handleGHRelease: true
+    branch: 7.x
+    extraFiles: ["README.adoc"]
+  - releaseType: java-yoshi
+    handleGHRelease: true
     branch: 6.x
     extraFiles: ["README.adoc"]

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 7.x
       - 6.x
       - 5.x
       - 3.x
