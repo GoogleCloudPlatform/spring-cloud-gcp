@@ -38,7 +38,7 @@
 //
 // The flags are:
 //     -branches string
-//         Comma-separated list of branches to release (default "main,3.x,5.x,6.x")
+//         Comma-separated list of branches to release (default "main,7.x,6.x,5.x,3.x")
 //     -email string
 //         Email address to send success/failure notifications to. This utilizes
 //         the internal `sendgmr` tool and requires active LOAS/gcert credentials.
@@ -76,7 +76,7 @@ var interactiveOpt bool
 // main is the entry point of the script. It parses flags, sets up the parallel release process
 // for the specified branches, and handles the sequential README update for the main branch.
 func main() {
-	branchesOpt := flag.String("branches", "main,3.x,5.x,6.x", "Comma-separated list of branches to release")
+	branchesOpt := flag.String("branches", "main,7.x,6.x,5.x,3.x", "Comma-separated list of branches to release")
 	flag.StringVar(&emailOpt, "email", "", "Email address to send notifications to (requires LOAS/gcert)")
 	flag.StringVar(&bootMaxOpt, "boot-max", "", "Newly supported Spring Boot max version for compatibilityRange (e.g. 4.1.0-M1)")
 	flag.BoolVar(&interactiveOpt, "interactive", false, "Ask for confirmation before proceeding to each step")
@@ -223,7 +223,7 @@ func runReleaseForMain() {
 
 }
 
-// runReleaseForBranch contains the standard release pipeline for 3.x, 5.x, 6.x
+// runReleaseForBranch contains the standard release pipeline for 3.x, 5.x, 6.x, 7.x
 func runReleaseForBranch(branch string) {
 	prefix := fmt.Sprintf("[%s]", branch)
 	step := 1
