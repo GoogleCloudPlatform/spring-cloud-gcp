@@ -22,9 +22,9 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
+import com.google.cloud.spring.secretmanager.SecretManagerSanitizingFunction;
 import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
-import java.io.IOException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -34,9 +34,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import java.io.IOException;
+
 
 /**
- *  Autoconfiguration for GCP Secret Manager.
+ * Autoconfiguration for GCP Secret Manager.
  *
  * @since 4.0.1
  */
@@ -47,55 +49,61 @@ import org.springframework.context.annotation.Bean;
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)
 public class GcpSecretManagerAutoConfiguration {
 
-  private final GcpProjectIdProvider gcpProjectIdProvider;
-  private final GcpSecretManagerProperties properties;
-  private final CredentialsProvider credentialsProvider;
+    private final GcpProjectIdProvider gcpProjectIdProvider;
+    private final GcpSecretManagerProperties properties;
+    private final CredentialsProvider credentialsProvider;
 
-  public GcpSecretManagerAutoConfiguration(
-      CredentialsProvider credentialsProvider,
-      GcpSecretManagerProperties properties,
-      GcpProjectIdProvider projectIdProvider) {
+    public GcpSecretManagerAutoConfiguration(
+            CredentialsProvider credentialsProvider,
+            GcpSecretManagerProperties properties,
+            GcpProjectIdProvider projectIdProvider) {
 
-    this.credentialsProvider = credentialsProvider;
-    this.properties = properties;
-    this.gcpProjectIdProvider =
-        properties.getProjectId() != null
-            ? properties::getProjectId
-            : projectIdProvider;
-  }
-
-  @Bean
-  @ConditionalOnMissingBean
-  public SecretManagerServiceClient secretManagerClient() throws IOException {
-    SecretManagerServiceSettings settings =
-        SecretManagerServiceSettings.newBuilder()
-            .setCredentialsProvider(this.credentialsProvider)
-            .setHeaderProvider(new UserAgentHeaderProvider(GcpSecretManagerAutoConfiguration.class))
-            .build();
-    return SecretManagerServiceClient.create(settings);
-  }
-
-  @Bean
-  @ConditionalOnMissingBean
-  public SecretManagerServiceClientFactory secretManagerClientFactory() {
-    return new DefaultSecretManagerServiceClientFactory(this.credentialsProvider);
-  }
-
-
-  @Bean
-  @ConditionalOnMissingBean
-  public SecretManagerTemplate secretManagerTemplate(
-      SecretManagerServiceClient client, ObjectProvider<SecretManagerServiceClientFactory> clientFactoryProvider) {
-
-    SecretManagerServiceClientFactory clientFactory = clientFactoryProvider.getIfAvailable();
-
-    if (clientFactory != null) {
-      return new SecretManagerTemplate(clientFactory, this.gcpProjectIdProvider)
-          .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
-    } else {
-      return new SecretManagerTemplate(client, this.gcpProjectIdProvider)
-          .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
+        this.credentialsProvider = credentialsProvider;
+        this.properties = properties;
+        this.gcpProjectIdProvider =
+                properties.getProjectId() != null
+                        ? properties::getProjectId
+                        : projectIdProvider;
     }
-  }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public SecretManagerServiceClient secretManagerClient() throws IOException {
+        SecretManagerServiceSettings settings =
+                SecretManagerServiceSettings.newBuilder()
+                        .setCredentialsProvider(this.credentialsProvider)
+                        .setHeaderProvider(new UserAgentHeaderProvider(GcpSecretManagerAutoConfiguration.class))
+                        .build();
+        return SecretManagerServiceClient.create(settings);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SecretManagerServiceClientFactory secretManagerClientFactory() {
+        return new DefaultSecretManagerServiceClientFactory(this.credentialsProvider);
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SecretManagerTemplate secretManagerTemplate(
+            SecretManagerServiceClient client, ObjectProvider<SecretManagerServiceClientFactory> clientFactoryProvider) {
+
+        SecretManagerServiceClientFactory clientFactory = clientFactoryProvider.getIfAvailable();
+
+        if (clientFactory != null) {
+            return new SecretManagerTemplate(clientFactory, this.gcpProjectIdProvider)
+                    .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
+        } else {
+            return new SecretManagerTemplate(client, this.gcpProjectIdProvider)
+                    .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
+        }
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.SanitizingFunction")
+    public SecretManagerSanitizingFunction secretManagerSanitizingFunction() {
+        return new SecretManagerSanitizingFunction();
+    }
 }
