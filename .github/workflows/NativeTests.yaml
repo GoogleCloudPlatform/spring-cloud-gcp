@@ -6,7 +6,6 @@ on:
       - main
       - 6.x
       - 5.x
-      - 8.0-migration
   pull_request:
     types: [opened, synchronize, reopened]
     paths-ignore:
