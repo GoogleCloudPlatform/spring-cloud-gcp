@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.4.6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.5...v7.4.6) (2026-03-06)
+
+
+### Documentation
+
+* update latest versions in README ([#4335](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4335)) ([5bf1b41](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5bf1b411a6c27cd8ac6bd6a019c9f24bd60de090))
+
 ## [7.4.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.4...v7.4.5) (2026-02-21)
 
 
