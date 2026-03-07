@@ -21,9 +21,7 @@ import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.r2dbc.core.binding.BindMarkersFactory;
 import org.springframework.r2dbc.core.binding.BindMarkersFactoryResolver.BindMarkerFactoryProvider;
 
-/**
- * Provides the named bind marker strategy for Cloud Spanner.
- */
+/** Provides the named bind marker strategy for Cloud Spanner. */
 public class SpannerBindMarkerFactoryProvider implements BindMarkerFactoryProvider {
 
   @Override

@@ -26,13 +26,13 @@ import com.google.cloud.generator.spring.TestUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SpringComposerTest {
   private GapicContext context;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.context = TestUtils.parseShowcaseEcho();
   }

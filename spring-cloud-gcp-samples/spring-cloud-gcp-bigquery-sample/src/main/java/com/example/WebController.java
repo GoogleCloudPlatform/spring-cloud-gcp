@@ -49,8 +49,7 @@ public class WebController {
   @Value("${spring.cloud.gcp.bigquery.datasetName}")
   private String datasetName;
 
-  public WebController(BigQueryFileGateway bigQueryFileGateway,
-      BigQueryTemplate bigQueryTemplate) {
+  public WebController(BigQueryFileGateway bigQueryFileGateway, BigQueryTemplate bigQueryTemplate) {
     this.bigQueryFileGateway = bigQueryFileGateway;
     this.bigQueryTemplate = bigQueryTemplate;
   }

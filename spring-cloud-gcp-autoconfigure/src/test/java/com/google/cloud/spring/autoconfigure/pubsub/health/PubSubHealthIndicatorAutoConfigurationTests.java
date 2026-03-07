@@ -27,7 +27,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
@@ -39,9 +38,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.boot.actuate.health.CompositeHealthContributor;
-import org.springframework.boot.actuate.health.NamedContributor;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.health.contributor.CompositeHealthContributor;
+import org.springframework.boot.health.contributor.HealthContributors;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 /** Tests for Pub/Sub Health Indicator autoconfiguration. */
@@ -127,7 +126,7 @@ class PubSubHealthIndicatorAutoConfigurationTests {
                   ctx.getBean("pubSubHealthContributor", CompositeHealthContributor.class);
               assertThat(healthContributor).isNotNull();
               assertThat(healthContributor.stream()).hasSize(2);
-              assertThat(healthContributor.stream().map(NamedContributor::getName))
+              assertThat(healthContributor.stream().map(HealthContributors.Entry::name))
                   .containsExactlyInAnyOrder("pubSubTemplate1", "pubSubTemplate2");
             });
   }

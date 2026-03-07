@@ -17,10 +17,10 @@
 package com.google.cloud.spring.data.firestore.mapping;
 
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.data.mapping.context.AbstractMappingContext;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
-import org.springframework.data.util.TypeInformation;
 
 /**
  * A mapping context for Firestore that provides ways to create persistent entities and properties.

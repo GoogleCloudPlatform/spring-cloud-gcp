@@ -188,17 +188,18 @@ public class SpannerTemplateIntegrationTests extends AbstractSpannerIntegrationT
 
     Trade trade = Trade.makeTrade();
 
-    Function<SpannerTemplate, Void> operation =  transactionOperations -> {
-      // cannot do mutate in a read-only transaction
-      transactionOperations.insert(trade);
-      return null;
-    };
+    Function<SpannerTemplate, Void> operation =
+        transactionOperations -> {
+          // cannot do mutate in a read-only transaction
+          transactionOperations.insert(trade);
+          return null;
+        };
     SpannerReadOptions readOptions = new SpannerReadOptions();
 
-    assertThatThrownBy(() -> this.spannerOperations.performReadOnlyTransaction(operation, readOptions))
-            .isInstanceOf(SpannerDataException.class)
-            .hasMessage("A read-only transaction template cannot perform mutations.");
-
+    assertThatThrownBy(
+            () -> this.spannerOperations.performReadOnlyTransaction(operation, readOptions))
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("A read-only transaction template cannot perform mutations.");
   }
 
   /** a transactional service for testing annotated transaction methods. */

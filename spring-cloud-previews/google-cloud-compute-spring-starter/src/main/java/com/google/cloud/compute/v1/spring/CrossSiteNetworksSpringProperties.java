@@ -36,17 +36,22 @@ public class CrossSiteNetworksSpringProperties implements CredentialsSupplier {
       new Credentials(
           "https://www.googleapis.com/auth/compute",
           "https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for get. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRetry;
+
   /**
    * Allow override of retry settings at method-level for list. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.

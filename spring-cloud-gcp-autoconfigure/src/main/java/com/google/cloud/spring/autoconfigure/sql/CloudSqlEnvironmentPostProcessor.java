@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.util.ClassUtils;
@@ -81,8 +81,8 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
           .getPropertySources()
           .addFirst(new MapPropertySource("CLOUD_SQL_DATA_SOURCE_URL", primaryMap));
 
-      CredentialsPropertiesSetter.setCredentials(sqlProperties,
-          propertiesRetriever.getGcpProperties());
+      CredentialsPropertiesSetter.setCredentials(
+          sqlProperties, propertiesRetriever.getGcpProperties());
 
       // support usage metrics
       ConnectorRegistry.addArtifactId(
@@ -109,11 +109,10 @@ public class CloudSqlEnvironmentPostProcessor implements EnvironmentPostProcesso
   private boolean isJdbcEnabled(ConfigurableEnvironment environment) {
     return Boolean.parseBoolean(environment.getProperty("spring.cloud.gcp.sql.enabled", "true"))
         && Boolean.parseBoolean(
-        environment.getProperty("spring.cloud.gcp.sql.jdbc.enabled", "true"));
+            environment.getProperty("spring.cloud.gcp.sql.jdbc.enabled", "true"));
   }
 
   private boolean isOnClasspath(String className) {
     return ClassUtils.isPresent(className, null);
   }
-
 }

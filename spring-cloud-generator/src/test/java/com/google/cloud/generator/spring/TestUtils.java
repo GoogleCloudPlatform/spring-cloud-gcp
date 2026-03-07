@@ -51,11 +51,11 @@ public class TestUtils {
           + " to have the values echoed in the response trailers.";
 
   /**
-   * Temporary workaround that copies the implementation of
-   * {@link com.google.api.generator.test.protoloader.TestProtoLoader} {@code parseShowcaseEcho()}
-   * This is due to the resources not being available in the test-jar exported by
-   * gapic-generator-java We could in theory create a TestProtoLoader instance with a custom test
-   * resources path but the constructor is protected
+   * Temporary workaround that copies the implementation of {@link
+   * com.google.api.generator.test.protoloader.TestProtoLoader} {@code parseShowcaseEcho()} This is
+   * due to the resources not being available in the test-jar exported by gapic-generator-java We
+   * could in theory create a TestProtoLoader instance with a custom test resources path but the
+   * constructor is protected
    *
    * @return The {@link GapicContext} of the Showcase Echo service
    */
@@ -66,8 +66,7 @@ public class TestUtils {
 
     String serviceYamlFilename = "echo_v1beta1.yaml";
     Path serviceYamlPath = Paths.get(TEST_FILES_DIRECTORY, serviceYamlFilename);
-    Optional<Service> serviceYamlOpt =
-        ServiceYamlParser.parse(serviceYamlPath.toString());
+    Optional<Service> serviceYamlOpt = ServiceYamlParser.parse(serviceYamlPath.toString());
     assertTrue(serviceYamlOpt.isPresent());
 
     Map<String, Message> messageTypes = Parser.parseMessages(echoFileDescriptor);

@@ -35,11 +35,9 @@ class ParameterManagerPropertySourceTests {
   private static final String PROPERTY_SOURCE_NAME = "test-property-source";
   private static final String TEST_PROJECT_ID = "test-project";
 
-  @Mock
-  private ParameterManagerTemplate parameterManagerTemplate;
+  @Mock private ParameterManagerTemplate parameterManagerTemplate;
 
-  @Mock
-  private GcpProjectIdProvider projectIdProvider;
+  @Mock private GcpProjectIdProvider projectIdProvider;
 
   private ParameterManagerPropertySource propertySource;
 
@@ -47,16 +45,17 @@ class ParameterManagerPropertySourceTests {
   void setUp() {
     MockitoAnnotations.openMocks(this);
     when(projectIdProvider.getProjectId()).thenReturn(TEST_PROJECT_ID);
-    propertySource = new ParameterManagerPropertySource(
-        PROPERTY_SOURCE_NAME, parameterManagerTemplate, projectIdProvider);
+    propertySource =
+        new ParameterManagerPropertySource(
+            PROPERTY_SOURCE_NAME, parameterManagerTemplate, projectIdProvider);
   }
 
   @Test
   void testGetProperty_withValidParameter() {
     // Arrange
     String propertyName = "pm@global/test-parameter/v1";
-    ParameterVersionName parameterVersionName = ParameterVersionName.of(
-        TEST_PROJECT_ID, "global", "test-parameter", "v1");
+    ParameterVersionName parameterVersionName =
+        ParameterVersionName.of(TEST_PROJECT_ID, "global", "test-parameter", "v1");
     ByteString expectedValue = ByteString.copyFromUtf8("test-value");
 
     // Use the specific ParameterVersionName overload to avoid ambiguity
@@ -80,7 +79,8 @@ class ParameterManagerPropertySourceTests {
 
     // Assert
     assertThat(result).isNull();
-    verify(parameterManagerTemplate, never()).getRenderedParameterByteString(any(ParameterVersionName.class));
+    verify(parameterManagerTemplate, never())
+        .getRenderedParameterByteString(any(ParameterVersionName.class));
   }
 
   @Test

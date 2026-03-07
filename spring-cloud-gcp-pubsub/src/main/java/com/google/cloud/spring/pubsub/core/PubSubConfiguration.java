@@ -43,8 +43,9 @@ public class PubSubConfiguration {
    */
   private Map<String, Subscriber> subscription = new HashMap<>();
 
-  /** Properties keyed by fully qualified subscription name.
-   * Initialized once; effectively a singleton.
+  /**
+   * Properties keyed by fully qualified subscription name. Initialized once; effectively a
+   * singleton.
    */
   private Map<ProjectSubscriptionName, Subscriber> fullyQualifiedSubscriptionProperties;
 
@@ -70,28 +71,31 @@ public class PubSubConfiguration {
   }
 
   /**
-   * This method will be called by Spring Framework when binding user properties.
-   * Also potentially useful for tests.
+   * This method will be called by Spring Framework when binding user properties. Also potentially
+   * useful for tests.
    *
    * @param subscriberProperties map of user-defined properties.
    */
   public void setSubscription(Map<String, Subscriber> subscriberProperties) {
-    Assert.isNull(this.fullyQualifiedSubscriptionProperties,
+    Assert.isNull(
+        this.fullyQualifiedSubscriptionProperties,
         "Pub/Sub properties have already been initialized; cannot update subscription properties");
 
     this.subscription = subscriberProperties;
   }
 
   /**
-   * Returns an immutable map of subscription properties keyed by the fully-qualified
-   * {@link ProjectSubscriptionName}.
+   * Returns an immutable map of subscription properties keyed by the fully-qualified {@link
+   * ProjectSubscriptionName}.
    *
    * <p>Cannot be called before {@link #initialize(String)}.
    *
    * @return map of subscription properties
    */
   public Map<ProjectSubscriptionName, Subscriber> getFullyQualifiedSubscriberProperties() {
-    Assert.notNull(this.fullyQualifiedSubscriptionProperties, "Please call initialize() prior to retrieving properties.");
+    Assert.notNull(
+        this.fullyQualifiedSubscriptionProperties,
+        "Please call initialize() prior to retrieving properties.");
     return this.fullyQualifiedSubscriptionProperties;
   }
 
@@ -113,15 +117,20 @@ public class PubSubConfiguration {
 
     Map<ProjectSubscriptionName, Subscriber> fullyQualifiedProps = new HashMap<>();
     for (Entry<String, Subscriber> entry : this.subscription.entrySet()) {
-      // Subscription name is either a valid short name, or a made-up name with fully-qualified provided as a property
+      // Subscription name is either a valid short name, or a made-up name with fully-qualified
+      // provided as a property
       Subscriber subscriberProperties = entry.getValue();
-      String qualifiedName = subscriberProperties.fullyQualifiedName != null
-          ? subscriberProperties.fullyQualifiedName : entry.getKey();
+      String qualifiedName =
+          subscriberProperties.fullyQualifiedName != null
+              ? subscriberProperties.fullyQualifiedName
+              : entry.getKey();
       ProjectSubscriptionName projectSubscriptionName =
           PubSubSubscriptionUtils.toProjectSubscriptionName(qualifiedName, defaultProjectId);
       if (fullyQualifiedProps.containsKey(projectSubscriptionName)) {
-        logger.warn("Found multiple configurations for {}; ignoring properties with key {}",
-            projectSubscriptionName, entry.getKey());
+        logger.warn(
+            "Found multiple configurations for {}; ignoring properties with key {}",
+            projectSubscriptionName,
+            entry.getKey());
       } else {
         fullyQualifiedProps.put(projectSubscriptionName, subscriberProperties);
       }
@@ -137,7 +146,9 @@ public class PubSubConfiguration {
    * @return user-provided subscription properties
    */
   public Subscriber getSubscriptionProperties(ProjectSubscriptionName projectSubscriptionName) {
-    Assert.notNull(this.fullyQualifiedSubscriptionProperties, "Please call initialize() prior to retrieving properties.");
+    Assert.notNull(
+        this.fullyQualifiedSubscriptionProperties,
+        "Please call initialize() prior to retrieving properties.");
 
     if (this.fullyQualifiedSubscriptionProperties.containsKey(projectSubscriptionName)) {
       return this.fullyQualifiedSubscriptionProperties.get(projectSubscriptionName);
@@ -154,7 +165,8 @@ public class PubSubConfiguration {
    * @param projectSubscriptionName Fully qualified subscription name
    * @return flow control settings defaulting to global where not provided
    */
-  public FlowControl computeSubscriberFlowControlSettings(ProjectSubscriptionName projectSubscriptionName) {
+  public FlowControl computeSubscriberFlowControlSettings(
+      ProjectSubscriptionName projectSubscriptionName) {
     FlowControl flowControl = getSubscriptionProperties(projectSubscriptionName).getFlowControl();
     FlowControl globalFlowControl = this.globalSubscriber.getFlowControl();
     // It is possible for flowControl and globalFlowControl to be the same object.
@@ -182,7 +194,8 @@ public class PubSubConfiguration {
    */
   public Integer computeParallelPullCount(String subscriptionName, String projectId) {
     Integer parallelPullCount =
-        getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
+        getSubscriptionProperties(
+                PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
             .getParallelPullCount();
 
     return parallelPullCount != null
@@ -201,7 +214,8 @@ public class PubSubConfiguration {
    */
   public Code[] computeRetryableCodes(String subscriptionName, String projectId) {
     Code[] retryableCodes =
-        getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
+        getSubscriptionProperties(
+                PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
             .getRetryableCodes();
     return retryableCodes != null ? retryableCodes : this.globalSubscriber.getRetryableCodes();
   }
@@ -217,8 +231,9 @@ public class PubSubConfiguration {
    */
   public Long computeMaxAckExtensionPeriod(String subscriptionName, String projectId) {
     Long maxAckExtensionPeriod =
-        getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
-        .getMaxAckExtensionPeriod();
+        getSubscriptionProperties(
+                PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
+            .getMaxAckExtensionPeriod();
 
     if (maxAckExtensionPeriod != null) {
       return maxAckExtensionPeriod;
@@ -238,7 +253,8 @@ public class PubSubConfiguration {
   @Nullable
   public Long computeMinDurationPerAckExtension(String subscriptionName, String projectId) {
     Long minDurationPerAckExtension =
-        getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
+        getSubscriptionProperties(
+                PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
             .getMinDurationPerAckExtension();
 
     if (minDurationPerAckExtension != null) {
@@ -260,7 +276,8 @@ public class PubSubConfiguration {
   @Nullable
   public Long computeMaxDurationPerAckExtension(String subscriptionName, String projectId) {
     Long maxDurationPerAckExtension =
-        getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
+        getSubscriptionProperties(
+                PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
             .getMaxDurationPerAckExtension();
 
     if (maxDurationPerAckExtension != null) {
@@ -281,8 +298,9 @@ public class PubSubConfiguration {
    */
   public String computePullEndpoint(String subscriptionName, String projectId) {
     String pullEndpoint =
-        getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
-        .getPullEndpoint();
+        getSubscriptionProperties(
+                PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
+            .getPullEndpoint();
     return pullEndpoint != null ? pullEndpoint : this.globalSubscriber.getPullEndpoint();
   }
 
@@ -297,8 +315,9 @@ public class PubSubConfiguration {
    */
   public String computeSubscriberUniverseDomain(String subscriptionName, String projectId) {
     String universeDomain =
-            getSubscriptionProperties(PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
-                    .getUniverseDomain();
+        getSubscriptionProperties(
+                PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, projectId))
+            .getUniverseDomain();
     return universeDomain != null ? universeDomain : this.globalSubscriber.getUniverseDomain();
   }
 
@@ -494,9 +513,7 @@ public class PubSubConfiguration {
      */
     private Long maxDurationPerAckExtension;
 
-    /**
-     * The optional parallel pull count setting for the subscriber factory.
-     */
+    /** The optional parallel pull count setting for the subscriber factory. */
     private Integer parallelPullCount;
 
     /** Retry settings for subscriber factory. */
@@ -892,6 +909,4 @@ public class PubSubConfiguration {
       return this.flowControl;
     }
   }
-
-
 }

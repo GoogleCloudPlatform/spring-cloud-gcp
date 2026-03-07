@@ -34,199 +34,241 @@ public class CloudChannelServiceSpringProperties implements CredentialsSupplier 
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/apps.order");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listCustomers. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listCustomersRetry;
+
   /**
    * Allow override of retry settings at method-level for getCustomer. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getCustomerRetry;
+
   /**
    * Allow override of retry settings at method-level for checkCloudIdentityAccountsExist. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry checkCloudIdentityAccountsExistRetry;
+
   /**
    * Allow override of retry settings at method-level for createCustomer. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createCustomerRetry;
+
   /**
    * Allow override of retry settings at method-level for updateCustomer. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateCustomerRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteCustomer. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteCustomerRetry;
+
   /**
    * Allow override of retry settings at method-level for importCustomer. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry importCustomerRetry;
+
   /**
    * Allow override of retry settings at method-level for listEntitlements. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listEntitlementsRetry;
+
   /**
    * Allow override of retry settings at method-level for listTransferableSkus. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTransferableSkusRetry;
+
   /**
    * Allow override of retry settings at method-level for listTransferableOffers. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTransferableOffersRetry;
+
   /**
    * Allow override of retry settings at method-level for getEntitlement. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getEntitlementRetry;
+
   /**
    * Allow override of retry settings at method-level for listChannelPartnerLinks. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listChannelPartnerLinksRetry;
+
   /**
    * Allow override of retry settings at method-level for getChannelPartnerLink. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getChannelPartnerLinkRetry;
+
   /**
    * Allow override of retry settings at method-level for createChannelPartnerLink. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createChannelPartnerLinkRetry;
+
   /**
    * Allow override of retry settings at method-level for updateChannelPartnerLink. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateChannelPartnerLinkRetry;
+
   /**
    * Allow override of retry settings at method-level for getCustomerRepricingConfig. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getCustomerRepricingConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for listCustomerRepricingConfigs. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listCustomerRepricingConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for createCustomerRepricingConfig. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createCustomerRepricingConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for updateCustomerRepricingConfig. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateCustomerRepricingConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteCustomerRepricingConfig. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteCustomerRepricingConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for getChannelPartnerRepricingConfig. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getChannelPartnerRepricingConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for listChannelPartnerRepricingConfigs. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listChannelPartnerRepricingConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for createChannelPartnerRepricingConfig. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createChannelPartnerRepricingConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for updateChannelPartnerRepricingConfig. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateChannelPartnerRepricingConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteChannelPartnerRepricingConfig. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteChannelPartnerRepricingConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for listSkuGroups. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSkuGroupsRetry;
+
   /**
    * Allow override of retry settings at method-level for listSkuGroupBillableSkus. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSkuGroupBillableSkusRetry;
+
   /**
    * Allow override of retry settings at method-level for lookupOffer. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry lookupOfferRetry;
+
   /**
    * Allow override of retry settings at method-level for listProducts. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listProductsRetry;
+
   /**
    * Allow override of retry settings at method-level for listSkus. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSkusRetry;
+
   /**
    * Allow override of retry settings at method-level for listOffers. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listOffersRetry;
+
   /**
    * Allow override of retry settings at method-level for listPurchasableSkus. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listPurchasableSkusRetry;
+
   /**
    * Allow override of retry settings at method-level for listPurchasableOffers. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listPurchasableOffersRetry;
+
   /**
    * Allow override of retry settings at method-level for queryEligibleBillingAccounts. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry queryEligibleBillingAccountsRetry;
+
   /**
    * Allow override of retry settings at method-level for registerSubscriber. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry registerSubscriberRetry;
+
   /**
    * Allow override of retry settings at method-level for unregisterSubscriber. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry unregisterSubscriberRetry;
+
   /**
    * Allow override of retry settings at method-level for listSubscribers. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSubscribersRetry;
+
   /**
    * Allow override of retry settings at method-level for listEntitlementChanges. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

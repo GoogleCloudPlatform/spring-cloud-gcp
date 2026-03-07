@@ -57,8 +57,8 @@ public class StructAccessor {
           .put(ByteArray.class, AbstractStructReader::getBytesList)
           .put(BigDecimal.class, AbstractStructReader::getBigDecimalList)
           .put(Struct.class, AbstractStructReader::getStructList)
-              .put(Interval.class, AbstractStructReader::getIntervalList)
-              .put(UUID.class, AbstractStructReader::getUuidList)
+          .put(Interval.class, AbstractStructReader::getIntervalList)
+          .put(UUID.class, AbstractStructReader::getUuidList)
           .build();
 
   static final Map<Class, BiFunction<Struct, String, ?>> singleItemReadMethodMapping =
@@ -79,8 +79,8 @@ public class StructAccessor {
           .put(float[].class, AbstractStructReader::getFloatArray)
           .put(long[].class, AbstractStructReader::getLongArray)
           .put(boolean[].class, AbstractStructReader::getBooleanArray)
-              .put(Interval.class, AbstractStructReader::getInterval)
-              .put(UUID.class, AbstractStructReader::getUuid)
+          .put(Interval.class, AbstractStructReader::getInterval)
+          .put(UUID.class, AbstractStructReader::getUuid)
           // Note that Struct.class appears in this map. While we support
           // converting structs into POJO fields of POJOs, the value in this map is for
           // the case where the field within the POJO is Struct.
@@ -105,8 +105,8 @@ public class StructAccessor {
           .put(float[].class, AbstractStructReader::getFloatArray)
           .put(long[].class, AbstractStructReader::getLongArray)
           .put(boolean[].class, AbstractStructReader::getBooleanArray)
-              .put(Interval.class, AbstractStructReader::getInterval)
-              .put(UUID.class, AbstractStructReader::getUuid)
+          .put(Interval.class, AbstractStructReader::getInterval)
+          .put(UUID.class, AbstractStructReader::getUuid)
           // Note that Struct.class appears in this map. While we support
           // converting structs into POJO fields of POJOs, the value in this map
           // is for
@@ -179,26 +179,24 @@ public class StructAccessor {
     }
     List<String> jsonStringList = this.struct.getJsonList(colName);
     List<T> result = new ArrayList<>();
-    jsonStringList.forEach(item ->
-        result.add(gson.fromJson(item, colType)));
+    jsonStringList.forEach(item -> result.add(gson.fromJson(item, colType)));
     return result;
   }
 
-  public  <T> Object getJsonValue(int colIndex, Class<T> colType) {
+  public <T> Object getJsonValue(int colIndex, Class<T> colType) {
     if (this.struct.getColumnType(colIndex).getCode() != Code.ARRAY) {
       return getSingleJsonValue(colIndex, colType);
     }
     return getListJsonValue(colIndex, colType);
   }
 
-  private  <T> List<T> getListJsonValue(int colIndex, Class<T> colType) {
+  private <T> List<T> getListJsonValue(int colIndex, Class<T> colType) {
     if (this.struct.getColumnType(colIndex).getCode() != Code.ARRAY) {
       throw new SpannerDataException(EXCEPTION_COL_NOT_ARRAY + colIndex);
     }
     List<String> jsonStringList = this.struct.getJsonList(colIndex);
     List<T> result = new ArrayList<>();
-    jsonStringList.forEach(item ->
-        result.add(gson.fromJson(item, colType)));
+    jsonStringList.forEach(item -> result.add(gson.fromJson(item, colType)));
     return result;
   }
 
@@ -233,8 +231,8 @@ public class StructAccessor {
     return gson.fromJson(jsonString, colType);
   }
 
-  //TODO: change this to private in next major release
-  public  <T> T getSingleJsonValue(int colIndex, Class<T> colType) {
+  // TODO: change this to private in next major release
+  public <T> T getSingleJsonValue(int colIndex, Class<T> colType) {
     if (this.struct.getColumnType(colIndex).getCode() != Code.JSON) {
       throw new SpannerDataException("Column of index " + colIndex + " not an JSON type.");
     }

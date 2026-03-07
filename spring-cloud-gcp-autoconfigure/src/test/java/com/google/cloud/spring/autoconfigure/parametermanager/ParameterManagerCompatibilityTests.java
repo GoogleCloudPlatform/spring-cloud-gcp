@@ -28,8 +28,8 @@ import com.google.cloud.parametermanager.v1.ParameterVersionName;
 import com.google.cloud.parametermanager.v1.ParameterVersionPayload;
 import com.google.protobuf.ByteString;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.boot.BootstrapRegistry.InstanceSupplier;
 import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.bootstrap.BootstrapRegistry.InstanceSupplier;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -43,10 +43,10 @@ class ParameterManagerCompatibilityTests {
 
   @BeforeEach
   void init() {
-    application = new SpringApplicationBuilder(ParameterManagerCompatibilityTests.class)
-        .web(WebApplicationType.NONE)
-        .properties(
-            "spring.cloud.gcp.sql.enabled=false");
+    application =
+        new SpringApplicationBuilder(ParameterManagerCompatibilityTests.class)
+            .web(WebApplicationType.NONE)
+            .properties("spring.cloud.gcp.sql.enabled=false");
 
     client = mock(ParameterManagerClient.class);
     ParameterVersionName parameterVersionName =
@@ -65,8 +65,8 @@ class ParameterManagerCompatibilityTests {
 
   /**
    * Users with the new configuration (i.e., using `spring.config.import`) should get {@link
-   * com.google.cloud.spring.parametermanager.ParameterManagerTemplate} autoconfiguration and properties
-   * resolved.
+   * com.google.cloud.spring.parametermanager.ParameterManagerTemplate} autoconfiguration and
+   * properties resolved.
    */
   void testConfigurationWhenDefaultParameterIsNotAllowed(String projectIdPropertyName) {
     application

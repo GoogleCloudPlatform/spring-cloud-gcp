@@ -20,8 +20,8 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
- * Provides an interface to customize thread name of subscription-specific
- * {@link ThreadPoolTaskScheduler}
+ * Provides an interface to customize thread name of subscription-specific {@link
+ * ThreadPoolTaskScheduler}
  */
 @FunctionalInterface
 public interface SelectiveSchedulerThreadNameProvider {

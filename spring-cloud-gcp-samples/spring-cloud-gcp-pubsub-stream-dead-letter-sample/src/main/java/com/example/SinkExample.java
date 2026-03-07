@@ -16,7 +16,6 @@
 
 package com.example;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
@@ -28,6 +27,7 @@ import org.springframework.cloud.function.json.JacksonMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
+import tools.jackson.databind.ObjectMapper;
 
 /** Example of a sink for the sample app. */
 @Configuration

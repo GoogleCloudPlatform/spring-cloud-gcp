@@ -16,17 +16,11 @@
 
 package com.example;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreProperties;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -40,6 +34,5 @@ public class FirestoreSampleAppNativeIntegrationTests {
   // which implicitly verifies that ADC credentials are functioning (if
   // required at startup).
   @Test
-  void contextLoads() {
-  }
+  void contextLoads() {}
 }

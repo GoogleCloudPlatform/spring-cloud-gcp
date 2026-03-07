@@ -140,6 +140,7 @@ public final class SpannerConverters {
           return timestamp.toDate();
         }
       };
+
   /** A converter from {@link Instant} to the Spanner instantaneous time type. */
   public static final Converter<Instant, Timestamp> INSTANT_TIMESTAMP_CONVERTER =
       new CommitTimestampDecorator<Instant>(

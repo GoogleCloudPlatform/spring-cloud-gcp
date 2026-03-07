@@ -21,30 +21,27 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.boot.BootstrapRegistry;
-import org.springframework.boot.DefaultBootstrapContext;
+import org.springframework.boot.bootstrap.BootstrapRegistry;
+import org.springframework.boot.bootstrap.DefaultBootstrapContext;
 import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.ConfigurableApplicationContext;
 
-/**
- * Unit tests for {@link SecretManagerConfigDataLocationResolver}.
- */
+/** Unit tests for {@link SecretManagerConfigDataLocationResolver}. */
 class SecretManagerConfigDataLocationResolverUnitTests {
 
-  private final SecretManagerConfigDataLocationResolver resolver = new SecretManagerConfigDataLocationResolver();
-  private final ConfigDataLocationResolverContext context = mock(
-      ConfigDataLocationResolverContext.class);
+  private final SecretManagerConfigDataLocationResolver resolver =
+      new SecretManagerConfigDataLocationResolver();
+  private final ConfigDataLocationResolverContext context =
+      mock(ConfigDataLocationResolverContext.class);
   private final DefaultBootstrapContext defaultBootstrapContext = new DefaultBootstrapContext();
-  private final GcpSecretManagerProperties secretManagerProperties = mock(GcpSecretManagerProperties.class);
+  private final GcpSecretManagerProperties secretManagerProperties =
+      mock(GcpSecretManagerProperties.class);
   private final GcpProperties gcpProperties = mock(GcpProperties.class);
 
   static Stream<Arguments> prefixes() {
-    return Stream.of(
-        Arguments.of("sm://"),
-        Arguments.of("sm@")
-    );
+    return Stream.of(Arguments.of("sm://"), Arguments.of("sm@"));
   }
 
   @Nested
@@ -95,8 +92,8 @@ class SecretManagerConfigDataLocationResolverUnitTests {
       SecretManagerConfigDataLocationResolver.setSecretManagerServiceClientFactory(
           secretManagerServiceClientFactory);
       assertThat(
-          SecretManagerConfigDataLocationResolver.createSecretManagerServiceClientFactory(
-              context))
+              SecretManagerConfigDataLocationResolver.createSecretManagerServiceClientFactory(
+                  context))
           .isEqualTo(secretManagerServiceClientFactory);
     }
 
@@ -137,7 +134,8 @@ class SecretManagerConfigDataLocationResolverUnitTests {
       defaultBootstrapContext.register(
           GcpProperties.class, BootstrapRegistry.InstanceSupplier.of(gcpProperties));
       defaultBootstrapContext.register(
-          GcpSecretManagerProperties.class, BootstrapRegistry.InstanceSupplier.of(secretManagerProperties));
+          GcpSecretManagerProperties.class,
+          BootstrapRegistry.InstanceSupplier.of(secretManagerProperties));
       defaultBootstrapContext.register(
           CredentialsProvider.class, BootstrapRegistry.InstanceSupplier.of(credentialsProvider));
       defaultBootstrapContext.register(
@@ -197,8 +195,8 @@ class SecretManagerConfigDataLocationResolverUnitTests {
       SecretManagerConfigDataLocationResolver.setSecretManagerServiceClientFactory(
           secretManagerServiceClientFactory);
       assertThat(
-          SecretManagerConfigDataLocationResolver.createSecretManagerServiceClientFactory(
-              context))
+              SecretManagerConfigDataLocationResolver.createSecretManagerServiceClientFactory(
+                  context))
           .isEqualTo(secretManagerServiceClientFactory);
     }
 

@@ -76,7 +76,8 @@ public class PubSubMessageChannelBinder
       ExtendedProducerProperties<PubSubProducerProperties> producerProperties,
       MessageChannel errorChannel) {
 
-    PubSubMessageHandler messageHandler = new PubSubMessageHandler(this.pubSubTemplate, destination.getName());
+    PubSubMessageHandler messageHandler =
+        new PubSubMessageHandler(this.pubSubTemplate, destination.getName());
 
     PubSubProducerProperties props = producerProperties.getExtension();
     if (props != null && props.getAllowedHeaders() != null) {

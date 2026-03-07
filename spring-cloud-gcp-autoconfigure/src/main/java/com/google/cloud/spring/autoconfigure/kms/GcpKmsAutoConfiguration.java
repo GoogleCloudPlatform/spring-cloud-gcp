@@ -52,9 +52,7 @@ public class GcpKmsAutoConfiguration {
     this.universeDomain = properties.getUniverseDomain();
     this.endpoint = properties.getEndpoint();
     this.gcpProjectIdProvider =
-        properties.getProjectId() != null
-            ? properties::getProjectId
-            : coreProjectIdProvider;
+        properties.getProjectId() != null ? properties::getProjectId : coreProjectIdProvider;
 
     this.credentialsProvider =
         properties.getCredentials().hasKey()

@@ -23,8 +23,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.retrying.RetrySettings;
-import com.google.auth.CredentialTypeForMetrics;
-import com.google.auth.Credentials;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.TestUtils;

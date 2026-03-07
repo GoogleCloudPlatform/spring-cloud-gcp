@@ -27,7 +27,8 @@ public class StorageIntegrationRuntimeHint implements RuntimeHintsRegistrar {
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
     // This is reflectively called using `getClass` in
     // org.springframework.integration.file.support.FileUtils#purgeUnwantedElements
-    // which is invoked by AbstractInboundFileSynchronizer, the parent class of GcsInboundFileSynchronizer.
+    // which is invoked by AbstractInboundFileSynchronizer, the parent class of
+    // GcsInboundFileSynchronizer.
     hints
         .reflection()
         .registerType(

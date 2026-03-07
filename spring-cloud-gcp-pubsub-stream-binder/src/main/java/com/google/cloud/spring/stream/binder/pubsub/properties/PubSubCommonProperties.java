@@ -33,14 +33,13 @@ public class PubSubCommonProperties {
     this.autoCreateResources = autoCreateResources;
   }
 
-  private  String[] allowedHeaders;
+  private String[] allowedHeaders;
 
-  public  String[] getAllowedHeaders() {
+  public String[] getAllowedHeaders() {
     return this.allowedHeaders;
   }
 
   public void setAllowedHeaders(String[] headers) {
     this.allowedHeaders = headers;
   }
-
 }
