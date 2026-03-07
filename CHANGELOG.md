@@ -14,6 +14,22 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [8.0.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.5...v8.0.0) (2026-03-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* Migrate Spring Cloud GCP to Spring Boot 4.0 and Spring Framework 7.0 baseline ([#4354](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4354))
+
+### Features
+
+* Migrate Spring Cloud GCP to Spring Boot 4.0 and Spring Framework 7.0 baseline ([#4354](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4354)) ([a9ac189](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a9ac18951b8e35696029197648329a1db1baa678))
+
+
+### Documentation
+
+* update latest versions in README ([#4335](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4335)) ([5bf1b41](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/5bf1b411a6c27cd8ac6bd6a019c9f24bd60de090))
+
 ## [7.4.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.4...v7.4.5) (2026-02-21)
 
 
