@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [8.0.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.0.0...v8.0.1) (2026-03-09)
+
+
+### Bug Fixes
+
+* **deps:** remove versionless Jackson 3 dependencies from BOM ([#4363](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4363)) ([1f7395f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1f7395f3c02e6335e87d858b434c1d16c8105c6d))
+
 ## [8.0.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.5...v8.0.0) (2026-03-07)
 
 
