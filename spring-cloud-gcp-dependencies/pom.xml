@@ -136,24 +136,6 @@
 				<version>${project.version}</version>
 			</dependency>
 
-			<!-- Jackson 3 -->
-			<dependency>
-				<groupId>tools.jackson.core</groupId>
-				<artifactId>jackson-core</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>tools.jackson.core</groupId>
-				<artifactId>jackson-databind</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>tools.jackson.core</groupId>
-				<artifactId>jackson-annotations</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>tools.jackson.dataformat</groupId>
-				<artifactId>jackson-dataformat-yaml</artifactId>
-			</dependency>
-
 			<!--Starters-->
 			<dependency>
 				<groupId>com.google.cloud</groupId>
