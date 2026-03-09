@@ -169,9 +169,12 @@ public class GcpFirestoreAutoConfiguration {
       if (projectId != null && databaseId != null) {
         Metadata.Key<String> key =
             Metadata.Key.of(Headers.DYNAMIC_ROUTING_HEADER_KEY, Metadata.ASCII_STRING_MARSHALLER);
-        routingHeader.put(key,
-            "project_id=" + PERCENT_ESCAPER.escape(projectId)
-                + "&database_id=" + PERCENT_ESCAPER.escape(databaseId));
+        routingHeader.put(
+            key,
+            "project_id="
+                + PERCENT_ESCAPER.escape(projectId)
+                + "&database_id="
+                + PERCENT_ESCAPER.escape(databaseId));
       }
       return MetadataUtils.newAttachHeadersInterceptor(routingHeader);
     }

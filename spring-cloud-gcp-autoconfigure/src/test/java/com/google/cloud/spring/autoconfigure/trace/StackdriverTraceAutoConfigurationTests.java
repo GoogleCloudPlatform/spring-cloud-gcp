@@ -50,8 +50,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.micrometer.tracing.brave.autoconfigure.BraveAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -59,7 +59,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import zipkin2.reporter.BytesEncoder;
 import zipkin2.reporter.BytesMessageSender;
 import zipkin2.reporter.Encoding;
-import zipkin2.reporter.SpanBytesEncoder;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.stackdriver.StackdriverSender;
 import zipkin2.reporter.stackdriver.brave.StackdriverV2Encoder;
@@ -71,16 +70,16 @@ class StackdriverTraceAutoConfigurationTests {
 
   @BeforeEach
   void init() {
-    contextRunner = new ApplicationContextRunner()
-        .withConfiguration(
-            AutoConfigurations.of(
-                StackdriverTraceAutoConfiguration.class,
-                GcpContextAutoConfiguration.class,
-                BraveAutoConfiguration.class,
-                RefreshAutoConfiguration.class))
-        .withUserConfiguration(MockConfiguration.class)
-        .withPropertyValues(
-            "spring.cloud.gcp.project-id=proj");
+    contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(
+                AutoConfigurations.of(
+                    StackdriverTraceAutoConfiguration.class,
+                    GcpContextAutoConfiguration.class,
+                    BraveAutoConfiguration.class,
+                    RefreshAutoConfiguration.class))
+            .withUserConfiguration(MockConfiguration.class)
+            .withPropertyValues("spring.cloud.gcp.project-id=proj");
   }
 
   @Test
@@ -94,7 +93,8 @@ class StackdriverTraceAutoConfigurationTests {
             context -> {
               assertThat(
                       context.getBean(
-                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class))
+                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME,
+                          StackdriverSender.class))
                   .isNotNull();
               assertThat(context.getBean(ManagedChannel.class)).isNotNull();
             });
@@ -102,10 +102,9 @@ class StackdriverTraceAutoConfigurationTests {
 
   @Test
   void testEncodingSchema() {
-    this.contextRunner
-        .run(
-            context -> assertThat(
-                context.getBean(BytesEncoder.class))
+    this.contextRunner.run(
+        context ->
+            assertThat(context.getBean(BytesEncoder.class))
                 .isInstanceOf(StackdriverV2Encoder.class));
   }
 
@@ -120,13 +119,15 @@ class StackdriverTraceAutoConfigurationTests {
             context -> {
               assertThat(
                       context.getBean(
-                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class))
+                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME,
+                          StackdriverSender.class))
                   .isNotNull()
                   .isInstanceOf(StackdriverSender.class);
               final StackdriverSender sender =
                   (StackdriverSender)
                       context.getBean(
-                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class);
+                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME,
+                          StackdriverSender.class);
               final CallOptions callOptions =
                   (CallOptions) FieldUtils.readField(sender, "callOptions", true);
               assertThat(callOptions).isNotNull();
@@ -152,13 +153,15 @@ class StackdriverTraceAutoConfigurationTests {
             context -> {
               assertThat(
                       context.getBean(
-                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class))
+                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME,
+                          StackdriverSender.class))
                   .isNotNull()
                   .isInstanceOf(StackdriverSender.class);
               final StackdriverSender sender =
                   (StackdriverSender)
                       context.getBean(
-                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class);
+                          StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME,
+                          StackdriverSender.class);
               assertThat(FieldUtils.readField(sender, "serverResponseTimeoutMs", true))
                   .isEqualTo(1000L);
             });
@@ -183,17 +186,17 @@ class StackdriverTraceAutoConfigurationTests {
               assertThat(context.getBeansOfType(SpanHandler.class))
                   .containsKeys("stackdriverSpanHandler", "otherSpanHandler");
 
-              brave.Span span = context
-                  .getBean(Tracer.class)
-                  // always send the trace
-                  .nextSpan(TraceContextOrSamplingFlags.SAMPLED)
-                  .name("foo")
-                  .tag("foo", "bar")
-                  .start();
+              brave.Span span =
+                  context
+                      .getBean(Tracer.class)
+                      // always send the trace
+                      .nextSpan(TraceContextOrSamplingFlags.SAMPLED)
+                      .name("foo")
+                      .tag("foo", "bar")
+                      .start();
               span.finish();
               String spanId = span.context().spanIdString();
-              GcpTraceService gcpTraceService =
-                  context.getBean(GcpTraceService.class);
+              GcpTraceService gcpTraceService = context.getBean(GcpTraceService.class);
 
               await()
                   .atMost(10, TimeUnit.SECONDS)
@@ -216,8 +219,7 @@ class StackdriverTraceAutoConfigurationTests {
                             .isEqualTo("bar");
                       });
 
-              OtherSender sender =
-                  (OtherSender) context.getBean("otherSender");
+              OtherSender sender = (OtherSender) context.getBean("otherSender");
               await()
                   .atMost(10, TimeUnit.SECONDS)
                   .untilAsserted(() -> assertThat(sender.isSpanSent()).isTrue());
@@ -226,12 +228,14 @@ class StackdriverTraceAutoConfigurationTests {
 
   @Test
   void testAsyncReporterHealthCheck() {
-    StackdriverSender senderMock = StackdriverSender.newBuilder(mock(Channel.class))
-        .projectId("proj").build();
+    StackdriverSender senderMock =
+        StackdriverSender.newBuilder(mock(Channel.class)).projectId("proj").build();
 
     this.contextRunner
         .withBean(
-            StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME, StackdriverSender.class, () -> senderMock)
+            StackdriverTraceAutoConfiguration.SENDER_BEAN_NAME,
+            StackdriverSender.class,
+            () -> senderMock)
         .run(
             context -> {
               SpanHandler spanHandler =
@@ -348,8 +352,7 @@ class StackdriverTraceAutoConfigurationTests {
       }
 
       @Override
-      public void close() throws IOException {
-      }
+      public void close() throws IOException {}
     }
 
     /** Used as implementation on the in-process gRPC server for verification. */

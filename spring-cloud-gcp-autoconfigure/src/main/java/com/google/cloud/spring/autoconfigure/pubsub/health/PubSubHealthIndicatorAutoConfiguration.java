@@ -19,11 +19,6 @@ package com.google.cloud.spring.autoconfigure.pubsub.health;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import java.util.Map;
-import org.springframework.boot.actuate.autoconfigure.health.CompositeHealthContributorConfiguration;
-import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
-import org.springframework.boot.actuate.autoconfigure.health.HealthContributorAutoConfiguration;
-import org.springframework.boot.actuate.health.HealthContributor;
-import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -31,6 +26,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.health.autoconfigure.contributor.CompositeHealthContributorConfiguration;
+import org.springframework.boot.health.autoconfigure.contributor.ConditionalOnEnabledHealthIndicator;
+import org.springframework.boot.health.autoconfigure.contributor.HealthContributorAutoConfiguration;
+import org.springframework.boot.health.contributor.HealthContributor;
+import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.util.Assert;
 
@@ -51,12 +51,13 @@ public class PubSubHealthIndicatorAutoConfiguration
 
   public PubSubHealthIndicatorAutoConfiguration(
       PubSubHealthIndicatorProperties pubSubHealthProperties) {
-    super(pubSubTemplate ->
-        new PubSubHealthIndicator(
-            pubSubTemplate,
-            pubSubHealthProperties.getSubscription(),
-            pubSubHealthProperties.getTimeoutMillis(),
-            pubSubHealthProperties.isAcknowledgeMessages()));
+    super(
+        pubSubTemplate ->
+            new PubSubHealthIndicator(
+                pubSubTemplate,
+                pubSubHealthProperties.getSubscription(),
+                pubSubHealthProperties.getTimeoutMillis(),
+                pubSubHealthProperties.isAcknowledgeMessages()));
   }
 
   @Bean

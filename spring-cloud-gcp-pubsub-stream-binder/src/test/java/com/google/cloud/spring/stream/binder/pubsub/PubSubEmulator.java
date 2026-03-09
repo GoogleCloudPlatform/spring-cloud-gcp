@@ -288,9 +288,9 @@ public class PubSubEmulator implements BeforeAllCallback, AfterAllCallback, Para
   private static Path getEmulatorConfigDir() {
     if (SystemUtils.IS_OS_WINDOWS) {
       return Paths.get(System.getenv("APPDATA"))
-              .resolve(Paths.get("gcloud", "emulators", "pubsub"));
+          .resolve(Paths.get("gcloud", "emulators", "pubsub"));
     }
     return Paths.get(System.getProperty("user.home"))
-            .resolve(Paths.get(".config", "gcloud", "emulators", "pubsub"));
+        .resolve(Paths.get(".config", "gcloud", "emulators", "pubsub"));
   }
 }

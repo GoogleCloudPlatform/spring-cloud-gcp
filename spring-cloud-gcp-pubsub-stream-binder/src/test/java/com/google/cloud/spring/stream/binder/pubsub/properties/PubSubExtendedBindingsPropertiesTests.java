@@ -43,9 +43,7 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.messaging.MessageChannel;
 
-/**
- * Tests for extended binding properties.
- */
+/** Tests for extended binding properties. */
 class PubSubExtendedBindingsPropertiesTests {
 
   private static Binder<MessageChannel, ?, ?> binder;
@@ -53,14 +51,15 @@ class PubSubExtendedBindingsPropertiesTests {
   @BeforeAll
   static void init() {
     DefaultBinderFactory binderFactory = createMockExtendedBinderFactory();
-    binder = binderFactory.getBinder(null,
-        MessageChannel.class);
+    binder = binderFactory.getBinder(null, MessageChannel.class);
   }
 
   @Test
   void testExtendedDefaultProducerProperties() {
-    PubSubProducerProperties producerProperties = (PubSubProducerProperties) ((ExtendedPropertiesBinder<?, ?, ?>) binder)
-        .getExtendedProducerProperties("default-output");
+    PubSubProducerProperties producerProperties =
+        (PubSubProducerProperties)
+            ((ExtendedPropertiesBinder<?, ?, ?>) binder)
+                .getExtendedProducerProperties("default-output");
     assertThat(producerProperties.isAutoCreateResources()).isTrue();
     assertThat(producerProperties.getAllowedHeaders()).isNull();
     assertThat(producerProperties.isSync()).isFalse();
@@ -68,8 +67,10 @@ class PubSubExtendedBindingsPropertiesTests {
 
   @Test
   void testExtendedDefaultConsumerProperties() {
-    PubSubConsumerProperties consumerProperties = (PubSubConsumerProperties) ((ExtendedPropertiesBinder<?, ?, ?>) binder)
-        .getExtendedConsumerProperties("default-input");
+    PubSubConsumerProperties consumerProperties =
+        (PubSubConsumerProperties)
+            ((ExtendedPropertiesBinder<?, ?, ?>) binder)
+                .getExtendedConsumerProperties("default-input");
     assertThat(consumerProperties.isAutoCreateResources()).isTrue();
     assertThat(consumerProperties.getAllowedHeaders()).isNull();
     assertThat(consumerProperties.getAckMode()).isEqualTo(AckMode.AUTO);
@@ -81,15 +82,16 @@ class PubSubExtendedBindingsPropertiesTests {
   private static DefaultBinderFactory createMockExtendedBinderFactory() {
     BinderTypeRegistry binderTypeRegistry = createMockExtendedBinderTypeRegistry();
     return new DefaultBinderFactory(
-        Collections.singletonMap("mock",
-            new BinderConfiguration("mock", new HashMap<>(), true, true)),
-        binderTypeRegistry, null);
+        Collections.singletonMap(
+            "mock", new BinderConfiguration("mock", new HashMap<>(), true, true)),
+        binderTypeRegistry,
+        null);
   }
 
   private static DefaultBinderTypeRegistry createMockExtendedBinderTypeRegistry() {
     return new DefaultBinderTypeRegistry(
-        Collections.singletonMap("mock", new BinderType("mock",
-            new Class[]{ MockExtendedBinderConfiguration.class })));
+        Collections.singletonMap(
+            "mock", new BinderType("mock", new Class[] {MockExtendedBinderConfiguration.class})));
   }
 
   @Configuration
@@ -98,22 +100,27 @@ class PubSubExtendedBindingsPropertiesTests {
     @SuppressWarnings("rawtypes")
     @Bean
     public Binder<?, ?, ?> extendedPropertiesBinder() {
-      Binder mock = mock(Binder.class,
-          Mockito.withSettings().defaultAnswer(Mockito.RETURNS_MOCKS)
-              .extraInterfaces(ExtendedPropertiesBinder.class));
+      Binder mock =
+          mock(
+              Binder.class,
+              Mockito.withSettings()
+                  .defaultAnswer(Mockito.RETURNS_MOCKS)
+                  .extraInterfaces(ExtendedPropertiesBinder.class));
       ConfigurableEnvironment environment = new StandardEnvironment();
       Map<String, Object> propertiesToAdd = new HashMap<>();
-      environment.getPropertySources()
+      environment
+          .getPropertySources()
           .addLast(new MapPropertySource("extPropertiesConfig", propertiesToAdd));
       ConfigurableApplicationContext applicationContext = new GenericApplicationContext();
       applicationContext.setEnvironment(environment);
 
-      PubSubExtendedBindingProperties pubSubExtendedBindingProperties = new PubSubExtendedBindingProperties();
+      PubSubExtendedBindingProperties pubSubExtendedBindingProperties =
+          new PubSubExtendedBindingProperties();
       pubSubExtendedBindingProperties.setApplicationContext(applicationContext);
-      final PubSubConsumerProperties defaultConsumerProperties = pubSubExtendedBindingProperties
-          .getExtendedConsumerProperties("default-input");
-      final PubSubProducerProperties defaultProducerProperties = pubSubExtendedBindingProperties
-          .getExtendedProducerProperties("default-output");
+      final PubSubConsumerProperties defaultConsumerProperties =
+          pubSubExtendedBindingProperties.getExtendedConsumerProperties("default-input");
+      final PubSubProducerProperties defaultProducerProperties =
+          pubSubExtendedBindingProperties.getExtendedProducerProperties("default-output");
       when(((ExtendedPropertiesBinder) mock).getExtendedConsumerProperties("default-input"))
           .thenReturn(defaultConsumerProperties);
       when(((ExtendedPropertiesBinder) mock).getExtendedProducerProperties("default-output"))

@@ -38,12 +38,13 @@ class GcpSecretManagerAutoConfigurationUnitTests {
 
   @BeforeEach
   void init() {
-    contextRunner = new ApplicationContextRunner()
-        .withConfiguration(AutoConfigurations.of(
-            GcpSecretManagerAutoConfiguration.class,
-            GcpContextAutoConfiguration.class))
-        .withPropertyValues("spring.cloud.gcp.project-id=globalProject")
-        .withUserConfiguration(TestConfig.class);
+    contextRunner =
+        new ApplicationContextRunner()
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpSecretManagerAutoConfiguration.class, GcpContextAutoConfiguration.class))
+            .withPropertyValues("spring.cloud.gcp.project-id=globalProject")
+            .withUserConfiguration(TestConfig.class);
   }
 
   @Test
@@ -57,10 +58,11 @@ class GcpSecretManagerAutoConfigurationUnitTests {
   void testParameterManagerDependencyWithoutConfigImportShouldHaveSingletonBeanForPmAndSm() {
     contextRunner
         .withConfiguration(AutoConfigurations.of(GcpParameterManagerAutoConfiguration.class))
-        .run(ctx -> {
-          assertThat(ctx).hasSingleBean(SecretManagerServiceClientFactory.class);
-          assertThat(ctx).hasSingleBean(ParameterManagerClientFactory.class);
-        });
+        .run(
+            ctx -> {
+              assertThat(ctx).hasSingleBean(SecretManagerServiceClientFactory.class);
+              assertThat(ctx).hasSingleBean(ParameterManagerClientFactory.class);
+            });
   }
 
   @Test
@@ -68,36 +70,33 @@ class GcpSecretManagerAutoConfigurationUnitTests {
     contextRunner
         .withPropertyValues("spring.cloud.gcp.secretmanager.project-id=secretManagerProject")
         .run(
-            ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class)
-                .getProjectId()).isEqualTo("secretManagerProject"));
+            ctx ->
+                assertThat(ctx.getBean(SecretManagerTemplate.class).getProjectId())
+                    .isEqualTo("secretManagerProject"));
   }
 
   @Test
   void testProjectIdWithGcpProperties() {
     contextRunner.run(
-        ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class)
-            .getProjectId()).isEqualTo("globalProject"));
+        ctx ->
+            assertThat(ctx.getBean(SecretManagerTemplate.class).getProjectId())
+                .isEqualTo("globalProject"));
   }
 
   @Test
   void testSecretManagerServiceClientExists() {
-    contextRunner.run(
-        ctx -> assertThat(ctx.getBean(SecretManagerServiceClient.class))
-            .isNotNull());
+    contextRunner.run(ctx -> assertThat(ctx.getBean(SecretManagerServiceClient.class)).isNotNull());
   }
 
   @Test
   void testSecretManagerServiceClientFactoryExists() {
     contextRunner.run(
-        ctx -> assertThat(ctx.getBean(SecretManagerServiceClientFactory.class))
-            .isNotNull());
+        ctx -> assertThat(ctx.getBean(SecretManagerServiceClientFactory.class)).isNotNull());
   }
 
   @Test
   void testSecretManagerTemplateExists() {
-    contextRunner.run(
-        ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class))
-            .isNotNull());
+    contextRunner.run(ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class)).isNotNull());
   }
 
   @Test

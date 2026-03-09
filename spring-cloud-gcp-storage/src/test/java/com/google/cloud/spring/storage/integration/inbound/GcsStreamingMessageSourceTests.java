@@ -52,19 +52,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/**
- * Tests for the streaming message source.
- */
+/** Tests for the streaming message source. */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
 @DisabledInAotMode
 class GcsStreamingMessageSourceTests {
 
-  @Autowired
-  private PollableChannel unsortedChannel;
+  @Autowired private PollableChannel unsortedChannel;
 
-  @Autowired
-  private PollableChannel sortedChannel;
+  @Autowired private PollableChannel sortedChannel;
 
   private static Blob alphaBlob = mock(Blob.class);
 
@@ -127,20 +123,13 @@ class GcsStreamingMessageSourceTests {
     return blob;
   }
 
-  /**
-   * Spring config for the tests.
-   */
+  /** Spring config for the tests. */
   @Configuration
   @EnableIntegration
   public static class Config {
     private Storage gcsClient() {
       Storage gcs = mock(Storage.class);
-      willAnswer(
-          invocationOnMock ->
-              new PageImpl<>(
-                  null,
-                  null,
-                  blobList))
+      willAnswer(invocationOnMock -> new PageImpl<>(null, null, blobList))
           .given(gcs)
           .list(eq("gcsbucket"));
 

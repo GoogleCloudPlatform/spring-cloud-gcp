@@ -34,22 +34,28 @@ public class ManagedIdentitiesServiceSpringProperties implements CredentialsSupp
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for resetAdminPassword. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry resetAdminPasswordRetry;
+
   /**
    * Allow override of retry settings at method-level for listDomains. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDomainsRetry;
+
   /**
    * Allow override of retry settings at method-level for getDomain. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

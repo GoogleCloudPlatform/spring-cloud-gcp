@@ -23,15 +23,12 @@ import com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDa
 import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.RuntimeHints;
 
-
 public class SecretManagerRuntimeHintsTest {
   @Test
   void shouldRegisterHints() {
     RuntimeHints hints = new RuntimeHints();
     new SecretManagerRuntimeHints().registerHints(hints, getClass().getClassLoader());
 
-    assertThat(hints)
-        .matches(reflection().onType(SecretManagerConfigDataLocationResolver.class));
+    assertThat(hints).matches(reflection().onType(SecretManagerConfigDataLocationResolver.class));
   }
 }
-

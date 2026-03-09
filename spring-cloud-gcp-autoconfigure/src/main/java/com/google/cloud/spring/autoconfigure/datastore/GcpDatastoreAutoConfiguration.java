@@ -153,7 +153,8 @@ public class GcpDatastoreAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public DatastoreMappingContext datastoreMappingContext(GcpDatastoreProperties gcpDatastoreProperties) {
+  public DatastoreMappingContext datastoreMappingContext(
+      GcpDatastoreProperties gcpDatastoreProperties) {
     return new DatastoreMappingContext(gcpDatastoreProperties.isSkipNullValue());
   }
 

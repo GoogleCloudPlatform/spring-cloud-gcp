@@ -44,6 +44,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -54,16 +55,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
+import org.springframework.boot.micrometer.metrics.test.autoconfigure.AutoConfigureMetrics;
+import org.springframework.boot.micrometer.tracing.test.autoconfigure.AutoConfigureTracing;
+import org.springframework.boot.restclient.RestTemplateBuilder;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -74,10 +80,24 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
-    classes = {Application.class})
-@AutoConfigureObservability
+    classes = {Application.class, TraceSampleApplicationIntegrationTests.TestConfig.class})
+@AutoConfigureMetrics
+@AutoConfigureTracing
 @ImportRuntimeHints(TestRuntimeHints.class)
+@AutoConfigureTestRestTemplate
 class TraceSampleApplicationIntegrationTests {
+
+  @Configuration
+  static class TestConfig {
+    @Bean
+    public ThreadPoolTaskScheduler taskScheduler() {
+      ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+      scheduler.setPoolSize(1);
+      scheduler.setThreadNamePrefix("test-task-scheduler-");
+      scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+      return scheduler;
+    }
+  }
 
   @DynamicPropertySource
   static void registerProperties(DynamicPropertyRegistry registry) {
@@ -87,12 +107,11 @@ class TraceSampleApplicationIntegrationTests {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
   private static GcpProjectIdProvider projectIdProvider;
 
-  @Autowired private  CredentialsProvider credentialsProvider;
+  @Autowired private CredentialsProvider credentialsProvider;
 
   private String url;
 
@@ -120,7 +139,6 @@ class TraceSampleApplicationIntegrationTests {
 
     pubSubAdmin.createTopic(SAMPLE_TOPIC);
     pubSubAdmin.createSubscription(SAMPLE_SUBSCRIPTION, SAMPLE_TOPIC);
-
   }
 
   @AfterAll

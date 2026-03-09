@@ -37,12 +37,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.data.core.TypeInformation;
 import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.data.mapping.model.EntityInstantiator;
 import org.springframework.data.mapping.model.EntityInstantiators;
 import org.springframework.data.mapping.model.ParameterValueProvider;
 import org.springframework.data.mapping.model.PersistentEntityParameterValueProvider;
-import org.springframework.data.util.TypeInformation;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
@@ -227,8 +227,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
     List<String> discriminationValues = persistentEntity.getCompatibleDiscriminationValues();
     if (!discriminationValues.isEmpty() || discriminationFieldName != null) {
       sink.set(
-          discriminationFieldName,
-          discriminationValues.stream().map(StringValue::of).toList());
+          discriminationFieldName, discriminationValues.stream().map(StringValue::of).toList());
     }
     PersistentPropertyAccessor accessor = persistentEntity.getPropertyAccessor(source);
     persistentEntity.doWithColumnBackedProperties(
@@ -272,8 +271,7 @@ public class DefaultDatastoreEntityConverter implements DatastoreEntityConverter
     } else if (convertedVal.getClass().equals(ListValue.class)) {
       return ListValue.of(
           (List)
-              ((ListValue) convertedVal)
-                  .get().stream().map(this::setExcludeFromIndexes).toList());
+              ((ListValue) convertedVal).get().stream().map(this::setExcludeFromIndexes).toList());
     } else {
       return convertedVal.toBuilder().setExcludeFromIndexes(true).build();
     }

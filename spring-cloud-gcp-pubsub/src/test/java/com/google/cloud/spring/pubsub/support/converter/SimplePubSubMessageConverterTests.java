@@ -84,16 +84,18 @@ class SimplePubSubMessageConverterTests {
   void testToUnknown() {
 
     assertThatThrownBy(() -> doToTestForType(Integer.class, a -> toString()))
-            .isInstanceOf(PubSubMessageConversionException.class)
-            .hasMessage("Unable to convert Pub/Sub message to " + "payload of type java.lang.Integer.");
+        .isInstanceOf(PubSubMessageConversionException.class)
+        .hasMessage("Unable to convert Pub/Sub message to " + "payload of type java.lang.Integer.");
   }
 
   @Test
   void testFromUnknown() {
 
-    assertThatThrownBy(() ->   doFromTest(Integer.class))
-            .isInstanceOf(PubSubMessageConversionException.class)
-            .hasMessage("Unable to convert payload of type java.lang.Class " + "to byte[] for sending to Pub/Sub.");
+    assertThatThrownBy(() -> doFromTest(Integer.class))
+        .isInstanceOf(PubSubMessageConversionException.class)
+        .hasMessage(
+            "Unable to convert payload of type java.lang.Class "
+                + "to byte[] for sending to Pub/Sub.");
   }
 
   @Test

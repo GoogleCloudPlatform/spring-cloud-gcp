@@ -123,8 +123,7 @@ class GcpBigQueryAutoConfigurationTests {
   @Test
   void testBigQueryWrite_endpoint() {
     this.contextRunner
-        .withPropertyValues(
-            "spring.cloud.gcp.bigquery.endpoint=bigquerystorage.example.com:123")
+        .withPropertyValues("spring.cloud.gcp.bigquery.endpoint=bigquerystorage.example.com:123")
         .run(
             ctx -> {
               BigQueryWriteClient client = ctx.getBean(BigQueryWriteClient.class);
@@ -137,8 +136,7 @@ class GcpBigQueryAutoConfigurationTests {
   void testBigQueryWrite_bothUniverseDomainAndEndpointSet() {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.bigquery.universe-domain=myUniverseDomain")
-        .withPropertyValues(
-            "spring.cloud.gcp.bigquery.endpoint=bigquerystorage.example.com:123")
+        .withPropertyValues("spring.cloud.gcp.bigquery.endpoint=bigquerystorage.example.com:123")
         .run(
             ctx -> {
               BigQueryWriteClient client = ctx.getBean(BigQueryWriteClient.class);

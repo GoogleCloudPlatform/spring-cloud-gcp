@@ -24,7 +24,6 @@ import com.google.cloud.storage.BlobInfo;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -56,8 +55,7 @@ class GcsDiscardRecentModifiedFileListFilterTest {
 
     BlobInfo blobInfo = mock(BlobInfo.class);
     when(blobInfo.getUpdateTimeOffsetDateTime())
-        .thenReturn(
-            OffsetDateTime.now(ZoneId.systemDefault()).minusMinutes(3));
+        .thenReturn(OffsetDateTime.now(ZoneId.systemDefault()).minusMinutes(3));
 
     assertThat(filter.filterFiles(new BlobInfo[] {blobInfo})).hasSize(1);
     assertThat(filter.accept(blobInfo)).isTrue();

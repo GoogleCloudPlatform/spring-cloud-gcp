@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.pubsub;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
@@ -26,7 +25,6 @@ import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.FixedTransportChannelProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
-import com.google.auth.Credentials;
 import com.google.cloud.pubsub.v1.TopicAdminSettings;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;

@@ -325,8 +325,7 @@ public class Trade {
     return additionalDetails;
   }
 
-  public void setAdditionalDetails(
-      List<Details> additionalDetails) {
+  public void setAdditionalDetails(List<Details> additionalDetails) {
     this.additionalDetails = additionalDetails;
   }
 

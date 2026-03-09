@@ -37,34 +37,43 @@ public class AuthorizedCertificatesSpringProperties implements CredentialsSuppli
           "https://www.googleapis.com/auth/appengine.admin",
           "https://www.googleapis.com/auth/cloud-platform",
           "https://www.googleapis.com/auth/cloud-platform.read-only");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listAuthorizedCertificates. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAuthorizedCertificatesRetry;
+
   /**
    * Allow override of retry settings at method-level for getAuthorizedCertificate. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getAuthorizedCertificateRetry;
+
   /**
    * Allow override of retry settings at method-level for createAuthorizedCertificate. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createAuthorizedCertificateRetry;
+
   /**
    * Allow override of retry settings at method-level for updateAuthorizedCertificate. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateAuthorizedCertificateRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteAuthorizedCertificate. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.

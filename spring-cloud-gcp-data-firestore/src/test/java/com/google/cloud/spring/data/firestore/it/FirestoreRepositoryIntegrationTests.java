@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -54,6 +53,7 @@ class FirestoreRepositoryIntegrationTests {
 
   // tag::autowire_user_service[]
   @Autowired UserService userService;
+
   // end::autowire_user_service[]
 
   @BeforeEach
@@ -103,6 +103,7 @@ class FirestoreRepositoryIntegrationTests {
         .expectNext(0L)
         .verifyComplete();
   }
+
   // end::repository_built_in[]
 
   @Test
@@ -144,6 +145,7 @@ class FirestoreRepositoryIntegrationTests {
                 .block())
         .containsExactly(u2);
   }
+
   // end::repository_part_tree[]
 
   @Test
@@ -324,7 +326,8 @@ class FirestoreRepositoryIntegrationTests {
         userRepository
             .findAll()
             .flatMap(
-                user -> testUser.flatMap(user1 -> Mono.just(user.getName() + " " + user1.getName())));
+                user ->
+                    testUser.flatMap(user1 -> Mono.just(user.getName() + " " + user1.getName())));
     List<String> list = stringFlux.collectList().block();
     assertThat(list).contains("Alice Alice", "Bob Alice");
   }
@@ -365,10 +368,10 @@ class FirestoreRepositoryIntegrationTests {
     User bob = new User("Bob", 99);
     User zelda = new User("Zelda", 23);
     this.userRepository
-            .save(alice)
-            .then(this.userRepository.save(bob))
-            .then(this.userRepository.save(zelda))
-            .block();
+        .save(alice)
+        .then(this.userRepository.save(bob))
+        .then(this.userRepository.save(zelda))
+        .block();
 
     Mono<User> testUser = this.userRepository.findTopByAge(99);
     assertThat(testUser.block().getName()).isEqualTo("Alice");

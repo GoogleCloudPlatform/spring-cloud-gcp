@@ -8,8 +8,8 @@ import org.springframework.boot.context.config.ConfigDataLocation;
 class SecretManagerConfigDataResourceUnitTests {
 
   private ConfigDataLocation location = ConfigDataLocation.of("test");
-  private final SecretManagerConfigDataResource resource = new SecretManagerConfigDataResource(
-      location);
+  private final SecretManagerConfigDataResource resource =
+      new SecretManagerConfigDataResource(location);
 
   @Test
   void resourceShouldBeEqualToItself() {
@@ -28,18 +28,13 @@ class SecretManagerConfigDataResourceUnitTests {
 
   @Test
   void twoResourcesWithSameLocationShouldHaveSameHashcode() {
-    assertThat(resource).hasSameHashCodeAs(
-        new SecretManagerConfigDataResource(location));
+    assertThat(resource).hasSameHashCodeAs(new SecretManagerConfigDataResource(location));
   }
 
   @Test
   void toStringTest() {
 
-    String expectedString = "SecretManagerConfigDataResource{"
-        + "location="
-        + location
-        + "}";
-    assertThat(resource)
-        .hasToString(expectedString);
+    String expectedString = "SecretManagerConfigDataResource{" + "location=" + location + "}";
+    assertThat(resource).hasToString(expectedString);
   }
 }

@@ -51,7 +51,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.StreamUtils;
 
 /** Integration for Google Cloud Storage. */
-
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(
     classes = {GoogleStorageIntegrationTests.GoogleStorageIntegrationTestsConfiguration.class})
@@ -142,7 +141,8 @@ class GoogleStorageIntegrationTests {
     assertThat(this.resource.exists()).isTrue();
 
     try (WriteChannel writer = thisResource().getBlob().writer();
-         ObjectOutputStream objectOutputStream = new ObjectOutputStream(OutputStream.nullOutputStream())) {
+        ObjectOutputStream objectOutputStream =
+            new ObjectOutputStream(OutputStream.nullOutputStream())) {
       objectOutputStream.writeObject(writer.capture());
     }
   }
@@ -158,7 +158,8 @@ class GoogleStorageIntegrationTests {
         CredentialsProvider credentialsProvider, GcpProjectIdProvider projectIdProvider)
         throws IOException {
       return StorageOptions.newBuilder()
-          .setHeaderProvider(new UserAgentHeaderProvider(GoogleStorageIntegrationTestsConfiguration.class))
+          .setHeaderProvider(
+              new UserAgentHeaderProvider(GoogleStorageIntegrationTestsConfiguration.class))
           .setCredentials(credentialsProvider.getCredentials())
           .setProjectId(projectIdProvider.getProjectId())
           .build()

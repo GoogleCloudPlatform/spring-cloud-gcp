@@ -34,74 +34,91 @@ public class RecommenderSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listInsights. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listInsightsRetry;
+
   /**
    * Allow override of retry settings at method-level for getInsight. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getInsightRetry;
+
   /**
    * Allow override of retry settings at method-level for markInsightAccepted. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry markInsightAcceptedRetry;
+
   /**
    * Allow override of retry settings at method-level for listRecommendations. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listRecommendationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getRecommendation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRecommendationRetry;
+
   /**
    * Allow override of retry settings at method-level for markRecommendationDismissed. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry markRecommendationDismissedRetry;
+
   /**
    * Allow override of retry settings at method-level for markRecommendationClaimed. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry markRecommendationClaimedRetry;
+
   /**
    * Allow override of retry settings at method-level for markRecommendationSucceeded. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry markRecommendationSucceededRetry;
+
   /**
    * Allow override of retry settings at method-level for markRecommendationFailed. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry markRecommendationFailedRetry;
+
   /**
    * Allow override of retry settings at method-level for getRecommenderConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRecommenderConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for updateRecommenderConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateRecommenderConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for getInsightTypeConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getInsightTypeConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for updateInsightTypeConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

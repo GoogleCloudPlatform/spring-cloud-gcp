@@ -35,9 +35,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-
 /**
- *  Autoconfiguration for GCP Secret Manager.
+ * Autoconfiguration for GCP Secret Manager.
  *
  * @since 4.0.1
  */
@@ -60,9 +59,7 @@ public class GcpSecretManagerAutoConfiguration {
     this.credentialsProvider = credentialsProvider;
     this.properties = properties;
     this.gcpProjectIdProvider =
-        properties.getProjectId() != null
-            ? properties::getProjectId
-            : projectIdProvider;
+        properties.getProjectId() != null ? properties::getProjectId : projectIdProvider;
   }
 
   @Bean
@@ -82,11 +79,11 @@ public class GcpSecretManagerAutoConfiguration {
     return new DefaultSecretManagerServiceClientFactory(this.credentialsProvider);
   }
 
-
   @Bean
   @ConditionalOnMissingBean
   public SecretManagerTemplate secretManagerTemplate(
-      SecretManagerServiceClient client, ObjectProvider<SecretManagerServiceClientFactory> clientFactoryProvider) {
+      SecretManagerServiceClient client,
+      ObjectProvider<SecretManagerServiceClientFactory> clientFactoryProvider) {
 
     SecretManagerServiceClientFactory clientFactory = clientFactoryProvider.getIfAvailable();
 
@@ -98,12 +95,4 @@ public class GcpSecretManagerAutoConfiguration {
           .setAllowDefaultSecretValue(this.properties.isAllowDefaultSecret());
     }
   }
-
-  @Bean
-  @ConditionalOnMissingBean
-  @ConditionalOnClass(SanitizingFunction.class)
-  public SecretManagerSanitizingFunction secretManagerSanitizingFunction() {
-    return new SecretManagerSanitizingFunction();
-  }
-
 }

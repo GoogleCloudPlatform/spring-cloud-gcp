@@ -20,7 +20,7 @@ import com.google.cloud.datastore.Value;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
 import com.google.cloud.spring.data.datastore.core.mapping.EmbeddedType;
 import java.util.Optional;
-import org.springframework.data.util.TypeInformation;
+import org.springframework.data.core.TypeInformation;
 
 /**
  * An interface for type conversions on read and on write.

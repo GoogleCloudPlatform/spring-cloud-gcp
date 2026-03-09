@@ -33,11 +33,10 @@ public class HelloController {
 
   @GetMapping("/")
   public String json() {
-    String welcomeMessage = String.format(
-        "Hello %s, your password is %s",
-        this.sampleConfig.getUsername(),
-        this.sampleConfig.getPassword()
-    );
+    String welcomeMessage =
+        String.format(
+            "Hello %s, your password is %s",
+            this.sampleConfig.getUsername(), this.sampleConfig.getPassword());
     return welcomeMessage;
   }
 }

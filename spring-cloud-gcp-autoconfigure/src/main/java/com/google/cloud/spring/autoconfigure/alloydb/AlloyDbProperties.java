@@ -45,8 +45,8 @@ public class AlloyDbProperties implements CredentialsSupplier {
   private String targetPrincipal;
 
   /**
-   * Comma-separated list of service accounts containing chained list of delegates
-   * required to grant the final access_token.
+   * Comma-separated list of service accounts containing chained list of delegates required to grant
+   * the final access_token.
    */
   private String delegates;
 

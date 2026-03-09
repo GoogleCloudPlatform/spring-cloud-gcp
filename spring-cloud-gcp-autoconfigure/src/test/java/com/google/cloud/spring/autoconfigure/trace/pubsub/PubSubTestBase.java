@@ -29,7 +29,7 @@ import brave.propagation.StrictCurrentTraceContext;
 import brave.propagation.TraceContext;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 public class PubSubTestBase {
   static final String TEST_TOPIC = "myTopic";
@@ -81,7 +81,7 @@ public class PubSubTestBase {
         .inject(parent, new PubSubConsumerRequest(message, TEST_SUBSCRIPTION));
   }
 
-  @After
+  @AfterEach
   public void close() {
     tracing.close();
     currentTraceContext.close();

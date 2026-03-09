@@ -152,7 +152,7 @@ public class GcpBigQueryAutoConfiguration {
       BigQuery bigQuery,
       BigQueryWriteClient bigQueryWriteClient,
       @Qualifier("bigQueryThreadPoolTaskScheduler")
-      ThreadPoolTaskScheduler bigQueryThreadPoolTaskScheduler) {
+          ThreadPoolTaskScheduler bigQueryThreadPoolTaskScheduler) {
     Map<String, Object> bqInitSettings = new HashMap<>();
     bqInitSettings.put("DATASET_NAME", this.datasetName);
     bqInitSettings.put("JSON_WRITER_BATCH_SIZE", this.jsonWriterBatchSize);

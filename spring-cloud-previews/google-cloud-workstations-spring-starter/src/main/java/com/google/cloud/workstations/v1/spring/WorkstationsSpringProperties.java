@@ -34,69 +34,85 @@ public class WorkstationsSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for getWorkstationCluster. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getWorkstationClusterRetry;
+
   /**
    * Allow override of retry settings at method-level for listWorkstationClusters. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listWorkstationClustersRetry;
+
   /**
    * Allow override of retry settings at method-level for getWorkstationConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getWorkstationConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for listWorkstationConfigs. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listWorkstationConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for listUsableWorkstationConfigs. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listUsableWorkstationConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for getWorkstation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getWorkstationRetry;
+
   /**
    * Allow override of retry settings at method-level for listWorkstations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listWorkstationsRetry;
+
   /**
    * Allow override of retry settings at method-level for listUsableWorkstations. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listUsableWorkstationsRetry;
+
   /**
    * Allow override of retry settings at method-level for generateAccessToken. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry generateAccessTokenRetry;
+
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

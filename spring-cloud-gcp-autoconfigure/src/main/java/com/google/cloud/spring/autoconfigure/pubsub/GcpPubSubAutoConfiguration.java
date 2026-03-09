@@ -52,6 +52,7 @@ import com.google.cloud.spring.pubsub.support.PublisherFactory;
 import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import com.google.pubsub.v1.ProjectSubscriptionName;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,7 +62,6 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -375,8 +375,8 @@ public class GcpPubSubAutoConfiguration {
     factory.setEndpoint(gcpPubSubProperties.getPublisher().getEndpoint());
     factory.setUniverseDomain(gcpPubSubProperties.getPublisher().getUniverseDomain());
 
-    List<PublisherCustomizer> customizers = customizersProvider.orderedStream()
-        .collect(Collectors.toList());
+    List<PublisherCustomizer> customizers =
+        customizersProvider.orderedStream().collect(Collectors.toList());
     Collections.reverse(customizers); // highest priority customizer needs to be last
     factory.setCustomizers(customizers);
 
@@ -438,7 +438,8 @@ public class GcpPubSubAutoConfiguration {
   public TransportChannelProvider subscriberTransportChannelProvider() {
     return SubscriberStubSettings.defaultGrpcTransportProviderBuilder()
         // default value specified by pubsub client library,
-        // see https://github.com/googleapis/java-pubsub/blob/main/google-cloud-pubsub/src/main/java/com/google/cloud/pubsub/v1/Subscriber.java#L487.
+        // see
+        // https://github.com/googleapis/java-pubsub/blob/main/google-cloud-pubsub/src/main/java/com/google/cloud/pubsub/v1/Subscriber.java#L487.
         .setMaxInboundMetadataSize(4 * 1024 * 1024)
         .setKeepAliveTime(
             Duration.ofMinutes(this.gcpPubSubProperties.getKeepAliveIntervalMinutes()))
@@ -533,10 +534,12 @@ public class GcpPubSubAutoConfiguration {
       Integer selectiveExecutorThreads = selectiveSubscriber.getExecutorThreads();
       if (selectiveExecutorThreads != null) {
         String qualifiedName = fullSubscriptionName.toString(); // will include slashes
-        String threadName = selectiveSchedulerThreadNameProvider
-            .getIfAvailable(
-                () -> subscriptionName -> "gcp-pubsub-subscriber-" + subscriptionName.toString())
-            .getThreadName(fullSubscriptionName);
+        String threadName =
+            selectiveSchedulerThreadNameProvider
+                .getIfAvailable(
+                    () ->
+                        subscriptionName -> "gcp-pubsub-subscriber-" + subscriptionName.toString())
+                .getThreadName(fullSubscriptionName);
         String beanName = "threadPoolScheduler_" + qualifiedName;
         ThreadPoolTaskScheduler selectiveScheduler =
             createAndRegisterSchedulerBean(selectiveExecutorThreads, threadName, beanName, context);
@@ -618,9 +621,7 @@ public class GcpPubSubAutoConfiguration {
         ThreadPoolTaskScheduler scheduler = schedulerSet.getValue();
         ExecutorProvider executorProvider =
             createAndRegisterExecutorProvider(
-                "subscriberExecutorProvider-" + qualifiedName,
-                scheduler,
-                context);
+                "subscriberExecutorProvider-" + qualifiedName, scheduler, context);
         this.executorProviderMap.putIfAbsent(fullSubscriptionName, executorProvider);
       }
     }

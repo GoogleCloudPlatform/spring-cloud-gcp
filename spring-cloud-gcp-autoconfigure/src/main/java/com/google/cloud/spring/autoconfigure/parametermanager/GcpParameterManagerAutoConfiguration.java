@@ -54,9 +54,7 @@ public class GcpParameterManagerAutoConfiguration {
     this.credentialsProvider = credentialsProvider;
     this.properties = properties;
     this.gcpProjectIdProvider =
-        properties.getProjectId() != null
-            ? properties::getProjectId
-            : projectIdProvider;
+        properties.getProjectId() != null ? properties::getProjectId : projectIdProvider;
   }
 
   @Bean
@@ -65,21 +63,24 @@ public class GcpParameterManagerAutoConfiguration {
     ParameterManagerSettings settings =
         ParameterManagerSettings.newBuilder()
             .setCredentialsProvider(this.credentialsProvider)
-            .setHeaderProvider(new UserAgentHeaderProvider(GcpParameterManagerAutoConfiguration.class))
+            .setHeaderProvider(
+                new UserAgentHeaderProvider(GcpParameterManagerAutoConfiguration.class))
             .build();
     return ParameterManagerClient.create(settings);
   }
 
   @Bean
   @ConditionalOnMissingBean
-  public ParameterManagerClientFactory parameterManagerClientFactory(ParameterManagerClient client) {
+  public ParameterManagerClientFactory parameterManagerClientFactory(
+      ParameterManagerClient client) {
     return new DefaultParameterManagerClientFactory(this.credentialsProvider, client);
   }
 
   @Bean
   @ConditionalOnMissingBean
   public ParameterManagerTemplate parameterManagerTemplate(
-      ParameterManagerClient client, ObjectProvider<ParameterManagerClientFactory> clientFactoryProvider) {
+      ParameterManagerClient client,
+      ObjectProvider<ParameterManagerClientFactory> clientFactoryProvider) {
 
     ParameterManagerClientFactory clientFactory = clientFactoryProvider.getIfAvailable();
 
@@ -91,5 +92,4 @@ public class GcpParameterManagerAutoConfiguration {
           .setAllowDefaultParameterValue(this.properties.isAllowDefaultParameter());
     }
   }
-
 }

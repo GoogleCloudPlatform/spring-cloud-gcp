@@ -20,11 +20,11 @@ import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health.Builder;
+import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+import org.springframework.boot.health.contributor.Health.Builder;
 
 /**
- * Default implementation of {@link org.springframework.boot.actuate.health.HealthIndicator} for
+ * Default implementation of {@link org.springframework.boot.health.contributor.HealthIndicator} for
  * Spanner. Validates if connection is successful by executing query from the spannerTemplate using
  * {@link SpannerTemplate#executeQuery(Statement, SpannerQueryOptions)}.
  *

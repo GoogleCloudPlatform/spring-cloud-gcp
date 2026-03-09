@@ -17,8 +17,8 @@
 package com.google.cloud.spring.autoconfigure.metrics;
 
 import com.google.api.gax.core.CredentialsProvider;
-import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverProperties;
-import org.springframework.boot.actuate.autoconfigure.metrics.export.stackdriver.StackdriverPropertiesConfigAdapter;
+import org.springframework.boot.micrometer.metrics.autoconfigure.export.stackdriver.StackdriverProperties;
+import org.springframework.boot.micrometer.metrics.autoconfigure.export.stackdriver.StackdriverPropertiesConfigAdapter;
 
 /**
  * @since 1.2.4

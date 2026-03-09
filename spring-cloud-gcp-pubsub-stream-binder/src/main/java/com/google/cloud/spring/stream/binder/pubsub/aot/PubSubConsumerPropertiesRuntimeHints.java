@@ -26,7 +26,8 @@ public class PubSubConsumerPropertiesRuntimeHints implements RuntimeHintsRegistr
   @Override
   public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
 
-    // Called reflectively in org.springframework.cloud.stream.binder.AbstractExtendedBindingProperties#bindToDefault().
+    // Called reflectively in
+    // org.springframework.cloud.stream.binder.AbstractExtendedBindingProperties#bindToDefault().
     hints
         .reflection()
         .registerType(

@@ -36,10 +36,13 @@ public class RegionInstancesSpringProperties implements CredentialsSupplier {
       new Credentials(
           "https://www.googleapis.com/auth/compute",
           "https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
 

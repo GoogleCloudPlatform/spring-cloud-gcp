@@ -22,7 +22,6 @@ import static org.awaitility.Awaitility.await;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
@@ -60,6 +59,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tools.jackson.databind.ObjectMapper;
 
 /** Integration tests for Pub/Sub template. */
 @EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
@@ -266,12 +266,10 @@ class PubSubTemplateIntegrationTests {
           CachingPublisherFactory publisherFactory = context.getBean(CachingPublisherFactory.class);
           publisherAtomicReference1.set(publisherFactory.createPublisher("test-topic-1"));
           publisherAtomicReference2.set(publisherFactory.createPublisher("test_topic-2"));
-        }
-    );
+        });
 
-    PubsubMessage message = PubsubMessage.newBuilder()
-        .setData(ByteString.copyFromUtf8("random test msg"))
-        .build();
+    PubsubMessage message =
+        PubsubMessage.newBuilder().setData(ByteString.copyFromUtf8("random test msg")).build();
 
     Publisher publisher1 = publisherAtomicReference1.get();
     assertThatThrownBy(() -> publisher1.publish(message))

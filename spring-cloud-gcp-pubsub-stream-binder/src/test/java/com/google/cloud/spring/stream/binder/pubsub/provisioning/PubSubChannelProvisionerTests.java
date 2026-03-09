@@ -349,8 +349,7 @@ class PubSubChannelProvisionerTests {
             Subscription.newBuilder().setTopic("topic_A").setName("subscription_A").build());
 
     Subscription subscription =
-        this.pubSubChannelProvisioner.ensureSubscriptionExists(
-            "subscription_A", "topic_A", null);
+        this.pubSubChannelProvisioner.ensureSubscriptionExists("subscription_A", "topic_A", null);
 
     assertThat(subscription.getName()).isEqualTo("subscription_A");
     assertThat(subscription.getTopic()).isEqualTo("topic_A");

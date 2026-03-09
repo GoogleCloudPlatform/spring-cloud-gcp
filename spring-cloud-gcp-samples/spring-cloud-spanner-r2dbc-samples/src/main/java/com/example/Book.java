@@ -48,8 +48,7 @@ public class Book implements Persistable<String> {
   @Column("COUNT")
   private int count;
 
-  @Transient
-  private boolean isNew;
+  @Transient private boolean isNew;
 
   public Book(String title, Map<String, String> extraDetails, Review review) {
     this.id = UUID.randomUUID().toString();

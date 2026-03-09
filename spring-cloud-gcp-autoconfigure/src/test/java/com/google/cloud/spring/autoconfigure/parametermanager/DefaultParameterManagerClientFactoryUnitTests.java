@@ -13,11 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class DefaultParameterManagerClientFactoryUnitTests {
-  @Mock
-  private CredentialsProvider credentialsProvider;
+  @Mock private CredentialsProvider credentialsProvider;
 
-  @Mock
-  private ParameterManagerClient globalClient;
+  @Mock private ParameterManagerClient globalClient;
 
   private DefaultParameterManagerClientFactory factory;
 

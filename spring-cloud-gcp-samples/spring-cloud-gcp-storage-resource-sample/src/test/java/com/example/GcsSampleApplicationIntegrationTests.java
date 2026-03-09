@@ -26,16 +26,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
-import org.junit.AfterClass;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -48,16 +50,20 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @EnabledIfSystemProperty(named = "it.storage", matches = "true")
 @ExtendWith(SpringExtension.class)
+@AutoConfigureTestRestTemplate
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {GcsApplication.class})
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GcsSampleApplicationIntegrationTests {
 
   private final String filename = String.format("file-%s.txt", UUID.randomUUID());
   @Autowired private Storage storage;
   @Autowired private TestRestTemplate testRestTemplate;
+
   @Value("${gcs-resource-test-bucket}")
   private String bucketName;
+
   @LocalServerPort private int port;
   private String appUrl;
 
@@ -66,7 +72,7 @@ class GcsSampleApplicationIntegrationTests {
     this.appUrl = "http://localhost:" + this.port;
   }
 
-  @AfterClass
+  @AfterAll
   void cleanupCloudStorage() {
     BlobId blobId = BlobId.of(this.bucketName, filename);
     Blob blob = storage.get(blobId);
@@ -83,7 +89,7 @@ class GcsSampleApplicationIntegrationTests {
 
     // Verify the contents of the uploaded file.
     String getUrl =
-        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/")
+        UriComponentsBuilder.fromUriString(this.appUrl + "/")
             .queryParam("filename", filename)
             .toUriString();
     Awaitility.await()
@@ -96,7 +102,7 @@ class GcsSampleApplicationIntegrationTests {
 
     // Update the contents of the uploaded file and verify.
     String postUrl =
-        UriComponentsBuilder.fromHttpUrl(this.appUrl + "/")
+        UriComponentsBuilder.fromUriString(this.appUrl + "/")
             .queryParam("filename", filename)
             .toUriString();
     this.testRestTemplate.postForObject(postUrl, "Good Night!", String.class);

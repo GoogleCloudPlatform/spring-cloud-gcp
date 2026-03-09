@@ -17,11 +17,9 @@
 package com.google.cloud.spring.autoconfigure.pubsub;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberOperations;
@@ -131,7 +129,8 @@ class GcpPubSubReactiveAutoConfigurationTest {
             arg -> {
               assertThat(Thread.currentThread().getName()).startsWith(threadPrefix);
 
-              return CompletableFuture.completedFuture(Arrays.asList(mockMessage, mockMessage, mockMessage));
+              return CompletableFuture.completedFuture(
+                  Arrays.asList(mockMessage, mockMessage, mockMessage));
             });
   }
 

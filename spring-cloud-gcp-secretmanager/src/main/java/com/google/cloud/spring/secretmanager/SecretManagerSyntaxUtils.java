@@ -26,9 +26,7 @@ public class SecretManagerSyntaxUtils {
 
   private static final String PREFERRED_PREFIX = "sm@";
 
-  /**
-   * Prefixes for Google Cloud Secret Manager resources.
-   */
+  /** Prefixes for Google Cloud Secret Manager resources. */
   public static final List<String> PREFIXES = ImmutableList.of(PREFERRED_PREFIX, DEPRECATED_PREFIX);
 
   public static Optional<String> getMatchedPrefixes(PrefixMatcher matcher) {
@@ -39,9 +37,11 @@ public class SecretManagerSyntaxUtils {
     if (!logger.isWarnEnabled() || !value.startsWith(DEPRECATED_PREFIX)) {
       return;
     }
-    logger.warn(String.format("Detected usage of deprecated prefix %s. This may be removed in a "
-            + "future version of Spring Cloud GCP. Please use the new prefix %s instead.",
-        DEPRECATED_PREFIX, PREFERRED_PREFIX));
+    logger.warn(
+        String.format(
+            "Detected usage of deprecated prefix %s. This may be removed in a "
+                + "future version of Spring Cloud GCP. Please use the new prefix %s instead.",
+            DEPRECATED_PREFIX, PREFERRED_PREFIX));
   }
 
   @FunctionalInterface

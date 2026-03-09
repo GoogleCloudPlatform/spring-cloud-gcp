@@ -110,5 +110,4 @@ public class GcpBigQueryProperties implements CredentialsSupplier {
   public void setEndpoint(String endpoint) {
     this.endpoint = endpoint;
   }
-
 }

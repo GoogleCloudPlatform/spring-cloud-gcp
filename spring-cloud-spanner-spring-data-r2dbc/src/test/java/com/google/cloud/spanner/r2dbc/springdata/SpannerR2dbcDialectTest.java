@@ -61,9 +61,7 @@ class SpannerR2dbcDialectTest {
   void lockStringAlwaysEmpty() {
     SpannerR2dbcDialect dialect = new SpannerR2dbcDialect();
     Table table = SQL.table("aTable");
-    Select sql = Select.builder().select(table.column("aColumn"))
-        .from(table)
-        .build();
+    Select sql = Select.builder().select(table.column("aColumn")).from(table).build();
     LockOptions lockOptions = new LockOptions(LockMode.PESSIMISTIC_READ, sql.getFrom());
 
     LockClause lock = dialect.lock();
@@ -77,8 +75,10 @@ class SpannerR2dbcDialectTest {
   void testSimpleType() {
     SpannerR2dbcDialect dialect = new SpannerR2dbcDialect();
     SimpleTypeHolder simpleTypeHolder = dialect.getSimpleTypeHolder();
-    assertThat(Stream.of(JsonWrapper.class, Timestamp.class, Date.class, ByteArray.class)
-        .allMatch(simpleTypeHolder::isSimpleType)).isTrue();
+    assertThat(
+            Stream.of(JsonWrapper.class, Timestamp.class, Date.class, ByteArray.class)
+                .allMatch(simpleTypeHolder::isSimpleType))
+        .isTrue();
   }
 
   @Test

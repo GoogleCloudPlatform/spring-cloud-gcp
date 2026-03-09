@@ -81,8 +81,7 @@ class PubSubChannelAdaptersIntegrationTests {
   static void enableTests() throws IOException {
     pubSubAdmin =
         new PubSubAdmin(
-            new DefaultGcpProjectIdProvider(),
-            new DefaultCredentialsProvider(Credentials::new));
+            new DefaultGcpProjectIdProvider(), new DefaultCredentialsProvider(Credentials::new));
   }
 
   @BeforeEach
@@ -311,8 +310,7 @@ class PubSubChannelAdaptersIntegrationTests {
 
               Awaitility.await()
                   .atMost(1, TimeUnit.SECONDS)
-                  .untilAsserted(() ->
-                      verify(successCallback).onSuccess(anyString(), any()));
+                  .untilAsserted(() -> verify(successCallback).onSuccess(anyString(), any()));
             });
   }
 

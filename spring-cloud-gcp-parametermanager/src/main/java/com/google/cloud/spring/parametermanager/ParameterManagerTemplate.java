@@ -334,7 +334,10 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
     ByteString parameterData;
     try {
       parameterData =
-          getClient(parameterVersionName.getLocation()).getParameterVersion(parameterVersionName).getPayload().getData();
+          getClient(parameterVersionName.getLocation())
+              .getParameterVersion(parameterVersionName)
+              .getPayload()
+              .getData();
     } catch (NotFoundException ex) {
       LOGGER.warn(parameterVersionName.toString() + " doesn't exist in Parameter Manager.");
       if (!this.allowDefaultParameterValue) {
@@ -359,7 +362,9 @@ public class ParameterManagerTemplate implements ParameterManagerOperations {
     ByteString parameterData;
     try {
       parameterData =
-          getClient(parameterVersionName.getLocation()).renderParameterVersion(parameterVersionName).getRenderedPayload();
+          getClient(parameterVersionName.getLocation())
+              .renderParameterVersion(parameterVersionName)
+              .getRenderedPayload();
     } catch (NotFoundException ex) {
       LOGGER.warn(parameterVersionName.toString() + " doesn't exist in Parameter Manager.");
       if (!this.allowDefaultParameterValue) {
