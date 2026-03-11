@@ -36,57 +36,70 @@ public class RoutersSpringProperties implements CredentialsSupplier {
       new Credentials(
           "https://www.googleapis.com/auth/compute",
           "https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for aggregatedList. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry aggregatedListRetry;
+
   /**
    * Allow override of retry settings at method-level for get. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRetry;
+
   /**
    * Allow override of retry settings at method-level for getNatIpInfo. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getNatIpInfoRetry;
+
   /**
    * Allow override of retry settings at method-level for getNatMappingInfo. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getNatMappingInfoRetry;
+
   /**
    * Allow override of retry settings at method-level for getRoutePolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRoutePolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for getRouterStatus. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRouterStatusRetry;
+
   /**
    * Allow override of retry settings at method-level for list. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listRetry;
+
   /**
    * Allow override of retry settings at method-level for listBgpRoutes. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBgpRoutesRetry;
+
   /**
    * Allow override of retry settings at method-level for listRoutePolicies. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listRoutePoliciesRetry;
+
   /**
    * Allow override of retry settings at method-level for preview. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.

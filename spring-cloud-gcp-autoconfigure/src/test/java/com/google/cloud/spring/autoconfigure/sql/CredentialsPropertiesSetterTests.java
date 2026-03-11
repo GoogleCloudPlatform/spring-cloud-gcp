@@ -26,52 +26,51 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-/**
- * Tests for {@link CredentialsPropertiesSetter}.
- */
+/** Tests for {@link CredentialsPropertiesSetter}. */
 class CredentialsPropertiesSetterTests {
 
-  @TempDir
-  Path temporaryDirectory;
+  @TempDir Path temporaryDirectory;
 
   @Test
   void testSetCredentials_encodedKey_setFromCloudSqlProperties() {
-    ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-        .withPropertyValues("spring.cloud.gcp.sql.credentials.encodedKey=myGcpEncodedKey");
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withPropertyValues("spring.cloud.gcp.sql.credentials.encodedKey=myGcpEncodedKey");
     contextRunner.run(
         context -> {
           ConfigurableEnvironment environment = context.getEnvironment();
           PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
 
-          CredentialsPropertiesSetter.setCredentials(propertiesRetriever.getCloudSqlProperties(),
-              propertiesRetriever.getGcpProperties());
+          CredentialsPropertiesSetter.setCredentials(
+              propertiesRetriever.getCloudSqlProperties(), propertiesRetriever.getGcpProperties());
 
-          assertThat(environment
-              .getProperty(SqlCredentialFactory.CREDENTIAL_ENCODED_KEY_PROPERTY_NAME))
+          assertThat(
+                  environment.getProperty(
+                      SqlCredentialFactory.CREDENTIAL_ENCODED_KEY_PROPERTY_NAME))
               .isEqualTo("myGcpEncodedKey");
-          assertThat(environment
-              .getProperty(SqlCredentialFactory.CREDENTIAL_FACTORY_PROPERTY))
+          assertThat(environment.getProperty(SqlCredentialFactory.CREDENTIAL_FACTORY_PROPERTY))
               .isEqualTo("com.google.cloud.spring.autoconfigure.sql.SqlCredentialFactory");
         });
   }
 
   @Test
   void testSetCredentials_encodedKey_setFromGcpProperties() {
-    ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-        .withPropertyValues("spring.cloud.gcp.credentials.encodedKey=myGcpEncodedKey");
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withPropertyValues("spring.cloud.gcp.credentials.encodedKey=myGcpEncodedKey");
     contextRunner.run(
         context -> {
           ConfigurableEnvironment environment = context.getEnvironment();
           PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
 
-          CredentialsPropertiesSetter.setCredentials(propertiesRetriever.getCloudSqlProperties(),
-              propertiesRetriever.getGcpProperties());
+          CredentialsPropertiesSetter.setCredentials(
+              propertiesRetriever.getCloudSqlProperties(), propertiesRetriever.getGcpProperties());
 
-          assertThat(environment
-              .getProperty(SqlCredentialFactory.CREDENTIAL_ENCODED_KEY_PROPERTY_NAME))
+          assertThat(
+                  environment.getProperty(
+                      SqlCredentialFactory.CREDENTIAL_ENCODED_KEY_PROPERTY_NAME))
               .isEqualTo("myGcpEncodedKey");
-          assertThat(environment
-              .getProperty(SqlCredentialFactory.CREDENTIAL_FACTORY_PROPERTY))
+          assertThat(environment.getProperty(SqlCredentialFactory.CREDENTIAL_FACTORY_PROPERTY))
               .isEqualTo("com.google.cloud.spring.autoconfigure.sql.SqlCredentialFactory");
         });
   }
@@ -79,22 +78,23 @@ class CredentialsPropertiesSetterTests {
   @Test
   void testSetCredentials_location_setFromCloudSqlProperties() {
     Path credentialsFile = temporaryDirectory.resolve("credentials.json");
-    ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-        .withPropertyValues("spring.cloud.gcp.sql.credentials.location=file:" + credentialsFile,
-            "spring.cloud.gcp.credentials.location=ignore");
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withPropertyValues(
+                "spring.cloud.gcp.sql.credentials.location=file:" + credentialsFile,
+                "spring.cloud.gcp.credentials.location=ignore");
     contextRunner.run(
         context -> {
           ConfigurableEnvironment environment = context.getEnvironment();
           PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
 
-          CredentialsPropertiesSetter.setCredentials(propertiesRetriever.getCloudSqlProperties(),
-              propertiesRetriever.getGcpProperties());
+          CredentialsPropertiesSetter.setCredentials(
+              propertiesRetriever.getCloudSqlProperties(), propertiesRetriever.getGcpProperties());
 
-          assertThat(environment
-              .getProperty(SqlCredentialFactory.CREDENTIAL_LOCATION_PROPERTY_NAME))
+          assertThat(
+                  environment.getProperty(SqlCredentialFactory.CREDENTIAL_LOCATION_PROPERTY_NAME))
               .endsWith("credentials.json");
-          assertThat(environment
-              .getProperty(SqlCredentialFactory.CREDENTIAL_FACTORY_PROPERTY))
+          assertThat(environment.getProperty(SqlCredentialFactory.CREDENTIAL_FACTORY_PROPERTY))
               .isEqualTo("com.google.cloud.spring.autoconfigure.sql.SqlCredentialFactory");
         });
   }
@@ -102,40 +102,43 @@ class CredentialsPropertiesSetterTests {
   @Test
   void testSetCredentials_location_setFromGcpProperties() {
     Path credentialsFile = temporaryDirectory.resolve("credentials.json");
-    ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-        .withPropertyValues("spring.cloud.gcp.credentials.location=file:" + credentialsFile);
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withPropertyValues("spring.cloud.gcp.credentials.location=file:" + credentialsFile);
     contextRunner.run(
         context -> {
           ConfigurableEnvironment environment = context.getEnvironment();
           PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
 
-          CredentialsPropertiesSetter.setCredentials(propertiesRetriever.getCloudSqlProperties(),
-              propertiesRetriever.getGcpProperties());
+          CredentialsPropertiesSetter.setCredentials(
+              propertiesRetriever.getCloudSqlProperties(), propertiesRetriever.getGcpProperties());
 
-          assertThat(environment
-              .getProperty(SqlCredentialFactory.CREDENTIAL_LOCATION_PROPERTY_NAME))
+          assertThat(
+                  environment.getProperty(SqlCredentialFactory.CREDENTIAL_LOCATION_PROPERTY_NAME))
               .endsWith("credentials.json");
-          assertThat(environment
-              .getProperty(SqlCredentialFactory.CREDENTIAL_FACTORY_PROPERTY))
+          assertThat(environment.getProperty(SqlCredentialFactory.CREDENTIAL_FACTORY_PROPERTY))
               .isEqualTo("com.google.cloud.spring.autoconfigure.sql.SqlCredentialFactory");
         });
   }
 
   @Test
   void testSetCredentialsFileProperty_invalidLocation() {
-    ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-        .withPropertyValues("spring.cloud.gcp.credentials.location=invalid/path");
+    ApplicationContextRunner contextRunner =
+        new ApplicationContextRunner()
+            .withPropertyValues("spring.cloud.gcp.credentials.location=invalid/path");
     contextRunner.run(
         context -> {
           ConfigurableEnvironment environment = context.getEnvironment();
           PropertiesRetriever propertiesRetriever = new PropertiesRetriever(environment);
           GcpCloudSqlProperties sqlProperties = propertiesRetriever.getCloudSqlProperties();
           GcpProperties gcpProperties = propertiesRetriever.getGcpProperties();
-          IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-              () -> CredentialsPropertiesSetter.setCredentials(sqlProperties, gcpProperties));
-          assertThat(exception).hasMessageContaining(
-              "Error reading Cloud SQL credentials file: class path resource [invalid/path].");
-        }
-    );
+          IllegalArgumentException exception =
+              assertThrows(
+                  IllegalArgumentException.class,
+                  () -> CredentialsPropertiesSetter.setCredentials(sqlProperties, gcpProperties));
+          assertThat(exception)
+              .hasMessageContaining(
+                  "Error reading Cloud SQL credentials file: class path resource [invalid/path].");
+        });
   }
 }

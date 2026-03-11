@@ -52,7 +52,8 @@ public class SpannerRepositoryExample {
 
   private static final String STOCK_2 = "STOCK2";
 
-  public SpannerRepositoryExample(TraderRepository traderRepository,
+  public SpannerRepositoryExample(
+      TraderRepository traderRepository,
       TradeRepository tradeRepository,
       SpannerSchemaUtils spannerSchemaUtils,
       SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate) {
@@ -101,10 +102,8 @@ public class SpannerRepositoryExample {
     }
 
     LOGGER.info("Make a pageable query:");
-    List<Trade> tradesPageOne = this.tradeRepository.findByActionAndSymbol(PageRequest.of(0, 1),
-        "BUY",
-        STOCK_1
-        );
+    List<Trade> tradesPageOne =
+        this.tradeRepository.findByActionAndSymbol(PageRequest.of(0, 1), "BUY", STOCK_1);
     for (Trade t : tradesPageOne) {
       LOGGER.info(t);
     }
@@ -127,7 +126,8 @@ public class SpannerRepositoryExample {
     this.tradeRepository.getTradeIds("BUY").forEach(LOGGER::info);
 
     LOGGER.info("Lazy-loading collection of trades for 'demo_trader1':");
-    this.traderRepository.findById(DEMO_TRADER_1)
+    this.traderRepository
+        .findById(DEMO_TRADER_1)
         .ifPresent(trader -> LOGGER.info(trader.getTrades()));
 
     LOGGER.info("Try http://localhost:8080/trades in the browser to see all trades.");
@@ -144,8 +144,12 @@ public class SpannerRepositoryExample {
         new Trader("demo_trader_json3", "Scott", "Smith", new Address(8L, "fake address 3", false));
     trader3.setHomeAddress(new Address(8L, "fake address 3 in unused detail", false));
     Trader trader4 =
-        new Trader("demo_trader_json4", "John", "Doe",
-            Arrays.asList(new Address(666L, "fake address 4", false),
+        new Trader(
+            "demo_trader_json4",
+            "John",
+            "Doe",
+            Arrays.asList(
+                new Address(666L, "fake address 4", false),
                 new Address(777L, "fake address 5", false)));
 
     this.traderRepository.save(trader1);
@@ -153,14 +157,32 @@ public class SpannerRepositoryExample {
     this.traderRepository.save(trader3);
     this.traderRepository.save(trader4);
 
-    this.traderRepository.findById("demo_trader_json1")
-        .ifPresent(trader -> LOGGER.info(String.format("Find trader by Id and print out JSON field 'workAddress' as string: %s", trader.getWorkAddress())));
+    this.traderRepository
+        .findById("demo_trader_json1")
+        .ifPresent(
+            trader ->
+                LOGGER.info(
+                    String.format(
+                        "Find trader by Id and print out JSON field 'workAddress' as string: %s",
+                        trader.getWorkAddress())));
 
-    this.traderRepository.findById("demo_trader_json3")
-        .ifPresent(trader -> LOGGER.info(String.format("Find trader by Id and print out JSON field 'unusedDetails' as string:  %s", trader.getHomeAddress())));
+    this.traderRepository
+        .findById("demo_trader_json3")
+        .ifPresent(
+            trader ->
+                LOGGER.info(
+                    String.format(
+                        "Find trader by Id and print out JSON field 'unusedDetails' as string:  %s",
+                        trader.getHomeAddress())));
 
-    this.traderRepository.findById("demo_trader_json4")
-        .ifPresent(trader -> LOGGER.info(String.format("Find trader by Id and print out ARRAY<JSON> field 'addressList' as string: %s", trader.getAddressList())));
+    this.traderRepository
+        .findById("demo_trader_json4")
+        .ifPresent(
+            trader ->
+                LOGGER.info(
+                    String.format(
+                        "Find trader by Id and print out ARRAY<JSON> field 'addressList' as string: %s",
+                        trader.getAddressList())));
 
     long count = this.traderRepository.getCountActive("true");
     LOGGER.info("A query method can query on the properties of JSON values");

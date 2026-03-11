@@ -49,7 +49,6 @@ import org.springframework.messaging.Message;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /** Tests for inbound file synchronizer. */
 @ExtendWith(SpringExtension.class)
@@ -58,6 +57,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 class GcsInboundFileSynchronizerTests {
 
   @Autowired private Storage gcs;
+
+  @Autowired private BeanFactory beanFactory;
 
   private static final Log LOGGER = LogFactory.getLog(GcsInboundFileSynchronizerTests.class);
 
@@ -89,13 +90,13 @@ class GcsInboundFileSynchronizerTests {
     File localDirectory = new File("test");
     GcsInboundFileSynchronizer synchronizer = new GcsInboundFileSynchronizer(this.gcs);
     synchronizer.setRemoteDirectory("test-bucket");
-    synchronizer.setBeanFactory(mock(BeanFactory.class));
+    synchronizer.setBeanFactory(this.beanFactory);
 
     GcsInboundFileSynchronizingMessageSource adapter =
         new GcsInboundFileSynchronizingMessageSource(synchronizer);
     adapter.setAutoCreateLocalDirectory(true);
     adapter.setLocalDirectory(localDirectory);
-    adapter.setBeanFactory(mock(BeanFactory.class));
+    adapter.setBeanFactory(this.beanFactory);
 
     adapter.setLocalFilter(new AcceptOnceFileListFilter<>());
 

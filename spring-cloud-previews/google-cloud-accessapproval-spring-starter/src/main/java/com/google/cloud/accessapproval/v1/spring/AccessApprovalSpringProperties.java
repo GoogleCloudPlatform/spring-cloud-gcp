@@ -34,54 +34,67 @@ public class AccessApprovalSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listApprovalRequests. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listApprovalRequestsRetry;
+
   /**
    * Allow override of retry settings at method-level for getApprovalRequest. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getApprovalRequestRetry;
+
   /**
    * Allow override of retry settings at method-level for approveApprovalRequest. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry approveApprovalRequestRetry;
+
   /**
    * Allow override of retry settings at method-level for dismissApprovalRequest. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry dismissApprovalRequestRetry;
+
   /**
    * Allow override of retry settings at method-level for invalidateApprovalRequest. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry invalidateApprovalRequestRetry;
+
   /**
    * Allow override of retry settings at method-level for getAccessApprovalSettings. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getAccessApprovalSettingsRetry;
+
   /**
    * Allow override of retry settings at method-level for updateAccessApprovalSettings. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateAccessApprovalSettingsRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteAccessApprovalSettings. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteAccessApprovalSettingsRetry;
+
   /**
    * Allow override of retry settings at method-level for getAccessApprovalServiceAccount. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.

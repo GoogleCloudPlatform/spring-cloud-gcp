@@ -24,9 +24,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 
 /**
- * Sample custom {@link SecurityFilterChain} that applies OAuth Resource Server
- * pre-authentication, and rejects unauthenticated requests to a single page, {@code /topsecret}.
- * All other pages are unsecured.
+ * Sample custom {@link SecurityFilterChain} that applies OAuth Resource Server pre-authentication,
+ * and rejects unauthenticated requests to a single page, {@code /topsecret}. All other pages are
+ * unsecured.
  *
  * <p>Because of {@code spring-cloud-gcp-starter-security-iap} dependency, the secure token will be
  * retrieved from Google Cloud IAP header {@code x-goog-iap-jwt-assertion}, and not from the
@@ -40,14 +40,11 @@ public class SecurityConfigurer {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests()
-        .requestMatchers("/topsecret")
-        .authenticated()
-        .and()
-        .oauth2ResourceServer()
-        .jwt()
-        .and()
-        .authenticationEntryPoint(new Http403ForbiddenEntryPoint());
+    http.authorizeHttpRequests(
+            auth -> auth.requestMatchers("/topsecret").authenticated().anyRequest().permitAll())
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}))
+        .exceptionHandling(
+            exceptions -> exceptions.authenticationEntryPoint(new Http403ForbiddenEntryPoint()));
 
     return http.build();
   }

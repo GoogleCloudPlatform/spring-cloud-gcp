@@ -18,8 +18,8 @@ package com.google.cloud.spring.autoconfigure.pubsub.health;
 
 import com.google.cloud.spring.pubsub.core.health.HealthTracker;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health.Builder;
+import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+import org.springframework.boot.health.contributor.Health.Builder;
 
 /**
  * @since 2.0.6

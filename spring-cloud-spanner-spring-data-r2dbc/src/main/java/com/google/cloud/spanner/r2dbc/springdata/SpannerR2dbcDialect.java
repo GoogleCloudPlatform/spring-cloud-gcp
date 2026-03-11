@@ -28,6 +28,7 @@ import org.springframework.data.relational.core.dialect.AbstractDialect;
 import org.springframework.data.relational.core.dialect.ArrayColumns;
 import org.springframework.data.relational.core.dialect.LimitClause;
 import org.springframework.data.relational.core.dialect.LockClause;
+import org.springframework.data.relational.core.sql.IdentifierProcessing;
 import org.springframework.data.relational.core.sql.LockOptions;
 import org.springframework.r2dbc.core.binding.BindMarkersFactory;
 
@@ -36,52 +37,52 @@ import org.springframework.r2dbc.core.binding.BindMarkersFactory;
  * Spanner.
  */
 public class SpannerR2dbcDialect extends AbstractDialect implements R2dbcDialect {
-  static final BindMarkersFactory NAMED =
-      BindMarkersFactory.named("@", "val", 32);
+  static final BindMarkersFactory NAMED = BindMarkersFactory.named("@", "val", 32);
 
   public static final String SQL_LIMIT = "LIMIT ";
 
   private Gson gson = new Gson();
 
-  private static final LimitClause LIMIT_CLAUSE = new LimitClause() {
-    @Override
-    public String getLimit(long limit) {
-      return SQL_LIMIT + limit;
-    }
+  private static final LimitClause LIMIT_CLAUSE =
+      new LimitClause() {
+        @Override
+        public String getLimit(long limit) {
+          return SQL_LIMIT + limit;
+        }
 
-    @Override
-    public String getOffset(long offset) {
-      return SQL_LIMIT + Long.MAX_VALUE + " OFFSET " + offset;
-    }
+        @Override
+        public String getOffset(long offset) {
+          return SQL_LIMIT + Long.MAX_VALUE + " OFFSET " + offset;
+        }
 
-    @Override
-    public String getLimitOffset(long limit, long offset) {
-      return SQL_LIMIT + limit + " OFFSET " + offset;
-    }
+        @Override
+        public String getLimitOffset(long limit, long offset) {
+          return SQL_LIMIT + limit + " OFFSET " + offset;
+        }
 
-    @Override
-    public Position getClausePosition() {
-      return Position.AFTER_ORDER_BY;
-    }
-  };
+        @Override
+        public Position getClausePosition() {
+          return Position.AFTER_ORDER_BY;
+        }
+      };
 
   /**
-   * Pessimistic locking is not supported.
-   * Spanner has a LOCK_SCANNED_RANGES hint, but it appears before SELECT, a position not currently
-   * supported in LockClause.Position
+   * Pessimistic locking is not supported. Spanner has a LOCK_SCANNED_RANGES hint, but it appears
+   * before SELECT, a position not currently supported in LockClause.Position
    */
-  private static final LockClause LOCK_CLAUSE = new LockClause() {
-    @Override
-    public String getLock(LockOptions lockOptions) {
-      return "";
-    }
+  private static final LockClause LOCK_CLAUSE =
+      new LockClause() {
+        @Override
+        public String getLock(LockOptions lockOptions) {
+          return "";
+        }
 
-    @Override
-    public Position getClausePosition() {
-      // It does not matter where to append an empty string.
-      return Position.AFTER_FROM_TABLE;
-    }
-  };
+        @Override
+        public Position getClausePosition() {
+          // It does not matter where to append an empty string.
+          return Position.AFTER_FROM_TABLE;
+        }
+      };
 
   @Override
   public BindMarkersFactory getBindMarkersFactory() {
@@ -100,18 +101,12 @@ public class SpannerR2dbcDialect extends AbstractDialect implements R2dbcDialect
 
   @Override
   public Collection<? extends Class<?>> getSimpleTypes() {
-    return Arrays.asList(
-        JsonWrapper.class,
-        Timestamp.class,
-        ByteArray.class,
-        Date.class);
+    return Arrays.asList(JsonWrapper.class, Timestamp.class, ByteArray.class, Date.class);
   }
 
   @Override
   public Collection<Object> getConverters() {
-    return Arrays.asList(
-        new JsonToMapConverter<>(this.gson),
-        new MapToJsonConverter<>(this.gson));
+    return Arrays.asList(new JsonToMapConverter<>(this.gson), new MapToJsonConverter<>(this.gson));
   }
 
   @Override
@@ -119,4 +114,9 @@ public class SpannerR2dbcDialect extends AbstractDialect implements R2dbcDialect
     return new SpannerArrayColumns();
   }
 
+  @Override
+  public IdentifierProcessing getIdentifierProcessing() {
+    return IdentifierProcessing.create(
+        new IdentifierProcessing.Quoting("`"), IdentifierProcessing.LetterCasing.AS_IS);
+  }
 }

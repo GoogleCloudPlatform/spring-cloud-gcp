@@ -174,7 +174,9 @@ class SpannerStatementQueryTests {
             List.class,
             BigDecimal.class);
     when(this.queryMethod.getQueryMethod()).thenReturn(method);
-    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method)))
+        .when(this.queryMethod)
+        .getParameters();
 
     this.partTreeSpannerQuery.execute(params);
     verify(this.spannerTemplate, times(1)).query((Class<Object>) any(), any(), any());
@@ -222,7 +224,9 @@ class SpannerStatementQueryTests {
             Object.class,
             Object.class,
             Object.class);
-    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method)))
+        .when(this.queryMethod)
+        .getParameters();
 
     when(this.spannerTemplate.query((Function<Struct, Object>) any(), any(), any()))
         .thenAnswer(
@@ -296,7 +300,9 @@ class SpannerStatementQueryTests {
     when(this.spannerTemplate.query((Function<Struct, Object>) any(), any(), any()))
         .thenReturn(Collections.singletonList(1L));
 
-    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method)))
+        .when(this.queryMethod)
+        .getParameters();
 
     when(this.spannerTemplate.query((Class) any(), any(), any()))
         .thenAnswer(
@@ -325,7 +331,9 @@ class SpannerStatementQueryTests {
     // Test that preparePartTreeSqlTagParameterMap() can process cases
     // where Pageable is not the last parameter
     Object[] params = new Object[] {"BUY", PageRequest.of(1, 10, Sort.by("traderId")), "STOCK1"};
-    Method method = QueryHolder.class.getMethod("repositoryMethod7", String.class, Pageable.class, String.class);
+    Method method =
+        QueryHolder.class.getMethod(
+            "repositoryMethod7", String.class, Pageable.class, String.class);
 
     when(this.queryMethod.getQueryMethod()).thenReturn(method);
     String expectedSql =
@@ -334,14 +342,15 @@ class SpannerStatementQueryTests {
             + "WHERE ( action=@tag0 AND ticker=@tag1 ) "
             + "ORDER BY trader_id ASC LIMIT 10 OFFSET 10";
 
-
     when(this.queryMethod.getName()).thenReturn("findByActionAndSymbol");
     this.partTreeSpannerQuery = spy(createQuery());
 
     when(this.spannerTemplate.query((Function<Struct, Object>) any(), any(), any()))
         .thenReturn(Collections.singletonList(1L));
 
-    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method)))
+        .when(this.queryMethod)
+        .getParameters();
 
     when(this.spannerTemplate.query((Class) any(), any(), any()))
         .thenAnswer(
@@ -378,7 +387,9 @@ class SpannerStatementQueryTests {
     this.partTreeSpannerQuery = createQuery();
     Method method =
         QueryHolder.class.getMethod("repositoryMethod4", Object.class, Object.class, Object.class);
-    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method)))
+        .when(this.queryMethod)
+        .getParameters();
 
     // There are too few params specified, so the exception will occur.
     Object[] params =
@@ -387,8 +398,8 @@ class SpannerStatementQueryTests {
         };
 
     assertThatThrownBy(() -> this.partTreeSpannerQuery.execute(params))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("The number of tags does not match the number of params.");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("The number of tags does not match the number of params.");
   }
 
   @Test
@@ -409,7 +420,9 @@ class SpannerStatementQueryTests {
             Trade.class,
             Object.class);
 
-    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method)))
+        .when(this.queryMethod)
+        .getParameters();
 
     // This parameter is an unsupported type for Spanner SQL.
     Object[] params =
@@ -418,22 +431,25 @@ class SpannerStatementQueryTests {
         };
 
     assertThatThrownBy(() -> this.partTreeSpannerQuery.execute(params))
-              .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("is not a supported type: class com.google."
-                    + "cloud.spring.data.spanner.repository.query.SpannerStatementQueryTests$Trade");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining(
+            "is not a supported type: class com.google."
+                + "cloud.spring.data.spanner.repository.query.SpannerStatementQueryTests$Trade");
   }
 
   @Test
   void unSupportedPredicateTest() throws NoSuchMethodException {
     when(this.queryMethod.getName()).thenReturn("countByTraderIdBetween");
     Method method = Object.class.getMethod("toString");
-    doReturn(new DefaultParameters(ParametersSource.of(method))).when(this.queryMethod).getParameters();
+    doReturn(new DefaultParameters(ParametersSource.of(method)))
+        .when(this.queryMethod)
+        .getParameters();
 
     this.partTreeSpannerQuery = createQuery();
 
     assertThatThrownBy(() -> this.partTreeSpannerQuery.execute(EMPTY_PARAMETERS))
-            .isInstanceOf(UnsupportedOperationException.class)
-            .hasMessage("The statement type: BETWEEN (2): [IsBetween, " + "Between] is not supported.");
+        .isInstanceOf(UnsupportedOperationException.class)
+        .hasMessage("The statement type: BETWEEN (2): [IsBetween, " + "Between] is not supported.");
   }
 
   @Table(name = "trades")

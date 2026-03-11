@@ -16,7 +16,7 @@
 
 package com.google.cloud.spring.data.datastore.core.mapping;
 
-import org.springframework.data.util.TypeInformation;
+import org.springframework.data.core.TypeInformation;
 
 /**
  * The various types of properties with respect to their storage as embedded entities.

@@ -19,7 +19,6 @@ package com.google.cloud.spring.autoconfigure.pubsub.it;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
@@ -51,7 +50,9 @@ import org.springframework.boot.test.context.assertj.AssertableApplicationContex
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.support.GenericMessage;
+import tools.jackson.databind.ObjectMapper;
 
 /** Documentation tests for Pub/Sub. */
 @EnabledIfSystemProperty(named = "it.pubsub-docs", matches = "true")
@@ -175,14 +176,11 @@ class PubSubTemplateDocumentationIntegrationTests {
           } finally {
             // tag::list_subscriptions[]
             List<String> subscriptions =
-                pubSubAdmin.listSubscriptions().stream()
-                    .map(Subscription::getName)
-                    .toList();
+                pubSubAdmin.listSubscriptions().stream().map(Subscription::getName).toList();
             // end::list_subscriptions[]
 
             // tag::list_topics[]
-            List<String> topics =
-                pubSubAdmin.listTopics().stream().map(Topic::getName).toList();
+            List<String> topics = pubSubAdmin.listTopics().stream().map(Topic::getName).toList();
             // end::list_topics[]
 
             pubSubAdmin.deleteSubscription(subscriptionName);
@@ -356,6 +354,7 @@ class PubSubTemplateDocumentationIntegrationTests {
   }
 
   @Configuration
+  @EnableIntegration
   static class MessageHandlerTestConfiguration {
 
     // This bean needs to go through a proper @Configuration class because it has an package-private
@@ -402,6 +401,7 @@ class PubSubTemplateDocumentationIntegrationTests {
       this.password = password;
     }
   }
+
   // end::json_convertible_class[]
 
   interface PubSubTest {

@@ -6,7 +6,7 @@
 		<!-- Your own application should inherit from spring-boot-starter-parent -->
 		<artifactId>spring-cloud-gcp-kotlin-samples</artifactId>
 		<groupId>com.google.cloud</groupId>
-		<version>7.4.6-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+		<version>8.0.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -79,7 +79,7 @@
 		</dependency>
 
 		<dependency>
-			<artifactId>kotlin-test-junit</artifactId>
+			<artifactId>kotlin-test-junit5</artifactId>
 			<groupId>org.jetbrains.kotlin</groupId>
 			<version>${kotlin.version}</version>
 			<scope>test</scope>
@@ -92,13 +92,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
+			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

@@ -237,8 +237,10 @@ class BigQueryTemplateTest {
 
   @Test
   void writeJsonStreamTestDefaultPool()
-      throws DescriptorValidationException, IOException, InterruptedException,
-      ExecutionException { // Tests the constructor which doesn't have jsonWriterExecutorService
+      throws DescriptorValidationException,
+          IOException,
+          InterruptedException,
+          ExecutionException { // Tests the constructor which doesn't have jsonWriterExecutorService
     // as the param
 
     InputStream jsonInputStream = new ByteArrayInputStream(newLineSeperatedJson.getBytes());
@@ -339,19 +341,20 @@ class BigQueryTemplateTest {
   @Test
   void testWriterAppendsErrors() throws Exception {
     BigQueryJsonDataWriter writer = mock(BigQueryJsonDataWriter.class);
-    doReturn(writer)
-        .when(bqTemplateSpy)
-        .getBigQueryJsonDataWriter(any(TableName.class));
+    doReturn(writer).when(bqTemplateSpy).getBigQueryJsonDataWriter(any(TableName.class));
 
     StorageError storageError = StorageError.newBuilder().build();
-    doReturn(BatchCommitWriteStreamsResponse.getDefaultInstance()
-            .toBuilder().clearCommitTime().addStreamErrors(storageError).build())
+    doReturn(
+            BatchCommitWriteStreamsResponse.getDefaultInstance().toBuilder()
+                .clearCommitTime()
+                .addStreamErrors(storageError)
+                .build())
         .when(bqTemplateSpy)
         .getCommitResponse(any(TableName.class), any(BigQueryJsonDataWriter.class));
 
-    WriteApiResponse apiRes = bqTemplateSpy.getWriteApiResponse(
-        TABLE,
-        new ByteArrayInputStream(newLineSeperatedJson.getBytes()));
+    WriteApiResponse apiRes =
+        bqTemplateSpy.getWriteApiResponse(
+            TABLE, new ByteArrayInputStream(newLineSeperatedJson.getBytes()));
 
     assertThat(apiRes.isSuccessful()).isFalse();
     assertThat(apiRes.getErrors()).contains(storageError);
@@ -360,17 +363,15 @@ class BigQueryTemplateTest {
   @Test
   void testWriterIsClosed() throws Exception {
     BigQueryJsonDataWriter writer = mock(BigQueryJsonDataWriter.class);
-    doReturn(writer)
-        .when(bqTemplateSpy)
-        .getBigQueryJsonDataWriter(any(TableName.class));
+    doReturn(writer).when(bqTemplateSpy).getBigQueryJsonDataWriter(any(TableName.class));
 
     doReturn(BatchCommitWriteStreamsResponse.getDefaultInstance())
         .when(bqTemplateSpy)
         .getCommitResponse(any(TableName.class), any(BigQueryJsonDataWriter.class));
 
-    WriteApiResponse apiRes = bqTemplateSpy.getWriteApiResponse(
-        TABLE,
-        new ByteArrayInputStream(newLineSeperatedJson.getBytes()));
+    WriteApiResponse apiRes =
+        bqTemplateSpy.getWriteApiResponse(
+            TABLE, new ByteArrayInputStream(newLineSeperatedJson.getBytes()));
 
     verify(writer).close();
   }

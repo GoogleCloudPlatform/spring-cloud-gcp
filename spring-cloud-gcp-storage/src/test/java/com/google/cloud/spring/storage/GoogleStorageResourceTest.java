@@ -97,8 +97,7 @@ class GoogleStorageResourceTest {
   void createBlobTest() {
     GoogleStorageResource gsr = new GoogleStorageResource(mockStorage, "gs://my-bucket/my-object");
     gsr.createBlob();
-    verify(mockStorage)
-        .create(BlobInfo.newBuilder("my-bucket", "my-object").build());
+    verify(mockStorage).create(BlobInfo.newBuilder("my-bucket", "my-object").build());
   }
 
   @Test

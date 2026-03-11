@@ -165,9 +165,8 @@ public class BigQueryFileMessageHandler extends AbstractReplyProducingMessageHan
    * wait for each file to be successfully loaded to BigQuery.
    *
    * <p>If set to true, the handler runs synchronously and returns {@link Job} for message
-   * responses. If set to false, the handler will return {@link
-   * CompletableFuture} of the Job as the response for each
-   * message.
+   * responses. If set to false, the handler will return {@link CompletableFuture} of the Job as the
+   * response for each message.
    *
    * @param sync whether {@link BigQueryFileMessageHandler} should wait synchronously for jobs to
    *     complete. Default is false (async).

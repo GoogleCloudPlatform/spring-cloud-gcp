@@ -18,10 +18,8 @@ package com.google.cloud.spring.autoconfigure.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.security.firebase.FirebaseJwtTokenDecoder;

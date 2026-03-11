@@ -43,23 +43,18 @@ import org.springframework.util.ObjectUtils;
  */
 public class SecretManagerTemplate implements SecretManagerOperations {
 
-  /**
-   * Default value for the latest version of the secret.
-   */
+  /** Default value for the latest version of the secret. */
   public static final String LATEST_VERSION = "latest";
 
-  /**
-   * Default value for the latest version of the secret.
-   */
+  /** Default value for the latest version of the secret. */
   public static final String GLOBAL_LOCATION = "global";
 
   private static final Log LOGGER = LogFactory.getLog(SecretManagerTemplate.class);
   private final SecretManagerServiceClient secretManagerServiceClient;
   private final SecretManagerServiceClientFactory clientFactory;
   private final GcpProjectIdProvider projectIdProvider;
-  /**
-   * Define the behavior when accessing a non-existed secret string/bytes.
-   */
+
+  /** Define the behavior when accessing a non-existed secret string/bytes. */
   private boolean allowDefaultSecretValue;
 
   // Constructor for SecretManagerServiceClient
@@ -71,8 +66,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
 
   // Constructor for SecretManagerServiceClientFactory
   public SecretManagerTemplate(
-      SecretManagerServiceClientFactory clientFactory,
-      GcpProjectIdProvider projectIdProvider) {
+      SecretManagerServiceClientFactory clientFactory, GcpProjectIdProvider projectIdProvider) {
     this(clientFactory.getClient(GLOBAL_LOCATION), clientFactory, projectIdProvider);
   }
 
@@ -88,9 +82,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   }
 
   private SecretManagerServiceClient getClient(@Nullable String locationId) {
-    return clientFactory == null
-        ? secretManagerServiceClient
-        : clientFactory.getClient(locationId);
+    return clientFactory == null ? secretManagerServiceClient : clientFactory.getClient(locationId);
   }
 
   public SecretManagerTemplate setAllowDefaultSecretValue(boolean allowDefaultSecretValue) {
@@ -115,7 +107,6 @@ public class SecretManagerTemplate implements SecretManagerOperations {
         secretId, ByteString.copyFromUtf8(payload), projectIdProvider.getProjectId(), locationId);
   }
 
-
   @Override
   public void createSecret(String secretId, byte[] payload) {
     createNewSecretVersion(
@@ -139,14 +130,12 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     return secretByteString == null ? null : secretByteString.toStringUtf8();
   }
 
-
   @Override
   @Nullable
   public byte[] getSecretBytes(String secretIdentifier) {
     ByteString secretByteString = getSecretByteString(secretIdentifier);
     return secretByteString == null ? null : secretByteString.toByteArray();
   }
-
 
   @Override
   public boolean secretExists(String secretId) {
@@ -185,16 +174,15 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   @Override
   public void disableSecretVersion(String secretId, String version, String projectId) {
     SecretVersionName secretVersionName =
-        SecretManagerPropertyUtils.getSecretVersionName(
-            projectId, secretId, version, null);
+        SecretManagerPropertyUtils.getSecretVersionName(projectId, secretId, version, null);
     getClient(GLOBAL_LOCATION).disableSecretVersion(secretVersionName);
   }
 
   @Override
-  public void disableSecretVersion(String secretId, String version, String projectId, String locationId) {
+  public void disableSecretVersion(
+      String secretId, String version, String projectId, String locationId) {
     SecretVersionName secretVersionName =
-        SecretManagerPropertyUtils.getSecretVersionName(
-            projectId, secretId, version, locationId);
+        SecretManagerPropertyUtils.getSecretVersionName(projectId, secretId, version, locationId);
     getClient(locationId).disableSecretVersion(secretVersionName);
   }
 
@@ -206,16 +194,15 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   @Override
   public void enableSecretVersion(String secretId, String version, String projectId) {
     SecretVersionName secretVersionName =
-        SecretManagerPropertyUtils.getSecretVersionName(
-            projectId, secretId, version, null);
+        SecretManagerPropertyUtils.getSecretVersionName(projectId, secretId, version, null);
     getClient(GLOBAL_LOCATION).enableSecretVersion(secretVersionName);
   }
 
   @Override
-  public void enableSecretVersion(String secretId, String version, String projectId, String locationId) {
+  public void enableSecretVersion(
+      String secretId, String version, String projectId, String locationId) {
     SecretVersionName secretVersionName =
-        SecretManagerPropertyUtils.getSecretVersionName(
-            projectId, secretId, version, locationId);
+        SecretManagerPropertyUtils.getSecretVersionName(projectId, secretId, version, locationId);
     getClient(locationId).enableSecretVersion(secretVersionName);
   }
 
@@ -241,22 +228,21 @@ public class SecretManagerTemplate implements SecretManagerOperations {
   @Override
   public void deleteSecretVersion(String secretId, String version, String projectId) {
     SecretVersionName secretVersionName =
-        SecretManagerPropertyUtils.getSecretVersionName(
-            projectId, secretId, version, null);
+        SecretManagerPropertyUtils.getSecretVersionName(projectId, secretId, version, null);
     getClient(GLOBAL_LOCATION).destroySecretVersion(secretVersionName);
   }
 
   @Override
-  public void deleteSecretVersion(String secretId, String version, String projectId, String locationId) {
+  public void deleteSecretVersion(
+      String secretId, String version, String projectId, String locationId) {
     SecretVersionName secretVersionName =
-        SecretManagerPropertyUtils.getSecretVersionName(
-            projectId, secretId, version, locationId);
+        SecretManagerPropertyUtils.getSecretVersionName(projectId, secretId, version, locationId);
     getClient(locationId).destroySecretVersion(secretVersionName);
   }
 
   ByteString getSecretByteString(String secretIdentifier) {
-    SecretVersionName secretVersionName = SecretManagerPropertyUtils.getSecretVersionName(
-        secretIdentifier, this.projectIdProvider);
+    SecretVersionName secretVersionName =
+        SecretManagerPropertyUtils.getSecretVersionName(secretIdentifier, this.projectIdProvider);
 
     if (secretVersionName == null) {
       secretVersionName = getDefaultSecretVersionName(secretIdentifier);
@@ -269,7 +255,10 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     ByteString secretData;
     try {
       secretData =
-        getClient(secretVersionName.getLocation()).accessSecretVersion(secretVersionName).getPayload().getData();
+          getClient(secretVersionName.getLocation())
+              .accessSecretVersion(secretVersionName)
+              .getPayload()
+              .getData();
     } catch (NotFoundException ex) {
       LOGGER.warn(secretVersionName.toString() + " doesn't exist in Secret Manager.");
       if (!this.allowDefaultSecretValue) {
@@ -289,7 +278,8 @@ public class SecretManagerTemplate implements SecretManagerOperations {
    * Create a new version of the secret with the specified payload under a {@link Secret}. Will also
    * create the parent secret if it does not already exist.
    */
-  private void createNewSecretVersion(String secretId, ByteString payload, String projectId, String locationId) {
+  private void createNewSecretVersion(
+      String secretId, ByteString payload, String projectId, String locationId) {
     if (!secretExists(secretId, projectId, locationId)) {
       createSecretInternal(secretId, projectId, locationId);
     }
@@ -314,8 +304,7 @@ public class SecretManagerTemplate implements SecretManagerOperations {
     String parent;
     if (ObjectUtils.isEmpty(locationId)) {
       secret.setReplication(
-          Replication.newBuilder().setAutomatic(Replication.Automatic.getDefaultInstance())
-      );
+          Replication.newBuilder().setAutomatic(Replication.Automatic.getDefaultInstance()));
       parent = ProjectName.of(projectId).toString();
     } else {
       parent = LocationName.of(projectId, locationId).toString();

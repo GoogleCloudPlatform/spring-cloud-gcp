@@ -23,9 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
 
-/**
- * Map to JsonWrapper Converter.
- */
+/** Map to JsonWrapper Converter. */
 @WritingConverter
 public class MapToJsonConverter<K, V> implements Converter<Map<K, V>, JsonWrapper> {
 

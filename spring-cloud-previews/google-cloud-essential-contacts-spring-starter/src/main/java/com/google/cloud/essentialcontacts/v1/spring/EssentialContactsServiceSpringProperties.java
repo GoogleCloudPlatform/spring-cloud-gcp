@@ -34,44 +34,55 @@ public class EssentialContactsServiceSpringProperties implements CredentialsSupp
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for createContact. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createContactRetry;
+
   /**
    * Allow override of retry settings at method-level for updateContact. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateContactRetry;
+
   /**
    * Allow override of retry settings at method-level for listContacts. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listContactsRetry;
+
   /**
    * Allow override of retry settings at method-level for getContact. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getContactRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteContact. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteContactRetry;
+
   /**
    * Allow override of retry settings at method-level for computeContacts. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry computeContactsRetry;
+
   /**
    * Allow override of retry settings at method-level for sendTestMessage. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

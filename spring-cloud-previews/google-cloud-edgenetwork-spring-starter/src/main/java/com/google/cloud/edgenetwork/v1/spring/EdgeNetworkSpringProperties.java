@@ -34,99 +34,121 @@ public class EdgeNetworkSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for initializeZone. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry initializeZoneRetry;
+
   /**
    * Allow override of retry settings at method-level for listZones. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listZonesRetry;
+
   /**
    * Allow override of retry settings at method-level for getZone. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getZoneRetry;
+
   /**
    * Allow override of retry settings at method-level for listNetworks. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listNetworksRetry;
+
   /**
    * Allow override of retry settings at method-level for getNetwork. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getNetworkRetry;
+
   /**
    * Allow override of retry settings at method-level for diagnoseNetwork. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry diagnoseNetworkRetry;
+
   /**
    * Allow override of retry settings at method-level for listSubnets. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSubnetsRetry;
+
   /**
    * Allow override of retry settings at method-level for getSubnet. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getSubnetRetry;
+
   /**
    * Allow override of retry settings at method-level for listInterconnects. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listInterconnectsRetry;
+
   /**
    * Allow override of retry settings at method-level for getInterconnect. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getInterconnectRetry;
+
   /**
    * Allow override of retry settings at method-level for diagnoseInterconnect. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry diagnoseInterconnectRetry;
+
   /**
    * Allow override of retry settings at method-level for listInterconnectAttachments. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listInterconnectAttachmentsRetry;
+
   /**
    * Allow override of retry settings at method-level for getInterconnectAttachment. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getInterconnectAttachmentRetry;
+
   /**
    * Allow override of retry settings at method-level for listRouters. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listRoutersRetry;
+
   /**
    * Allow override of retry settings at method-level for getRouter. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRouterRetry;
+
   /**
    * Allow override of retry settings at method-level for diagnoseRouter. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry diagnoseRouterRetry;
+
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

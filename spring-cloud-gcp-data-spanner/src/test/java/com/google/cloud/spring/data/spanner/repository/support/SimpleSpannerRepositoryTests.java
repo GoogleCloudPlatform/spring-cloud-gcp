@@ -62,16 +62,16 @@ class SimpleSpannerRepositoryTests {
   void constructorNullSpannerOperationsTest() {
 
     assertThatThrownBy(() -> new SimpleSpannerRepository<Object, Key>(null, Object.class))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("A valid SpannerTemplate object is required.");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A valid SpannerTemplate object is required.");
   }
 
   @Test
   void constructorNullEntityTypeTest() {
 
     assertThatThrownBy(() -> new SimpleSpannerRepository<Object, Key>(this.template, null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("A valid entity type is required.");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A valid entity type is required.");
   }
 
   @Test
@@ -84,74 +84,77 @@ class SimpleSpannerRepositoryTests {
 
   @Test
   void saveNullObjectTest() {
-    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+    SimpleSpannerRepository spannerRepository =
+        new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
 
     assertThatThrownBy(() -> spannerRepository.save(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("A non-null entity is required for saving.");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A non-null entity is required for saving.");
   }
 
   @Test
   void findNullIdTest() {
-    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+    SimpleSpannerRepository spannerRepository =
+        new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
 
     assertThatThrownBy(() -> spannerRepository.findById(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("A non-null ID is required.");
-
-
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A non-null ID is required.");
   }
 
   @Test
   void existsNullIdTest() {
 
-    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+    SimpleSpannerRepository spannerRepository =
+        new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
 
     assertThatThrownBy(() -> spannerRepository.existsById(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("A non-null ID is required.");
-
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A non-null ID is required.");
   }
 
   @Test
   void deleteNullIdTest() {
 
-    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+    SimpleSpannerRepository spannerRepository =
+        new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
 
     assertThatThrownBy(() -> spannerRepository.deleteById(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("A non-null ID is required.");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A non-null ID is required.");
   }
 
   @Test
   void deleteNullEntityTest() {
 
-    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+    SimpleSpannerRepository spannerRepository =
+        new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
 
     assertThatThrownBy(() -> spannerRepository.delete(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("A non-null entity is required.");
-
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A non-null entity is required.");
   }
 
   @Test
   void deleteAllNullEntityTest() {
 
-    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+    SimpleSpannerRepository spannerRepository =
+        new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
 
     assertThatThrownBy(() -> spannerRepository.deleteAll(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("A non-null list of entities is required.");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A non-null list of entities is required.");
   }
 
   @Test
   void saveAllNullEntityTest() {
 
-    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+    SimpleSpannerRepository spannerRepository =
+        new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
 
     assertThatThrownBy(() -> spannerRepository.saveAll(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("A non-null list of entities is required for saving.");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A non-null list of entities is required for saving.");
   }
 
   @Test
@@ -188,12 +191,12 @@ class SimpleSpannerRepositoryTests {
   void findByIdKeyWritingThrowsAnException() {
     when(this.entityProcessor.convertToKey(any())).thenThrow(SpannerDataException.class);
 
-    SimpleSpannerRepository spannerRepository = new SimpleSpannerRepository<Object, Object[]>(this.template, Object.class);
+    SimpleSpannerRepository spannerRepository =
+        new SimpleSpannerRepository<Object, Object[]>(this.template, Object.class);
 
     assertThatThrownBy(() -> spannerRepository.findById(new Object[] {}))
-            .isInstanceOf(SpannerDataException.class);
+        .isInstanceOf(SpannerDataException.class);
   }
-
 
   @Test
   void existsByIdTestFound() {
@@ -285,8 +288,7 @@ class SimpleSpannerRepositoryTests {
   void findAllById_shortcutsToEmptyReturn() {
     SimpleSpannerRepository<Object, Key> repo =
         new SimpleSpannerRepository<>(this.template, Object.class);
-    assertThat(repo.findAllById(new ArrayList<>()))
-        .isEmpty();
+    assertThat(repo.findAllById(new ArrayList<>())).isEmpty();
     verifyNoInteractions(this.template);
   }
 

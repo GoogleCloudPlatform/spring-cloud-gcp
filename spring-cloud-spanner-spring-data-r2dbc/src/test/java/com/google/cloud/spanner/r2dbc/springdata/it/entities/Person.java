@@ -19,9 +19,7 @@ package com.google.cloud.spanner.r2dbc.springdata.it.entities;
 import java.util.Map;
 import org.springframework.data.relational.core.mapping.Column;
 
-/**
- * Example entity.
- */
+/** Example entity. */
 public class Person<T> {
 
   @Column("NAME")

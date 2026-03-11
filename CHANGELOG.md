@@ -15,7 +15,7 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
-## [8.0.0-SNAPSHOT] Spring Boot 4.0 / Spring 7 Migration
+## [8.0.1] Spring Boot 4.0 / Spring 7 Migration
 
 This release marks a major architectural upgrade, moving the project baseline to **Java 17** (with **JDK 25** for Native Image) and **Jakarta EE 11**.
 This version focuses on achieving compatibility with the new modular architecture of Spring Boot 4.0, the refactored SpEL evaluation engine in Spring Data 2025.1, and enhanced AOT support for GraalVM.

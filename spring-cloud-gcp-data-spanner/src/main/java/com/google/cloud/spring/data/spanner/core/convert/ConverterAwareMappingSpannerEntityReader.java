@@ -70,7 +70,8 @@ class ConverterAwareMappingSpannerEntityReader implements SpannerEntityReader {
     SpannerPersistentEntity<R> persistentEntity =
         (SpannerPersistentEntity<R>) this.spannerMappingContext.getPersistentEntityOrFail(type);
 
-    StructAccessor structAccessor = new StructAccessor(source, this.spannerMappingContext.getGson());
+    StructAccessor structAccessor =
+        new StructAccessor(source, this.spannerMappingContext.getGson());
 
     StructPropertyValueProvider propertyValueProvider =
         new StructPropertyValueProvider(structAccessor, this.converter, this, allowMissingColumns);

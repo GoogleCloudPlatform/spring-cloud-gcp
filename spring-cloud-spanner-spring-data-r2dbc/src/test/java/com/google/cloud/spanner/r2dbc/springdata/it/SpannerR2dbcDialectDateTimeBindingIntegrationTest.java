@@ -53,7 +53,8 @@ import reactor.test.StepVerifier;
  * SpannerR2dbcDialect}.
  */
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
-class SpannerR2dbcDialectDateTimeBindingIntegrationTest extends AbstractBaseSpannerR2dbcIntegrationTest {
+class SpannerR2dbcDialectDateTimeBindingIntegrationTest
+    extends AbstractBaseSpannerR2dbcIntegrationTest {
   /** Initializes the integration test environment for the Spanner R2DBC dialect. */
   @BeforeEach
   void initializeTestEnvironment() {
@@ -78,29 +79,30 @@ class SpannerR2dbcDialectDateTimeBindingIntegrationTest extends AbstractBaseSpan
             LocalDate.parse("2021-12-31"),
             LocalDateTime.parse("2021-12-15T21:30:10"));
 
-    this.contextRunner.run(ctx -> {
-      R2dbcEntityTemplate r2dbcEntityTemplate = ctx.getBean(R2dbcEntityTemplate.class);
+    this.contextRunner.run(
+        ctx -> {
+          R2dbcEntityTemplate r2dbcEntityTemplate = ctx.getBean(R2dbcEntityTemplate.class);
 
-      r2dbcEntityTemplate
-          .insert(Card.class)
-          .using(card)
-          .then()
-          .as(StepVerifier::create)
-          .verifyComplete();
+          r2dbcEntityTemplate
+              .insert(Card.class)
+              .using(card)
+              .then()
+              .as(StepVerifier::create)
+              .verifyComplete();
 
-      r2dbcEntityTemplate
-          .select(Card.class)
-          .first()
-          .as(StepVerifier::create)
-          .expectNextMatches(
-              c ->
-                  c.getId() == 1L
-                      && c.getExpiryYear() == 2022
-                      && c.getExpiryMonth() == 12
-                      && c.getIssueDate().equals(LocalDate.parse("2021-12-31"))
-                      && c.getRequestedAt().equals(LocalDateTime.parse("2021-12-15T21:30:10")))
-          .verifyComplete();
-    });
+          r2dbcEntityTemplate
+              .select(Card.class)
+              .first()
+              .as(StepVerifier::create)
+              .expectNextMatches(
+                  c ->
+                      c.getId() == 1L
+                          && c.getExpiryYear() == 2022
+                          && c.getExpiryMonth() == 12
+                          && c.getIssueDate().equals(LocalDate.parse("2021-12-31"))
+                          && c.getRequestedAt().equals(LocalDateTime.parse("2021-12-15T21:30:10")))
+              .verifyComplete();
+        });
   }
 
   /** Register custom converters. */

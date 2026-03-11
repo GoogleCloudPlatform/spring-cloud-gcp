@@ -108,8 +108,8 @@ class PubSubHeaderMapperTests {
     PubSubHeaderMapper mapper = new PubSubHeaderMapper();
 
     assertThatThrownBy(() -> mapper.setInboundHeaderPatterns(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Header patterns can't be null.");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Header patterns can't be null.");
   }
 
   @Test
@@ -118,7 +118,7 @@ class PubSubHeaderMapperTests {
     PubSubHeaderMapper mapper = new PubSubHeaderMapper();
 
     assertThatThrownBy(() -> mapper.setInboundHeaderPatterns(new String[1]))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("No header pattern can be null.");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("No header pattern can be null.");
   }
 }

@@ -42,7 +42,8 @@ public class UserController {
 
   private final UserService userService;
 
-  public UserController(UserService userService, UserRepository userRepository, FirestoreTemplate firestoreTemplate) {
+  public UserController(
+      UserService userService, UserRepository userRepository, FirestoreTemplate firestoreTemplate) {
     this.userService = userService;
     this.userRepository = userRepository;
     this.firestoreTemplate = firestoreTemplate;
@@ -89,13 +90,16 @@ public class UserController {
                       createPets(formData.getFirst("pets")));
               List<PhoneNumber> phones = getPhones(formData.getFirst("phones"));
 
-              return userRepository.save(user)
-                  .flatMap(savedUser -> {
-                    FirestoreReactiveOperations userTemplate = this.firestoreTemplate.withParent(
-                        savedUser);
-                    return userTemplate.saveAll(Flux.fromIterable(phones))
-                        .then(Mono.just(savedUser));
-                  });
+              return userRepository
+                  .save(user)
+                  .flatMap(
+                      savedUser -> {
+                        FirestoreReactiveOperations userTemplate =
+                            this.firestoreTemplate.withParent(savedUser);
+                        return userTemplate
+                            .saveAll(Flux.fromIterable(phones))
+                            .then(Mono.just(savedUser));
+                      });
             });
   }
 

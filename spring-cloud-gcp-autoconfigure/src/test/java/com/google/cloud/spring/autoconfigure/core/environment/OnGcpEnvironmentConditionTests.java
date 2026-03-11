@@ -138,7 +138,7 @@ class OnGcpEnvironmentConditionTests {
     setUpAnnotationValue(new GcpEnvironment[] {GcpEnvironment.COMPUTE_ENGINE});
     when(this.mockContext.getBeanFactory()).thenReturn(this.mockBeanFactory);
     when(this.mockBeanFactory.getBean(GcpEnvironmentProvider.class))
-            .thenReturn(this.mockGcpEnvironmentProvider);
+        .thenReturn(this.mockGcpEnvironmentProvider);
     when(this.mockGcpEnvironmentProvider.getCurrentEnvironment())
         .thenReturn(GcpEnvironment.UNKNOWN);
 
@@ -156,7 +156,7 @@ class OnGcpEnvironmentConditionTests {
         new GcpEnvironment[] {GcpEnvironment.COMPUTE_ENGINE, GcpEnvironment.KUBERNETES_ENGINE});
     when(this.mockContext.getBeanFactory()).thenReturn(this.mockBeanFactory);
     when(this.mockBeanFactory.getBean(GcpEnvironmentProvider.class))
-            .thenReturn(this.mockGcpEnvironmentProvider);
+        .thenReturn(this.mockGcpEnvironmentProvider);
     when(this.mockGcpEnvironmentProvider.getCurrentEnvironment())
         .thenReturn(GcpEnvironment.UNKNOWN);
 
@@ -174,7 +174,7 @@ class OnGcpEnvironmentConditionTests {
         new GcpEnvironment[] {GcpEnvironment.COMPUTE_ENGINE, GcpEnvironment.KUBERNETES_ENGINE});
     when(this.mockContext.getBeanFactory()).thenReturn(this.mockBeanFactory);
     when(this.mockBeanFactory.getBean(GcpEnvironmentProvider.class))
-            .thenReturn(this.mockGcpEnvironmentProvider);
+        .thenReturn(this.mockGcpEnvironmentProvider);
     when(this.mockGcpEnvironmentProvider.getCurrentEnvironment())
         .thenReturn(GcpEnvironment.KUBERNETES_ENGINE);
 
@@ -190,7 +190,7 @@ class OnGcpEnvironmentConditionTests {
     setUpAnnotationValue(new GcpEnvironment[] {GcpEnvironment.COMPUTE_ENGINE});
     when(this.mockContext.getBeanFactory()).thenReturn(this.mockBeanFactory);
     when(this.mockBeanFactory.getBean(GcpEnvironmentProvider.class))
-            .thenReturn(this.mockGcpEnvironmentProvider);
+        .thenReturn(this.mockGcpEnvironmentProvider);
     when(this.mockGcpEnvironmentProvider.getCurrentEnvironment())
         .thenReturn(GcpEnvironment.COMPUTE_ENGINE);
     ConditionOutcome outcome =

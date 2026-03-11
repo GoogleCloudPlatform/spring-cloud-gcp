@@ -63,12 +63,11 @@ import reactor.test.StepVerifier;
 @EnabledIfSystemProperty(named = "it.spanner", matches = "true")
 class SpannerR2dbcDialectJsonIntegrationTest extends AbstractBaseSpannerR2dbcIntegrationTest {
 
-  /**
-   * Initializes the integration test environment for the Spanner R2DBC dialect.
-   */
+  /** Initializes the integration test environment for the Spanner R2DBC dialect. */
   @BeforeEach
   public void initializeTestEnvironment() {
-    initializeTestEnvironment(SpannerR2dbcDialectJsonIntegrationTest.TestConfiguration.class,
+    initializeTestEnvironment(
+        SpannerR2dbcDialectJsonIntegrationTest.TestConfiguration.class,
         "CREATE TABLE PERSON ("
             + "  NAME STRING(256) NOT NULL,"
             + "  BIRTH_YEAR INT64 NOT NULL,"
@@ -93,24 +92,28 @@ class SpannerR2dbcDialectJsonIntegrationTest extends AbstractBaseSpannerR2dbcInt
     extras.put("spouse", "Hillary Clinton");
     Person billClinton = new Person("Bill Clinton", 1946, extras, null);
 
-    this.contextRunner.run(ctx -> {
-      R2dbcEntityTemplate r2dbcEntityTemplate = ctx.getBean(R2dbcEntityTemplate.class);
-      insertPerson(billClinton, r2dbcEntityTemplate);
-      r2dbcEntityTemplate
-          .select(Person.class)
-          .first()
-          .as(StepVerifier::create)
-          .expectNextMatches(
-              person ->
-                  person.getName().equals("Bill Clinton")
-                      && person.getBirthYear() == 1946
-                      && person.getExtras().getOrDefault("spouse", "none").equals("Hillary Clinton")
-                      && person
-                      .getExtras()
-                      .getOrDefault("bio", "none")
-                      .equals("former U.S. president"))
-          .verifyComplete();
-    });
+    this.contextRunner.run(
+        ctx -> {
+          R2dbcEntityTemplate r2dbcEntityTemplate = ctx.getBean(R2dbcEntityTemplate.class);
+          insertPerson(billClinton, r2dbcEntityTemplate);
+          r2dbcEntityTemplate
+              .select(Person.class)
+              .first()
+              .as(StepVerifier::create)
+              .expectNextMatches(
+                  person ->
+                      person.getName().equals("Bill Clinton")
+                          && person.getBirthYear() == 1946
+                          && person
+                              .getExtras()
+                              .getOrDefault("spouse", "none")
+                              .equals("Hillary Clinton")
+                          && person
+                              .getExtras()
+                              .getOrDefault("bio", "none")
+                              .equals("former U.S. president"))
+              .verifyComplete();
+        });
   }
 
   @Test
@@ -120,21 +123,22 @@ class SpannerR2dbcDialectJsonIntegrationTest extends AbstractBaseSpannerR2dbcInt
     extras.put("US citizen", true);
     Person billClinton = new Person("Bill Clinton", 1946, extras, null);
 
-    this.contextRunner.run(ctx -> {
-      R2dbcEntityTemplate r2dbcEntityTemplate = ctx.getBean(R2dbcEntityTemplate.class);
-      insertPerson(billClinton, r2dbcEntityTemplate);
-      r2dbcEntityTemplate
-          .select(Person.class)
-          .first()
-          .as(StepVerifier::create)
-          .expectNextMatches(
-              person ->
-                  person.getName().equals("Bill Clinton")
-                      && person.getBirthYear() == 1946
-                      && person.getExtras().getOrDefault("male", false).equals(true)
-                      && person.getExtras().getOrDefault("US citizen", false).equals(true))
-          .verifyComplete();
-    });
+    this.contextRunner.run(
+        ctx -> {
+          R2dbcEntityTemplate r2dbcEntityTemplate = ctx.getBean(R2dbcEntityTemplate.class);
+          insertPerson(billClinton, r2dbcEntityTemplate);
+          r2dbcEntityTemplate
+              .select(Person.class)
+              .first()
+              .as(StepVerifier::create)
+              .expectNextMatches(
+                  person ->
+                      person.getName().equals("Bill Clinton")
+                          && person.getBirthYear() == 1946
+                          && person.getExtras().getOrDefault("male", false).equals(true)
+                          && person.getExtras().getOrDefault("US citizen", false).equals(true))
+              .verifyComplete();
+        });
   }
 
   @Test
@@ -144,43 +148,45 @@ class SpannerR2dbcDialectJsonIntegrationTest extends AbstractBaseSpannerR2dbcInt
     extras.put("height", 5.916);
     Person<Double> billClinton = new Person("John Doe", 1946, extras, null);
 
-    this.contextRunner.run(ctx -> {
-      R2dbcEntityTemplate r2dbcEntityTemplate = ctx.getBean(R2dbcEntityTemplate.class);
-      insertPerson(billClinton, r2dbcEntityTemplate);
-      r2dbcEntityTemplate
-          .select(Person.class)
-          .first()
-          .as(StepVerifier::create)
-          .expectNextMatches(
-              person ->
-                  person.getName().equals("John Doe")
-                      && person.getBirthYear() == 1946
-                      && DoubleMath.fuzzyEquals(
-                      (double) person.getExtras().get("weight"), 144.5, 1e-5)
-                      && DoubleMath.fuzzyEquals(
-                      (double) person.getExtras().get("height"), 5.916, 1e-5))
-          .verifyComplete();
-    });
+    this.contextRunner.run(
+        ctx -> {
+          R2dbcEntityTemplate r2dbcEntityTemplate = ctx.getBean(R2dbcEntityTemplate.class);
+          insertPerson(billClinton, r2dbcEntityTemplate);
+          r2dbcEntityTemplate
+              .select(Person.class)
+              .first()
+              .as(StepVerifier::create)
+              .expectNextMatches(
+                  person ->
+                      person.getName().equals("John Doe")
+                          && person.getBirthYear() == 1946
+                          && DoubleMath.fuzzyEquals(
+                              (double) person.getExtras().get("weight"), 144.5, 1e-5)
+                          && DoubleMath.fuzzyEquals(
+                              (double) person.getExtras().get("height"), 5.916, 1e-5))
+              .verifyComplete();
+        });
   }
 
   @Test
   void testReadWriteWithJsonFieldCustomClass() {
     Address address = new Address("home address", "work address", 10012, 10011);
     Person billClinton = new Person("Bill Clinton", 1946, null, address);
-    this.contextRunner.run(ctx -> {
-      R2dbcEntityTemplate r2dbcEntityTemplate = ctx.getBean(R2dbcEntityTemplate.class);
-      insertPerson(billClinton, r2dbcEntityTemplate);
-      r2dbcEntityTemplate
-          .select(Person.class)
-          .first()
-          .as(StepVerifier::create)
-          .expectNextMatches(
-              person ->
-                  person.getName().equals("Bill Clinton")
-                      && person.getBirthYear() == 1946
-                      && person.getAddress().equals(address))
-          .verifyComplete();
-    });
+    this.contextRunner.run(
+        ctx -> {
+          R2dbcEntityTemplate r2dbcEntityTemplate = ctx.getBean(R2dbcEntityTemplate.class);
+          insertPerson(billClinton, r2dbcEntityTemplate);
+          r2dbcEntityTemplate
+              .select(Person.class)
+              .first()
+              .as(StepVerifier::create)
+              .expectNextMatches(
+                  person ->
+                      person.getName().equals("Bill Clinton")
+                          && person.getBirthYear() == 1946
+                          && person.getAddress().equals(address))
+              .verifyComplete();
+        });
   }
 
   /** Register custom converters between Map and JsonWrapper. */

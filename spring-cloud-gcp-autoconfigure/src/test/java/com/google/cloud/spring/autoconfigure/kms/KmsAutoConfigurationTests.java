@@ -42,7 +42,8 @@ class KmsAutoConfigurationTests {
 
   private static final String CORE_PROJECT_NAME = "core-project";
   private static final String KMS_PROJECT_NAME = "hollow-light-of-the-sealed-land";
-  private static final String KMS_CREDENTIAL_LOCATION = "src/test/resources/fake-credential-key.json";
+  private static final String KMS_CREDENTIAL_LOCATION =
+      "src/test/resources/fake-credential-key.json";
   private static final String CORE_CREDENTIAL_CLIENT_ID = "12345";
   private static final String KMS_CREDENTIAL_CLIENT_ID = "45678";
 
@@ -54,9 +55,10 @@ class KmsAutoConfigurationTests {
               "spring.cloud.gcp.sql.enabled=false")
           .web(WebApplicationType.NONE);
 
-  private ApplicationContextRunner contextRunner = new ApplicationContextRunner().withConfiguration(
-          AutoConfigurations.of(GcpKmsAutoConfiguration.class))
-      .withUserConfiguration(TestConfiguration.class);
+  private ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner()
+          .withConfiguration(AutoConfigurations.of(GcpKmsAutoConfiguration.class))
+          .withUserConfiguration(TestConfiguration.class);
 
   @Test
   void testKeyManagementClientCreated() {
@@ -76,12 +78,12 @@ class KmsAutoConfigurationTests {
 
   @Test
   void testShouldTakeCoreCredentials() {
-    this.contextRunner
-        .run(ctx -> {
+    this.contextRunner.run(
+        ctx -> {
           KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
           Credentials credentials = client.getSettings().getCredentialsProvider().getCredentials();
-          assertThat(((UserCredentials) credentials).getClientId()).isEqualTo(
-              CORE_CREDENTIAL_CLIENT_ID);
+          assertThat(((UserCredentials) credentials).getClientId())
+              .isEqualTo(CORE_CREDENTIAL_CLIENT_ID);
         });
   }
 
@@ -90,23 +92,27 @@ class KmsAutoConfigurationTests {
     this.contextRunner
         .withPropertyValues(
             "spring.cloud.gcp.kms.credentials.location=file:" + KMS_CREDENTIAL_LOCATION)
-        .run(ctx -> {
-          KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
-          Credentials credentials = client.getSettings().getCredentialsProvider().getCredentials();
-          assertThat(((ServiceAccountCredentials) credentials).getClientId()).isEqualTo(
-              KMS_CREDENTIAL_CLIENT_ID);
-        });
+        .run(
+            ctx -> {
+              KeyManagementServiceClient client = ctx.getBean(KeyManagementServiceClient.class);
+              Credentials credentials =
+                  client.getSettings().getCredentialsProvider().getCredentials();
+              assertThat(((ServiceAccountCredentials) credentials).getClientId())
+                  .isEqualTo(KMS_CREDENTIAL_CLIENT_ID);
+            });
   }
 
   @Test
   void testShouldTakeKmsProjectIdWhenPresent() {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.kms.project-id=" + KMS_PROJECT_NAME)
-        .run(ctx -> {
-          GcpKmsAutoConfiguration autoConfiguration = ctx.getBean(GcpKmsAutoConfiguration.class);
-          assertThat(autoConfiguration.getGcpProjectIdProvider().getProjectId()).isEqualTo(
-              KMS_PROJECT_NAME);
-        });
+        .run(
+            ctx -> {
+              GcpKmsAutoConfiguration autoConfiguration =
+                  ctx.getBean(GcpKmsAutoConfiguration.class);
+              assertThat(autoConfiguration.getGcpProjectIdProvider().getProjectId())
+                  .isEqualTo(KMS_PROJECT_NAME);
+            });
   }
 
   @Test
@@ -173,7 +179,8 @@ class KmsAutoConfigurationTests {
     public static CredentialsProvider googleCredentials() {
       UserCredentials mockUserCredential = mock(UserCredentials.class);
       when(mockUserCredential.getClientId()).thenReturn(CORE_CREDENTIAL_CLIENT_ID);
-      when(mockUserCredential.getMetricsCredentialType()).thenReturn(CredentialTypeForMetrics.DO_NOT_SEND);
+      when(mockUserCredential.getMetricsCredentialType())
+          .thenReturn(CredentialTypeForMetrics.DO_NOT_SEND);
       return () -> mockUserCredential;
     }
 

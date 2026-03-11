@@ -34,49 +34,61 @@ public class TranscoderServiceSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for createJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listJobs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for getJob. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getJobRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteJobRetry;
+
   /**
    * Allow override of retry settings at method-level for createJobTemplate. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createJobTemplateRetry;
+
   /**
    * Allow override of retry settings at method-level for listJobTemplates. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listJobTemplatesRetry;
+
   /**
    * Allow override of retry settings at method-level for getJobTemplate. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getJobTemplateRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteJobTemplate. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

@@ -34,84 +34,103 @@ public class LineageSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for processOpenLineageRunEvent. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry processOpenLineageRunEventRetry;
+
   /**
    * Allow override of retry settings at method-level for createProcess. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createProcessRetry;
+
   /**
    * Allow override of retry settings at method-level for updateProcess. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateProcessRetry;
+
   /**
    * Allow override of retry settings at method-level for getProcess. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getProcessRetry;
+
   /**
    * Allow override of retry settings at method-level for listProcesses. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listProcessesRetry;
+
   /**
    * Allow override of retry settings at method-level for createRun. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createRunRetry;
+
   /**
    * Allow override of retry settings at method-level for updateRun. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateRunRetry;
+
   /**
    * Allow override of retry settings at method-level for getRun. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRunRetry;
+
   /**
    * Allow override of retry settings at method-level for listRuns. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listRunsRetry;
+
   /**
    * Allow override of retry settings at method-level for createLineageEvent. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createLineageEventRetry;
+
   /**
    * Allow override of retry settings at method-level for getLineageEvent. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLineageEventRetry;
+
   /**
    * Allow override of retry settings at method-level for listLineageEvents. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLineageEventsRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteLineageEvent. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteLineageEventRetry;
+
   /**
    * Allow override of retry settings at method-level for searchLinks. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchLinksRetry;
+
   /**
    * Allow override of retry settings at method-level for batchSearchLinkProcesses. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

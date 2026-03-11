@@ -17,7 +17,6 @@
 package com.google.cloud.spring.data.datastore.it.testdomains;
 
 import com.google.cloud.datastore.Key;
-import com.google.cloud.spring.data.datastore.it.testdomains.Product;
 import com.google.cloud.spring.data.datastore.repository.DatastoreRepository;
 import org.springframework.stereotype.Repository;
 
