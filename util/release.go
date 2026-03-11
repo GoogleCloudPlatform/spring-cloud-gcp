@@ -49,6 +49,10 @@
 //     -interactive
 //         Ask for confirmation before proceeding to each step. When enabled,
 //         the release process for branches runs sequentially rather than in parallel.
+//     -libraries-bom-update-optional
+//         Make the gapic-generator-java-bom and libraries-bom PR checks optional. 
+//         When enabled, the script will skip these PR checks and their dependent 
+//         workflows if the corresponding PRs are not found.
 //
 // Requirements:
 //   - The GitHub CLI (`gh`) must be installed and authenticated. Run `gh auth login`
@@ -72,6 +76,7 @@ import (
 var emailOpt string
 var bootMaxOpt string
 var interactiveOpt bool
+var librariesBomOptionalOpt bool
 
 // main is the entry point of the script. It parses flags, sets up the parallel release process
 // for the specified branches, and handles the sequential README update for the main branch.
@@ -80,6 +85,7 @@ func main() {
 	flag.StringVar(&emailOpt, "email", "", "Email address to send notifications to (requires LOAS/gcert)")
 	flag.StringVar(&bootMaxOpt, "boot-max", "", "Newly supported Spring Boot max version for compatibilityRange (e.g. 4.1.0-M1)")
 	flag.BoolVar(&interactiveOpt, "interactive", false, "Ask for confirmation before proceeding to each step")
+	flag.BoolVar(&librariesBomOptionalOpt, "libraries-bom-update-optional", false, "Make gapic-generator-java-bom PR check optional")
 	flag.Parse()
 
 	branches := strings.Split(*branchesOpt, ",")
@@ -153,13 +159,18 @@ func runReleaseForMain() {
 	fmt.Printf("%s ▶️ STEP %d: Finding gapic-generator-java-bom upgrade PR...\n", prefix, step)
 	gapicPR := findPR(branch, "gapic-generator-java-bom in:title is:open")
 	if gapicPR == "" {
-		fatalError(branch, "Could not find an open gapic-generator-java-bom PR. Exiting.")
+		if librariesBomOptionalOpt {
+			fmt.Printf("%s ℹ️ Skipping gapic-generator-java-bom upgrade PR (optional).\n", prefix)
+		} else {
+			fatalError(branch, "Could not find an open gapic-generator-java-bom PR. Exiting.")
+		}
+	} else {
+		fmt.Printf("%s ✅ Found gapic-generator PR: #%s\n", prefix, gapicPR)
+		approveWorkflowRuns(branch, gapicPR)
+		approvePR(branch, gapicPR)
+		enableAutoMerge(branch, gapicPR)
+		waitForAutoMerge(branch, gapicPR)
 	}
-	fmt.Printf("%s ✅ Found gapic-generator PR: #%s\n", prefix, gapicPR)
-	approveWorkflowRuns(branch, gapicPR)
-	approvePR(branch, gapicPR)
-        enableAutoMerge(branch, gapicPR)
-	waitForAutoMerge(branch, gapicPR)
 	step++
 
 	// Find libraries-bom PR and Trigger Rebase
@@ -167,27 +178,40 @@ func runReleaseForMain() {
 	fmt.Printf("\n%s ▶️ STEP %d: Finding libraries-bom PR and triggering rebase...\n", prefix, step)
 	bomPR := findPR(branch, "libraries-bom in:title is:open")
 	if bomPR == "" {
-		fatalError(branch, "Could not find an open libraries-bom PR.")
+		if librariesBomOptionalOpt {
+			fmt.Printf("%s ℹ️ Skipping libraries-bom upgrade PR (optional).\n", prefix)
+		} else {
+			fatalError(branch, "Could not find an open libraries-bom PR.")
+		}
+	} else {
+		fmt.Printf("%s ✅ Found libraries-bom PR: #%s\n", prefix, bomPR)
+		checkRebaseBox(branch, bomPR)
 	}
-	fmt.Printf("%s ✅ Found libraries-bom PR: #%s\n", prefix, bomPR)
-	checkRebaseBox(branch, bomPR)
 	step++
 
 	// Trigger AutoConfigs Workflow
-	confirmStep(branch, "Trigger Generate Spring Auto-Configurations workflow")
-	fmt.Printf("\n%s ▶️ STEP %d: Triggering Generate Spring Auto-Configurations workflow...\n", prefix, step)
-	triggerAutoConfigs(branch, bomPR)
-	waitForBotCommit(branch, bomPR)
-	verifyBotCommit(branch, bomPR)
+	if bomPR != "" {
+		confirmStep(branch, "Trigger Generate Spring Auto-Configurations workflow")
+		fmt.Printf("\n%s ▶️ STEP %d: Triggering Generate Spring Auto-Configurations workflow...\n", prefix, step)
+		triggerAutoConfigs(branch, bomPR)
+		waitForBotCommit(branch, bomPR)
+		verifyBotCommit(branch, bomPR)
+	} else {
+		fmt.Printf("\n%s ℹ️ Skipping Generate Spring Auto-Configurations (no libraries-bom PR).\n", prefix)
+	}
 	step++
 
 	// Merge the libraries-bom PR
-	confirmStep(branch, "Merge the completed libraries-bom PR")
-	fmt.Printf("\n%s ▶️ STEP %d: Merging the completed libraries-bom PR...\n", prefix, step)
-	approveWorkflowRuns(branch, bomPR)
-	approvePR(branch, bomPR)
-	enableAutoMerge(branch, bomPR)
-	waitForAutoMerge(branch, bomPR)
+	if bomPR != "" {
+		confirmStep(branch, "Merge the completed libraries-bom PR")
+		fmt.Printf("\n%s ▶️ STEP %d: Merging the completed libraries-bom PR...\n", prefix, step)
+		approveWorkflowRuns(branch, bomPR)
+		approvePR(branch, bomPR)
+		enableAutoMerge(branch, bomPR)
+		waitForAutoMerge(branch, bomPR)
+	} else {
+		fmt.Printf("\n%s ℹ️ Skipping Merging libraries-bom PR (no libraries-bom PR).\n", prefix)
+	}
 	step++
 
 	// Wait for and merge Release PR (and Snapshot)
@@ -228,17 +252,21 @@ func runReleaseForBranch(branch string) {
 	prefix := fmt.Sprintf("[%s]", branch)
 	step := 1
 
-	// Merge gapic-generator-java-bom PR
+	// Merge libraries-bom PR
 	confirmStep(branch, "Find and merge libraries-bom upgrade PR")
 	fmt.Printf("%s ▶️ STEP %d: Finding libraries-bom upgrade PR...\n", prefix, step)
 	bomPR := findPR(branch, "libraries-bom in:title is:open")
 	if bomPR == "" {
-		fatalError(branch, "Could not find an open libraries-bom PR. Exiting.")
+		if librariesBomOptionalOpt {
+			fmt.Printf("%s ℹ️ Skipping libraries-bom upgrade PR (optional).\n", prefix)
+		} else {
+			fatalError(branch, "Could not find an open libraries-bom PR. Exiting.")
+		}
+	} else {
+		fmt.Printf("%s ✅ Found libraries-bom PR: #%s\n", prefix, bomPR)
+		approvePR(branch, bomPR)
+		waitForMerge(branch, bomPR)
 	}
-	fmt.Printf("%s ✅ Found libraries-bom PR: #%s\n", prefix, bomPR)
-
-	approvePR(branch, bomPR)
-	waitForMerge(branch, bomPR)
 	step++
 
 	// Merge libraries-bom PR
