@@ -573,9 +573,24 @@ func createInitializrPR(version, bootMax string, step int) {
 		prBody += fmt.Sprintf("\n\nAlso updating `compatibilityRange` max to `%s`.", bootMax)
 	}
 
+	// Fetch user info for DCO sign-off
+	fullName, _ := runCmd("gh", "api", "user", "--jq", ".name")
 	username, err := runCmd("gh", "api", "user", "--jq", ".login")
 	if err != nil || username == "" {
 		fatalError("main", "Failed to retrieve GitHub username: %v", err)
+	}
+	if fullName == "" {
+		fullName = username
+	}
+
+	// Try to get email from git config, fallback to emailOpt
+	userEmail, _ := runCmd("git", "config", "user.email")
+	if userEmail == "" {
+		userEmail = emailOpt
+	}
+
+	if userEmail != "" {
+		prBody += fmt.Sprintf("\n\nSigned-off-by: %s <%s>", fullName, userEmail)
 	}
 
 	headArg := fmt.Sprintf("%s:%s", username, branchName)
