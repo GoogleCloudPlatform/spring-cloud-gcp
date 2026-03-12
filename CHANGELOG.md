@@ -15,6 +15,13 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.0.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.0.1...v8.0.2) (2026-03-12)
+
+
+### Documentation
+
+* add Spring Boot 4.0 migration release notes ([#4355](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4355)) ([20f22d3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/20f22d31d89b2441eb81d8d03914220ba7e37b62))
+
 ## [8.0.1] Spring Boot 4.0 / Spring 7 Migration
 
 This release marks a major architectural upgrade, moving the project baseline to **Java 17** (with **JDK 25** for Native Image) and **Jakarta EE 11**.
