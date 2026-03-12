@@ -175,6 +175,7 @@ func main() {
 	}
 }
 
+// printSteps outputs a numbered list of all release steps for documentation and flag reference.
 func printSteps() {
 	fmt.Println("Steps for 'main' branch:")
 	fmt.Println("  1. Find and merge gapic-generator-java-bom upgrade PR")
@@ -444,6 +445,8 @@ func runReleaseForBranch(branch string, startStep int) {
 	}
 }
 
+// discoverVersion attempts to find the most recently merged release version for a branch 
+// from GitHub PR history. This is used as a fallback when earlier steps are skipped.
 func discoverVersion(branch string) string {
 	fmt.Printf("[%s] 🔍 Attempting to discover version from merged release PRs...\n", branch)
 	query := "release in:title is:merged author:app/release-please"
@@ -490,7 +493,7 @@ func confirmStep(branch, description string) {
 func createInitializrPR(version, bootMax string, step int) {
 	fmt.Printf("\n[main] ▶️ STEP %d: Creating PR for Spring Initializr...\n", step)
 
-	// Fetch user info early for sync and DCO sign-off
+	// 1. Fetch user info early for sync and DCO sign-off
 	fullName, _ := runCmd("gh", "api", "user", "--jq", ".name")
 	username, err := runCmd("gh", "api", "user", "--jq", ".login")
 	if err != nil || username == "" {
@@ -500,29 +503,24 @@ func createInitializrPR(version, bootMax string, step int) {
 		fullName = username
 	}
 
-	// 3. Name the directory to reflect it's temporary
 	repoPath := "./temp-start.spring.io"
 
-	// 1. Print out the temp directory so the user knows where it is being created
+	// 2. Print out the temp directory so the user knows where it is being created
 	fmt.Printf("[main] 📁 Using temporary directory: %s\n", repoPath)
-
-	// 2. Always start by deleting the temp directory (and the default gh clone path)
-	// to ensure the script always succeeds even if a previous run crashed.
 	fmt.Printf("[main] 🧹 Cleaning up any leftover temporary directories...\n")
 	os.RemoveAll(repoPath)
 	os.RemoveAll("./start.spring.io")
 
-	// 4. Clean up the temp directory at the end of the script (on successful runs)
+	// 3. Clean up the temp directory at the end of the script (on successful runs)
 	defer func() {
 		fmt.Printf("[main] 🧹 Cleaning up temporary directory at the end of the script...\n")
 		os.RemoveAll(repoPath)
 	}()
 
+	// 4. Fork and clone the upstream repository
 	fmt.Println("[main] ⏳ Forking and cloning spring-io/start.spring.io...")
-	// This command defaults to cloning into "./start.spring.io"
 	runCmd("gh", "repo", "fork", "spring-io/start.spring.io", "--clone=true", "--default-branch-only")
 
-	// Rename it to our explicit "temp" prefixed directory
 	err = os.Rename("./start.spring.io", repoPath)
 	if err != nil {
 		fatalError("main", "Failed to rename cloned directory: %v", err)
@@ -546,23 +544,52 @@ func createInitializrPR(version, bootMax string, step int) {
 	}
 
 	contentStr := string(content)
+	majorVersion := strings.Split(version, ".")[0] // Dynamically extract "7" or "8"
 	commitMsg := fmt.Sprintf("Update spring cloud gcp to %s", version)
 
 	if bootMax != "" {
-		fmt.Printf("[main] 🔄 Updating version to %s AND compatibilityRange max to %s...\n", version, bootMax)
+		fmt.Printf("[main] 🔄 Updating version for %s.x mapping to %s AND compatibilityRange max to %s...\n", majorVersion, version, bootMax)
 		commitMsg = fmt.Sprintf("Upgrade to Spring Cloud GCP %s and Spring Boot %s", version, bootMax)
+	} else {
+		fmt.Printf("[main] 🔄 Updating version for %s.x mapping to %s...\n", majorVersion, version)
+	}
 
-		reBom := regexp.MustCompile(`(?s)(spring-cloud-gcp:.*?mappings:.*?- compatibilityRange:\s*"\[[^,]+,)([^)]+)(\)"\s+version:\s*)[^\s]+`)
-		contentStr = reBom.ReplaceAllString(contentStr, "${1}"+bootMax+"${3}"+version)
+	// 1. Isolate the spring-cloud-gcp block using standard capture groups instead of lookaheads
+	reBlock := regexp.MustCompile(`(?s)(spring-cloud-gcp:\s*\n\s+groupId:\s*com\.google\.cloud.*?mappings:.*?)(?:\n\s+[a-zA-Z0-9_-]+:|$)`)
+	matches := reBlock.FindStringSubmatch(contentStr)
 
+	if len(matches) < 2 {
+		fatalError("main", "Could not find the spring-cloud-gcp block in application.yml")
+	}
+	
+	blockMatch := matches[1] // matches[1] contains exactly the spring-cloud-gcp block
+
+	// 2. Find and update ONLY the version string that matches our major version
+	reVersion := regexp.MustCompile(`(?m)(version:\s*)` + majorVersion + `\.[0-9]+\.[0-9]+[A-Za-z0-9-]*$`)
+	
+	newBlock := blockMatch
+	if reVersion.MatchString(blockMatch) {
+		// Mapping exists for this major version! Update the version string.
+		newBlock = reVersion.ReplaceAllString(blockMatch, "${1}"+version)
+		
+		// If bootMax is provided, we also update the compatibilityRange for THIS specific mapping.
+		if bootMax != "" {
+			// Finds the compatibilityRange line located immediately before the specific version we just updated
+			reRange := regexp.MustCompile(`(?s)(- compatibilityRange:\s*"\[[^,]+,)([^)]+)(\)"\s+version:\s*` + regexp.QuoteMeta(version) + `)`)
+			newBlock = reRange.ReplaceAllString(newBlock, "${1}"+bootMax+"${3}")
+		}
+	} else {
+		// Failsafe: If a brand new major version mapping doesn't exist, we force a manual update
+		fatalError("main", "Could not find an existing mapping for major version %s.x in application.yml. Since adding a brand new major version requires structural YAML changes, please manually edit the file this one time to add the %s.x mapping block.", majorVersion, majorVersion)
+	}
+
+	// Replace the old block with the updated block in the full file string
+	contentStr = strings.Replace(contentStr, blockMatch, newBlock, 1)
+
+	// 3. Update the top-level dependency compatibility range max if bootMax is provided
+	if bootMax != "" {
 		reDep := regexp.MustCompile(`(?s)(bom:\s*spring-cloud-gcp\s+compatibilityRange:\s*"\[[^,]+,)([^)]+)(\)")`)
 		contentStr = reDep.ReplaceAllString(contentStr, "${1}"+bootMax+"${3}")
-
-	} else {
-		fmt.Printf("[main] 🔄 Updating version to %s...\n", version)
-
-		reBom := regexp.MustCompile(`(?s)(spring-cloud-gcp:.*?mappings:.*?- compatibilityRange:\s*"\[[^,]+,[^)]+\)"\s+version:\s*)[^\s]+`)
-		contentStr = reBom.ReplaceAllString(contentStr, "${1}"+version)
 	}
 
 	if string(content) == contentStr {
