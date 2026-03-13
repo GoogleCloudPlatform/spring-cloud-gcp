@@ -756,11 +756,14 @@ func pollForPR(branch, query string, excludeSnapshot bool) string {
 // verifyMavenCentral polls Maven Central until the specified version is available.
 func verifyMavenCentral(branch, version string) {
 	prefix := fmt.Sprintf("[%s]", branch)
-	mavenURL := fmt.Sprintf("https://central.sonatype.com/artifact/com.google.cloud/spring-cloud-gcp/%s", version)
-	overviewURL := "https://central.sonatype.com/artifact/com.google.cloud/spring-cloud-gcp/overview"
+	// We check the actual repository instead of the web UI to avoid false positives from soft 404s.
+	repoURL := fmt.Sprintf("https://repo1.maven.org/maven2/com/google/cloud/spring-cloud-gcp/%s/spring-cloud-gcp-%s.pom", version, version)
+	metadataURL := "https://repo1.maven.org/maven2/com/google/cloud/spring-cloud-gcp/maven-metadata.xml"
+	searchURL := fmt.Sprintf("https://central.sonatype.com/artifact/com.google.cloud/spring-cloud-gcp/%s", version)
 	
-	fmt.Printf("%s 🔗 Version URL: %s\n", prefix, mavenURL)
-	fmt.Printf("%s 🔗 Overview URL: %s\n", prefix, overviewURL)
+	fmt.Printf("%s 🔗 Repository POM: %s\n", prefix, repoURL)
+	fmt.Printf("%s 🔗 Metadata URL: %s\n", prefix, metadataURL)
+	fmt.Printf("%s 🔗 Search Portal: %s\n", prefix, searchURL)
 
 	success := false
 	maxWait := 6 * time.Hour
@@ -768,13 +771,23 @@ func verifyMavenCentral(branch, version string) {
 	
 	for i := 0; i < 72; i++ {
 		elapsed := time.Since(start).Round(time.Second)
-		fmt.Printf("\r%s ⏳ Polling central.sonatype.com up to %v... (Elapsed: %v)", prefix, maxWait, elapsed)
+		fmt.Printf("\r%s ⏳ Polling Maven Central up to %v... (Elapsed: %v)", prefix, maxWait, elapsed)
 
-		resp, err := http.Get(mavenURL)
+		// 1. Check if the specific POM file exists
+		resp, err := http.Get(repoURL)
 		if err == nil && resp.StatusCode == 200 {
-			success = true
 			resp.Body.Close()
-			break
+			
+			// 2. Double check that it's also indexed in the metadata
+			metaResp, metaErr := http.Get(metadataURL)
+			if metaErr == nil && metaResp.StatusCode == 200 {
+				body, _ := io.ReadAll(metaResp.Body)
+				metaResp.Body.Close()
+				if strings.Contains(string(body), "<version>"+version+"</version>") {
+					success = true
+					break
+				}
+			}
 		}
 		if resp != nil {
 			resp.Body.Close()
@@ -786,7 +799,7 @@ func verifyMavenCentral(branch, version string) {
 	if success {
 		fmt.Printf("%s 🎉 SUCCESS! Version %s is now live on Maven Central!\n", prefix, version)
 		if emailOpt != "" {
-			emailBody := fmt.Sprintf("The Spring Cloud GCP release for %s (branch %s) is complete.\n\nMaven Central link: %s", version, branch, mavenURL)
+			emailBody := fmt.Sprintf("The Spring Cloud GCP release for %s (branch %s) is complete.\n\nMaven Central link: %s", version, branch, searchURL)
 			sendEmail(emailOpt, fmt.Sprintf("✅ Spring Cloud GCP Release %s Complete", version), emailBody)
 		}
 	} else {
