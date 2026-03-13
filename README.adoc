@@ -63,8 +63,8 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 
 |8.x
 |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2025.1-Release-Notes[2025.1.x] (Oakwood)
-|https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Release-Notes [4.0.x]
-|https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-7.0-Release-Notes [7.0.0 or above]
+|https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Release-Notes[4.0.x]
+|https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-7.0-Release-Notes[7.0.0 or above]
 |Yes
 
 |7.x
