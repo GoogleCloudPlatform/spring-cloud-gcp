@@ -39,44 +39,48 @@ public class GcpCloudSqlProperties {
 
   /** Specifies whether to enable IAM database authentication (PostgreSQL only). */
   private boolean enableIamAuth;
+
   /**
-   * The target principal to use for service account impersonation. Corresponds to
-   * Cloud SQL Java Connector JDBC property cloudSqlTargetPrincipal
+   * The target principal to use for service account impersonation. Corresponds to Cloud SQL Java
+   * Connector JDBC property cloudSqlTargetPrincipal
    */
   private String targetPrincipal;
 
   /**
-   * The chain of delegated service accounts to use for service account impersonation.
-   * Corresponds to Cloud SQL Java Connector JDBC property cloudSqlDelegates
+   * The chain of delegated service accounts to use for service account impersonation. Corresponds
+   * to Cloud SQL Java Connector JDBC property cloudSqlDelegates
    */
   private String delegates;
 
   /**
-   * The alternate admin root url for the Cloud SQL Admin API.
-   * Corresponds to Cloud SQL Java Connector JDBC property cloudSqlAdminRootUrl.
+   * The alternate admin root url for the Cloud SQL Admin API. Corresponds to Cloud SQL Java
+   * Connector JDBC property cloudSqlAdminRootUrl.
    */
   private String adminRootUrl;
+
   /**
-   * The alternate service path for the Cloud SQL Admin API
-   * Corresponds to Cloud SQL Java Connector JDBC property cloudSqlAdminServicePath.
+   * The alternate service path for the Cloud SQL Admin API Corresponds to Cloud SQL Java Connector
+   * JDBC property cloudSqlAdminServicePath.
    */
   private String adminServicePath;
+
   /**
-   * The quota project to use for API requests.
-   * Corresponds to Cloud SQL Java Connector JDBC property cloudSqlAdminQuotaProject
+   * The quota project to use for API requests. Corresponds to Cloud SQL Java Connector JDBC
+   * property cloudSqlAdminQuotaProject
    */
   private String adminQuotaProject;
+
   /**
-   * The universe domain to use for API requests
-   * Corresponds to Cloud SQL Java Connector JDBC property cloudSqlUniverseDomain
+   * The universe domain to use for API requests Corresponds to Cloud SQL Java Connector JDBC
+   * property cloudSqlUniverseDomain
    */
   private String universeDomain;
+
   /**
-   * The refresh strategy to use for API requests
-   * Corresponds to Cloud SQL Java Connector JDBC property cloudSqlRefreshStrategy
+   * The refresh strategy to use for API requests Corresponds to Cloud SQL Java Connector JDBC
+   * property cloudSqlRefreshStrategy
    */
   private String refreshStrategy;
-
 
   public String getDatabaseName() {
     return this.databaseName;

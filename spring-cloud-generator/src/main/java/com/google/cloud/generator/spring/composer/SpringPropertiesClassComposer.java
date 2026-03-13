@@ -91,10 +91,8 @@ public class SpringPropertiesClassComposer implements ClassComposer {
             .setPackageString(packageName)
             .setName(className)
             .setScope(ScopeNode.PUBLIC)
-            .setStatements(
-                createMemberVariables(service, transport, dynamicTypes))
-            .setMethods(
-                createGetterSetters(service, transport, dynamicTypes))
+            .setStatements(createMemberVariables(service, transport, dynamicTypes))
+            .setMethods(createGetterSetters(service, transport, dynamicTypes))
             .setAnnotations(Arrays.asList(classAnnotationNode))
             .setImplementsTypes(Arrays.asList(STATIC_TYPES.get("CredentialsSupplier")))
             .build();
@@ -102,9 +100,7 @@ public class SpringPropertiesClassComposer implements ClassComposer {
   }
 
   private static List<Statement> createMemberVariables(
-      Service service,
-      Transport transport,
-      Map<String, TypeNode> types) {
+      Service service, Transport transport, Map<String, TypeNode> types) {
 
     String serviceName = service.name();
     List<Statement> statements = new ArrayList<>();
@@ -116,7 +112,8 @@ public class SpringPropertiesClassComposer implements ClassComposer {
         Arrays.asList(AnnotationNode.withType(STATIC_TYPES.get("NestedConfigurationProperty")));
 
     // Generates credentials variable:
-    // private final Credentials credentials = new Credentials("https://www.googleapis.com/auth/cloud-language");
+    // private final Credentials credentials = new
+    // Credentials("https://www.googleapis.com/auth/cloud-language");
     NewObjectExpr defaultCredentialScopes =
         builder()
             .setType(STATIC_TYPES.get("Credentials"))
@@ -146,7 +143,8 @@ public class SpringPropertiesClassComposer implements ClassComposer {
             "executorThreadCount", TypeNode.INT_OBJECT, false, null, null);
     statements.add(SpringPropertiesCommentComposer.createExecutorThreadCountPropertyComment());
     statements.add(executorThreadCountVarStatement);
-    // For GRPC+REST libraries, provide configuration property to override GRPC default and use REST transport instead
+    // For GRPC+REST libraries, provide configuration property to override GRPC default and use REST
+    // transport instead
     // For GRPC-only and REST-only libraries, this property is not provided
     if (ComposerUtils.shouldSupportRestOptionWithGrpcDefault(transport, service)) {
       ExprStatement useRestVarStatement =
@@ -182,9 +180,7 @@ public class SpringPropertiesClassComposer implements ClassComposer {
   }
 
   private static List<MethodDefinition> createGetterSetters(
-      Service service,
-      Transport transport,
-      Map<String, TypeNode> types) {
+      Service service, Transport transport, Map<String, TypeNode> types) {
 
     TypeNode thisClassType = types.get(Utils.getServicePropertiesClassName(service));
     List<MethodDefinition> methodDefinitions = new ArrayList<>();
@@ -280,8 +276,7 @@ public class SpringPropertiesClassComposer implements ClassComposer {
     AssignmentExpr propertyVarExpr =
         AssignmentExpr.builder()
             .setVariableExpr(
-                VariableExpr.withVariable(propertyVar)
-                    .toBuilder()
+                VariableExpr.withVariable(propertyVar).toBuilder()
                     .setExprReferenceExpr(thisExpr)
                     .build())
             .setValueExpr(propertyValueExpr)

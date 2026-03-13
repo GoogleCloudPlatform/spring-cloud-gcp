@@ -142,9 +142,7 @@ public class PubSubChannelProvisioner
   }
 
   Subscription ensureSubscriptionExists(
-      String subscriptionName,
-      String topicName,
-      PubSubConsumerProperties properties) {
+      String subscriptionName, String topicName, PubSubConsumerProperties properties) {
     Subscription subscription = this.pubSubAdmin.getSubscription(subscriptionName);
     if (subscription == null) {
       return createSubscription(subscriptionName, topicName, properties);
@@ -153,9 +151,7 @@ public class PubSubChannelProvisioner
   }
 
   private Subscription createSubscription(
-      String subscriptionName,
-      String topicName,
-      PubSubConsumerProperties properties) {
+      String subscriptionName, String topicName, PubSubConsumerProperties properties) {
     Subscription.Builder builder =
         Subscription.newBuilder().setName(subscriptionName).setTopic(topicName);
 

@@ -34,7 +34,10 @@ import org.springframework.context.annotation.Bean;
  * @since 1.1
  */
 @AutoConfiguration
-@ConditionalOnProperty(prefix = "spring.cloud.gcp.parameter", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(
+    prefix = "spring.cloud.gcp.parameter",
+    name = "enabled",
+    havingValue = "true")
 @EnableConfigurationProperties(GcpParameterProperties.class)
 public class GcpParameterBootstrapConfiguration {
 
@@ -49,7 +52,8 @@ public class GcpParameterBootstrapConfiguration {
                 new UserAgentHeaderProvider(GcpParameterBootstrapConfiguration.class));
 
     if (!properties.getLocation().equals("global")) {
-      String apiEndpoint = String.format("parametermanager.%s.rep.googleapis.com:443", properties.getLocation());
+      String apiEndpoint =
+          String.format("parametermanager.%s.rep.googleapis.com:443", properties.getLocation());
       settings.setEndpoint(apiEndpoint);
     }
 
@@ -59,8 +63,8 @@ public class GcpParameterBootstrapConfiguration {
   @Bean
   @ConditionalOnMissingBean
   public GoogleParameterPropertySourceLocator googleConfigPropertySourceLocator(
-      GcpParameterProperties parameterProperties,
-      ParameterManagerClient parameterManagerClient) throws IOException {
+      GcpParameterProperties parameterProperties, ParameterManagerClient parameterManagerClient)
+      throws IOException {
     return new GoogleParameterPropertySourceLocator(
         new DefaultGcpProjectIdProvider(),
         new DefaultCredentialsProvider(parameterProperties),

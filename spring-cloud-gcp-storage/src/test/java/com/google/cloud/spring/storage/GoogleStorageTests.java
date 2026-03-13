@@ -74,16 +74,16 @@ class GoogleStorageTests {
   void testEmptyPath() {
 
     assertThatThrownBy(() -> new GoogleStorageResource(this.mockStorage, "gs://", false))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Invalid location: gs://");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Invalid location: gs://");
   }
 
   @Test
   void testSlashPath() {
 
     assertThatThrownBy(() -> new GoogleStorageResource(this.mockStorage, "gs:///", false))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("No bucket specified in the location: gs:///");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("No bucket specified in the location: gs:///");
   }
 
   @Test
@@ -161,41 +161,43 @@ class GoogleStorageTests {
   @Test
   void testBucketOutputStream() {
 
-    assertThatThrownBy(() ->  ((WritableResource) this.bucketResource).getOutputStream())
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("Cannot open an output stream to a bucket: 'gs://test-spring/'");
+    assertThatThrownBy(() -> ((WritableResource) this.bucketResource).getOutputStream())
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage("Cannot open an output stream to a bucket: 'gs://test-spring/'");
   }
 
   @Test
   void testBucketNoBlobInputStream() {
 
-    assertThatThrownBy(() ->  this.bucketResource.getInputStream())
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("Cannot open an input stream to a bucket: 'gs://test-spring/'");
+    assertThatThrownBy(() -> this.bucketResource.getInputStream())
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage("Cannot open an input stream to a bucket: 'gs://test-spring/'");
   }
 
   @Test
   void testBucketNoBlobContentLength() {
 
     assertThatThrownBy(() -> this.bucketResource.contentLength())
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("No blob id specified in the location: 'gs://test-spring/', and the operation is not allowed on buckets.");
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage(
+            "No blob id specified in the location: 'gs://test-spring/', and the operation is not allowed on buckets.");
   }
 
   @Test
   void testBucketNoBlobFile() {
 
     assertThatThrownBy(() -> this.bucketResource.getFile())
-            .isInstanceOf(UnsupportedOperationException.class)
-            .hasMessage("gs://test-spring/ cannot be resolved to absolute file path");
+        .isInstanceOf(UnsupportedOperationException.class)
+        .hasMessage("gs://test-spring/ cannot be resolved to absolute file path");
   }
 
   @Test
   void testBucketNoBlobLastModified() {
 
-    assertThatThrownBy(() ->  this.bucketResource.lastModified())
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("No blob id specified in the location: 'gs://test-spring/', and the operation is not allowed on buckets.");
+    assertThatThrownBy(() -> this.bucketResource.lastModified())
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage(
+            "No blob id specified in the location: 'gs://test-spring/', and the operation is not allowed on buckets.");
   }
 
   @Test
@@ -240,8 +242,8 @@ class GoogleStorageTests {
     GoogleStorageResource resource = new GoogleStorageResource(this.mockStorage, location, false);
 
     assertThatThrownBy(resource::getOutputStream)
-            .isInstanceOf(FileNotFoundException.class)
-            .hasMessage("The blob was not found: gs://test-spring/test");
+        .isInstanceOf(FileNotFoundException.class)
+        .hasMessage("The blob was not found: gs://test-spring/test");
   }
 
   @Test
@@ -302,9 +304,8 @@ class GoogleStorageTests {
     GoogleStorageResource resource = new GoogleStorageResource(storage, location, false);
 
     assertThatThrownBy(resource::getInputStream)
-            .isInstanceOf(FileNotFoundException.class)
-            .hasMessage("The blob was not found: gs://test-spring/test");
-
+        .isInstanceOf(FileNotFoundException.class)
+        .hasMessage("The blob was not found: gs://test-spring/test");
   }
 
   @Test

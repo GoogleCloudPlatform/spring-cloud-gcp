@@ -23,8 +23,9 @@ import org.springframework.boot.context.config.ConfigDataLocationResolverContext
 import org.springframework.boot.context.config.ConfigDataResource;
 
 /**
- * A safe delegating ConfigDataLocationResolver that loads ParameterManagerConfigDataLocationResolver
- * only if Parameter Manager dependency is present on the classpath.
+ * A safe delegating ConfigDataLocationResolver that loads
+ * ParameterManagerConfigDataLocationResolver only if Parameter Manager dependency is present on the
+ * classpath.
  */
 public class ParameterManagerConfigDataLocationResolverLoader
     implements ConfigDataLocationResolver<ConfigDataResource> {
@@ -39,10 +40,11 @@ public class ParameterManagerConfigDataLocationResolverLoader
 
   private ConfigDataLocationResolver<ConfigDataResource> instantiateRealResolver() {
     try {
-      Class<?> clazz = Class.forName(
-          "com.google.cloud.spring.autoconfigure.parametermanager.ParameterManagerConfigDataLocationResolver");
-      return (ConfigDataLocationResolver<ConfigDataResource>) clazz
-          .getDeclaredConstructor().newInstance();
+      Class<?> clazz =
+          Class.forName(
+              "com.google.cloud.spring.autoconfigure.parametermanager.ParameterManagerConfigDataLocationResolver");
+      return (ConfigDataLocationResolver<ConfigDataResource>)
+          clazz.getDeclaredConstructor().newInstance();
     } catch (Exception ex) {
       throw new IllegalStateException(
           "Failed to instantiate ParameterManagerConfigDataLocationResolver", ex);
@@ -50,12 +52,11 @@ public class ParameterManagerConfigDataLocationResolverLoader
   }
 
   /**
-   * Checks if the property can be resolved by the Parameter Manager resolver.
-   * For the check, we rely on the presence of the ParameterManagerSyntaxUtils class, which is an
-   * optional dependency.
+   * Checks if the property can be resolved by the Parameter Manager resolver. For the check, we
+   * rely on the presence of the ParameterManagerSyntaxUtils class, which is an optional dependency.
    * Since optional dependencies may not be present at runtime, we explicitly check for its
-   * existence before resolving the property.
-   * If it's not present, it means this config resolver is not meant to be used.
+   * existence before resolving the property. If it's not present, it means this config resolver is
+   * not meant to be used.
    *
    * @return true if the delegate resolver is initialized and the location has the expected
    *     Parameter Manager prefix (e.g., {@code pm@}); false otherwise.
@@ -87,7 +88,8 @@ public class ParameterManagerConfigDataLocationResolverLoader
     if (delegate == null) {
       // This should technically never happen if isResolvable is checked first,
       // but safe guard.
-      throw new IllegalStateException("Parameter Manager support is not available on the classpath.");
+      throw new IllegalStateException(
+          "Parameter Manager support is not available on the classpath.");
     }
     return delegate.resolve(context, location);
   }

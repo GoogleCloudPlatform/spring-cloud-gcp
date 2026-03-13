@@ -16,13 +16,12 @@
 
 package com.google.cloud.spring.pubsub.support.converter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
-import java.io.IOException;
 import java.util.Map;
 import org.springframework.util.Assert;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 /** A converter using Jackson JSON. */
 public class JacksonPubSubMessageConverter implements PubSubMessageConverter {
@@ -44,7 +43,7 @@ public class JacksonPubSubMessageConverter implements PubSubMessageConverter {
     try {
       return byteStringToPubSubMessage(
           ByteString.copyFrom(this.objectMapper.writeValueAsBytes(payload)), headers);
-    } catch (JsonProcessingException ex) {
+    } catch (JacksonException ex) {
       throw new PubSubMessageConversionException(
           "JSON serialization of an object of type " + payload.getClass().getName() + " failed.",
           ex);
@@ -56,7 +55,7 @@ public class JacksonPubSubMessageConverter implements PubSubMessageConverter {
     try {
       return (T)
           this.objectMapper.readerFor(payloadType).readValue(message.getData().toByteArray());
-    } catch (IOException ex) {
+    } catch (JacksonException ex) {
       throw new PubSubMessageConversionException(
           "JSON deserialization of an object of type " + payloadType.getName() + " failed.", ex);
     }

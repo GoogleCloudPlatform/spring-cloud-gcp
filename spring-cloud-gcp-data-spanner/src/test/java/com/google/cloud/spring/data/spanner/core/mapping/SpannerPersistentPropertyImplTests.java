@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -36,7 +37,7 @@ class SpannerPersistentPropertyImplTests {
   @Test
   void testGetColumn() {
     assertThat(new SpannerMappingContext().getPersistentEntity(TestEntity.class).columns())
-            .containsExactlyInAnyOrder("id", "custom_col", "other", "doubleList");
+        .containsExactlyInAnyOrder("id", "custom_col", "other", "doubleList");
   }
 
   @Test
@@ -48,57 +49,62 @@ class SpannerPersistentPropertyImplTests {
     context.setFieldNamingStrategy(namingStrat);
 
     assertThatThrownBy(() -> context.getPersistentEntity(TestEntity.class))
-            .hasMessageContaining("Invalid (null or empty) field name returned for ")
-            .hasMessageContaining("com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentPropertyImplTests$TestEntity")
-                .satisfies(t -> {
-                  String msg = t.getMessage();
-                  assertThat(msg).matches("(?s).*SpannerPersistentPropertyImplTests\\$TestEntity\\.(id|doubleList|other)\\b.*");
-                });
+        .satisfies(
+            t -> {
+              Throwable cause = NestedExceptionUtils.getMostSpecificCause(t);
+              assertThat(cause).isNotNull();
+              assertThat(cause.getMessage())
+                  .contains("Invalid (null or empty) field name returned for ")
+                  .contains(
+                      "com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentPropertyImplTests$TestEntity");
+              assertThat(cause.getMessage())
+                  .matches(
+                      "(?s).*SpannerPersistentPropertyImplTests\\$TestEntity\\.(id|doubleList|other)\\b.*");
+            });
   }
-
 
   @Test
   void testAssociations() {
     new SpannerMappingContext()
-            .getPersistentEntity(TestEntity.class)
-            .doWithProperties(
-                    (PropertyHandler<SpannerPersistentProperty>)
-                            prop -> {
-                              assertThat(
-                                      ((SpannerPersistentPropertyImpl) prop).createAssociation().getInverse())
-                                      .isSameAs(prop);
-                              assertThat(
-                                      ((SpannerPersistentPropertyImpl) prop).createAssociation().getObverse())
-                                      .isNull();
-                            });
+        .getPersistentEntity(TestEntity.class)
+        .doWithProperties(
+            (PropertyHandler<SpannerPersistentProperty>)
+                prop -> {
+                  assertThat(
+                          ((SpannerPersistentPropertyImpl) prop).createAssociation().getInverse())
+                      .isSameAs(prop);
+                  assertThat(
+                          ((SpannerPersistentPropertyImpl) prop).createAssociation().getObverse())
+                      .isNull();
+                });
   }
 
   @Test
   void testColumnInnerType() {
     assertThat(
             new SpannerMappingContext()
-                    .getPersistentEntity(TestEntity.class)
-                    .getPersistentProperty("doubleList")
-                    .getColumnInnerType())
-            .isEqualTo(Double.class);
+                .getPersistentEntity(TestEntity.class)
+                .getPersistentProperty("doubleList")
+                .getColumnInnerType())
+        .isEqualTo(Double.class);
   }
 
   @Test
   void testNoPojoIdProperties() {
     new SpannerMappingContext()
-            .getPersistentEntity(TestEntity.class)
-            .doWithProperties(
-                    (PropertyHandler<SpannerPersistentProperty>)
-                            prop -> assertThat(prop.isIdProperty()).isFalse());
+        .getPersistentEntity(TestEntity.class)
+        .doWithProperties(
+            (PropertyHandler<SpannerPersistentProperty>)
+                prop -> assertThat(prop.isIdProperty()).isFalse());
   }
 
   @Test
   void testIgnoredProperty() {
     new SpannerMappingContext()
-            .getPersistentEntity(TestEntity.class)
-            .doWithProperties(
-                    (PropertyHandler<SpannerPersistentProperty>)
-                            prop -> assertThat(prop.getColumnName()).isNotEqualTo("not_mapped"));
+        .getPersistentEntity(TestEntity.class)
+        .doWithProperties(
+            (PropertyHandler<SpannerPersistentProperty>)
+                prop -> assertThat(prop.getColumnName()).isNotEqualTo("not_mapped"));
   }
 
   @Table(name = "custom_test_table")

@@ -87,7 +87,6 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
   private int writeBufferSize = FIRESTORE_WRITE_MAX_SIZE;
 
-
   private String collectionNameSuffix = "";
 
   /**
@@ -198,25 +197,25 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
   @Override
   public <T> Flux<T> saveAll(Publisher<T> instances) {
     return Flux.deferContextual(
-            ctx -> {
-              Optional<TransactionContext> transactionContext =
-                  ctx.getOrEmpty(TransactionContext.class);
-              if (transactionContext.isPresent()) {
-                ReactiveFirestoreResourceHolder holder =
-                    (ReactiveFirestoreResourceHolder)
-                        transactionContext.get().getResources().get(this.firestoreStub);
-                // In a transaction, all write operations should be sent in the commit request, so
-                // we just
-                // collect them
-                return Flux.from(instances)
-                    .doOnNext(
-                        t -> {
-                          holder.getWrites().add(createUpdateWrite(t));
-                          holder.getEntities().add(t);
-                        });
-              }
-              return commitWrites(instances, this::createUpdateWrite, true);
-            });
+        ctx -> {
+          Optional<TransactionContext> transactionContext =
+              ctx.getOrEmpty(TransactionContext.class);
+          if (transactionContext.isPresent()) {
+            ReactiveFirestoreResourceHolder holder =
+                (ReactiveFirestoreResourceHolder)
+                    transactionContext.get().getResources().get(this.firestoreStub);
+            // In a transaction, all write operations should be sent in the commit request, so
+            // we just
+            // collect them
+            return Flux.from(instances)
+                .doOnNext(
+                    t -> {
+                      holder.getWrites().add(createUpdateWrite(t));
+                      holder.getEntities().add(t);
+                    });
+          }
+          return commitWrites(instances, this::createUpdateWrite, true);
+        });
   }
 
   @Override
@@ -297,7 +296,12 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
   @Override
   public String buildResourceName(FirestorePersistentEntity<?> persistentEntity, String resource) {
-    return this.parent + "/" + persistentEntity.collectionName() + collectionNameSuffix + "/" + resource;
+    return this.parent
+        + "/"
+        + persistentEntity.collectionName()
+        + collectionNameSuffix
+        + "/"
+        + resource;
   }
 
   private FirestoreReactiveOperations withParent(String resourceName) {
@@ -316,20 +320,20 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
 
   private Flux<String> deleteDocumentsByName(Flux<String> documentNames) {
     return Flux.deferContextual(
-            ctx -> {
-              Optional<TransactionContext> transactionContext =
-                  ctx.getOrEmpty(TransactionContext.class);
-              if (transactionContext.isPresent()) {
-                ReactiveFirestoreResourceHolder holder =
-                    (ReactiveFirestoreResourceHolder)
-                        transactionContext.get().getResources().get(this.firestoreStub);
-                List<Write> writes = holder.getWrites();
-                // In a transaction, all write operations should be sent in the commit request, so
-                // we just collect them
-                return Flux.from(documentNames).doOnNext(t -> writes.add(createDeleteWrite(t)));
-              }
-              return commitWrites(documentNames, this::createDeleteWrite, false);
-            });
+        ctx -> {
+          Optional<TransactionContext> transactionContext =
+              ctx.getOrEmpty(TransactionContext.class);
+          if (transactionContext.isPresent()) {
+            ReactiveFirestoreResourceHolder holder =
+                (ReactiveFirestoreResourceHolder)
+                    transactionContext.get().getResources().get(this.firestoreStub);
+            List<Write> writes = holder.getWrites();
+            // In a transaction, all write operations should be sent in the commit request, so
+            // we just collect them
+            return Flux.from(documentNames).doOnNext(t -> writes.add(createDeleteWrite(t)));
+          }
+          return commitWrites(documentNames, this::createDeleteWrite, false);
+        });
   }
 
   private <T> Flux<T> commitWrites(
@@ -351,7 +355,8 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
                           for (int i = 0; i < batch.size(); i++) {
                             getClassMapper()
                                 .setUpdateTime(
-                                    batch.get(i), Timestamp.fromProto(
+                                    batch.get(i),
+                                    Timestamp.fromProto(
                                         response.getWriteResults(i).getUpdateTime()));
                           }
                         }
@@ -371,56 +376,55 @@ public class FirestoreTemplate implements FirestoreReactiveOperations {
   private <T> Flux<Document> findAllDocuments(
       Class<T> clazz, StructuredQuery.Projection projection, StructuredQuery.Builder queryBuilder) {
     return Flux.deferContextual(
-            ctx -> {
-              FirestorePersistentEntity<?> persistentEntity =
-                  this.mappingContext.getPersistentEntity(clazz);
+        ctx -> {
+          FirestorePersistentEntity<?> persistentEntity =
+              this.mappingContext.getPersistentEntity(clazz);
 
-              StructuredQuery.Builder builder =
-                  queryBuilder != null ? queryBuilder.clone() : StructuredQuery.newBuilder();
-              builder.addFrom(
-                  StructuredQuery.CollectionSelector.newBuilder()
-                      .setCollectionId(persistentEntity.collectionName() + collectionNameSuffix)
-                      .build());
-              if (projection != null) {
-                builder.setSelect(projection);
-              }
-              RunQueryRequest.Builder requestBuilder =
-                  RunQueryRequest.newBuilder()
-                      .setParent(this.parent)
-                      .setStructuredQuery(builder.build());
+          StructuredQuery.Builder builder =
+              queryBuilder != null ? queryBuilder.clone() : StructuredQuery.newBuilder();
+          builder.addFrom(
+              StructuredQuery.CollectionSelector.newBuilder()
+                  .setCollectionId(persistentEntity.collectionName() + collectionNameSuffix)
+                  .build());
+          if (projection != null) {
+            builder.setSelect(projection);
+          }
+          RunQueryRequest.Builder requestBuilder =
+              RunQueryRequest.newBuilder()
+                  .setParent(this.parent)
+                  .setStructuredQuery(builder.build());
 
-              doIfTransaction(
-                  ctx,
-                  resourceHolder ->
-                      requestBuilder.setTransaction(resourceHolder.getTransactionId()));
+          doIfTransaction(
+              ctx,
+              resourceHolder -> requestBuilder.setTransaction(resourceHolder.getTransactionId()));
 
-              return ObservableReactiveUtil.<RunQueryResponse>streamingCall(
-                      obs -> this.firestoreStub.runQuery(requestBuilder.build(), obs))
-                  .filter(RunQueryResponse::hasDocument)
-                  .map(RunQueryResponse::getDocument);
-            });
+          return ObservableReactiveUtil.<RunQueryResponse>streamingCall(
+                  obs -> this.firestoreStub.runQuery(requestBuilder.build(), obs))
+              .filter(RunQueryResponse::hasDocument)
+              .map(RunQueryResponse::getDocument);
+        });
   }
 
   private Mono<Document> getDocument(String id, Class clazz, DocumentMask documentMask) {
     return Mono.deferContextual(
-            ctx -> {
-              FirestorePersistentEntity<?> persistentEntity =
-                  this.mappingContext.getPersistentEntity(clazz);
-              GetDocumentRequest.Builder builder =
-                  GetDocumentRequest.newBuilder().setName(buildResourceName(persistentEntity, id));
+        ctx -> {
+          FirestorePersistentEntity<?> persistentEntity =
+              this.mappingContext.getPersistentEntity(clazz);
+          GetDocumentRequest.Builder builder =
+              GetDocumentRequest.newBuilder().setName(buildResourceName(persistentEntity, id));
 
-              doIfTransaction(ctx, holder -> builder.setTransaction(holder.getTransactionId()));
+          doIfTransaction(ctx, holder -> builder.setTransaction(holder.getTransactionId()));
 
-              if (documentMask != null) {
-                builder.setMask(documentMask);
-              }
+          if (documentMask != null) {
+            builder.setMask(documentMask);
+          }
 
-              return ObservableReactiveUtil.<Document>unaryCall(
-                      obs -> this.firestoreStub.getDocument(builder.build(), obs))
-                  .onErrorResume(
-                      throwable -> throwable.getMessage().startsWith(NOT_FOUND_DOCUMENT_MESSAGE),
-                      throwable -> Mono.empty());
-            });
+          return ObservableReactiveUtil.<Document>unaryCall(
+                  obs -> this.firestoreStub.getDocument(builder.build(), obs))
+              .onErrorResume(
+                  throwable -> throwable.getMessage().startsWith(NOT_FOUND_DOCUMENT_MESSAGE),
+                  throwable -> Mono.empty());
+        });
   }
 
   private void doIfTransaction(

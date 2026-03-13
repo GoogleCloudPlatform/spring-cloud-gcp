@@ -16,7 +16,6 @@
 
 package com.google.cloud.spring.autoconfigure.parameter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
@@ -37,6 +36,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Custom {@link PropertySourceLocator} for Google Cloud Parameter Manager API.
@@ -100,11 +100,12 @@ public class GoogleParameterPropertySourceLocator implements PropertySourceLocat
     try {
       ParameterVersionName parameterVersionName =
           ParameterVersionName.of(projectId, this.location, this.name, this.profile);
-      RenderParameterVersionResponse response = this.parameterManagerClient.renderParameterVersion(parameterVersionName.toString());
+      RenderParameterVersionResponse response =
+          this.parameterManagerClient.renderParameterVersion(parameterVersionName.toString());
 
       if (response == null) {
         throw new HttpClientErrorException(
-          HttpStatusCode.valueOf(500), "Invalid response from Parameter Manager API");
+            HttpStatusCode.valueOf(500), "Invalid response from Parameter Manager API");
       }
       return response;
     } catch (Exception ex) {
@@ -123,8 +124,7 @@ public class GoogleParameterPropertySourceLocator implements PropertySourceLocat
       config = convertStringToMap(googleParameterEnvironment.getRenderedPayload().toStringUtf8());
       Assert.notNull(googleParameterEnvironment, "Configuration not in expected format.");
     } catch (Exception ex) {
-      String message =
-          "Error loading configuration";
+      String message = "Error loading configuration";
       throw new RuntimeException(message, ex);
     }
     return new MapPropertySource(PROPERTY_SOURCE_NAME, config);

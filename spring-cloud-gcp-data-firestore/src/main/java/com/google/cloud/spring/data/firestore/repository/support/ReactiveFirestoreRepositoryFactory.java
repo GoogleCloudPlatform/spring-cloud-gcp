@@ -27,7 +27,7 @@ import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.ReactiveRepositoryFactorySupport;
 import org.springframework.data.repository.query.QueryLookupStrategy;
-import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
+import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.lang.Nullable;
 
 /**
@@ -57,8 +57,7 @@ public class ReactiveFirestoreRepositoryFactory extends ReactiveRepositoryFactor
   public <T, I> EntityInformation<T, I> getEntityInformation(Class<T> clazz) {
     return (EntityInformation<T, I>)
         new FirestorePersistentEntityInformation<>(
-            (FirestorePersistentEntity<T>)
-                this.firestoreMappingContext.getPersistentEntity(clazz));
+            (FirestorePersistentEntity<T>) this.firestoreMappingContext.getPersistentEntity(clazz));
   }
 
   @Override
@@ -74,8 +73,7 @@ public class ReactiveFirestoreRepositoryFactory extends ReactiveRepositoryFactor
 
   @Override
   protected Optional<QueryLookupStrategy> getQueryLookupStrategy(
-      @Nullable QueryLookupStrategy.Key key,
-      QueryMethodEvaluationContextProvider evaluationContextProvider) {
+      @Nullable QueryLookupStrategy.Key key, ValueExpressionDelegate valueExpressionDelegate) {
     return Optional.of(new FirestoreQueryLookupStrategy(this.firestoreTemplate));
   }
 }

@@ -27,16 +27,25 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /** Spring Integration Channel Adapters for Google Cloud Pub/Sub code sample. */
 @SpringBootApplication
+@EnableIntegration
 public class SenderApplication {
 
   private static final Log LOGGER = LogFactory.getLog(SenderApplication.class);
 
   public static void main(String[] args) {
     SpringApplication.run(SenderApplication.class, args);
+  }
+
+  @Bean
+  public TaskScheduler senderTaskScheduler() {
+    return new ThreadPoolTaskScheduler();
   }
 
   @Bean

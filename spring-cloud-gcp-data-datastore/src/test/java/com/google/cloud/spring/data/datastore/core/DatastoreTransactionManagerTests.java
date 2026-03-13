@@ -31,7 +31,6 @@ import com.google.cloud.datastore.Transaction;
 import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager.Tx;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.transaction.TransactionDefinition;
@@ -107,9 +106,9 @@ class DatastoreTransactionManagerTests {
     this.tx.setTransaction(this.transaction);
 
     assertThatThrownBy(() -> this.manager.doCommit(this.status))
-            .isInstanceOf(TransactionSystemException.class)
-            .hasMessage("Cloud Datastore transaction failed to commit.")
-            .hasCause(exception);
+        .isInstanceOf(TransactionSystemException.class)
+        .hasMessage("Cloud Datastore transaction failed to commit.")
+        .hasCause(exception);
   }
 
   @Test
@@ -136,9 +135,9 @@ class DatastoreTransactionManagerTests {
     this.tx.setTransaction(this.transaction);
 
     assertThatThrownBy(() -> this.manager.doRollback(this.status))
-            .isInstanceOf(TransactionSystemException.class)
-            .hasMessage("Cloud Datastore transaction failed to rollback.")
-            .hasCause(exception);
+        .isInstanceOf(TransactionSystemException.class)
+        .hasMessage("Cloud Datastore transaction failed to rollback.")
+        .hasCause(exception);
   }
 
   @Test

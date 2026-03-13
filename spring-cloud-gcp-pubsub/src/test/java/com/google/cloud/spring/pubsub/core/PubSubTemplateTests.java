@@ -29,8 +29,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiService;
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.pubsub.v1.MessageReceiver;
@@ -53,6 +51,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /** Tests for the Pub/Sub template. */
 @ExtendWith(MockitoExtension.class)
@@ -80,10 +81,9 @@ class PubSubTemplateTests {
   private PubSubPublisherTemplate createPublisherTemplate() {
     PubSubPublisherTemplate pubSubPublisherTemplate =
         new PubSubPublisherTemplate(this.mockPublisherFactory);
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
-    pubSubPublisherTemplate.setMessageConverter(
-        new JacksonPubSubMessageConverter(objectMapper));
+    ObjectMapper objectMapper =
+        JsonMapper.builder().configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true).build();
+    pubSubPublisherTemplate.setMessageConverter(new JacksonPubSubMessageConverter(objectMapper));
     return pubSubPublisherTemplate;
   }
 
@@ -172,9 +172,8 @@ class PubSubTemplateTests {
         .thenThrow(new PubSubException("couldn't create the publisher."));
 
     assertThatThrownBy(() -> this.pubSubTemplate.publish("testTopic", this.pubsubMessage))
-            .isInstanceOf(PubSubException.class)
-            .hasMessage("couldn't create the publisher.");
-
+        .isInstanceOf(PubSubException.class)
+        .hasMessage("couldn't create the publisher.");
   }
 
   @Test
@@ -207,7 +206,7 @@ class PubSubTemplateTests {
 
     when(this.mockSubscriberFactory.createSubscriber(
             eq("testSubscription"), isA(MessageReceiver.class)))
-            .thenReturn(this.mockSubscriber);
+        .thenReturn(this.mockSubscriber);
     when(this.mockSubscriber.startAsync()).thenReturn(mock(ApiService.class));
 
     Subscriber subscriber = this.pubSubTemplate.subscribe("testSubscription", message -> {});

@@ -25,13 +25,11 @@ import org.springframework.data.annotation.Id;
 
 /** An ancestor entity for integration tests. */
 public class AncestorEntity {
-  @Id
-  public Long id;
+  @Id public Long id;
 
   String name;
 
-  @Descendants
-  public List<DescendantEntry> descendants;
+  @Descendants public List<DescendantEntry> descendants;
 
   public AncestorEntity(String name, List<DescendantEntry> descendants) {
     this.name = name;

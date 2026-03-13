@@ -58,8 +58,9 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
    * Instantiates a streaming Pub/Sub subscription adapter.
    *
    * @param pubSubSubscriberOperations {@link PubSubSubscriberOperations} to use
-   * @param subscriptionName short subscription name, e.g., "subscriptionName", or the fully-qualified subscription name
-   *                        in the {@code projects/[project_name]/subscriptions/[subscription_name]} format
+   * @param subscriptionName short subscription name, e.g., "subscriptionName", or the
+   *     fully-qualified subscription name in the {@code
+   *     projects/[project_name]/subscriptions/[subscription_name]} format
    */
   public PubSubInboundChannelAdapter(
       PubSubSubscriberOperations pubSubSubscriberOperations, String subscriptionName) {
@@ -168,8 +169,10 @@ public class PubSubInboundChannelAdapter extends MessageProducerSupport {
       ConvertedBasicAcknowledgeablePubsubMessage<?> message,
       RuntimeException re,
       String actionMessage) {
-    LOGGER.warn(String.format("Sending Spring message [%s] failed; %s",
-        message.getPubsubMessage().getMessageId(), actionMessage));
+    LOGGER.warn(
+        String.format(
+            "Sending Spring message [%s] failed; %s",
+            message.getPubsubMessage().getMessageId(), actionMessage));
     // Starting from Spring 3.0, nested exception message is NOT included in stacktrace.
     // However, customers may still rely on messages in nested exception to troubleshoot,
     // so we explicitly log failure messages.

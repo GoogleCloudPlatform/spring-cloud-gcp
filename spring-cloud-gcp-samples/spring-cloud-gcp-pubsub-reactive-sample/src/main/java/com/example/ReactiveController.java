@@ -47,8 +47,7 @@ public class ReactiveController {
    */
   public static final int MAX_RESPONSE_ITEMS = 100;
 
-  @Autowired
-  PubSubReactiveFactory reactiveFactory;
+  @Autowired PubSubReactiveFactory reactiveFactory;
 
   @GetMapping(value = "/getMessages", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public Flux<String> getMessages() {

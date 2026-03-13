@@ -94,10 +94,10 @@ public class SecretManagerRegionalTestConfiguration {
         }
         try {
           SecretManagerServiceSettings.Builder settings =
-              SecretManagerServiceSettings.newBuilder()
-                  .setCredentialsProvider(credentialsProvider);
+              SecretManagerServiceSettings.newBuilder().setCredentialsProvider(credentialsProvider);
           if (!location.equals(GLOBAL_LOCATION)) {
-            settings.setEndpoint(String.format("secretmanager.%s.rep.googleapis.com:443", location));
+            settings.setEndpoint(
+                String.format("secretmanager.%s.rep.googleapis.com:443", location));
           }
           return SecretManagerServiceClient.create(settings.build());
         } catch (IOException e) {

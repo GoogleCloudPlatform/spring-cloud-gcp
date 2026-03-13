@@ -54,7 +54,10 @@ public class FirestoreSampleApp {
   }
 
   @Bean
-  @ConditionalOnProperty(name = "run.commandline.runner", havingValue = "true", matchIfMissing = true)
+  @ConditionalOnProperty(
+      name = "run.commandline.runner",
+      havingValue = "true",
+      matchIfMissing = true)
   public CommandLineRunner commandLineRunner() {
     return args -> {
       writeDocumentFromMap();

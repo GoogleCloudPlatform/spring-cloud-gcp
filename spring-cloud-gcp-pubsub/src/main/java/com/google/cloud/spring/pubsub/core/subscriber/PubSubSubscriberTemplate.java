@@ -237,11 +237,12 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
     return messages.stream()
         .map(
             message ->
-                (AcknowledgeablePubsubMessage) new PulledAcknowledgeablePubsubMessage(
-                    PubSubSubscriptionUtils.toProjectSubscriptionName(
-                        subscriptionId, this.subscriberFactory.getProjectId()),
-                    message.getMessage(),
-                    message.getAckId()))
+                (AcknowledgeablePubsubMessage)
+                    new PulledAcknowledgeablePubsubMessage(
+                        PubSubSubscriptionUtils.toProjectSubscriptionName(
+                            subscriptionId, this.subscriberFactory.getProjectId()),
+                        message.getMessage(),
+                        message.getAckId()))
         .toList();
   }
 
@@ -277,31 +278,32 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
     this.pullAsync(subscription, maxMessages, returnImmediately)
         .whenComplete(
             (ackableMessages, exception) -> {
-                if (exception != null) {
-                  completableFuture.completeExceptionally(exception);
-                  return;
-                }
-                try {
-                  completableFuture.complete(this.toConvertedAcknowledgeablePubsubMessages(payloadType, ackableMessages));
-                } catch (Exception e) {
-                  completableFuture.completeExceptionally(e);
-                }
-
+              if (exception != null) {
+                completableFuture.completeExceptionally(exception);
+                return;
+              }
+              try {
+                completableFuture.complete(
+                    this.toConvertedAcknowledgeablePubsubMessages(payloadType, ackableMessages));
+              } catch (Exception e) {
+                completableFuture.completeExceptionally(e);
+              }
             });
 
     return completableFuture;
   }
 
-  private <T> List<ConvertedAcknowledgeablePubsubMessage<T>> toConvertedAcknowledgeablePubsubMessages(
-      Class<T> payloadType, List<AcknowledgeablePubsubMessage> ackableMessages) {
+  private <T>
+      List<ConvertedAcknowledgeablePubsubMessage<T>> toConvertedAcknowledgeablePubsubMessages(
+          Class<T> payloadType, List<AcknowledgeablePubsubMessage> ackableMessages) {
     return ackableMessages.stream()
         .map(
             m ->
                 (ConvertedAcknowledgeablePubsubMessage<T>)
                     new ConvertedPulledAcknowledgeablePubsubMessage<>(
                         m,
-                        this.pubSubMessageConverter
-                            .fromPubSubMessage(m.getPubsubMessage(), payloadType)))
+                        this.pubSubMessageConverter.fromPubSubMessage(
+                            m.getPubsubMessage(), payloadType)))
         .toList();
   }
 
@@ -317,9 +319,7 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
       ack(ackableMessages);
     }
 
-    return ackableMessages.stream()
-        .map(AcknowledgeablePubsubMessage::getPubsubMessage)
-        .toList();
+    return ackableMessages.stream().map(AcknowledgeablePubsubMessage::getPubsubMessage).toList();
   }
 
   @Override
@@ -328,8 +328,7 @@ public class PubSubSubscriberTemplate implements PubSubSubscriberOperations, Dis
     PullRequest pullRequest =
         this.subscriberFactory.createPullRequest(subscription, maxMessages, returnImmediately);
 
-    final CompletableFuture<List<PubsubMessage>> completableFuture =
-        new CompletableFuture<>();
+    final CompletableFuture<List<PubsubMessage>> completableFuture = new CompletableFuture<>();
 
     this.pullAsync(pullRequest)
         .whenComplete(

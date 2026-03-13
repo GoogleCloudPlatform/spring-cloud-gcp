@@ -43,7 +43,7 @@ import org.springframework.util.Assert;
 public class SpannerDatabaseAdminTemplate {
 
   private static final String TABLE_SCHEMA_COL_NAME = "table_schema";
-  
+
   private static final String TABLE_NAME_COL_NAME = "table_name";
 
   private static final String PARENT_TABLE_NAME_COL_NAME = "parent_table_name";
@@ -158,8 +158,7 @@ public class SpannerDatabaseAdminTemplate {
         Struct row = results.getCurrentRowAsStruct();
         relationships.put(
             getQualifiedTableName(
-                row.getString(TABLE_SCHEMA_COL_NAME),
-                row.getString(TABLE_NAME_COL_NAME)),
+                row.getString(TABLE_SCHEMA_COL_NAME), row.getString(TABLE_NAME_COL_NAME)),
             row.isNull(PARENT_TABLE_NAME_COL_NAME)
                 ? null
                 : getQualifiedTableName(
@@ -171,14 +170,14 @@ public class SpannerDatabaseAdminTemplate {
       return relationships;
     }
   }
-  
+
   private String getQualifiedTableName(String schema, String table) {
     if (schema == null || Objects.equals(schema, getDefaultSchemaName())) {
       return table;
     }
     return schema + "." + table;
   }
-  
+
   private String getDefaultSchemaName() {
     // TODO: Get the default schema directly from the dialect when this is supported in the Spanner
     //       Java client.

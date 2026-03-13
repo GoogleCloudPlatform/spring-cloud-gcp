@@ -179,9 +179,7 @@ public class DatastoreRepositoryExample {
 
     System.out.println("Find by reference");
     List<String> singers2 =
-        this.singerRepository.findByFirstBand(band3).stream()
-            .map(Singer::getFirstName)
-            .toList();
+        this.singerRepository.findByFirstBand(band3).stream().map(Singer::getFirstName).toList();
     System.out.println(singers2);
   }
 }

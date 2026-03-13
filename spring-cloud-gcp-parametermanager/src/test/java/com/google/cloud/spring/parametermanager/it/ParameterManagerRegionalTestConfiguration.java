@@ -29,7 +29,6 @@ import com.google.cloud.spring.parametermanager.ParameterManagerClientFactory;
 import com.google.cloud.spring.parametermanager.ParameterManagerTemplate;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
-import javax.annotation.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -92,10 +91,10 @@ public class ParameterManagerRegionalTestConfiguration {
       }
       try {
         ParameterManagerSettings.Builder settings =
-            ParameterManagerSettings.newBuilder()
-                .setCredentialsProvider(credentialsProvider);
+            ParameterManagerSettings.newBuilder().setCredentialsProvider(credentialsProvider);
         if (!location.equals(GLOBAL_LOCATION)) {
-          settings.setEndpoint(String.format("parametermanager.%s.rep.googleapis.com:443", location));
+          settings.setEndpoint(
+              String.format("parametermanager.%s.rep.googleapis.com:443", location));
         }
         return ParameterManagerClient.create(settings.build());
       } catch (IOException e) {

@@ -35,7 +35,6 @@ import org.springframework.data.mapping.MappingException;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.query.QueryLookupStrategy;
-import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.ValueExpressionDelegate;
 
 /** Tests for the Spanner repository factory. */
@@ -73,10 +72,11 @@ class SpannerRepositoryFactoryTests {
         new SpannerRepositoryFactory(mock(SpannerMappingContext.class), this.spannerTemplate);
 
     assertThatThrownBy(() -> factory.getEntityInformation(TestEntity.class))
-            .isInstanceOf(MappingException.class)
-            .hasMessage("Could not lookup mapping metadata for domain "
-                    + "class com.google.cloud.spring.data.spanner.repository.support."
-                    + "SpannerRepositoryFactoryTests$TestEntity!");
+        .isInstanceOf(MappingException.class)
+        .hasMessage(
+            "Could not lookup mapping metadata for domain "
+                + "class com.google.cloud.spring.data.spanner.repository.support."
+                + "SpannerRepositoryFactoryTests$TestEntity!");
   }
 
   @Test
@@ -102,10 +102,6 @@ class SpannerRepositoryFactoryTests {
     Optional<QueryLookupStrategy> qls =
         this.spannerRepositoryFactory.getQueryLookupStrategy(
             null, mock(ValueExpressionDelegate.class));
-    assertThat(qls.get()).isInstanceOf(SpannerQueryLookupStrategy.class);
-    qls =
-        this.spannerRepositoryFactory.getQueryLookupStrategy(
-            null, mock(QueryMethodEvaluationContextProvider.class));
     assertThat(qls.get()).isInstanceOf(SpannerQueryLookupStrategy.class);
   }
 

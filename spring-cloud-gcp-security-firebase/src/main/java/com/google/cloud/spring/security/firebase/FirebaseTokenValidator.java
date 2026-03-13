@@ -36,10 +36,10 @@ import org.springframework.util.Assert;
  * <p>This validator will check the following claims:
  *
  * <ul>
- *     <li>iat : Must be in the past</li>
- *     <li>aud : Must be the firebase project id</li>
- *     <li>auth_time : Must be in the past</li>
- *     <li>sub : Must not be empty</li>
+ *   <li>iat : Must be in the past
+ *   <li>aud : Must be the firebase project id
+ *   <li>auth_time : Must be in the past
+ *   <li>sub : Must not be empty
  * </ul>
  *
  * @since 1.2.2

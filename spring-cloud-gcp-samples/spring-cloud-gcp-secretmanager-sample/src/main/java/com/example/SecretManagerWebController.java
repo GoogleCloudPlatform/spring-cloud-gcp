@@ -33,7 +33,8 @@ public class SecretManagerWebController {
 
   private static final String INDEX_PAGE = "index.html";
   private static final String APPLICATION_SECRET_FROM_VALUE = "applicationSecretFromValue";
-  private static final String APPLICATION_REGIONAL_SECRET_FROM_VALUE = "applicationRegionalSecretFromValue";
+  private static final String APPLICATION_REGIONAL_SECRET_FROM_VALUE =
+      "applicationRegionalSecretFromValue";
 
   private final SecretManagerTemplate secretManagerTemplate;
   // Application secrets can be accessed using configuration properties class,
@@ -44,13 +45,13 @@ public class SecretManagerWebController {
   // will be warned if using this syntax.
   // Note that the colon of the protocol specification section must be escaped;
   // See https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/3440
-  //@Value("${sm\\://application-fake:DEFAULT}")
-  //private String defaultSecretDeprecatedSyntax;
+  // @Value("${sm\\://application-fake:DEFAULT}")
+  // private String defaultSecretDeprecatedSyntax;
 
   // This syntax is not recommended. Please switch your code to the `sm@my_secret` syntax. Users
   // will be warned if using this syntax.
-  //@Value("${sm://application-secret}")
-  //private String appSecretFromValueDeprecatedSyntax;
+  // @Value("${sm://application-secret}")
+  // private String appSecretFromValueDeprecatedSyntax;
 
   // For the default value to take place, there should be no property called `application-fake`
   // in property files.
@@ -67,9 +68,8 @@ public class SecretManagerWebController {
   @Value("${sm@locations/us-central1/application-secret:DEFAULT}")
   private String appRegionalSecretFromValue;
 
-  public SecretManagerWebController(SecretManagerTemplate secretManagerTemplate,
-      SecretConfiguration configuration
-  ) {
+  public SecretManagerWebController(
+      SecretManagerTemplate secretManagerTemplate, SecretConfiguration configuration) {
     this.secretManagerTemplate = secretManagerTemplate;
     this.configuration = configuration;
   }
@@ -139,7 +139,8 @@ public class SecretManagerWebController {
       if (StringUtils.isEmpty(locationId)) {
         this.secretManagerTemplate.createSecret(secretId, secretPayload.getBytes(), projectId);
       } else {
-        this.secretManagerTemplate.createSecret(secretId, secretPayload.getBytes(), projectId, locationId);
+        this.secretManagerTemplate.createSecret(
+            secretId, secretPayload.getBytes(), projectId, locationId);
       }
     }
 
@@ -158,7 +159,8 @@ public class SecretManagerWebController {
       if (StringUtils.isEmpty(locationId)) {
         this.secretManagerTemplate.deleteSecret(secretId);
       } else {
-        this.secretManagerTemplate.deleteSecret(secretId, this.secretManagerTemplate.getProjectId(), locationId);
+        this.secretManagerTemplate.deleteSecret(
+            secretId, this.secretManagerTemplate.getProjectId(), locationId);
       }
     } else {
       if (StringUtils.isEmpty(locationId)) {

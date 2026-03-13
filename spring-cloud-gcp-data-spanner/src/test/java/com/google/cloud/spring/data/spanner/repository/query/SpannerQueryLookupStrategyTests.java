@@ -44,13 +44,11 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.Parameters;
-import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
@@ -67,8 +65,6 @@ class SpannerQueryLookupStrategyTests {
 
   private ValueExpressionDelegate valueExpressionDelegate;
 
-  private QueryMethodEvaluationContextProvider evaluationContextProvider;
-
   private SpelExpressionParser spelExpressionParser;
 
   @BeforeEach
@@ -78,7 +74,6 @@ class SpannerQueryLookupStrategyTests {
     this.spannerTemplate = mock(SpannerTemplate.class);
     this.queryMethod = mock(SpannerQueryMethod.class);
     this.valueExpressionDelegate = mock(ValueExpressionDelegate.class);
-    this.evaluationContextProvider = mock(QueryMethodEvaluationContextProvider.class);
     this.spelExpressionParser = new SpelExpressionParser();
 
     when(this.queryMethod.getQueryAnnotation())
@@ -101,10 +96,9 @@ class SpannerQueryLookupStrategyTests {
             });
   }
 
-  @ParameterizedTest
-  @ValueSource(booleans = {true, false})
-  void resolveSqlQueryTest(boolean useValueExpressionDelegate) {
-    this.spannerQueryLookupStrategy = getSpannerQueryLookupStrategy(useValueExpressionDelegate);
+  @Test
+  void resolveSqlQueryTest() {
+    this.spannerQueryLookupStrategy = getSpannerQueryLookupStrategy();
     String queryName = "fakeNamedQueryName";
     String query = "fake query";
     when(this.queryMethod.getNamedQueryName()).thenReturn(queryName);
@@ -137,10 +131,9 @@ class SpannerQueryLookupStrategyTests {
         .createSqlSpannerQuery(eq(Object.class), same(this.queryMethod), eq(query), eq(false));
   }
 
-  @ParameterizedTest
-  @ValueSource(booleans = {true, false})
-  void resolvePartTreeQueryTest(boolean useValueExpressionDelegate) {
-    this.spannerQueryLookupStrategy = getSpannerQueryLookupStrategy(useValueExpressionDelegate);
+  @Test
+  void resolvePartTreeQueryTest() {
+    this.spannerQueryLookupStrategy = getSpannerQueryLookupStrategy();
     String queryName = "fakeNamedQueryName";
     when(this.queryMethod.getNamedQueryName()).thenReturn(queryName);
     NamedQueries namedQueries = mock(NamedQueries.class);
@@ -152,25 +145,14 @@ class SpannerQueryLookupStrategyTests {
         .createPartTreeSpannerQuery(eq(Object.class), same(this.queryMethod));
   }
 
-  private SpannerQueryLookupStrategy getSpannerQueryLookupStrategy(boolean useValueExpressionDelegate) {
-    SpannerQueryLookupStrategy spannerQueryLookupStrategy;
-    if (useValueExpressionDelegate) {
-      spannerQueryLookupStrategy =
-          spy(
-              new SpannerQueryLookupStrategy(
-                  this.spannerMappingContext,
-                  this.spannerTemplate,
-                  this.valueExpressionDelegate,
-                  this.spelExpressionParser));
-    } else {
-      spannerQueryLookupStrategy =
-          spy(
-              new SpannerQueryLookupStrategy(
-                  this.spannerMappingContext,
-                  this.spannerTemplate,
-                  this.evaluationContextProvider,
-                  this.spelExpressionParser));
-    }
+  private SpannerQueryLookupStrategy getSpannerQueryLookupStrategy() {
+    SpannerQueryLookupStrategy spannerQueryLookupStrategy =
+        spy(
+            new SpannerQueryLookupStrategy(
+                this.spannerMappingContext,
+                this.spannerTemplate,
+                this.valueExpressionDelegate,
+                this.spelExpressionParser));
     doReturn(Object.class).when(spannerQueryLookupStrategy).getEntityType(any());
     doReturn(null).when(spannerQueryLookupStrategy).createPartTreeSpannerQuery(any(), any());
     doReturn(this.queryMethod)
@@ -179,10 +161,9 @@ class SpannerQueryLookupStrategyTests {
     return spannerQueryLookupStrategy;
   }
 
-  @ParameterizedTest
-  @ValueSource(booleans = {true, false})
-  void getChildrenRowsQueryTest(boolean useValueExpressionDelegate) {
-    this.spannerQueryLookupStrategy = getSpannerQueryLookupStrategy(useValueExpressionDelegate);
+  @Test
+  void getChildrenRowsQueryTest() {
+    this.spannerQueryLookupStrategy = getSpannerQueryLookupStrategy();
     TestEntity t = new TestEntity();
     t.id = "key";
     t.id2 = "key2";
@@ -203,10 +184,9 @@ class SpannerQueryLookupStrategyTests {
     assertThat(statement.getParameters().get("tag1").getString()).isEqualTo("key2");
   }
 
-  @ParameterizedTest
-  @ValueSource(booleans = {true, false})
-  void getColumnsStringForSelectTest(boolean useValueExpressionDelegate) {
-    this.spannerQueryLookupStrategy = getSpannerQueryLookupStrategy(useValueExpressionDelegate);
+  @Test
+  void getColumnsStringForSelectTest() {
+    this.spannerQueryLookupStrategy = getSpannerQueryLookupStrategy();
     TestEntity t = new TestEntity();
     t.id = "key";
     t.id2 = "key2";
@@ -224,11 +204,10 @@ class SpannerQueryLookupStrategyTests {
                 + " childEntities");
   }
 
-  @ParameterizedTest
+  @Test
   @SuppressWarnings("unchecked")
-  @ValueSource(booleans = {true, false})
-  void getColumnsStringForSelectMultipleTest(boolean useValueExpressionDelegate) {
-    this.spannerQueryLookupStrategy = getSpannerQueryLookupStrategy(useValueExpressionDelegate);
+  void getColumnsStringForSelectMultipleTest() {
+    this.spannerQueryLookupStrategy = getSpannerQueryLookupStrategy();
     final SpannerPersistentEntity<TestEntity> entity =
         (SpannerPersistentEntity<TestEntity>)
             this.spannerMappingContext.getPersistentEntity(TestEntity.class);

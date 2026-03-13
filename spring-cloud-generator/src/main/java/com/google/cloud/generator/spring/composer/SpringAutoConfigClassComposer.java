@@ -128,11 +128,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
                 Arrays.asList(
                     createConstructor(service, className, dynamicTypes, thisExpr),
                     createTransportChannelProviderBeanMethod(
-                        service,
-                        transport,
-                        transportChannelProviderName,
-                        dynamicTypes,
-                        thisExpr),
+                        service, transport, transportChannelProviderName, dynamicTypes, thisExpr),
                     createSettingsBeanMethod(
                         service,
                         transport,
@@ -197,7 +193,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
     ExprStatement thisClientPropertiesAssignmentStatement =
         ExprStatement.withExpr(thisClientPropertiesAssignmentExpr);
 
-    // If credentials configured through properties, create DefaultCredentialsProvider from properties
+    // If credentials configured through properties, create DefaultCredentialsProvider from
+    // properties
     // Otherwise use credentialsProvider through constructor injection
     VariableExpr thisClientProperties =
         clientPropertiesVarExpr.toBuilder().setExprReferenceExpr(thisExpr).build();
@@ -383,7 +380,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setReturnType(STATIC_TYPES.get("TransportChannelProvider"))
             .build();
 
-    // For GRPC+REST libraries, generates code to choose provider according to configuration property
+    // For GRPC+REST libraries, generates code to choose provider according to configuration
+    // property
     if (ComposerUtils.shouldSupportRestOptionWithGrpcDefault(transport, service)) {
       Variable clientPropertiesVar =
           Variable.builder()
@@ -391,8 +389,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
               .setType(types.get(Utils.getServicePropertiesClassName(service)))
               .build();
       VariableExpr thisClientPropertiesVarExpr =
-          VariableExpr.withVariable(clientPropertiesVar)
-              .toBuilder()
+          VariableExpr.withVariable(clientPropertiesVar).toBuilder()
               .setExprReferenceExpr(thisExpr)
               .build();
 
@@ -466,11 +463,11 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
                 .setType(STATIC_TYPES.get("TransportChannelProvider"))
                 .build());
     MethodInvocationExpr defaultEnpointMethodInvocationExpr =
-            MethodInvocationExpr.builder()
-                    .setStaticReferenceType(types.get("ServiceSettings"))
-                    .setMethodName("getDefaultEndpoint")
-                    .setReturnType(TypeNode.STRING)
-                    .build();
+        MethodInvocationExpr.builder()
+            .setStaticReferenceType(types.get("ServiceSettings"))
+            .setMethodName("getDefaultEndpoint")
+            .setReturnType(TypeNode.STRING)
+            .build();
 
     List<Statement> bodyStatements = new ArrayList<>();
 
@@ -496,13 +493,13 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setType(types.get(Utils.getServicePropertiesClassName(service)))
             .build();
     VariableExpr thisClientPropertiesVarExpr =
-        VariableExpr.withVariable(clientPropertiesVar)
-            .toBuilder()
+        VariableExpr.withVariable(clientPropertiesVar).toBuilder()
             .setExprReferenceExpr(thisExpr)
             .build();
 
     if (ComposerUtils.shouldSupportRestOptionWithGrpcDefault(transport, service)) {
-      // For GRPC+REST libraries, generates code to choose builder according to configuration property
+      // For GRPC+REST libraries, generates code to choose builder according to configuration
+      // property
       MethodInvocationExpr getUseRest =
           MethodInvocationExpr.builder()
               .setMethodName("getUseRest")
@@ -584,11 +581,11 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setArguments(transportChannelProviderVariableExpr)
             .build();
     settingsBuilderExpr =
-            MethodInvocationExpr.builder()
-                    .setExprReferenceExpr(settingsBuilderExpr)
-                    .setMethodName("setEndpoint")
-                    .setArguments(defaultEnpointMethodInvocationExpr)
-                    .build();
+        MethodInvocationExpr.builder()
+            .setExprReferenceExpr(settingsBuilderExpr)
+            .setMethodName("setEndpoint")
+            .setArguments(defaultEnpointMethodInvocationExpr)
+            .build();
     MethodInvocationExpr userAgentHeaderProviderInvocation =
         MethodInvocationExpr.builder()
             .setExprReferenceExpr(thisExpr)
@@ -816,8 +813,7 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .build();
     List<VariableExpr> argumentsVariableExprs =
         Arrays.asList(
-            transportChannelProviderVariableExpr
-                .toBuilder()
+            transportChannelProviderVariableExpr.toBuilder()
                 .setIsDecl(true)
                 .setAnnotations(
                     Arrays.asList(

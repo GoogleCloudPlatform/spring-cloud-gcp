@@ -18,8 +18,6 @@ package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,8 +37,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +47,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * These tests verifies that the datastore-sample works. In order to run it, use the
@@ -59,6 +60,7 @@ import org.springframework.util.MultiValueMap;
 @EnabledIfSystemProperty(named = "it.datastore", matches = "true")
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")
+@AutoConfigureTestRestTemplate
 @SpringBootTest(
     classes = {DatastoreRepositoryExample.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -212,7 +214,7 @@ class DatastoreSampleApplicationIntegrationTests {
     String instrumentType = instrument.get("type").toString();
     String instrumentResponse = sendRequest(instrumentUrl, null, HttpMethod.GET);
     // An instrument JSON object is expected. In this case a recorder.
-    assertThat(instrumentResponse).contains("{\n" + "  \"type\" : \"" + instrumentType + "\"");
+    assertThat(instrumentResponse).contains("\"type\" : \"" + instrumentType + "\"");
   }
 
   private String sendRequest(String url, String json, HttpMethod method) {

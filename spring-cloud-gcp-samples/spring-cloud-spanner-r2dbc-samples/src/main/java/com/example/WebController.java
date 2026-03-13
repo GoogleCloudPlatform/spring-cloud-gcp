@@ -67,7 +67,8 @@ public class WebController {
   @Transactional
   @PostMapping("/increment-count/{id}")
   public Mono<Void> incrementCount(@PathVariable String id) {
-    return r2dbcRepository.findById(id)
+    return r2dbcRepository
+        .findById(id)
         .doOnNext(Book::incrementCount)
         .flatMap(r2dbcRepository::save)
         .log()

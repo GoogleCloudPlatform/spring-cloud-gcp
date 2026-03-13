@@ -19,10 +19,13 @@ package com.example;
 import com.google.cloud.spanner.r2dbc.v2.JsonWrapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +34,9 @@ import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
 import org.springframework.data.r2dbc.convert.R2dbcCustomConversions;
+import org.springframework.data.r2dbc.mapping.R2dbcMappingContext;
+import org.springframework.data.relational.RelationalManagedTypes;
+import org.springframework.data.relational.core.mapping.NamingStrategy;
 import org.springframework.stereotype.Component;
 
 @Configuration
@@ -38,9 +44,40 @@ public class CustomConfiguration extends AbstractR2dbcConfiguration {
 
   @Autowired ApplicationContext applicationContext;
 
+  @Value("${gcp.project}")
+  private String project;
+
+  @Value("${spanner.instance}")
+  private String instance;
+
+  @Value("${spanner.database}")
+  private String database;
+
+  @Bean
+  public Gson gson() {
+    return new Gson();
+  }
+
   @Override
+  @Bean
   public ConnectionFactory connectionFactory() {
-    return null;
+    String url =
+        String.format(
+            "r2dbc:cloudspanner://spanner.googleapis.com:443/projects/%s/instances/%s/databases/%s",
+            this.project, this.instance, this.database);
+    return ConnectionFactories.get(url);
+  }
+
+  @Bean
+  @Override
+  public R2dbcMappingContext r2dbcMappingContext(
+      Optional<NamingStrategy> namingStrategy,
+      R2dbcCustomConversions r2dbcCustomConversions,
+      RelationalManagedTypes managedTypes) {
+    R2dbcMappingContext context =
+        super.r2dbcMappingContext(namingStrategy, r2dbcCustomConversions, managedTypes);
+    context.setForceQuote(false);
+    return context;
   }
 
   @Bean
@@ -54,7 +91,7 @@ public class CustomConfiguration extends AbstractR2dbcConfiguration {
 
   @Component
   @ReadingConverter
-  public class JsonToReviewsConverter implements Converter<JsonWrapper, Review> {
+  public static class JsonToReviewsConverter implements Converter<JsonWrapper, Review> {
 
     private final Gson gson;
 
@@ -75,7 +112,7 @@ public class CustomConfiguration extends AbstractR2dbcConfiguration {
 
   @Component
   @WritingConverter
-  public class ReviewsToJsonConverter implements Converter<Review, JsonWrapper> {
+  public static class ReviewsToJsonConverter implements Converter<Review, JsonWrapper> {
 
     private final Gson gson;
 

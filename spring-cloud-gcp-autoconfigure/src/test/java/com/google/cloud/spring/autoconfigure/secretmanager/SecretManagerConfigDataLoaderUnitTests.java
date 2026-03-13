@@ -10,14 +10,11 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.boot.ConfigurableBootstrapContext;
+import org.springframework.boot.bootstrap.ConfigurableBootstrapContext;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
 import org.springframework.boot.context.config.ConfigDataLocation;
 
-/**
- * Unit tests for {@link SecretManagerConfigDataLoader}.
- */
-
+/** Unit tests for {@link SecretManagerConfigDataLoader}. */
 class SecretManagerConfigDataLoaderUnitTests {
 
   private final ConfigDataLoaderContext loaderContext = mock(ConfigDataLoaderContext.class);
@@ -25,15 +22,12 @@ class SecretManagerConfigDataLoaderUnitTests {
   private final SecretManagerTemplate template = mock(SecretManagerTemplate.class);
   private final GcpSecretManagerProperties properties = mock(GcpSecretManagerProperties.class);
   private final CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
-  private final ConfigurableBootstrapContext bootstrapContext = mock(
-      ConfigurableBootstrapContext.class);
+  private final ConfigurableBootstrapContext bootstrapContext =
+      mock(ConfigurableBootstrapContext.class);
   private final SecretManagerConfigDataLoader loader = new SecretManagerConfigDataLoader();
 
   @ParameterizedTest
-  @CsvSource({
-      "regional-fake, us-central1",
-      "fake, "
-  })
+  @CsvSource({"regional-fake, us-central1", "fake, "})
   void loadIncorrectResourceThrowsException(String resourceName, String location) {
     when(loaderContext.getBootstrapContext()).thenReturn(bootstrapContext);
     when(bootstrapContext.get(GcpProjectIdProvider.class)).thenReturn(idProvider);
@@ -41,8 +35,8 @@ class SecretManagerConfigDataLoaderUnitTests {
     when(bootstrapContext.get(GcpSecretManagerProperties.class)).thenReturn(properties);
     when(bootstrapContext.get(CredentialsProvider.class)).thenReturn(credentialsProvider);
     when(template.secretExists(anyString(), anyString())).thenReturn(false);
-    SecretManagerConfigDataResource resource = new SecretManagerConfigDataResource(
-        ConfigDataLocation.of("fake"));
+    SecretManagerConfigDataResource resource =
+        new SecretManagerConfigDataResource(ConfigDataLocation.of("fake"));
     assertThatCode(() -> loader.load(loaderContext, resource)).doesNotThrowAnyException();
   }
 }

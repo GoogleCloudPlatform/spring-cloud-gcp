@@ -26,7 +26,7 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.parametermanager.ParameterManagerTemplate;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.boot.ConfigurableBootstrapContext;
+import org.springframework.boot.bootstrap.ConfigurableBootstrapContext;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
 import org.springframework.boot.context.config.ConfigDataLocation;
 
@@ -35,17 +35,15 @@ class ParameterManagerConfigDataLoaderUnitTests {
   private final ConfigDataLoaderContext loaderContext = mock(ConfigDataLoaderContext.class);
   private final GcpProjectIdProvider idProvider = mock(GcpProjectIdProvider.class);
   private final ParameterManagerTemplate template = mock(ParameterManagerTemplate.class);
-  private final GcpParameterManagerProperties properties = mock(GcpParameterManagerProperties.class);
+  private final GcpParameterManagerProperties properties =
+      mock(GcpParameterManagerProperties.class);
   private final CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
-  private final ConfigurableBootstrapContext bootstrapContext = mock(
-      ConfigurableBootstrapContext.class);
+  private final ConfigurableBootstrapContext bootstrapContext =
+      mock(ConfigurableBootstrapContext.class);
   private final ParameterManagerConfigDataLoader loader = new ParameterManagerConfigDataLoader();
 
   @ParameterizedTest
-  @CsvSource({
-      "regional-fake, us-central1",
-      "fake, "
-  })
+  @CsvSource({"regional-fake, us-central1", "fake, "})
   void loadIncorrectResourceThrowsException(String resourceName, String location) {
     when(loaderContext.getBootstrapContext()).thenReturn(bootstrapContext);
     when(bootstrapContext.get(GcpProjectIdProvider.class)).thenReturn(idProvider);

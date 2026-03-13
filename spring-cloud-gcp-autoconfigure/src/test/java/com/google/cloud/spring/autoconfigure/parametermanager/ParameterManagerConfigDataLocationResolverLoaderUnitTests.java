@@ -13,10 +13,7 @@ import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
 import org.springframework.boot.context.properties.bind.Binder;
 
-/**
- * Unit tests for {@link ParameterManagerConfigDataLocationResolverLoader}.
- */
-
+/** Unit tests for {@link ParameterManagerConfigDataLocationResolverLoader}. */
 public class ParameterManagerConfigDataLocationResolverLoaderUnitTests {
   private ConfigDataLocationResolverContext resolverContext;
   private ParameterManagerConfigDataLocationResolverLoader resolverLoader;
@@ -30,12 +27,9 @@ public class ParameterManagerConfigDataLocationResolverLoaderUnitTests {
     when(resolverContext.getBinder()).thenReturn(mockBinder);
     resolverLoader = new ParameterManagerConfigDataLocationResolverLoader();
   }
-    
+
   @ParameterizedTest
-  @CsvSource({
-      "pm@us-central1/test-param/dev, true",
-      "invalid-location, false"
-  })
+  @CsvSource({"pm@us-central1/test-param/dev, true", "invalid-location, false"})
   void isResolvableTest(String locationString, boolean expected) {
     ConfigDataLocation location = ConfigDataLocation.of(locationString);
     boolean result = resolverLoader.isResolvable(resolverContext, location);
@@ -44,7 +38,9 @@ public class ParameterManagerConfigDataLocationResolverLoaderUnitTests {
 
   @Test
   void testIsClassPresent_classExists() throws Exception {
-    Method isClassPresentMethod = ParameterManagerConfigDataLocationResolverLoader.class.getDeclaredMethod("isClassPresent", String.class);
+    Method isClassPresentMethod =
+        ParameterManagerConfigDataLocationResolverLoader.class.getDeclaredMethod(
+            "isClassPresent", String.class);
     isClassPresentMethod.setAccessible(true);
 
     boolean result = (boolean) isClassPresentMethod.invoke(null, "java.lang.String");
@@ -53,7 +49,9 @@ public class ParameterManagerConfigDataLocationResolverLoaderUnitTests {
 
   @Test
   void testIsClassPresent_classDoesNotExist() throws Exception {
-    Method isClassPresentMethod = ParameterManagerConfigDataLocationResolverLoader.class.getDeclaredMethod("isClassPresent", String.class);
+    Method isClassPresentMethod =
+        ParameterManagerConfigDataLocationResolverLoader.class.getDeclaredMethod(
+            "isClassPresent", String.class);
     isClassPresentMethod.setAccessible(true);
 
     boolean result = (boolean) isClassPresentMethod.invoke(null, "non.existent.ClassName");

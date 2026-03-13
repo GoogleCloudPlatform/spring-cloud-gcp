@@ -22,9 +22,7 @@ import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
 
-/**
- * Runtime hints are needed for running application with GraalVM
- */
+/** Runtime hints are needed for running application with GraalVM */
 public class SampleRuntimeHints implements RuntimeHintsRegistrar {
 
   @Override
@@ -32,7 +30,8 @@ public class SampleRuntimeHints implements RuntimeHintsRegistrar {
     hints
         .reflection()
         .registerTypes(
-            Arrays.asList(TypeReference.of(User.class),
+            Arrays.asList(
+                TypeReference.of(User.class),
                 TypeReference.of(Phone.class),
                 TypeReference.of(PhoneType.class)),
             hint ->

@@ -40,8 +40,7 @@ class ParallelDatastoreIntegrationTests extends AbstractDatastoreIntegrationTest
 
   private static final int PARALLEL_OPERATIONS = 10;
 
-  @Autowired
-  TestEntityRepository testEntityRepository;
+  @Autowired TestEntityRepository testEntityRepository;
 
   @AfterEach
   void deleteAll() {
@@ -51,9 +50,9 @@ class ParallelDatastoreIntegrationTests extends AbstractDatastoreIntegrationTest
   @Test
   void testParallelOperations() {
     performOperation(
-            x ->
-                    this.testEntityRepository.save(
-                            new TestEntity((long) x, "color", (long) x, null, null)));
+        x ->
+            this.testEntityRepository.save(
+                new TestEntity((long) x, "color", (long) x, null, null)));
 
     waitUntilTrue(() -> this.testEntityRepository.count() == PARALLEL_OPERATIONS - 1);
 

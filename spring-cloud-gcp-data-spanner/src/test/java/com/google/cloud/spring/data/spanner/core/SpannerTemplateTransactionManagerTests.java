@@ -45,14 +45,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.aot.DisabledInAotMode;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,17 +74,17 @@ class SpannerTemplateTransactionManagerTests {
   private final AtomicReference<TransactionManager.TransactionState> transactionState =
       new AtomicReference<>();
 
-  @MockBean DatabaseClient databaseClient;
+  @MockitoBean DatabaseClient databaseClient;
 
-  @MockBean ReadContext readContext;
+  @MockitoBean ReadContext readContext;
 
-  @MockBean TransactionContext transactionContext;
+  @MockitoBean TransactionContext transactionContext;
+
+  @MockitoBean ReadOnlyTransaction readOnlyTransaction;
 
   @Autowired TransactionalService transactionalService;
 
   TransactionManager transactionManager;
-
-  @Mock ReadOnlyTransaction readOnlyTransaction;
 
   @BeforeEach
   void setUp() {
@@ -119,6 +118,9 @@ class SpannerTemplateTransactionManagerTests {
 
     when(this.databaseClient.transactionManager()).thenReturn(this.transactionManager);
     when(this.databaseClient.readOnlyTransaction()).thenReturn(this.readOnlyTransaction);
+    when(this.readOnlyTransaction.read(
+            Mockito.anyString(), Mockito.any(), Mockito.any(Iterable.class), Mockito.any()))
+        .thenReturn(Mockito.mock(com.google.cloud.spanner.ResultSet.class));
     when(this.transactionManager.begin()).thenReturn(this.transactionContext);
   }
 
@@ -210,25 +212,25 @@ class SpannerTemplateTransactionManagerTests {
   @Test
   void readOnlySaveTest() {
     assertThatThrownBy(() -> this.transactionalService.writingInReadOnly(new TestEntity()))
-            .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
+        .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
   }
 
   @Test
   void readOnlyDeleteTest() {
     assertThatThrownBy(() -> this.transactionalService.deleteInReadOnly(new TestEntity()))
-            .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
+        .hasMessage("Spanner transaction cannot apply mutations because it is in readonly mode");
   }
 
   @Test
   void readOnlyDmlTest() {
     assertThatThrownBy(() -> this.transactionalService.dmlInReadOnly())
-            .hasMessage("Spanner transaction cannot execute DML because it is in readonly mode");
+        .hasMessage("Spanner transaction cannot execute DML because it is in readonly mode");
   }
 
   @Test
   void partitionedDmlInTransactionTest() {
     assertThatThrownBy(() -> this.transactionalService.partitionedDmlInTransaction())
-            .hasMessage("Cannot execute partitioned DML in a transaction.");
+        .hasMessage("Cannot execute partitioned DML in a transaction.");
   }
 
   /** Spring config for the tests. */

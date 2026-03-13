@@ -44,8 +44,8 @@ class AudienceValidatorTests {
   void testNullAudienceDisallowedInConstructor() {
 
     assertThatThrownBy(() -> new AudienceValidator(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Audience Provider cannot be null");
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Audience Provider cannot be null");
   }
 
   @Test

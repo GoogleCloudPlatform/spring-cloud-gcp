@@ -39,10 +39,11 @@ public class SecretManagerConfigDataLocationResolverLoader
 
   private ConfigDataLocationResolver<ConfigDataResource> instantiateRealResolver() {
     try {
-      Class<?> clazz = Class.forName(
-          "com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolver");
-      return (ConfigDataLocationResolver<ConfigDataResource>) clazz
-          .getDeclaredConstructor().newInstance();
+      Class<?> clazz =
+          Class.forName(
+              "com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolver");
+      return (ConfigDataLocationResolver<ConfigDataResource>)
+          clazz.getDeclaredConstructor().newInstance();
     } catch (Exception ex) {
       throw new IllegalStateException(
           "Failed to instantiate SecretManagerConfigDataLocationResolver", ex);
@@ -50,15 +51,14 @@ public class SecretManagerConfigDataLocationResolverLoader
   }
 
   /**
-   * Checks if the property can be resolved by the Secret Manager resolver.
-   * For the check, we rely on the presence of the SecretManagerSyntaxUtils class, which is an
-   * optional dependency.
-   * Since optional dependencies may not be present at runtime, we explicitly check for its
-   * existence before resolving the property.
-   * If it's not present, it means this config resolver is not meant to be used.
+   * Checks if the property can be resolved by the Secret Manager resolver. For the check, we rely
+   * on the presence of the SecretManagerSyntaxUtils class, which is an optional dependency. Since
+   * optional dependencies may not be present at runtime, we explicitly check for its existence
+   * before resolving the property. If it's not present, it means this config resolver is not meant
+   * to be used.
    *
-   * @return true if the delegate resolver is initialized and the location has the expected
-   *     Secret Manager prefix (e.g., {@code sm@} or {@code sm://}); false otherwise.
+   * @return true if the delegate resolver is initialized and the location has the expected Secret
+   *     Manager prefix (e.g., {@code sm@} or {@code sm://}); false otherwise.
    */
   @Override
   public boolean isResolvable(

@@ -74,8 +74,7 @@ public class Trader {
     this.workAddress = workAddress;
   }
 
-  public Trader(String traderId, String firstName, String lastName,
-      List<Address> addressList) {
+  public Trader(String traderId, String firstName, String lastName, List<Address> addressList) {
     this.traderId = traderId;
     this.firstName = firstName;
     this.lastName = lastName;

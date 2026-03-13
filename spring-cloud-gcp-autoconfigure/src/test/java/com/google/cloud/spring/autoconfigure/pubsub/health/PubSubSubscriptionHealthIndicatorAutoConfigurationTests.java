@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
@@ -29,9 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-/**
- * Tests for Pub/Sub Health Indicator autoconfiguration.
- */
+/** Tests for Pub/Sub Health Indicator autoconfiguration. */
 class PubSubSubscriptionHealthIndicatorAutoConfigurationTests {
 
   private final ApplicationContextRunner contextRunner =
@@ -66,16 +63,14 @@ class PubSubSubscriptionHealthIndicatorAutoConfigurationTests {
   @Test
   void healthIndicatorNotPresent_whenMissingLagThreshold() {
     this.contextRunner
-        .withPropertyValues(
-            "spring.cloud.gcp.pubsub.health.backlogThreshold=1")
+        .withPropertyValues("spring.cloud.gcp.pubsub.health.backlogThreshold=1")
         .run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubSubscriptionHealthIndicator.class));
   }
 
   @Test
   void healthIndicatorNotPresent_whenMissingBacklogThreshold() {
     this.contextRunner
-        .withPropertyValues(
-            "spring.cloud.gcp.pubsub.health.lagThreshold=1")
+        .withPropertyValues("spring.cloud.gcp.pubsub.health.lagThreshold=1")
         .run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubSubscriptionHealthIndicator.class));
   }
 }

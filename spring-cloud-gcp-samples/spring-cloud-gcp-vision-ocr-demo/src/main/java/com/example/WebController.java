@@ -148,8 +148,8 @@ public class WebController {
     return switch (fileType) {
       case ".tif" -> "image/tiff";
       case ".pdf" -> "application/pdf";
-      default -> throw new IllegalArgumentException(
-          "Does not support processing file type: " + fileType);
+      default ->
+          throw new IllegalArgumentException("Does not support processing file type: " + fileType);
     };
   }
 }
