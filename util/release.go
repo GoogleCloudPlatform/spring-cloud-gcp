@@ -46,6 +46,14 @@
 //         Newly supported Spring Boot max version for compatibilityRange 
 //         (e.g., "4.1.0-M1"). This is used exclusively when creating the 
 //         Spring Initializr pull request for the main branch.
+//     -version string
+//         Explicitly set the release version (e.g., "8.0.1"). This is useful when 
+//         restarting from a later step to avoid automatic version detection.
+//     -start-step int
+//         The step number to start the release process from (default 1). 
+//         Use -list-steps to see the available steps for each branch.
+//     -list-steps
+//         Print a numbered list of all release steps for each branch and exit.
 //     -interactive
 //         Ask for confirmation before proceeding to each step. When enabled,
 //         the release process for branches runs sequentially rather than in parallel.
@@ -75,6 +83,8 @@ import (
 
 var emailOpt string
 var bootMaxOpt string
+var versionOpt string
+var startStepOpt int
 var interactiveOpt bool
 var librariesBomOptionalOpt bool
 
@@ -84,9 +94,17 @@ func main() {
 	branchesOpt := flag.String("branches", "main,7.x,6.x,5.x,3.x", "Comma-separated list of branches to release")
 	flag.StringVar(&emailOpt, "email", "", "Email address to send notifications to (requires LOAS/gcert)")
 	flag.StringVar(&bootMaxOpt, "boot-max", "", "Newly supported Spring Boot max version for compatibilityRange (e.g. 4.1.0-M1)")
+	flag.StringVar(&versionOpt, "version", "", "Release version (e.g. 8.0.1). If provided, skips version detection.")
+	flag.IntVar(&startStepOpt, "start-step", 1, "Step number to start from")
+	listStepsOpt := flag.Bool("list-steps", false, "List all available steps for each branch and exit")
 	flag.BoolVar(&interactiveOpt, "interactive", false, "Ask for confirmation before proceeding to each step")
 	flag.BoolVar(&librariesBomOptionalOpt, "libraries-bom-update-optional", false, "Make gapic-generator-java-bom PR check optional")
 	flag.Parse()
+
+	if *listStepsOpt {
+		printSteps()
+		os.Exit(0)
+	}
 
 	branches := strings.Split(*branchesOpt, ",")
 	
@@ -95,6 +113,10 @@ func main() {
 		fmt.Println("⚠️ Interactive mode enabled. Releases will run sequentially to allow for user input.\n")
 	} else {
 		fmt.Printf("🚀 Starting automated release process in parallel for branches: %v\n\n", branches)
+	}
+
+	if startStepOpt > 1 {
+		fmt.Printf("⏭️ Starting from STEP %d\n", startStepOpt)
 	}
 
 	if emailOpt != "" {
@@ -117,18 +139,18 @@ func main() {
 
 		if interactiveOpt {
 			if branch == "main" {
-				runReleaseForMain()
+				runReleaseForMain(startStepOpt)
 			} else {
-				runReleaseForBranch(branch)
+				runReleaseForBranch(branch, startStepOpt)
 			}
 		} else {
 			wg.Add(1)
 			go func(br string) {
 				defer wg.Done()
 				if br == "main" {
-					runReleaseForMain()
+					runReleaseForMain(startStepOpt)
 				} else {
-					runReleaseForBranch(br)
+					runReleaseForBranch(br, startStepOpt)
 				}
 			}(branch)
 		}
@@ -143,159 +165,298 @@ func main() {
 	// Run the README.adoc update sequentially after all parallel releases are done.
 	// We only trigger this if 'main' was part of the run.
 	if includesMain {
-		confirmStep("main", "Update README.adoc with latest versions from Maven Central")
-		updateReadmeAdoc(10)
+		readmeStep := 10
+		if startStepOpt <= readmeStep {
+			confirmStep("main", "Update README.adoc with latest versions from Maven Central")
+			updateReadmeAdoc(readmeStep)
+		} else {
+			fmt.Printf("\n[main] ⏭️ Skipping STEP %d: Update README.adoc\n", readmeStep)
+		}
 	}
 }
 
+func printSteps() {
+	fmt.Println("Steps for 'main' branch:")
+	fmt.Println("  1. Find and merge gapic-generator-java-bom upgrade PR")
+	fmt.Println("  2. Find libraries-bom PR and trigger rebase")
+	fmt.Println("  3. Trigger Generate Spring Auto-Configurations workflow")
+	fmt.Println("  4. Merge the completed libraries-bom PR")
+	fmt.Println("  5. Wait for and merge Release PR")
+	fmt.Println("  6. Wait for post-release SNAPSHOT PR and merge it")
+	fmt.Println("  7. Verify release on Maven Central")
+	fmt.Println("  8. Verify Documentation and Javadocs")
+	fmt.Println("  9. Create PR for Spring Initializr")
+	fmt.Println("  10. Update README.adoc with latest versions")
+	fmt.Println("\nSteps for other branches (e.g., 6.x, 7.x):")
+	fmt.Println("  1. Find and merge libraries-bom upgrade PR")
+	fmt.Println("  2. Wait for and merge Release PR")
+	fmt.Println("  3. Wait for post-release SNAPSHOT PR and merge it")
+	fmt.Println("  4. Verify release on Maven Central")
+	fmt.Println("  5. Verify Documentation and Javadocs")
+}
+
 // runReleaseForMain handles the complex, 6-step workflow exclusively for the main branch
-func runReleaseForMain() {
+func runReleaseForMain(startStep int) {
 	branch := "main"
 	prefix := "[main]"
 	step := 1
+	version := versionOpt
+
+	// Helper to check if step should run
+	shouldRun := func(s int) bool {
+		return s >= startStep
+	}
 
 	// Merge gapic-generator-java-bom PR
-	confirmStep(branch, "Find and merge gapic-generator-java-bom upgrade PR")
-	fmt.Printf("%s ▶️ STEP %d: Finding gapic-generator-java-bom upgrade PR...\n", prefix, step)
-	gapicPR := findPR(branch, "gapic-generator-java-bom in:title is:open")
-	if gapicPR == "" {
-		if librariesBomOptionalOpt {
-			fmt.Printf("%s ℹ️ Skipping gapic-generator-java-bom upgrade PR (optional).\n", prefix)
+	if shouldRun(step) {
+		confirmStep(branch, "Find and merge gapic-generator-java-bom upgrade PR")
+		fmt.Printf("%s ▶️ STEP %d: Finding gapic-generator-java-bom upgrade PR...\n", prefix, step)
+		gapicPR := findPR(branch, "gapic-generator-java-bom in:title is:open")
+		if gapicPR == "" {
+			if librariesBomOptionalOpt {
+				fmt.Printf("%s ℹ️ Skipping gapic-generator-java-bom upgrade PR (optional).\n", prefix)
+			} else {
+				fatalError(branch, "Could not find an open gapic-generator-java-bom PR. Exiting.")
+			}
 		} else {
-			fatalError(branch, "Could not find an open gapic-generator-java-bom PR. Exiting.")
+			fmt.Printf("%s ✅ Found gapic-generator PR: #%s\n", prefix, gapicPR)
+			approveWorkflowRuns(branch, gapicPR)
+			approvePR(branch, gapicPR)
+			enableAutoMerge(branch, gapicPR)
+			waitForAutoMerge(branch, gapicPR)
 		}
 	} else {
-		fmt.Printf("%s ✅ Found gapic-generator PR: #%s\n", prefix, gapicPR)
-		approveWorkflowRuns(branch, gapicPR)
-		approvePR(branch, gapicPR)
-		enableAutoMerge(branch, gapicPR)
-		waitForAutoMerge(branch, gapicPR)
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
 	}
 	step++
 
 	// Find libraries-bom PR and Trigger Rebase
-	confirmStep(branch, "Find libraries-bom PR and trigger rebase")
-	fmt.Printf("\n%s ▶️ STEP %d: Finding libraries-bom PR and triggering rebase...\n", prefix, step)
-	bomPR := findPR(branch, "libraries-bom in:title is:open")
-	if bomPR == "" {
-		if librariesBomOptionalOpt {
-			fmt.Printf("%s ℹ️ Skipping libraries-bom upgrade PR (optional).\n", prefix)
+	var bomPR string
+	if shouldRun(step) {
+		confirmStep(branch, "Find libraries-bom PR and trigger rebase")
+		fmt.Printf("\n%s ▶️ STEP %d: Finding libraries-bom PR and triggering rebase...\n", prefix, step)
+		bomPR = findPR(branch, "libraries-bom in:title is:open")
+		if bomPR == "" {
+			if librariesBomOptionalOpt {
+				fmt.Printf("%s ℹ️ Skipping libraries-bom upgrade PR (optional).\n", prefix)
+			} else {
+				fatalError(branch, "Could not find an open libraries-bom PR.")
+			}
 		} else {
-			fatalError(branch, "Could not find an open libraries-bom PR.")
+			fmt.Printf("%s ✅ Found libraries-bom PR: #%s\n", prefix, bomPR)
+			checkRebaseBox(branch, bomPR)
 		}
 	} else {
-		fmt.Printf("%s ✅ Found libraries-bom PR: #%s\n", prefix, bomPR)
-		checkRebaseBox(branch, bomPR)
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
+		// Try to discover bomPR if needed by subsequent steps
+		if startStep > step && startStep <= 4 {
+			bomPR = findPR(branch, "libraries-bom in:title is:open")
+		}
 	}
 	step++
 
 	// Trigger AutoConfigs Workflow
-	if bomPR != "" {
-		confirmStep(branch, "Trigger Generate Spring Auto-Configurations workflow")
-		fmt.Printf("\n%s ▶️ STEP %d: Triggering Generate Spring Auto-Configurations workflow...\n", prefix, step)
-		triggerAutoConfigs(branch, bomPR)
-		waitForBotCommit(branch, bomPR)
-		verifyBotCommit(branch, bomPR)
+	if shouldRun(step) {
+		if bomPR != "" {
+			confirmStep(branch, "Trigger Generate Spring Auto-Configurations workflow")
+			fmt.Printf("\n%s ▶️ STEP %d: Triggering Generate Spring Auto-Configurations workflow...\n", prefix, step)
+			triggerAutoConfigs(branch, bomPR)
+			waitForBotCommit(branch, bomPR)
+			verifyBotCommit(branch, bomPR)
+		} else {
+			fmt.Printf("\n%s ℹ️ Skipping Generate Spring Auto-Configurations (no libraries-bom PR).\n", prefix)
+		}
 	} else {
-		fmt.Printf("\n%s ℹ️ Skipping Generate Spring Auto-Configurations (no libraries-bom PR).\n", prefix)
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
 	}
 	step++
 
 	// Merge the libraries-bom PR
-	if bomPR != "" {
-		confirmStep(branch, "Merge the completed libraries-bom PR")
-		fmt.Printf("\n%s ▶️ STEP %d: Merging the completed libraries-bom PR...\n", prefix, step)
-		approveWorkflowRuns(branch, bomPR)
-		approvePR(branch, bomPR)
-		enableAutoMerge(branch, bomPR)
-		waitForAutoMerge(branch, bomPR)
+	if shouldRun(step) {
+		if bomPR != "" {
+			confirmStep(branch, "Merge the completed libraries-bom PR")
+			fmt.Printf("\n%s ▶️ STEP %d: Merging the completed libraries-bom PR...\n", prefix, step)
+			approveWorkflowRuns(branch, bomPR)
+			approvePR(branch, bomPR)
+			enableAutoMerge(branch, bomPR)
+			waitForAutoMerge(branch, bomPR)
+		} else {
+			fmt.Printf("\n%s ℹ️ Skipping Merging libraries-bom PR (no libraries-bom PR).\n", prefix)
+		}
 	} else {
-		fmt.Printf("\n%s ℹ️ Skipping Merging libraries-bom PR (no libraries-bom PR).\n", prefix)
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
 	}
 	step++
 
 	// Wait for and merge Release PR (and Snapshot)
-	confirmStep(branch, "Wait for release-please to create the release PR and merge it")
-	fmt.Printf("\n%s ▶️ STEP %d: Waiting for release-please to create the release PR...\n", prefix, step)
-	releasePR := pollForPR(branch, "chore(main): release in:title is:open author:app/release-please", true)
-	version := getVersionFromPR(releasePR)
-	fmt.Printf("%s 📦 Detected Release Version: %s\n", prefix, version)
-	approvePR(branch, releasePR)
-	waitForMerge(branch, releasePR)
+	if shouldRun(step) {
+		confirmStep(branch, "Wait for release-please to create the release PR and merge it")
+		fmt.Printf("\n%s ▶️ STEP %d: Waiting for release-please to create the release PR...\n", prefix, step)
+		releasePR := pollForPR(branch, "chore(main): release in:title is:open author:app/release-please", true)
+		if version == "" {
+			version = getVersionFromPR(releasePR)
+		}
+		fmt.Printf("%s 📦 Detected Release Version: %s\n", prefix, version)
+		approvePR(branch, releasePR)
+		waitForMerge(branch, releasePR)
+	} else {
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
+		if version == "" && startStep > step {
+			// Try to discover version from merged PRs if not provided
+			version = discoverVersion(branch)
+		}
+	}
 	step++
 
-	confirmStep(branch, "Wait for post-release SNAPSHOT PR and merge it")
-	fmt.Printf("\n%s ▶️ STEP %d: Waiting for post-release SNAPSHOT PR...\n", prefix, step)
-	snapshotPR := pollForPR(branch, "SNAPSHOT in:title is:open author:app/release-please", false)
-	approvePR(branch, snapshotPR)
-	waitForMerge(branch, snapshotPR)
+	if shouldRun(step) {
+		confirmStep(branch, "Wait for post-release SNAPSHOT PR and merge it")
+		fmt.Printf("\n%s ▶️ STEP %d: Waiting for post-release SNAPSHOT PR...\n", prefix, step)
+		snapshotPR := pollForPR(branch, "SNAPSHOT in:title is:open author:app/release-please", false)
+		approvePR(branch, snapshotPR)
+		waitForMerge(branch, snapshotPR)
+	} else {
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
+	}
 	step++
 
 	// Verify Maven Central
-	confirmStep(branch, "Verify release on Maven Central")
-	fmt.Printf("\n%s ▶️ STEP %d: Verifying release %s on Maven Central...\n", prefix, step, version)
-	verifyMavenCentral(branch, version)
+	if shouldRun(step) {
+		confirmStep(branch, "Verify release on Maven Central")
+		if version == "" {
+			fatalError(branch, "Version is required for Maven Central verification. Please provide it via -version flag.")
+		}
+		fmt.Printf("\n%s ▶️ STEP %d: Verifying release %s on Maven Central...\n", prefix, step, version)
+		verifyMavenCentral(branch, version)
+	} else {
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
+	}
 	step++
 	
-	confirmStep(branch, "Verify Documentation and Javadocs")
-	verifyDocumentation(branch, version, step)
+	if shouldRun(step) {
+		confirmStep(branch, "Verify Documentation and Javadocs")
+		if version == "" {
+			fatalError(branch, "Version is required for Documentation verification. Please provide it via -version flag.")
+		}
+		verifyDocumentation(branch, version, step)
+	} else {
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
+	}
 	step++
 
 	// Create PR on Spring Initializr
-	confirmStep(branch, "Create PR for Spring Initializr")
-	createInitializrPR(version, bootMaxOpt, step)
+	if shouldRun(step) {
+		confirmStep(branch, "Create PR for Spring Initializr")
+		if version == "" {
+			fatalError(branch, "Version is required for Spring Initializr PR. Please provide it via -version flag.")
+		}
+		createInitializrPR(version, bootMaxOpt, step)
+	} else {
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
+	}
 
 }
 
 // runReleaseForBranch contains the standard release pipeline for 3.x, 5.x, 6.x, 7.x
-func runReleaseForBranch(branch string) {
+func runReleaseForBranch(branch string, startStep int) {
 	prefix := fmt.Sprintf("[%s]", branch)
 	step := 1
+	version := versionOpt
+
+	// Helper to check if step should run
+	shouldRun := func(s int) bool {
+		return s >= startStep
+	}
 
 	// Merge libraries-bom PR
-	confirmStep(branch, "Find and merge libraries-bom upgrade PR")
-	fmt.Printf("%s ▶️ STEP %d: Finding libraries-bom upgrade PR...\n", prefix, step)
-	bomPR := findPR(branch, "libraries-bom in:title is:open")
-	if bomPR == "" {
-		if librariesBomOptionalOpt {
-			fmt.Printf("%s ℹ️ Skipping libraries-bom upgrade PR (optional).\n", prefix)
+	if shouldRun(step) {
+		confirmStep(branch, "Find and merge libraries-bom upgrade PR")
+		fmt.Printf("%s ▶️ STEP %d: Finding libraries-bom upgrade PR...\n", prefix, step)
+		bomPR := findPR(branch, "libraries-bom in:title is:open")
+		if bomPR == "" {
+			if librariesBomOptionalOpt {
+				fmt.Printf("%s ℹ️ Skipping libraries-bom upgrade PR (optional).\n", prefix)
+			} else {
+				fatalError(branch, "Could not find an open libraries-bom PR. Exiting.")
+			}
 		} else {
-			fatalError(branch, "Could not find an open libraries-bom PR. Exiting.")
+			fmt.Printf("%s ✅ Found libraries-bom PR: #%s\n", prefix, bomPR)
+			approvePR(branch, bomPR)
+			waitForMerge(branch, bomPR)
 		}
 	} else {
-		fmt.Printf("%s ✅ Found libraries-bom PR: #%s\n", prefix, bomPR)
-		approvePR(branch, bomPR)
-		waitForMerge(branch, bomPR)
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
 	}
 	step++
 
-	// Merge libraries-bom PR
-	confirmStep(branch, "Wait for release PR to be created by release-please and merge it")
-	fmt.Printf("\n%s ▶️ STEP %d: Waiting for release PR to be created by release-please...\n", prefix, step)
-	releasePR := pollForPR(branch, "chore("+branch+"): release in:title is:open author:app/release-please", true)
-	version := getVersionFromPR(releasePR)
-	fmt.Printf("%s 📦 Detected Release Version: %s\n", prefix, version)
+	// Merge release PR
+	if shouldRun(step) {
+		confirmStep(branch, "Wait for release PR to be created by release-please and merge it")
+		fmt.Printf("\n%s ▶️ STEP %d: Waiting for release PR to be created by release-please...\n", prefix, step)
+		releasePR := pollForPR(branch, "chore("+branch+"): release in:title is:open author:app/release-please", true)
+		if version == "" {
+			version = getVersionFromPR(releasePR)
+		}
+		fmt.Printf("%s 📦 Detected Release Version: %s\n", prefix, version)
 
-	approvePR(branch, releasePR)
-	waitForMerge(branch, releasePR)
+		approvePR(branch, releasePR)
+		waitForMerge(branch, releasePR)
+	} else {
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
+		if version == "" && startStep > step {
+			version = discoverVersion(branch)
+		}
+	}
 	step++
 
-	// Wait for and merge Release PR (and Snapshot)
-	confirmStep(branch, "Wait for post-release SNAPSHOT PR and merge it")
-	fmt.Printf("\n%s ▶️ STEP %d: Waiting for post-release SNAPSHOT PR...\n", prefix, step)
-	snapshotPR := pollForPR(branch, "SNAPSHOT in:title is:open author:app/release-please", false)
-	approvePR(branch, snapshotPR)
-	waitForMerge(branch, snapshotPR)
+	// Wait for and merge SNAPSHOT PR
+	if shouldRun(step) {
+		confirmStep(branch, "Wait for post-release SNAPSHOT PR and merge it")
+		fmt.Printf("\n%s ▶️ STEP %d: Waiting for post-release SNAPSHOT PR...\n", prefix, step)
+		snapshotPR := pollForPR(branch, "SNAPSHOT in:title is:open author:app/release-please", false)
+		approvePR(branch, snapshotPR)
+		waitForMerge(branch, snapshotPR)
+	} else {
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
+	}
 	step++
 
 	// Verify Maven Central
-	confirmStep(branch, "Verify release on Maven Central")
-	fmt.Printf("\n%s ▶️ STEP %d: Verifying release %s on Maven Central...\n", prefix, step, version)
-	verifyMavenCentral(branch, version)
+	if shouldRun(step) {
+		confirmStep(branch, "Verify release on Maven Central")
+		if version == "" {
+			fatalError(branch, "Version is required for Maven Central verification. Please provide it via -version flag.")
+		}
+		fmt.Printf("\n%s ▶️ STEP %d: Verifying release %s on Maven Central...\n", prefix, step, version)
+		verifyMavenCentral(branch, version)
+	} else {
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
+	}
 	step++
 	
-	confirmStep(branch, "Verify Documentation and Javadocs")
-	verifyDocumentation(branch, version, step)
+	if shouldRun(step) {
+		confirmStep(branch, "Verify Documentation and Javadocs")
+		if version == "" {
+			fatalError(branch, "Version is required for Documentation verification. Please provide it via -version flag.")
+		}
+		verifyDocumentation(branch, version, step)
+	} else {
+		fmt.Printf("%s ⏭️ Skipping STEP %d\n", prefix, step)
+	}
+}
+
+func discoverVersion(branch string) string {
+	fmt.Printf("[%s] 🔍 Attempting to discover version from merged release PRs...\n", branch)
+	query := "release in:title is:merged author:app/release-please"
+	if branch != "main" {
+		query = "chore(" + branch + "): release in:title is:merged author:app/release-please"
+	}
+	pr := findPR(branch, query)
+	if pr != "" {
+		v := getVersionFromPR(pr)
+		fmt.Printf("[%s] 📦 Discovered Version: %s\n", branch, v)
+		return v
+	}
+	return ""
 }
 
 // confirmStep prompts the user for confirmation before proceeding to the next step if interactive mode is enabled.
