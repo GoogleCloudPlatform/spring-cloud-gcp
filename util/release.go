@@ -597,6 +597,19 @@ func createInitializrPR(version, bootMax string, step int) {
 	if userEmail != "" {
 		prBody += fmt.Sprintf("\n\nSigned-off-by: %s <%s>", fullName, userEmail)
 	}
+	if fullName == "" {
+		fullName = username
+	}
+
+	// Try to get email from git config, fallback to emailOpt
+	userEmail, _ := runCmd("git", "config", "user.email")
+	if userEmail == "" {
+		userEmail = emailOpt
+	}
+
+	if userEmail != "" {
+		prBody += fmt.Sprintf("\n\nSigned-off-by: %s <%s>", fullName, userEmail)
+	}
 
 	headArg := fmt.Sprintf("%s:%s", username, branchName)
 
