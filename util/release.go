@@ -490,6 +490,16 @@ func confirmStep(branch, description string) {
 func createInitializrPR(version, bootMax string, step int) {
 	fmt.Printf("\n[main] ▶️ STEP %d: Creating PR for Spring Initializr...\n", step)
 
+	// Fetch user info early for sync and DCO sign-off
+	fullName, _ := runCmd("gh", "api", "user", "--jq", ".name")
+	username, err := runCmd("gh", "api", "user", "--jq", ".login")
+	if err != nil || username == "" {
+		fatalError("main", "Failed to retrieve GitHub username: %v", err)
+	}
+	if fullName == "" {
+		fullName = username
+	}
+
 	// 3. Name the directory to reflect it's temporary
 	repoPath := "./temp-start.spring.io"
 
@@ -513,15 +523,20 @@ func createInitializrPR(version, bootMax string, step int) {
 	runCmd("gh", "repo", "fork", "spring-io/start.spring.io", "--clone=true", "--default-branch-only")
 
 	// Rename it to our explicit "temp" prefixed directory
-	err := os.Rename("./start.spring.io", repoPath)
+	err = os.Rename("./start.spring.io", repoPath)
 	if err != nil {
 		fatalError("main", "Failed to rename cloned directory: %v", err)
 	}
+
+	fmt.Println("[main] 🔄 Syncing fork with upstream...")
+	runCmd("gh", "repo", "sync", username+"/start.spring.io", "--source", "spring-io/start.spring.io")
 
 	branchName := fmt.Sprintf("update-gcp-%s", version)
 	fmt.Printf("[main] 🌿 Creating branch: %s\n", branchName)
 	cmd := exec.Command("git", "checkout", "-b", branchName)
 	cmd.Dir = repoPath
+	// Ensure the local main is up to date with the newly synced remote main
+	exec.Command("git", "-C", repoPath, "pull", "origin", "main").Run()
 	cmd.Run()
 
 	yamlPath := fmt.Sprintf("%s/start-site/src/main/resources/application.yml", repoPath)
@@ -573,11 +588,14 @@ func createInitializrPR(version, bootMax string, step int) {
 		prBody += fmt.Sprintf("\n\nAlso updating `compatibilityRange` max to `%s`.", bootMax)
 	}
 
-	// Fetch user info for DCO sign-off
-	fullName, _ := runCmd("gh", "api", "user", "--jq", ".name")
-	username, err := runCmd("gh", "api", "user", "--jq", ".login")
-	if err != nil || username == "" {
-		fatalError("main", "Failed to retrieve GitHub username: %v", err)
+	// Try to get email from git config, fallback to emailOpt
+	userEmail, _ := runCmd("git", "config", "user.email")
+	if userEmail == "" {
+		userEmail = emailOpt
+	}
+
+	if userEmail != "" {
+		prBody += fmt.Sprintf("\n\nSigned-off-by: %s <%s>", fullName, userEmail)
 	}
 	if fullName == "" {
 		fullName = username
