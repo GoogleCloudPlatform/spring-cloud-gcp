@@ -461,4 +461,32 @@ class ConverterAwareMappingSpannerEntityReaderTests {
 
     assertThat(result.paramsList.get(2)).isNull();
   }
+
+  @Test
+  void readArrayWithNullFieldTest() {
+    Struct row = mock(Struct.class);
+    when(row.getString("id")).thenReturn("1234");
+    when(row.getType())
+        .thenReturn(
+            Type.struct(
+                Arrays.asList(
+                    Type.StructField.of("id", Type.string()),
+                    Type.StructField.of("stringList", Type.array(Type.string())))));
+    when(row.getColumnType("id")).thenReturn(Type.string());
+
+    when(row.getColumnType("stringList")).thenReturn(Type.array(Type.string()));
+    when(row.getStringList("stringList"))
+        .thenReturn(
+            Arrays.asList("string1", null, "string3"));
+
+    TestEntities.TestEntityWithStringList result =
+        this.spannerEntityReader.read(TestEntities.TestEntityWithStringList.class, row);
+
+    assertThat(result.id).isEqualTo("1234");
+
+    assertThat(result.stringList).hasSize(3);
+    assertThat(result.stringList.get(0)).isEqualTo("string1");
+    assertThat(result.stringList.get(1)).isNull();
+    assertThat(result.stringList.get(2)).isEqualTo("string3");
+  }
 }
