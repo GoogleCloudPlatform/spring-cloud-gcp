@@ -333,7 +333,6 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 
     boolean valueSet = false;
 
-
     if (spannerPersistentProperty.getAnnotatedColumnItemType() == Type.Code.JSON) {
       // if column annotated with JSON, convert directly
       valueBinder.toJsonArray(this.convertIterableJsonToValue(value));

@@ -158,9 +158,9 @@ public class DefaultPublisherFactory implements PublisherFactory {
   }
 
   /**
-   * Accepts a list of {@link Publisher.Builder} customizers.
-   * The customizers are applied in the order provided, so the later customizers can override
-   * any settings provided by the earlier ones.
+   * Accepts a list of {@link Publisher.Builder} customizers. The customizers are applied in the
+   * order provided, so the later customizers can override any settings provided by the earlier
+   * ones.
    */
   public void setCustomizers(List<PublisherCustomizer> customizers) {
     Assert.notNull(customizers, "Non-null customizers expected");
@@ -170,12 +170,13 @@ public class DefaultPublisherFactory implements PublisherFactory {
   /**
    * Creates a {@link Publisher} for a given topic.
    *
-   * <p></p>Configuration precedence:
+   * <p>Configuration precedence:
+   *
    * <ol>
    *   <li>modifications applied by the factory customizers
    *   <li>{@code spring.cloud.gcp.pubsub.publisher} configuration options
    *   <li>client library defaults
-   *</ol>
+   * </ol>
    *
    * @param topic destination topic
    * @return fully configured publisher

@@ -32,20 +32,15 @@ public class SecurityConfiguration {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests()
-        .requestMatchers("/")
-        .permitAll()
-        .requestMatchers("/css/**")
-        .permitAll()
-        .requestMatchers("/templates/**")
-        .permitAll()
-        .requestMatchers("/answer")
-        .authenticated()
-        .and()
-        .oauth2ResourceServer()
-        .jwt()
-        .and()
-        .authenticationEntryPoint(new Http403ForbiddenEntryPoint());
+    http.authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers("/", "/css/**", "/templates/**")
+                    .permitAll()
+                    .requestMatchers("/answer")
+                    .authenticated())
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}))
+        .exceptionHandling(
+            exceptions -> exceptions.authenticationEntryPoint(new Http403ForbiddenEntryPoint()));
 
     return http.build();
   }

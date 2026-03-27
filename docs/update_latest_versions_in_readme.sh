@@ -15,10 +15,10 @@ latest_v4=$(echo "$versions" | grep '^4\.' | tail -n 1)
 latest_v3=$(echo "$versions" | grep '^3\.' | tail -n 1)
 
 # Update the README.adoc file
-sed -i "/Spring Framework on Google Cloud 6\./s/[0-9]*\.[0-9]*\.[0-9]*/${latest_v6}/g" README.adoc
-sed -i "/Spring Framework on Google Cloud 5\./s/[0-9]*\.[0-9]*\.[0-9]*/${latest_v5}/g" README.adoc
-sed -i "/Spring Framework on Google Cloud 4\./s/[0-9]*\.[0-9]*\.[0-9]*/${latest_v4}/g" README.adoc
-sed -i "/Spring Framework on Google Cloud 3\./s/[0-9]*\.[0-9]*\.[0-9]*/${latest_v3}/g" README.adoc
+sed -i.bak "/Spring Framework on Google Cloud 6\./s/[0-9]*\.[0-9]*\.[0-9]*/${latest_v6}/g" README.adoc
+sed -i.bak "/Spring Framework on Google Cloud 5\./s/[0-9]*\.[0-9]*\.[0-9]*/${latest_v5}/g" README.adoc
+sed -i.bak "/Spring Framework on Google Cloud 4\./s/[0-9]*\.[0-9]*\.[0-9]*/${latest_v4}/g" README.adoc
+sed -i.bak "/Spring Framework on Google Cloud 3\./s/[0-9]*\.[0-9]*\.[0-9]*/${latest_v3}/g" README.adoc
 
 echo "README.adoc updated with the latest versions:"
 echo "version-6: $latest_v6"

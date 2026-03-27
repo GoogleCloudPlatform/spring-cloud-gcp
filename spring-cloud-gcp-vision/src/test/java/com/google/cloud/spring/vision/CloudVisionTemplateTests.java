@@ -161,8 +161,8 @@ class CloudVisionTemplateTests {
         .thenReturn(BatchAnnotateImagesResponse.getDefaultInstance());
 
     assertThatThrownBy(() -> this.cloudVisionTemplate.analyzeImage(FAKE_IMAGE, Type.TEXT_DETECTION))
-            .isInstanceOf(CloudVisionException.class)
-            .hasMessage(EMPTY_RESPONSE_ERROR_MESSAGE);
+        .isInstanceOf(CloudVisionException.class)
+        .hasMessage(EMPTY_RESPONSE_ERROR_MESSAGE);
   }
 
   @Test
@@ -170,10 +170,12 @@ class CloudVisionTemplateTests {
     when(this.imageAnnotatorClient.batchAnnotateFiles(any(BatchAnnotateFilesRequest.class)))
         .thenReturn(BatchAnnotateFilesResponse.getDefaultInstance());
 
-    assertThatThrownBy(() ->  this.cloudVisionTemplate.analyzeFile(FAKE_PDF, "application/pdf", Type.TEXT_DETECTION))
-            .isInstanceOf(CloudVisionException.class)
-            .hasMessage(EMPTY_RESPONSE_ERROR_MESSAGE);
-
+    assertThatThrownBy(
+            () ->
+                this.cloudVisionTemplate.analyzeFile(
+                    FAKE_PDF, "application/pdf", Type.TEXT_DETECTION))
+        .isInstanceOf(CloudVisionException.class)
+        .hasMessage(EMPTY_RESPONSE_ERROR_MESSAGE);
   }
 
   @Test
@@ -192,28 +194,31 @@ class CloudVisionTemplateTests {
     when(this.imageAnnotatorClient.batchAnnotateImages(any(BatchAnnotateImagesRequest.class)))
         .thenReturn(responseBatch);
 
-
     assertThatThrownBy(() -> this.cloudVisionTemplate.extractTextFromImage(FAKE_IMAGE))
-            .isInstanceOf(CloudVisionException.class)
-            .hasMessage("Error Message from Vision API.");
+        .isInstanceOf(CloudVisionException.class)
+        .hasMessage("Error Message from Vision API.");
   }
 
   @Test
   void testResourceReadingError() {
 
     Resource imageResource = new BadResource();
-    assertThatThrownBy(() -> this.cloudVisionTemplate.analyzeImage(imageResource, Type.LABEL_DETECTION))
-            .isInstanceOf(CloudVisionException.class)
-            .hasMessageContaining(READ_BYTES_ERROR_MESSAGE);
+    assertThatThrownBy(
+            () -> this.cloudVisionTemplate.analyzeImage(imageResource, Type.LABEL_DETECTION))
+        .isInstanceOf(CloudVisionException.class)
+        .hasMessageContaining(READ_BYTES_ERROR_MESSAGE);
   }
 
   @Test
   void testFileResourceReadingError() {
 
     Resource imageResource = new BadResource();
-    assertThatThrownBy(() ->  this.cloudVisionTemplate.analyzeFile(imageResource, "application/pdf", Type.LABEL_DETECTION))
-            .isInstanceOf(CloudVisionException.class)
-            .hasMessageContaining(READ_BYTES_ERROR_MESSAGE);
+    assertThatThrownBy(
+            () ->
+                this.cloudVisionTemplate.analyzeFile(
+                    imageResource, "application/pdf", Type.LABEL_DETECTION))
+        .isInstanceOf(CloudVisionException.class)
+        .hasMessageContaining(READ_BYTES_ERROR_MESSAGE);
   }
 
   private static final class BadResource extends AbstractResource {

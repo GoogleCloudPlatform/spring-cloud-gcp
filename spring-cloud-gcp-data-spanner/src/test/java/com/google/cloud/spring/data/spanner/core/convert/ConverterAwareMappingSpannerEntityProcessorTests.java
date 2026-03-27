@@ -197,7 +197,8 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
             Timestamp.ofTimeSecondsAndNanos(222, 0),
             Timestamp.ofTimeSecondsAndNanos(333, 0));
     List<Interval> intervals = Collections.singletonList(Interval.ofSeconds(1L));
-    List<UUID> uuids = Collections.singletonList(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
+    List<UUID> uuids =
+        Collections.singletonList(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
 
     Struct struct1 =
         Struct.newBuilder()
@@ -377,8 +378,8 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
     assertThat(t1.intervalField).isEqualTo(Interval.ofSeconds(100L));
     assertThat(t1.intervalList).containsExactly(Interval.ofSeconds(1L));
     assertThat(t1.uuidField).isEqualTo(UUID.fromString("a1b2c3d4-e5f6-7890-1234-567890abcdef"));
-    assertThat(t1.uuidList).containsExactly(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
-
+    assertThat(t1.uuidList)
+        .containsExactly(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
 
     assertThat(t2)
         .hasFieldOrPropertyWithValue("id", "key12")
@@ -409,7 +410,8 @@ class ConverterAwareMappingSpannerEntityProcessorTests {
     assertThat(t2.intervalField).isEqualTo(Interval.ofSeconds(200L));
     assertThat(t2.intervalList).containsExactly(Interval.ofSeconds(1L));
     assertThat(t2.uuidField).isEqualTo(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
-    assertThat(t2.uuidList).containsExactly(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
+    assertThat(t2.uuidList)
+        .containsExactly(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
   }
 
   @Test

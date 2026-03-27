@@ -38,7 +38,7 @@ public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider
   /**
    * Create a new instance.
    *
-   * @param properties   configuration properties
+   * @param properties configuration properties
    * @param databaseType the database type
    */
   public DefaultCloudSqlJdbcInfoProvider(
@@ -46,10 +46,11 @@ public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider
     this.properties = properties;
     this.databaseType = databaseType;
     Assert.hasText(this.properties.getDatabaseName(), "A database name must be provided.");
-    if (!StringUtils.hasLength(properties.getDnsName()) && !StringUtils.hasLength(
-        properties.getInstanceConnectionName())) {
-      throw new IllegalArgumentException("A DNS name or instance connection name must be provided. "
-          + "Instance connection should be in the format <PROJECT_ID>:<REGION>:<INSTANCE_ID>.");
+    if (!StringUtils.hasLength(properties.getDnsName())
+        && !StringUtils.hasLength(properties.getInstanceConnectionName())) {
+      throw new IllegalArgumentException(
+          "A DNS name or instance connection name must be provided. "
+              + "Instance connection should be in the format <PROJECT_ID>:<REGION>:<INSTANCE_ID>.");
     }
   }
 
@@ -106,8 +107,9 @@ public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider
                       // the instance connection name.
                       return URLEncoder.encode(entry.getKey(), "UTF-8") + "=" + entry.getValue();
                     } else {
-                      return URLEncoder.encode(entry.getKey(), "UTF-8") + "=" + URLEncoder.encode(
-                          entry.getValue());
+                      return URLEncoder.encode(entry.getKey(), "UTF-8")
+                          + "="
+                          + URLEncoder.encode(entry.getValue());
                     }
                   } catch (UnsupportedEncodingException e) {
                     // this should never happen, but we need to support JDK 8.
@@ -117,7 +119,8 @@ public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider
                 })
             .collect(Collectors.joining("&"));
     String dnsName =
-        StringUtils.hasLength(this.properties.getDnsName()) ? this.properties.getDnsName()
+        StringUtils.hasLength(this.properties.getDnsName())
+            ? this.properties.getDnsName()
             : "google";
 
     String jdbcUrl =

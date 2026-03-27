@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,204 +34,247 @@ public class SecurityCenterSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for batchCreateResourceValueConfigs. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry batchCreateResourceValueConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for createBigQueryExport. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createBigQueryExportRetry;
+
   /**
    * Allow override of retry settings at method-level for createFinding. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createFindingRetry;
+
   /**
    * Allow override of retry settings at method-level for createMuteConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createMuteConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for createNotificationConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createNotificationConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for createSource. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createSourceRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteBigQueryExport. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteBigQueryExportRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteMuteConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteMuteConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteNotificationConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteNotificationConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteResourceValueConfig. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteResourceValueConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for getBigQueryExport. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBigQueryExportRetry;
+
   /**
    * Allow override of retry settings at method-level for getSimulation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getSimulationRetry;
+
   /**
    * Allow override of retry settings at method-level for getValuedResource. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getValuedResourceRetry;
+
   /**
    * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for getMuteConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getMuteConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for getNotificationConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getNotificationConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for getResourceValueConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getResourceValueConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for getSource. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getSourceRetry;
+
   /**
    * Allow override of retry settings at method-level for groupFindings. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry groupFindingsRetry;
+
   /**
    * Allow override of retry settings at method-level for listAttackPaths. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAttackPathsRetry;
+
   /**
    * Allow override of retry settings at method-level for listBigQueryExports. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBigQueryExportsRetry;
+
   /**
    * Allow override of retry settings at method-level for listFindings. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listFindingsRetry;
+
   /**
    * Allow override of retry settings at method-level for listMuteConfigs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listMuteConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for listNotificationConfigs. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listNotificationConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for listResourceValueConfigs. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listResourceValueConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for listSources. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSourcesRetry;
+
   /**
    * Allow override of retry settings at method-level for listValuedResources. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listValuedResourcesRetry;
+
   /**
    * Allow override of retry settings at method-level for setFindingState. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setFindingStateRetry;
+
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for setMute. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setMuteRetry;
+
   /**
    * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry testIamPermissionsRetry;
+
   /**
    * Allow override of retry settings at method-level for updateBigQueryExport. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateBigQueryExportRetry;
+
   /**
    * Allow override of retry settings at method-level for updateExternalSystem. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateExternalSystemRetry;
+
   /**
    * Allow override of retry settings at method-level for updateFinding. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateFindingRetry;
+
   /**
    * Allow override of retry settings at method-level for updateMuteConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateMuteConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for updateNotificationConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateNotificationConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for updateResourceValueConfig. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateResourceValueConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for updateSecurityMarks. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateSecurityMarksRetry;
+
   /**
    * Allow override of retry settings at method-level for updateSource. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

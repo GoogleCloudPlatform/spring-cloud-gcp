@@ -44,7 +44,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.actuate.health.Status;
+import org.springframework.boot.health.contributor.Status;
 
 /** Tests for the Pub/Sub Health Indicator. */
 @ExtendWith(MockitoExtension.class)
@@ -52,8 +52,7 @@ class PubSubHealthIndicatorTests {
 
   @Mock private PubSubTemplate pubSubTemplate;
 
-  @Mock
-  CompletableFuture<List<AcknowledgeablePubsubMessage>> future;
+  @Mock CompletableFuture<List<AcknowledgeablePubsubMessage>> future;
 
   @Test
   void healthUp_customSubscription() throws Exception {
@@ -152,5 +151,4 @@ class PubSubHealthIndicatorTests {
     Exception e = new RuntimeException("Runtime error");
     testHealth(e, "testSubscription", Status.DOWN);
   }
-
 }

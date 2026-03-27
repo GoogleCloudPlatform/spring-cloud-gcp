@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,6 +177,22 @@ public class VpcFlowLogsServiceSpringAutoConfiguration {
           .getVpcFlowLogsConfigSettings()
           .setRetrySettings(getVpcFlowLogsConfigRetrySettings);
 
+      RetrySettings queryOrgVpcFlowLogsConfigsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.queryOrgVpcFlowLogsConfigsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .queryOrgVpcFlowLogsConfigsSettings()
+          .setRetrySettings(queryOrgVpcFlowLogsConfigsRetrySettings);
+
+      RetrySettings showEffectiveFlowLogsConfigsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.showEffectiveFlowLogsConfigsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .showEffectiveFlowLogsConfigsSettings()
+          .setRetrySettings(showEffectiveFlowLogsConfigsRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -234,6 +250,35 @@ public class VpcFlowLogsServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getVpcFlowLogsConfig from properties.");
+      }
+    }
+    Retry queryOrgVpcFlowLogsConfigsRetry = clientProperties.getQueryOrgVpcFlowLogsConfigsRetry();
+    if (queryOrgVpcFlowLogsConfigsRetry != null) {
+      RetrySettings queryOrgVpcFlowLogsConfigsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.queryOrgVpcFlowLogsConfigsSettings().getRetrySettings(),
+              queryOrgVpcFlowLogsConfigsRetry);
+      clientSettingsBuilder
+          .queryOrgVpcFlowLogsConfigsSettings()
+          .setRetrySettings(queryOrgVpcFlowLogsConfigsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for queryOrgVpcFlowLogsConfigs from properties.");
+      }
+    }
+    Retry showEffectiveFlowLogsConfigsRetry =
+        clientProperties.getShowEffectiveFlowLogsConfigsRetry();
+    if (showEffectiveFlowLogsConfigsRetry != null) {
+      RetrySettings showEffectiveFlowLogsConfigsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.showEffectiveFlowLogsConfigsSettings().getRetrySettings(),
+              showEffectiveFlowLogsConfigsRetry);
+      clientSettingsBuilder
+          .showEffectiveFlowLogsConfigsSettings()
+          .setRetrySettings(showEffectiveFlowLogsConfigsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for showEffectiveFlowLogsConfigs from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

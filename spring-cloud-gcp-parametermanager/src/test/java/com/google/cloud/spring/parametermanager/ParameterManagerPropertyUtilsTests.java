@@ -41,9 +41,9 @@ class ParameterManagerPropertyUtilsTests {
     String property = "pm@";
 
     assertThatThrownBy(
-        () ->
-            ParameterManagerPropertyUtils.getParameterVersionName(
-                property, DEFAULT_PROJECT_ID_PROVIDER))
+            () ->
+                ParameterManagerPropertyUtils.getParameterVersionName(
+                    property, DEFAULT_PROJECT_ID_PROVIDER))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining(
             "Unrecognized format for specifying a GCP Parameter Manager parameter:");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,54 +34,67 @@ public class AutoMlSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for getDataset. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDatasetRetry;
+
   /**
    * Allow override of retry settings at method-level for listDatasets. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDatasetsRetry;
+
   /**
    * Allow override of retry settings at method-level for updateDataset. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateDatasetRetry;
+
   /**
    * Allow override of retry settings at method-level for getAnnotationSpec. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getAnnotationSpecRetry;
+
   /**
    * Allow override of retry settings at method-level for getModel. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getModelRetry;
+
   /**
    * Allow override of retry settings at method-level for listModels. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listModelsRetry;
+
   /**
    * Allow override of retry settings at method-level for updateModel. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateModelRetry;
+
   /**
    * Allow override of retry settings at method-level for getModelEvaluation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getModelEvaluationRetry;
+
   /**
    * Allow override of retry settings at method-level for listModelEvaluations. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

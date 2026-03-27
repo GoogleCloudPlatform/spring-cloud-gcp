@@ -46,7 +46,6 @@ import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.ParameterAccessor;
 import org.springframework.data.repository.query.Parameters;
 import org.springframework.data.repository.query.ParametersParameterAccessor;
-import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
@@ -81,8 +80,6 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
         return builder.build();
       };
 
-  private final QueryMethodEvaluationContextProvider evaluationContextProvider;
-
   private final ValueExpressionDelegate valueExpressionDelegate;
 
   private SpelExpressionParser expressionParser;
@@ -97,31 +94,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
       SpannerMappingContext spannerMappingContext,
       boolean isDml) {
     super(type, queryMethod, spannerTemplate, spannerMappingContext);
-    this.evaluationContextProvider = null;
     this.valueExpressionDelegate = valueExpressionDelegate;
-    this.expressionParser = expressionParser;
-    this.sql = StringUtils.trimTrailingCharacter(sql.trim(), ';');
-    this.isDml = isDml;
-  }
-
-  /**
-   * @deprecated Use {@link
-   *     SpannerQueryLookupStrategy#SpannerQueryLookupStrategy(SpannerMappingContext,
-   *     SpannerTemplate, ValueExpressionDelegate, SpelExpressionParser)} instead.
-   */
-  @Deprecated
-  SqlSpannerQuery(
-      Class<T> type,
-      SpannerQueryMethod queryMethod,
-      SpannerTemplate spannerTemplate,
-      String sql,
-      QueryMethodEvaluationContextProvider evaluationContextProvider,
-      SpelExpressionParser expressionParser,
-      SpannerMappingContext spannerMappingContext,
-      boolean isDml) {
-    super(type, queryMethod, spannerTemplate, spannerMappingContext);
-    this.evaluationContextProvider = evaluationContextProvider;
-    this.valueExpressionDelegate = null;
     this.expressionParser = expressionParser;
     this.sql = StringUtils.trimTrailingCharacter(sql.trim(), ';');
     this.isDml = isDml;
@@ -181,12 +154,11 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
   }
 
   private EvaluationContext getEvaluationContext(QueryTagValue queryTagValue) {
-    if (evaluationContextProvider != null) {
-      return this.evaluationContextProvider.getEvaluationContext(
-          this.queryMethod.getParameters(), queryTagValue.rawParams);
-    }
-    return this.valueExpressionDelegate.getEvaluationContextAccessor().create(this.queryMethod.getParameters())
-        .getEvaluationContext(queryTagValue.rawParams).getEvaluationContext();
+    return this.valueExpressionDelegate
+        .getEvaluationContextAccessor()
+        .create(this.queryMethod.getParameters())
+        .getEvaluationContext(queryTagValue.rawParams)
+        .getEvaluationContext();
   }
 
   private void resolveSpelTags(QueryTagValue queryTagValue) {
@@ -274,11 +246,13 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
       return this.spannerTemplate.query(
           struct -> new StructAccessor(struct).getSingleValue(0), statement, spannerQueryOptions);
     }
-    // check if returnedType is a field annotated as json or is inner-type of a field annotated as json
+    // check if returnedType is a field annotated as json or is inner-type of a field annotated as
+    // json
     if (isJsonFieldType(returnedType)) {
       return this.spannerTemplate.query(
-          struct -> new StructAccessor(struct,
-              this.spannerMappingContext.getGson()).getJsonValue(0, returnedType),
+          struct ->
+              new StructAccessor(struct, this.spannerMappingContext.getGson())
+                  .getJsonValue(0, returnedType),
           statement,
           spannerQueryOptions);
     }

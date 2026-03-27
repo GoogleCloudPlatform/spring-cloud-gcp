@@ -102,11 +102,10 @@ class PubSubMessageChannelBinderTests {
             .withBean(PubSubTemplate.class, () -> pubSubTemplate)
             .withBean(PubSubAdmin.class, () -> pubSubAdmin)
             .withUserConfiguration(BaseTestConfiguration.class)
-            .withConfiguration(
-                AutoConfigurations.of(
-                    PubSubBinderConfiguration.class
-                ));
-    this.binder = new PubSubMessageChannelBinder(new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
+            .withConfiguration(AutoConfigurations.of(PubSubBinderConfiguration.class));
+    this.binder =
+        new PubSubMessageChannelBinder(
+            new String[0], this.channelProvisioner, this.pubSubTemplate, this.properties);
   }
 
   @Test
@@ -162,24 +161,28 @@ class PubSubMessageChannelBinderTests {
   void producerHeaderPropertyPropagatesToMessageHandler() {
     when(producerDestination.getName()).thenReturn("test-topic");
     baseContext
-                .withPropertyValues("spring.cloud.stream.gcp.pubsub.default.producer.allowedHeaders=foo4,foo5")
-                .run(
-                        ctx -> {
-                          PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
+        .withPropertyValues(
+            "spring.cloud.stream.gcp.pubsub.default.producer.allowedHeaders=foo4,foo5")
+        .run(
+            ctx -> {
+              PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
 
-                          PubSubExtendedBindingProperties props =
-                                    ctx.getBean("pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
-                          PubSubMessageHandler messageHandler =
-                                    (PubSubMessageHandler)
-                                            binder.createProducerMessageHandler(
-                                                    producerDestination,
-                                                    new ExtendedProducerProperties<>(
-                                                            props.getExtendedProducerProperties("test")),
-                                                    errorChannel);
-                          PubSubHeaderMapper mapper = (PubSubHeaderMapper) FieldUtils.readField(messageHandler, "headerMapper", true);
-                          String[] headersToCheck = (String[]) FieldUtils.readField(mapper, "outboundHeaderPatterns", true);
-                          Assertions.assertArrayEquals(new String[]{"foo4", "foo5"}, headersToCheck);
-                        });
+              PubSubExtendedBindingProperties props =
+                  ctx.getBean(
+                      "pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
+              PubSubMessageHandler messageHandler =
+                  (PubSubMessageHandler)
+                      binder.createProducerMessageHandler(
+                          producerDestination,
+                          new ExtendedProducerProperties<>(
+                              props.getExtendedProducerProperties("test")),
+                          errorChannel);
+              PubSubHeaderMapper mapper =
+                  (PubSubHeaderMapper) FieldUtils.readField(messageHandler, "headerMapper", true);
+              String[] headersToCheck =
+                  (String[]) FieldUtils.readField(mapper, "outboundHeaderPatterns", true);
+              Assertions.assertArrayEquals(new String[] {"foo4", "foo5"}, headersToCheck);
+            });
   }
 
   @Test
@@ -189,8 +192,7 @@ class PubSubMessageChannelBinderTests {
         .withPropertyValues(
             "spring.cloud.stream.gcp.pubsub.default.consumer.maxFetchSize=20",
             "spring.cloud.stream.gcp.pubsub.default.consumer.subscription-name=mock",
-            "spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources=false"
-        )
+            "spring.cloud.stream.gcp.pubsub.default.consumer.auto-create-resources=false")
         .run(
             ctx -> {
               PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
@@ -198,12 +200,10 @@ class PubSubMessageChannelBinderTests {
                   ctx.getBean(
                       "pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
 
-              assertThat(props.getExtendedConsumerProperties("test")
-                  .getSubscriptionName())
+              assertThat(props.getExtendedConsumerProperties("test").getSubscriptionName())
                   .isEqualTo("mock");
 
-              assertThat(props.getExtendedConsumerProperties("test")
-                  .isAutoCreateResources())
+              assertThat(props.getExtendedConsumerProperties("test").isAutoCreateResources())
                   .isFalse();
 
               PubSubMessageSource source =
@@ -246,8 +246,7 @@ class PubSubMessageChannelBinderTests {
         .withPropertyValues(
             "spring.cloud.function.definition=producer;consumer",
             "spring.cloud.stream.bindings.producer-out-0.destination=my-topic",
-            "spring.cloud.stream.bindings.consumer-in-0.destination=my-topic"
-        )
+            "spring.cloud.stream.bindings.consumer-in-0.destination=my-topic")
         .run(
             context -> {
               DirectFieldAccessor channelBindingServiceAccessor =
@@ -309,57 +308,62 @@ class PubSubMessageChannelBinderTests {
   @Test
   void testConsumerEndpointCreationWithNoHeadersProvided() {
     when(consumerDestination.getName()).thenReturn("test-subscription");
-    baseContext
-        .run(
-             ctx -> {
-               PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
-               PubSubExtendedBindingProperties props =
-                                    ctx.getBean(
-                                            "pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
+    baseContext.run(
+        ctx -> {
+          PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
+          PubSubExtendedBindingProperties props =
+              ctx.getBean("pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
 
-               assertThat(binder).isNotNull();
-               MessageProducer messageProducer =
-                                    binder.createConsumerEndpoint(
-                                            consumerDestination,
-                                            "testGroup",
-                                            new ExtendedConsumerProperties<>(
-                                                    props.getExtendedConsumerProperties("test")));
-               assertThat(messageProducer).isInstanceOf(PubSubInboundChannelAdapter.class);
-               PubSubInboundChannelAdapter inboundChannelAdapter =
-                                    (PubSubInboundChannelAdapter) messageProducer;
-               PubSubHeaderMapper mapper = (PubSubHeaderMapper) FieldUtils.readField(inboundChannelAdapter, "headerMapper", true);
-               String [] headersToCheck = (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true);
-               Assertions.assertArrayEquals(headersToCheck,
-                   (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true));
-          });
+          assertThat(binder).isNotNull();
+          MessageProducer messageProducer =
+              binder.createConsumerEndpoint(
+                  consumerDestination,
+                  "testGroup",
+                  new ExtendedConsumerProperties<>(props.getExtendedConsumerProperties("test")));
+          assertThat(messageProducer).isInstanceOf(PubSubInboundChannelAdapter.class);
+          PubSubInboundChannelAdapter inboundChannelAdapter =
+              (PubSubInboundChannelAdapter) messageProducer;
+          PubSubHeaderMapper mapper =
+              (PubSubHeaderMapper)
+                  FieldUtils.readField(inboundChannelAdapter, "headerMapper", true);
+          String[] headersToCheck =
+              (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true);
+          Assertions.assertArrayEquals(
+              headersToCheck,
+              (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true));
+        });
   }
 
   @Test
   void testConsumerEndpointCreationWithHeadersProvided() {
     when(consumerDestination.getName()).thenReturn("test-subscription");
     baseContext
-                .withPropertyValues("spring.cloud.stream.gcp.pubsub.default.consumer.allowedHeaders=foo2,foo3")
-                .run(
-                        ctx -> {
-                          PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
-                          PubSubExtendedBindingProperties props =
-                                    ctx.getBean(
-                                            "pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
+        .withPropertyValues(
+            "spring.cloud.stream.gcp.pubsub.default.consumer.allowedHeaders=foo2,foo3")
+        .run(
+            ctx -> {
+              PubSubMessageChannelBinder binder = ctx.getBean(PubSubMessageChannelBinder.class);
+              PubSubExtendedBindingProperties props =
+                  ctx.getBean(
+                      "pubSubExtendedBindingProperties", PubSubExtendedBindingProperties.class);
 
-                          assertThat(binder).isNotNull();
-                          MessageProducer messageProducer =
-                                    binder.createConsumerEndpoint(
-                                            consumerDestination,
-                                            "testGroup",
-                                            new ExtendedConsumerProperties<>(
-                                                    props.getExtendedConsumerProperties("test")));
-                          assertThat(messageProducer).isInstanceOf(PubSubInboundChannelAdapter.class);
-                          PubSubInboundChannelAdapter inboundChannelAdapter =
-                                    (PubSubInboundChannelAdapter) messageProducer;
-                          PubSubHeaderMapper mapper = (PubSubHeaderMapper) FieldUtils.readField(inboundChannelAdapter, "headerMapper", true);
-                          String [] headersToCheck = (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true);
-                          Assertions.assertArrayEquals(new String[]{"foo2", "foo3"}, headersToCheck);
-                        });
+              assertThat(binder).isNotNull();
+              MessageProducer messageProducer =
+                  binder.createConsumerEndpoint(
+                      consumerDestination,
+                      "testGroup",
+                      new ExtendedConsumerProperties<>(
+                          props.getExtendedConsumerProperties("test")));
+              assertThat(messageProducer).isInstanceOf(PubSubInboundChannelAdapter.class);
+              PubSubInboundChannelAdapter inboundChannelAdapter =
+                  (PubSubInboundChannelAdapter) messageProducer;
+              PubSubHeaderMapper mapper =
+                  (PubSubHeaderMapper)
+                      FieldUtils.readField(inboundChannelAdapter, "headerMapper", true);
+              String[] headersToCheck =
+                  (String[]) FieldUtils.readField(mapper, "inboundHeaderPatterns", true);
+              Assertions.assertArrayEquals(new String[] {"foo2", "foo3"}, headersToCheck);
+            });
   }
 
   @EnableAutoConfiguration

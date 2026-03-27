@@ -18,7 +18,7 @@ package com.example.app
 
 import com.example.data.Person
 import com.example.data.PersonRepository
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.ObjectMapper
 import com.google.cloud.spring.pubsub.core.PubSubTemplate
 import com.google.cloud.spring.pubsub.integration.AckMode
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter
@@ -30,10 +30,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.integration.annotation.IntegrationComponentScan
 import org.springframework.integration.annotation.ServiceActivator
 import org.springframework.integration.channel.DirectChannel
+import org.springframework.integration.config.EnableIntegration
 import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.handler.annotation.Header
+import org.springframework.scheduling.TaskScheduler
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 
 
 /**
@@ -42,6 +46,8 @@ import org.springframework.messaging.handler.annotation.Header
  * @since 1.1
  */
 @Configuration
+@EnableIntegration
+@IntegrationComponentScan
 class PubSubConfiguration {
 
 	private val LOGGER = LogFactory.getLog(PubSubConfiguration::class.java)
@@ -50,6 +56,11 @@ class PubSubConfiguration {
 
 	@Autowired
 	private lateinit var personRepository: PersonRepository
+
+	@Bean
+	fun taskScheduler(): TaskScheduler {
+		return ThreadPoolTaskScheduler()
+	}
 
 	@Bean
 	fun pubsubInputChannel() = DirectChannel()
@@ -71,9 +82,9 @@ class PubSubConfiguration {
 			pubSubTemplate: PubSubTemplate): PubSubInboundChannelAdapter {
 
 		val adapter = PubSubInboundChannelAdapter(pubSubTemplate, REGISTRANT_SUBSCRIPTION)
-		adapter.outputChannel = inputChannel
-		adapter.ackMode = AckMode.MANUAL
-		adapter.payloadType = Person::class.java
+		adapter.setOutputChannel(inputChannel)
+		adapter.setAckMode(AckMode.MANUAL)
+		adapter.setPayloadType(Person::class.java)
 		return adapter
 	}
 

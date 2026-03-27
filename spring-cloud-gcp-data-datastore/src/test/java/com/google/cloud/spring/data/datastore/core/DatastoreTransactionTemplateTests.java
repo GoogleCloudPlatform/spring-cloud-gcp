@@ -40,12 +40,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.Id;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.aot.DisabledInAotMode;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Isolation;
@@ -63,13 +63,13 @@ class DatastoreTransactionTemplateTests {
 
   private final Key key = Key.newBuilder("a", "b", "c").build();
 
-  @MockBean Datastore datastore;
+  @MockitoBean Datastore datastore;
 
-  @MockBean Transaction transaction;
+  @MockitoBean Transaction transaction;
 
   @Autowired TransactionalService transactionalService;
 
-  @MockBean ObjectToKeyFactory objectToKeyFactory;
+  @MockitoBean ObjectToKeyFactory objectToKeyFactory;
 
   @BeforeEach
   void setUp() {
@@ -144,18 +144,20 @@ class DatastoreTransactionTemplateTests {
   void unsupportedIsolationTest() {
 
     assertThatThrownBy(() -> this.transactionalService.doNothingUnsupportedIsolation())
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("DatastoreTransactionManager supports only "
-                    + "isolation level TransactionDefinition.ISOLATION_DEFAULT or ISOLATION_SERIALIZABLE");
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage(
+            "DatastoreTransactionManager supports only "
+                + "isolation level TransactionDefinition.ISOLATION_DEFAULT or ISOLATION_SERIALIZABLE");
   }
 
   @Test
   void unsupportedPropagationTest() {
 
     assertThatThrownBy(() -> this.transactionalService.doNothingUnsupportedPropagation())
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("DatastoreTransactionManager supports only "
-                    + "propagation behavior TransactionDefinition.PROPAGATION_REQUIRED");
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage(
+            "DatastoreTransactionManager supports only "
+                + "propagation behavior TransactionDefinition.PROPAGATION_REQUIRED");
   }
 
   /** Spring config for the tests. */

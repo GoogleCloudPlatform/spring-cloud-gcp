@@ -27,20 +27,14 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties(PREFIX)
 public class GcpSecretManagerProperties implements CredentialsSupplier {
 
-  /**
-   * Configuration prefix for Secret Manager properties.
-   */
+  /** Configuration prefix for Secret Manager properties. */
   public static final String PREFIX = "spring.cloud.gcp.secretmanager";
 
-  /**
-   * Overrides the GCP OAuth2 credentials specified in the Core module.
-   */
+  /** Overrides the GCP OAuth2 credentials specified in the Core module. */
   @NestedConfigurationProperty
   private final Credentials credentials = new Credentials(GcpScope.CLOUD_PLATFORM.getUrl());
 
-  /**
-   * Overrides the GCP Project ID specified in the Core module.
-   */
+  /** Overrides the GCP Project ID specified in the Core module. */
   private String projectId;
 
   /**

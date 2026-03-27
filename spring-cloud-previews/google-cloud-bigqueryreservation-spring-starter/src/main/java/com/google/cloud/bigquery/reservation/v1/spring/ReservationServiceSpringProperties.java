@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,124 +36,192 @@ public class ReservationServiceSpringProperties implements CredentialsSupplier {
       new Credentials(
           "https://www.googleapis.com/auth/bigquery",
           "https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for createReservation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createReservationRetry;
+
   /**
    * Allow override of retry settings at method-level for listReservations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listReservationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getReservation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getReservationRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteReservation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteReservationRetry;
+
   /**
    * Allow override of retry settings at method-level for updateReservation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateReservationRetry;
+
   /**
    * Allow override of retry settings at method-level for failoverReservation. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry failoverReservationRetry;
+
   /**
    * Allow override of retry settings at method-level for createCapacityCommitment. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createCapacityCommitmentRetry;
+
   /**
    * Allow override of retry settings at method-level for listCapacityCommitments. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listCapacityCommitmentsRetry;
+
   /**
    * Allow override of retry settings at method-level for getCapacityCommitment. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getCapacityCommitmentRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteCapacityCommitment. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteCapacityCommitmentRetry;
+
   /**
    * Allow override of retry settings at method-level for updateCapacityCommitment. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateCapacityCommitmentRetry;
+
   /**
    * Allow override of retry settings at method-level for splitCapacityCommitment. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry splitCapacityCommitmentRetry;
+
   /**
    * Allow override of retry settings at method-level for mergeCapacityCommitments. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry mergeCapacityCommitmentsRetry;
+
   /**
    * Allow override of retry settings at method-level for createAssignment. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createAssignmentRetry;
+
   /**
    * Allow override of retry settings at method-level for listAssignments. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAssignmentsRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteAssignment. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteAssignmentRetry;
+
   /**
    * Allow override of retry settings at method-level for searchAssignments. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchAssignmentsRetry;
+
   /**
    * Allow override of retry settings at method-level for searchAllAssignments. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchAllAssignmentsRetry;
+
   /**
    * Allow override of retry settings at method-level for moveAssignment. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry moveAssignmentRetry;
+
   /**
    * Allow override of retry settings at method-level for updateAssignment. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateAssignmentRetry;
+
   /**
    * Allow override of retry settings at method-level for getBiReservation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBiReservationRetry;
+
   /**
    * Allow override of retry settings at method-level for updateBiReservation. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateBiReservationRetry;
+
+  /**
+   * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getIamPolicyRetry;
+
+  /**
+   * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry setIamPolicyRetry;
+
+  /**
+   * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry testIamPermissionsRetry;
+
+  /**
+   * Allow override of retry settings at method-level for createReservationGroup. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createReservationGroupRetry;
+
+  /**
+   * Allow override of retry settings at method-level for getReservationGroup. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getReservationGroupRetry;
+
+  /**
+   * Allow override of retry settings at method-level for deleteReservationGroup. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteReservationGroupRetry;
+
+  /**
+   * Allow override of retry settings at method-level for listReservationGroups. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listReservationGroupsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -366,5 +434,61 @@ public class ReservationServiceSpringProperties implements CredentialsSupplier {
 
   public void setUpdateBiReservationRetry(Retry updateBiReservationRetry) {
     this.updateBiReservationRetry = updateBiReservationRetry;
+  }
+
+  public Retry getGetIamPolicyRetry() {
+    return this.getIamPolicyRetry;
+  }
+
+  public void setGetIamPolicyRetry(Retry getIamPolicyRetry) {
+    this.getIamPolicyRetry = getIamPolicyRetry;
+  }
+
+  public Retry getSetIamPolicyRetry() {
+    return this.setIamPolicyRetry;
+  }
+
+  public void setSetIamPolicyRetry(Retry setIamPolicyRetry) {
+    this.setIamPolicyRetry = setIamPolicyRetry;
+  }
+
+  public Retry getTestIamPermissionsRetry() {
+    return this.testIamPermissionsRetry;
+  }
+
+  public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
+    this.testIamPermissionsRetry = testIamPermissionsRetry;
+  }
+
+  public Retry getCreateReservationGroupRetry() {
+    return this.createReservationGroupRetry;
+  }
+
+  public void setCreateReservationGroupRetry(Retry createReservationGroupRetry) {
+    this.createReservationGroupRetry = createReservationGroupRetry;
+  }
+
+  public Retry getGetReservationGroupRetry() {
+    return this.getReservationGroupRetry;
+  }
+
+  public void setGetReservationGroupRetry(Retry getReservationGroupRetry) {
+    this.getReservationGroupRetry = getReservationGroupRetry;
+  }
+
+  public Retry getDeleteReservationGroupRetry() {
+    return this.deleteReservationGroupRetry;
+  }
+
+  public void setDeleteReservationGroupRetry(Retry deleteReservationGroupRetry) {
+    this.deleteReservationGroupRetry = deleteReservationGroupRetry;
+  }
+
+  public Retry getListReservationGroupsRetry() {
+    return this.listReservationGroupsRetry;
+  }
+
+  public void setListReservationGroupsRetry(Retry listReservationGroupsRetry) {
+    this.listReservationGroupsRetry = listReservationGroupsRetry;
   }
 }

@@ -77,20 +77,20 @@ class GcsFileInfoTests {
 
   @Test
   void toStringTest() {
-    assertThat(gcsFileInfo).hasToString(
-        "FileInfo [isDirectory="
-            + randomBoolean
-            + ", isLink="
-            + false
-            + ", Size="
-            + randomSize
-            + ", ModifiedTime="
-            + new Date(now.toInstant().toEpochMilli())
-            + ", Filename="
-            + "fake-name"
-            + ", RemoteDirectory="
-            + null
-            + "]"
-    );
+    assertThat(gcsFileInfo)
+        .hasToString(
+            "FileInfo [isDirectory="
+                + randomBoolean
+                + ", isLink="
+                + false
+                + ", Size="
+                + randomSize
+                + ", ModifiedTime="
+                + new Date(now.toInstant().toEpochMilli())
+                + ", Filename="
+                + "fake-name"
+                + ", RemoteDirectory="
+                + null
+                + "]");
   }
 }

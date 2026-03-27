@@ -31,8 +31,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
  * Spring Boot Application demonstrating receiving PubSub messages via streaming pull.
@@ -40,6 +43,7 @@ import org.springframework.messaging.handler.annotation.Header;
  * @since 1.1
  */
 @SpringBootApplication
+@EnableIntegration
 public class ReceiverApplication {
 
   private static final Log LOGGER = LogFactory.getLog(ReceiverApplication.class);
@@ -51,6 +55,11 @@ public class ReceiverApplication {
   }
 
   @Bean
+  public TaskScheduler receiverTaskScheduler() {
+    return new ThreadPoolTaskScheduler();
+  }
+
+  @Bean
   public String subscriptionName(@Value("${subscriptionName}") String subscriptionName) {
     return subscriptionName;
   }
@@ -59,7 +68,6 @@ public class ReceiverApplication {
   public MessageChannel pubsubInputChannel() {
     return new DirectChannel();
   }
-
 
   @Bean
   public PubSubInboundChannelAdapter messageChannelAdapter(

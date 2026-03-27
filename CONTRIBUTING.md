@@ -20,7 +20,7 @@ You generally only need to submit a CLA once, so if you've already submitted one
 
 The first step to contributing is to fork the repository and clone it onto your machine.
 
-1. Ensure you have Java version 8 or later installed on your machine.
+1. Ensure you have Java version 17 or later installed on your machine.
 
 2. Try running some tests.
     - Run `./mvnw clean test` in the root directory of the project to run the tests.The `./mvnw` is a

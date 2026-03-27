@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,144 +36,175 @@ public class TranslationServiceSpringProperties implements CredentialsSupplier {
       new Credentials(
           "https://www.googleapis.com/auth/cloud-platform",
           "https://www.googleapis.com/auth/cloud-translation");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for translateText. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry translateTextRetry;
+
   /**
    * Allow override of retry settings at method-level for romanizeText. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry romanizeTextRetry;
+
   /**
    * Allow override of retry settings at method-level for detectLanguage. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry detectLanguageRetry;
+
   /**
    * Allow override of retry settings at method-level for getSupportedLanguages. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getSupportedLanguagesRetry;
+
   /**
    * Allow override of retry settings at method-level for translateDocument. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry translateDocumentRetry;
+
   /**
    * Allow override of retry settings at method-level for listGlossaries. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listGlossariesRetry;
+
   /**
    * Allow override of retry settings at method-level for getGlossary. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getGlossaryRetry;
+
   /**
    * Allow override of retry settings at method-level for getGlossaryEntry. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getGlossaryEntryRetry;
+
   /**
    * Allow override of retry settings at method-level for listGlossaryEntries. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listGlossaryEntriesRetry;
+
   /**
    * Allow override of retry settings at method-level for createGlossaryEntry. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createGlossaryEntryRetry;
+
   /**
    * Allow override of retry settings at method-level for updateGlossaryEntry. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateGlossaryEntryRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteGlossaryEntry. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteGlossaryEntryRetry;
+
   /**
    * Allow override of retry settings at method-level for getDataset. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDatasetRetry;
+
   /**
    * Allow override of retry settings at method-level for listDatasets. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDatasetsRetry;
+
   /**
    * Allow override of retry settings at method-level for createAdaptiveMtDataset. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createAdaptiveMtDatasetRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteAdaptiveMtDataset. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteAdaptiveMtDatasetRetry;
+
   /**
    * Allow override of retry settings at method-level for getAdaptiveMtDataset. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getAdaptiveMtDatasetRetry;
+
   /**
    * Allow override of retry settings at method-level for listAdaptiveMtDatasets. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAdaptiveMtDatasetsRetry;
+
   /**
    * Allow override of retry settings at method-level for adaptiveMtTranslate. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry adaptiveMtTranslateRetry;
+
   /**
    * Allow override of retry settings at method-level for getAdaptiveMtFile. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getAdaptiveMtFileRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteAdaptiveMtFile. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteAdaptiveMtFileRetry;
+
   /**
    * Allow override of retry settings at method-level for importAdaptiveMtFile. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry importAdaptiveMtFileRetry;
+
   /**
    * Allow override of retry settings at method-level for listAdaptiveMtFiles. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAdaptiveMtFilesRetry;
+
   /**
    * Allow override of retry settings at method-level for listAdaptiveMtSentences. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAdaptiveMtSentencesRetry;
+
   /**
    * Allow override of retry settings at method-level for listExamples. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listExamplesRetry;
+
   /**
    * Allow override of retry settings at method-level for listModels. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listModelsRetry;
+
   /**
    * Allow override of retry settings at method-level for getModel. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

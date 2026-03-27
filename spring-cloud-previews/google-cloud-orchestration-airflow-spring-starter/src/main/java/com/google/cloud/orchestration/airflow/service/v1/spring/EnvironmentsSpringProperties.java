@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,94 +34,115 @@ public class EnvironmentsSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for getEnvironment. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getEnvironmentRetry;
+
   /**
    * Allow override of retry settings at method-level for listEnvironments. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listEnvironmentsRetry;
+
   /**
    * Allow override of retry settings at method-level for executeAirflowCommand. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry executeAirflowCommandRetry;
+
   /**
    * Allow override of retry settings at method-level for stopAirflowCommand. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry stopAirflowCommandRetry;
+
   /**
    * Allow override of retry settings at method-level for pollAirflowCommand. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry pollAirflowCommandRetry;
+
   /**
    * Allow override of retry settings at method-level for listWorkloads. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listWorkloadsRetry;
+
   /**
    * Allow override of retry settings at method-level for createUserWorkloadsSecret. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createUserWorkloadsSecretRetry;
+
   /**
    * Allow override of retry settings at method-level for getUserWorkloadsSecret. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getUserWorkloadsSecretRetry;
+
   /**
    * Allow override of retry settings at method-level for listUserWorkloadsSecrets. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listUserWorkloadsSecretsRetry;
+
   /**
    * Allow override of retry settings at method-level for updateUserWorkloadsSecret. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateUserWorkloadsSecretRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteUserWorkloadsSecret. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteUserWorkloadsSecretRetry;
+
   /**
    * Allow override of retry settings at method-level for createUserWorkloadsConfigMap. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createUserWorkloadsConfigMapRetry;
+
   /**
    * Allow override of retry settings at method-level for getUserWorkloadsConfigMap. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getUserWorkloadsConfigMapRetry;
+
   /**
    * Allow override of retry settings at method-level for listUserWorkloadsConfigMaps. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listUserWorkloadsConfigMapsRetry;
+
   /**
    * Allow override of retry settings at method-level for updateUserWorkloadsConfigMap. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateUserWorkloadsConfigMapRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteUserWorkloadsConfigMap. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteUserWorkloadsConfigMapRetry;
+
   /**
    * Allow override of retry settings at method-level for fetchDatabaseProperties. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

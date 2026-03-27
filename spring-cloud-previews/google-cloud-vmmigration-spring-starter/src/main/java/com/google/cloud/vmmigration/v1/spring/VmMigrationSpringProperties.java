@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,149 +34,181 @@ public class VmMigrationSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listSources. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSourcesRetry;
+
   /**
    * Allow override of retry settings at method-level for getSource. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getSourceRetry;
+
   /**
    * Allow override of retry settings at method-level for fetchInventory. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry fetchInventoryRetry;
+
   /**
    * Allow override of retry settings at method-level for fetchStorageInventory. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry fetchStorageInventoryRetry;
+
   /**
    * Allow override of retry settings at method-level for listUtilizationReports. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listUtilizationReportsRetry;
+
   /**
    * Allow override of retry settings at method-level for getUtilizationReport. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getUtilizationReportRetry;
+
   /**
    * Allow override of retry settings at method-level for listDatacenterConnectors. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDatacenterConnectorsRetry;
+
   /**
    * Allow override of retry settings at method-level for getDatacenterConnector. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDatacenterConnectorRetry;
+
   /**
    * Allow override of retry settings at method-level for listMigratingVms. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listMigratingVmsRetry;
+
   /**
    * Allow override of retry settings at method-level for getMigratingVm. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getMigratingVmRetry;
+
   /**
    * Allow override of retry settings at method-level for listCloneJobs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listCloneJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for getCloneJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getCloneJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listCutoverJobs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listCutoverJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for getCutoverJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getCutoverJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listGroups. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listGroupsRetry;
+
   /**
    * Allow override of retry settings at method-level for getGroup. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getGroupRetry;
+
   /**
    * Allow override of retry settings at method-level for listTargetProjects. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTargetProjectsRetry;
+
   /**
    * Allow override of retry settings at method-level for getTargetProject. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getTargetProjectRetry;
+
   /**
    * Allow override of retry settings at method-level for listReplicationCycles. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listReplicationCyclesRetry;
+
   /**
    * Allow override of retry settings at method-level for getReplicationCycle. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getReplicationCycleRetry;
+
   /**
    * Allow override of retry settings at method-level for listImageImports. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listImageImportsRetry;
+
   /**
    * Allow override of retry settings at method-level for getImageImport. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getImageImportRetry;
+
   /**
    * Allow override of retry settings at method-level for listImageImportJobs. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listImageImportJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for getImageImportJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getImageImportJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listDiskMigrationJobs. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDiskMigrationJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for getDiskMigrationJob. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDiskMigrationJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

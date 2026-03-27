@@ -22,7 +22,7 @@ import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

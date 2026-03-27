@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.actuate.health.Health;
-import org.springframework.boot.actuate.health.Status;
+import org.springframework.boot.health.contributor.Health;
+import org.springframework.boot.health.contributor.Status;
 
 /**
  * Tests for {@link DatastoreHealthIndicator}.
@@ -63,8 +63,8 @@ class DatastoreHealthIndicatorTests {
     Health.Builder builder = new Health.Builder();
 
     assertThatThrownBy(() -> datastoreHealthIndicator.doHealthCheck(builder))
-            .isInstanceOf(RuntimeException.class)
-            .hasMessage("Cloud Datastore is down!!!");
+        .isInstanceOf(RuntimeException.class)
+        .hasMessage("Cloud Datastore is down!!!");
   }
 
   @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,34 +38,43 @@ public class DashboardsServiceSpringProperties implements CredentialsSupplier {
           "https://www.googleapis.com/auth/monitoring",
           "https://www.googleapis.com/auth/monitoring.read",
           "https://www.googleapis.com/auth/monitoring.write");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for createDashboard. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createDashboardRetry;
+
   /**
    * Allow override of retry settings at method-level for listDashboards. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDashboardsRetry;
+
   /**
    * Allow override of retry settings at method-level for getDashboard. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDashboardRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteDashboard. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteDashboardRetry;
+
   /**
    * Allow override of retry settings at method-level for updateDashboard. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

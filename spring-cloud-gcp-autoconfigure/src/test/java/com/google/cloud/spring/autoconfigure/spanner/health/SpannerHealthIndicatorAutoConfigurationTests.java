@@ -18,10 +18,8 @@ package com.google.cloud.spring.autoconfigure.spanner.health;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.auth.Credentials;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
@@ -82,10 +80,10 @@ class SpannerHealthIndicatorAutoConfigurationTests {
 
   @Test
   void testSpannerHealthIndicatorNotCreated() {
-
-    ApplicationContextRunner contextRunnerNew = this.contextRunner.withPropertyValues("management.health.spanner.enabled=false");
-    assertThatThrownBy(() -> contextRunnerNew
-        .run(context -> context.getBean(SpannerHealthIndicator.class)))
+    ApplicationContextRunner contextRunnerNew =
+        this.contextRunner.withPropertyValues("management.health.spanner.enabled=false");
+    assertThatThrownBy(
+            () -> contextRunnerNew.run(context -> context.getBean(SpannerHealthIndicator.class)))
         .isInstanceOf(NoSuchBeanDefinitionException.class);
   }
 

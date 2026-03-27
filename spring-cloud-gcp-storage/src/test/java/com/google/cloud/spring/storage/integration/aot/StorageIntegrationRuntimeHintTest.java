@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.TypeReference;
 
-
 class StorageIntegrationRuntimeHintTest {
   @Test
   void shouldRegisterHints() {

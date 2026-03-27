@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,125 +34,164 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listManagementServers. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listManagementServersRetry;
+
   /**
    * Allow override of retry settings at method-level for getManagementServer. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getManagementServerRetry;
+
   /**
    * Allow override of retry settings at method-level for listBackupVaults. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBackupVaultsRetry;
+
   /**
    * Allow override of retry settings at method-level for fetchUsableBackupVaults. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry fetchUsableBackupVaultsRetry;
+
   /**
    * Allow override of retry settings at method-level for getBackupVault. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBackupVaultRetry;
+
   /**
    * Allow override of retry settings at method-level for listDataSources. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDataSourcesRetry;
+
   /**
    * Allow override of retry settings at method-level for getDataSource. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDataSourceRetry;
+
   /**
    * Allow override of retry settings at method-level for listBackups. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBackupsRetry;
+
+  /**
+   * Allow override of retry settings at method-level for fetchBackupsForResourceType. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchBackupsForResourceTypeRetry;
+
   /**
    * Allow override of retry settings at method-level for getBackup. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBackupRetry;
+
   /**
    * Allow override of retry settings at method-level for getBackupPlan. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBackupPlanRetry;
+
   /**
    * Allow override of retry settings at method-level for listBackupPlans. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBackupPlansRetry;
+
   /**
    * Allow override of retry settings at method-level for getBackupPlanRevision. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBackupPlanRevisionRetry;
+
   /**
    * Allow override of retry settings at method-level for listBackupPlanRevisions. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBackupPlanRevisionsRetry;
+
   /**
    * Allow override of retry settings at method-level for getBackupPlanAssociation. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBackupPlanAssociationRetry;
+
   /**
    * Allow override of retry settings at method-level for listBackupPlanAssociations. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBackupPlanAssociationsRetry;
+
   /**
    * Allow override of retry settings at method-level for
    * fetchBackupPlanAssociationsForResourceType. If defined, this takes precedence over
    * service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry fetchBackupPlanAssociationsForResourceTypeRetry;
+
   /**
    * Allow override of retry settings at method-level for getDataSourceReference. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDataSourceReferenceRetry;
+
+  /**
+   * Allow override of retry settings at method-level for listDataSourceReferences. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listDataSourceReferencesRetry;
+
   /**
    * Allow override of retry settings at method-level for fetchDataSourceReferencesForResourceType.
    * If defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry fetchDataSourceReferencesForResourceTypeRetry;
+
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLocationRetry;
+
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -260,6 +299,14 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
     this.listBackupsRetry = listBackupsRetry;
   }
 
+  public Retry getFetchBackupsForResourceTypeRetry() {
+    return this.fetchBackupsForResourceTypeRetry;
+  }
+
+  public void setFetchBackupsForResourceTypeRetry(Retry fetchBackupsForResourceTypeRetry) {
+    this.fetchBackupsForResourceTypeRetry = fetchBackupsForResourceTypeRetry;
+  }
+
   public Retry getGetBackupRetry() {
     return this.getBackupRetry;
   }
@@ -332,6 +379,14 @@ public class BackupDRSpringProperties implements CredentialsSupplier {
 
   public void setGetDataSourceReferenceRetry(Retry getDataSourceReferenceRetry) {
     this.getDataSourceReferenceRetry = getDataSourceReferenceRetry;
+  }
+
+  public Retry getListDataSourceReferencesRetry() {
+    return this.listDataSourceReferencesRetry;
+  }
+
+  public void setListDataSourceReferencesRetry(Retry listDataSourceReferencesRetry) {
+    this.listDataSourceReferencesRetry = listDataSourceReferencesRetry;
   }
 
   public Retry getFetchDataSourceReferencesForResourceTypeRetry() {

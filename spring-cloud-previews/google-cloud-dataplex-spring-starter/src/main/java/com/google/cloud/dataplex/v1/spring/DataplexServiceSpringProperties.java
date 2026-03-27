@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,109 +34,133 @@ public class DataplexServiceSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listLakes. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLakesRetry;
+
   /**
    * Allow override of retry settings at method-level for getLake. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLakeRetry;
+
   /**
    * Allow override of retry settings at method-level for listLakeActions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLakeActionsRetry;
+
   /**
    * Allow override of retry settings at method-level for listZones. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listZonesRetry;
+
   /**
    * Allow override of retry settings at method-level for getZone. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getZoneRetry;
+
   /**
    * Allow override of retry settings at method-level for listZoneActions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listZoneActionsRetry;
+
   /**
    * Allow override of retry settings at method-level for listAssets. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAssetsRetry;
+
   /**
    * Allow override of retry settings at method-level for getAsset. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getAssetRetry;
+
   /**
    * Allow override of retry settings at method-level for listAssetActions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAssetActionsRetry;
+
   /**
    * Allow override of retry settings at method-level for listTasks. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTasksRetry;
+
   /**
    * Allow override of retry settings at method-level for getTask. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getTaskRetry;
+
   /**
    * Allow override of retry settings at method-level for listJobs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for runTask. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry runTaskRetry;
+
   /**
    * Allow override of retry settings at method-level for getJob. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getJobRetry;
+
   /**
    * Allow override of retry settings at method-level for cancelJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry cancelJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listEnvironments. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listEnvironmentsRetry;
+
   /**
    * Allow override of retry settings at method-level for getEnvironment. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getEnvironmentRetry;
+
   /**
    * Allow override of retry settings at method-level for listSessions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSessionsRetry;
+
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

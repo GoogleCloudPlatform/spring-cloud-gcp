@@ -26,13 +26,10 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.gax.grpc.GrpcStatusCode;
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.api.gax.rpc.StatusCode;
-import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.parametermanager.v1.CreateParameterRequest;
 import com.google.cloud.parametermanager.v1.CreateParameterVersionRequest;
 import com.google.cloud.parametermanager.v1.DeleteParameterRequest;
 import com.google.cloud.parametermanager.v1.DeleteParameterVersionRequest;
-import com.google.cloud.parametermanager.v1.GetParameterRequest;
 import com.google.cloud.parametermanager.v1.GetParameterVersionRequest;
 import com.google.cloud.parametermanager.v1.LocationName;
 import com.google.cloud.parametermanager.v1.Parameter;
@@ -46,7 +43,6 @@ import com.google.cloud.parametermanager.v1.RenderParameterVersionResponse;
 import com.google.cloud.parametermanager.v1.UpdateParameterVersionRequest;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.util.FieldMaskUtil;
-import io.grpc.Status;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -447,31 +443,30 @@ class ParameterManagerTemplateTests {
     String parameterIdentifier = "pm@global/my-parameter/v1";
     ByteString expectedData = ByteString.copyFromUtf8("rendered parameter data");
 
-    ParameterVersionName parameterVersionName = ParameterVersionName.of(
-        "my-project", "global", "my-parameter", "v1");
+    ParameterVersionName parameterVersionName =
+        ParameterVersionName.of("my-project", "global", "my-parameter", "v1");
 
     RenderParameterVersionResponse mockResponse = mock(RenderParameterVersionResponse.class);
     when(mockResponse.getRenderedPayload()).thenReturn(expectedData);
 
-    when(client.renderParameterVersion(parameterVersionName))
-        .thenReturn(mockResponse);
+    when(client.renderParameterVersion(parameterVersionName)).thenReturn(mockResponse);
 
-    byte[] result = this.parameterManagerTemplate.renderedParameterVersionBytes(parameterIdentifier);
+    byte[] result =
+        this.parameterManagerTemplate.renderedParameterVersionBytes(parameterIdentifier);
 
     assertThat(result).isEqualTo(expectedData.toByteArray());
   }
 
   @Test
   void testGetRenderedParameterByteString_withParameterVersionName() {
-    ParameterVersionName parameterVersionName = ParameterVersionName.of(
-        "my-project", "global", "my-parameter", "v1");
+    ParameterVersionName parameterVersionName =
+        ParameterVersionName.of("my-project", "global", "my-parameter", "v1");
     ByteString expectedData = ByteString.copyFromUtf8("rendered parameter data");
 
     RenderParameterVersionResponse mockResponse = mock(RenderParameterVersionResponse.class);
     when(mockResponse.getRenderedPayload()).thenReturn(expectedData);
 
-    when(client.renderParameterVersion(parameterVersionName))
-        .thenReturn(mockResponse);
+    when(client.renderParameterVersion(parameterVersionName)).thenReturn(mockResponse);
 
     ByteString result = invokeGetRenderedParameterByteString(parameterVersionName);
 
@@ -480,17 +475,17 @@ class ParameterManagerTemplateTests {
 
   @Test
   void testGetRenderedParameterByteString_notFoundAndDefaultNotAllowed() {
-    ParameterVersionName parameterVersionName = ParameterVersionName.of(
-        "my-project", "global", "non-existent-parameter", "v1");
+    ParameterVersionName parameterVersionName =
+        ParameterVersionName.of("my-project", "global", "non-existent-parameter", "v1");
 
-    NotFoundException notFoundException = new NotFoundException(
-        "Parameter not found",
-        new RuntimeException("Not found"),
-        GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
-        false);
+    NotFoundException notFoundException =
+        new NotFoundException(
+            "Parameter not found",
+            new RuntimeException("Not found"),
+            GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
+            false);
 
-    when(client.renderParameterVersion(parameterVersionName))
-        .thenThrow(notFoundException);
+    when(client.renderParameterVersion(parameterVersionName)).thenThrow(notFoundException);
 
     this.parameterManagerTemplate.setAllowDefaultParameterValue(false);
 
@@ -500,17 +495,17 @@ class ParameterManagerTemplateTests {
 
   @Test
   void testGetRenderedParameterByteString_notFoundAndDefaultAllowed() {
-    ParameterVersionName parameterVersionName = ParameterVersionName.of(
-        "my-project", "global", "non-existent-parameter", "v1");
+    ParameterVersionName parameterVersionName =
+        ParameterVersionName.of("my-project", "global", "non-existent-parameter", "v1");
 
-    NotFoundException notFoundException = new NotFoundException(
-        "Parameter not found",
-        new RuntimeException("Not found"),
-        GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
-        false);
+    NotFoundException notFoundException =
+        new NotFoundException(
+            "Parameter not found",
+            new RuntimeException("Not found"),
+            GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
+            false);
 
-    when(client.renderParameterVersion(parameterVersionName))
-        .thenThrow(notFoundException);
+    when(client.renderParameterVersion(parameterVersionName)).thenThrow(notFoundException);
 
     this.parameterManagerTemplate.setAllowDefaultParameterValue(true);
 
@@ -558,15 +553,15 @@ class ParameterManagerTemplateTests {
     String versionId = "v1";
     String projectId = "my-project";
 
-    ParameterVersionName parameterVersionName = ParameterVersionName.of(
-        projectId, locationId, parameterId, versionId);
-    GetParameterVersionRequest request = GetParameterVersionRequest.newBuilder()
-        .setName(parameterVersionName.toString())
-        .build();
+    ParameterVersionName parameterVersionName =
+        ParameterVersionName.of(projectId, locationId, parameterId, versionId);
+    GetParameterVersionRequest request =
+        GetParameterVersionRequest.newBuilder().setName(parameterVersionName.toString()).build();
 
     when(client.getParameterVersion(request)).thenReturn(ParameterVersion.newBuilder().build());
 
-    boolean result = parameterManagerTemplate.parameterVersionExists(locationId, parameterId, versionId);
+    boolean result =
+        parameterManagerTemplate.parameterVersionExists(locationId, parameterId, versionId);
 
     assertThat(result).isTrue();
     verify(client).getParameterVersion(request);
@@ -579,16 +574,16 @@ class ParameterManagerTemplateTests {
     String parameterId = "my-parameter";
     String versionId = "v1";
 
-    ParameterVersionName parameterVersionName = ParameterVersionName.of(
-        projectId, locationId, parameterId, versionId);
-    GetParameterVersionRequest request = GetParameterVersionRequest.newBuilder()
-        .setName(parameterVersionName.toString())
-        .build();
+    ParameterVersionName parameterVersionName =
+        ParameterVersionName.of(projectId, locationId, parameterId, versionId);
+    GetParameterVersionRequest request =
+        GetParameterVersionRequest.newBuilder().setName(parameterVersionName.toString()).build();
 
     when(client.getParameterVersion(request)).thenReturn(ParameterVersion.newBuilder().build());
 
-    boolean result = parameterManagerTemplate.parameterVersionExists(
-        projectId, locationId, parameterId, versionId);
+    boolean result =
+        parameterManagerTemplate.parameterVersionExists(
+            projectId, locationId, parameterId, versionId);
 
     assertThat(result).isTrue();
     verify(client).getParameterVersion(request);
@@ -600,14 +595,13 @@ class ParameterManagerTemplateTests {
     String expectedValue = "test-value";
     ByteString byteString = ByteString.copyFromUtf8(expectedValue);
 
-    ParameterVersionName parameterVersionName = ParameterVersionName.of(
-        "my-project", "global", "my-parameter", "v1");
+    ParameterVersionName parameterVersionName =
+        ParameterVersionName.of("my-project", "global", "my-parameter", "v1");
 
     RenderParameterVersionResponse mockResponse = mock(RenderParameterVersionResponse.class);
     when(mockResponse.getRenderedPayload()).thenReturn(byteString);
 
-    when(client.renderParameterVersion(parameterVersionName))
-        .thenReturn(mockResponse);
+    when(client.renderParameterVersion(parameterVersionName)).thenReturn(mockResponse);
 
     String result = parameterManagerTemplate.renderedParameterVersionString(parameterIdentifier);
 
@@ -618,17 +612,17 @@ class ParameterManagerTemplateTests {
   void testRenderedParameterVersionString_returnsNullWhenByteStringIsNull() {
     String parameterIdentifier = "pm@global/non-existent-parameter/v1";
 
-    ParameterVersionName parameterVersionName = ParameterVersionName.of(
-        "my-project", "global", "non-existent-parameter", "v1");
+    ParameterVersionName parameterVersionName =
+        ParameterVersionName.of("my-project", "global", "non-existent-parameter", "v1");
 
-    NotFoundException notFoundException = new NotFoundException(
-        "Parameter not found",
-        new RuntimeException("Not found"),
-        GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
-        false);
+    NotFoundException notFoundException =
+        new NotFoundException(
+            "Parameter not found",
+            new RuntimeException("Not found"),
+            GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
+            false);
 
-    when(client.renderParameterVersion(parameterVersionName))
-        .thenThrow(notFoundException);
+    when(client.renderParameterVersion(parameterVersionName)).thenThrow(notFoundException);
 
     parameterManagerTemplate.setAllowDefaultParameterValue(true);
 
@@ -644,14 +638,13 @@ class ParameterManagerTemplateTests {
     ByteString byteString = ByteString.copyFromUtf8(valueString);
     byte[] expectedBytes = byteString.toByteArray();
 
-    ParameterVersionName parameterVersionName = ParameterVersionName.of(
-        "my-project", "global", "my-parameter", "v1");
+    ParameterVersionName parameterVersionName =
+        ParameterVersionName.of("my-project", "global", "my-parameter", "v1");
 
     RenderParameterVersionResponse mockResponse = mock(RenderParameterVersionResponse.class);
     when(mockResponse.getRenderedPayload()).thenReturn(byteString);
 
-    when(client.renderParameterVersion(parameterVersionName))
-        .thenReturn(mockResponse);
+    when(client.renderParameterVersion(parameterVersionName)).thenReturn(mockResponse);
 
     byte[] result = parameterManagerTemplate.renderedParameterVersionBytes(parameterIdentifier);
 
@@ -662,17 +655,17 @@ class ParameterManagerTemplateTests {
   void testRenderedParameterVersionBytes_returnsNullWhenByteStringIsNull() {
     String parameterIdentifier = "pm@global/non-existent-parameter/v1";
 
-    ParameterVersionName parameterVersionName = ParameterVersionName.of(
-        "my-project", "global", "non-existent-parameter", "v1");
+    ParameterVersionName parameterVersionName =
+        ParameterVersionName.of("my-project", "global", "non-existent-parameter", "v1");
 
-    NotFoundException notFoundException = new NotFoundException(
-        "Parameter not found",
-        new RuntimeException("Not found"),
-        GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
-        false);
+    NotFoundException notFoundException =
+        new NotFoundException(
+            "Parameter not found",
+            new RuntimeException("Not found"),
+            GrpcStatusCode.of(io.grpc.Status.Code.NOT_FOUND),
+            false);
 
-    when(client.renderParameterVersion(parameterVersionName))
-        .thenThrow(notFoundException);
+    when(client.renderParameterVersion(parameterVersionName)).thenThrow(notFoundException);
 
     parameterManagerTemplate.setAllowDefaultParameterValue(true);
 
@@ -681,10 +674,12 @@ class ParameterManagerTemplateTests {
     assertThat(result).isNull();
   }
 
-  private ByteString invokeGetRenderedParameterByteString(ParameterVersionName parameterVersionName) {
+  private ByteString invokeGetRenderedParameterByteString(
+      ParameterVersionName parameterVersionName) {
     try {
-      Method method = ParameterManagerTemplate.class.getDeclaredMethod(
-          "getRenderedParameterByteString", ParameterVersionName.class);
+      Method method =
+          ParameterManagerTemplate.class.getDeclaredMethod(
+              "getRenderedParameterByteString", ParameterVersionName.class);
       method.setAccessible(true);
       return (ByteString) method.invoke(parameterManagerTemplate, parameterVersionName);
     } catch (Exception e) {

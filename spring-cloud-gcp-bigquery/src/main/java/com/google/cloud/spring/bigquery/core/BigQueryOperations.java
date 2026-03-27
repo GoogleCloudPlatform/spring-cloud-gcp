@@ -35,7 +35,8 @@ public interface BigQueryOperations {
    * @param tableName name of the table to write to
    * @param inputStream input stream of the table data to write
    * @param dataFormatOptions the format of the data to write
-   * @return {@link CompletableFuture} containing the BigQuery Job indicating completion of operation
+   * @return {@link CompletableFuture} containing the BigQuery Job indicating completion of
+   *     operation
    * @throws BigQueryException if errors occur when loading data to the BigQuery table
    */
   CompletableFuture<Job> writeDataToTable(
@@ -62,7 +63,8 @@ public interface BigQueryOperations {
    * @param inputStream input stream of the table data to write
    * @param dataFormatOptions the format of the data to write
    * @param schema the schema of the table being loaded
-   * @return {@link CompletableFuture} containing the BigQuery Job indicating completion of operation
+   * @return {@link CompletableFuture} containing the BigQuery Job indicating completion of
+   *     operation
    * @throws BigQueryException if errors occur when loading data to the BigQuery table
    */
   CompletableFuture<Job> writeDataToTable(
@@ -78,7 +80,8 @@ public interface BigQueryOperations {
    * @return {@link CompletableFuture} containing the WriteApiResponse indicating completion of
    *     operation
    */
-  CompletableFuture<WriteApiResponse> writeJsonStream(String tableName, InputStream jsonInputStream);
+  CompletableFuture<WriteApiResponse> writeJsonStream(
+      String tableName, InputStream jsonInputStream);
 
   /**
    * This method uses BigQuery Storage Write API to write new line delimited JSON file to the

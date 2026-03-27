@@ -11,7 +11,7 @@
         <!-- Your own application should inherit from spring-boot-starter-parent -->
         <artifactId>spring-cloud-gcp-samples</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>7.3.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>8.0.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
 
     <properties>
@@ -49,11 +49,6 @@
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <version>4.3.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

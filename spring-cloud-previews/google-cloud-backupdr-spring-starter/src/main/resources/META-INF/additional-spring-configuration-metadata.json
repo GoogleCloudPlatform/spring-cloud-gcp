@@ -5,6 +5,12 @@
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud backupdr/BackupDR components.",
       "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.backupdr.v1.backup-dr-protection-summary.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud backupdr/BackupDrProtectionSummary components.",
+      "defaultValue": true
     }
   ]
 }

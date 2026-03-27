@@ -14,6 +14,119 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+
+## [8.0.1] Spring Boot 4.0 / Spring 7 Migration
+
+This release marks a major architectural upgrade, moving the project baseline to **Java 17** (with **JDK 25** for Native Image) and **Jakarta EE 11**.
+This version focuses on achieving compatibility with the new modular architecture of Spring Boot 4.0, the refactored SpEL evaluation engine in Spring Data 2025.1, and enhanced AOT support for GraalVM.
+For a comprehensive overview of upstream changes, please refer to the official [Spring Boot 4.0 Migration Guide](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide).
+
+### ⚠️ Breaking Changes
+
+* **Spring Data 4.0 (SpEL Evaluation):** Multiple constructors removed due to the removal of `QueryMethodEvaluationContextProvider`. Users must migrate to constructors accepting `ValueExpressionDelegate`.
+  * **Affected Classes:** `DatastoreQueryLookupStrategy`, `GqlDatastoreQuery`, `SpannerQueryLookupStrategy`, `SqlSpannerQuery`.
+  * **User Action:** If you manually instantiate these classes (e.g., in custom repository implementations), you must replace the `QueryMethodEvaluationContextProvider` parameter with `ValueExpressionDelegate`.
+* **Mapping Exceptions:** In Spring Data 4.0 (2025.1), metadata discovery and entity mapping failures are now uniformly wrapped in a top-level `org.springframework.data.mapping.MappingException`.
+  * **Impact:** Previously caught module-specific exceptions (e.g., `SpannerDataException`) may now be nested inside a `MappingException`.
+  * **User Action:** Update error handling logic to check for the underlying cause. "Use `NestedExceptionUtils.getMostSpecificCause()` to retrieve specific error message details.."
+* **Nested Exceptions:** Following Spring Framework 7.0's changes to `NestedRuntimeException`, nested exception messages are no longer automatically appended to the top-level `getMessage()` output.
+  * **User Action:** When constructing custom error messages, you must now explicitly access the cause. "Use `NestedExceptionUtils.getMostSpecificCause()` to retrieve specific error message details."
+* **Actuator Health API:** [The Actuator Health API](https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.health) has been restructured to support better grouping through the `org.springframework.boot.health.contributor` package. `PubSubHealthIndicator` and `SpannerHealthIndicator` are now registered as `HealthContributor` beans.
+  * **User Action:** These indicators are now **always** wrapped into a `CompositeHealthContributor` by the framework's auto-configuration. Users who previously injected `PubSubHealthIndicator` or `HealthIndicator` directly must now inject `HealthContributor` and navigate the composite hierarchy if direct access is needed.
+
+### Dependencies
+
+* bump `org.springframework.boot:spring-boot-dependencies` from `3.5.3` to `4.0.0`
+* bump `org.springframework.cloud:spring-cloud-dependencies` from `2025.0.0` to `2025.1.0`
+* bump `com.google.cloud:cloud-sql-socket-factory-bom` from `1.25.0` to `1.28.0`
+* bump `io.r2dbc:r2dbc-postgresql` from `1.0.7.RELEASE` to `1.1.1.RELEASE`
+* bump `org.graalvm.buildtools:native-maven-plugin` from `0.10.5` to `0.11.3`
+* bump `jakarta.annotation:jakarta.annotation-api` from `1.3.5` to `2.1.1`
+* bump `com.fasterxml.jackson:jackson-bom` from `2.18.2` to `3.0.2` (via `tools.jackson`)
+
+
+## [7.4.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.4...v7.4.5) (2026-02-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.76.0 ([#4319](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4319)) ([929a693](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/929a6939a69e95bd34ef974b63bdfb93ff589063))
+* **deps:** update gapic-generator-java-bom.version to v2.67.0 ([#4320](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4320)) ([77d48cf](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/77d48cfe77c5fd8c69b3f99fca2faaa8ed50a7fa))
+* remove main from dependabot ([#4323](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4323)) ([ac5d188](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ac5d188600359c05d2d8088f3b877fe261bf6111))
+
+
+### Documentation
+
+* Add note about Postgres username truncation for IAM auth ([#4315](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4315)) ([2458afb](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2458afbfbb6d85bda611c270d633737b578c6ff2))
+
+## [7.4.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.3...v7.4.4) (2026-02-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.75.0 ([#4296](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4296)) ([34e21e3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/34e21e3db346d604267b98c97d6c7b8f0c7f6271))
+* **deps:** update gapic-generator-java-bom.version to v2.66.0 ([#4301](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4301)) ([64ab3b2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/64ab3b2669d233886bfd60bb1d3fcc1e5ead9f72))
+
+## [7.4.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.2...v7.4.3) (2026-01-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.74.0 ([#4282](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4282)) ([f7f3d7f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f7f3d7f45d3e216cd067a7e00d14d674c9f01292))
+* **deps:** update gapic-generator-java-bom.version to v2.65.1 ([#4283](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4283)) ([150913d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/150913d0e7f12f621a3d943547ebb69fdef73c9b))
+* Use ADC in NativeTests ([#4280](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4280)) ([c9b3a19](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/c9b3a1974b791602e03b7f497778ac9917c183c1))
+
+
+### Documentation
+
+* update latest versions in README.adoc ([#4263](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4263)) ([ffda1d8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ffda1d81724a956b7f5728245e501c8ae231ff86))
+
+## [7.4.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.1...v7.4.2) (2025-12-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.73.0 ([#4251](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4251)) ([70c1c59](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/70c1c59489a56d8cd421355a06e79c36faee2e5e))
+* **deps:** update gapic-generator-java-bom.version to v2.64.1 ([#4241](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4241)) ([ad9149e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ad9149e33ed3c0e8bc4101c3786e3b103a118ad0))
+* **deps:** update gapic-generator-java-bom.version to v2.64.2 ([#4250](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4250)) ([3c4da00](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3c4da00d28836a68e977c518ee427d725db67933))
+
+
+### Documentation
+
+* fix broken link in parameter.adoc ([#4119](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4119)) ([499ed70](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/499ed708f2cf51b29960830d5e7c49fa6a2c93b6)), closes [#4073](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4073)
+* Update readme to point to the latest versions of spring ([#4233](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4233)) ([bfa7f00](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/bfa7f00d228a251b8e242724bcefb5fefbdbcb88))
+
+## [7.4.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.0...v7.4.1) (2025-10-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.71.0 ([#4220](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4220)) ([3e8d945](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3e8d9458af0ed71134d4c72cb8bafb284dc5afeb))
+* **deps:** update gapic-generator-java-bom.version to v2.63.0 ([#4217](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4217)) ([8cc0ff7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8cc0ff79d40d9699cedcc55ee58d4e87f911e1b4))
+
+## [7.4.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.3.2...v7.4.0) (2025-10-10)
+
+
+### Features
+
+* add script to update versions in README.adoc ([#4176](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4176)) ([1a05f04](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1a05f04f7606b576397cb68c8cd04534436dc9ef))
+* Add support for configuring the Cloud SQL JDBC connection using a DNS name ([#4123](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4123)) ([e45ca49](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e45ca49bbd37923d20fc5d374d94c5fa2a48631e)), closes [#4114](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4114)
+
+
+### Bug Fixes
+
+* **deps:** update gapic-generator-java-bom.version to v2.62.3 ([#4192](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4192)) ([4d0df06](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4d0df0652722df2a7d3b425e8345938fa50e0c18))
+
+
+### Dependencies
+
+* upgrade libraries-bom to 26.70.0 ([#4188](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4188)) ([f0d3321](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f0d33214740577139013c3749d0ea7f9d4a5a37e))
+
+
+### Documentation
+
+* update latest versions in README.adoc ([#4177](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4177)) ([1acd575](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1acd5751adc10c8011016da46815769b646db0cb))
+
 ## [7.3.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.3.1...v7.3.2) (2025-09-30)
 
 

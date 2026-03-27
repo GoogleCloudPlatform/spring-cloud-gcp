@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,74 +36,91 @@ public class ConversationsSpringProperties implements CredentialsSupplier {
       new Credentials(
           "https://www.googleapis.com/auth/cloud-platform",
           "https://www.googleapis.com/auth/dialogflow");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for createConversation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createConversationRetry;
+
   /**
    * Allow override of retry settings at method-level for listConversations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listConversationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getConversation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getConversationRetry;
+
   /**
    * Allow override of retry settings at method-level for completeConversation. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry completeConversationRetry;
+
   /**
    * Allow override of retry settings at method-level for ingestContextReferences. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry ingestContextReferencesRetry;
+
   /**
    * Allow override of retry settings at method-level for listMessages. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listMessagesRetry;
+
   /**
    * Allow override of retry settings at method-level for suggestConversationSummary. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry suggestConversationSummaryRetry;
+
   /**
    * Allow override of retry settings at method-level for generateStatelessSummary. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry generateStatelessSummaryRetry;
+
   /**
    * Allow override of retry settings at method-level for generateStatelessSuggestion. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry generateStatelessSuggestionRetry;
+
   /**
    * Allow override of retry settings at method-level for searchKnowledge. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchKnowledgeRetry;
+
   /**
    * Allow override of retry settings at method-level for generateSuggestions. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry generateSuggestionsRetry;
+
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,64 +37,79 @@ public class CloudBillingSpringProperties implements CredentialsSupplier {
           "https://www.googleapis.com/auth/cloud-billing",
           "https://www.googleapis.com/auth/cloud-billing.readonly",
           "https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for getBillingAccount. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBillingAccountRetry;
+
   /**
    * Allow override of retry settings at method-level for listBillingAccounts. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBillingAccountsRetry;
+
   /**
    * Allow override of retry settings at method-level for updateBillingAccount. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateBillingAccountRetry;
+
   /**
    * Allow override of retry settings at method-level for createBillingAccount. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createBillingAccountRetry;
+
   /**
    * Allow override of retry settings at method-level for listProjectBillingInfo. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listProjectBillingInfoRetry;
+
   /**
    * Allow override of retry settings at method-level for getProjectBillingInfo. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getProjectBillingInfoRetry;
+
   /**
    * Allow override of retry settings at method-level for updateProjectBillingInfo. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateProjectBillingInfoRetry;
+
   /**
    * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry testIamPermissionsRetry;
+
   /**
    * Allow override of retry settings at method-level for moveBillingAccount. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

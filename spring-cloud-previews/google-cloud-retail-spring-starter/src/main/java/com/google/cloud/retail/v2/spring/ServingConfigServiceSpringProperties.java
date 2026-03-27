@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,44 +34,55 @@ public class ServingConfigServiceSpringProperties implements CredentialsSupplier
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for createServingConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createServingConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteServingConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteServingConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for updateServingConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateServingConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for getServingConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getServingConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for listServingConfigs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listServingConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for addControl. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry addControlRetry;
+
   /**
    * Allow override of retry settings at method-level for removeControl. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

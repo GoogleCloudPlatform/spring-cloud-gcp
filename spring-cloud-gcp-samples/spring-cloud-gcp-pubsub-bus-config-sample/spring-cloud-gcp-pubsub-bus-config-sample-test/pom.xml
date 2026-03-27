@@ -6,7 +6,7 @@
     <!-- Your own application should inherit from spring-boot-starter-parent -->
     <artifactId>spring-cloud-gcp-pubsub-bus-config-sample</artifactId>
     <groupId>com.google.cloud</groupId>
-    <version>7.3.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+    <version>8.0.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -17,12 +17,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
 

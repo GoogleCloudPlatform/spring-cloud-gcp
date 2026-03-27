@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,147 +36,178 @@ public class TensorboardServiceSpringProperties implements CredentialsSupplier {
       new Credentials(
           "https://www.googleapis.com/auth/cloud-platform",
           "https://www.googleapis.com/auth/cloud-platform.read-only");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for getTensorboard. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getTensorboardRetry;
+
   /**
    * Allow override of retry settings at method-level for listTensorboards. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTensorboardsRetry;
+
   /**
    * Allow override of retry settings at method-level for readTensorboardUsage. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry readTensorboardUsageRetry;
+
   /**
    * Allow override of retry settings at method-level for readTensorboardSize. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry readTensorboardSizeRetry;
+
   /**
    * Allow override of retry settings at method-level for createTensorboardExperiment. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createTensorboardExperimentRetry;
+
   /**
    * Allow override of retry settings at method-level for getTensorboardExperiment. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getTensorboardExperimentRetry;
+
   /**
    * Allow override of retry settings at method-level for updateTensorboardExperiment. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateTensorboardExperimentRetry;
+
   /**
    * Allow override of retry settings at method-level for listTensorboardExperiments. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTensorboardExperimentsRetry;
+
   /**
    * Allow override of retry settings at method-level for createTensorboardRun. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createTensorboardRunRetry;
+
   /**
    * Allow override of retry settings at method-level for batchCreateTensorboardRuns. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry batchCreateTensorboardRunsRetry;
+
   /**
    * Allow override of retry settings at method-level for getTensorboardRun. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getTensorboardRunRetry;
+
   /**
    * Allow override of retry settings at method-level for updateTensorboardRun. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateTensorboardRunRetry;
+
   /**
    * Allow override of retry settings at method-level for listTensorboardRuns. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTensorboardRunsRetry;
+
   /**
    * Allow override of retry settings at method-level for batchCreateTensorboardTimeSeries. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry batchCreateTensorboardTimeSeriesRetry;
+
   /**
    * Allow override of retry settings at method-level for createTensorboardTimeSeries. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createTensorboardTimeSeriesRetry;
+
   /**
    * Allow override of retry settings at method-level for getTensorboardTimeSeries. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getTensorboardTimeSeriesRetry;
+
   /**
    * Allow override of retry settings at method-level for updateTensorboardTimeSeries. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateTensorboardTimeSeriesRetry;
+
   /**
    * Allow override of retry settings at method-level for listTensorboardTimeSeries. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTensorboardTimeSeriesRetry;
+
   /**
    * Allow override of retry settings at method-level for batchReadTensorboardTimeSeriesData. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry batchReadTensorboardTimeSeriesDataRetry;
+
   /**
    * Allow override of retry settings at method-level for readTensorboardTimeSeriesData. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry readTensorboardTimeSeriesDataRetry;
+
   /**
    * Allow override of retry settings at method-level for writeTensorboardExperimentData. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry writeTensorboardExperimentDataRetry;
+
   /**
    * Allow override of retry settings at method-level for writeTensorboardRunData. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry writeTensorboardRunDataRetry;
+
   /**
    * Allow override of retry settings at method-level for exportTensorboardTimeSeriesData. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry exportTensorboardTimeSeriesDataRetry;
+
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLocationRetry;
+
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

@@ -32,9 +32,8 @@ class TraceHelper {
   }
 
   /**
-   * Adds tracing headers to an outgoing Pub/Sub message.
-   * Uses the current application trace context; falls back to original message header context
-   * if not available.
+   * Adds tracing headers to an outgoing Pub/Sub message. Uses the current application trace
+   * context; falls back to original message header context if not available.
    *
    * @param originalMessage message to instrument
    * @param topic destination topic, used as channel name and {@link PubSubTags#PUBSUB_TOPIC_TAG}.
@@ -76,5 +75,4 @@ class TraceHelper {
 
     return messageBuilder.build();
   }
-
 }

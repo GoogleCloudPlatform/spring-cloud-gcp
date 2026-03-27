@@ -18,8 +18,10 @@ package com.example;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.integration.annotation.IntegrationComponentScan;
 
 @SpringBootApplication
+@IntegrationComponentScan
 public class SenderReceiverApplication {
   public static void main(String[] args) {
     SpringApplicationBuilder senderApplication =

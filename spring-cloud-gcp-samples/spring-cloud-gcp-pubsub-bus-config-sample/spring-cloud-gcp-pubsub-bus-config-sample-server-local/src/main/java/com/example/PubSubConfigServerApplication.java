@@ -19,13 +19,23 @@ package com.example;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.config.server.EnableConfigServer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.integration.config.EnableIntegration;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /** Sample Spring Cloud Config server. */
 @SpringBootApplication
 @EnableConfigServer
+@EnableIntegration
 public class PubSubConfigServerApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(PubSubConfigServerApplication.class, args);
+  }
+
+  @Bean
+  public TaskScheduler taskScheduler() {
+    return new ThreadPoolTaskScheduler();
   }
 }

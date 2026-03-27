@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,44 +34,67 @@ public class VpcFlowLogsServiceSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listVpcFlowLogsConfigs. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listVpcFlowLogsConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for getVpcFlowLogsConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getVpcFlowLogsConfigRetry;
+
+  /**
+   * Allow override of retry settings at method-level for queryOrgVpcFlowLogsConfigs. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry queryOrgVpcFlowLogsConfigsRetry;
+
+  /**
+   * Allow override of retry settings at method-level for showEffectiveFlowLogsConfigs. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry showEffectiveFlowLogsConfigsRetry;
+
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLocationRetry;
+
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -129,6 +152,22 @@ public class VpcFlowLogsServiceSpringProperties implements CredentialsSupplier {
 
   public void setGetVpcFlowLogsConfigRetry(Retry getVpcFlowLogsConfigRetry) {
     this.getVpcFlowLogsConfigRetry = getVpcFlowLogsConfigRetry;
+  }
+
+  public Retry getQueryOrgVpcFlowLogsConfigsRetry() {
+    return this.queryOrgVpcFlowLogsConfigsRetry;
+  }
+
+  public void setQueryOrgVpcFlowLogsConfigsRetry(Retry queryOrgVpcFlowLogsConfigsRetry) {
+    this.queryOrgVpcFlowLogsConfigsRetry = queryOrgVpcFlowLogsConfigsRetry;
+  }
+
+  public Retry getShowEffectiveFlowLogsConfigsRetry() {
+    return this.showEffectiveFlowLogsConfigsRetry;
+  }
+
+  public void setShowEffectiveFlowLogsConfigsRetry(Retry showEffectiveFlowLogsConfigsRetry) {
+    this.showEffectiveFlowLogsConfigsRetry = showEffectiveFlowLogsConfigsRetry;
   }
 
   public Retry getListLocationsRetry() {

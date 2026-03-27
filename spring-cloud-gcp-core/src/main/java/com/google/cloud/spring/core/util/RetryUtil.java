@@ -33,8 +33,7 @@ public class RetryUtil {
    * @param newRetry the {@link Retry} object containing configured property override values
    * @return the updated {@link RetrySettings} object
    */
-  public static RetrySettings updateRetrySettings(
-      RetrySettings oldRetrySettings, Retry newRetry) {
+  public static RetrySettings updateRetrySettings(RetrySettings oldRetrySettings, Retry newRetry) {
     RetrySettings.Builder builder = oldRetrySettings.toBuilder();
     if (newRetry.getTotalTimeout() != null) {
       builder.setTotalTimeout(newRetry.getTotalTimeout());

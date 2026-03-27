@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,22 +36,45 @@ public class ReservationSubBlocksSpringProperties implements CredentialsSupplier
       new Credentials(
           "https://www.googleapis.com/auth/compute",
           "https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for get. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRetry;
+
+  /**
+   * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for list. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listRetry;
+
+  /**
+   * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry setIamPolicyRetry;
+
+  /**
+   * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry testIamPermissionsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -90,11 +113,35 @@ public class ReservationSubBlocksSpringProperties implements CredentialsSupplier
     this.getRetry = getRetry;
   }
 
+  public Retry getGetIamPolicyRetry() {
+    return this.getIamPolicyRetry;
+  }
+
+  public void setGetIamPolicyRetry(Retry getIamPolicyRetry) {
+    this.getIamPolicyRetry = getIamPolicyRetry;
+  }
+
   public Retry getListRetry() {
     return this.listRetry;
   }
 
   public void setListRetry(Retry listRetry) {
     this.listRetry = listRetry;
+  }
+
+  public Retry getSetIamPolicyRetry() {
+    return this.setIamPolicyRetry;
+  }
+
+  public void setSetIamPolicyRetry(Retry setIamPolicyRetry) {
+    this.setIamPolicyRetry = setIamPolicyRetry;
+  }
+
+  public Retry getTestIamPermissionsRetry() {
+    return this.testIamPermissionsRetry;
+  }
+
+  public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
+    this.testIamPermissionsRetry = testIamPermissionsRetry;
   }
 }

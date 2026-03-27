@@ -88,15 +88,16 @@ class GcpFirestoreAutoConfigurationTests {
                   ctx.getBean("firestoreGrpcStub", FirestoreGrpc.FirestoreStub.class);
               ManagedChannel channel = (ManagedChannel) stub.getChannel();
               assertThat(channel.authority()).isEqualTo("firestore.googleapis.com:443");
-              assertThat(getRoutingHeader(ctx)).isEqualTo("project_id=test-project&database_id=%28default%29");
+              assertThat(getRoutingHeader(ctx))
+                  .isEqualTo("project_id=test-project&database_id=%28default%29");
             });
   }
 
   private static String getRoutingHeader(ApplicationContext ctx) {
     ClientInterceptor clientInterceptor =
         ctx.getBean("firestoreRoutingHeadersInterceptor", ClientInterceptor.class);
-    Metadata extraHeaders = (Metadata) ReflectionTestUtils.getField(clientInterceptor,
-        "extraHeaders");
+    Metadata extraHeaders =
+        (Metadata) ReflectionTestUtils.getField(clientInterceptor, "extraHeaders");
     return extraHeaders.get(Key.of("x-goog-request-params", Metadata.ASCII_STRING_MARSHALLER));
   }
 
@@ -114,18 +115,20 @@ class GcpFirestoreAutoConfigurationTests {
   @Test
   void testDatabaseIdOverride() {
     contextRunner
-        .withPropertyValues("spring.cloud.gcp.firestore.database-id=mydb^2",
+        .withPropertyValues(
+            "spring.cloud.gcp.firestore.database-id=mydb^2",
             "spring.cloud.gcp.firestore.project-id=test")
         .run(
             context -> {
               FirestoreOptions datastoreOptions = context.getBean(Firestore.class).getOptions();
               assertThat(datastoreOptions.getDatabaseId()).isEqualTo("mydb^2");
-              String rootPath = context.getBean(GcpFirestoreProperties.class)
-                  .getFirestoreRootPath(() -> "xyz-ignored");
-              assertThat(rootPath)
-                  .isEqualTo("projects/test/databases/mydb^2/documents");
-              assertThat(getRoutingHeader(context)).isEqualTo(
-                  "project_id=test&database_id=mydb%5E2");
+              String rootPath =
+                  context
+                      .getBean(GcpFirestoreProperties.class)
+                      .getFirestoreRootPath(() -> "xyz-ignored");
+              assertThat(rootPath).isEqualTo("projects/test/databases/mydb^2/documents");
+              assertThat(getRoutingHeader(context))
+                  .isEqualTo("project_id=test&database_id=mydb%5E2");
             });
   }
 

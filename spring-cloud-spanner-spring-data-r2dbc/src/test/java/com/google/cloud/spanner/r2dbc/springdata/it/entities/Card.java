@@ -39,8 +39,8 @@ public class Card {
   private LocalDateTime requestedAt;
 
   /** Constructor. */
-  public Card(long id, int expiryYear, int expiryMonth, LocalDate issueDate,
-              LocalDateTime requestedAt) {
+  public Card(
+      long id, int expiryYear, int expiryMonth, LocalDate issueDate, LocalDateTime requestedAt) {
     this.id = id;
     this.expiryYear = expiryYear;
     this.expiryMonth = expiryMonth;

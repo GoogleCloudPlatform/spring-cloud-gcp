@@ -29,8 +29,6 @@ public class SecretManagerRuntimeHintsTest {
     RuntimeHints hints = new RuntimeHints();
     new SecretManagerRuntimeHints().registerHints(hints, getClass().getClassLoader());
 
-    assertThat(hints)
-        .matches(reflection().onType(SecretManagerSyntaxUtils.class));
+    assertThat(hints).matches(reflection().onType(SecretManagerSyntaxUtils.class));
   }
 }
-

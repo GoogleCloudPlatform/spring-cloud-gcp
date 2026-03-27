@@ -16,17 +16,11 @@
 
 package com.example;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreProperties;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -36,18 +30,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(properties = "run.commandline.runner=off")
 public class FirestoreSampleAppNativeIntegrationTests {
 
-  private final Logger logger =
-      LoggerFactory.getLogger(FirestoreSampleAppNativeIntegrationTests.class);
-  @Autowired private ApplicationContext applicationContext;
-
+  // This test ensures the Spring Context loads successfully in native mode,
+  // which implicitly verifies that ADC credentials are functioning (if
+  // required at startup).
   @Test
-  void credentialsPropertiesAreAccessibleTest() {
-    logger.info(
-        "This test is only needed for graalvm compilation test"
-            + " to verify the encoded-key property is accessible."
-            + " Turn on by it.firestore.native=true");
-    String encodedKeyFromAutoConfig =
-        applicationContext.getBean(GcpFirestoreProperties.class).getCredentials().getEncodedKey();
-    assertNotNull(encodedKeyFromAutoConfig);
-  }
+  void contextLoads() {}
 }

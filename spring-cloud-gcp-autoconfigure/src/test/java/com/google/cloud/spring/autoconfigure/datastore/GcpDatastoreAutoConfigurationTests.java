@@ -103,8 +103,8 @@ class GcpDatastoreAutoConfigurationTests {
                 "management.health.datastore.enabled=false");
 
     assertThatThrownBy(() -> runner.run(context -> getDatastoreBean(context)))
-            .isInstanceOf(RuntimeException.class)
-            .hasMessageContaining("failed to start");
+        .isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("failed to start");
   }
 
   @Test

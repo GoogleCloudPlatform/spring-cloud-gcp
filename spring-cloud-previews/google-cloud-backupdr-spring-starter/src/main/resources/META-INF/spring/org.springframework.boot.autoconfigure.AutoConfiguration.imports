@@ -1,1 +1,2 @@
 com.google.cloud.backupdr.v1.spring.BackupDRSpringAutoConfiguration
+com.google.cloud.backupdr.v1.spring.BackupDrProtectionSummarySpringAutoConfiguration

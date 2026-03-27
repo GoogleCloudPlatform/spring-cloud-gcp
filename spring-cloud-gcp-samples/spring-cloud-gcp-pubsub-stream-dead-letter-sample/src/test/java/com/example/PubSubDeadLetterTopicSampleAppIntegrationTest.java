@@ -25,10 +25,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
@@ -37,16 +38,16 @@ import org.springframework.util.MultiValueMap;
 /**
  * @since 2.0.2
  */
-//Please enable the tests using "-Dit.pubsub=true"
+// Please enable the tests using "-Dit.pubsub=true"
 @EnabledIfSystemProperty(named = "it.pubsub", matches = "true")
 @ExtendWith(OutputCaptureExtension.class)
 @ExtendWith(SpringExtension.class)
+@AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
 class PubSubDeadLetterTopicSampleAppIntegrationTest {
 
-  @Autowired
-  private TestRestTemplate restTemplate;
+  @Autowired private TestRestTemplate restTemplate;
 
   @Test
   void testSample_deadLetterHandling(CapturedOutput capturedOutput) {
@@ -58,12 +59,15 @@ class PubSubDeadLetterTopicSampleAppIntegrationTest {
 
     this.restTemplate.postForObject("/newMessage", map, String.class);
 
-    await().atMost(60, TimeUnit.SECONDS)
+    await()
+        .atMost(60, TimeUnit.SECONDS)
         .pollDelay(3, TimeUnit.SECONDS)
-        .untilAsserted(() -> assertThat(capturedOutput.toString())
-            .contains("Nacking message (attempt 1)")
-            .contains("Nacking message (attempt 6)")
-            .contains("Received message on dead letter topic")
-            .contains(message));
+        .untilAsserted(
+            () ->
+                assertThat(capturedOutput.toString())
+                    .contains("Nacking message (attempt 1)")
+                    .contains("Nacking message (attempt 6)")
+                    .contains("Received message on dead letter topic")
+                    .contains(message));
   }
 }

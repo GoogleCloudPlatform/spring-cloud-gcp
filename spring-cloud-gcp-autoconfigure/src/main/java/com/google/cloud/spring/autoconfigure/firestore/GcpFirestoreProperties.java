@@ -96,7 +96,9 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
   }
 
   public String getFirestoreRootPath(GcpProjectIdProvider projectIdProvider) {
-    return String.format(ROOT_PATH_FORMAT, this.getResolvedProjectId(projectIdProvider),
+    return String.format(
+        ROOT_PATH_FORMAT,
+        this.getResolvedProjectId(projectIdProvider),
         this.getResolvedDatabaseId());
   }
 

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 7.x
       - 6.x
       - 5.x
       - 4.x
@@ -22,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [17, 19, 21, 24]
+        java: [17, 21, 25]
     steps:
     - name: Get current date
       id: date

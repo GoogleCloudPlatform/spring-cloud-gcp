@@ -24,13 +24,13 @@ import com.google.api.generator.test.framework.GoldenFileWriter;
 import com.google.cloud.generator.spring.TestUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SpringPackageInfoComposerTest {
   private GapicContext context;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.context = TestUtils.parseShowcaseEcho();
   }

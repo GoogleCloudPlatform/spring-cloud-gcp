@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,173 +36,209 @@ public class JobServiceSpringProperties implements CredentialsSupplier {
       new Credentials(
           "https://www.googleapis.com/auth/cloud-platform",
           "https://www.googleapis.com/auth/cloud-platform.read-only");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for createCustomJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createCustomJobRetry;
+
   /**
    * Allow override of retry settings at method-level for getCustomJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getCustomJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listCustomJobs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listCustomJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for cancelCustomJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry cancelCustomJobRetry;
+
   /**
    * Allow override of retry settings at method-level for createDataLabelingJob. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createDataLabelingJobRetry;
+
   /**
    * Allow override of retry settings at method-level for getDataLabelingJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDataLabelingJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listDataLabelingJobs. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDataLabelingJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for cancelDataLabelingJob. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry cancelDataLabelingJobRetry;
+
   /**
    * Allow override of retry settings at method-level for createHyperparameterTuningJob. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createHyperparameterTuningJobRetry;
+
   /**
    * Allow override of retry settings at method-level for getHyperparameterTuningJob. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getHyperparameterTuningJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listHyperparameterTuningJobs. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listHyperparameterTuningJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for cancelHyperparameterTuningJob. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry cancelHyperparameterTuningJobRetry;
+
   /**
    * Allow override of retry settings at method-level for createNasJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createNasJobRetry;
+
   /**
    * Allow override of retry settings at method-level for getNasJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getNasJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listNasJobs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listNasJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for cancelNasJob. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry cancelNasJobRetry;
+
   /**
    * Allow override of retry settings at method-level for getNasTrialDetail. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getNasTrialDetailRetry;
+
   /**
    * Allow override of retry settings at method-level for listNasTrialDetails. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listNasTrialDetailsRetry;
+
   /**
    * Allow override of retry settings at method-level for createBatchPredictionJob. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createBatchPredictionJobRetry;
+
   /**
    * Allow override of retry settings at method-level for getBatchPredictionJob. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBatchPredictionJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listBatchPredictionJobs. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBatchPredictionJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for cancelBatchPredictionJob. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry cancelBatchPredictionJobRetry;
+
   /**
    * Allow override of retry settings at method-level for createModelDeploymentMonitoringJob. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createModelDeploymentMonitoringJobRetry;
+
   /**
    * Allow override of retry settings at method-level for
    * searchModelDeploymentMonitoringStatsAnomalies. If defined, this takes precedence over
    * service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchModelDeploymentMonitoringStatsAnomaliesRetry;
+
   /**
    * Allow override of retry settings at method-level for getModelDeploymentMonitoringJob. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getModelDeploymentMonitoringJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listModelDeploymentMonitoringJobs. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listModelDeploymentMonitoringJobsRetry;
+
   /**
    * Allow override of retry settings at method-level for pauseModelDeploymentMonitoringJob. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry pauseModelDeploymentMonitoringJobRetry;
+
   /**
    * Allow override of retry settings at method-level for resumeModelDeploymentMonitoringJob. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry resumeModelDeploymentMonitoringJobRetry;
+
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLocationRetry;
+
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

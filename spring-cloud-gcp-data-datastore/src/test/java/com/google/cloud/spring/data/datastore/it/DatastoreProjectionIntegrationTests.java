@@ -42,11 +42,11 @@ import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.aot.DisabledInAotMode;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Projection tests separated from DatastoreIntegrationTests.java that needs mockito */
@@ -56,7 +56,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DatastoreIntegrationTestConfiguration.class})
 public class DatastoreProjectionIntegrationTests {
-  @SpyBean private DatastoreTemplate datastoreTemplate;
+  @MockitoSpyBean private DatastoreTemplate datastoreTemplate;
   @Autowired private TestEntityRepository testEntityRepository;
 
   private final TestEntity testEntityA = new TestEntity(1L, "red", 1L, Shape.CIRCLE, null);

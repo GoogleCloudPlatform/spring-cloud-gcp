@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,184 +34,223 @@ public class DataCatalogSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for searchCatalog. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchCatalogRetry;
+
   /**
    * Allow override of retry settings at method-level for createEntryGroup. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createEntryGroupRetry;
+
   /**
    * Allow override of retry settings at method-level for getEntryGroup. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getEntryGroupRetry;
+
   /**
    * Allow override of retry settings at method-level for updateEntryGroup. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateEntryGroupRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteEntryGroup. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteEntryGroupRetry;
+
   /**
    * Allow override of retry settings at method-level for listEntryGroups. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listEntryGroupsRetry;
+
   /**
    * Allow override of retry settings at method-level for createEntry. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createEntryRetry;
+
   /**
    * Allow override of retry settings at method-level for updateEntry. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateEntryRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteEntry. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteEntryRetry;
+
   /**
    * Allow override of retry settings at method-level for getEntry. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getEntryRetry;
+
   /**
    * Allow override of retry settings at method-level for lookupEntry. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry lookupEntryRetry;
+
   /**
    * Allow override of retry settings at method-level for listEntries. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listEntriesRetry;
+
   /**
    * Allow override of retry settings at method-level for modifyEntryOverview. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry modifyEntryOverviewRetry;
+
   /**
    * Allow override of retry settings at method-level for modifyEntryContacts. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry modifyEntryContactsRetry;
+
   /**
    * Allow override of retry settings at method-level for createTagTemplate. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createTagTemplateRetry;
+
   /**
    * Allow override of retry settings at method-level for getTagTemplate. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getTagTemplateRetry;
+
   /**
    * Allow override of retry settings at method-level for updateTagTemplate. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateTagTemplateRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteTagTemplate. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteTagTemplateRetry;
+
   /**
    * Allow override of retry settings at method-level for createTagTemplateField. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createTagTemplateFieldRetry;
+
   /**
    * Allow override of retry settings at method-level for updateTagTemplateField. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateTagTemplateFieldRetry;
+
   /**
    * Allow override of retry settings at method-level for renameTagTemplateField. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry renameTagTemplateFieldRetry;
+
   /**
    * Allow override of retry settings at method-level for renameTagTemplateFieldEnumValue. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry renameTagTemplateFieldEnumValueRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteTagTemplateField. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteTagTemplateFieldRetry;
+
   /**
    * Allow override of retry settings at method-level for createTag. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createTagRetry;
+
   /**
    * Allow override of retry settings at method-level for updateTag. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateTagRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteTag. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteTagRetry;
+
   /**
    * Allow override of retry settings at method-level for listTags. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTagsRetry;
+
   /**
    * Allow override of retry settings at method-level for starEntry. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry starEntryRetry;
+
   /**
    * Allow override of retry settings at method-level for unstarEntry. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry unstarEntryRetry;
+
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
+
   /**
    * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry testIamPermissionsRetry;
+
   /**
    * Allow override of retry settings at method-level for setConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for retrieveConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry retrieveConfigRetry;
+
   /**
    * Allow override of retry settings at method-level for retrieveEffectiveConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

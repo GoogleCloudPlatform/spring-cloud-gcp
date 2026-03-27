@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,179 +34,217 @@ public class TelcoAutomationSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
+
   /** Quota project to use for billing. */
   private String quotaProjectId;
+
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
+
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
+
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
+
   /**
    * Allow override of retry settings at method-level for listOrchestrationClusters. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listOrchestrationClustersRetry;
+
   /**
    * Allow override of retry settings at method-level for getOrchestrationCluster. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getOrchestrationClusterRetry;
+
   /**
    * Allow override of retry settings at method-level for listEdgeSlms. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listEdgeSlmsRetry;
+
   /**
    * Allow override of retry settings at method-level for getEdgeSlm. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getEdgeSlmRetry;
+
   /**
    * Allow override of retry settings at method-level for createBlueprint. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createBlueprintRetry;
+
   /**
    * Allow override of retry settings at method-level for updateBlueprint. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateBlueprintRetry;
+
   /**
    * Allow override of retry settings at method-level for getBlueprint. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBlueprintRetry;
+
   /**
    * Allow override of retry settings at method-level for deleteBlueprint. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteBlueprintRetry;
+
   /**
    * Allow override of retry settings at method-level for listBlueprints. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBlueprintsRetry;
+
   /**
    * Allow override of retry settings at method-level for approveBlueprint. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry approveBlueprintRetry;
+
   /**
    * Allow override of retry settings at method-level for proposeBlueprint. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry proposeBlueprintRetry;
+
   /**
    * Allow override of retry settings at method-level for rejectBlueprint. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry rejectBlueprintRetry;
+
   /**
    * Allow override of retry settings at method-level for listBlueprintRevisions. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBlueprintRevisionsRetry;
+
   /**
    * Allow override of retry settings at method-level for searchBlueprintRevisions. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchBlueprintRevisionsRetry;
+
   /**
    * Allow override of retry settings at method-level for searchDeploymentRevisions. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchDeploymentRevisionsRetry;
+
   /**
    * Allow override of retry settings at method-level for discardBlueprintChanges. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry discardBlueprintChangesRetry;
+
   /**
    * Allow override of retry settings at method-level for listPublicBlueprints. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listPublicBlueprintsRetry;
+
   /**
    * Allow override of retry settings at method-level for getPublicBlueprint. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getPublicBlueprintRetry;
+
   /**
    * Allow override of retry settings at method-level for createDeployment. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createDeploymentRetry;
+
   /**
    * Allow override of retry settings at method-level for updateDeployment. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateDeploymentRetry;
+
   /**
    * Allow override of retry settings at method-level for getDeployment. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDeploymentRetry;
+
   /**
    * Allow override of retry settings at method-level for removeDeployment. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry removeDeploymentRetry;
+
   /**
    * Allow override of retry settings at method-level for listDeployments. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDeploymentsRetry;
+
   /**
    * Allow override of retry settings at method-level for listDeploymentRevisions. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDeploymentRevisionsRetry;
+
   /**
    * Allow override of retry settings at method-level for discardDeploymentChanges. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry discardDeploymentChangesRetry;
+
   /**
    * Allow override of retry settings at method-level for applyDeployment. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry applyDeploymentRetry;
+
   /**
    * Allow override of retry settings at method-level for computeDeploymentStatus. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry computeDeploymentStatusRetry;
+
   /**
    * Allow override of retry settings at method-level for rollbackDeployment. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry rollbackDeploymentRetry;
+
   /**
    * Allow override of retry settings at method-level for getHydratedDeployment. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getHydratedDeploymentRetry;
+
   /**
    * Allow override of retry settings at method-level for listHydratedDeployments. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listHydratedDeploymentsRetry;
+
   /**
    * Allow override of retry settings at method-level for updateHydratedDeployment. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateHydratedDeploymentRetry;
+
   /**
    * Allow override of retry settings at method-level for applyHydratedDeployment. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry applyHydratedDeploymentRetry;
+
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
+
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
