@@ -113,6 +113,6 @@ public class GcpStorageAutoConfiguration { // NOSONAR squid:S1610 must be a clas
               + host
               + ". Please verify that the specified host follows the 'https://${service}.${universeDomain}/' format");
     }
-    return url.getProtocol() + "://" + url.getHost() + "/";
+    return url.getProtocol() + "://" + url.getAuthority() + "/";
   }
 }

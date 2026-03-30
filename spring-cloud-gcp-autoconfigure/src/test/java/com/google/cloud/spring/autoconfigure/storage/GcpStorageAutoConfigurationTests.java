@@ -106,6 +106,17 @@ class GcpStorageAutoConfigurationTests {
   }
 
   @Test
+  void testHostWithPort() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.storage.host=http://localhost:54321")
+        .run(
+            context -> {
+              Storage storage = context.getBean("storage", Storage.class);
+              assertThat(storage.getOptions().getHost()).isEqualTo("http://localhost:54321/");
+            });
+  }
+
+  @Test
   void testUniverseDomainAndHostSet() {
     this.contextRunner
         .withPropertyValues(
