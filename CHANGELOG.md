@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.5.6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.5.5...v6.5.6) (2026-04-07)
+
+
+### Bug Fixes
+
+* NullPointerException in spring-cloud-gcp-data-spanner ([#4383](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4383)) ([#4387](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4387)) ([7d0e71e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7d0e71e0b8b0581777a0b6a286ff0fd70470d465))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.76.0 to 26.79.0 ([#4391](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4391)) ([21f1e73](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/21f1e733f16490f42a1a32efe0a2fc9b5ef242d9))
+
 ## [6.5.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.5.4...v6.5.5) (2026-02-20)
 
 
