@@ -137,6 +137,9 @@ class StructPropertyValueProvider implements PropertyValueProvider<SpannerPersis
   }
 
   private <T> T convertOrRead(Class<T> targetType, Object sourceValue) {
+    if (sourceValue == null) {
+      return null;
+    }
     Class<?> sourceClass = sourceValue.getClass();
     return (Struct.class.isAssignableFrom(sourceClass)
             && !this.readConverter.canConvert(sourceClass, targetType))
