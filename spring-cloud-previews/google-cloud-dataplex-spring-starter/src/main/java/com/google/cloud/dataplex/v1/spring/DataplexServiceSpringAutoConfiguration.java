@@ -241,23 +241,6 @@ public class DataplexServiceSpringAutoConfiguration {
               clientSettingsBuilder.cancelJobSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.cancelJobSettings().setRetrySettings(cancelJobRetrySettings);
 
-      RetrySettings listEnvironmentsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listEnvironmentsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .listEnvironmentsSettings()
-          .setRetrySettings(listEnvironmentsRetrySettings);
-
-      RetrySettings getEnvironmentRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getEnvironmentSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.getEnvironmentSettings().setRetrySettings(getEnvironmentRetrySettings);
-
-      RetrySettings listSessionsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listSessionsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.listSessionsSettings().setRetrySettings(listSessionsRetrySettings);
-
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -430,41 +413,6 @@ public class DataplexServiceSpringAutoConfiguration {
       clientSettingsBuilder.cancelJobSettings().setRetrySettings(cancelJobRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for cancelJob from properties.");
-      }
-    }
-    Retry listEnvironmentsRetry = clientProperties.getListEnvironmentsRetry();
-    if (listEnvironmentsRetry != null) {
-      RetrySettings listEnvironmentsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listEnvironmentsSettings().getRetrySettings(),
-              listEnvironmentsRetry);
-      clientSettingsBuilder
-          .listEnvironmentsSettings()
-          .setRetrySettings(listEnvironmentsRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for listEnvironments from properties.");
-      }
-    }
-    Retry getEnvironmentRetry = clientProperties.getGetEnvironmentRetry();
-    if (getEnvironmentRetry != null) {
-      RetrySettings getEnvironmentRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getEnvironmentSettings().getRetrySettings(),
-              getEnvironmentRetry);
-      clientSettingsBuilder.getEnvironmentSettings().setRetrySettings(getEnvironmentRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for getEnvironment from properties.");
-      }
-    }
-    Retry listSessionsRetry = clientProperties.getListSessionsRetry();
-    if (listSessionsRetry != null) {
-      RetrySettings listSessionsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listSessionsSettings().getRetrySettings(), listSessionsRetry);
-      clientSettingsBuilder.listSessionsSettings().setRetrySettings(listSessionsRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for listSessions from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

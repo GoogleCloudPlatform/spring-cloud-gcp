@@ -138,24 +138,6 @@ public class DataplexServiceSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty private Retry cancelJobRetry;
 
   /**
-   * Allow override of retry settings at method-level for listEnvironments. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry listEnvironmentsRetry;
-
-  /**
-   * Allow override of retry settings at method-level for getEnvironment. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry getEnvironmentRetry;
-
-  /**
-   * Allow override of retry settings at method-level for listSessions. If defined, this takes
-   * precedence over service-level retry configurations for that RPC method.
-   */
-  @NestedConfigurationProperty private Retry listSessionsRetry;
-
-  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -322,30 +304,6 @@ public class DataplexServiceSpringProperties implements CredentialsSupplier {
 
   public void setCancelJobRetry(Retry cancelJobRetry) {
     this.cancelJobRetry = cancelJobRetry;
-  }
-
-  public Retry getListEnvironmentsRetry() {
-    return this.listEnvironmentsRetry;
-  }
-
-  public void setListEnvironmentsRetry(Retry listEnvironmentsRetry) {
-    this.listEnvironmentsRetry = listEnvironmentsRetry;
-  }
-
-  public Retry getGetEnvironmentRetry() {
-    return this.getEnvironmentRetry;
-  }
-
-  public void setGetEnvironmentRetry(Retry getEnvironmentRetry) {
-    this.getEnvironmentRetry = getEnvironmentRetry;
-  }
-
-  public Retry getListSessionsRetry() {
-    return this.listSessionsRetry;
-  }
-
-  public void setListSessionsRetry(Retry listSessionsRetry) {
-    this.listSessionsRetry = listSessionsRetry;
   }
 
   public Retry getListLocationsRetry() {
