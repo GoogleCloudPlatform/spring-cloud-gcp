@@ -36,43 +36,34 @@ public class BudgetServiceSpringProperties implements CredentialsSupplier {
       new Credentials(
           "https://www.googleapis.com/auth/cloud-billing",
           "https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for createBudget. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createBudgetRetry;
-
   /**
    * Allow override of retry settings at method-level for updateBudget. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateBudgetRetry;
-
   /**
    * Allow override of retry settings at method-level for getBudget. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBudgetRetry;
-
   /**
    * Allow override of retry settings at method-level for listBudgets. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBudgetsRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteBudget. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

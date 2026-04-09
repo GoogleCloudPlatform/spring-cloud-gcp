@@ -56,10 +56,13 @@ com.google.cloud.compute.v1.spring.PublicDelegatedPrefixesSpringAutoConfiguratio
 com.google.cloud.compute.v1.spring.RegionAutoscalersSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionBackendServicesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionCommitmentsSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.RegionCompositeHealthChecksSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionDiskTypesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionDisksSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.RegionHealthAggregationPoliciesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionHealthCheckServicesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionHealthChecksSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.RegionHealthSourcesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionInstanceGroupManagersSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionInstanceGroupsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionInstanceTemplatesSpringAutoConfiguration
@@ -79,6 +82,7 @@ com.google.cloud.compute.v1.spring.RegionUrlMapsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionZonesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RegionsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ReservationBlocksSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.ReservationSlotsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ReservationSubBlocksSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ReservationsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ResourcePoliciesSpringAutoConfiguration

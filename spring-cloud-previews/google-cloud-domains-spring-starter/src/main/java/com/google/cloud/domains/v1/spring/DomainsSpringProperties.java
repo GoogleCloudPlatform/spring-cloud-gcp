@@ -34,55 +34,44 @@ public class DomainsSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for searchDomains. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry searchDomainsRetry;
-
   /**
    * Allow override of retry settings at method-level for retrieveRegisterParameters. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry retrieveRegisterParametersRetry;
-
   /**
    * Allow override of retry settings at method-level for retrieveTransferParameters. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry retrieveTransferParametersRetry;
-
   /**
    * Allow override of retry settings at method-level for listRegistrations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listRegistrationsRetry;
-
   /**
    * Allow override of retry settings at method-level for getRegistration. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRegistrationRetry;
-
   /**
    * Allow override of retry settings at method-level for retrieveAuthorizationCode. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry retrieveAuthorizationCodeRetry;
-
   /**
    * Allow override of retry settings at method-level for resetAuthorizationCode. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

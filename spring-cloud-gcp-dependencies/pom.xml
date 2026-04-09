@@ -34,7 +34,8 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.76.0</gcp-libraries-bom.version>
+		<gcp-libraries-bom.version>26.79.0</gcp-libraries-bom.version>
+		<google-cloud-logging-logback.version>0.137.0-alpha</google-cloud-logging-logback.version>
 		<cloud-sql-socket-factory.version>1.28.0</cloud-sql-socket-factory.version>
 		<r2dbc-postgres-driver.version>1.1.1.RELEASE</r2dbc-postgres-driver.version>
 		<cloud-spanner-r2dbc.version>1.3.0</cloud-spanner-r2dbc.version>
@@ -347,6 +348,12 @@
 				<groupId>com.google.cloud</groupId>
 				<artifactId>cloud-spanner-r2dbc</artifactId>
 				<version>${cloud-spanner-r2dbc.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>google-cloud-logging-logback</artifactId>
+				<version>${google-cloud-logging-logback.version}</version>
 			</dependency>
 
 			<!--Google Cloud Libraries BOM -->

@@ -37,19 +37,14 @@ public class ExportServiceSpringProperties implements CredentialsSupplier {
           "https://www.googleapis.com/auth/cloud-platform",
           "https://www.googleapis.com/auth/monitoring",
           "https://www.googleapis.com/auth/monitoring.write");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for listProfiles. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

@@ -36,27 +36,32 @@ public class RegionHealthCheckServicesSpringProperties implements CredentialsSup
       new Credentials(
           "https://www.googleapis.com/auth/compute",
           "https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
+  /**
+   * Allow override of retry settings at method-level for aggregatedList. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry aggregatedListRetry;
   /**
    * Allow override of retry settings at method-level for get. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getRetry;
-
   /**
    * Allow override of retry settings at method-level for list. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listRetry;
+  /**
+   * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry testIamPermissionsRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -87,6 +92,14 @@ public class RegionHealthCheckServicesSpringProperties implements CredentialsSup
     this.retry = retry;
   }
 
+  public Retry getAggregatedListRetry() {
+    return this.aggregatedListRetry;
+  }
+
+  public void setAggregatedListRetry(Retry aggregatedListRetry) {
+    this.aggregatedListRetry = aggregatedListRetry;
+  }
+
   public Retry getGetRetry() {
     return this.getRetry;
   }
@@ -101,5 +114,13 @@ public class RegionHealthCheckServicesSpringProperties implements CredentialsSup
 
   public void setListRetry(Retry listRetry) {
     this.listRetry = listRetry;
+  }
+
+  public Retry getTestIamPermissionsRetry() {
+    return this.testIamPermissionsRetry;
+  }
+
+  public void setTestIamPermissionsRetry(Retry testIamPermissionsRetry) {
+    this.testIamPermissionsRetry = testIamPermissionsRetry;
   }
 }

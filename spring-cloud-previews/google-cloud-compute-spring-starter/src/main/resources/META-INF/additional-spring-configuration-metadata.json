@@ -349,6 +349,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.region-composite-health-checks.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionCompositeHealthChecks components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.region-disk-types.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionDiskTypes components.",
@@ -361,6 +367,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.region-health-aggregation-policies.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionHealthAggregationPolicies components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.region-health-check-services.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionHealthCheckServices components.",
@@ -370,6 +382,12 @@
       "name": "com.google.cloud.compute.v1.region-health-checks.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionHealthChecks components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.region-health-sources.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionHealthSources components.",
       "defaultValue": true
     },
     {
@@ -484,6 +502,12 @@
       "name": "com.google.cloud.compute.v1.reservation-blocks.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/ReservationBlocks components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.reservation-slots.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/ReservationSlots components.",
       "defaultValue": true
     },
     {
