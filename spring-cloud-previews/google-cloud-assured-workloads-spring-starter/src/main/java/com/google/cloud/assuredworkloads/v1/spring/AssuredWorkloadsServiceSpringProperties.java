@@ -34,61 +34,49 @@ public class AssuredWorkloadsServiceSpringProperties implements CredentialsSuppl
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for updateWorkload. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateWorkloadRetry;
-
   /**
    * Allow override of retry settings at method-level for restrictAllowedResources. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry restrictAllowedResourcesRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteWorkload. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteWorkloadRetry;
-
   /**
    * Allow override of retry settings at method-level for getWorkload. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getWorkloadRetry;
-
   /**
    * Allow override of retry settings at method-level for listWorkloads. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listWorkloadsRetry;
-
   /**
    * Allow override of retry settings at method-level for listViolations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listViolationsRetry;
-
   /**
    * Allow override of retry settings at method-level for getViolation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getViolationRetry;
-
   /**
    * Allow override of retry settings at method-level for acknowledgeViolation. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

@@ -34,67 +34,54 @@ public class OsConfigZonalServiceSpringProperties implements CredentialsSupplier
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for getOSPolicyAssignment. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getOSPolicyAssignmentRetry;
-
   /**
    * Allow override of retry settings at method-level for listOSPolicyAssignments. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listOSPolicyAssignmentsRetry;
-
   /**
    * Allow override of retry settings at method-level for listOSPolicyAssignmentRevisions. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listOSPolicyAssignmentRevisionsRetry;
-
   /**
    * Allow override of retry settings at method-level for getOSPolicyAssignmentReport. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getOSPolicyAssignmentReportRetry;
-
   /**
    * Allow override of retry settings at method-level for listOSPolicyAssignmentReports. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listOSPolicyAssignmentReportsRetry;
-
   /**
    * Allow override of retry settings at method-level for getInventory. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getInventoryRetry;
-
   /**
    * Allow override of retry settings at method-level for listInventories. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listInventoriesRetry;
-
   /**
    * Allow override of retry settings at method-level for getVulnerabilityReport. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getVulnerabilityReportRetry;
-
   /**
    * Allow override of retry settings at method-level for listVulnerabilityReports. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

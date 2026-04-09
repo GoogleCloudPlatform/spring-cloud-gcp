@@ -34,229 +34,189 @@ public class ClusterManagerSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for listClusters. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listClustersRetry;
-
   /**
    * Allow override of retry settings at method-level for getCluster. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getClusterRetry;
-
   /**
    * Allow override of retry settings at method-level for createCluster. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createClusterRetry;
-
   /**
    * Allow override of retry settings at method-level for updateCluster. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateClusterRetry;
-
   /**
    * Allow override of retry settings at method-level for updateNodePool. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateNodePoolRetry;
-
   /**
    * Allow override of retry settings at method-level for setNodePoolAutoscaling. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setNodePoolAutoscalingRetry;
-
   /**
    * Allow override of retry settings at method-level for setLoggingService. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setLoggingServiceRetry;
-
   /**
    * Allow override of retry settings at method-level for setMonitoringService. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setMonitoringServiceRetry;
-
   /**
    * Allow override of retry settings at method-level for setAddonsConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setAddonsConfigRetry;
-
   /**
    * Allow override of retry settings at method-level for setLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setLocationsRetry;
-
   /**
    * Allow override of retry settings at method-level for updateMaster. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateMasterRetry;
-
   /**
    * Allow override of retry settings at method-level for setMasterAuth. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setMasterAuthRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteCluster. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteClusterRetry;
-
   /**
    * Allow override of retry settings at method-level for listOperations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listOperationsRetry;
-
   /**
    * Allow override of retry settings at method-level for getOperation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getOperationRetry;
-
   /**
    * Allow override of retry settings at method-level for cancelOperation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry cancelOperationRetry;
-
   /**
    * Allow override of retry settings at method-level for getServerConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getServerConfigRetry;
-
   /**
    * Allow override of retry settings at method-level for getJSONWebKeys. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getJSONWebKeysRetry;
-
   /**
    * Allow override of retry settings at method-level for listNodePools. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listNodePoolsRetry;
-
   /**
    * Allow override of retry settings at method-level for getNodePool. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getNodePoolRetry;
-
   /**
    * Allow override of retry settings at method-level for createNodePool. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createNodePoolRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteNodePool. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteNodePoolRetry;
-
   /**
    * Allow override of retry settings at method-level for completeNodePoolUpgrade. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry completeNodePoolUpgradeRetry;
-
   /**
    * Allow override of retry settings at method-level for rollbackNodePoolUpgrade. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry rollbackNodePoolUpgradeRetry;
-
   /**
    * Allow override of retry settings at method-level for setNodePoolManagement. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setNodePoolManagementRetry;
-
   /**
    * Allow override of retry settings at method-level for setLabels. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setLabelsRetry;
-
   /**
    * Allow override of retry settings at method-level for setLegacyAbac. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setLegacyAbacRetry;
-
   /**
    * Allow override of retry settings at method-level for startIPRotation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry startIPRotationRetry;
-
   /**
    * Allow override of retry settings at method-level for completeIPRotation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry completeIPRotationRetry;
-
   /**
    * Allow override of retry settings at method-level for setNodePoolSize. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setNodePoolSizeRetry;
-
   /**
    * Allow override of retry settings at method-level for setNetworkPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setNetworkPolicyRetry;
-
   /**
    * Allow override of retry settings at method-level for setMaintenancePolicy. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setMaintenancePolicyRetry;
-
   /**
    * Allow override of retry settings at method-level for listUsableSubnetworks. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listUsableSubnetworksRetry;
-
   /**
    * Allow override of retry settings at method-level for checkAutopilotCompatibility. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry checkAutopilotCompatibilityRetry;
-
   /**
    * Allow override of retry settings at method-level for fetchClusterUpgradeInfo. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry fetchClusterUpgradeInfoRetry;
-
   /**
    * Allow override of retry settings at method-level for fetchNodePoolUpgradeInfo. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

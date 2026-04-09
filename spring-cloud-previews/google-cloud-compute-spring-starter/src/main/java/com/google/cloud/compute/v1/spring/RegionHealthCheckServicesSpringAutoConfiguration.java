@@ -152,6 +152,11 @@ public class RegionHealthCheckServicesSpringAutoConfiguration {
     }
     Retry serviceRetry = clientProperties.getRetry();
     if (serviceRetry != null) {
+      RetrySettings aggregatedListRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.aggregatedListSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.aggregatedListSettings().setRetrySettings(aggregatedListRetrySettings);
+
       RetrySettings getRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getSettings().getRetrySettings(), serviceRetry);
@@ -162,8 +167,26 @@ public class RegionHealthCheckServicesSpringAutoConfiguration {
               clientSettingsBuilder.listSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listSettings().setRetrySettings(listRetrySettings);
 
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
+      }
+    }
+    Retry aggregatedListRetry = clientProperties.getAggregatedListRetry();
+    if (aggregatedListRetry != null) {
+      RetrySettings aggregatedListRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.aggregatedListSettings().getRetrySettings(),
+              aggregatedListRetry);
+      clientSettingsBuilder.aggregatedListSettings().setRetrySettings(aggregatedListRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for aggregatedList from properties.");
       }
     }
     Retry getRetry = clientProperties.getGetRetry();
@@ -184,6 +207,20 @@ public class RegionHealthCheckServicesSpringAutoConfiguration {
       clientSettingsBuilder.listSettings().setRetrySettings(listRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for list from properties.");
+      }
+    }
+    Retry testIamPermissionsRetry = clientProperties.getTestIamPermissionsRetry();
+    if (testIamPermissionsRetry != null) {
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(),
+              testIamPermissionsRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for testIamPermissions from properties.");
       }
     }
     return clientSettingsBuilder.build();
