@@ -1165,23 +1165,18 @@ func updateReadmeAdoc(step int) {
 		fatalError("main", "Failed to write README.adoc: %v", err)
 	}
 
-	// 6. Delete the old shell script
-	scriptPath := "docs/update_latest_versions_in_readme.sh"
-	os.Remove(scriptPath) // It is safe if this fails (e.g., if already deleted)
-
-	// 7. Commit and create the Pull Request
+	// 6. Commit and create the Pull Request
 	fmt.Println("[main] 💾 Committing changes and creating PR...")
 	branchName := fmt.Sprintf("docs-update-readme-%d", time.Now().Unix())
 
 	runCmd("git", "checkout", "-b", branchName)
 	runCmd("git", "add", readmePath)
-	runCmd("git", "add", scriptPath) // Stages the deletion of the shell script if it existed
-	runCmd("git", "commit", "-m", "docs: update latest versions in README and remove shell script")
+	runCmd("git", "commit", "-m", "docs: update latest versions in README")
 	runCmd("git", "push", "-u", "origin", branchName)
 
 	prURL, err := runCmd("gh", "pr", "create",
 		"--title", "docs: update latest versions in README",
-		"--body", "Automated PR to update versions in README.adoc and remove the deprecated bash script.",
+		"--body", "Automated PR to update versions in README.adoc.",
 		"--base", "main")
 
 	if err != nil {
