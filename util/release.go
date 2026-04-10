@@ -88,6 +88,8 @@ var startStepOpt int
 var interactiveOpt bool
 var librariesBomOptionalOpt bool
 
+const dependencyDashboardIssue = "1705"
+
 // main is the entry point of the script. It parses flags, sets up the parallel release process
 // for the specified branches, and handles the sequential README update for the main branch.
 func main() {
@@ -211,14 +213,22 @@ func runReleaseForMain(startStep int) {
 	if shouldRun(step) {
 		confirmStep(branch, "Find and merge gapic-generator-java-bom upgrade PR")
 		fmt.Printf("%s ▶️ STEP %d: Finding gapic-generator-java-bom upgrade PR...\n", prefix, step)
-		gapicPR := findPR(branch, "gapic-generator-java-bom in:title is:open")
+		gapicSearchQuery := "gapic-generator-java-bom in:title is:open"
+		gapicPR := findPR(branch, gapicSearchQuery)
+
 		if gapicPR == "" {
 			if librariesBomOptionalOpt {
 				fmt.Printf("%s ℹ️ Skipping gapic-generator-java-bom upgrade PR (optional).\n", prefix)
 			} else {
-				fatalError(branch, "Could not find an open gapic-generator-java-bom PR. Exiting.")
+				// Fallback: Attempt to force creation from the Dependency Dashboard
+				gapicPR = forcePRCreationFromDashboard(branch, "gapic-generator-java-bom", gapicSearchQuery)
+				if gapicPR == "" {
+					fatalError(branch, "Could not find an open gapic-generator-java-bom PR even after forcing creation. Exiting.")
+				}
 			}
-		} else {
+		}
+
+		if gapicPR != "" {
 			fmt.Printf("%s ✅ Found gapic-generator PR: #%s\n", prefix, gapicPR)
 			approveWorkflowRuns(branch, gapicPR)
 			approvePR(branch, gapicPR)
@@ -235,14 +245,22 @@ func runReleaseForMain(startStep int) {
 	if shouldRun(step) {
 		confirmStep(branch, "Find libraries-bom PR and trigger rebase")
 		fmt.Printf("\n%s ▶️ STEP %d: Finding libraries-bom PR and triggering rebase...\n", prefix, step)
-		bomPR = findPR(branch, "libraries-bom in:title is:open")
+		bomSearchQuery := "libraries-bom in:title is:open"
+		bomPR = findPR(branch, bomSearchQuery)
+
 		if bomPR == "" {
 			if librariesBomOptionalOpt {
 				fmt.Printf("%s ℹ️ Skipping libraries-bom upgrade PR (optional).\n", prefix)
 			} else {
-				fatalError(branch, "Could not find an open libraries-bom PR.")
+				// Fallback: Attempt to force creation from the Dependency Dashboard
+				bomPR = forcePRCreationFromDashboard(branch, "libraries-bom", bomSearchQuery)
+				if bomPR == "" {
+					fatalError(branch, "Could not find an open libraries-bom PR even after forcing creation.")
+				}
 			}
-		} else {
+		}
+
+		if bomPR != "" {
 			fmt.Printf("%s ✅ Found libraries-bom PR: #%s\n", prefix, bomPR)
 			checkRebaseBox(branch, bomPR)
 		}
@@ -1172,5 +1190,63 @@ func updateReadmeAdoc(step int) {
 
 	fmt.Printf("[main] 🎉 SUCCESS! Created README.adoc PR!\n")
 	fmt.Printf("[main] 🔗 PR URL: %s\n", prURL)
+}
+
+// forcePRCreationFromDashboard checks the appropriate box in the Renovate Dependency Dashboard (Issue #1705)
+// to force the creation of a rate-limited PR, then polls until the PR is created.
+func forcePRCreationFromDashboard(branch, keyword, prSearchQuery string) string {
+	prefix := fmt.Sprintf("[%s]", branch)
+	fmt.Printf("%s ⏳ Checking Dependency Dashboard (Issue #%s) for rate-limited PRs matching '%s'...\n", prefix, dependencyDashboardIssue, keyword)
+
+	body, err := runCmd("gh", "issue", "view", dependencyDashboardIssue, "--repo", "GoogleCloudPlatform/spring-cloud-gcp", "--json", "body", "--jq", ".body")
+	if err != nil {
+		fmt.Printf("%s ⚠️ Warning: Failed to fetch Dependency Dashboard: %v\n", prefix, err)
+		return ""
+	}
+
+	lines := strings.Split(body, "\n")
+	modified := false
+	for i, line := range lines {
+		if strings.Contains(line, "- [ ]") && strings.Contains(line, keyword) {
+			fmt.Printf("%s ⏳ Ticking the checkbox for '%s' to force PR creation...\n", prefix, keyword)
+			lines[i] = strings.Replace(line, "- [ ]", "- [x]", 1)
+			modified = true
+		}
+	}
+
+	if !modified {
+		fmt.Printf("%s ℹ️ No unchecked box found for '%s' in the Dependency Dashboard.\n", prefix, keyword)
+		return ""
+	}
+
+	newBody := strings.Join(lines, "\n")
+	tmpFile, _ := os.CreateTemp("", "dashboard-body-*.md")
+	tmpFile.WriteString(newBody)
+	tmpFile.Close()
+	defer os.Remove(tmpFile.Name())
+
+	_, err = runCmd("gh", "issue", "edit", dependencyDashboardIssue, "--repo", "GoogleCloudPlatform/spring-cloud-gcp", "--body-file", tmpFile.Name())
+	if err != nil {
+		fmt.Printf("%s ⚠️ Warning: Failed to update Dependency Dashboard: %v\n", prefix, err)
+		return ""
+	}
+
+	fmt.Printf("%s ✅ Dashboard updated! Waiting for Renovate to create the PR...\n", prefix)
+
+	maxWait := 30 * time.Minute
+	start := time.Now()
+	for i := 0; i < 60; i++ { // 60 iterations of 30s = 30 mins
+		elapsed := time.Since(start).Round(time.Second)
+		fmt.Printf("\r%s ⏳ Polling for new PR up to %v... (Elapsed: %v)", prefix, maxWait, elapsed)
+
+		newPR := findPR(branch, prSearchQuery)
+		if newPR != "" {
+			fmt.Printf("\n%s 🎉 Renovate successfully created PR #%s!\n", prefix, newPR)
+			return newPR
+		}
+		time.Sleep(30 * time.Second)
+	}
+	fmt.Println()
+	return ""
 }
 
