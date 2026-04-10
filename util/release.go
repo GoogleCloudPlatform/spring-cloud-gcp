@@ -1138,13 +1138,8 @@ func updateReadmeAdoc(step int) {
 	}
 	contentStr := string(content)
 
-	// 4. Update the lines for all supported major versions (including 7)
-	for _, major := range []string{"3", "4", "5", "6", "7"} {
-		latest := latestVersions[major]
-		if latest == "" {
-			continue
-		}
-
+	// 4. Update the lines for all supported major versions dynamically based on Maven Central data
+	for major, latest := range latestVersions {
 		// Find lines that contain "Spring Framework on Google Cloud X."
 		reLine := regexp.MustCompile(`(?m)^(.*Spring Framework on Google Cloud ` + major + `\..*)$`)
 		contentStr = reLine.ReplaceAllStringFunc(contentStr, func(line string) string {
