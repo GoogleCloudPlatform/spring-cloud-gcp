@@ -34,7 +34,7 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.79.0</gcp-libraries-bom.version>
+		<gcp-libraries-bom.version>26.80.0</gcp-libraries-bom.version>
 		<google-cloud-logging-logback.version>0.137.0-alpha</google-cloud-logging-logback.version>
 		<cloud-sql-socket-factory.version>1.25.0</cloud-sql-socket-factory.version>
 		<r2dbc-postgres-driver.version>1.0.7.RELEASE</r2dbc-postgres-driver.version>
