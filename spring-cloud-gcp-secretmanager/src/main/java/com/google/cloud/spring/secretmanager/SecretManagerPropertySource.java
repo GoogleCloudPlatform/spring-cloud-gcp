@@ -44,7 +44,9 @@ public class SecretManagerPropertySource extends EnumerablePropertySource<Secret
         SecretManagerPropertyUtils.getSecretVersionName(name, this.projectIdProvider);
 
     if (secretIdentifier != null) {
-      return getSource().getSecretByteString(secretIdentifier);
+      // Return standard String so ConfigurationProperties binder handles type conversion natively.
+      com.google.protobuf.ByteString byteString = getSource().getSecretByteString(secretIdentifier);
+      return byteString != null ? byteString.toStringUtf8() : null;
     } else {
       return null;
     }
