@@ -253,10 +253,29 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
       Class<?> propertyType,
       ValueBinder valueBinder,
       SpannerCustomConverter spannerCustomConverter) {
+    boolean valueSet = false;
+
+    if (propertyType == UUID.class) {
+      if (propertyValue != null) {
+        com.google.protobuf.Value protoValue = com.google.protobuf.Value.newBuilder()
+            .setStringValue(propertyValue.toString())
+            .build();
+        valueBinder.to(Value.untyped(protoValue));
+      } else {
+        com.google.protobuf.Value nullProtoValue = com.google.protobuf.Value.newBuilder()
+            .setNullValue(com.google.protobuf.NullValue.NULL_VALUE)
+            .build();
+        valueBinder.to(Value.untyped(nullProtoValue));
+      }
+      valueSet = true;
+    }
+
     // directly try to set using the property's original Java type
-    boolean valueSet =
-        attemptSetSingleItemValue(
-            propertyValue, propertyType, valueBinder, propertyType, spannerCustomConverter);
+    if (!valueSet) {
+      valueSet =
+          attemptSetSingleItemValue(
+              propertyValue, propertyType, valueBinder, propertyType, spannerCustomConverter);
+    }
 
     // Finally try and find any conversion that works
     if (!valueSet) {
