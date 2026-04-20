@@ -32,6 +32,7 @@ import com.google.spanner.v1.TypeCode;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.data.core.TypeInformation;
 import org.springframework.data.mapping.PersistentProperty;
@@ -225,11 +226,15 @@ class SpannerPersistentEntityImplTests {
     t.id = "a";
     t.something = "a";
     t.notMapped = "b";
+    t.readOnly = "c";
     SpannerPersistentEntity p = new SpannerMappingContext().getPersistentEntity(TestEntity.class);
     PersistentPropertyAccessor accessor = p.getPropertyAccessor(t);
     p.doWithProperties(
         (SimplePropertyHandler)
-            property -> assertThat(accessor.getProperty(property)).isNotEqualTo("b"));
+            property -> {
+              assertThat(accessor.getProperty(property)).isNotEqualTo("b");
+              assertThat(accessor.getProperty(property)).isNotEqualTo("c");
+            });
   }
 
   @Test
@@ -564,6 +569,9 @@ class SpannerPersistentEntityImplTests {
     String something;
 
     @NotMapped String notMapped;
+
+    @ReadOnlyProperty
+    String readOnly;
   }
 
   private static class EntityNoCustomName {
