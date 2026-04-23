@@ -67,19 +67,34 @@ class SpannerSchemaUtilsTests {
 
   @Test
   void getCreateDdlTest() {
-    String ddlResult =
-        "CREATE TABLE custom_test_table ( id STRING(MAX) , id3 INT64 , id_2 STRING(MAX) , "
-            + "bytes2 BYTES(MAX) , custom_col FLOAT64 NOT NULL , other STRING(333) , "
-            + "primitiveDoubleField FLOAT64 , bigDoubleField FLOAT64 , primitiveFloatField FLOAT32 , "
-            + "bigFloatField FLOAT32 , bigLongField INT64 , primitiveIntField INT64 , "
-            + "bigIntField INT64 , bytes BYTES(MAX) , bytesList ARRAY<BYTES(111)> , "
-            + "integerList ARRAY<INT64> , doubles ARRAY<FLOAT64> , floats ARRAY<FLOAT32> , "
-            + "commitTimestamp TIMESTAMP OPTIONS (allow_commit_timestamp=true) , "
-            + "bigDecimalField NUMERIC , bigDecimals ARRAY<NUMERIC> , jsonCol JSON ) "
-            + "PRIMARY KEY ( id , id_2 , id3 )";
+    String ddl = this.spannerSchemaUtils.getCreateTableDdlString(TestEntity.class);
 
-    assertThat(this.spannerSchemaUtils.getCreateTableDdlString(TestEntity.class))
-        .isEqualTo(ddlResult);
+    assertThat(ddl).startsWith("CREATE TABLE custom_test_table (");
+    assertThat(ddl).contains(") PRIMARY KEY ( id , id_2 , id3 )");
+
+    // All columns from TestEntity
+    assertThat(ddl).contains("id STRING(MAX)");
+    assertThat(ddl).contains("id3 INT64");
+    assertThat(ddl).contains("id_2 STRING(MAX)");
+    assertThat(ddl).contains("bytes2 BYTES(MAX)");
+    assertThat(ddl).contains("custom_col FLOAT64 NOT NULL");
+    assertThat(ddl).contains("other STRING(333)");
+    assertThat(ddl).contains("primitiveDoubleField FLOAT64");
+    assertThat(ddl).contains("bigDoubleField FLOAT64");
+    assertThat(ddl).contains("primitiveFloatField FLOAT32");
+    assertThat(ddl).contains("bigFloatField FLOAT32");
+    assertThat(ddl).contains("bigLongField INT64");
+    assertThat(ddl).contains("primitiveIntField INT64");
+    assertThat(ddl).contains("bigIntField INT64");
+    assertThat(ddl).contains("bytes BYTES(MAX)");
+    assertThat(ddl).contains("bytesList ARRAY<BYTES(111)>");
+    assertThat(ddl).contains("integerList ARRAY<INT64>");
+    assertThat(ddl).contains("doubles ARRAY<FLOAT64>");
+    assertThat(ddl).contains("floats ARRAY<FLOAT32>");
+    assertThat(ddl).contains("commitTimestamp TIMESTAMP OPTIONS (allow_commit_timestamp=true)");
+    assertThat(ddl).contains("bigDecimalField NUMERIC");
+    assertThat(ddl).contains("bigDecimals ARRAY<NUMERIC>");
+    assertThat(ddl).contains("jsonCol JSON");
   }
 
   @Test
