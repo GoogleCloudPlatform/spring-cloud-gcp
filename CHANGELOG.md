@@ -14,6 +14,15 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.4.7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.6...v7.4.7) (2026-05-13)
+
+
+### Bug Fixes
+
+* allow at most one dot in Spanner table names for named schemas ([#4418](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4418)) ([#4439](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4439)) ([103ba3f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/103ba3fefbfdba97ffa439894d09d8c7aa9287db))
+* **secretmanager:** restore parsing of bytestrings ([#4417](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4417)) ([#4437](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4437)) ([636b9b1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/636b9b19581c9d51ecd92aeabb419e6b73c6861b))
+* **spanner:** support querying UUID against STRING columns by using untyped binding ([#4416](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4416)) ([#4435](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4435)) ([498a454](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/498a45451b3eabe5ab22ba3b049866cb51b2295e))
+
 ## [7.4.6](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.5...v7.4.6) (2026-04-07)
 
 
