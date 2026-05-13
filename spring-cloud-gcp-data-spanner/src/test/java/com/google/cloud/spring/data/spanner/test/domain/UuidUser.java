@@ -54,6 +54,7 @@ public class UuidUser {
   public void setName(String name) {
     this.name = name;
   }
+
   public UUID getSecondaryId() {
     return this.secondaryId;
   }
@@ -64,13 +65,21 @@ public class UuidUser {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
 
     UuidUser uuidUser = (UuidUser) o;
 
-    if (userId != null ? !userId.equals(uuidUser.userId) : uuidUser.userId != null) return false;
-    if (name != null ? !name.equals(uuidUser.name) : uuidUser.name != null) return false;
+    if (userId != null ? !userId.equals(uuidUser.userId) : uuidUser.userId != null) {
+      return false;
+    }
+    if (name != null ? !name.equals(uuidUser.name) : uuidUser.name != null) {
+      return false;
+    }
     return secondaryId != null ? secondaryId.equals(uuidUser.secondaryId) : uuidUser.secondaryId == null;
   }
 

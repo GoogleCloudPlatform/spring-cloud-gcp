@@ -55,12 +55,18 @@ public class UuidStringUser {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
 
     UuidStringUser that = (UuidStringUser) o;
 
-    if (userId != null ? !userId.equals(that.userId) : that.userId != null) return false;
+    if (userId != null ? !userId.equals(that.userId) : that.userId != null) {
+      return false;
+    }
     return name != null ? name.equals(that.name) : that.name == null;
   }
 
