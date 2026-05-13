@@ -319,7 +319,10 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     verify(bigDecimalsBinder, times(1)).toNumericArray(t.bigDecimals);
     verify(intervalFieldBinder, times(1)).to(t.intervalField);
     verify(intervalListFieldBinder, times(1)).toIntervalArray(t.intervalList);
-    verify(uuidFieldBinder, times(1)).to(t.uuidField);
+    com.google.protobuf.Value expectedProtoValue = com.google.protobuf.Value.newBuilder()
+        .setStringValue(t.uuidField.toString())
+        .build();
+    verify(uuidFieldBinder, times(1)).to(Value.untyped(expectedProtoValue));
     verify(uuidListFieldBinder, times(1)).toUuidArray(t.uuidList);
   }
 
@@ -329,6 +332,7 @@ class ConverterAwareMappingSpannerEntityWriterTests {
 
     t.dateField = null;
     t.doubleList = null;
+    t.uuidField = null;
 
     WriteBuilder writeBuilder = mock(WriteBuilder.class);
 
@@ -340,12 +344,21 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     when(doubleListFieldBinder.toFloat64Array((Iterable<Double>) any())).thenReturn(null);
     when(writeBuilder.set("doubleList")).thenReturn(doubleListFieldBinder);
 
+    ValueBinder<WriteBuilder> uuidFieldBinder = mock(ValueBinder.class);
+    when(uuidFieldBinder.to((Value) any())).thenReturn(null);
+    when(writeBuilder.set("uuidField")).thenReturn(uuidFieldBinder);
+
     this.spannerEntityWriter.write(
         t,
         writeBuilder::set,
-        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("dateField", "doubleList"))));
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("dateField", "doubleList", "uuidField"))));
     verify(dateFieldBinder, times(1)).to((Date) isNull());
     verify(doubleListFieldBinder, times(1)).toFloat64Array((Iterable<Double>) isNull());
+    
+    com.google.protobuf.Value nullProtoValue = com.google.protobuf.Value.newBuilder()
+        .setNullValue(com.google.protobuf.NullValue.NULL_VALUE)
+        .build();
+    verify(uuidFieldBinder, times(1)).to(Value.untyped(nullProtoValue));
   }
 
   @Test
