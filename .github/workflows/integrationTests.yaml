@@ -81,7 +81,6 @@ jobs:
           ./mvnw \
             --batch-mode \
             --no-transfer-progress \
-            --threads 1.5C \
             --define maven.test.skip=true \
             --define maven.javadoc.skip=true \
             --define org.slf4j.simpleLogger.showDateTime=true \
