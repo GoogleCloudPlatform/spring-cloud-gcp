@@ -18,6 +18,9 @@ on:
     - cron: '05 8 * * *' # 08:00 UTC every day
 
 
+permissions:
+  contents: read
+
 jobs:
   parallel-integrationTests:
     if: |
