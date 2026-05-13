@@ -8,6 +8,9 @@ on:
   schedule:
     - cron: '00 9 * * *' # 09:00 UTC every day
 
+permissions:
+  contents: read
+
 jobs:
   linkageCheck:
     if: |
