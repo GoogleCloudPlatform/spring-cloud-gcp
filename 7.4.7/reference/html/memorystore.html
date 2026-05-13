@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Cloud Memorystore for Redis</title>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
+
+</head>
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
+<li><a href="#_cloud_memorystore_for_redis">Cloud Memorystore for Redis</a>
+<ul class="sectlevel2">
+<li><a href="#_spring_data_redis">Spring Data Redis</a></li>
+<li><a href="#_spring_caching">Spring Caching</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_cloud_memorystore_for_redis"><a class="anchor" href="#_cloud_memorystore_for_redis"></a><a class="link" href="#_cloud_memorystore_for_redis">Cloud Memorystore for Redis</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://cloud.google.com/memorystore/">Cloud Memorystore for Redis</a> provides a fully managed in-memory data store service.
+Cloud Memorystore for Redis is compatible with the Redis protocol, allowing both programmatic access to the data store as well as easy integration with Spring caching.</p>
+</div>
+<div class="paragraph">
+<p>Cloud Memorystore for Redis documentation can be found <a href="https://cloud.google.com/memorystore/docs/redis/">here</a>.
+Use this documentation to create a Cloud Memorystore for Redis instance for your application.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Cloud Memorystore instances and your application instances have to be located in the same region.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_spring_data_redis"><a class="anchor" href="#_spring_data_redis"></a><a class="link" href="#_spring_data_redis">Spring Data Redis</a></h3>
+<div class="paragraph">
+<p>Because Cloud Memorystore is compatible with Redis, your application can use Spring Data Redis to connect to a Cloud Memorystore instance.</p>
+</div>
+<div class="paragraph">
+<p>Add the Spring Boot Data Redis starter for a blocking I/O application:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or use the reactive starter for a reactive application:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-redis-reactive&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Refer to Memorystore guides for instructions to find the address of your Cloud Memorystore instance in the <a href="https://cloud.google.com/memorystore/docs/redis/create-instance-console#creating_a_redis_instance">Google Cloud Console</a>, or via the <a href="https://cloud.google.com/memorystore/docs/redis/create-instance-gcloud#creating-redis">gcloud command</a>.</p>
+</div>
+<div class="paragraph">
+<p>Configure the host and port of the Cloud Memorystore instance like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/main/resources/application.properties</div>
+<div class="content">
+<pre class="highlight"><code>spring.data.redis.host: &lt;cloud_memorystore_host&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+spring.data.redis.port: &lt;cloud_memorystore_port&gt; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Replace <code>&lt;cloud_memorystore_host&gt;</code> with the actual IP address of the Memorystore instance.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Replace <code>&lt;cloud_memorystore_post&gt;</code> with the actual port of the Memorystore instance.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>(Read more about these configuration properties in the <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties">Spring Boot documentation</a>.)</p>
+</div>
+<div class="sect3">
+<h4 id="_authentication"><a class="anchor" href="#_authentication"></a><a class="link" href="#_authentication">Authentication</a></h4>
+<div class="paragraph">
+<p>If you&#8217;ve enabled <a href="https://cloud.google.com/memorystore/docs/redis/about-redis-auth">authentication</a> for the Cloud Memorystore instance, you will need to provide the auth string via the <code>spring.data.redis.password</code> configuration property.
+You can find the auth string for your instance following <a href="https://cloud.google.com/memorystore/docs/redis/manage-redis-auth#getting_the_auth_string">this guide</a>.</p>
+</div>
+<div class="paragraph">
+<p>Remember to never commit plain-text secrets in your configuration properties file, so use an alternative method to provide this value to the application during startup.
+You can for instance load it from Secret Manager, use a Kubernetes secret, or provide it to your application via an environment variable.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_in_transit_encryption"><a class="anchor" href="#_in_transit_encryption"></a><a class="link" href="#_in_transit_encryption">In-transit encryption</a></h4>
+<div class="paragraph">
+<p>If you&#8217;ve enabled <a href="https://cloud.google.com/memorystore/docs/redis/about-in-transit-encryption">in-transit encryption</a> for the Cloud Memorystore instance, you will need to configure the server CA certificate file via an SSL bundle.
+Follow guide in <a href="https://cloud.google.com/memorystore/docs/redis/manage-in-transit-encryption#downloading_the_certificate_authority">this page</a> to download the certificate <code>server-ca.pem</code> file.
+You can include this file in your project as a resource file, e.g. <code>src/main/resources/redis/server-ca.pem</code>.</p>
+</div>
+<div class="paragraph">
+<p>Configure an SSL bundle to use the <code>server-ca.pem</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/main/resources/application.properties</div>
+<div class="content">
+<pre class="highlight"><code>spring.data.redis.ssl.bundle: cloud-memorystore
+spring.ssl.bundle.pem.cloud-memorystore.truststore.certificate: classpath:redis/server-ca.pem <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>You can replace this location with a local file path if you don&#8217;t want to add this file to your application&#8217;s classpath, e.g. <code>file:/path/to/server-ca.pem</code>.
+It is also possible to put the contents of the <code>server-ca.pem</code> file here directly.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Spring Boot automatically enables encrypted access, when an SSL bundle is configured.</p>
+</div>
+<div class="paragraph">
+<p>See the Spring Boot <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.ssl">SSL</a> documentation for more information about SSL bundles.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_programmatic_access"><a class="anchor" href="#_programmatic_access"></a><a class="link" href="#_programmatic_access">Programmatic access</a></h4>
+<div class="paragraph">
+<p>See <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/data.html#data.nosql.redis.connecting">connecting to Redis</a> in the Spring Boot documentation for ways to programmatically interact with Cloud Memorystore.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spring_caching"><a class="anchor" href="#_spring_caching"></a><a class="link" href="#_spring_caching">Spring Caching</a></h3>
+<div class="paragraph">
+<p>Optionally, Cloud Memorystore can be used as a (Redis) backend for <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/io.html#io.caching">Spring caching</a> by adding this starter dependency (in addition to the Spring Data Redis starter):</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-cache&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Add the <code>@EnableCaching</code> annotation on your <code>@SpringBootApplication</code> class, or one of its <code>@Configuration</code> classes to enable caching support.</p>
+</div>
+<div class="paragraph">
+<p>This lets you use the <code>org.springframework.cache.annotation.Cacheable</code> annotation for methods you&#8217;d like to be cached.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Cacheable("cache1")
+public String hello(@PathVariable String name) {
+    ....
+}
+</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See the <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/io.html#io.caching.provider.redis">Redis cache provider documentation</a> for information about configuring cache names, time-to-live, etc.</p>
+</div>
+<div class="paragraph">
+<p>If you are interested in a detailed how-to guide, please check <a href="https://codelabs.developers.google.com/codelabs/cloud-spring-cache-memorystore/">Spring Boot Caching using Cloud Memorystore codelab</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+</div>
+  </div>
+</div>
+</body>
+</html>
