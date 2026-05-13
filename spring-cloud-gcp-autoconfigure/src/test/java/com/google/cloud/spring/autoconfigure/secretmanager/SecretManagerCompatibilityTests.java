@@ -5,11 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
+import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import com.google.protobuf.ByteString;
 import java.util.stream.Stream;
@@ -19,8 +21,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.BootstrapRegistry.InstanceSupplier;
 import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
@@ -133,4 +141,59 @@ class SecretManagerCompatibilityTests {
       assertThat(environment.getProperty(prefix + "fake-secret")).isNull();
     }
   }
+
+  @ParameterizedTest
+  @MethodSource("prefixes")
+  void testConfigurationPropertiesBinding(String prefix, String projectIdPropertyName) {
+    application
+        .sources(MongoConfig.class)
+        .properties(
+            projectIdPropertyName + PROJECT_NAME,
+            "spring.config.import=" + prefix,
+            "spring.data.mongodb.uri=${" + prefix + "my-secret}")
+        .addBootstrapRegistryInitializer(
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClientFactory.class,
+                    InstanceSupplier.of(secretManagerServiceClientFactory)))
+        .addBootstrapRegistryInitializer(
+            (registry) ->
+                registry.registerIfAbsent(
+                    SecretManagerServiceClient.class, InstanceSupplier.of(client)));
+    try (ConfigurableApplicationContext applicationContext = application.run()) {
+      MongoConfig.MongoProperties properties = applicationContext.getBean(MongoConfig.MongoProperties.class);
+      assertThat(properties.getUri()).isInstanceOf(String.class);
+      assertThat(properties.getUri()).isEqualTo("newSecret");
+    }
+  }
+
+  @Configuration
+  @EnableConfigurationProperties(MongoConfig.MongoProperties.class)
+  @Import(GcpSecretManagerAutoConfiguration.class)
+  static class MongoConfig {
+    @ConfigurationProperties("spring.data.mongodb")
+    static class MongoProperties {
+      private String uri;
+
+      public String getUri() {
+        return uri;
+      }
+
+      public void setUri(String uri) {
+        this.uri = uri;
+      }
+    }
+
+
+    @Bean
+    public CredentialsProvider googleCredentials() {
+      return () -> null;
+    }
+
+    @Bean
+    public GcpProjectIdProvider gcpProjectIdProvider() {
+      return () -> PROJECT_NAME;
+    }
+  }
 }
+
