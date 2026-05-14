@@ -96,6 +96,7 @@ jobs:
           bash scripts/generate.sh
         env:
           LIBRARIES_BOM_VERSION: ${{ steps.get_libraries_bom_version.outputs.LIBRARIES_BOM_VERSION }}
+          MONOREPO_TAG: "dc965fe"
       - name: Sanity checks
         continue-on-error: false
         working-directory: spring-cloud-generator
