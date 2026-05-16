@@ -175,6 +175,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.instant-snapshot-groups.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/InstantSnapshotGroups components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.instant-snapshots.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/InstantSnapshots components.",
@@ -337,6 +343,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.region-backend-buckets.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionBackendBuckets components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.region-backend-services.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionBackendServices components.",
@@ -391,6 +403,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.region-instance-group-manager-resize-requests.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionInstanceGroupManagerResizeRequests components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.region-instance-group-managers.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionInstanceGroupManagers components.",
@@ -412,6 +430,12 @@
       "name": "com.google.cloud.compute.v1.region-instances.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionInstances components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.region-instant-snapshot-groups.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionInstantSnapshotGroups components.",
       "defaultValue": true
     },
     {
@@ -448,6 +472,18 @@
       "name": "com.google.cloud.compute.v1.region-security-policies.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionSecurityPolicies components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.region-snapshot-settings.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionSnapshotSettings components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.region-snapshots.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionSnapshots components.",
       "defaultValue": true
     },
     {
@@ -670,6 +706,12 @@
       "name": "com.google.cloud.compute.v1.zone-operations.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/ZoneOperations components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.zone-vm-extension-policies.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/ZoneVmExtensionPolicies components.",
       "defaultValue": true
     },
     {

@@ -148,6 +148,26 @@ public class ConfigSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getAutoMigrationConfigRetry;
   /**
+   * Allow override of retry settings at method-level for getDeploymentGroup. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getDeploymentGroupRetry;
+  /**
+   * Allow override of retry settings at method-level for listDeploymentGroups. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listDeploymentGroupsRetry;
+  /**
+   * Allow override of retry settings at method-level for getDeploymentGroupRevision. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getDeploymentGroupRevisionRetry;
+  /**
+   * Allow override of retry settings at method-level for listDeploymentGroupRevisions. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listDeploymentGroupRevisionsRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -376,6 +396,38 @@ public class ConfigSpringProperties implements CredentialsSupplier {
 
   public void setGetAutoMigrationConfigRetry(Retry getAutoMigrationConfigRetry) {
     this.getAutoMigrationConfigRetry = getAutoMigrationConfigRetry;
+  }
+
+  public Retry getGetDeploymentGroupRetry() {
+    return this.getDeploymentGroupRetry;
+  }
+
+  public void setGetDeploymentGroupRetry(Retry getDeploymentGroupRetry) {
+    this.getDeploymentGroupRetry = getDeploymentGroupRetry;
+  }
+
+  public Retry getListDeploymentGroupsRetry() {
+    return this.listDeploymentGroupsRetry;
+  }
+
+  public void setListDeploymentGroupsRetry(Retry listDeploymentGroupsRetry) {
+    this.listDeploymentGroupsRetry = listDeploymentGroupsRetry;
+  }
+
+  public Retry getGetDeploymentGroupRevisionRetry() {
+    return this.getDeploymentGroupRevisionRetry;
+  }
+
+  public void setGetDeploymentGroupRevisionRetry(Retry getDeploymentGroupRevisionRetry) {
+    this.getDeploymentGroupRevisionRetry = getDeploymentGroupRevisionRetry;
+  }
+
+  public Retry getListDeploymentGroupRevisionsRetry() {
+    return this.listDeploymentGroupRevisionsRetry;
+  }
+
+  public void setListDeploymentGroupRevisionsRetry(Retry listDeploymentGroupRevisionsRetry) {
+    this.listDeploymentGroupRevisionsRetry = listDeploymentGroupRevisionsRetry;
   }
 
   public Retry getListLocationsRetry() {
