@@ -46,6 +46,11 @@ public class ReasoningEngineExecutionServiceSpringProperties implements Credenti
    */
   @NestedConfigurationProperty private Retry queryReasoningEngineRetry;
   /**
+   * Allow override of retry settings at method-level for cancelAsyncQueryReasoningEngine. If
+   * defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry cancelAsyncQueryReasoningEngineRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -106,6 +111,14 @@ public class ReasoningEngineExecutionServiceSpringProperties implements Credenti
 
   public void setQueryReasoningEngineRetry(Retry queryReasoningEngineRetry) {
     this.queryReasoningEngineRetry = queryReasoningEngineRetry;
+  }
+
+  public Retry getCancelAsyncQueryReasoningEngineRetry() {
+    return this.cancelAsyncQueryReasoningEngineRetry;
+  }
+
+  public void setCancelAsyncQueryReasoningEngineRetry(Retry cancelAsyncQueryReasoningEngineRetry) {
+    this.cancelAsyncQueryReasoningEngineRetry = cancelAsyncQueryReasoningEngineRetry;
   }
 
   public Retry getListLocationsRetry() {
