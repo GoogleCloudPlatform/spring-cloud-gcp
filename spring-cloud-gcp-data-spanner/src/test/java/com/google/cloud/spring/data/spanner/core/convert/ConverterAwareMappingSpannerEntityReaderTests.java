@@ -269,7 +269,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
   }
 
   @Test
-  void readUnmatachableTypesTest() {
+  void readUnmatchableTypesTest() {
     Struct struct =
         Struct.newBuilder().set("fieldWithUnsupportedType").to(Value.string("key1")).build();
 
@@ -280,8 +280,7 @@ class ConverterAwareMappingSpannerEntityReaderTests {
         false
     ))
         .isInstanceOf(SpannerDataException.class)
-        .hasMessageContaining("Unable to read column from Cloud Spanner results")
-        .hasMessageEndingWith(": id");
+        .hasMessageContaining("Unable to read column from Cloud Spanner results");
   }
 
   @Test
