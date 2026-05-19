@@ -19,12 +19,6 @@
 	<properties>
 		<main.basedir>${basedir}/..</main.basedir>
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>javax.annotation-api</artifactId>
-		</dependency>
-	</dependencies>
 	<modules>
 		<module>spring-cloud-gcp-starter</module>
 		<module>spring-cloud-gcp-starter-bus-pubsub</module>

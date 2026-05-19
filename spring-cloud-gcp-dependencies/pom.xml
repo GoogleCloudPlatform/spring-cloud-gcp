@@ -34,7 +34,7 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.82.0</gcp-libraries-bom.version>
+		<gcp-libraries-bom.version>26.79.0</gcp-libraries-bom.version>
 		<google-cloud-logging-logback.version>0.137.0-alpha</google-cloud-logging-logback.version>
 		<cloud-sql-socket-factory.version>1.28.0</cloud-sql-socket-factory.version>
 		<r2dbc-postgres-driver.version>1.1.1.RELEASE</r2dbc-postgres-driver.version>
@@ -355,32 +355,6 @@
 				<artifactId>google-cloud-logging-logback</artifactId>
 				<version>${google-cloud-logging-logback.version}</version>
 			</dependency>
-			
-			<!-- spring dependency overrides -->
-			<dependency>
-				<groupId>com.fasterxml.jackson</groupId>
-				<artifactId>jackson-bom</artifactId>
-				<version>2.20.1</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.junit</groupId>
-				<artifactId>junit-bom</artifactId>
-				<version>6.0.1</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>io.opentelemetry</groupId>
-				<artifactId>opentelemetry-api</artifactId>
-				<version>1.47.0</version>
-			</dependency>
-      <dependency>
-				<groupId>javax.annotation</groupId>
-				<artifactId>javax.annotation-api</artifactId>
-				<version>1.3.2</version>
-			</dependency>
 
 			<!--Google Cloud Libraries BOM -->
 			<dependency>
@@ -389,6 +363,13 @@
 				<version>${gcp-libraries-bom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+
+			<!-- spring dependency overrides -->
+			<dependency>
+				<groupId>io.opentelemetry</groupId>
+				<artifactId>opentelemetry-api</artifactId>
+				<version>1.47.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
