@@ -1,3 +1,8 @@
 com.google.cloud.networksecurity.v1.spring.AddressGroupServiceSpringAutoConfiguration
 com.google.cloud.networksecurity.v1.spring.OrganizationAddressGroupServiceSpringAutoConfiguration
+com.google.cloud.networksecurity.v1.spring.DnsThreatDetectorServiceSpringAutoConfiguration
+com.google.cloud.networksecurity.v1.spring.FirewallActivationSpringAutoConfiguration
+com.google.cloud.networksecurity.v1.spring.InterceptSpringAutoConfiguration
+com.google.cloud.networksecurity.v1.spring.MirroringSpringAutoConfiguration
 com.google.cloud.networksecurity.v1.spring.NetworkSecuritySpringAutoConfiguration
+com.google.cloud.networksecurity.v1.spring.OrganizationSecurityProfileGroupServiceSpringAutoConfiguration
