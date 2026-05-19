@@ -15,6 +15,24 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.0.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.0.2...v8.0.3) (2026-05-19)
+
+
+### Bug Fixes
+
+* allow at most one dot in Spanner table names for named schemas ([#4418](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4418)) ([b5baf4c](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b5baf4c4b5b2ab29113d9c33b06b55737c90a447)), closes [#4384](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4384)
+* **deps:** downgrade gapic-generator-java-bom to 2.68.0 ([#4457](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4457)) ([25c21d2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/25c21d242aeecb177cbd015e00e6146d4728cb48))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.81.0 ([#4465](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4465)) ([64f51e9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/64f51e9ec39b75a69d56f40717ec769e8ce37bca))
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.82.0 ([#4449](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4449)) ([e38ba9a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e38ba9a1100b19a4bf2c13cdfd4038574a83e09a))
+* **deps:** update gapic-generator-java-bom.version to v2.72.0 ([#4454](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4454)) ([e6c5107](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/e6c5107b42feb528c6d7731b43fbd493d7602c5f))
+* **secretmanager:** restore parsing of bytestrings ([#4417](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4417)) ([a626628](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a626628eb46e98f489f9a4b409eae61586d7ae80))
+* **spanner:** support querying UUID against STRING columns by using untyped binding ([#4416](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4416)) ([a335a2b](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a335a2b42d44c2a9273d2ad1449cd5a721012503))
+
+
+### Documentation
+
+* add SKILLS.md for AI agent backporting guidelines ([#4440](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4440)) ([decb1e7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/decb1e7a8e5b0f9014999ea063a11bcd2e08e798))
+
 ## [8.0.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.0.1...v8.0.2) (2026-04-09)
 
 
