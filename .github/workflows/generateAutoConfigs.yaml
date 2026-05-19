@@ -81,7 +81,7 @@ jobs:
             --no-transfer-progress \
             --show-version \
             --threads 1.5C \
-            --define maven.test.skip=true \
+            --define skipTests=true \
             --define maven.javadoc.skip=true \
             -P non-previews,\!default \
             install
