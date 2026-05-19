@@ -37,31 +37,24 @@ public class ServiceUsageSpringProperties implements CredentialsSupplier {
           "https://www.googleapis.com/auth/cloud-platform",
           "https://www.googleapis.com/auth/cloud-platform.read-only",
           "https://www.googleapis.com/auth/service.management");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for getService. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getServiceRetry;
-
   /**
    * Allow override of retry settings at method-level for listServices. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listServicesRetry;
-
   /**
    * Allow override of retry settings at method-level for batchGetServices. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

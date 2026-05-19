@@ -34,39 +34,31 @@ public class SecurityCenterManagementSpringProperties implements CredentialsSupp
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for
    * listEffectiveSecurityHealthAnalyticsCustomModules. If defined, this takes precedence over
    * service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listEffectiveSecurityHealthAnalyticsCustomModulesRetry;
-
   /**
    * Allow override of retry settings at method-level for
    * getEffectiveSecurityHealthAnalyticsCustomModule. If defined, this takes precedence over
    * service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getEffectiveSecurityHealthAnalyticsCustomModuleRetry;
-
   /**
    * Allow override of retry settings at method-level for listSecurityHealthAnalyticsCustomModules.
    * If defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSecurityHealthAnalyticsCustomModulesRetry;
-
   /**
    * Allow override of retry settings at method-level for
    * listDescendantSecurityHealthAnalyticsCustomModules. If defined, this takes precedence over
@@ -74,119 +66,100 @@ public class SecurityCenterManagementSpringProperties implements CredentialsSupp
    */
   @NestedConfigurationProperty
   private Retry listDescendantSecurityHealthAnalyticsCustomModulesRetry;
-
   /**
    * Allow override of retry settings at method-level for getSecurityHealthAnalyticsCustomModule. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getSecurityHealthAnalyticsCustomModuleRetry;
-
   /**
    * Allow override of retry settings at method-level for createSecurityHealthAnalyticsCustomModule.
    * If defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createSecurityHealthAnalyticsCustomModuleRetry;
-
   /**
    * Allow override of retry settings at method-level for updateSecurityHealthAnalyticsCustomModule.
    * If defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateSecurityHealthAnalyticsCustomModuleRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteSecurityHealthAnalyticsCustomModule.
    * If defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteSecurityHealthAnalyticsCustomModuleRetry;
-
   /**
    * Allow override of retry settings at method-level for
    * simulateSecurityHealthAnalyticsCustomModule. If defined, this takes precedence over
    * service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry simulateSecurityHealthAnalyticsCustomModuleRetry;
-
   /**
    * Allow override of retry settings at method-level for
    * listEffectiveEventThreatDetectionCustomModules. If defined, this takes precedence over
    * service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listEffectiveEventThreatDetectionCustomModulesRetry;
-
   /**
    * Allow override of retry settings at method-level for
    * getEffectiveEventThreatDetectionCustomModule. If defined, this takes precedence over
    * service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getEffectiveEventThreatDetectionCustomModuleRetry;
-
   /**
    * Allow override of retry settings at method-level for listEventThreatDetectionCustomModules. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listEventThreatDetectionCustomModulesRetry;
-
   /**
    * Allow override of retry settings at method-level for
    * listDescendantEventThreatDetectionCustomModules. If defined, this takes precedence over
    * service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDescendantEventThreatDetectionCustomModulesRetry;
-
   /**
    * Allow override of retry settings at method-level for getEventThreatDetectionCustomModule. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getEventThreatDetectionCustomModuleRetry;
-
   /**
    * Allow override of retry settings at method-level for createEventThreatDetectionCustomModule. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createEventThreatDetectionCustomModuleRetry;
-
   /**
    * Allow override of retry settings at method-level for updateEventThreatDetectionCustomModule. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateEventThreatDetectionCustomModuleRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteEventThreatDetectionCustomModule. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteEventThreatDetectionCustomModuleRetry;
-
   /**
    * Allow override of retry settings at method-level for validateEventThreatDetectionCustomModule.
    * If defined, this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry validateEventThreatDetectionCustomModuleRetry;
-
   /**
    * Allow override of retry settings at method-level for getSecurityCenterService. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getSecurityCenterServiceRetry;
-
   /**
    * Allow override of retry settings at method-level for listSecurityCenterServices. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listSecurityCenterServicesRetry;
-
   /**
    * Allow override of retry settings at method-level for updateSecurityCenterService. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateSecurityCenterServiceRetry;
-
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
-
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

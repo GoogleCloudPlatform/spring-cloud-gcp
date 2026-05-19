@@ -169,6 +169,11 @@ public class VertexRagServiceSpringAutoConfiguration {
           .corroborateContentSettings()
           .setRetrySettings(corroborateContentRetrySettings);
 
+      RetrySettings askContextsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.askContextsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.askContextsSettings().setRetrySettings(askContextsRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -236,6 +241,16 @@ public class VertexRagServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for corroborateContent from properties.");
+      }
+    }
+    Retry askContextsRetry = clientProperties.getAskContextsRetry();
+    if (askContextsRetry != null) {
+      RetrySettings askContextsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.askContextsSettings().getRetrySettings(), askContextsRetry);
+      clientSettingsBuilder.askContextsSettings().setRetrySettings(askContextsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for askContexts from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

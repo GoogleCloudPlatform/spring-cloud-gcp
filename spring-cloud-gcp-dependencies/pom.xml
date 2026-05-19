@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-dependencies</artifactId>
-	<version>8.0.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>8.0.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud Dependencies</name>
 	<description>Spring Framework on Google Cloud Dependencies</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -34,7 +34,8 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.76.0</gcp-libraries-bom.version>
+		<gcp-libraries-bom.version>26.82.0</gcp-libraries-bom.version>
+		<google-cloud-logging-logback.version>0.137.0-alpha</google-cloud-logging-logback.version>
 		<cloud-sql-socket-factory.version>1.28.0</cloud-sql-socket-factory.version>
 		<r2dbc-postgres-driver.version>1.1.1.RELEASE</r2dbc-postgres-driver.version>
 		<cloud-spanner-r2dbc.version>1.3.0</cloud-spanner-r2dbc.version>
@@ -349,6 +350,38 @@
 				<version>${cloud-spanner-r2dbc.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>google-cloud-logging-logback</artifactId>
+				<version>${google-cloud-logging-logback.version}</version>
+			</dependency>
+			
+			<!-- spring dependency overrides -->
+			<dependency>
+				<groupId>com.fasterxml.jackson</groupId>
+				<artifactId>jackson-bom</artifactId>
+				<version>2.20.1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>6.0.1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.opentelemetry</groupId>
+				<artifactId>opentelemetry-api</artifactId>
+				<version>1.47.0</version>
+			</dependency>
+      <dependency>
+				<groupId>javax.annotation</groupId>
+				<artifactId>javax.annotation-api</artifactId>
+				<version>1.3.2</version>
+			</dependency>
+
 			<!--Google Cloud Libraries BOM -->
 			<dependency>
 				<groupId>com.google.cloud</groupId>
@@ -356,13 +389,6 @@
 				<version>${gcp-libraries-bom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-
-			<!-- spring dependency overrides -->
-			<dependency>
-				<groupId>io.opentelemetry</groupId>
-				<artifactId>opentelemetry-api</artifactId>
-				<version>1.47.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

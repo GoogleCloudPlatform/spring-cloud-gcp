@@ -255,6 +255,13 @@ public class CatalogServiceSpringAutoConfiguration {
           .createEntryLinkSettings()
           .setRetrySettings(createEntryLinkRetrySettings);
 
+      RetrySettings updateEntryLinkRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateEntryLinkSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .updateEntryLinkSettings()
+          .setRetrySettings(updateEntryLinkRetrySettings);
+
       RetrySettings deleteEntryLinkRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.deleteEntryLinkSettings().getRetrySettings(), serviceRetry);
@@ -262,10 +269,36 @@ public class CatalogServiceSpringAutoConfiguration {
           .deleteEntryLinkSettings()
           .setRetrySettings(deleteEntryLinkRetrySettings);
 
+      RetrySettings lookupEntryLinksRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.lookupEntryLinksSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .lookupEntryLinksSettings()
+          .setRetrySettings(lookupEntryLinksRetrySettings);
+
+      RetrySettings lookupContextRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.lookupContextSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.lookupContextSettings().setRetrySettings(lookupContextRetrySettings);
+
       RetrySettings getEntryLinkRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getEntryLinkSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getEntryLinkSettings().setRetrySettings(getEntryLinkRetrySettings);
+
+      RetrySettings getMetadataFeedRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMetadataFeedSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getMetadataFeedSettings()
+          .setRetrySettings(getMetadataFeedRetrySettings);
+
+      RetrySettings listMetadataFeedsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMetadataFeedsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listMetadataFeedsSettings()
+          .setRetrySettings(listMetadataFeedsRetrySettings);
 
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -276,6 +309,23 @@ public class CatalogServiceSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getLocationSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getLocationSettings().setRetrySettings(getLocationRetrySettings);
+
+      RetrySettings setIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.setIamPolicySettings().setRetrySettings(setIamPolicyRetrySettings);
+
+      RetrySettings getIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIamPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
+
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
@@ -470,6 +520,19 @@ public class CatalogServiceSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for createEntryLink from properties.");
       }
     }
+    Retry updateEntryLinkRetry = clientProperties.getUpdateEntryLinkRetry();
+    if (updateEntryLinkRetry != null) {
+      RetrySettings updateEntryLinkRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateEntryLinkSettings().getRetrySettings(),
+              updateEntryLinkRetry);
+      clientSettingsBuilder
+          .updateEntryLinkSettings()
+          .setRetrySettings(updateEntryLinkRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for updateEntryLink from properties.");
+      }
+    }
     Retry deleteEntryLinkRetry = clientProperties.getDeleteEntryLinkRetry();
     if (deleteEntryLinkRetry != null) {
       RetrySettings deleteEntryLinkRetrySettings =
@@ -483,6 +546,30 @@ public class CatalogServiceSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for deleteEntryLink from properties.");
       }
     }
+    Retry lookupEntryLinksRetry = clientProperties.getLookupEntryLinksRetry();
+    if (lookupEntryLinksRetry != null) {
+      RetrySettings lookupEntryLinksRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.lookupEntryLinksSettings().getRetrySettings(),
+              lookupEntryLinksRetry);
+      clientSettingsBuilder
+          .lookupEntryLinksSettings()
+          .setRetrySettings(lookupEntryLinksRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for lookupEntryLinks from properties.");
+      }
+    }
+    Retry lookupContextRetry = clientProperties.getLookupContextRetry();
+    if (lookupContextRetry != null) {
+      RetrySettings lookupContextRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.lookupContextSettings().getRetrySettings(), lookupContextRetry);
+      clientSettingsBuilder.lookupContextSettings().setRetrySettings(lookupContextRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for lookupContext from properties.");
+      }
+    }
     Retry getEntryLinkRetry = clientProperties.getGetEntryLinkRetry();
     if (getEntryLinkRetry != null) {
       RetrySettings getEntryLinkRetrySettings =
@@ -491,6 +578,33 @@ public class CatalogServiceSpringAutoConfiguration {
       clientSettingsBuilder.getEntryLinkSettings().setRetrySettings(getEntryLinkRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getEntryLink from properties.");
+      }
+    }
+    Retry getMetadataFeedRetry = clientProperties.getGetMetadataFeedRetry();
+    if (getMetadataFeedRetry != null) {
+      RetrySettings getMetadataFeedRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getMetadataFeedSettings().getRetrySettings(),
+              getMetadataFeedRetry);
+      clientSettingsBuilder
+          .getMetadataFeedSettings()
+          .setRetrySettings(getMetadataFeedRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getMetadataFeed from properties.");
+      }
+    }
+    Retry listMetadataFeedsRetry = clientProperties.getListMetadataFeedsRetry();
+    if (listMetadataFeedsRetry != null) {
+      RetrySettings listMetadataFeedsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listMetadataFeedsSettings().getRetrySettings(),
+              listMetadataFeedsRetry);
+      clientSettingsBuilder
+          .listMetadataFeedsSettings()
+          .setRetrySettings(listMetadataFeedsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listMetadataFeeds from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
@@ -511,6 +625,40 @@ public class CatalogServiceSpringAutoConfiguration {
       clientSettingsBuilder.getLocationSettings().setRetrySettings(getLocationRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getLocation from properties.");
+      }
+    }
+    Retry setIamPolicyRetry = clientProperties.getSetIamPolicyRetry();
+    if (setIamPolicyRetry != null) {
+      RetrySettings setIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), setIamPolicyRetry);
+      clientSettingsBuilder.setIamPolicySettings().setRetrySettings(setIamPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for setIamPolicy from properties.");
+      }
+    }
+    Retry getIamPolicyRetry = clientProperties.getGetIamPolicyRetry();
+    if (getIamPolicyRetry != null) {
+      RetrySettings getIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIamPolicySettings().getRetrySettings(), getIamPolicyRetry);
+      clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getIamPolicy from properties.");
+      }
+    }
+    Retry testIamPermissionsRetry = clientProperties.getTestIamPermissionsRetry();
+    if (testIamPermissionsRetry != null) {
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(),
+              testIamPermissionsRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for testIamPermissions from properties.");
       }
     }
     return clientSettingsBuilder.build();

@@ -15,6 +15,22 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.0.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.0.1...v8.0.2) (2026-04-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.79.0 ([#4401](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4401)) ([ea49ad1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ea49ad19ea80c460ada05f7e8efd602ec6abeb99))
+* **deps:** update gapic-generator-java-bom.version to v2.68.0 ([#4400](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4400)) ([23eb6e8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/23eb6e881c6a1ac2ff2d3bddadb537c4a1bdd4cc))
+* enhance check with maven central ([#4369](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4369)) ([bc21fe7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/bc21fe7d6472459a8b3b20e1a2013d1d97650170))
+* Flaky Test `ConverterAwareMappingSpannerEntityReaderTests.readUnmatachableTypesTest()` ([#4187](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4187)) ([3c1ce61](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3c1ce61d201d732a8886ca06900fd83962f36c2a))
+* NullPointerException in spring-cloud-gcp-data-spanner ([#4383](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4383)) ([366c6fe](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/366c6fe5791aff9bf05e3e55bdaff9fcc2354067)), closes [#4381](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4381)
+
+
+### Documentation
+
+* add Spring Boot 4.0 migration release notes ([#4355](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4355)) ([20f22d3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/20f22d31d89b2441eb81d8d03914220ba7e37b62))
+
 ## [8.0.1] Spring Boot 4.0 / Spring 7 Migration
 
 This release marks a major architectural upgrade, moving the project baseline to **Java 17** (with **JDK 25** for Native Image) and **Jakarta EE 11**.

@@ -34,85 +34,69 @@ public class OrgPolicySpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for listConstraints. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listConstraintsRetry;
-
   /**
    * Allow override of retry settings at method-level for listPolicies. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listPoliciesRetry;
-
   /**
    * Allow override of retry settings at method-level for getPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getPolicyRetry;
-
   /**
    * Allow override of retry settings at method-level for getEffectivePolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getEffectivePolicyRetry;
-
   /**
    * Allow override of retry settings at method-level for createPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createPolicyRetry;
-
   /**
    * Allow override of retry settings at method-level for updatePolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updatePolicyRetry;
-
   /**
    * Allow override of retry settings at method-level for deletePolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deletePolicyRetry;
-
   /**
    * Allow override of retry settings at method-level for createCustomConstraint. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createCustomConstraintRetry;
-
   /**
    * Allow override of retry settings at method-level for updateCustomConstraint. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateCustomConstraintRetry;
-
   /**
    * Allow override of retry settings at method-level for getCustomConstraint. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getCustomConstraintRetry;
-
   /**
    * Allow override of retry settings at method-level for listCustomConstraints. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listCustomConstraintsRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteCustomConstraint. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

@@ -245,7 +245,63 @@ class SpannerPersistentEntityImplTests {
         .isInstanceOf(SpannerDataException.class)
         .hasMessage("Error getting table name for EntityBadName")
         .hasStackTraceContaining(
-            "Only letters, numbers, and underscores are allowed in table names: ;DROP TABLE your_table;");
+            "Only letters, numbers, and underscores are allowed in table names, and at most one dot: ;DROP TABLE your_table;");
+  }
+
+  @Test
+  void testValidTableNameWithDot() {
+    SpannerPersistentEntityImpl<EntityWithValidDotName> entity =
+        new SpannerPersistentEntityImpl<>(
+            TypeInformation.of(EntityWithValidDotName.class),
+            this.spannerMappingContext,
+            this.spannerEntityProcessor);
+
+    assertThat(entity.tableName()).isEqualTo("schema.table");
+  }
+
+  @Test
+  void testInvalidTableNameWithDotAtStart() {
+    SpannerPersistentEntityImpl<EntityWithDotAtStart> entity =
+        new SpannerPersistentEntityImpl<>(
+            TypeInformation.of(EntityWithDotAtStart.class),
+            this.spannerMappingContext,
+            this.spannerEntityProcessor);
+
+    assertThatThrownBy(entity::tableName)
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("Error getting table name for EntityWithDotAtStart")
+        .hasStackTraceContaining(
+            "Only letters, numbers, and underscores are allowed in table names, and at most one dot: .table");
+  }
+
+  @Test
+  void testInvalidTableNameWithDotAtEnd() {
+    SpannerPersistentEntityImpl<EntityWithDotAtEnd> entity =
+        new SpannerPersistentEntityImpl<>(
+            TypeInformation.of(EntityWithDotAtEnd.class),
+            this.spannerMappingContext,
+            this.spannerEntityProcessor);
+
+    assertThatThrownBy(entity::tableName)
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("Error getting table name for EntityWithDotAtEnd")
+        .hasStackTraceContaining(
+            "Only letters, numbers, and underscores are allowed in table names, and at most one dot: table.");
+  }
+
+  @Test
+  void testInvalidTableNameWithMultipleDots() {
+    SpannerPersistentEntityImpl<EntityWithMultipleDots> entity =
+        new SpannerPersistentEntityImpl<>(
+            TypeInformation.of(EntityWithMultipleDots.class),
+            this.spannerMappingContext,
+            this.spannerEntityProcessor);
+
+    assertThatThrownBy(entity::tableName)
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("Error getting table name for EntityWithMultipleDots")
+        .hasStackTraceContaining(
+            "Only letters, numbers, and underscores are allowed in table names, and at most one dot: schema.table.subtable");
   }
 
   @Test
@@ -267,7 +323,7 @@ class SpannerPersistentEntityImplTests {
         .isInstanceOf(SpannerDataException.class)
         .hasMessage("Error getting table name for EntityWithExpression")
         .hasStackTraceContaining(
-            "Only letters, numbers, and underscores are allowed in table names: "
+            "Only letters, numbers, and underscores are allowed in table names, and at most one dot: "
                 + "table_; DROP TABLE your_table;");
   }
 
@@ -473,6 +529,30 @@ class SpannerPersistentEntityImplTests {
     String id;
 
     String something;
+  }
+
+  @Table(name = "schema.table")
+  private static class EntityWithValidDotName {
+    @PrimaryKey(keyOrder = 1)
+    String id;
+  }
+
+  @Table(name = ".table")
+  private static class EntityWithDotAtStart {
+    @PrimaryKey(keyOrder = 1)
+    String id;
+  }
+
+  @Table(name = "table.")
+  private static class EntityWithDotAtEnd {
+    @PrimaryKey(keyOrder = 1)
+    String id;
+  }
+
+  @Table(name = "schema.table.subtable")
+  private static class EntityWithMultipleDots {
+    @PrimaryKey(keyOrder = 1)
+    String id;
   }
 
   @Table(name = "custom_test_table")

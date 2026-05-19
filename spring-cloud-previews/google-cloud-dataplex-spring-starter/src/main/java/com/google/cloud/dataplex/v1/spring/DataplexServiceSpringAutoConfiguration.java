@@ -241,23 +241,6 @@ public class DataplexServiceSpringAutoConfiguration {
               clientSettingsBuilder.cancelJobSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.cancelJobSettings().setRetrySettings(cancelJobRetrySettings);
 
-      RetrySettings listEnvironmentsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listEnvironmentsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder
-          .listEnvironmentsSettings()
-          .setRetrySettings(listEnvironmentsRetrySettings);
-
-      RetrySettings getEnvironmentRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getEnvironmentSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.getEnvironmentSettings().setRetrySettings(getEnvironmentRetrySettings);
-
-      RetrySettings listSessionsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listSessionsSettings().getRetrySettings(), serviceRetry);
-      clientSettingsBuilder.listSessionsSettings().setRetrySettings(listSessionsRetrySettings);
-
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -267,6 +250,23 @@ public class DataplexServiceSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getLocationSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getLocationSettings().setRetrySettings(getLocationRetrySettings);
+
+      RetrySettings setIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.setIamPolicySettings().setRetrySettings(setIamPolicyRetrySettings);
+
+      RetrySettings getIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIamPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
+
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
@@ -432,41 +432,6 @@ public class DataplexServiceSpringAutoConfiguration {
         LOGGER.trace("Configured method-level retry settings for cancelJob from properties.");
       }
     }
-    Retry listEnvironmentsRetry = clientProperties.getListEnvironmentsRetry();
-    if (listEnvironmentsRetry != null) {
-      RetrySettings listEnvironmentsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listEnvironmentsSettings().getRetrySettings(),
-              listEnvironmentsRetry);
-      clientSettingsBuilder
-          .listEnvironmentsSettings()
-          .setRetrySettings(listEnvironmentsRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(
-            "Configured method-level retry settings for listEnvironments from properties.");
-      }
-    }
-    Retry getEnvironmentRetry = clientProperties.getGetEnvironmentRetry();
-    if (getEnvironmentRetry != null) {
-      RetrySettings getEnvironmentRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.getEnvironmentSettings().getRetrySettings(),
-              getEnvironmentRetry);
-      clientSettingsBuilder.getEnvironmentSettings().setRetrySettings(getEnvironmentRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for getEnvironment from properties.");
-      }
-    }
-    Retry listSessionsRetry = clientProperties.getListSessionsRetry();
-    if (listSessionsRetry != null) {
-      RetrySettings listSessionsRetrySettings =
-          RetryUtil.updateRetrySettings(
-              clientSettingsBuilder.listSessionsSettings().getRetrySettings(), listSessionsRetry);
-      clientSettingsBuilder.listSessionsSettings().setRetrySettings(listSessionsRetrySettings);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Configured method-level retry settings for listSessions from properties.");
-      }
-    }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();
     if (listLocationsRetry != null) {
       RetrySettings listLocationsRetrySettings =
@@ -485,6 +450,40 @@ public class DataplexServiceSpringAutoConfiguration {
       clientSettingsBuilder.getLocationSettings().setRetrySettings(getLocationRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getLocation from properties.");
+      }
+    }
+    Retry setIamPolicyRetry = clientProperties.getSetIamPolicyRetry();
+    if (setIamPolicyRetry != null) {
+      RetrySettings setIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), setIamPolicyRetry);
+      clientSettingsBuilder.setIamPolicySettings().setRetrySettings(setIamPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for setIamPolicy from properties.");
+      }
+    }
+    Retry getIamPolicyRetry = clientProperties.getGetIamPolicyRetry();
+    if (getIamPolicyRetry != null) {
+      RetrySettings getIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIamPolicySettings().getRetrySettings(), getIamPolicyRetry);
+      clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getIamPolicy from properties.");
+      }
+    }
+    Retry testIamPermissionsRetry = clientProperties.getTestIamPermissionsRetry();
+    if (testIamPermissionsRetry != null) {
+      RetrySettings testIamPermissionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(),
+              testIamPermissionsRetry);
+      clientSettingsBuilder
+          .testIamPermissionsSettings()
+          .setRetrySettings(testIamPermissionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for testIamPermissions from properties.");
       }
     }
     return clientSettingsBuilder.build();

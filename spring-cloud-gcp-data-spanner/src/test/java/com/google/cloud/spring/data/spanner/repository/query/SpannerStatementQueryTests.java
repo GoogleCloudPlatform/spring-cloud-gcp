@@ -119,7 +119,7 @@ class SpannerStatementQueryTests {
               Statement statement = invocation.getArgument(1);
 
               String expectedQuery =
-                  "SELECT DISTINCT shares, trader_id, ticker, price, action, id, value FROM trades"
+                  "SELECT DISTINCT shares, trader_id, ticker, price, action, id, value, uuid FROM trades"
                       + " WHERE ( LOWER(action)=LOWER(@tag0) AND ticker=@tag1 ) OR ("
                       + " trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND id IS NOT NULL AND"
                       + " trader_id=NULL AND trader_id LIKE @tag7 AND price=TRUE AND price=FALSE"
@@ -235,7 +235,7 @@ class SpannerStatementQueryTests {
 
               String expectedSql =
                   "SELECT EXISTS(SELECT DISTINCT shares, trader_id, ticker, price, action, id,"
-                      + " value FROM trades WHERE ( LOWER(action)=LOWER(@tag0) AND ticker=@tag1 )"
+                      + " value, uuid FROM trades WHERE ( LOWER(action)=LOWER(@tag0) AND ticker=@tag1 )"
                       + " OR ( trader_id=@tag2 AND price<@tag3 ) OR ( price>=@tag4 AND id IS NOT NULL AND"
                       + " trader_id=NULL AND trader_id LIKE @tag7 AND price=TRUE AND price=FALSE"
                       + " AND price>@tag10 AND price<=@tag11 ) ORDER BY id DESC LIMIT 1)";
@@ -271,7 +271,7 @@ class SpannerStatementQueryTests {
     Object[] params = new Object[] {8.88, PageRequest.of(1, 10, Sort.by("traderId"))};
     Method method = QueryHolder.class.getMethod("repositoryMethod5", Double.class, Pageable.class);
     String expectedSql =
-        "SELECT shares, trader_id, ticker, price, action, id, value "
+        "SELECT shares, trader_id, ticker, price, action, id, value, uuid "
             + "FROM trades WHERE ( price<@tag0 ) "
             + "ORDER BY trader_id ASC LIMIT 10 OFFSET 10";
 
@@ -286,11 +286,46 @@ class SpannerStatementQueryTests {
         };
     Method method = QueryHolder.class.getMethod("repositoryMethod6", Double.class, Sort.class);
     String expectedSql =
-        "SELECT shares, trader_id, ticker, price, action, id, value "
+        "SELECT shares, trader_id, ticker, price, action, id, value, uuid "
             + "FROM trades WHERE ( price<@tag0 ) "
             + "ORDER BY trader_id DESC , price ASC , action DESC";
 
     runPageableOrSortTest(params, method, expectedSql);
+  }
+
+  @Test
+  void uuidUntypedBindingTest() throws NoSuchMethodException {
+    when(this.queryMethod.getName()).thenReturn("findByUuid");
+    this.partTreeSpannerQuery = spy(createQuery());
+
+    java.util.UUID uuid = java.util.UUID.randomUUID();
+    Object[] params = new Object[] {uuid};
+    
+    Method method = QueryHolder.class.getMethod("repositoryMethod8", java.util.UUID.class);
+    doReturn(new DefaultParameters(ParametersSource.of(method)))
+        .when(this.queryMethod)
+        .getParameters();
+
+    when(this.spannerTemplate.query((Class) any(), any(), any()))
+        .thenAnswer(
+            invocation -> {
+              Statement statement = invocation.getArgument(1);
+              Map<String, Value> paramMap = statement.getParameters();
+
+              com.google.protobuf.Value expectedProtoValue = com.google.protobuf.Value.newBuilder()
+                  .setStringValue(uuid.toString())
+                  .build();
+              assertThat(paramMap.get("tag0")).isEqualTo(Value.untyped(expectedProtoValue));
+              assertThat(paramMap).hasSize(1);
+
+              return null;
+            });
+
+    doReturn(Object.class).when(this.partTreeSpannerQuery).getReturnedSimpleConvertableItemType();
+    doReturn(null).when(this.partTreeSpannerQuery).convertToSimpleReturnType(any(), any());
+
+    this.partTreeSpannerQuery.execute(params);
+    verify(this.spannerTemplate, times(1)).query((Class) any(), any(), any());
   }
 
   private void runPageableOrSortTest(Object[] params, Method method, String expectedSql) {
@@ -337,7 +372,7 @@ class SpannerStatementQueryTests {
 
     when(this.queryMethod.getQueryMethod()).thenReturn(method);
     String expectedSql =
-        "SELECT shares, trader_id, ticker, price, action, id, value "
+        "SELECT shares, trader_id, ticker, price, action, id, value, uuid "
             + "FROM trades "
             + "WHERE ( action=@tag0 AND ticker=@tag1 ) "
             + "ORDER BY trader_id ASC LIMIT 10 OFFSET 10";
@@ -474,6 +509,8 @@ class SpannerStatementQueryTests {
     }
 
     BigDecimal value;
+
+    java.util.UUID uuid;
   }
 
   // The methods in this class are used to emulate repository methods
@@ -531,6 +568,10 @@ class SpannerStatementQueryTests {
     }
 
     public long repositoryMethod7(String tag0, Pageable tag1, String tag2) {
+      return 0;
+    }
+
+    public long repositoryMethod8(java.util.UUID tag0) {
       return 0;
     }
   }
