@@ -13,9 +13,39 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.networksecurity.v1.dns-threat-detector-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud networksecurity/DnsThreatDetectorService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.networksecurity.v1.firewall-activation.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud networksecurity/FirewallActivation components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.networksecurity.v1.intercept.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud networksecurity/Intercept components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.networksecurity.v1.mirroring.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud networksecurity/Mirroring components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.networksecurity.v1.network-security.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud networksecurity/NetworkSecurity components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.networksecurity.v1.organization-security-profile-group-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud networksecurity/OrganizationSecurityProfileGroupService components.",
       "defaultValue": true
     }
   ]
