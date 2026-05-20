@@ -218,9 +218,33 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
       SpannerCustomConverter writeConverter,
       Class innerType) {
     boolean valueSet = false;
+
+    if (innerType == UUID.class) {
+      if (value != null) {
+        com.google.protobuf.ListValue.Builder listValueBuilder = com.google.protobuf.ListValue.newBuilder();
+        for (Object item : value) {
+          if (item != null) {
+            listValueBuilder.addValues(com.google.protobuf.Value.newBuilder().setStringValue(item.toString()).build());
+          } else {
+            listValueBuilder.addValues(com.google.protobuf.Value.newBuilder().setNullValue(com.google.protobuf.NullValue.NULL_VALUE).build());
+          }
+        }
+        com.google.protobuf.Value protoValue = com.google.protobuf.Value.newBuilder()
+            .setListValue(listValueBuilder.build())
+            .build();
+        valueBinder.to(Value.untyped(protoValue));
+      } else {
+        com.google.protobuf.Value nullProtoValue = com.google.protobuf.Value.newBuilder()
+            .setNullValue(com.google.protobuf.NullValue.NULL_VALUE)
+            .build();
+        valueBinder.to(Value.untyped(nullProtoValue));
+      }
+      valueSet = true;
+    }
+
     // attempt check if there is directly a write method that can accept the
     // property
-    if (iterablePropertyTypeToMethodMap.containsKey(innerType)) {
+    if (!valueSet && iterablePropertyTypeToMethodMap.containsKey(innerType)) {
       iterablePropertyTypeToMethodMap.get(innerType).accept(valueBinder, value);
       valueSet = true;
     }
