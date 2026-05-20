@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import com.google.protobuf.ListValue;
+import com.google.protobuf.NullValue;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -221,12 +223,12 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
 
     if (innerType == UUID.class) {
       if (value != null) {
-        com.google.protobuf.ListValue.Builder listValueBuilder = com.google.protobuf.ListValue.newBuilder();
+        ListValue.Builder listValueBuilder = ListValue.newBuilder();
         for (Object item : value) {
           if (item != null) {
             listValueBuilder.addValues(com.google.protobuf.Value.newBuilder().setStringValue(item.toString()).build());
           } else {
-            listValueBuilder.addValues(com.google.protobuf.Value.newBuilder().setNullValue(com.google.protobuf.NullValue.NULL_VALUE).build());
+            listValueBuilder.addValues(com.google.protobuf.Value.newBuilder().setNullValue(NullValue.NULL_VALUE).build());
           }
         }
         com.google.protobuf.Value protoValue = com.google.protobuf.Value.newBuilder()
@@ -235,7 +237,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
         valueBinder.to(Value.untyped(protoValue));
       } else {
         com.google.protobuf.Value nullProtoValue = com.google.protobuf.Value.newBuilder()
-            .setNullValue(com.google.protobuf.NullValue.NULL_VALUE)
+            .setNullValue(NullValue.NULL_VALUE)
             .build();
         valueBinder.to(Value.untyped(nullProtoValue));
       }
@@ -287,7 +289,7 @@ public class ConverterAwareMappingSpannerEntityWriter implements SpannerEntityWr
         valueBinder.to(Value.untyped(protoValue));
       } else {
         com.google.protobuf.Value nullProtoValue = com.google.protobuf.Value.newBuilder()
-            .setNullValue(com.google.protobuf.NullValue.NULL_VALUE)
+            .setNullValue(NullValue.NULL_VALUE)
             .build();
         valueBinder.to(Value.untyped(nullProtoValue));
       }
