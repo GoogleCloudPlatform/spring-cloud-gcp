@@ -149,6 +149,11 @@ public class BackendBucketsSpringAutoConfiguration {
     }
     Retry serviceRetry = clientProperties.getRetry();
     if (serviceRetry != null) {
+      RetrySettings aggregatedListRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.aggregatedListSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.aggregatedListSettings().setRetrySettings(aggregatedListRetrySettings);
+
       RetrySettings getRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getSettings().getRetrySettings(), serviceRetry);
@@ -164,6 +169,11 @@ public class BackendBucketsSpringAutoConfiguration {
               clientSettingsBuilder.listSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listSettings().setRetrySettings(listRetrySettings);
 
+      RetrySettings listUsableRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listUsableSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listUsableSettings().setRetrySettings(listUsableRetrySettings);
+
       RetrySettings setIamPolicyRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), serviceRetry);
@@ -178,6 +188,17 @@ public class BackendBucketsSpringAutoConfiguration {
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
+      }
+    }
+    Retry aggregatedListRetry = clientProperties.getAggregatedListRetry();
+    if (aggregatedListRetry != null) {
+      RetrySettings aggregatedListRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.aggregatedListSettings().getRetrySettings(),
+              aggregatedListRetry);
+      clientSettingsBuilder.aggregatedListSettings().setRetrySettings(aggregatedListRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for aggregatedList from properties.");
       }
     }
     Retry getRetry = clientProperties.getGetRetry();
@@ -208,6 +229,16 @@ public class BackendBucketsSpringAutoConfiguration {
       clientSettingsBuilder.listSettings().setRetrySettings(listRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for list from properties.");
+      }
+    }
+    Retry listUsableRetry = clientProperties.getListUsableRetry();
+    if (listUsableRetry != null) {
+      RetrySettings listUsableRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listUsableSettings().getRetrySettings(), listUsableRetry);
+      clientSettingsBuilder.listUsableSettings().setRetrySettings(listUsableRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listUsable from properties.");
       }
     }
     Retry setIamPolicyRetry = clientProperties.getSetIamPolicyRetry();
