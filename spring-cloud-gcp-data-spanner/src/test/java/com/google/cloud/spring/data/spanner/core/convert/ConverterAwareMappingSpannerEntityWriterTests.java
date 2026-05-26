@@ -281,7 +281,7 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     when(writeBuilder.set("uuidField")).thenReturn(uuidFieldBinder);
 
     ValueBinder<WriteBuilder> uuidListFieldBinder = mock(ValueBinder.class);
-    when(uuidListFieldBinder.toUuidArray(any())).thenReturn(null);
+    when(uuidListFieldBinder.to((Value) any())).thenReturn(null);
     when(writeBuilder.set("uuidList")).thenReturn(uuidListFieldBinder);
 
     this.spannerEntityWriter.write(t, writeBuilder::set);
@@ -323,7 +323,10 @@ class ConverterAwareMappingSpannerEntityWriterTests {
         .setStringValue(t.uuidField.toString())
         .build();
     verify(uuidFieldBinder, times(1)).to(Value.untyped(expectedProtoValue));
-    verify(uuidListFieldBinder, times(1)).toUuidArray(t.uuidList);
+    com.google.protobuf.ListValue expectedProtoListValue = com.google.protobuf.ListValue.newBuilder()
+        .addValues(com.google.protobuf.Value.newBuilder().setStringValue(t.uuidField.toString()).build())
+        .build();
+    verify(uuidListFieldBinder, times(1)).to(Value.untyped(com.google.protobuf.Value.newBuilder().setListValue(expectedProtoListValue).build()));
   }
 
   @Test
@@ -333,6 +336,7 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     t.dateField = null;
     t.doubleList = null;
     t.uuidField = null;
+    t.uuidList = null;
 
     WriteBuilder writeBuilder = mock(WriteBuilder.class);
 
@@ -348,10 +352,14 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     when(uuidFieldBinder.to((Value) any())).thenReturn(null);
     when(writeBuilder.set("uuidField")).thenReturn(uuidFieldBinder);
 
+    ValueBinder<WriteBuilder> uuidListFieldBinder = mock(ValueBinder.class);
+    when(uuidListFieldBinder.to((Value) any())).thenReturn(null);
+    when(writeBuilder.set("uuidList")).thenReturn(uuidListFieldBinder);
+
     this.spannerEntityWriter.write(
         t,
         writeBuilder::set,
-        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("dateField", "doubleList", "uuidField"))));
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("dateField", "doubleList", "uuidField", "uuidList"))));
     verify(dateFieldBinder, times(1)).to((Date) isNull());
     verify(doubleListFieldBinder, times(1)).toFloat64Array((Iterable<Double>) isNull());
     
@@ -359,6 +367,7 @@ class ConverterAwareMappingSpannerEntityWriterTests {
         .setNullValue(com.google.protobuf.NullValue.NULL_VALUE)
         .build();
     verify(uuidFieldBinder, times(1)).to(Value.untyped(nullProtoValue));
+    verify(uuidListFieldBinder, times(1)).to(Value.untyped(nullProtoValue));
   }
 
   @Test
