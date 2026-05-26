@@ -161,6 +161,11 @@ public class RegionHealthSourcesSpringAutoConfiguration {
               clientSettingsBuilder.getSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getSettings().setRetrySettings(getRetrySettings);
 
+      RetrySettings getHealthRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getHealthSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getHealthSettings().setRetrySettings(getHealthRetrySettings);
+
       RetrySettings listRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listSettings().getRetrySettings(), serviceRetry);
@@ -196,6 +201,16 @@ public class RegionHealthSourcesSpringAutoConfiguration {
       clientSettingsBuilder.getSettings().setRetrySettings(getRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for get from properties.");
+      }
+    }
+    Retry getHealthRetry = clientProperties.getGetHealthRetry();
+    if (getHealthRetry != null) {
+      RetrySettings getHealthRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getHealthSettings().getRetrySettings(), getHealthRetry);
+      clientSettingsBuilder.getHealthSettings().setRetrySettings(getHealthRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getHealth from properties.");
       }
     }
     Retry listRetry = clientProperties.getListRetry();

@@ -6,7 +6,7 @@
     <parent>
         <artifactId>spring-cloud-gcp</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>8.0.3-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>8.0.4-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
 
     <groupId>com.google.cloud</groupId>
@@ -44,6 +44,13 @@
             <artifactId>gapic-generator-java</artifactId>
             <version>${gapic-generator-java-bom.version}</version>
             <type>test-jar</type>
+            <classifier>testlib</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.api</groupId>
+            <artifactId>gax</artifactId>
+            <version>2.80.0</version>
             <classifier>testlib</classifier>
             <scope>test</scope>
         </dependency>

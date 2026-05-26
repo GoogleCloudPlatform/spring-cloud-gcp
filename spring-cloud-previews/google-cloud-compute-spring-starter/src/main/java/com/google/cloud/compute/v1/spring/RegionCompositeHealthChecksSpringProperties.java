@@ -53,6 +53,11 @@ public class RegionCompositeHealthChecksSpringProperties implements CredentialsS
    */
   @NestedConfigurationProperty private Retry getRetry;
   /**
+   * Allow override of retry settings at method-level for getHealth. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getHealthRetry;
+  /**
    * Allow override of retry settings at method-level for list. If defined, this takes precedence
    * over service-level retry configurations for that RPC method.
    */
@@ -106,6 +111,14 @@ public class RegionCompositeHealthChecksSpringProperties implements CredentialsS
 
   public void setGetRetry(Retry getRetry) {
     this.getRetry = getRetry;
+  }
+
+  public Retry getGetHealthRetry() {
+    return this.getHealthRetry;
+  }
+
+  public void setGetHealthRetry(Retry getHealthRetry) {
+    this.getHealthRetry = getHealthRetry;
   }
 
   public Retry getListRetry() {
