@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.4.9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.8...v7.4.9) (2026-05-28)
+
+
+### Bug Fixes
+
+* **spanner:** support querying UUID collections against STRING columns using untyped binding ([#4478](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4478)) ([#4480](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4480)) ([95f60f4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/95f60f43650ddd48657ce31423bab4c4405ff00c))
+
 ## [7.4.8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.7...v7.4.8) (2026-05-19)
 
 
