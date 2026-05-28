@@ -324,6 +324,45 @@ class SpannerStatementQueryTests {
     verify(this.spannerTemplate, times(1)).query((Class) any(), any(), any());
   }
 
+  @Test
+  void uuidListUntypedBindingTest() throws NoSuchMethodException {
+    when(this.queryMethod.getName()).thenReturn("findByUuidIn");
+    this.partTreeSpannerQuery = spy(createQuery());
+
+    java.util.UUID uuid1 = java.util.UUID.randomUUID();
+    java.util.UUID uuid2 = java.util.UUID.randomUUID();
+    List<java.util.UUID> uuids = Arrays.asList(uuid1, uuid2);
+    Object[] params = new Object[] {uuids};
+    
+    Method method = QueryHolder.class.getMethod("repositoryMethod9", List.class);
+    when(this.queryMethod.getQueryMethod()).thenReturn(method);
+    doReturn(new DefaultParameters(ParametersSource.of(method)))
+        .when(this.queryMethod)
+        .getParameters();
+
+    when(this.spannerTemplate.query((Class) any(), any(), any()))
+        .thenAnswer(
+            invocation -> {
+              Statement statement = invocation.getArgument(1);
+              Map<String, Value> paramMap = statement.getParameters();
+
+              com.google.protobuf.ListValue expectedProtoListValue = com.google.protobuf.ListValue.newBuilder()
+                  .addValues(com.google.protobuf.Value.newBuilder().setStringValue(uuid1.toString()).build())
+                  .addValues(com.google.protobuf.Value.newBuilder().setStringValue(uuid2.toString()).build())
+                  .build();
+              assertThat(paramMap.get("tag0")).isEqualTo(Value.untyped(com.google.protobuf.Value.newBuilder().setListValue(expectedProtoListValue).build()));
+              assertThat(paramMap).hasSize(1);
+
+              return null;
+            });
+
+    doReturn(Object.class).when(this.partTreeSpannerQuery).getReturnedSimpleConvertableItemType();
+    doReturn(null).when(this.partTreeSpannerQuery).convertToSimpleReturnType(any(), any());
+
+    this.partTreeSpannerQuery.execute(params);
+    verify(this.spannerTemplate, times(1)).query((Class) any(), any(), any());
+  }
+
   private void runPageableOrSortTest(Object[] params, Method method, String expectedSql) {
     when(this.queryMethod.getName()).thenReturn("findByPriceLessThan");
     this.partTreeSpannerQuery = spy(createQuery());
@@ -556,6 +595,10 @@ class SpannerStatementQueryTests {
     }
 
     public long repositoryMethod8(java.util.UUID tag0) {
+      return 0;
+    }
+
+    public long repositoryMethod9(List<java.util.UUID> tag0) {
       return 0;
     }
   }
