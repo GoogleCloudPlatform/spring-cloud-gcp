@@ -15,6 +15,19 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.0.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.0.3...v8.0.4) (2026-05-28)
+
+
+### Bug Fixes
+
+* **deps:** remove hardcoded jackson-bom override from dependencies BOM ([#4479](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4479)) ([f7fd907](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f7fd9070294d9dcbdce4902842cf366dc1848cca))
+* **spanner:** support querying UUID collections against STRING columns using untyped binding ([#4478](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4478)) ([21503d9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/21503d9085834d17ab23e701bb959bcaa035a437))
+
+
+### Documentation
+
+* update latest versions in README ([#4475](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4475)) ([ef7946a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ef7946a43e7c770e0f2bddf3979ff69945d1e1d2))
+
 ## [8.0.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.0.2...v8.0.3) (2026-05-19)
 
 
