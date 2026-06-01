@@ -63,8 +63,10 @@ public class DefaultCloudSqlJdbcInfoProvider implements CloudSqlJdbcInfoProvider
   public String getJdbcUrl() {
     // Build additional JDBC url parameters from the configuration.
     Map<String, String> urlParams = new LinkedHashMap<>();
-    if (StringUtils.hasText(properties.getInstanceConnectionName())) {
-      urlParams.put("cloudSqlInstance", properties.getInstanceConnectionName());
+    String instanceConnectionName = properties.getInstanceConnectionName();
+
+    if (StringUtils.hasText(instanceConnectionName)) {
+      urlParams.put("cloudSqlInstance", instanceConnectionName.trim());
     }
     if (StringUtils.hasText(properties.getIpTypes())) {
       urlParams.put("ipTypes", properties.getIpTypes());
