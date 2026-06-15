@@ -21,7 +21,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import java.util.UUID;
 
-@Table(name = "uuid_users")
+@Table(name = "#{'uuid_users_'.concat(tableNameSuffix)}")
 public class UuidUser {
 
   @PrimaryKey

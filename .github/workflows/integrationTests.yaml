@@ -28,6 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        java: [17, 21, 25, 26]
         it:
           - alloydb
           - bigquery
@@ -55,11 +56,11 @@ jobs:
         id: date
         run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v4
-      - name: Setup Java 17
+      - name: Setup Java ${{ matrix.java }}
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: ${{ matrix.java }}
       - name: Set Up Authentication
         uses: google-github-actions/auth@v1
         with:
@@ -115,7 +116,7 @@ jobs:
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: Integration Test Logs - ${{ matrix.it}}
+          name: Integration Test Logs - ${{ matrix.it}} - Java ${{ matrix.java }}
           path: |
             **/target/failsafe-reports/*
             **/target/site
