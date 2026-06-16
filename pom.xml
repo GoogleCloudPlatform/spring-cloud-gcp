@@ -56,6 +56,7 @@
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
 		<native-maven-plugin.version>0.11.3</native-maven-plugin.version>
 		<errorprone.version>2.38.0</errorprone.version>
+		<errorprone.extra.args>-J-Ddummy=true</errorprone.extra.args>
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
@@ -699,6 +700,7 @@
 									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
 									<arg>-parameters</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
+									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
@@ -708,6 +710,7 @@
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
 									<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
 									<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+									<arg>${errorprone.extra.args}</arg>
 								</compilerArgs>
 								<annotationProcessorPaths>
 									<path>
@@ -931,6 +934,16 @@
 					<url>${artifact-registry-url}</url>
 				</snapshotRepository>
 			</distributionManagement>
+		</profile>
+		<profile>
+			<id>errorprone_java_21_and_up</id>
+			<activation>
+				<jdk>[21,]</jdk>
+			</activation>
+			<properties>
+				<errorprone.version>2.49.0</errorprone.version>
+				<errorprone.extra.args>-XDaddTypeAnnotationsToSymbol=true</errorprone.extra.args>
+			</properties>
 		</profile>
 	</profiles>
 
