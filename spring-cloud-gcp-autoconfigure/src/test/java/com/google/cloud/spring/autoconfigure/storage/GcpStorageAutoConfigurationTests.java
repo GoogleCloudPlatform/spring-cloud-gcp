@@ -17,7 +17,6 @@
 package com.google.cloud.spring.autoconfigure.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -107,6 +106,17 @@ class GcpStorageAutoConfigurationTests {
   }
 
   @Test
+  void testHostWithPort_respectedAsIs() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.storage.host=http://localhost:54321")
+        .run(
+            context -> {
+              Storage storage = context.getBean("storage", Storage.class);
+              assertThat(storage.getOptions().getHost()).isEqualTo("http://localhost:54321");
+            });
+  }
+
+  @Test
   void testUniverseDomainAndHostSet() {
     this.contextRunner
         .withPropertyValues(
@@ -116,7 +126,7 @@ class GcpStorageAutoConfigurationTests {
             context -> {
               Storage storage = context.getBean("storage", Storage.class);
               assertThat(storage.getOptions().getUniverseDomain()).isEqualTo("example.com");
-              assertThat(storage.getOptions().getHost()).isEqualTo("https://storage.example.com/");
+              assertThat(storage.getOptions().getHost()).isEqualTo("https://storage.example.com");
             });
   }
 
@@ -131,17 +141,13 @@ class GcpStorageAutoConfigurationTests {
   }
 
   @Test
-  void testInvalidHost_throwsException() {
+  void testHost_respectedAsIs() {
     this.contextRunner
         .withPropertyValues("spring.cloud.gcp.storage.host=storage.example.com")
         .run(
             context -> {
-              Exception exception =
-                  assertThrows(Exception.class, () -> context.getBean("storage", Storage.class));
-              assertThat(exception).hasRootCauseInstanceOf(IllegalArgumentException.class);
-              assertThat(exception)
-                  .hasRootCauseMessage(
-                      "Invalid host format: storage.example.com. Please verify that the specified host follows the 'https://${service}.${universeDomain}/' format");
+              Storage storage = context.getBean("storage", Storage.class);
+              assertThat(storage.getOptions().getHost()).isEqualTo("storage.example.com");
             });
   }
 
