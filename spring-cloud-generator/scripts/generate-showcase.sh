@@ -54,18 +54,22 @@ function generate_showcase_spring_starter(){
   export project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
   cd "${spring_generator_dir}"
   gapic_generator_java_version=$(mvn help:evaluate -Dexpression=gapic-generator-java-bom.version -q -DforceStdout)
+  gax_test_version=$(mvn help:evaluate -Dexpression=gax.test.version -q -DforceStdout)
 
   if [[ -z "${gapic_generator_java_version}" ]]; then
-    echo "Missing sdk-platform-java commitish to checkout"
+    echo "Missing google-cloud-java commitish to checkout"
     exit 1
   fi
 
-  # Clone sdk-platform-java (with showcase library)
-  if [[ ! -d "./sdk-platform-java" ]]; then
-    git clone https://github.com/googleapis/sdk-platform-java.git
+  # Clone google-cloud-java (with showcase library)
+  if [[ ! -d "./google-cloud-java" ]]; then
+    git clone --filter=blob:none https://github.com/googleapis/google-cloud-java.git
   fi
-  pushd sdk-platform-java
-  git checkout "v${gapic_generator_java_version}"
+  pushd google-cloud-java
+  if ! git checkout "gax/v${gax_test_version}" 2>/dev/null; then
+    echo "Error: Tag gax/v${gax_test_version} not found in google-cloud-java."
+    exit 1
+  fi
 
   # Install showcase client libraries locally
   pushd java-showcase
@@ -86,7 +90,7 @@ function generate_showcase_spring_starter(){
   download_protoc "${protoc_version}" "${os_architecture}"
 
   # We now copy the spring-cloud-generator jar with dependencies
-  # into the output_folder the sdk-platform-java generation
+  # into the output_folder the google-cloud-java generation
   # scripts work with.
   spring_generator_jar_name="spring-cloud-generator-${project_version}-jar-with-dependencies.jar"
   cp ~/.m2/repository/com/google/cloud/spring-cloud-generator/"${project_version}/${spring_generator_jar_name}" \
@@ -109,7 +113,7 @@ function generate_showcase_spring_starter(){
   popd #googleapis
 
   # Now we call protoc with a series of arguments we obtain from
-  # sdk-platform-java's utilities.sh and others that are hardcoded (and stable).
+  # google-cloud-java's utilities.sh and others that are hardcoded (and stable).
   # Note that --java_gapic_spring_opt uses `get_gapic_opts` which will work
   # since the BUILD rules take similar arguments
 
@@ -151,8 +155,8 @@ function generate_showcase_spring_starter(){
 
   # Remove downloaded repos
   popd #showcase
-  popd #sdk-platform-java
-  rm -rdf "${spring_generator_dir}/sdk-platform-java"
+  popd #google-cloud-java
+  rm -rdf "${spring_generator_dir}/google-cloud-java"
   rm -rdf gapic-showcase
   popd #spring_root_dir
 }
