@@ -19,6 +19,7 @@
         <!-- [gapic-test]: protobuf.version for compiling protos used in unit testing
              this should be consistent with version in gapic-generator-java-bom -->
         <protobuf.version>3.25.8</protobuf.version>
+        <gax.test.version>2.82.0</gax.test.version>
     </properties>
 
     <dependencyManagement>
@@ -50,7 +51,7 @@
         <dependency>
             <groupId>com.google.api</groupId>
             <artifactId>gax</artifactId>
-            <version>2.82.0</version>
+            <version>${gax.test.version}</version>
             <classifier>testlib</classifier>
             <scope>test</scope>
         </dependency>
