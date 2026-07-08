@@ -39,7 +39,7 @@ function generate_libraries_list(){
   pushd google-cloud-java || { echo "Failure: google-cloud-java folder does not exists."; exit 1; }
   git checkout "${MONOREPO_TAG}"
   # read googleapis committish used in hermetic build
-  GOOGLEAPIS_COMMITTISH=$(yq -r ".googleapis_commitish" generation_config.yaml)
+  GOOGLEAPIS_COMMITTISH=$(yq -r ".sources.googleapis.commit" librarian.yaml)
   popd || { echo "Failure in popd."; exit 1; }
 
   bash scripts/generate-library-list.sh -c $monorepo_commitish
