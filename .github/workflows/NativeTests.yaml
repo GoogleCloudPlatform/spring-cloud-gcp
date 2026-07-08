@@ -17,6 +17,9 @@ on:
 env:
   EXCLUDED_MODULES: spring-cloud-spanner-spring-data-r2dbc
 
+permissions:
+  contents: read
+
 jobs:
   parallel-NativeTests:
     if: |
