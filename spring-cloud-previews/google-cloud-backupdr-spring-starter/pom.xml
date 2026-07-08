@@ -30,6 +30,11 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>spring-cloud-gcp-autoconfigure</artifactId>
     </dependency>
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 </dependencies>
 
 </project>

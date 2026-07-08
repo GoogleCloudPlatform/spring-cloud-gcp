@@ -39,6 +39,10 @@
 		<r2dbc-postgres-driver.version>1.0.7.RELEASE</r2dbc-postgres-driver.version>
 		<cloud-spanner-r2dbc.version>1.3.0</cloud-spanner-r2dbc.version>
 		<alloydb-jdbc-connector.version>1.2.0</alloydb-jdbc-connector.version>
+		<!-- Manually manage version since it was removed from libraries-bom after 26.78.0+ -->
+		<google-cloud-logging-logback.version>0.143.0-alpha</google-cloud-logging-logback.version>
+		<!-- Needed for @Generated annotation in auto-generated preview starters. Upstream client libraries changed scope of javax.annotation-api to provided. -->
+		<javax.annotation-api.version>1.3.2</javax.annotation-api.version>
 	</properties>
 
 	<dependencyManagement>
@@ -288,6 +292,19 @@
 				<groupId>com.google.cloud</groupId>
 				<artifactId>cloud-spanner-r2dbc</artifactId>
 				<version>${cloud-spanner-r2dbc.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.annotation</groupId>
+				<artifactId>javax.annotation-api</artifactId>
+				<version>${javax.annotation-api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>google-cloud-logging-logback</artifactId>
+				<version>${google-cloud-logging-logback.version}</version>
 			</dependency>
 
 			<!--Google Cloud Libraries BOM -->

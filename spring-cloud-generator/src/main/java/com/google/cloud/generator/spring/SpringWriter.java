@@ -250,7 +250,13 @@ public class SpringWriter {
                 + "      <groupId>com.google.cloud</groupId>\n"
                 + "      <artifactId>spring-cloud-gcp-autoconfigure</artifactId>\n"
                 + "    </dependency>\n"
-                + "</dependencies>\n"
+                + "\n"
+                + "    <dependency>\n"
+                + "      <groupId>javax.annotation</groupId>\n"
+                + "      <artifactId>javax.annotation-api</artifactId>\n"
+                + "      <scope>provided</scope>\n"
+                + "    </dependency>\n"
+                + "  </dependencies>\n"
                 + "\n"
                 + "</project>",
             springParentVersion,
