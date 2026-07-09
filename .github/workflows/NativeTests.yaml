@@ -16,10 +16,173 @@ on:
 
 env:
   EXCLUDED_MODULES: spring-cloud-spanner-spring-data-r2dbc
-
 jobs:
+  filter:
+    runs-on: ubuntu-latest
+    outputs:
+      targets: ${{ steps.select-targets.outputs.targets }}
+      run_tests: ${{ steps.select-targets.outputs.run_tests }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            infra:
+              - 'spring-cloud-gcp-core/**'
+              - 'spring-cloud-gcp-dependencies/**'
+              - 'pom.xml'
+              - '.github/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/core/**'
+              - 'spring-cloud-gcp-autoconfigure/pom.xml'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter/**'
+              - 'spring-cloud-gcp-starters/pom.xml'
+              - 'bin/**'
+              - 'util/**'
+              - '.kokoro/**'
+            alloydb-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-alloydb-sample/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-alloydb/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/alloydb/**'
+            bigquery-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-bigquery-sample/**'
+              - 'spring-cloud-gcp-bigquery/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/bigquery/**'
+            bigquery:
+              - 'spring-cloud-gcp-bigquery/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-bigquery/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/bigquery/**'
+            core:
+              - 'spring-cloud-gcp-core/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-core/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/core/**'
+            data-firestore:
+              - 'spring-cloud-gcp-data-firestore/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-firestore/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/firestore/**'
+            data-firestore-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-data-firestore-sample/**'
+              - 'spring-cloud-gcp-data-firestore/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/firestore/**'
+            datastore:
+              - 'spring-cloud-gcp-data-datastore/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-datastore/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/datastore/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-sample/**'
+            datastore-basic-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-basic-sample/**'
+              - 'spring-cloud-gcp-data-datastore/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/datastore/**'
+            kms:
+              - 'spring-cloud-gcp-kms/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-kms/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/kms/**'
+            kms-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-kms-sample/**'
+              - 'spring-cloud-gcp-kms/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/kms/**'
+            logging-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-logging-sample/**'
+              - 'spring-cloud-gcp-logging/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/logging/**'
+            metrics-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-metrics-sample/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/metrics/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-metrics/**'
+            pubsub-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-reactive-sample/**'
+              - 'spring-cloud-gcp-pubsub/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/pubsub/**'
+            pubsub-bus-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-bus-config-sample/**'
+              - 'spring-cloud-gcp-pubsub/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/pubsub/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-bus-pubsub/**'
+            pubsub-integration-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-json-sample/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-sample/**'
+              - 'spring-cloud-gcp-pubsub/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/pubsub/**'
+            secretmanager:
+              - 'spring-cloud-gcp-secretmanager/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-secretmanager/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/secretmanager/**'
+            secretmanager-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-secretmanager-sample/**'
+              - 'spring-cloud-gcp-secretmanager/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/secretmanager/**'
+            spanner:
+              - 'spring-cloud-gcp-data-spanner/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-spanner/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/spanner/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample/**'
+              - 'spring-cloud-spanner-spring-data-r2dbc/**'
+            sql-mysql-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-sample/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/sql/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-mysql/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-mysql-r2dbc/**'
+            sql-postgres-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-sample/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/sql/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-postgresql/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-postgres-r2dbc/**'
+            starter-firestore-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-starter-firestore-sample/**'
+              - 'spring-cloud-gcp-data-firestore/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/firestore/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-firestore/**'
+            storage:
+              - 'spring-cloud-gcp-storage/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-storage/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/storage/**'
+            storage-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-storage-resource-sample/**'
+              - 'spring-cloud-gcp-storage/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/storage/**'
+            trace-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/trace/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-trace/**'
+            vision:
+              - 'spring-cloud-gcp-vision/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-vision/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/vision/**'
+            vision-sample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-vision-ocr-demo/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-vision-api-sample/**'
+              - 'spring-cloud-gcp-vision/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/vision/**'
+
+      - name: Select targets
+        id: select-targets
+        run: |
+          FULL_LIST='["alloydb-sample", "bigquery-sample", "bigquery", "core", "data-firestore", "data-firestore-sample", "datastore", "datastore-basic-sample", "kms", "kms-sample", "logging-sample", "metrics-sample", "pubsub-sample", "pubsub-bus-sample", "pubsub-integration-sample", "secretmanager", "secretmanager-sample", "spanner", "sql-mysql-sample", "sql-postgres-sample", "starter-firestore-sample", "storage", "storage-sample", "trace-sample", "vision", "vision-sample"]'
+          if [[ "${{ github.event_name }}" != "pull_request" ]]; then
+            echo "targets=$FULL_LIST" >> $GITHUB_OUTPUT
+            echo "run_tests=true" >> $GITHUB_OUTPUT
+          else
+            CHANGES='${{ steps.filter.outputs.changes }}'
+            if [[ "${{ steps.filter.outputs.infra }}" == "true" ]]; then
+              echo "targets=$FULL_LIST" >> $GITHUB_OUTPUT
+              echo "run_tests=true" >> $GITHUB_OUTPUT
+            else
+              FILTERED=$(echo "$CHANGES" | jq -c '. - ["infra"]')
+              if [[ "$FILTERED" == "[]" ]]; then
+                echo "targets=[]" >> $GITHUB_OUTPUT
+                echo "run_tests=false" >> $GITHUB_OUTPUT
+              else
+                echo "targets=$FILTERED" >> $GITHUB_OUTPUT
+                echo "run_tests=true" >> $GITHUB_OUTPUT
+              fi
+            fi
+          fi
+
   parallel-NativeTests:
+    needs: filter
     if: |
+      needs.filter.outputs.run_tests == 'true' &&
       github.actor != 'dependabot[bot]' && ((
         github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
       ) || (github.event_name != 'pull_request'))
@@ -29,34 +192,7 @@ jobs:
       matrix:
         graalvm_for_jdk_version:
           - 25
-        it:
-          - alloydb-sample
-          - bigquery-sample
-          - bigquery
-          - core
-          - data-firestore
-          - data-firestore-sample
-          - datastore
-          - datastore-basic-sample
-          - kms
-          - kms-sample
-          - logging-sample
-          - metrics-sample
-          - pubsub-sample
-          - pubsub-bus-sample
-          - pubsub-integration-sample
-          #- pubsub-stream-sample ## https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2456
-          - secretmanager
-          - secretmanager-sample
-          - spanner
-          - sql-mysql-sample
-          - sql-postgres-sample
-          - starter-firestore-sample
-          - storage
-          - storage-sample
-          - trace-sample
-          - vision
-          - vision-sample
+        it: ${{ fromJSON(needs.filter.outputs.targets) }}
     steps:
       - name: Get current date
         id: date

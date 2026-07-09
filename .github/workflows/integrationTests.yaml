@@ -17,10 +17,159 @@ on:
   schedule:
     - cron: '05 8 * * *' # 08:00 UTC every day
 
-
 jobs:
+  filter:
+    runs-on: ubuntu-latest
+    outputs:
+      targets: ${{ steps.select-targets.outputs.targets }}
+      run_tests: ${{ steps.select-targets.outputs.run_tests }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            infra:
+              - 'spring-cloud-gcp-core/**'
+              - 'spring-cloud-gcp-dependencies/**'
+              - 'pom.xml'
+              - '.github/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter/**'
+              - 'spring-cloud-gcp-starters/pom.xml'
+              - 'spring-cloud-gcp-autoconfigure/pom.xml'
+              - 'bin/**'
+              - 'util/**'
+              - '.kokoro/**'
+            alloydb:
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-alloydb/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/alloydb/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-alloydb-sample/**'
+            bigquery:
+              - 'spring-cloud-gcp-bigquery/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-bigquery/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/bigquery/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-bigquery-sample/**'
+            cloudsql:
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-mysql/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-postgresql/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-mysql-r2dbc/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-sql-postgres-r2dbc/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/sql/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-sql-mysql-sample/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-sample/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-sql-postgres-r2dbc-sample/**'
+            config:
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/config/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-config-sample/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-config/**'
+            datastore:
+              - 'spring-cloud-gcp-data-datastore/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-datastore/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/datastore/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-sample/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-data-datastore-basic-sample/**'
+            firestore:
+              - 'spring-cloud-gcp-data-firestore/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-firestore/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-firestore/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/firestore/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-data-firestore-sample/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-starter-firestore-sample/**'
+            kms:
+              - 'spring-cloud-gcp-kms/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-kms/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/kms/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-kms-sample/**'
+            kotlin:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-kotlin-samples/**'
+            logging:
+              - 'spring-cloud-gcp-logging/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-logging/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/logging/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-logging-sample/**'
+            metrics:
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/metrics/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-metrics-sample/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-metrics/**'
+            multisample:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-data-multi-sample/**'
+            pubsub:
+              - 'spring-cloud-gcp-pubsub/**'
+              - 'spring-cloud-gcp-pubsub-stream-binder/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-pubsub/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/pubsub/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-sample/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-reactive-sample/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-functional-sample/**'
+            pubsub-bus:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-bus-config-sample/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-bus-pubsub/**'
+            pubsub-docs:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-pubsub-stream-dead-letter-sample/**'
+            pubsub-emulator:
+              - 'spring-cloud-gcp-pubsub/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/pubsub/**'
+            pubsub-integration:
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-json-sample/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-integration-pubsub-sample/**'
+            secretmanager:
+              - 'spring-cloud-gcp-secretmanager/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-secretmanager/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/secretmanager/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-secretmanager-sample/**'
+            spanner:
+              - 'spring-cloud-gcp-data-spanner/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-data-spanner/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/spanner/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-repository-sample/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-data-spanner-template-sample/**'
+              - 'spring-cloud-spanner-spring-data-r2dbc/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-spanner-r2dbc-samples/**'
+            storage:
+              - 'spring-cloud-gcp-storage/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-storage/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/storage/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-storage-resource-sample/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-integration-storage-sample/**'
+            trace:
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/trace/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-trace-sample/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-trace/**'
+            vision:
+              - 'spring-cloud-gcp-vision/**'
+              - 'spring-cloud-gcp-starters/spring-cloud-gcp-starter-vision/**'
+              - 'spring-cloud-gcp-autoconfigure/src/main/java/com/google/cloud/spring/autoconfigure/vision/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-vision-ocr-demo/**'
+              - 'spring-cloud-gcp-samples/spring-cloud-gcp-vision-api-sample/**'
+
+      - name: Select targets
+        id: select-targets
+        run: |
+          FULL_LIST='["alloydb", "bigquery", "cloudsql", "config", "datastore", "firestore", "kms", "kotlin", "logging", "metrics", "multisample", "pubsub", "pubsub-bus", "pubsub-docs", "pubsub-emulator", "pubsub-integration", "secretmanager", "spanner", "storage", "trace", "vision"]'
+          if [[ "${{ github.event_name }}" != "pull_request" ]]; then
+            echo "targets=$FULL_LIST" >> $GITHUB_OUTPUT
+            echo "run_tests=true" >> $GITHUB_OUTPUT
+          else
+            CHANGES='${{ steps.filter.outputs.changes }}'
+            if [[ "${{ steps.filter.outputs.infra }}" == "true" ]]; then
+              echo "targets=$FULL_LIST" >> $GITHUB_OUTPUT
+              echo "run_tests=true" >> $GITHUB_OUTPUT
+            else
+              FILTERED=$(echo "$CHANGES" | jq -c '. - ["infra"]')
+              if [[ "$FILTERED" == "[]" ]]; then
+                echo "targets=[]" >> $GITHUB_OUTPUT
+                echo "run_tests=false" >> $GITHUB_OUTPUT
+              else
+                echo "targets=$FILTERED" >> $GITHUB_OUTPUT
+                echo "run_tests=true" >> $GITHUB_OUTPUT
+              fi
+            fi
+          fi
+
   parallel-integrationTests:
+    needs: filter
     if: |
+      needs.filter.outputs.run_tests == 'true' &&
       github.actor != 'dependabot[bot]' && ((
         github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
       ) || (github.event_name != 'pull_request'))
@@ -29,28 +178,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [17, 21, 25, 26]
-        it:
-          - alloydb
-          - bigquery
-          - cloudsql
-          - config
-          - datastore
-          - firestore
-          - kms
-          - kotlin
-          - logging
-          - metrics
-          - multisample
-          - pubsub
-          - pubsub-bus
-          - pubsub-docs
-          - pubsub-emulator
-          - pubsub-integration
-          - secretmanager
-          - spanner
-          - storage
-          - trace
-          - vision
+        it: ${{ fromJSON(needs.filter.outputs.targets) }}
     steps:
       - name: Get current date
         id: date
