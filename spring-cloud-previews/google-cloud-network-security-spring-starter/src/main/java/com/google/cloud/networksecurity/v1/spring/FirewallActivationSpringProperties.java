@@ -46,10 +46,20 @@ public class FirewallActivationSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry listFirewallEndpointsRetry;
   /**
+   * Allow override of retry settings at method-level for listProjectFirewallEndpoints. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listProjectFirewallEndpointsRetry;
+  /**
    * Allow override of retry settings at method-level for getFirewallEndpoint. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getFirewallEndpointRetry;
+  /**
+   * Allow override of retry settings at method-level for getProjectFirewallEndpoint. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getProjectFirewallEndpointRetry;
   /**
    * Allow override of retry settings at method-level for listFirewallEndpointAssociations. If
    * defined, this takes precedence over service-level retry configurations for that RPC method.
@@ -123,12 +133,28 @@ public class FirewallActivationSpringProperties implements CredentialsSupplier {
     this.listFirewallEndpointsRetry = listFirewallEndpointsRetry;
   }
 
+  public Retry getListProjectFirewallEndpointsRetry() {
+    return this.listProjectFirewallEndpointsRetry;
+  }
+
+  public void setListProjectFirewallEndpointsRetry(Retry listProjectFirewallEndpointsRetry) {
+    this.listProjectFirewallEndpointsRetry = listProjectFirewallEndpointsRetry;
+  }
+
   public Retry getGetFirewallEndpointRetry() {
     return this.getFirewallEndpointRetry;
   }
 
   public void setGetFirewallEndpointRetry(Retry getFirewallEndpointRetry) {
     this.getFirewallEndpointRetry = getFirewallEndpointRetry;
+  }
+
+  public Retry getGetProjectFirewallEndpointRetry() {
+    return this.getProjectFirewallEndpointRetry;
+  }
+
+  public void setGetProjectFirewallEndpointRetry(Retry getProjectFirewallEndpointRetry) {
+    this.getProjectFirewallEndpointRetry = getProjectFirewallEndpointRetry;
   }
 
   public Retry getListFirewallEndpointAssociationsRetry() {

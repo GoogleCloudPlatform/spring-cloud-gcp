@@ -33,7 +33,11 @@ public class DataplexServiceSpringProperties implements CredentialsSupplier {
   /** OAuth2 credentials to authenticate and authorize calls to Google Cloud Client Libraries. */
   @NestedConfigurationProperty
   private final Credentials credentials =
-      new Credentials("https://www.googleapis.com/auth/cloud-platform");
+      new Credentials(
+          "https://www.googleapis.com/auth/cloud-platform",
+          "https://www.googleapis.com/auth/cloud-platform.read-only",
+          "https://www.googleapis.com/auth/dataplex.read-write",
+          "https://www.googleapis.com/auth/dataplex.readonly");
   /** Quota project to use for billing. */
   private String quotaProjectId;
   /** Number of threads used for executors. */

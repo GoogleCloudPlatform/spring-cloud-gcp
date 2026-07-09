@@ -161,6 +161,14 @@ public class ReasoningEngineExecutionServiceSpringAutoConfiguration {
           .queryReasoningEngineSettings()
           .setRetrySettings(queryReasoningEngineRetrySettings);
 
+      RetrySettings cancelAsyncQueryReasoningEngineRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.cancelAsyncQueryReasoningEngineSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .cancelAsyncQueryReasoningEngineSettings()
+          .setRetrySettings(cancelAsyncQueryReasoningEngineRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -204,6 +212,21 @@ public class ReasoningEngineExecutionServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for queryReasoningEngine from properties.");
+      }
+    }
+    Retry cancelAsyncQueryReasoningEngineRetry =
+        clientProperties.getCancelAsyncQueryReasoningEngineRetry();
+    if (cancelAsyncQueryReasoningEngineRetry != null) {
+      RetrySettings cancelAsyncQueryReasoningEngineRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.cancelAsyncQueryReasoningEngineSettings().getRetrySettings(),
+              cancelAsyncQueryReasoningEngineRetry);
+      clientSettingsBuilder
+          .cancelAsyncQueryReasoningEngineSettings()
+          .setRetrySettings(cancelAsyncQueryReasoningEngineRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for cancelAsyncQueryReasoningEngine from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

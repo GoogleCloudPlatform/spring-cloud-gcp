@@ -43,9 +43,21 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.networksecurity.v1.security-profile-group-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud networksecurity/SecurityProfileGroupService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.networksecurity.v1.organization-security-profile-group-service.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud networksecurity/OrganizationSecurityProfileGroupService components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.networksecurity.v1.s-s-e-realm-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud networksecurity/SSERealmService components.",
       "defaultValue": true
     }
   ]

@@ -33,7 +33,11 @@ public class DataScanServiceSpringProperties implements CredentialsSupplier {
   /** OAuth2 credentials to authenticate and authorize calls to Google Cloud Client Libraries. */
   @NestedConfigurationProperty
   private final Credentials credentials =
-      new Credentials("https://www.googleapis.com/auth/cloud-platform");
+      new Credentials(
+          "https://www.googleapis.com/auth/cloud-platform",
+          "https://www.googleapis.com/auth/cloud-platform.read-only",
+          "https://www.googleapis.com/auth/dataplex.read-write",
+          "https://www.googleapis.com/auth/dataplex.readonly");
   /** Quota project to use for billing. */
   private String quotaProjectId;
   /** Number of threads used for executors. */
@@ -67,6 +71,11 @@ public class DataScanServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDataScanJobsRetry;
+  /**
+   * Allow override of retry settings at method-level for cancelDataScanJob. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry cancelDataScanJobRetry;
   /**
    * Allow override of retry settings at method-level for generateDataQualityRules. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
@@ -173,6 +182,14 @@ public class DataScanServiceSpringProperties implements CredentialsSupplier {
 
   public void setListDataScanJobsRetry(Retry listDataScanJobsRetry) {
     this.listDataScanJobsRetry = listDataScanJobsRetry;
+  }
+
+  public Retry getCancelDataScanJobRetry() {
+    return this.cancelDataScanJobRetry;
+  }
+
+  public void setCancelDataScanJobRetry(Retry cancelDataScanJobRetry) {
+    this.cancelDataScanJobRetry = cancelDataScanJobRetry;
   }
 
   public Retry getGenerateDataQualityRulesRetry() {

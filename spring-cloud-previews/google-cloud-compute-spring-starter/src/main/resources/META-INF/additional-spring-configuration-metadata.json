@@ -121,6 +121,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.global-vm-extension-policies.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/GlobalVmExtensionPolicies components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.health-checks.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/HealthChecks components.",
@@ -562,6 +568,18 @@
       "name": "com.google.cloud.compute.v1.resource-policies.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/ResourcePolicies components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.rollout-plans.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RolloutPlans components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.rollouts.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/Rollouts components.",
       "defaultValue": true
     },
     {

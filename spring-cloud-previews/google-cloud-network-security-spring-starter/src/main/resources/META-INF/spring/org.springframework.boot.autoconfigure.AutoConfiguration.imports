@@ -5,4 +5,6 @@ com.google.cloud.networksecurity.v1.spring.FirewallActivationSpringAutoConfigura
 com.google.cloud.networksecurity.v1.spring.InterceptSpringAutoConfiguration
 com.google.cloud.networksecurity.v1.spring.MirroringSpringAutoConfiguration
 com.google.cloud.networksecurity.v1.spring.NetworkSecuritySpringAutoConfiguration
+com.google.cloud.networksecurity.v1.spring.SecurityProfileGroupServiceSpringAutoConfiguration
 com.google.cloud.networksecurity.v1.spring.OrganizationSecurityProfileGroupServiceSpringAutoConfiguration
+com.google.cloud.networksecurity.v1.spring.SSERealmServiceSpringAutoConfiguration
