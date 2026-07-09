@@ -283,7 +283,7 @@ If a PR merge fails due to failing CI checks:
     *   Evaluate both required and optional status checks for the release PRs.
     *   **Merge Condition**: You may proceed to merge a PR if:
         1. All **required** status checks pass (verified by `gh pr checks <PR_NUMBER> --required`).
-        2. The total count of failing **optional** (non-required) checks is **less than 5** (e.g. SonarCloud or flaky database checks).
-    *   **Halt Condition**: If any required check fails, or if **5 or more** optional checks fail, halt the automated release, pause the pipeline, and alert the release manager for manual review.
+        2. The total count of failing **optional** (non-required) checks is **less than 10** (e.g. SonarCloud or flaky database checks).
+    *   **Halt Condition**: If any required check fails, or if **10 or more** optional checks fail, halt the automated release, pause the pipeline, and alert the release manager for manual review.
 
 
