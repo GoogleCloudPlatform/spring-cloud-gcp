@@ -102,9 +102,12 @@ class SpannerRepositoryMultiDatabaseIntegrationTests {
 
     @Bean
     public DatabaseIdProvider databaseIdProvider(SpannerOptions spannerOptions) {
+      String javaVersion = System.getProperty("java.specification.version");
       return () ->
           DatabaseId.of(
-              spannerOptions.getProjectId(), this.instanceId, databaseFlipper ? "db1" : "db2");
+              spannerOptions.getProjectId(),
+              this.instanceId,
+              (databaseFlipper ? "db1" : "db2") + "_" + javaVersion);
     }
   }
 }
