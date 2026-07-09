@@ -239,9 +239,11 @@
 								<gcs-write-bucket>gcp-storage-bucket-sample-output</gcs-write-bucket>
 								<gcs-local-directory>/tmp/gcp_integration_tests/integration_storage_sample</gcs-local-directory>
 								<spring.cloud.gcp.sql.instance-connection-name>spring-cloud-gcp-ci:us-central1:testmysql</spring.cloud.gcp.sql.instance-connection-name>
-								<spring.cloud.gcp.sql.database-name>code_samples_test_db</spring.cloud.gcp.sql.database-name>
+								<spring.cloud.gcp.sql.database-name>code_samples_test_db_${java.specification.version}</spring.cloud.gcp.sql.database-name>
 								<spring.cloud.gcp.alloydb.instance-connection-uri>projects/spring-cloud-gcp-ci-native/locations/us-central1/clusters/testcluster/instances/testpostgres</spring.cloud.gcp.alloydb.instance-connection-uri>
 								<spring.cloud.gcp.alloydb.database-name>code_samples_test_db</spring.cloud.gcp.alloydb.database-name>
+								<spring.datasource.hikari.data-source-properties.createDatabaseIfNotExist>true</spring.datasource.hikari.data-source-properties.createDatabaseIfNotExist>
+
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
