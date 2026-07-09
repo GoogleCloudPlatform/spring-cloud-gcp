@@ -11,6 +11,10 @@ This skill guides the agent through the sequential release process for Spring Cl
 1.  The GitHub CLI (`gh`) must be installed and authenticated (`gh auth status`).
 2.  Your git working directory must be clean.
 
+## Release Guidelines & Safety
+*   **Merge Approvals**: You do **not** need to request explicit user approval to merge automated bot PRs (such as the Release PR or the SNAPSHOT bump PR created by `release-please`). You may approve and merge them directly once CI conditions are satisfied.
+*   **Code Change Approvals**: You **must** get explicit user approval before pushing any code fixes or opening any new PRs that you authored (such as the Spring Initializr PR or README update PR).
+
 ---
 
 # Workflow A: Releasing the 'main' Branch
