@@ -1,0 +1,17 @@
+[
+  {
+    "name": "tools.jackson.databind.json.JsonMapper",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "tools.jackson.databind.json.JsonMapper$Builder",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "tools.jackson.databind.cfg.MapperBuilder",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  }
+]
