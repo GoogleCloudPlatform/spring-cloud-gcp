@@ -57,8 +57,14 @@ class MultipleDataModuleIntegrationTest {
 
   @BeforeAll
   void beforeAll() {
-    this.spannerDatabaseAdminTemplate.executeDdlStrings(
-        List.of(this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
+    if (!this.spannerDatabaseAdminTemplate.tableExists("traders_multi_sample")) {
+      this.spannerDatabaseAdminTemplate.executeDdlStrings(
+          List.of(
+              this.spannerSchemaUtils
+                  .getCreateTableDdlString(Trader.class)
+                  .replaceFirst("^CREATE TABLE ", "CREATE TABLE IF NOT EXISTS ")),
+          true);
+    }
   }
 
   @Test
