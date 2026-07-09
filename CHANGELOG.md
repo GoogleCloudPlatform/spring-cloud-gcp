@@ -15,6 +15,38 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.0.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.0.4...v8.0.5) (2026-07-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.cloud:libraries-bom to v26.85.0 ([#4513](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4513)) ([96402e1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/96402e1ca7e1674fed414654fa0ed90e435d32d5))
+* **deps:** update dependency io.opentelemetry:opentelemetry-api to v1.62.0 [security] ([#4453](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4453)) ([76501d1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/76501d1bac058575dbf210c4cc2f99b77d2b6296))
+* **deps:** update dependency org.junit:junit-bom to v6.1.1 ([#4516](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4516)) ([1f4dda8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/1f4dda853c427a0694f3e179666ec1205f958b89))
+* **deps:** update gapic-generator-java-bom.version to v2.74.0 ([#4482](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4482)) ([52f177e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/52f177e9a88968f92a43cda5e15d13ca4d740d54))
+* **generator:** update generate-library-list.sh to use librarian.yaml and repo-metadata.json ([#4533](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4533)) ([35a5274](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/35a5274aded02a25d49f9db9c846179282c5f150))
+* migrate showcase verification to google-cloud-java using gax version ([#4526](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4526)) ([726da1e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/726da1ec4bef11f0d1f1fae4c77e8223c5b57661))
+* **native:** add GraalVM serialization config for JUnit UniqueId ([#4527](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4527)) ([a4f6a2e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a4f6a2e518977f4b30ca789c390b8da152e0a213))
+* **native:** move JUnit UniqueId serialization config to core module ([#4531](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4531)) ([30906f5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/30906f5ce565b4ea1e989477e063191f3a453413))
+* **native:** register Firestore POJOs for reflection on Java 25 ([#4535](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4535)) ([b484705](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b484705d56800af1463413d5c796223f0a76200b))
+* **native:** register Jackson 3 reflection config for Thymeleaf on Java 25 ([#4532](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4532)) ([3fc57e8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/3fc57e8d9cbdf50eaa44463f850e89b8344f9bf4))
+* **samples:** Fix missing spring-boot-starter-restclient dependency in samples ([#4525](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4525)) ([6b2cf7f](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6b2cf7f96e7557a710dea96e39bd32fd0832a8db))
+* **samples:** isolate Spanner table name in spring-cloud-gcp-data-multi-sample ([#4543](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4543)) ([726d95e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/726d95eb4b5d8032b7cbd3787d24cc8ff5f3133c))
+* **storage:** respect configured storage host as-is ([#4492](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4492)) ([d620d03](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d620d03af532aa53c0b9bc6f65d2cdfb974f1c5c)), closes [#4343](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4343)
+* Trim Cloud SQL instance connection name in JDBC URLs ([#4468](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4468)) ([723a06e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/723a06e9c9e173773638fd048b7137bba2c51b0d)), closes [#4467](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4467)
+* update libraries-bom metadata URL to consolidated monorepo path ([#4528](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4528)) ([6fe091e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/6fe091e1faa71b3a23f3a7114a319d4ac9d75616))
+* use librarian.yaml directly to resolve googleapis_commitish ([#4529](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4529)) ([78ec54e](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/78ec54e6031164647d7949270ddeb0d88ee23b98))
+
+
+### Dependencies
+
+* upgrade to Spring Boot 4.1.0 and Spring Cloud 2025.1.2 ([#4503](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4503)) ([ac850be](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ac850be3e855ff776450223051abdd64546e64e2))
+
+
+### Documentation
+
+* **samples:** Remove usage of MySQL57Dialect from Spring Boot 3.x+ ([#4544](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4544)) ([9249b41](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/9249b41edcd39786cc0410ea8a9700e745554da5))
+
 ## [8.0.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.0.3...v8.0.4) (2026-05-28)
 
 
