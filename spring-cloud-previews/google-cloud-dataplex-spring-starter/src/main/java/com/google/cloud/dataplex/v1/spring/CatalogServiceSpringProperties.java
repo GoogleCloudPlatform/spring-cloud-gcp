@@ -107,6 +107,11 @@ public class CatalogServiceSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry lookupEntryRetry;
   /**
+   * Allow override of retry settings at method-level for modifyEntry. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry modifyEntryRetry;
+  /**
    * Allow override of retry settings at method-level for searchEntries. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -323,6 +328,14 @@ public class CatalogServiceSpringProperties implements CredentialsSupplier {
 
   public void setLookupEntryRetry(Retry lookupEntryRetry) {
     this.lookupEntryRetry = lookupEntryRetry;
+  }
+
+  public Retry getModifyEntryRetry() {
+    return this.modifyEntryRetry;
+  }
+
+  public void setModifyEntryRetry(Retry modifyEntryRetry) {
+    this.modifyEntryRetry = modifyEntryRetry;
   }
 
   public Retry getSearchEntriesRetry() {

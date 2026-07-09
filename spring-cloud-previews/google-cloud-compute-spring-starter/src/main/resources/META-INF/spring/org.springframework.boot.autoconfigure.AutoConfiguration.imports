@@ -18,6 +18,7 @@ com.google.cloud.compute.v1.spring.GlobalNetworkEndpointGroupsSpringAutoConfigur
 com.google.cloud.compute.v1.spring.GlobalOperationsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.GlobalOrganizationOperationsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.GlobalPublicDelegatedPrefixesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.GlobalVmExtensionPoliciesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.HealthChecksSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ImageFamilyViewsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ImagesSpringAutoConfiguration
@@ -92,6 +93,8 @@ com.google.cloud.compute.v1.spring.ReservationSlotsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ReservationSubBlocksSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ReservationsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.ResourcePoliciesSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.RolloutPlansSpringAutoConfiguration
+com.google.cloud.compute.v1.spring.RolloutsSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RoutersSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.RoutesSpringAutoConfiguration
 com.google.cloud.compute.v1.spring.SecurityPoliciesSpringAutoConfiguration

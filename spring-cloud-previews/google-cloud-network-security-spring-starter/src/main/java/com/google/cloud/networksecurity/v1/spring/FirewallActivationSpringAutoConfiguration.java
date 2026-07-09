@@ -159,12 +159,28 @@ public class FirewallActivationSpringAutoConfiguration {
           .listFirewallEndpointsSettings()
           .setRetrySettings(listFirewallEndpointsRetrySettings);
 
+      RetrySettings listProjectFirewallEndpointsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listProjectFirewallEndpointsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listProjectFirewallEndpointsSettings()
+          .setRetrySettings(listProjectFirewallEndpointsRetrySettings);
+
       RetrySettings getFirewallEndpointRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getFirewallEndpointSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder
           .getFirewallEndpointSettings()
           .setRetrySettings(getFirewallEndpointRetrySettings);
+
+      RetrySettings getProjectFirewallEndpointRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getProjectFirewallEndpointSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getProjectFirewallEndpointSettings()
+          .setRetrySettings(getProjectFirewallEndpointRetrySettings);
 
       RetrySettings listFirewallEndpointAssociationsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -227,6 +243,21 @@ public class FirewallActivationSpringAutoConfiguration {
             "Configured method-level retry settings for listFirewallEndpoints from properties.");
       }
     }
+    Retry listProjectFirewallEndpointsRetry =
+        clientProperties.getListProjectFirewallEndpointsRetry();
+    if (listProjectFirewallEndpointsRetry != null) {
+      RetrySettings listProjectFirewallEndpointsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listProjectFirewallEndpointsSettings().getRetrySettings(),
+              listProjectFirewallEndpointsRetry);
+      clientSettingsBuilder
+          .listProjectFirewallEndpointsSettings()
+          .setRetrySettings(listProjectFirewallEndpointsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listProjectFirewallEndpoints from properties.");
+      }
+    }
     Retry getFirewallEndpointRetry = clientProperties.getGetFirewallEndpointRetry();
     if (getFirewallEndpointRetry != null) {
       RetrySettings getFirewallEndpointRetrySettings =
@@ -239,6 +270,20 @@ public class FirewallActivationSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getFirewallEndpoint from properties.");
+      }
+    }
+    Retry getProjectFirewallEndpointRetry = clientProperties.getGetProjectFirewallEndpointRetry();
+    if (getProjectFirewallEndpointRetry != null) {
+      RetrySettings getProjectFirewallEndpointRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getProjectFirewallEndpointSettings().getRetrySettings(),
+              getProjectFirewallEndpointRetry);
+      clientSettingsBuilder
+          .getProjectFirewallEndpointSettings()
+          .setRetrySettings(getProjectFirewallEndpointRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getProjectFirewallEndpoint from properties.");
       }
     }
     Retry listFirewallEndpointAssociationsRetry =
