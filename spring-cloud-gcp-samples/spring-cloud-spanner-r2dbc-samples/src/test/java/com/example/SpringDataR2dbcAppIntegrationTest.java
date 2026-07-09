@@ -28,7 +28,12 @@ class SpringDataR2dbcAppIntegrationTest {
   @DynamicPropertySource
   static void registerProperties(DynamicPropertyRegistry registry) {
     registry.add("gcp.project", () -> System.getProperty("gcp.project", "spring-cloud-gcp-ci"));
-    registry.add("spanner.database", () -> System.getProperty("spanner.database", "trades"));
+    registry.add(
+        "spanner.database",
+        () ->
+            System.getProperty(
+                "spanner.database", "trades_" + System.getProperty("java.specification.version")));
+
     registry.add("spanner.instance", () -> System.getProperty("spanner.instance", "spring-demo"));
   }
 

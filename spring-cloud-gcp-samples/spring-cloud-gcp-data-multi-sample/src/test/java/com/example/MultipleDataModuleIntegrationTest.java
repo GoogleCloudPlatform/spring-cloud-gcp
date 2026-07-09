@@ -18,6 +18,10 @@ package com.example;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +38,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest
 class MultipleDataModuleIntegrationTest {
 
+  @Autowired private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
+
+  @Autowired private SpannerSchemaUtils spannerSchemaUtils;
+
   // The Spanner Repo
   @Autowired TraderRepository traderRepository;
 
@@ -43,6 +51,14 @@ class MultipleDataModuleIntegrationTest {
   @Autowired TraderService traderService;
 
   @Autowired PersonService personService;
+
+  @BeforeEach
+  void setUp() {
+    if (!this.spannerDatabaseAdminTemplate.tableExists("traders_repository")) {
+      this.spannerDatabaseAdminTemplate.executeDdlStrings(
+          List.of(this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
+    }
+  }
 
   @Test
   void testMultipleModulesTogether() {
