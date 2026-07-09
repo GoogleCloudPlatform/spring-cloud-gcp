@@ -224,6 +224,11 @@ public class CatalogServiceSpringAutoConfiguration {
               clientSettingsBuilder.lookupEntrySettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.lookupEntrySettings().setRetrySettings(lookupEntryRetrySettings);
 
+      RetrySettings modifyEntryRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.modifyEntrySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.modifyEntrySettings().setRetrySettings(modifyEntryRetrySettings);
+
       RetrySettings searchEntriesRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.searchEntriesSettings().getRetrySettings(), serviceRetry);
@@ -456,6 +461,16 @@ public class CatalogServiceSpringAutoConfiguration {
       clientSettingsBuilder.lookupEntrySettings().setRetrySettings(lookupEntryRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for lookupEntry from properties.");
+      }
+    }
+    Retry modifyEntryRetry = clientProperties.getModifyEntryRetry();
+    if (modifyEntryRetry != null) {
+      RetrySettings modifyEntryRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.modifyEntrySettings().getRetrySettings(), modifyEntryRetry);
+      clientSettingsBuilder.modifyEntrySettings().setRetrySettings(modifyEntryRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for modifyEntry from properties.");
       }
     }
     Retry searchEntriesRetry = clientProperties.getSearchEntriesRetry();

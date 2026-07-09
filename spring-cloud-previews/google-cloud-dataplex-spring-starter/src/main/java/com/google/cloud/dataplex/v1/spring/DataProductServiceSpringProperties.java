@@ -33,7 +33,11 @@ public class DataProductServiceSpringProperties implements CredentialsSupplier {
   /** OAuth2 credentials to authenticate and authorize calls to Google Cloud Client Libraries. */
   @NestedConfigurationProperty
   private final Credentials credentials =
-      new Credentials("https://www.googleapis.com/auth/cloud-platform");
+      new Credentials(
+          "https://www.googleapis.com/auth/cloud-platform",
+          "https://www.googleapis.com/auth/cloud-platform.read-only",
+          "https://www.googleapis.com/auth/dataplex.read-write",
+          "https://www.googleapis.com/auth/dataplex.readonly");
   /** Quota project to use for billing. */
   private String quotaProjectId;
   /** Number of threads used for executors. */
@@ -52,6 +56,11 @@ public class DataProductServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDataProductsRetry;
+  /**
+   * Allow override of retry settings at method-level for requestDataProductAccess. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry requestDataProductAccessRetry;
   /**
    * Allow override of retry settings at method-level for getDataAsset. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -139,6 +148,14 @@ public class DataProductServiceSpringProperties implements CredentialsSupplier {
 
   public void setListDataProductsRetry(Retry listDataProductsRetry) {
     this.listDataProductsRetry = listDataProductsRetry;
+  }
+
+  public Retry getRequestDataProductAccessRetry() {
+    return this.requestDataProductAccessRetry;
+  }
+
+  public void setRequestDataProductAccessRetry(Retry requestDataProductAccessRetry) {
+    this.requestDataProductAccessRetry = requestDataProductAccessRetry;
   }
 
   public Retry getGetDataAssetRetry() {
