@@ -22,11 +22,17 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
+import java.util.Arrays;
+import org.springframework.aot.hint.MemberCategory;
+import org.springframework.aot.hint.RuntimeHints;
+import org.springframework.aot.hint.RuntimeHintsRegistrar;
+import org.springframework.aot.hint.TypeReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -36,7 +42,26 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 /** Sample application for Spring Data Firestore. */
 @SpringBootApplication
 @EnableTransactionManagement
+@ImportRuntimeHints(FirestoreSampleApplication.FirestoreSampleRuntimeHints.class)
 public class FirestoreSampleApplication {
+
+  static class FirestoreSampleRuntimeHints implements RuntimeHintsRegistrar {
+    @Override
+    public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+      hints
+          .reflection()
+          .registerTypes(
+              Arrays.asList(
+                  TypeReference.of(User.class),
+                  TypeReference.of(Pet.class),
+                  TypeReference.of(PhoneNumber.class)),
+              hint ->
+                  hint.withMembers(
+                      MemberCategory.DECLARED_FIELDS,
+                      MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
+                      MemberCategory.INVOKE_DECLARED_METHODS));
+    }
+  }
 
   @Bean
   @ConditionalOnProperty(
