@@ -21,8 +21,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @EnabledIfSystemProperty(named = "it.multisample", matches = "true")
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest
+@TestInstance(Lifecycle.PER_CLASS)
 class MultipleDataModuleIntegrationTest {
 
   @Autowired private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
@@ -52,12 +55,10 @@ class MultipleDataModuleIntegrationTest {
 
   @Autowired PersonService personService;
 
-  @BeforeEach
-  void setUp() {
-    if (!this.spannerDatabaseAdminTemplate.tableExists("traders_repository")) {
-      this.spannerDatabaseAdminTemplate.executeDdlStrings(
-          List.of(this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
-    }
+  @BeforeAll
+  void beforeAll() {
+    this.spannerDatabaseAdminTemplate.executeDdlStrings(
+        List.of(this.spannerSchemaUtils.getCreateTableDdlString(Trader.class)), true);
   }
 
   @Test
