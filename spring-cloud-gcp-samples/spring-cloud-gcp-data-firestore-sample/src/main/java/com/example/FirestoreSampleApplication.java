@@ -45,6 +45,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 @ImportRuntimeHints(FirestoreSampleApplication.FirestoreSampleRuntimeHints.class)
 public class FirestoreSampleApplication {
 
+  /**
+   * Register reflection hints for Firestore POJOs to support GraalVM Native Image deserialization.
+   */
   static class FirestoreSampleRuntimeHints implements RuntimeHintsRegistrar {
     @Override
     public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
