@@ -148,7 +148,7 @@ Update Spring Initializr with the new Spring Cloud GCP version:
     ```
 11. Create a PR targeting `spring-io/start.spring.io`'s `main` branch:
     ```bash
-    gh pr create --repo spring-io/start.spring.io --title "Upgrade to Spring Cloud GCP <VERSION>" --body "Automated PR to update Spring Cloud GCP."
+    gh pr create --repo spring-io/start.spring.io --head <USERNAME>:update-gcp-<VERSION> --title "Upgrade to Spring Cloud GCP <VERSION>" --body "Automated PR to update Spring Cloud GCP."
     ```
 
 ### Step 8: Update README.adoc
