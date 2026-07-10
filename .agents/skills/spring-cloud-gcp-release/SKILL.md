@@ -116,14 +116,29 @@ Before updating `libraries-bom`, check for and merge other open dependency upgra
 Update Spring Initializr with the new Spring Cloud GCP version:
 1.  Fork `spring-io/start.spring.io` if not already forked:
     ```bash
-    gh repo fork spring-io/start.spring.io --clone=true --default-branch-only
+    gh repo fork spring-io/start.spring.io --clone=false
     ```
-2.  Clone it (default directory `temp-start.spring.io`).
-3.  Sync with upstream:
+2.  Clean up any pre-existing clone and perform a fresh clone of your fork (using `temp-start.spring.io` as directory):
+    ```bash
+    rm -rf temp-start.spring.io
+    gh repo clone <USERNAME>/start.spring.io temp-start.spring.io
+    ```
+3.  Navigate to the clone, link the upstream repository, fetch, and hard-reset your `main` branch to match the latest upstream state to prevent unrelated diffs:
+    ```bash
+    cd temp-start.spring.io
+    git remote add upstream https://github.com/spring-io/start.spring.io.git || true
+    git fetch upstream main
+    git checkout main
+    git reset --hard upstream/main
+    ```
+4.  Sync your fork with the latest upstream state:
     ```bash
     gh repo sync <USERNAME>/start.spring.io --source spring-io/start.spring.io
     ```
-4.  Create a branch `update-gcp-<VERSION>` from `main`.
+5.  Create a branch `update-gcp-<VERSION>` from `main`:
+    ```bash
+    git checkout -b update-gcp-<VERSION>
+    ```
 5.  Locate `start-site/src/main/resources/application.yml`.
 6.  Update the `spring-cloud-gcp` BOM version (and optionally the compatibility range upper bound if releasing compatibility with a new Boot version).
     *   *Tip*: Use the `update_initializr_yaml.go` script located in the skill's `scripts/` folder:
