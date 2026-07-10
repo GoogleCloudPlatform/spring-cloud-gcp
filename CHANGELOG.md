@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.5.10](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.5.9...v6.5.10) (2026-07-09)
+
+
+### Bug Fixes
+
+* **storage:** respect configured storage host as-is ([#4492](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4492)) ([#4546](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4546)) ([824b419](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/824b41928507f02ee2028d7e9beb50c5fb032f8d))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.83.0 to 26.85.0 ([#4506](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4506)) ([4ab9218](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4ab9218194cbfa5ec29b9382f20204ed70d54a70))
+
 ## [6.5.9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.5.8...v6.5.9) (2026-05-28)
 
 
