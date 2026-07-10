@@ -33,24 +33,25 @@ Create or read a `.release_status.json` file in the root of the repository to tr
 }
 ```
 
-### Step 2: Merge gapic-generator-java-bom PR
-1.  Search for open PRs with `gapic-generator-java-bom` in the title:
+### Step 2: Merge Renovate/Dependabot Dependency Upgrade PRs (except libraries-bom)
+Before updating `libraries-bom`, check for and merge other open dependency upgrade PRs from Renovate or Dependabot:
+1.  Query open PRs created by Renovate or Dependabot that are NOT `libraries-bom`:
     ```bash
-    gh pr list --base main --search "gapic-generator-java-bom in:title is:open" --json number
+    gh pr list --base main --json number,title,author --jq '.[] | select((.author.login == "renovate" or .author.login == "dependabot" or .author.isBot == true) and (.title | contains("libraries-bom") | not))'
     ```
-2.  If found, approve workflow runs, approve the PR, and merge it:
+2.  For each found dependency upgrade PR, approve and squash-merge it:
     ```bash
     gh pr review <PR_NUMBER> --approve
     gh pr merge <PR_NUMBER> --squash
     ```
-3.  **Fallback (If PR is not found)**:
-    *   View the Renovate Dependency Dashboard (Issue #1705):
+3.  Specifically verify that the `gapic-generator-java-bom` PR is merged. If not found:
+    *   Check the Renovate Dependency Dashboard (Issue #1705):
         ```bash
         gh issue view 1705 --json body --jq .body
         ```
     *   Find the checkbox containing `gapic-generator-java-bom` (e.g. `- [ ] ... gapic-generator-java-bom ...`).
-    *   If it is unchecked (`- [ ]`), edit the issue to check it (`- [x]`) using `gh issue edit 1705 --body-file <temp_file_with_checked_body>`. This triggers Renovate to create the PR.
-    *   Poll for the PR again (up to 30 minutes). If still not found, report failure to the user.
+    *   If it is unchecked (`- [ ]`), check it by editing the issue body using `gh issue edit`.
+    *   Poll for the PR again (up to 30 minutes). If still not found, report failure.
 
 ### Step 3: Merge libraries-bom PR (with Autoconfigs)
 1.  Search for open PRs with `libraries-bom` in the title:
@@ -190,20 +191,25 @@ Create or read a `.release_status.json` file in the root of the repository to tr
 }
 ```
 
-### Step 2: Merge libraries-bom PR
-1.  Search for open PRs with `libraries-bom` in the title:
+### Step 2: Merge Renovate/Dependabot Dependency Upgrade PRs (including libraries-bom)
+For maintenance branches, the `libraries-bom` update PR does NOT require running the `Generate Spring Auto-Configurations` workflow. Therefore, merge ALL pending Renovate and Dependabot dependency upgrade PRs (including the `libraries-bom` update PR):
+1.  Query all open PRs on the maintenance branch created by Renovate or Dependabot:
     ```bash
-    gh pr list --base <BRANCH> --search "libraries-bom in:title is:open" --json number
+    gh pr list --base <BRANCH> --json number,title,author --jq '.[] | select(.author.login == "renovate" or .author.login == "dependabot" or .author.isBot == true)'
     ```
-2.  **Fallback (If PR is not found)**:
-    *   Check the Renovate Dependency Dashboard (Issue #1705).
-    *   Find and tick the `libraries-bom` checkbox by editing the issue body.
-    *   Poll for the PR again (up to 30 minutes). If still not found, report failure.
-3.  Once the PR is found, approve and merge it:
+2.  For each found dependency upgrade PR, approve and squash-merge it:
     ```bash
     gh pr review <PR_NUMBER> --approve
     gh pr merge <PR_NUMBER> --squash
     ```
+3.  Specifically verify that the `libraries-bom` PR is merged. If not found:
+    *   Check the Renovate Dependency Dashboard (Issue #1705):
+        ```bash
+        gh issue view 1705 --json body --jq .body
+        ```
+    *   Find the checkbox containing `libraries-bom` (e.g., matching target branch name).
+    *   If it is unchecked (`- [ ]`), check it by editing the issue body using `gh issue edit`.
+    *   Poll for the PR again (up to 30 minutes). If still not found, report failure.
 
 ### Step 3: Merge Release PR
 1.  Wait for `release-please` to create the Release PR:
