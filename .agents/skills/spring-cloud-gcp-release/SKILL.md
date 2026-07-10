@@ -99,6 +99,8 @@ Create or read a `.release_status.json` file in the root of the repository to tr
     `https://repo1.maven.org/maven2/com/google/cloud/spring-cloud-gcp/maven-metadata.xml`
     > [!NOTE]
     > **Release Pipeline Delays**: The Maven artifact release pipeline (executed by Kokoro/Louhi) can take longer than 2 hours to complete after the release tag is created. Continue polling Maven Central until the release process completes and the artifacts are indexed.
+    > [!TIP]
+    > **Checking Kokoro/Sponge**: The agent does not have direct access to search internal Google release dashboard runs (Louhi/Kokoro) due to corp SSO authentication. If the release remains unavailable after a long time, the user can manually retrieve the Sponge invocation ID from Louhi and provide it to the agent. The agent can then use `read_sponge_test_failure_logs` and `list_sponge_artifacts` to diagnose any internal build failures.
     *If Maven Central verification fails or times out, stop the release and report failure.*
 2.  **Documentation (OPTIONAL)**: Poll the documentation URLs (timeout 2 hours). Do **not** halt the release if they are missing:
     *   Reference Docs: `https://googlecloudplatform.github.io/spring-cloud-gcp/<VERSION>/reference/html/index.html`
@@ -225,6 +227,8 @@ Create or read a `.release_status.json` file in the root of the repository to tr
     `https://repo1.maven.org/maven2/com/google/cloud/spring-cloud-gcp/maven-metadata.xml`
     > [!NOTE]
     > **Release Pipeline Delays**: The Maven artifact release pipeline (executed by Kokoro/Louhi) can take longer than 2 hours to complete after the release tag is created. Continue polling Maven Central until the release process completes and the artifacts are indexed.
+    > [!TIP]
+    > **Checking Kokoro/Sponge**: The agent does not have direct access to search internal Google release dashboard runs (Louhi/Kokoro) due to corp SSO authentication. If the release remains unavailable after a long time, the user can manually retrieve the Sponge invocation ID from Louhi and provide it to the agent. The agent can then use `read_sponge_test_failure_logs` and `list_sponge_artifacts` to diagnose any internal build failures.
     *If Maven Central verification fails or times out, stop the release and report failure.*
 2.  **Documentation (OPTIONAL)**: Poll the documentation URLs (timeout 2 hours). Do **not** halt the release if they are missing:
     *   Reference Docs: `https://googlecloudplatform.github.io/spring-cloud-gcp/<VERSION>/reference/html/index.html`
