@@ -130,7 +130,10 @@ Update Spring Initializr with the new Spring Cloud GCP version:
         ```bash
         go run /workspace/spring-cloud-gcp/.agents/skills/spring-cloud-gcp-release/scripts/update_initializr_yaml.go <file_path> <version> [<boot_max>]
         ```
-7.  Commit the changes.
+7.  Commit the changes with sign-off (DCO requirement):
+    ```bash
+    git commit -s -m "Upgrade to Spring Cloud GCP <VERSION>"
+    ```
 8.  **SAFETY GATE**: Generate the git diff (`git diff HEAD~1`) and include it in your prompt to the user when asking for approval:
     *"I have prepared the changes for spring-io/start.spring.io. Here is the diff:*
     *```diff*
@@ -149,7 +152,10 @@ Update Spring Initializr with the new Spring Cloud GCP version:
 ### Step 8: Update README.adoc
 1.  Update the version strings in `README.adoc` with the newly released version.
 2.  Create a local branch `docs-update-readme-<TIMESTAMP>`.
-3.  Commit the change.
+3.  Commit the change:
+    ```bash
+    git commit -m "docs: update README for release <VERSION>"
+    ```
 4.  **SAFETY GATE**: Generate the git diff (`git diff HEAD~1`) and include it in your prompt to the user when asking for approval:
     *"I have prepared the README update. Here is the diff:*
     *```diff*
@@ -176,7 +182,7 @@ Send a message to the user summarizing the release, including:
 
 ---
 
-# Workflow B: Releasing Maintenance Branches (e.g. 6.x, 7.x)
+# Workflow B: Releasing Maintenance Branches (e.g. 7.x)
 
 Use this workflow when the user requests a release for a maintenance branch (e.g., "Perform a release for the 7.x branch").
 
@@ -257,7 +263,10 @@ Update the version reference for the released maintenance version in `README.ado
     ```
 2.  Create a local branch `docs-update-readme-<VERSION>`.
 3.  Update the version string of the released maintenance branch in `README.adoc` (e.g. update `7.4.8` to `7.4.10` in the links list).
-4.  Commit the change.
+4.  Commit the change:
+    ```bash
+    git commit -m "docs: update README for release <VERSION>"
+    ```
 5.  **SAFETY GATE**: Generate the git diff (`git diff HEAD~1`) and ask for approval:
     *"I have prepared the README update. Here is the diff:*
     *```diff*
