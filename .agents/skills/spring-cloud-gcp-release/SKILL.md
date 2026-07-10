@@ -235,7 +235,26 @@ Create or read a `.release_status.json` file in the root of the repository to tr
     *   Javadocs: `https://googleapis.dev/java/spring-cloud-gcp/<VERSION>/index.html`
     *Note the publication status (Exists / Missing) of both endpoints to include in the final report.*
 
-### Step 6: Final Report
+### Step 6: Update README.adoc
+Update the version reference for the released maintenance version in `README.adoc` on the `main` branch.
+1.  Checkout the `main` branch and pull latest changes:
+    ```bash
+    git checkout main
+    git pull upstream main
+    ```
+2.  Create a local branch `docs-update-readme-<VERSION>`.
+3.  Update the version string of the released maintenance branch in `README.adoc` (e.g. update `7.4.8` to `7.4.10` in the links list).
+4.  Commit the change.
+5.  **SAFETY GATE**: Generate the git diff (`git diff HEAD~1`) and ask for approval:
+    *"I have prepared the README update. Here is the diff:*
+    *```diff*
+    *<INSERT_DIFF_HERE>*
+    *```*
+    *Do you approve pushing this change to origin? (Reply 'Yes, proceed')"*
+6.  Push to `origin` (your fork of `spring-cloud-gcp`).
+7.  Create a PR targeting `main` branch of `GoogleCloudPlatform/spring-cloud-gcp`.
+
+### Step 7: Final Report
 Send a message to the user summarizing the release, including:
 *   A summary statement (e.g. "Release of Spring Cloud GCP <VERSION> is complete").
 *   Links to all merged PRs:
