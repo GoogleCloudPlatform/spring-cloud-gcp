@@ -130,12 +130,8 @@ Update Spring Initializr with the new Spring Cloud GCP version:
     ```bash
     git checkout -b update-gcp-<VERSION>
     ```
-6.  Locate `start-site/src/main/resources/application.yml`.
-7.  Update the `spring-cloud-gcp` BOM version for the mapping matching the compatibility range of the released branch.
-    *   *Tip*: Use the `update_initializr_yaml.go` script located in the skill's `scripts/` folder:
-        ```bash
-        go run /workspace/spring-cloud-gcp/.agents/skills/spring-cloud-gcp-release/scripts/update_initializr_yaml.go <file_path> <version>
-        ```
+6.  Locate `start-site/src/main/resources/application.yml` and find the `spring-cloud-gcp` block under `boms`.
+7.  Identify the mapping entry corresponding to the major version being released (e.g. if releasing `7.4.10`, locate the mapping with `version: 7.x.x`). Use the `replace_file_content` tool to update its `version` string (and optionally `compatibilityRange` upper bound if updating compatibility).
 8.  Commit the changes with sign-off (DCO requirement):
     ```bash
     git commit -s -m "Upgrade to Spring Cloud GCP <VERSION>"
