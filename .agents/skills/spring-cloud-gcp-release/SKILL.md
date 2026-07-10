@@ -171,6 +171,9 @@ Send a message to the user summarizing the release, including:
 
 Use this workflow when the user requests a release for a maintenance branch (e.g., "Perform a release for the 7.x branch").
 
+> [!IMPORTANT]
+> **No Cherry-Picking**: The release agent should NOT perform any code fixes, backports, or cherry-picking of commits during maintenance releases. All required fixes (such as database isolation backports) must be cherry-picked and merged to the target maintenance branch by the user before starting the release process.
+
 ### Step 1: Initialize State
 Create or read a `.release_status.json` file in the root of the repository to track progress.
 ```json
