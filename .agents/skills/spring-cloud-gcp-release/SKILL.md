@@ -272,9 +272,11 @@ Update the version reference for the released maintenance version in `README.ado
 Send a message to the user summarizing the release, including:
 *   A summary statement (e.g. "Release of Spring Cloud GCP <VERSION> is complete").
 *   Links to all merged PRs:
-    *   `libraries-bom` PR
+    *   Renovate/Dependabot dependency upgrade PRs (e.g. `libraries-bom` PR)
     *   Release PR
     *   Post-release SNAPSHOT PR
+*   Links to new PRs created:
+    *   `[ACTION REQUIRED]` README update PR (requires review and merge)
 *   Links to publications:
     *   Maven Central Artifact
     *   Reference Documentation (If missing, flag as `[ACTION REQUIRED] Reference Documentation is missing`)
