@@ -5,7 +5,7 @@ description: Instructions for performing an automated, sequential release of Spr
 
 # Spring Cloud GCP Release Workflow
 
-This skill guides the agent through the sequential release process for Spring Cloud GCP. Select the appropriate workflow section based on the branch being released.
+This skill guides the agent through the sequential release process for Spring Cloud GCP.
 
 ## Prerequisites
 1.  The GitHub CLI (`gh`) must be installed and authenticated (`gh auth status`).
@@ -18,7 +18,7 @@ This skill guides the agent through the sequential release process for Spring Cl
 
 ---
 
-# Unified Release Workflow
+# Release Workflow
 
 Use this workflow to release any branch (e.g. `main` or a maintenance branch like `7.x`).
 
