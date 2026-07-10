@@ -34,10 +34,14 @@ Create or read a `.release_status.json` file in the root of the repository to tr
 ```
 
 ### Step 2: Merge Renovate/Dependabot Dependency Upgrade PRs (except libraries-bom)
-Before updating `libraries-bom`, check for and merge other open dependency upgrade PRs from Renovate or Dependabot:
-1.  Query open PRs created by Renovate or Dependabot that are NOT `libraries-bom`:
+Before updating `libraries-bom`, check for and merge other open dependency upgrade PRs from Renovate or Dependabot created since the last release tag:
+1.  Get the date of the latest release tag on the branch:
     ```bash
-    gh pr list --base main --json number,title,author --jq '.[] | select((.author.login == "renovate" or .author.login == "dependabot" or .author.isBot == true) and (.title | contains("libraries-bom") | not))'
+    LAST_RELEASE_DATE=$(git log -1 --format=%aI $(git describe --tags --abbrev=0))
+    ```
+2.  Query open PRs created by Renovate or Dependabot since `LAST_RELEASE_DATE` that are NOT `libraries-bom`:
+    ```bash
+    gh pr list --base main --json number,title,author,createdAt --jq ".[] | select((.author.login == \"renovate\" or .author.login == \"dependabot\" or .author.isBot == true) and (.title | contains(\"libraries-bom\") | not) and .createdAt > \"$LAST_RELEASE_DATE\")"
     ```
 2.  For each found dependency upgrade PR, approve and squash-merge it:
     ```bash
@@ -192,10 +196,14 @@ Create or read a `.release_status.json` file in the root of the repository to tr
 ```
 
 ### Step 2: Merge Renovate/Dependabot Dependency Upgrade PRs (including libraries-bom)
-For maintenance branches, the `libraries-bom` update PR does NOT require running the `Generate Spring Auto-Configurations` workflow. Therefore, merge ALL pending Renovate and Dependabot dependency upgrade PRs (including the `libraries-bom` update PR):
-1.  Query all open PRs on the maintenance branch created by Renovate or Dependabot:
+For maintenance branches, the `libraries-bom` update PR does NOT require running the `Generate Spring Auto-Configurations` workflow. Therefore, merge ALL pending Renovate and Dependabot dependency upgrade PRs (including the `libraries-bom` update PR) created since the last release tag:
+1.  Get the date of the latest release tag on the branch:
     ```bash
-    gh pr list --base <BRANCH> --json number,title,author --jq '.[] | select(.author.login == "renovate" or .author.login == "dependabot" or .author.isBot == true)'
+    LAST_RELEASE_DATE=$(git log -1 --format=%aI $(git describe --tags --abbrev=0))
+    ```
+2.  Query all open PRs on the maintenance branch created by Renovate or Dependabot since `LAST_RELEASE_DATE`:
+    ```bash
+    gh pr list --base <BRANCH> --json number,title,author,createdAt --jq ".[] | select((.author.login == \"renovate\" or .author.login == \"dependabot\" or .author.isBot == true) and .createdAt > \"$LAST_RELEASE_DATE\")"
     ```
 2.  For each found dependency upgrade PR, approve and squash-merge it:
     ```bash
