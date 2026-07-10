@@ -163,8 +163,7 @@ Update Spring Initializr with the new Spring Cloud GCP version:
 Send a message to the user summarizing the release, including:
 *   A summary statement (e.g. "Release of Spring Cloud GCP <VERSION> is complete").
 *   Links to all merged PRs:
-    *   `gapic-generator-java-bom` PR
-    *   `libraries-bom` PR
+    *   Renovate/Dependabot dependency upgrade PRs (e.g. `gapic-generator-java-bom`, `libraries-bom` PRs)
     *   Release PR
     *   Post-release SNAPSHOT PR
 *   Links to new PRs created:
