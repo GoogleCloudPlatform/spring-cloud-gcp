@@ -291,7 +291,59 @@ Update the version reference for the released maintenance version in `README.ado
 6.  Push to `origin` (your fork of `spring-cloud-gcp`).
 7.  Create a PR targeting `main` branch of `GoogleCloudPlatform/spring-cloud-gcp`.
 
-### Step 7: Final Report
+### Step 7: Create Spring Initializr PR
+Update Spring Initializr with the new maintenance Spring Cloud GCP version:
+1.  Fork `spring-io/start.spring.io` if not already forked:
+    ```bash
+    gh repo fork spring-io/start.spring.io --clone=false
+    ```
+2.  Clean up any pre-existing clone and perform a fresh clone of your fork (using `temp-start.spring.io` as directory):
+    ```bash
+    rm -rf temp-start.spring.io
+    gh repo clone <USERNAME>/start.spring.io temp-start.spring.io
+    ```
+3.  Navigate to the clone, link the upstream repository, fetch, and hard-reset your `main` branch to match the latest upstream state to prevent unrelated diffs:
+    ```bash
+    cd temp-start.spring.io
+    git remote add upstream https://github.com/spring-io/start.spring.io.git || true
+    git fetch upstream main
+    git checkout main
+    git reset --hard upstream/main
+    ```
+4.  Sync your fork with the latest upstream state:
+    ```bash
+    gh repo sync <USERNAME>/start.spring.io --source spring-io/start.spring.io
+    ```
+5.  Create a branch `update-gcp-<VERSION>` from `main`:
+    ```bash
+    git checkout -b update-gcp-<VERSION>
+    ```
+6.  Locate `start-site/src/main/resources/application.yml`.
+7.  Update the `spring-cloud-gcp` BOM version for the mapping matching the compatibility range of this maintenance branch.
+    *   *Tip*: Use the `update_initializr_yaml.go` script located in the skill's `scripts/` folder:
+        ```bash
+        go run /workspace/spring-cloud-gcp/.agents/skills/spring-cloud-gcp-release/scripts/update_initializr_yaml.go <file_path> <version>
+        ```
+8.  Commit the changes with sign-off (DCO requirement):
+    ```bash
+    git commit -s -m "Upgrade to Spring Cloud GCP <VERSION>"
+    ```
+9.  **SAFETY GATE**: Generate the git diff (`git diff HEAD~1`) and include it in your prompt to the user when asking for approval:
+    *"I have prepared the changes for spring-io/start.spring.io. Here is the diff:*
+    *```diff*
+    *<INSERT_DIFF_HERE>*
+    *```*
+    *Do you approve pushing this change to your fork? (Reply 'Yes, proceed')"*
+10. After approval, push to your fork:
+    ```bash
+    git push -u origin update-gcp-<VERSION>
+    ```
+11. Create a PR targeting `spring-io/start.spring.io`'s `main` branch:
+    ```bash
+    gh pr create --repo spring-io/start.spring.io --title "Upgrade to Spring Cloud GCP <VERSION>" --body "Automated PR to update Spring Cloud GCP."
+    ```
+
+### Step 8: Final Report
 Send a message to the user summarizing the release, including:
 *   A summary statement (e.g. "Release of Spring Cloud GCP <VERSION> is complete").
 *   Links to all merged PRs:
@@ -299,6 +351,7 @@ Send a message to the user summarizing the release, including:
     *   Release PR
     *   Post-release SNAPSHOT PR
 *   Links to new PRs created:
+    *   `[ACTION REQUIRED]` Spring Initializr PR (requires review and merge)
     *   `[ACTION REQUIRED]` README update PR (requires review and merge)
 *   Links to publications:
     *   Maven Central Artifact
