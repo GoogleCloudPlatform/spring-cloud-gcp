@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"regexp"
+	"strings"
 )
 
 func main() {
@@ -19,6 +20,15 @@ func main() {
 	if len(os.Args) > 3 {
 		bootMax = os.Args[3]
 	}
+
+	// Extract major version (e.g., "7" from "7.4.10")
+	parts := strings.Split(version, ".")
+	if len(parts) < 1 {
+		fmt.Println("Error: Invalid version format:", version)
+		os.Exit(1)
+	}
+	majorVersion := parts[0]
+	versionPrefix := majorVersion + "."
 
 	content, err := ioutil.ReadFile(filePath)
 	if err != nil {
@@ -38,50 +48,49 @@ func main() {
 
 	blockStart, blockEnd := match[0], match[1]
 	bomBlock := contentStr[blockStart:blockEnd]
-	newBomBlock := bomBlock
 
-	if bootMax != "" {
-		// Update compatibility range upper bound and version of the last mapping
-		// Target format:
-		//           - compatibilityRange: "[4.0.0,4.1.0-M1)"
-		//             version: 8.0.3
-		// Submatch groups:
-		// Group 1: (- compatibilityRange:\s*"\[[^,]+,)([^)]+)(\)"\n\s+version:\s*)([^\s\n]+)
-		rangeRegex := regexp.MustCompile(`(- compatibilityRange:\s*"\[[^,]+,)([^)]+)(\)"\n\s+version:\s*)([^\s\n]+)`)
-		matches := rangeRegex.FindAllStringSubmatchIndex(bomBlock, -1)
-		if len(matches) > 0 {
-			lastMatch := matches[len(matches)-1]
-			// lastMatch indexes: [start, end, g1_start, g1_end, g2_start, g2_end, g3_start, g3_end, g4_start, g4_end]
-			g1 := bomBlock[lastMatch[2]:lastMatch[3]]
-			g3 := bomBlock[lastMatch[6]:lastMatch[7]]
-			replacedStr := g1 + bootMax + g3 + version
-			
-			matchStart, matchEnd := lastMatch[0], lastMatch[1]
-			newBomBlock = bomBlock[:matchStart] + replacedStr + bomBlock[matchEnd:]
-		} else {
-			fmt.Println("Error: Could not find compatibilityRange mappings in spring-cloud-gcp block.")
-			os.Exit(1)
-		}
-	} else {
-		// Just update version of the last mapping
-		// Target:
-		//           - compatibilityRange: "[4.0.0,4.1.0-M1)"
-		//             version: 8.0.3
-		versionRegex := regexp.MustCompile(`(- compatibilityRange:\s*"\[[^,]+,[^)]+\)"\n\s+version:\s*)([^\s\n]+)`)
-		matches := versionRegex.FindAllStringSubmatchIndex(bomBlock, -1)
-		if len(matches) > 0 {
-			lastMatch := matches[len(matches)-1]
-			g1 := bomBlock[lastMatch[2]:lastMatch[3]]
-			replacedStr := g1 + version
-			
-			matchStart, matchEnd := lastMatch[0], lastMatch[1]
-			newBomBlock = bomBlock[:matchStart] + replacedStr + bomBlock[matchEnd:]
-		} else {
-			fmt.Println("Error: Could not find version mappings in spring-cloud-gcp block.")
-			os.Exit(1)
+	// Find all mapping entries in the bomBlock
+	// Format:
+	//           - compatibilityRange: "[3.5.0,4.0.0)"
+	//             version: 7.4.8
+	// Group 1: prefix up to version
+	// Group 2: version value
+	versionRegex := regexp.MustCompile(`(- compatibilityRange:\s*"\[[^,]+,([^)]+)\)"\n\s+version:\s*)([^\s\n]+)`)
+	matches := versionRegex.FindAllStringSubmatchIndex(bomBlock, -1)
+
+	if len(matches) == 0 {
+		fmt.Println("Error: No compatibilityRange/version mappings found in spring-cloud-gcp block.")
+		os.Exit(1)
+	}
+
+	targetMatchIndex := -1
+	for i, m := range matches {
+		// m[6]:m[7] is the version string (Group 3)
+		vStr := bomBlock[m[6]:m[7]]
+		if strings.HasPrefix(vStr, versionPrefix) {
+			targetMatchIndex = i
+			break
 		}
 	}
 
+	if targetMatchIndex == -1 {
+		fmt.Printf("Error: Could not find a mapping matching major version %s (prefix: %s) in the block.\n", majorVersion, versionPrefix)
+		os.Exit(1)
+	}
+
+	targetMatch := matches[targetMatchIndex]
+	var replacedStr string
+
+	if bootMax != "" {
+		// Update both compatibilityRange upper bound and version
+		// Reconstruct Group 1 with new bootMax
+		replacedStr = bomBlock[targetMatch[2]:targetMatch[4]] + bootMax + bomBlock[targetMatch[5]:targetMatch[3]] + version
+	} else {
+		// Only update version
+		replacedStr = bomBlock[targetMatch[2]:targetMatch[3]] + version
+	}
+
+	newBomBlock := bomBlock[:targetMatch[0]] + replacedStr + bomBlock[targetMatch[1]:]
 	newContent := contentStr[:blockStart] + newBomBlock + contentStr[blockEnd:]
 
 	err = ioutil.WriteFile(filePath, []byte(newContent), 0644)
