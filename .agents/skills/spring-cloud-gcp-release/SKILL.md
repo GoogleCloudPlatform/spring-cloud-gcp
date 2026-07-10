@@ -97,6 +97,8 @@ Create or read a `.release_status.json` file in the root of the repository to tr
     `https://repo1.maven.org/maven2/com/google/cloud/spring-cloud-gcp/<VERSION>/`
     Also check metadata to ensure it's indexed:
     `https://repo1.maven.org/maven2/com/google/cloud/spring-cloud-gcp/maven-metadata.xml`
+    > [!NOTE]
+    > **Release Pipeline Delays**: The Maven artifact release pipeline (executed by Kokoro/Louhi) can take longer than 2 hours to complete after the release tag is created. Continue polling Maven Central until the release process completes and the artifacts are indexed.
     *If Maven Central verification fails or times out, stop the release and report failure.*
 2.  **Documentation (OPTIONAL)**: Poll the documentation URLs (timeout 2 hours). Do **not** halt the release if they are missing:
     *   Reference Docs: `https://googlecloudplatform.github.io/spring-cloud-gcp/<VERSION>/reference/html/index.html`
@@ -221,6 +223,8 @@ Create or read a `.release_status.json` file in the root of the repository to tr
     `https://repo1.maven.org/maven2/com/google/cloud/spring-cloud-gcp/<VERSION>/`
     Also check metadata to ensure it's indexed:
     `https://repo1.maven.org/maven2/com/google/cloud/spring-cloud-gcp/maven-metadata.xml`
+    > [!NOTE]
+    > **Release Pipeline Delays**: The Maven artifact release pipeline (executed by Kokoro/Louhi) can take longer than 2 hours to complete after the release tag is created. Continue polling Maven Central until the release process completes and the artifacts are indexed.
     *If Maven Central verification fails or times out, stop the release and report failure.*
 2.  **Documentation (OPTIONAL)**: Poll the documentation URLs (timeout 2 hours). Do **not** halt the release if they are missing:
     *   Reference Docs: `https://googlecloudplatform.github.io/spring-cloud-gcp/<VERSION>/reference/html/index.html`
