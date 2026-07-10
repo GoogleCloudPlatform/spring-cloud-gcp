@@ -112,7 +112,7 @@ Update Spring Initializr with the new Spring Cloud GCP version:
 2.  Clean up any pre-existing clone and perform a fresh clone of your fork (using `temp-start.spring.io` as directory):
     ```bash
     rm -rf temp-start.spring.io
-    gh repo clone <USERNAME>/start.spring.io temp-start.spring.io
+    gh repo clone $(gh api user --jq .login)/start.spring.io temp-start.spring.io
     ```
 3.  Navigate to the clone, link the upstream repository, fetch, and hard-reset your `main` branch to match the latest upstream state to prevent unrelated diffs:
     ```bash
@@ -124,7 +124,7 @@ Update Spring Initializr with the new Spring Cloud GCP version:
     ```
 4.  Sync your fork with the latest upstream state:
     ```bash
-    gh repo sync <USERNAME>/start.spring.io --source spring-io/start.spring.io
+    gh repo sync $(gh api user --jq .login)/start.spring.io --source spring-io/start.spring.io
     ```
 5.  Create a branch `update-gcp-<VERSION>` from `main`:
     ```bash
@@ -148,7 +148,7 @@ Update Spring Initializr with the new Spring Cloud GCP version:
     ```
 11. Create a PR targeting `spring-io/start.spring.io`'s `main` branch:
     ```bash
-    gh pr create --repo spring-io/start.spring.io --head <USERNAME>:update-gcp-<VERSION> --title "Upgrade to Spring Cloud GCP <VERSION>" --body "Automated PR to update Spring Cloud GCP."
+    gh pr create --repo spring-io/start.spring.io --head $(gh api user --jq .login):update-gcp-<VERSION> --title "Upgrade to Spring Cloud GCP <VERSION>" --body "Automated PR to update Spring Cloud GCP."
     ```
 
 ### Step 8: Update README.adoc
