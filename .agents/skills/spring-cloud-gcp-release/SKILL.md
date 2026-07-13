@@ -21,7 +21,7 @@ This skill guides the agent through the sequential release process for Spring Cl
 
 # Release Workflow
 
-Use this workflow to release any branch (e.g. `main` or a maintenance branch like `7.x`).
+Use this workflow to release any branch (e.g. `main` or `7.x`).
 
 ### Step 1: Initialize State
 Create or read a `.release_status.json` file in the root of the repository to track progress.
@@ -71,7 +71,14 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
     ```bash
     gh workflow run "Generate Spring Auto-Configurations" --ref main -f branch_name=<PR_BRANCH> -f forked_repo=<FORKED_REPO>
     ```
-3.  Wait for `cloud-java-bot` to commit changes, verify that modifications are strictly within `spring-cloud-previews/` and that `spring-cloud-previews/README.md` is updated.
+3.  Wait for `cloud-java-bot` to commit the auto-generated configurations. Poll the PR's commits list (re-running this command every 2-3 minutes) until a commit authored by `cloud-java-bot` (or containing "Regenerate auto-configurations") is present:
+    ```bash
+    gh pr view <PR_NUMBER> --json commits --jq '.commits[] | {message: .message, author: .author.login}'
+    ```
+    Once the commit is found, verify its files to ensure modifications are strictly within `spring-cloud-previews/` and that `spring-cloud-previews/README.md` is updated:
+    ```bash
+    gh pr diff <PR_NUMBER> --name-only
+    ```
 4.  Approve and squash-merge the `libraries-bom` PR.
 
 ### Step 4: Merge Release PR
