@@ -21,7 +21,7 @@ This skill guides the agent through the sequential release process for Spring Cl
 
 # Release Workflow
 
-Use this workflow to release any branch (e.g. `main` or `7.x`).
+Use this workflow to release any branch. The user must explicitly specify which branch(es) to release (e.g. "perform a release for main, 7.x and 6.x branches").
 
 ### Step 1: Initialize State
 Create or read a `.release_status.json` file in the root of the repository to track progress.
