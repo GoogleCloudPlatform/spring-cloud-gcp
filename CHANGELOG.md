@@ -15,6 +15,19 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.1.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.0.5...v8.1.0) (2026-07-13)
+
+
+### Features
+
+* migrate release process to agentic customizations ([#4553](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4553)) ([8c251ce](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/8c251ce5092f42d2dd11be4156ffdaa98ccc0390))
+
+
+### Documentation
+
+* update latest version label to 8.0.5 in README ([#4548](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4548)) ([d5ffac0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d5ffac0c9585d05b3f8ef4fcd7e4b8177ebc6a43))
+* update maintenance versions reference in README.adoc ([#4552](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4552)) ([01b1c77](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/01b1c77e4f1a58f3b426f19e1e4e23102f1e2878))
+
 ## [8.0.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.0.4...v8.0.5) (2026-07-09)
 
 
