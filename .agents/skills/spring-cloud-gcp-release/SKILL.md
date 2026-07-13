@@ -24,7 +24,7 @@ This skill guides the agent through the sequential release process for Spring Cl
 Use this workflow to release any branch. The user must explicitly specify which branch(es) to release (e.g. "perform a release for main, 7.x and 6.x branches").
 
 ### Step 1: Initialize State
-Create or read a `.release_status.json` file in the root of the repository to track progress.
+Create or read a `.release_status.json` file in the root of the repository to track progress. Note: This file is used purely for local status tracking across agent invocations and must NEVER be added, staged, or committed to git.
 ```json
 {
   "branch": "<BRANCH>",
@@ -39,6 +39,7 @@ Create or read a `.release_status.json` file in the root of the repository to tr
 
 ### Step 2: Merge Renovate/Dependabot Dependency Upgrade PRs
 Before updating `libraries-bom` or creating the release, check for and merge open dependency upgrade PRs from Renovate or Dependabot created since the last release tag:
+*Note: If there are expected dependency upgrade PRs that are rate-limited or have not yet been opened by Renovate, locate the Renovate Dependency Dashboard (Issue #1705) on GitHub and check their respective checkboxes to manually trigger PR creation.*
 1.  Get the date of the latest release tag on the active branch:
     ```bash
     LAST_RELEASE_DATE=$(git log -1 --format=%aI $(git describe --tags --abbrev=0))
@@ -71,7 +72,8 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
     ```bash
     gh workflow run "Generate Spring Auto-Configurations" --ref main -f branch_name=<PR_BRANCH> -f forked_repo=<FORKED_REPO>
     ```
-3.  Wait for `cloud-java-bot` to commit the auto-generated configurations. Poll the PR's commits list (re-running this command every 2-3 minutes) until a commit authored by `cloud-java-bot` (or containing "Regenerate auto-configurations") is present:
+3.  Wait for `cloud-java-bot` to commit the auto-generated configurations. Poll the PR's commits list (re-running this command every 2-3 minutes, up to a maximum of 10 minutes or 5 attempts) until a commit authored by `cloud-java-bot` (or containing "Regenerate auto-configurations") is present:
+    *   *Timeout Fallback*: If the commit is not found after 10 minutes, check the workflow run status (`gh run list --workflow "Generate Spring Auto-Configurations"`) to see if the run failed or got stuck, and report the diagnostic details to the user.
     ```bash
     gh pr view <PR_NUMBER> --json commits --jq '.commits[] | {message: .message, author: .author.login}'
     ```
@@ -82,7 +84,8 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
 4.  Approve and squash-merge the `libraries-bom` PR.
 
 ### Step 4: Merge Release PR
-1.  Wait for `release-please` to create the Release PR on the target branch:
+1.  Wait for `release-please` to create the Release PR on the target branch (re-running this query every 2 minutes, up to a maximum of 10 minutes or 5 attempts):
+    *   *Timeout Fallback*: If the Release PR is not found after 10 minutes, check the "release-please" workflow run status (`gh run list --workflow "release-please"`) to see if the run failed or is stuck, and report the diagnostic details to the user.
     ```bash
     gh pr list --base <BRANCH> --search "release in:title is:open author:app/release-please" --json number
     ```
@@ -113,6 +116,8 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
 
 ### Step 7: Create Spring Initializr PR
 Update Spring Initializr with the new Spring Cloud GCP version:
+> [!IMPORTANT]
+> **Spring Contributor License Agreement (CLA)**: Spring projects require contributors to sign the Spring CLA. If the GitHub account you are using has never signed the Spring CLA, the CLA check run on the created PR will fail. The CLA bot will post a comment on the PR with a link; the **user** must manually open that link and sign the agreement on GitHub to unblock the PR checks.
 1.  Fork `spring-io/start.spring.io` if not already forked:
     ```bash
     gh repo fork spring-io/start.spring.io --clone=false
