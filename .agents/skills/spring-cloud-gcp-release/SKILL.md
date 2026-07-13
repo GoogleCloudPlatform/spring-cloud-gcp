@@ -9,7 +9,8 @@ This skill guides the agent through the sequential release process for Spring Cl
 
 ## Prerequisites
 1.  The GitHub CLI (`gh`) must be installed and authenticated (`gh auth status`).
-2.  Your git working directory must be clean.
+2.  The authenticated user must have Admin or Maintainer access to the `GoogleCloudPlatform/spring-cloud-gcp` repository.
+3.  Your git working directory must be clean.
 
 ## Release Guidelines & Safety
 *   **Merge Approvals**: You do **not** need to request explicit user approval to merge automated bot PRs (such as the Release PR or the SNAPSHOT bump PR created by `release-please`). You may approve and merge them directly once CI conditions are satisfied.
