@@ -14,7 +14,7 @@ This skill guides the agent through the sequential release process for Spring Cl
 
 ## Release Guidelines & Safety
 *   **Merge Approvals**: You do **not** need to request explicit user approval to merge automated bot PRs (such as the Release PR or the SNAPSHOT bump PR created by `release-please`). You may approve and merge them directly once the required CI checks pass.
-*   **SNAPSHOT PR Merges**: For post-release SNAPSHOT bump PRs, you can merge them as soon as all **required** status checks pass. You do **not** need to wait for optional checks to complete or pass. If the repository policy blocks the merge due to pending optional checks, use administrator privileges (`--admin` flag) to complete the merge.
+*   **SNAPSHOT PR Merges**: For post-release SNAPSHOT bump PRs, you can merge them as soon as all **required** status checks pass. You do **not** need to wait for optional checks to complete or pass.
 *   **Code Change Approvals**: You **must** get explicit user approval before pushing any code fixes or opening any new PRs that you authored (such as the Spring Initializr PR or README update PR).
 
 ---
