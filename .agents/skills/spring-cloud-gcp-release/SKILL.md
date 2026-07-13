@@ -232,6 +232,7 @@ If a PR merge fails due to failing CI checks:
 2.  **Determine if Flaky**:
     *   Check if the failed test is a known flaky test (e.g. search repository issues for the test name, or check memory files for flaky test patterns).
     *   Common indicators of flakiness: transient network timeout, integration test database cleanup failure, or resource exhaustions.
+    *   If the failure is determined to be a real bug (non-flaky), proceed directly to Step 4.
 
 3.  **Flaky Test Recovery (Retry Up to 2 Times)**:
     *   If the test is deemed flaky, trigger a retry of the failed workflow run:
@@ -244,7 +245,9 @@ If a PR merge fails due to failing CI checks:
 
 4.  **Create Code Fix (For Real Bugs or Persistent Failures)**:
     *   Pause the release pipeline.
-    *   Create a local branch `fix/<issue-name>` off the branch you are releasing.
+    *   Present a diagnostic report to the user explaining the failure root cause, and propose a code fix strategy.
+    *   Wait for the user's feedback and explicit approval of the proposed fix before proceeding.
+    *   Once aligned, create a local branch `fix/<issue-name>` off the branch you are releasing.
     *   Implement the fix locally.
     *   Verify the fix:
         *   Run tests locally to confirm it passes.
