@@ -200,6 +200,7 @@ Update the version reference in `README.adoc`:
 ### Step 9: Final Report
 Send a message to the user summarizing the release, including:
 *   A summary statement (e.g. "Release of Spring Cloud GCP <VERSION> is complete").
+*   A list of any flaky test failures encountered and recovered during the release process (specifying test names and run URLs).
 *   Links to all merged PRs:
     *   Renovate/Dependabot dependency upgrade PRs (e.g. `libraries-bom`, `gapic-generator-java-bom` PRs)
     *   Release PR
@@ -240,6 +241,7 @@ If a PR merge fails due to failing CI checks:
         gh run rerun <RUN_ID> --failed
         ```
     *   Wait for the checks to complete.
+    *   If the test passes after retry, record it for the final release report.
     *   If the check fails again, retry one more time (maximum 2 retries total).
     *   If it still fails after the second retry, proceed to step 4.
 
