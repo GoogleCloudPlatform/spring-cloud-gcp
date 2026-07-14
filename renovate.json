@@ -19,6 +19,58 @@
 			"major": {
 				"enabled": false
 			}
+		},
+		{
+			"matchPackagePatterns": [
+				"^org\\.apache\\.maven\\.plugins:",
+				"^org\\.codehaus\\.mojo:",
+				"^com\\.coveo:fmt-maven-plugin"
+			],
+			"groupName": "Maven Plugins"
+		},
+		{
+			"matchPackagePatterns": [
+				"^org\\.graalvm\\."
+			],
+			"groupName": "GraalVM Dependencies"
+		},
+		{
+			"matchPackagePatterns": [
+				"^org\\.junit",
+				"^org\\.mockito:",
+				"^org\\.awaitility:",
+				"^org\\.hamcrest:"
+			],
+			"groupName": "Test Dependencies"
+		},
+		{
+			"matchPackagePatterns": [
+				"^org\\.springframework"
+			],
+			"groupName": "Spring Dependencies"
+		},
+		{
+			"matchPackagePatterns": [
+				"^com\\.google\\.protobuf:"
+			],
+			"groupName": "Protobuf Dependencies"
+		},
+		{
+			"matchPackagePatterns": [
+				"^io\\.grpc:"
+			],
+			"groupName": "gRPC Dependencies"
+		},
+		{
+			"matchPackagePatterns": [
+				"^com\\.google\\.cloud:",
+				"^com\\.google\\.cloud\\.sql:",
+				"^com\\.google\\.auth:",
+				"^com\\.google\\.api-common:",
+				"^com\\.google\\.api\\.grpc:",
+				"^com\\.google\\.api:"
+			],
+			"groupName": "Google Cloud Dependencies"
 		}
 	],
 	"labels": [
