@@ -140,7 +140,7 @@ public class SpannerPersistentEntityImpl<T>
 
   @Override
   public void addPersistentProperty(SpannerPersistentProperty property) {
-    if (!property.isMapped()) {
+    if (!property.isMapped() || !property.isWritable()) {
       return;
     }
     addPersistentPropertyToPersistentEntity(property);
