@@ -18,10 +18,17 @@ package com.google.cloud.spring.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
 
 /** Tests for the {@link DefaultCredentialsProvider}. */
 class DefaultCredentialsProviderTests {
@@ -48,5 +55,47 @@ class DefaultCredentialsProviderTests {
         .hasSize(GcpScope.values().length + 1)
         .contains(GcpScope.PUBSUB.getUrl())
         .contains("myscope");
+  }
+
+  @Test
+  void testImpersonatedServiceAccountGetterSetter() {
+    Credentials credentials = new Credentials();
+    assertThat(credentials.getImpersonatedServiceAccount()).isNull();
+
+    credentials.setImpersonatedServiceAccount("sa@project.iam.gserviceaccount.com");
+    assertThat(credentials.getImpersonatedServiceAccount())
+        .isEqualTo("sa@project.iam.gserviceaccount.com");
+  }
+
+  @Test
+  void testEncodedKeyTakesPrecedenceOverImpersonation() throws IOException {
+    Credentials credentials = new Credentials();
+    credentials.setEncodedKey(encodedFakeKey());
+    credentials.setImpersonatedServiceAccount("sa@project.iam.gserviceaccount.com");
+
+    DefaultCredentialsProvider provider = new DefaultCredentialsProvider(() -> credentials);
+
+    assertThat(provider.getCredentials()).isInstanceOf(ServiceAccountCredentials.class);
+    assertThat(((ServiceAccountCredentials) provider.getCredentials()).getClientEmail())
+        .isEqualTo("test@fake-project.iam.gserviceaccount.com");
+  }
+
+  @Test
+  void testLocationTakesPrecedenceOverImpersonation() throws IOException {
+    Credentials credentials = new Credentials();
+    credentials.setLocation(new ClassPathResource("fake-credential-key.json"));
+    credentials.setImpersonatedServiceAccount("sa@project.iam.gserviceaccount.com");
+
+    DefaultCredentialsProvider provider = new DefaultCredentialsProvider(() -> credentials);
+
+    assertThat(provider.getCredentials()).isInstanceOf(ServiceAccountCredentials.class);
+    assertThat(((ServiceAccountCredentials) provider.getCredentials()).getClientEmail())
+        .isEqualTo("test@fake-project.iam.gserviceaccount.com");
+  }
+
+  private static String encodedFakeKey() throws IOException {
+    byte[] keyBytes =
+        Files.readAllBytes(Paths.get("src/test/resources/fake-credential-key.json"));
+    return Base64.getEncoder().encodeToString(new String(keyBytes, StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8));
   }
 }

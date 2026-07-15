@@ -22,6 +22,7 @@ import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.ComputeEngineCredentials;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.ImpersonatedCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.auth.oauth2.UserCredentials;
 import java.io.ByteArrayInputStream;
@@ -68,6 +69,8 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
    *   <li>*.credentials.location: Credentials built from JSON content inside the file pointed to by
    *       this property,
    *   <li>*.credentials.encoded-key: Credentials built from JSON String, encoded on base64,
+   *   <li>*.credentials.impersonated-service-account: Credentials impersonating the service account by
+   *       default credentials,
    *   <li>Google Cloud Client Libraries default credentials provider.
    * </ul>
    *
@@ -81,6 +84,7 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
     List<String> scopes = resolveScopes(credentialsSupplier.getCredentials().getScopes());
     Resource providedLocation = credentialsSupplier.getCredentials().getLocation();
     String encodedKey = credentialsSupplier.getCredentials().getEncodedKey();
+    String impersonatedServiceAccount = credentialsSupplier.getCredentials().getImpersonatedServiceAccount();
 
     if (providedLocation != null) {
       this.wrappedCredentialsProvider =
@@ -92,6 +96,15 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
               GoogleCredentials.fromStream(
                       new ByteArrayInputStream(Base64.getDecoder().decode(encodedKey)))
                   .createScoped(scopes));
+    } else if (StringUtils.hasText(impersonatedServiceAccount)) {
+      this.wrappedCredentialsProvider =
+          FixedCredentialsProvider.create(
+              ImpersonatedCredentials.create(
+                  GoogleCredentials.getApplicationDefault(),
+                  impersonatedServiceAccount,
+                  null,
+                  scopes,
+                  0));
     } else {
       this.wrappedCredentialsProvider =
           GoogleCredentialsProvider.newBuilder().setScopesToApply(scopes).build();

@@ -92,6 +92,20 @@ spring.cloud.gcp.credentials.location=file:/usr/local/key.json
 Alternatively, you can set the credentials by directly specifying the `spring.cloud.gcp.credentials.encoded-key` property.
 The value should be the base64-encoded account private key in JSON format.
 
+Another alternative to managing service account keys is to use service account impersonation.
+Set `spring.cloud.gcp.credentials.impersonated-service-account` to the email of a service account, and the starter will use the Application Default Credentials to obtain access tokens on behalf of that service account.
+
+[source]
+----
+spring.cloud.gcp.credentials.impersonated-service-account=my-sa@my-project.iam.gserviceaccount.com
+----
+
+The source credentials (typically your local user credentials or the GCE/GKE workload identity) must have the `roles/iam.serviceAccountTokenCreator` role on the target service account.
+This property is useful for local development, where it lets engineers run code under a real dev service account identity without provisioning static service account keys.
+It is ignored when `spring.cloud.gcp.credentials.location` or `spring.cloud.gcp.credentials.encoded-key` is also set.
+
+NOTE: Like the other credential properties, impersonation can be overridden per service (for example, `spring.cloud.gcp.pubsub.credentials.impersonated-service-account`).
+
 If your app is running on Google App Engine or Google Compute Engine, in most cases, you should omit the `spring.cloud.gcp.credentials.location` property and, instead, let the Spring Framework on Google Cloud Starter get the correct credentials for those environments.
 On App Engine Standard, the https://cloud.google.com/appengine/docs/standard/java/appidentity/[App Identity service account credentials] are used, on App Engine Flexible, the https://cloud.google.com/appengine/docs/flexible/java/service-account[Flexible service account credential] are used and on Google Compute Engine, the https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#using_the_compute_engine_default_service_account[Compute Engine Default Service Account] is used.
 
