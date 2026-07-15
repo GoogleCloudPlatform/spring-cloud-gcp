@@ -21,56 +21,56 @@
 			}
 		},
 		{
-			"matchPackagePatterns": [
-				"^org\\.apache\\.maven\\.plugins:",
-				"^org\\.codehaus\\.mojo:",
-				"^com\\.coveo:fmt-maven-plugin"
-			],
-			"groupName": "Maven Plugins"
+			"groupName": "Maven Plugins",
+			"matchPackageNames": [
+				"/^org\\.apache\\.maven\\.plugins:/",
+				"/^org\\.codehaus\\.mojo:/",
+				"/^com\\.coveo:fmt-maven-plugin/"
+			]
 		},
 		{
-			"matchPackagePatterns": [
-				"^org\\.graalvm\\."
-			],
-			"groupName": "GraalVM Dependencies"
+			"groupName": "GraalVM Dependencies",
+			"matchPackageNames": [
+				"/^org\\.graalvm\\./"
+			]
 		},
 		{
-			"matchPackagePatterns": [
-				"^org\\.junit",
-				"^org\\.mockito:",
-				"^org\\.awaitility:",
-				"^org\\.hamcrest:"
-			],
-			"groupName": "Test Dependencies"
+			"groupName": "Test Dependencies",
+			"matchPackageNames": [
+				"/^org\\.junit/",
+				"/^org\\.mockito:/",
+				"/^org\\.awaitility:/",
+				"/^org\\.hamcrest:/"
+			]
 		},
 		{
-			"matchPackagePatterns": [
-				"^org\\.springframework"
-			],
-			"groupName": "Spring Dependencies"
+			"groupName": "Spring Dependencies",
+			"matchPackageNames": [
+				"/^org\\.springframework/"
+			]
 		},
 		{
-			"matchPackagePatterns": [
-				"^com\\.google\\.protobuf:"
-			],
-			"groupName": "Protobuf Dependencies"
+			"groupName": "Protobuf Dependencies",
+			"matchPackageNames": [
+				"/^com\\.google\\.protobuf:/"
+			]
 		},
 		{
-			"matchPackagePatterns": [
-				"^io\\.grpc:"
-			],
-			"groupName": "gRPC Dependencies"
+			"groupName": "gRPC Dependencies",
+			"matchPackageNames": [
+				"/^io\\.grpc:/"
+			]
 		},
 		{
-			"matchPackagePatterns": [
-				"^com\\.google\\.cloud:",
-				"^com\\.google\\.cloud\\.sql:",
-				"^com\\.google\\.auth:",
-				"^com\\.google\\.api-common:",
-				"^com\\.google\\.api\\.grpc:",
-				"^com\\.google\\.api:"
-			],
-			"groupName": "Google Cloud Dependencies"
+			"groupName": "Google Cloud Dependencies",
+			"matchPackageNames": [
+				"/^com\\.google\\.cloud:/",
+				"/^com\\.google\\.cloud\\.sql:/",
+				"/^com\\.google\\.auth:/",
+				"/^com\\.google\\.api-common:/",
+				"/^com\\.google\\.api\\.grpc:/",
+				"/^com\\.google\\.api:/"
+			]
 		}
 	],
 	"labels": [
