@@ -6,7 +6,7 @@ image:https://sonarcloud.io/api/project_badges/measure?project=GoogleCloudPlatfo
 == Spring Framework on Google Cloud
 
 This project makes it easy for Spring users to run their applications on Google Cloud.
-You can check our project website https://spring.io/projects/spring-cloud-gcp[here].
+You can check our project website https://spring.io/projects/spring-cloud-gcp[here]
 
 For a deep dive into the project, refer to the Spring Framework on Google Cloud Reference documentation or Javadocs:
 
