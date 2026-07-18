@@ -30,6 +30,8 @@ import org.springframework.util.Assert;
  */
 public class SpannerQueryOptions extends AbstractSpannerRequestOptions<QueryOption> {
 
+  private boolean forUpdate;
+
   /**
    * Constructor to create an instance. Use the extension-style add/set functions to add options and
    * settings.
@@ -41,6 +43,22 @@ public class SpannerQueryOptions extends AbstractSpannerRequestOptions<QueryOpti
   public SpannerQueryOptions addQueryOption(QueryOption queryOption) {
     Assert.notNull(queryOption, "Valid query option is required!");
     this.requestOptions.add(queryOption);
+    return this;
+  }
+
+  public boolean isForUpdate() {
+    return this.forUpdate;
+  }
+
+  /**
+   * Sets whether the query should acquire exclusive locks on the selected rows. Cloud Spanner only
+   * supports {@code FOR UPDATE} in read-write transactions.
+   *
+   * @param forUpdate whether {@code FOR UPDATE} is enabled
+   * @return this options instance
+   */
+  public SpannerQueryOptions setForUpdate(boolean forUpdate) {
+    this.forUpdate = forUpdate;
     return this;
   }
 

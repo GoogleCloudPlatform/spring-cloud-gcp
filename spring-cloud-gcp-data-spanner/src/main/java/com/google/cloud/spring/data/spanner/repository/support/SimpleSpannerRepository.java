@@ -20,8 +20,11 @@ import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
 import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
+import com.google.cloud.spring.data.spanner.repository.query.SpannerStatementQueryExecutor;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Function;
@@ -94,6 +97,27 @@ public class SimpleSpannerRepository<T, I> implements SpannerRepository<T, I> {
     Assert.notNull(id, NON_NULL_ID_REQUIRED);
     T result = this.spannerTemplate.read(this.entityType, toKey(id));
     return Optional.<T>ofNullable(result);
+  }
+
+  @Override
+  public Optional<T> findByIdForUpdate(I id) {
+    Assert.notNull(id, NON_NULL_ID_REQUIRED);
+    SpannerPersistentEntity<?> persistentEntity =
+        this.spannerTemplate.getMappingContext().getPersistentEntityOrFail(this.entityType);
+    return this.spannerTemplate
+        .query(
+            this.entityType,
+            SpannerStatementQueryExecutor.buildQuery(
+                KeySet.singleKey(toKey(id)),
+                persistentEntity,
+                this.spannerTemplate.getSpannerEntityProcessor().getWriteConverter(),
+                this.spannerTemplate.getMappingContext(),
+                persistentEntity.getWhere(),
+                null,
+                true),
+            new SpannerQueryOptions().setForUpdate(true))
+        .stream()
+        .findFirst();
   }
 
   @Override
