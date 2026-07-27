@@ -13,7 +13,7 @@ For a deep dive into the project, refer to the Spring Framework on Google Cloud 
 Google Cloud Reference Documentation:
 
 // {x-version-update-start:spring-cloud-gcp:released}
-* link:https://googlecloudplatform.github.io/spring-cloud-gcp/8.1.0/reference/html/index.html[Spring Framework on Google Cloud 8.0.5 (Latest)]
+* link:https://googlecloudplatform.github.io/spring-cloud-gcp/8.1.0/reference/html/index.html[Spring Framework on Google Cloud 8.1.0 (Latest)]
 // {x-version-update-end}
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/7.4.10/reference/html/index.html[Spring Framework on Google Cloud 7.4.10]
 * link:https://googlecloudplatform.github.io/spring-cloud-gcp/6.5.10/reference/html/index.html[Spring Framework on Google Cloud 6.5.10]
@@ -63,8 +63,8 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 
 |8.x
 |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2025.1-Release-Notes[2025.1.x] (Oakwood)
-|https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Release-Notes [4.0.x]
-|https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-7.0-Release-Notes [7.0.0 or above]
+|https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Release-Notes[4.0.x], https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.1-Release-Notes[4.1.x]
+|https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-7.0-Release-Notes[7.0.0 or above]
 |Yes
 
 |7.x
