@@ -168,7 +168,7 @@ Update Spring Initializr with the new Spring Cloud GCP version:
 Update the version reference in `README.adoc`:
 *   **If releasing `main` branch**:
     1.  Update the version strings in `README.adoc` with the newly released version (ensuring **both** the version URL path and the bracketed display label text are updated).
-        *   *Compatibility Matrix Check*: If the release adds or upgrades Spring Boot / Spring Cloud version support, update the compatibility table in **both** `README.adoc` and `docs/src/main/asciidoc/getting-started.adoc` (ensuring no spaces between link text brackets, e.g. `...Release-Notes[4.0.x], ...Release-Notes[4.1.x]`).
+        *   *Compatibility Matrix Check*: To determine if the release adds or upgrades Spring Boot / Spring Cloud version support, compare the `spring-boot-dependencies.version` and `spring-cloud-dependencies.version` properties in the root `pom.xml` against the current compatibility table. If the release updates a major or minor version line (e.g. `4.0.x` to `4.1.x`), update the compatibility table in **both** `README.adoc` and `docs/src/main/asciidoc/getting-started.adoc` (ensuring no spaces between link text brackets, e.g. `...Release-Notes[4.0.x], ...Release-Notes[4.1.x]`). If only a patch version was updated (e.g. `4.0.1` to `4.0.2`), no compatibility table change is required.
     2.  Create a local branch `docs-update-readme-<TIMESTAMP>`.
     3.  Commit the change:
         ```bash
@@ -190,7 +190,7 @@ Update the version reference in `README.adoc`:
         ```
     2.  Create a local branch `docs-update-readme-<VERSION>`.
     3.  Update the version string of the released maintenance branch in `README.adoc` (e.g. update `7.4.8` to `7.4.10` in both the links list URL path and bracketed display label text).
-        *   *Compatibility Matrix Check*: If the release adds or upgrades Spring Boot / Spring Cloud version support, update the compatibility table in **both** `README.adoc` and `docs/src/main/asciidoc/getting-started.adoc`.
+        *   *Compatibility Matrix Check*: To determine if the release adds or upgrades Spring Boot / Spring Cloud version support, compare the `spring-boot-dependencies.version` and `spring-cloud-dependencies.version` properties in the root `pom.xml` against the current compatibility table. If the release updates a major or minor version line (e.g. `4.0.x` to `4.1.x`), update the compatibility table in **both** `README.adoc` and `docs/src/main/asciidoc/getting-started.adoc`. If only a patch version was updated (e.g. `4.0.1` to `4.0.2`), no compatibility table change is required.
     4.  Commit the change:
         ```bash
         git commit -m "docs: update README for release <VERSION>"
