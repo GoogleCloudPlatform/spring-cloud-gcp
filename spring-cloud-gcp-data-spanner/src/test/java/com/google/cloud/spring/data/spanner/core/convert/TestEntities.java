@@ -318,4 +318,10 @@ class TestEntities {
       this.instant = instant;
     }
   }
+
+  static class TestEntityWithStringList {
+    @PrimaryKey String id;
+
+    List<String> stringList;
+  }
 }

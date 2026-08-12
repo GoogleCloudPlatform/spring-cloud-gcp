@@ -36,127 +36,104 @@ public class DeviceManagerSpringProperties implements CredentialsSupplier {
       new Credentials(
           "https://www.googleapis.com/auth/cloud-platform",
           "https://www.googleapis.com/auth/cloudiot");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for createDeviceRegistry. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createDeviceRegistryRetry;
-
   /**
    * Allow override of retry settings at method-level for getDeviceRegistry. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDeviceRegistryRetry;
-
   /**
    * Allow override of retry settings at method-level for updateDeviceRegistry. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateDeviceRegistryRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteDeviceRegistry. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteDeviceRegistryRetry;
-
   /**
    * Allow override of retry settings at method-level for listDeviceRegistries. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDeviceRegistriesRetry;
-
   /**
    * Allow override of retry settings at method-level for createDevice. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createDeviceRetry;
-
   /**
    * Allow override of retry settings at method-level for getDevice. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDeviceRetry;
-
   /**
    * Allow override of retry settings at method-level for updateDevice. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateDeviceRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteDevice. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteDeviceRetry;
-
   /**
    * Allow override of retry settings at method-level for listDevices. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDevicesRetry;
-
   /**
    * Allow override of retry settings at method-level for modifyCloudToDeviceConfig. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry modifyCloudToDeviceConfigRetry;
-
   /**
    * Allow override of retry settings at method-level for listDeviceConfigVersions. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDeviceConfigVersionsRetry;
-
   /**
    * Allow override of retry settings at method-level for listDeviceStates. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDeviceStatesRetry;
-
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
-
   /**
    * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
-
   /**
    * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry testIamPermissionsRetry;
-
   /**
    * Allow override of retry settings at method-level for sendCommandToDevice. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry sendCommandToDeviceRetry;
-
   /**
    * Allow override of retry settings at method-level for bindDeviceToGateway. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry bindDeviceToGatewayRetry;
-
   /**
    * Allow override of retry settings at method-level for unbindDeviceFromGateway. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.

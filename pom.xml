@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp</artifactId>
-	<version>8.0.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>8.1.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud</name>
 	<description>Spring Framework on Google Cloud</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -32,23 +32,23 @@
 	<properties>
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
-		<spring-cloud-dependencies.version>2025.1.0</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>4.0.0</spring-boot-dependencies.version>
+		<spring-cloud-dependencies.version>2025.1.2</spring-cloud-dependencies.version>
+		<spring-boot-dependencies.version>4.1.0</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>2.3.0</zipkin-gcp.version>
 		<java-cfenv.version>2.5.0</java-cfenv.version>
 		<micrometer-tracing.version>1.4.3</micrometer-tracing.version>
 
 		<!-- Plugin versions -->
-		<maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-		<maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
-		<maven-flatten-plugin.version>1.6.0</maven-flatten-plugin.version>
-		<maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
-		<maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
-		<maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
-		<maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-		<maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+		<maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
+		<maven-flatten-plugin.version>1.7.3</maven-flatten-plugin.version>
+		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+		<maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
+		<maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+		<maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+		<maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
 		<maven.compiler.release>17</maven.compiler.release>
 		<nexus-staging-plugin.version>1.7.0</nexus-staging-plugin.version>
 		<maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
@@ -56,6 +56,7 @@
 		<asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
 		<native-maven-plugin.version>0.11.3</native-maven-plugin.version>
 		<errorprone.version>2.38.0</errorprone.version>
+		<errorprone.extra.args>-J-Ddummy=true</errorprone.extra.args>
 
 		<!-- All checks except for javadoc enforced by default -->
 		<skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
@@ -117,12 +118,12 @@
 			<dependency>
 				<groupId>tools.jackson.core</groupId>
 				<artifactId>jackson-core</artifactId>
-				<version>3.0.2</version>
+				<version>3.1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>tools.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
-				<version>3.0.2</version>
+				<version>3.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>tools.jackson.core</groupId>
@@ -699,6 +700,7 @@
 									<!-- See: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/pull/92 -->
 									<arg>-parameters</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
+									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
@@ -708,6 +710,7 @@
 									<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
 									<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
 									<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+									<arg>${errorprone.extra.args}</arg>
 								</compilerArgs>
 								<annotationProcessorPaths>
 									<path>
@@ -931,6 +934,16 @@
 					<url>${artifact-registry-url}</url>
 				</snapshotRepository>
 			</distributionManagement>
+		</profile>
+		<profile>
+			<id>errorprone_java_21_and_up</id>
+			<activation>
+				<jdk>[21,]</jdk>
+			</activation>
+			<properties>
+				<errorprone.version>2.49.0</errorprone.version>
+				<errorprone.extra.args>-XDaddTypeAnnotationsToSymbol=true</errorprone.extra.args>
+			</properties>
 		</profile>
 	</profiles>
 

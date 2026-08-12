@@ -96,6 +96,9 @@ public class MemorystoreSpringAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean(name = "defaultMemorystoreTransportChannelProvider")
   public TransportChannelProvider defaultMemorystoreTransportChannelProvider() {
+    if (this.clientProperties.getUseRest()) {
+      return MemorystoreSettings.defaultHttpJsonTransportProviderBuilder().build();
+    }
     return MemorystoreSettings.defaultTransportChannelProvider();
   }
 
@@ -119,7 +122,15 @@ public class MemorystoreSpringAutoConfiguration {
       @Qualifier("defaultMemorystoreTransportChannelProvider")
           TransportChannelProvider defaultTransportChannelProvider)
       throws IOException {
-    MemorystoreSettings.Builder clientSettingsBuilder = MemorystoreSettings.newBuilder();
+    MemorystoreSettings.Builder clientSettingsBuilder;
+    if (this.clientProperties.getUseRest()) {
+      clientSettingsBuilder = MemorystoreSettings.newHttpJsonBuilder();
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Using REST (HTTP/JSON) transport.");
+      }
+    } else {
+      clientSettingsBuilder = MemorystoreSettings.newBuilder();
+    }
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)
@@ -165,6 +176,16 @@ public class MemorystoreSpringAutoConfiguration {
       clientSettingsBuilder
           .getCertificateAuthoritySettings()
           .setRetrySettings(getCertificateAuthorityRetrySettings);
+
+      RetrySettings getSharedRegionalCertificateAuthorityRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder
+                  .getSharedRegionalCertificateAuthoritySettings()
+                  .getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getSharedRegionalCertificateAuthoritySettings()
+          .setRetrySettings(getSharedRegionalCertificateAuthorityRetrySettings);
 
       RetrySettings listBackupCollectionsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -237,6 +258,23 @@ public class MemorystoreSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getCertificateAuthority from properties.");
+      }
+    }
+    Retry getSharedRegionalCertificateAuthorityRetry =
+        clientProperties.getGetSharedRegionalCertificateAuthorityRetry();
+    if (getSharedRegionalCertificateAuthorityRetry != null) {
+      RetrySettings getSharedRegionalCertificateAuthorityRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder
+                  .getSharedRegionalCertificateAuthoritySettings()
+                  .getRetrySettings(),
+              getSharedRegionalCertificateAuthorityRetry);
+      clientSettingsBuilder
+          .getSharedRegionalCertificateAuthoritySettings()
+          .setRetrySettings(getSharedRegionalCertificateAuthorityRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getSharedRegionalCertificateAuthority from properties.");
       }
     }
     Retry listBackupCollectionsRetry = clientProperties.getListBackupCollectionsRetry();

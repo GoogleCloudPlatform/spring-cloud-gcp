@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.cloud</groupId>
 	<artifactId>spring-cloud-gcp-dependencies</artifactId>
-	<version>8.0.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+	<version>8.1.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
 	<name>Spring Framework on Google Cloud Dependencies</name>
 	<description>Spring Framework on Google Cloud Dependencies</description>
 	<url>https://spring.io/projects/spring-cloud-gcp</url>
@@ -34,13 +34,14 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.76.0</gcp-libraries-bom.version>
+		<gcp-libraries-bom.version>26.85.0</gcp-libraries-bom.version>
+		<google-cloud-logging-logback.version>0.137.0-alpha</google-cloud-logging-logback.version>
 		<cloud-sql-socket-factory.version>1.28.0</cloud-sql-socket-factory.version>
 		<r2dbc-postgres-driver.version>1.1.1.RELEASE</r2dbc-postgres-driver.version>
 		<cloud-spanner-r2dbc.version>1.3.0</cloud-spanner-r2dbc.version>
 		<alloydb-jdbc-connector.version>1.2.0</alloydb-jdbc-connector.version>
 		<jakarta-annotation-api.version>2.1.1</jakarta-annotation-api.version>
-		<spring-boot-dependencies.version>4.0.0</spring-boot-dependencies.version>
+		<spring-boot-dependencies.version>4.1.0</spring-boot-dependencies.version>
 	</properties>
 
 	<dependencyManagement>
@@ -349,6 +350,31 @@
 				<version>${cloud-spanner-r2dbc.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>google-cloud-logging-logback</artifactId>
+				<version>${google-cloud-logging-logback.version}</version>
+			</dependency>
+			
+			<!-- spring dependency overrides -->
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>6.1.2</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.opentelemetry</groupId>
+				<artifactId>opentelemetry-api</artifactId>
+				<version>1.62.0</version>
+			</dependency>
+      <dependency>
+				<groupId>javax.annotation</groupId>
+				<artifactId>javax.annotation-api</artifactId>
+				<version>1.3.2</version>
+			</dependency>
+
 			<!--Google Cloud Libraries BOM -->
 			<dependency>
 				<groupId>com.google.cloud</groupId>
@@ -356,13 +382,6 @@
 				<version>${gcp-libraries-bom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-
-			<!-- spring dependency overrides -->
-			<dependency>
-				<groupId>io.opentelemetry</groupId>
-				<artifactId>opentelemetry-api</artifactId>
-				<version>1.47.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -385,7 +404,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.2.7</version>
+						<version>3.2.8</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -450,7 +469,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-enforcer-plugin</artifactId>
-						<version>3.5.0</version>
+						<version>3.6.3</version>
 						<dependencies>
 							<dependency>
 								<groupId>com.google.cloud.tools</groupId>

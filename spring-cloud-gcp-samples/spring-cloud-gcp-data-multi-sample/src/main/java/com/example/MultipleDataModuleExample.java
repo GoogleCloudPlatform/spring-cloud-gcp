@@ -16,6 +16,9 @@
 
 package com.example;
 
+import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
+import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -32,28 +35,85 @@ public class MultipleDataModuleExample {
   // Internally uses a Spring Data Cloud Spanner repository
   @Autowired private TraderService traderService;
 
+  @Autowired private SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
+
+  @Autowired private SpannerSchemaUtils spannerSchemaUtils;
+
   public static void main(String[] args) {
     SpringApplication.run(MultipleDataModuleExample.class, args);
+  }
+
+  void createTablesIfNotExists() {
+    if (!this.spannerDatabaseAdminTemplate.tableExists("traders_multi_sample")) {
+      this.spannerDatabaseAdminTemplate.executeDdlStrings(
+          List.of(
+              this.spannerSchemaUtils
+                  .getCreateTableDdlString(Trader.class)
+                  .replaceFirst("^CREATE TABLE ", "CREATE TABLE IF NOT EXISTS ")),
+          true);
+    }
   }
 
   @Bean
   ApplicationRunner applicationRunner() {
     return args -> {
-      System.out.println("Deleting all entities.");
+      createTablesIfNotExists();
 
-      this.personService.deleteAll();
-      this.traderService.deleteAll();
+      runWithRetry(
+          () -> {
+            System.out.println("Deleting all entities.");
 
-      System.out.println("The number of Person entities is now: " + this.personService.count());
-      System.out.println("The number of Trader entities is now: " + this.traderService.count());
+            this.personService.deleteAll();
+            this.traderService.deleteAll();
 
-      System.out.println("Saving one entity with each repository.");
+            System.out.println(
+                "The number of Person entities is now: " + this.personService.count());
+            System.out.println(
+                "The number of Trader entities is now: " + this.traderService.count());
 
-      this.traderService.save(new Trader("id1", "trader", "one"));
-      this.personService.save(new Person(1L, "person1"));
+            System.out.println("Saving one entity with each repository.");
 
-      System.out.println("The number of Person entities is now: " + this.personService.count());
-      System.out.println("The number of Trader entities is now: " + this.traderService.count());
+            this.traderService.save(new Trader("id1", "trader", "one"));
+            this.personService.save(new Person(1L, "person1"));
+
+            System.out.println(
+                "The number of Person entities is now: " + this.personService.count());
+            System.out.println(
+                "The number of Trader entities is now: " + this.traderService.count());
+          });
     };
+  }
+
+  private void runWithRetry(Runnable runnable) {
+    for (int attempt = 1; attempt <= 5; attempt++) {
+      try {
+        runnable.run();
+        return;
+      } catch (Exception ex) {
+        if (attempt == 5 || !isRetryable(ex)) {
+          throw ex;
+        }
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException ie) {
+          Thread.currentThread().interrupt();
+          throw ex;
+        }
+      }
+    }
+  }
+
+  private boolean isRetryable(Throwable ex) {
+    while (ex != null) {
+      String msg = ex.getMessage();
+      if (msg != null
+          && (msg.contains("Database schema has changed")
+              || msg.contains("Table not found: traders_multi_sample")
+              || msg.contains("ABORTED"))) {
+        return true;
+      }
+      ex = ex.getCause();
+    }
+    return false;
   }
 }

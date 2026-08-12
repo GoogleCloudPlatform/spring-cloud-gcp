@@ -290,6 +290,37 @@ public class ConfigSpringAutoConfiguration {
           .getAutoMigrationConfigSettings()
           .setRetrySettings(getAutoMigrationConfigRetrySettings);
 
+      RetrySettings getDeploymentGroupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDeploymentGroupSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getDeploymentGroupSettings()
+          .setRetrySettings(getDeploymentGroupRetrySettings);
+
+      RetrySettings listDeploymentGroupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDeploymentGroupsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listDeploymentGroupsSettings()
+          .setRetrySettings(listDeploymentGroupsRetrySettings);
+
+      RetrySettings getDeploymentGroupRevisionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDeploymentGroupRevisionSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getDeploymentGroupRevisionSettings()
+          .setRetrySettings(getDeploymentGroupRevisionRetrySettings);
+
+      RetrySettings listDeploymentGroupRevisionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDeploymentGroupRevisionsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listDeploymentGroupRevisionsSettings()
+          .setRetrySettings(listDeploymentGroupRevisionsRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -579,6 +610,63 @@ public class ConfigSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getAutoMigrationConfig from properties.");
+      }
+    }
+    Retry getDeploymentGroupRetry = clientProperties.getGetDeploymentGroupRetry();
+    if (getDeploymentGroupRetry != null) {
+      RetrySettings getDeploymentGroupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDeploymentGroupSettings().getRetrySettings(),
+              getDeploymentGroupRetry);
+      clientSettingsBuilder
+          .getDeploymentGroupSettings()
+          .setRetrySettings(getDeploymentGroupRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getDeploymentGroup from properties.");
+      }
+    }
+    Retry listDeploymentGroupsRetry = clientProperties.getListDeploymentGroupsRetry();
+    if (listDeploymentGroupsRetry != null) {
+      RetrySettings listDeploymentGroupsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDeploymentGroupsSettings().getRetrySettings(),
+              listDeploymentGroupsRetry);
+      clientSettingsBuilder
+          .listDeploymentGroupsSettings()
+          .setRetrySettings(listDeploymentGroupsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listDeploymentGroups from properties.");
+      }
+    }
+    Retry getDeploymentGroupRevisionRetry = clientProperties.getGetDeploymentGroupRevisionRetry();
+    if (getDeploymentGroupRevisionRetry != null) {
+      RetrySettings getDeploymentGroupRevisionRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getDeploymentGroupRevisionSettings().getRetrySettings(),
+              getDeploymentGroupRevisionRetry);
+      clientSettingsBuilder
+          .getDeploymentGroupRevisionSettings()
+          .setRetrySettings(getDeploymentGroupRevisionRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getDeploymentGroupRevision from properties.");
+      }
+    }
+    Retry listDeploymentGroupRevisionsRetry =
+        clientProperties.getListDeploymentGroupRevisionsRetry();
+    if (listDeploymentGroupRevisionsRetry != null) {
+      RetrySettings listDeploymentGroupRevisionsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listDeploymentGroupRevisionsSettings().getRetrySettings(),
+              listDeploymentGroupRevisionsRetry);
+      clientSettingsBuilder
+          .listDeploymentGroupRevisionsSettings()
+          .setRetrySettings(listDeploymentGroupRevisionsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listDeploymentGroupRevisions from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

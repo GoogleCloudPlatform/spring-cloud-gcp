@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [17, 21, 25]
+        java: [17, 21, 25, 26]
     steps:
     - name: Get current date
       id: date

@@ -34,79 +34,64 @@ public class CloudControlsPartnerCoreSpringProperties implements CredentialsSupp
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for getWorkload. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getWorkloadRetry;
-
   /**
    * Allow override of retry settings at method-level for listWorkloads. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listWorkloadsRetry;
-
   /**
    * Allow override of retry settings at method-level for getCustomer. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getCustomerRetry;
-
   /**
    * Allow override of retry settings at method-level for listCustomers. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listCustomersRetry;
-
   /**
    * Allow override of retry settings at method-level for getEkmConnections. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getEkmConnectionsRetry;
-
   /**
    * Allow override of retry settings at method-level for getPartnerPermissions. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getPartnerPermissionsRetry;
-
   /**
    * Allow override of retry settings at method-level for listAccessApprovalRequests. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAccessApprovalRequestsRetry;
-
   /**
    * Allow override of retry settings at method-level for getPartner. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getPartnerRetry;
-
   /**
    * Allow override of retry settings at method-level for createCustomer. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createCustomerRetry;
-
   /**
    * Allow override of retry settings at method-level for updateCustomer. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateCustomerRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteCustomer. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

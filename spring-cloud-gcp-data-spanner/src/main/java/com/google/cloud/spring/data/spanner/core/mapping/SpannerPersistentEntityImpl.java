@@ -62,7 +62,7 @@ public class SpannerPersistentEntityImpl<T>
 
   private static final ExpressionParser PARSER = new SpelExpressionParser();
 
-  private static final Pattern TABLE_NAME_ILLEGAL_CHAR_PATTERN = Pattern.compile("[^a-zA-Z0-9_]");
+  private static final Pattern VALID_TABLE_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)?$");
 
   private final Class rawType;
 
@@ -376,9 +376,10 @@ public class SpannerPersistentEntityImpl<T>
   // Because SpEL expressions in table name definitions are allowed, validation is
   // required.
   private String validateTableName(String name) {
-    if (TABLE_NAME_ILLEGAL_CHAR_PATTERN.matcher(name).find()) {
+    if (!VALID_TABLE_NAME_PATTERN.matcher(name).matches()) {
       throw new SpannerDataException(
-          "Only letters, numbers, and underscores are " + "allowed in table names: " + name);
+          "Only letters, numbers, and underscores are allowed in table names, and at most one dot: "
+              + name);
     }
     return name;
   }

@@ -165,6 +165,22 @@ public class NetworkSecuritySpringAutoConfiguration {
           .getAuthorizationPolicySettings()
           .setRetrySettings(getAuthorizationPolicyRetrySettings);
 
+      RetrySettings listBackendAuthenticationConfigsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackendAuthenticationConfigsSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listBackendAuthenticationConfigsSettings()
+          .setRetrySettings(listBackendAuthenticationConfigsRetrySettings);
+
+      RetrySettings getBackendAuthenticationConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackendAuthenticationConfigSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getBackendAuthenticationConfigSettings()
+          .setRetrySettings(getBackendAuthenticationConfigRetrySettings);
+
       RetrySettings listServerTlsPoliciesRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listServerTlsPoliciesSettings().getRetrySettings(),
@@ -194,6 +210,76 @@ public class NetworkSecuritySpringAutoConfiguration {
       clientSettingsBuilder
           .getClientTlsPolicySettings()
           .setRetrySettings(getClientTlsPolicyRetrySettings);
+
+      RetrySettings listGatewaySecurityPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listGatewaySecurityPoliciesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listGatewaySecurityPoliciesSettings()
+          .setRetrySettings(listGatewaySecurityPoliciesRetrySettings);
+
+      RetrySettings getGatewaySecurityPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getGatewaySecurityPolicySettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getGatewaySecurityPolicySettings()
+          .setRetrySettings(getGatewaySecurityPolicyRetrySettings);
+
+      RetrySettings listGatewaySecurityPolicyRulesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listGatewaySecurityPolicyRulesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listGatewaySecurityPolicyRulesSettings()
+          .setRetrySettings(listGatewaySecurityPolicyRulesRetrySettings);
+
+      RetrySettings getGatewaySecurityPolicyRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getGatewaySecurityPolicyRuleSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getGatewaySecurityPolicyRuleSettings()
+          .setRetrySettings(getGatewaySecurityPolicyRuleRetrySettings);
+
+      RetrySettings listUrlListsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listUrlListsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listUrlListsSettings().setRetrySettings(listUrlListsRetrySettings);
+
+      RetrySettings getUrlListRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getUrlListSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getUrlListSettings().setRetrySettings(getUrlListRetrySettings);
+
+      RetrySettings listTlsInspectionPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listTlsInspectionPoliciesSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .listTlsInspectionPoliciesSettings()
+          .setRetrySettings(listTlsInspectionPoliciesRetrySettings);
+
+      RetrySettings getTlsInspectionPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getTlsInspectionPolicySettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .getTlsInspectionPolicySettings()
+          .setRetrySettings(getTlsInspectionPolicyRetrySettings);
+
+      RetrySettings listAuthzPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAuthzPoliciesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listAuthzPoliciesSettings()
+          .setRetrySettings(listAuthzPoliciesRetrySettings);
+
+      RetrySettings getAuthzPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getAuthzPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getAuthzPolicySettings().setRetrySettings(getAuthzPolicyRetrySettings);
 
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -254,6 +340,36 @@ public class NetworkSecuritySpringAutoConfiguration {
             "Configured method-level retry settings for getAuthorizationPolicy from properties.");
       }
     }
+    Retry listBackendAuthenticationConfigsRetry =
+        clientProperties.getListBackendAuthenticationConfigsRetry();
+    if (listBackendAuthenticationConfigsRetry != null) {
+      RetrySettings listBackendAuthenticationConfigsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listBackendAuthenticationConfigsSettings().getRetrySettings(),
+              listBackendAuthenticationConfigsRetry);
+      clientSettingsBuilder
+          .listBackendAuthenticationConfigsSettings()
+          .setRetrySettings(listBackendAuthenticationConfigsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listBackendAuthenticationConfigs from properties.");
+      }
+    }
+    Retry getBackendAuthenticationConfigRetry =
+        clientProperties.getGetBackendAuthenticationConfigRetry();
+    if (getBackendAuthenticationConfigRetry != null) {
+      RetrySettings getBackendAuthenticationConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getBackendAuthenticationConfigSettings().getRetrySettings(),
+              getBackendAuthenticationConfigRetry);
+      clientSettingsBuilder
+          .getBackendAuthenticationConfigSettings()
+          .setRetrySettings(getBackendAuthenticationConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getBackendAuthenticationConfig from properties.");
+      }
+    }
     Retry listServerTlsPoliciesRetry = clientProperties.getListServerTlsPoliciesRetry();
     if (listServerTlsPoliciesRetry != null) {
       RetrySettings listServerTlsPoliciesRetrySettings =
@@ -308,6 +424,137 @@ public class NetworkSecuritySpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for getClientTlsPolicy from properties.");
+      }
+    }
+    Retry listGatewaySecurityPoliciesRetry = clientProperties.getListGatewaySecurityPoliciesRetry();
+    if (listGatewaySecurityPoliciesRetry != null) {
+      RetrySettings listGatewaySecurityPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listGatewaySecurityPoliciesSettings().getRetrySettings(),
+              listGatewaySecurityPoliciesRetry);
+      clientSettingsBuilder
+          .listGatewaySecurityPoliciesSettings()
+          .setRetrySettings(listGatewaySecurityPoliciesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listGatewaySecurityPolicies from properties.");
+      }
+    }
+    Retry getGatewaySecurityPolicyRetry = clientProperties.getGetGatewaySecurityPolicyRetry();
+    if (getGatewaySecurityPolicyRetry != null) {
+      RetrySettings getGatewaySecurityPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getGatewaySecurityPolicySettings().getRetrySettings(),
+              getGatewaySecurityPolicyRetry);
+      clientSettingsBuilder
+          .getGatewaySecurityPolicySettings()
+          .setRetrySettings(getGatewaySecurityPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getGatewaySecurityPolicy from properties.");
+      }
+    }
+    Retry listGatewaySecurityPolicyRulesRetry =
+        clientProperties.getListGatewaySecurityPolicyRulesRetry();
+    if (listGatewaySecurityPolicyRulesRetry != null) {
+      RetrySettings listGatewaySecurityPolicyRulesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listGatewaySecurityPolicyRulesSettings().getRetrySettings(),
+              listGatewaySecurityPolicyRulesRetry);
+      clientSettingsBuilder
+          .listGatewaySecurityPolicyRulesSettings()
+          .setRetrySettings(listGatewaySecurityPolicyRulesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listGatewaySecurityPolicyRules from properties.");
+      }
+    }
+    Retry getGatewaySecurityPolicyRuleRetry =
+        clientProperties.getGetGatewaySecurityPolicyRuleRetry();
+    if (getGatewaySecurityPolicyRuleRetry != null) {
+      RetrySettings getGatewaySecurityPolicyRuleRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getGatewaySecurityPolicyRuleSettings().getRetrySettings(),
+              getGatewaySecurityPolicyRuleRetry);
+      clientSettingsBuilder
+          .getGatewaySecurityPolicyRuleSettings()
+          .setRetrySettings(getGatewaySecurityPolicyRuleRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getGatewaySecurityPolicyRule from properties.");
+      }
+    }
+    Retry listUrlListsRetry = clientProperties.getListUrlListsRetry();
+    if (listUrlListsRetry != null) {
+      RetrySettings listUrlListsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listUrlListsSettings().getRetrySettings(), listUrlListsRetry);
+      clientSettingsBuilder.listUrlListsSettings().setRetrySettings(listUrlListsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listUrlLists from properties.");
+      }
+    }
+    Retry getUrlListRetry = clientProperties.getGetUrlListRetry();
+    if (getUrlListRetry != null) {
+      RetrySettings getUrlListRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getUrlListSettings().getRetrySettings(), getUrlListRetry);
+      clientSettingsBuilder.getUrlListSettings().setRetrySettings(getUrlListRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getUrlList from properties.");
+      }
+    }
+    Retry listTlsInspectionPoliciesRetry = clientProperties.getListTlsInspectionPoliciesRetry();
+    if (listTlsInspectionPoliciesRetry != null) {
+      RetrySettings listTlsInspectionPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listTlsInspectionPoliciesSettings().getRetrySettings(),
+              listTlsInspectionPoliciesRetry);
+      clientSettingsBuilder
+          .listTlsInspectionPoliciesSettings()
+          .setRetrySettings(listTlsInspectionPoliciesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listTlsInspectionPolicies from properties.");
+      }
+    }
+    Retry getTlsInspectionPolicyRetry = clientProperties.getGetTlsInspectionPolicyRetry();
+    if (getTlsInspectionPolicyRetry != null) {
+      RetrySettings getTlsInspectionPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getTlsInspectionPolicySettings().getRetrySettings(),
+              getTlsInspectionPolicyRetry);
+      clientSettingsBuilder
+          .getTlsInspectionPolicySettings()
+          .setRetrySettings(getTlsInspectionPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getTlsInspectionPolicy from properties.");
+      }
+    }
+    Retry listAuthzPoliciesRetry = clientProperties.getListAuthzPoliciesRetry();
+    if (listAuthzPoliciesRetry != null) {
+      RetrySettings listAuthzPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAuthzPoliciesSettings().getRetrySettings(),
+              listAuthzPoliciesRetry);
+      clientSettingsBuilder
+          .listAuthzPoliciesSettings()
+          .setRetrySettings(listAuthzPoliciesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listAuthzPolicies from properties.");
+      }
+    }
+    Retry getAuthzPolicyRetry = clientProperties.getGetAuthzPolicyRetry();
+    if (getAuthzPolicyRetry != null) {
+      RetrySettings getAuthzPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getAuthzPolicySettings().getRetrySettings(),
+              getAuthzPolicyRetry);
+      clientSettingsBuilder.getAuthzPolicySettings().setRetrySettings(getAuthzPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getAuthzPolicy from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

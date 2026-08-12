@@ -34,91 +34,74 @@ public class DocumentProcessorServiceSpringProperties implements CredentialsSupp
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for processDocument. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry processDocumentRetry;
-
   /**
    * Allow override of retry settings at method-level for fetchProcessorTypes. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry fetchProcessorTypesRetry;
-
   /**
    * Allow override of retry settings at method-level for listProcessorTypes. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listProcessorTypesRetry;
-
   /**
    * Allow override of retry settings at method-level for getProcessorType. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getProcessorTypeRetry;
-
   /**
    * Allow override of retry settings at method-level for listProcessors. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listProcessorsRetry;
-
   /**
    * Allow override of retry settings at method-level for getProcessor. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getProcessorRetry;
-
   /**
    * Allow override of retry settings at method-level for getProcessorVersion. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getProcessorVersionRetry;
-
   /**
    * Allow override of retry settings at method-level for listProcessorVersions. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listProcessorVersionsRetry;
-
   /**
    * Allow override of retry settings at method-level for createProcessor. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createProcessorRetry;
-
   /**
    * Allow override of retry settings at method-level for getEvaluation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getEvaluationRetry;
-
   /**
    * Allow override of retry settings at method-level for listEvaluations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listEvaluationsRetry;
-
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
-
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

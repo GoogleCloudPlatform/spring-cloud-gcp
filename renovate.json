@@ -2,6 +2,8 @@
 	"extends": [
 		"config:recommended"
 	],
+	"prHourlyLimit": 10,
+	"prConcurrentLimit": 20,
 	"ignorePaths": [
 		".kokoro/requirements.txt"
 	],
@@ -17,6 +19,58 @@
 			"major": {
 				"enabled": false
 			}
+		},
+		{
+			"groupName": "Maven Plugins",
+			"matchPackageNames": [
+				"/^org\\.apache\\.maven\\.plugins:/",
+				"/^org\\.codehaus\\.mojo:/",
+				"/^com\\.coveo:fmt-maven-plugin/"
+			]
+		},
+		{
+			"groupName": "GraalVM Dependencies",
+			"matchPackageNames": [
+				"/^org\\.graalvm\\./"
+			]
+		},
+		{
+			"groupName": "Test Dependencies",
+			"matchPackageNames": [
+				"/^org\\.junit/",
+				"/^org\\.mockito:/",
+				"/^org\\.awaitility:/",
+				"/^org\\.hamcrest:/"
+			]
+		},
+		{
+			"groupName": "Spring Dependencies",
+			"matchPackageNames": [
+				"/^org\\.springframework/"
+			]
+		},
+		{
+			"groupName": "Protobuf Dependencies",
+			"matchPackageNames": [
+				"/^com\\.google\\.protobuf:/"
+			]
+		},
+		{
+			"groupName": "gRPC Dependencies",
+			"matchPackageNames": [
+				"/^io\\.grpc:/"
+			]
+		},
+		{
+			"groupName": "Google Cloud Dependencies",
+			"matchPackageNames": [
+				"/^com\\.google\\.cloud:/",
+				"/^com\\.google\\.cloud\\.sql:/",
+				"/^com\\.google\\.auth:/",
+				"/^com\\.google\\.api-common:/",
+				"/^com\\.google\\.api\\.grpc:/",
+				"/^com\\.google\\.api:/"
+			]
 		}
 	],
 	"labels": [

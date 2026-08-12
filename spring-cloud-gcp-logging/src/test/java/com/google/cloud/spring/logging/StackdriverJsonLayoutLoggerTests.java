@@ -150,7 +150,7 @@ class StackdriverJsonLayoutLoggerTests {
 
     String loggedMessage = data.get(JsonLayout.FORMATTED_MESSAGE_ATTR_NAME);
     assertThat(loggedMessage)
-        .startsWith("null" + System.lineSeparator() + "java.lang.NullPointerException: null");
+        .startsWith("null" + System.lineSeparator() + "java.lang.NullPointerException");
   }
 
   @Test

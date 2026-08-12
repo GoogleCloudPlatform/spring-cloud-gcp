@@ -23,6 +23,8 @@ import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTempl
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import com.google.cloud.spring.data.spanner.test.domain.CommitTimestamps;
 import com.google.cloud.spring.data.spanner.test.domain.Trade;
+import com.google.cloud.spring.data.spanner.test.domain.UuidStringUser;
+import com.google.cloud.spring.data.spanner.test.domain.UuidUser;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,8 @@ public class SpannerTestExecutionListener implements TestExecutionListener {
     List<String> dropSchemaStatements =
         spannerSchemaUtils.getDropTableDdlStringsForInterleavedHierarchy(Trade.class);
     dropSchemaStatements.add(spannerSchemaUtils.getDropTableDdlString(CommitTimestamps.class));
+    dropSchemaStatements.add(spannerSchemaUtils.getDropTableDdlString(UuidUser.class));
+    dropSchemaStatements.add(spannerSchemaUtils.getDropTableDdlString(UuidStringUser.class));
 
     spannerDatabaseAdminTemplate.executeDdlStrings(dropSchemaStatements, false);
   }
@@ -91,6 +95,8 @@ public class SpannerTestExecutionListener implements TestExecutionListener {
         this.spannerSchemaUtils
             .getCreateTableDdlString(CommitTimestamps.class)
             .replaceAll("TIMESTAMP", "TIMESTAMP OPTIONS (allow_commit_timestamp = true)"));
+    list.add(this.spannerSchemaUtils.getCreateTableDdlString(UuidUser.class));
+    list.add(this.spannerSchemaUtils.getCreateTableDdlString(UuidStringUser.class));
     return list;
   }
 }

@@ -38,55 +38,44 @@ public class OsLoginServiceSpringProperties implements CredentialsSupplier {
           "https://www.googleapis.com/auth/cloud-platform.read-only",
           "https://www.googleapis.com/auth/compute",
           "https://www.googleapis.com/auth/compute.readonly");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for createSshPublicKey. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createSshPublicKeyRetry;
-
   /**
    * Allow override of retry settings at method-level for deletePosixAccount. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deletePosixAccountRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteSshPublicKey. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteSshPublicKeyRetry;
-
   /**
    * Allow override of retry settings at method-level for getLoginProfile. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLoginProfileRetry;
-
   /**
    * Allow override of retry settings at method-level for getSshPublicKey. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getSshPublicKeyRetry;
-
   /**
    * Allow override of retry settings at method-level for importSshPublicKey. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry importSshPublicKeyRetry;
-
   /**
    * Allow override of retry settings at method-level for updateSshPublicKey. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.

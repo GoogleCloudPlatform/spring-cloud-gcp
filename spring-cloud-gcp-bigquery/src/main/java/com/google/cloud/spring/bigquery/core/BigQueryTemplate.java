@@ -396,7 +396,7 @@ public class BigQueryTemplate implements BigQueryOperations {
                   }
                 }
               } catch (Exception e) {
-                result.completeExceptionally(new BigQueryException(e.getMessage()));
+                result.completeExceptionally(new BigQueryException(e.getMessage(), e));
               }
             },
             this.jobPollInterval);

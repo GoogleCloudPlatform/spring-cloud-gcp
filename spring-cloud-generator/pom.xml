@@ -6,7 +6,7 @@
     <parent>
         <artifactId>spring-cloud-gcp</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>8.0.2-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
+        <version>8.1.1-SNAPSHOT</version><!-- {x-version-update:spring-cloud-gcp:current} -->
     </parent>
 
     <groupId>com.google.cloud</groupId>
@@ -15,10 +15,11 @@
     <description>Spring Code Generator for Google Cloud</description>
 
     <properties>
-        <gapic-generator-java-bom.version>2.65.1</gapic-generator-java-bom.version>
+        <gapic-generator-java-bom.version>2.74.0</gapic-generator-java-bom.version>
         <!-- [gapic-test]: protobuf.version for compiling protos used in unit testing
              this should be consistent with version in gapic-generator-java-bom -->
         <protobuf.version>3.25.8</protobuf.version>
+        <gax.test.version>2.82.0</gax.test.version>
     </properties>
 
     <dependencyManagement>
@@ -48,6 +49,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.api</groupId>
+            <artifactId>gax</artifactId>
+            <version>${gax.test.version}</version>
+            <classifier>testlib</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-autoconfigure</artifactId>
         </dependency>
@@ -61,7 +69,7 @@
         <dependency>
             <groupId>com.google.truth</groupId>
             <artifactId>truth</artifactId>
-            <version>1.4.4</version>
+            <version>1.4.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

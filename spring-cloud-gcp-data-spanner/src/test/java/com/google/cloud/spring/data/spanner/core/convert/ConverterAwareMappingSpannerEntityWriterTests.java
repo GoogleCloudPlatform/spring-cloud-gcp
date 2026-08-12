@@ -281,7 +281,7 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     when(writeBuilder.set("uuidField")).thenReturn(uuidFieldBinder);
 
     ValueBinder<WriteBuilder> uuidListFieldBinder = mock(ValueBinder.class);
-    when(uuidListFieldBinder.toUuidArray(any())).thenReturn(null);
+    when(uuidListFieldBinder.to((Value) any())).thenReturn(null);
     when(writeBuilder.set("uuidList")).thenReturn(uuidListFieldBinder);
 
     this.spannerEntityWriter.write(t, writeBuilder::set);
@@ -319,8 +319,14 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     verify(bigDecimalsBinder, times(1)).toNumericArray(t.bigDecimals);
     verify(intervalFieldBinder, times(1)).to(t.intervalField);
     verify(intervalListFieldBinder, times(1)).toIntervalArray(t.intervalList);
-    verify(uuidFieldBinder, times(1)).to(t.uuidField);
-    verify(uuidListFieldBinder, times(1)).toUuidArray(t.uuidList);
+    com.google.protobuf.Value expectedProtoValue = com.google.protobuf.Value.newBuilder()
+        .setStringValue(t.uuidField.toString())
+        .build();
+    verify(uuidFieldBinder, times(1)).to(Value.untyped(expectedProtoValue));
+    com.google.protobuf.ListValue expectedProtoListValue = com.google.protobuf.ListValue.newBuilder()
+        .addValues(com.google.protobuf.Value.newBuilder().setStringValue(t.uuidField.toString()).build())
+        .build();
+    verify(uuidListFieldBinder, times(1)).to(Value.untyped(com.google.protobuf.Value.newBuilder().setListValue(expectedProtoListValue).build()));
   }
 
   @Test
@@ -329,6 +335,8 @@ class ConverterAwareMappingSpannerEntityWriterTests {
 
     t.dateField = null;
     t.doubleList = null;
+    t.uuidField = null;
+    t.uuidList = null;
 
     WriteBuilder writeBuilder = mock(WriteBuilder.class);
 
@@ -340,12 +348,26 @@ class ConverterAwareMappingSpannerEntityWriterTests {
     when(doubleListFieldBinder.toFloat64Array((Iterable<Double>) any())).thenReturn(null);
     when(writeBuilder.set("doubleList")).thenReturn(doubleListFieldBinder);
 
+    ValueBinder<WriteBuilder> uuidFieldBinder = mock(ValueBinder.class);
+    when(uuidFieldBinder.to((Value) any())).thenReturn(null);
+    when(writeBuilder.set("uuidField")).thenReturn(uuidFieldBinder);
+
+    ValueBinder<WriteBuilder> uuidListFieldBinder = mock(ValueBinder.class);
+    when(uuidListFieldBinder.to((Value) any())).thenReturn(null);
+    when(writeBuilder.set("uuidList")).thenReturn(uuidListFieldBinder);
+
     this.spannerEntityWriter.write(
         t,
         writeBuilder::set,
-        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("dateField", "doubleList"))));
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("dateField", "doubleList", "uuidField", "uuidList"))));
     verify(dateFieldBinder, times(1)).to((Date) isNull());
     verify(doubleListFieldBinder, times(1)).toFloat64Array((Iterable<Double>) isNull());
+    
+    com.google.protobuf.Value nullProtoValue = com.google.protobuf.Value.newBuilder()
+        .setNullValue(com.google.protobuf.NullValue.NULL_VALUE)
+        .build();
+    verify(uuidFieldBinder, times(1)).to(Value.untyped(nullProtoValue));
+    verify(uuidListFieldBinder, times(1)).to(Value.untyped(nullProtoValue));
   }
 
   @Test

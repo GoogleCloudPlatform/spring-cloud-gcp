@@ -34,64 +34,59 @@ public class MemorystoreSpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
+  /** Allow override of default transport channel provider to use REST instead of gRPC. */
+  private boolean useRest = false;
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for listInstances. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listInstancesRetry;
-
   /**
    * Allow override of retry settings at method-level for getInstance. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getInstanceRetry;
-
   /**
    * Allow override of retry settings at method-level for getCertificateAuthority. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getCertificateAuthorityRetry;
-
+  /**
+   * Allow override of retry settings at method-level for getSharedRegionalCertificateAuthority. If
+   * defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getSharedRegionalCertificateAuthorityRetry;
   /**
    * Allow override of retry settings at method-level for listBackupCollections. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBackupCollectionsRetry;
-
   /**
    * Allow override of retry settings at method-level for getBackupCollection. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBackupCollectionRetry;
-
   /**
    * Allow override of retry settings at method-level for listBackups. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBackupsRetry;
-
   /**
    * Allow override of retry settings at method-level for getBackup. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBackupRetry;
-
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
-
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -109,6 +104,14 @@ public class MemorystoreSpringProperties implements CredentialsSupplier {
 
   public void setQuotaProjectId(String quotaProjectId) {
     this.quotaProjectId = quotaProjectId;
+  }
+
+  public boolean getUseRest() {
+    return this.useRest;
+  }
+
+  public void setUseRest(boolean useRest) {
+    this.useRest = useRest;
   }
 
   public Integer getExecutorThreadCount() {
@@ -149,6 +152,15 @@ public class MemorystoreSpringProperties implements CredentialsSupplier {
 
   public void setGetCertificateAuthorityRetry(Retry getCertificateAuthorityRetry) {
     this.getCertificateAuthorityRetry = getCertificateAuthorityRetry;
+  }
+
+  public Retry getGetSharedRegionalCertificateAuthorityRetry() {
+    return this.getSharedRegionalCertificateAuthorityRetry;
+  }
+
+  public void setGetSharedRegionalCertificateAuthorityRetry(
+      Retry getSharedRegionalCertificateAuthorityRetry) {
+    this.getSharedRegionalCertificateAuthorityRetry = getSharedRegionalCertificateAuthorityRetry;
   }
 
   public Retry getListBackupCollectionsRetry() {

@@ -205,7 +205,11 @@ class TraceSampleApplicationIntegrationTests {
     await()
         .atMost(4, TimeUnit.MINUTES)
         .pollInterval(Duration.ofSeconds(2))
-        .ignoreExceptionsMatching(e -> e.getMessage().contains("Requested entity was not found"))
+        .ignoreExceptionsMatching(
+            e ->
+                e instanceof io.grpc.StatusRuntimeException
+                    && ((io.grpc.StatusRuntimeException) e).getStatus().getCode()
+                        == io.grpc.Status.Code.NOT_FOUND)
         .untilAsserted(
             () -> {
               log.debug("Getting trace...");

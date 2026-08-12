@@ -121,6 +121,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.global-vm-extension-policies.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/GlobalVmExtensionPolicies components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.health-checks.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/HealthChecks components.",
@@ -172,6 +178,12 @@
       "name": "com.google.cloud.compute.v1.instances.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/Instances components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.instant-snapshot-groups.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/InstantSnapshotGroups components.",
       "defaultValue": true
     },
     {
@@ -337,6 +349,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.region-backend-buckets.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionBackendBuckets components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.region-backend-services.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionBackendServices components.",
@@ -346,6 +364,12 @@
       "name": "com.google.cloud.compute.v1.region-commitments.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionCommitments components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.region-composite-health-checks.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionCompositeHealthChecks components.",
       "defaultValue": true
     },
     {
@@ -361,6 +385,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.region-health-aggregation-policies.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionHealthAggregationPolicies components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.region-health-check-services.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionHealthCheckServices components.",
@@ -370,6 +400,18 @@
       "name": "com.google.cloud.compute.v1.region-health-checks.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionHealthChecks components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.region-health-sources.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionHealthSources components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.region-instance-group-manager-resize-requests.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionInstanceGroupManagerResizeRequests components.",
       "defaultValue": true
     },
     {
@@ -394,6 +436,12 @@
       "name": "com.google.cloud.compute.v1.region-instances.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionInstances components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.region-instant-snapshot-groups.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionInstantSnapshotGroups components.",
       "defaultValue": true
     },
     {
@@ -430,6 +478,18 @@
       "name": "com.google.cloud.compute.v1.region-security-policies.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/RegionSecurityPolicies components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.region-snapshot-settings.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionSnapshotSettings components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.region-snapshots.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RegionSnapshots components.",
       "defaultValue": true
     },
     {
@@ -487,6 +547,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.reservation-slots.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/ReservationSlots components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.reservation-sub-blocks.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/ReservationSubBlocks components.",
@@ -502,6 +568,18 @@
       "name": "com.google.cloud.compute.v1.resource-policies.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/ResourcePolicies components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.rollout-plans.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/RolloutPlans components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.rollouts.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/Rollouts components.",
       "defaultValue": true
     },
     {
@@ -646,6 +724,12 @@
       "name": "com.google.cloud.compute.v1.zone-operations.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/ZoneOperations components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.zone-vm-extension-policies.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/ZoneVmExtensionPolicies components.",
       "defaultValue": true
     },
     {

@@ -34,76 +34,122 @@ public class NetworkSecuritySpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for listAuthorizationPolicies. If defined,
    * this takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listAuthorizationPoliciesRetry;
-
   /**
    * Allow override of retry settings at method-level for getAuthorizationPolicy. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getAuthorizationPolicyRetry;
-
+  /**
+   * Allow override of retry settings at method-level for listBackendAuthenticationConfigs. If
+   * defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listBackendAuthenticationConfigsRetry;
+  /**
+   * Allow override of retry settings at method-level for getBackendAuthenticationConfig. If
+   * defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getBackendAuthenticationConfigRetry;
   /**
    * Allow override of retry settings at method-level for listServerTlsPolicies. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listServerTlsPoliciesRetry;
-
   /**
    * Allow override of retry settings at method-level for getServerTlsPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getServerTlsPolicyRetry;
-
   /**
    * Allow override of retry settings at method-level for listClientTlsPolicies. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listClientTlsPoliciesRetry;
-
   /**
    * Allow override of retry settings at method-level for getClientTlsPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getClientTlsPolicyRetry;
-
+  /**
+   * Allow override of retry settings at method-level for listGatewaySecurityPolicies. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listGatewaySecurityPoliciesRetry;
+  /**
+   * Allow override of retry settings at method-level for getGatewaySecurityPolicy. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getGatewaySecurityPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for listGatewaySecurityPolicyRules. If
+   * defined, this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listGatewaySecurityPolicyRulesRetry;
+  /**
+   * Allow override of retry settings at method-level for getGatewaySecurityPolicyRule. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getGatewaySecurityPolicyRuleRetry;
+  /**
+   * Allow override of retry settings at method-level for listUrlLists. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listUrlListsRetry;
+  /**
+   * Allow override of retry settings at method-level for getUrlList. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getUrlListRetry;
+  /**
+   * Allow override of retry settings at method-level for listTlsInspectionPolicies. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listTlsInspectionPoliciesRetry;
+  /**
+   * Allow override of retry settings at method-level for getTlsInspectionPolicy. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getTlsInspectionPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for listAuthzPolicies. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listAuthzPoliciesRetry;
+  /**
+   * Allow override of retry settings at method-level for getAuthzPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getAuthzPolicyRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
-
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getLocationRetry;
-
   /**
    * Allow override of retry settings at method-level for setIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry setIamPolicyRetry;
-
   /**
    * Allow override of retry settings at method-level for getIamPolicy. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getIamPolicyRetry;
-
   /**
    * Allow override of retry settings at method-level for testIamPermissions. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -155,6 +201,23 @@ public class NetworkSecuritySpringProperties implements CredentialsSupplier {
     this.getAuthorizationPolicyRetry = getAuthorizationPolicyRetry;
   }
 
+  public Retry getListBackendAuthenticationConfigsRetry() {
+    return this.listBackendAuthenticationConfigsRetry;
+  }
+
+  public void setListBackendAuthenticationConfigsRetry(
+      Retry listBackendAuthenticationConfigsRetry) {
+    this.listBackendAuthenticationConfigsRetry = listBackendAuthenticationConfigsRetry;
+  }
+
+  public Retry getGetBackendAuthenticationConfigRetry() {
+    return this.getBackendAuthenticationConfigRetry;
+  }
+
+  public void setGetBackendAuthenticationConfigRetry(Retry getBackendAuthenticationConfigRetry) {
+    this.getBackendAuthenticationConfigRetry = getBackendAuthenticationConfigRetry;
+  }
+
   public Retry getListServerTlsPoliciesRetry() {
     return this.listServerTlsPoliciesRetry;
   }
@@ -185,6 +248,86 @@ public class NetworkSecuritySpringProperties implements CredentialsSupplier {
 
   public void setGetClientTlsPolicyRetry(Retry getClientTlsPolicyRetry) {
     this.getClientTlsPolicyRetry = getClientTlsPolicyRetry;
+  }
+
+  public Retry getListGatewaySecurityPoliciesRetry() {
+    return this.listGatewaySecurityPoliciesRetry;
+  }
+
+  public void setListGatewaySecurityPoliciesRetry(Retry listGatewaySecurityPoliciesRetry) {
+    this.listGatewaySecurityPoliciesRetry = listGatewaySecurityPoliciesRetry;
+  }
+
+  public Retry getGetGatewaySecurityPolicyRetry() {
+    return this.getGatewaySecurityPolicyRetry;
+  }
+
+  public void setGetGatewaySecurityPolicyRetry(Retry getGatewaySecurityPolicyRetry) {
+    this.getGatewaySecurityPolicyRetry = getGatewaySecurityPolicyRetry;
+  }
+
+  public Retry getListGatewaySecurityPolicyRulesRetry() {
+    return this.listGatewaySecurityPolicyRulesRetry;
+  }
+
+  public void setListGatewaySecurityPolicyRulesRetry(Retry listGatewaySecurityPolicyRulesRetry) {
+    this.listGatewaySecurityPolicyRulesRetry = listGatewaySecurityPolicyRulesRetry;
+  }
+
+  public Retry getGetGatewaySecurityPolicyRuleRetry() {
+    return this.getGatewaySecurityPolicyRuleRetry;
+  }
+
+  public void setGetGatewaySecurityPolicyRuleRetry(Retry getGatewaySecurityPolicyRuleRetry) {
+    this.getGatewaySecurityPolicyRuleRetry = getGatewaySecurityPolicyRuleRetry;
+  }
+
+  public Retry getListUrlListsRetry() {
+    return this.listUrlListsRetry;
+  }
+
+  public void setListUrlListsRetry(Retry listUrlListsRetry) {
+    this.listUrlListsRetry = listUrlListsRetry;
+  }
+
+  public Retry getGetUrlListRetry() {
+    return this.getUrlListRetry;
+  }
+
+  public void setGetUrlListRetry(Retry getUrlListRetry) {
+    this.getUrlListRetry = getUrlListRetry;
+  }
+
+  public Retry getListTlsInspectionPoliciesRetry() {
+    return this.listTlsInspectionPoliciesRetry;
+  }
+
+  public void setListTlsInspectionPoliciesRetry(Retry listTlsInspectionPoliciesRetry) {
+    this.listTlsInspectionPoliciesRetry = listTlsInspectionPoliciesRetry;
+  }
+
+  public Retry getGetTlsInspectionPolicyRetry() {
+    return this.getTlsInspectionPolicyRetry;
+  }
+
+  public void setGetTlsInspectionPolicyRetry(Retry getTlsInspectionPolicyRetry) {
+    this.getTlsInspectionPolicyRetry = getTlsInspectionPolicyRetry;
+  }
+
+  public Retry getListAuthzPoliciesRetry() {
+    return this.listAuthzPoliciesRetry;
+  }
+
+  public void setListAuthzPoliciesRetry(Retry listAuthzPoliciesRetry) {
+    this.listAuthzPoliciesRetry = listAuthzPoliciesRetry;
+  }
+
+  public Retry getGetAuthzPolicyRetry() {
+    return this.getAuthzPolicyRetry;
+  }
+
+  public void setGetAuthzPolicyRetry(Retry getAuthzPolicyRetry) {
+    this.getAuthzPolicyRetry = getAuthzPolicyRetry;
   }
 
   public Retry getListLocationsRetry() {

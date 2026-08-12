@@ -154,6 +154,16 @@ public class LicenseCodesSpringAutoConfiguration {
               clientSettingsBuilder.getSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getSettings().setRetrySettings(getRetrySettings);
 
+      RetrySettings getIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIamPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
+
+      RetrySettings setIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.setIamPolicySettings().setRetrySettings(setIamPolicyRetrySettings);
+
       RetrySettings testIamPermissionsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.testIamPermissionsSettings().getRetrySettings(), serviceRetry);
@@ -173,6 +183,26 @@ public class LicenseCodesSpringAutoConfiguration {
       clientSettingsBuilder.getSettings().setRetrySettings(getRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for get from properties.");
+      }
+    }
+    Retry getIamPolicyRetry = clientProperties.getGetIamPolicyRetry();
+    if (getIamPolicyRetry != null) {
+      RetrySettings getIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getIamPolicySettings().getRetrySettings(), getIamPolicyRetry);
+      clientSettingsBuilder.getIamPolicySettings().setRetrySettings(getIamPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getIamPolicy from properties.");
+      }
+    }
+    Retry setIamPolicyRetry = clientProperties.getSetIamPolicyRetry();
+    if (setIamPolicyRetry != null) {
+      RetrySettings setIamPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.setIamPolicySettings().getRetrySettings(), setIamPolicyRetry);
+      clientSettingsBuilder.setIamPolicySettings().setRetrySettings(setIamPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for setIamPolicy from properties.");
       }
     }
     Retry testIamPermissionsRetry = clientProperties.getTestIamPermissionsRetry();

@@ -34,121 +34,99 @@ public class DataTransferServiceSpringProperties implements CredentialsSupplier 
   @NestedConfigurationProperty
   private final Credentials credentials =
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
-
   /** Quota project to use for billing. */
   private String quotaProjectId;
-
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
-
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
   private boolean useRest = false;
-
   /** Allow override of retry settings at service level, applying to all of its RPC methods. */
   @NestedConfigurationProperty private Retry retry;
-
   /**
    * Allow override of retry settings at method-level for getDataSource. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getDataSourceRetry;
-
   /**
    * Allow override of retry settings at method-level for listDataSources. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listDataSourcesRetry;
-
   /**
    * Allow override of retry settings at method-level for createTransferConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry createTransferConfigRetry;
-
   /**
    * Allow override of retry settings at method-level for updateTransferConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateTransferConfigRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteTransferConfig. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteTransferConfigRetry;
-
   /**
    * Allow override of retry settings at method-level for getTransferConfig. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getTransferConfigRetry;
-
   /**
    * Allow override of retry settings at method-level for listTransferConfigs. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTransferConfigsRetry;
-
   /**
    * Allow override of retry settings at method-level for scheduleTransferRuns. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry scheduleTransferRunsRetry;
-
   /**
    * Allow override of retry settings at method-level for startManualTransferRuns. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry startManualTransferRunsRetry;
-
   /**
    * Allow override of retry settings at method-level for getTransferRun. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getTransferRunRetry;
-
   /**
    * Allow override of retry settings at method-level for deleteTransferRun. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry deleteTransferRunRetry;
-
   /**
    * Allow override of retry settings at method-level for listTransferRuns. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTransferRunsRetry;
-
   /**
    * Allow override of retry settings at method-level for listTransferLogs. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listTransferLogsRetry;
-
   /**
    * Allow override of retry settings at method-level for checkValidCreds. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry checkValidCredsRetry;
-
   /**
    * Allow override of retry settings at method-level for enrollDataSources. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry enrollDataSourcesRetry;
-
   /**
    * Allow override of retry settings at method-level for unenrollDataSources. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry unenrollDataSourcesRetry;
-
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listLocationsRetry;
-
   /**
    * Allow override of retry settings at method-level for getLocation. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
