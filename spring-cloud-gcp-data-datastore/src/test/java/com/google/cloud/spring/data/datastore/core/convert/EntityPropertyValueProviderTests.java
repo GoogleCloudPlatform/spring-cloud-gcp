@@ -29,6 +29,7 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataExceptio
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -52,6 +53,13 @@ class EntityPropertyValueProviderTests {
   void setUp() {
     this.datastore =
         HELPER.getOptions().toBuilder().setNamespace("ghijklmnop").build().getService();
+  }
+
+  @AfterEach
+  void tearDown() throws Exception {
+    if (this.datastore != null) {
+      this.datastore.close();
+    }
   }
 
   @Test

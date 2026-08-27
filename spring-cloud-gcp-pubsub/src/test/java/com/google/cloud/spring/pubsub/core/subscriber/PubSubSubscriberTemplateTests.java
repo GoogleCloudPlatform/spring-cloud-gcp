@@ -22,12 +22,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.core.ApiFuture;
 import com.google.api.gax.rpc.UnaryCallable;
@@ -100,7 +102,7 @@ class PubSubSubscriberTemplateTests {
   @Captor
   private ArgumentCaptor<ConvertedBasicAcknowledgeablePubsubMessage<Boolean>> convertedMessage;
 
-  @Mock private SubscriberStub subscriberStub;
+  private SubscriberStub subscriberStub;
 
   @Mock private UnaryCallable<PullRequest, PullResponse> pullCallable;
 
@@ -114,6 +116,7 @@ class PubSubSubscriberTemplateTests {
 
   @BeforeEach
   void setUp() throws ExecutionException, InterruptedException {
+    this.subscriberStub = mock(SubscriberStub.class, withSettings().withoutAnnotations());
     reset(this.subscriberFactory);
     reset(this.subscriberStub);
     reset(this.subscriber);

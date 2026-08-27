@@ -32,6 +32,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.bigquery.BigQuery;
@@ -103,7 +104,7 @@ class BigQueryTemplateTest {
     bigqueryRpcMock = mock(HttpBigQueryRpc.class);
     when(rpcFactoryMock.create(any(BigQueryOptions.class))).thenReturn(bigqueryRpcMock);
     options = createBigQueryOptionsForProject(rpcFactoryMock);
-    bigQueryWriteClientMock = mock(BigQueryWriteClient.class);
+    bigQueryWriteClientMock = mock(BigQueryWriteClient.class, withSettings().withoutAnnotations());
     bigquery = options.getService();
     bqInitSettings.put("DATASET_NAME", DATASET);
     bqInitSettings.put("JSON_WRITER_BATCH_SIZE", JSON_WRITER_BATCH_SIZE);
