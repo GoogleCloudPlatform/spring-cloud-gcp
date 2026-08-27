@@ -29,6 +29,7 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataExceptio
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentEntity;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastorePersistentProperty;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -52,6 +53,13 @@ class EntityPropertyValueProviderTests {
   void setUp() {
     this.datastore =
         HELPER.getOptions().toBuilder().setNamespace("ghijklmnop").build().getService();
+  }
+
+  @AfterEach
+  void tearDown() throws Exception {
+    if (this.datastore != null) {
+      this.datastore.close();
+    }
   }
 
   @Test
@@ -126,9 +134,10 @@ class EntityPropertyValueProviderTests {
     DatastorePersistentProperty testDpe = this.persistentEntity.getPersistentProperty("boolField");
 
     assertThatThrownBy(() -> provider.getPropertyValue(testDpe))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Unable to read property boolField; nested exception is "
-                    + "com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException: "
-                    + "Unable to convert class java.lang.Long to class java.lang.Boolean");
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessage(
+            "Unable to read property boolField; nested exception is "
+                + "com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException: "
+                + "Unable to convert class java.lang.Long to class java.lang.Boolean");
   }
 }
