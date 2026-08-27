@@ -24,6 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
@@ -59,15 +60,15 @@ import org.threeten.bp.Duration;
 @ExtendWith(MockitoExtension.class)
 class DefaultSubscriberFactoryTests {
 
-  @Mock private ExecutorProvider mockExecutorProvider;
+  private ExecutorProvider mockExecutorProvider;
 
-  @Mock private ExecutorProvider mockGlobalExecutorProvider;
+  private ExecutorProvider mockGlobalExecutorProvider;
 
-  @Mock private TransportChannel mockTransportChannel;
+  private TransportChannel mockTransportChannel;
 
-  @Mock private ApiCallContext mockApiCallContext;
+  private ApiCallContext mockApiCallContext;
 
-  @Mock private CredentialsProvider credentialsProvider;
+  private CredentialsProvider credentialsProvider;
 
   @Mock private PubSubConfiguration mockPubSubConfiguration;
 
@@ -79,6 +80,12 @@ class DefaultSubscriberFactoryTests {
 
   @BeforeEach
   void setUp() {
+    this.mockExecutorProvider = mock(ExecutorProvider.class, withSettings().withoutAnnotations());
+    this.mockGlobalExecutorProvider =
+        mock(ExecutorProvider.class, withSettings().withoutAnnotations());
+    this.mockTransportChannel = mock(TransportChannel.class, withSettings().withoutAnnotations());
+    this.mockApiCallContext = mock(ApiCallContext.class, withSettings().withoutAnnotations());
+    this.credentialsProvider = mock(CredentialsProvider.class, withSettings().withoutAnnotations());
     this.pubSubConfig = new PubSubConfiguration();
     this.pubSubConfig.initialize("some-project");
   }

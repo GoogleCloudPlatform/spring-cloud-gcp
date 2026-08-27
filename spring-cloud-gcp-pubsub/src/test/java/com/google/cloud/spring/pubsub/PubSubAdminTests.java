@@ -22,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.gax.grpc.GrpcStatusCode;
 import com.google.api.gax.rpc.ApiException;
@@ -35,18 +36,25 @@ import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.TopicName;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for the Pub/Sub admin operations. */
 @ExtendWith(MockitoExtension.class)
 class PubSubAdminTests {
 
-  @Mock private TopicAdminClient mockTopicAdminClient;
+  private TopicAdminClient mockTopicAdminClient;
 
-  @Mock private SubscriptionAdminClient mockSubscriptionAdminClient;
+  private SubscriptionAdminClient mockSubscriptionAdminClient;
+
+  @BeforeEach
+  void setUp() {
+    this.mockTopicAdminClient = mock(TopicAdminClient.class, withSettings().withoutAnnotations());
+    this.mockSubscriptionAdminClient =
+        mock(SubscriptionAdminClient.class, withSettings().withoutAnnotations());
+  }
 
   @Test
   void testNewPubSubAdmin_nullProjectProvider() {

@@ -24,7 +24,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -81,13 +80,13 @@ class PubSubSubscriberTemplateTests {
 
   private PubsubMessage pubsubMessage = PubsubMessage.newBuilder().build();
 
-  @Mock private MessageReceiver messageReceiver;
+  private MessageReceiver messageReceiver;
 
-  @Mock private AckReplyConsumer ackReplyConsumer;
+  private AckReplyConsumer ackReplyConsumer;
 
   @Mock private SubscriberFactory subscriberFactory;
 
-  @Mock private Subscriber subscriber;
+  private Subscriber subscriber;
 
   @Mock private PubSubMessageConverter messageConverter;
 
@@ -102,19 +101,28 @@ class PubSubSubscriberTemplateTests {
 
   private SubscriberStub subscriberStub;
 
-  @Mock private UnaryCallable<PullRequest, PullResponse> pullCallable;
+  private UnaryCallable<PullRequest, PullResponse> pullCallable;
 
-  @Mock private UnaryCallable<AcknowledgeRequest, Empty> ackCallable;
+  private UnaryCallable<AcknowledgeRequest, Empty> ackCallable;
 
-  @Mock private UnaryCallable<ModifyAckDeadlineRequest, Empty> modifyAckDeadlineCallable;
+  private UnaryCallable<ModifyAckDeadlineRequest, Empty> modifyAckDeadlineCallable;
 
-  @Mock private ApiFuture<PullResponse> pullApiFuture;
+  private ApiFuture<PullResponse> pullApiFuture;
 
-  @Mock private ApiFuture<Empty> ackApiFuture;
+  private ApiFuture<Empty> ackApiFuture;
 
   @BeforeEach
   void setUp() throws ExecutionException, InterruptedException {
     this.subscriberStub = mock(SubscriberStub.class, withSettings().withoutAnnotations());
+    this.subscriber = mock(Subscriber.class, withSettings().withoutAnnotations());
+    this.messageReceiver = mock(MessageReceiver.class, withSettings().withoutAnnotations());
+    this.ackReplyConsumer = mock(AckReplyConsumer.class, withSettings().withoutAnnotations());
+    this.pullCallable = mock(UnaryCallable.class, withSettings().withoutAnnotations());
+    this.ackCallable = mock(UnaryCallable.class, withSettings().withoutAnnotations());
+    this.modifyAckDeadlineCallable = mock(UnaryCallable.class, withSettings().withoutAnnotations());
+    this.pullApiFuture = mock(ApiFuture.class, withSettings().withoutAnnotations());
+    this.ackApiFuture = mock(ApiFuture.class, withSettings().withoutAnnotations());
+
     reset(this.subscriberFactory);
     reset(this.subscriberStub);
     reset(this.subscriber);
@@ -197,7 +205,13 @@ class PubSubSubscriberTemplateTests {
                 .build());
 
     // create object under test
-    this.pubSubSubscriberTemplate = spy(new PubSubSubscriberTemplate(this.subscriberFactory));
+    this.pubSubSubscriberTemplate =
+        mock(
+            PubSubSubscriberTemplate.class,
+            withSettings()
+                .spiedInstance(new PubSubSubscriberTemplate(this.subscriberFactory))
+                .defaultAnswer(Mockito.CALLS_REAL_METHODS)
+                .withoutAnnotations());
     this.pubSubSubscriberTemplate.setMessageConverter(this.messageConverter);
   }
 

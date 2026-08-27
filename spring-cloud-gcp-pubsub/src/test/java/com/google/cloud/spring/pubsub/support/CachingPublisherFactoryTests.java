@@ -17,11 +17,14 @@
 package com.google.cloud.spring.pubsub.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.cloud.pubsub.v1.Publisher;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -33,9 +36,15 @@ class CachingPublisherFactoryTests {
 
   @Mock private PublisherFactory delegate;
 
-  @Mock private Publisher publisher1;
+  private Publisher publisher1;
 
-  @Mock private Publisher publisher2;
+  private Publisher publisher2;
+
+  @BeforeEach
+  void setUp() {
+    this.publisher1 = mock(Publisher.class, withSettings().withoutAnnotations());
+    this.publisher2 = mock(Publisher.class, withSettings().withoutAnnotations());
+  }
 
   @Test
   void testGetPublisherCaching() {
