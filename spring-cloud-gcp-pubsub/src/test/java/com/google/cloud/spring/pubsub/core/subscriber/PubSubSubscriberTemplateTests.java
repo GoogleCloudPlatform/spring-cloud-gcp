@@ -21,12 +21,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.core.ApiFuture;
 import com.google.api.gax.rpc.UnaryCallable;
@@ -98,7 +100,7 @@ class PubSubSubscriberTemplateTests {
   @Captor
   private ArgumentCaptor<ConvertedBasicAcknowledgeablePubsubMessage<Boolean>> convertedMessage;
 
-  @Mock private SubscriberStub subscriberStub;
+  private SubscriberStub subscriberStub;
 
   @Mock private UnaryCallable<PullRequest, PullResponse> pullCallable;
 
@@ -112,6 +114,7 @@ class PubSubSubscriberTemplateTests {
 
   @BeforeEach
   void setUp() throws ExecutionException, InterruptedException {
+    this.subscriberStub = mock(SubscriberStub.class, withSettings().withoutAnnotations());
     reset(this.subscriberFactory);
     reset(this.subscriberStub);
     reset(this.subscriber);
@@ -325,8 +328,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPull_AndManualAck()
-      throws InterruptedException, ExecutionException, TimeoutException {
+  void testPull_AndManualAck() throws InterruptedException, ExecutionException, TimeoutException {
 
     List<AcknowledgeablePubsubMessage> result = this.pubSubSubscriberTemplate.pull("sub2", 1, true);
 
@@ -353,8 +355,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPull_AndManualNack()
-      throws InterruptedException, ExecutionException, TimeoutException {
+  void testPull_AndManualNack() throws InterruptedException, ExecutionException, TimeoutException {
     List<AcknowledgeablePubsubMessage> result = this.pubSubSubscriberTemplate.pull("sub2", 1, true);
 
     assertThat(result).hasSize(1);
@@ -467,8 +468,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPullAndAckAsync()
-      throws InterruptedException, ExecutionException, TimeoutException {
+  void testPullAndAckAsync() throws InterruptedException, ExecutionException, TimeoutException {
     ListenableFuture<List<PubsubMessage>> asyncResult =
         this.pubSubSubscriberTemplate.pullAndAckAsync("sub2", 1, true);
 
@@ -513,8 +513,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPullAndConvertAsync()
-      throws InterruptedException, ExecutionException, TimeoutException {
+  void testPullAndConvertAsync() throws InterruptedException, ExecutionException, TimeoutException {
     ListenableFuture<List<ConvertedAcknowledgeablePubsubMessage<BigInteger>>> asyncResult =
         this.pubSubSubscriberTemplate.pullAndConvertAsync("sub2", 1, true, BigInteger.class);
 
@@ -555,8 +554,7 @@ class PubSubSubscriberTemplateTests {
   }
 
   @Test
-  void testPullNextAsync()
-      throws InterruptedException, ExecutionException, TimeoutException {
+  void testPullNextAsync() throws InterruptedException, ExecutionException, TimeoutException {
     ListenableFuture<PubsubMessage> asyncResult =
         this.pubSubSubscriberTemplate.pullNextAsync("sub2");
 

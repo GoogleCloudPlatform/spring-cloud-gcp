@@ -50,6 +50,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.ConversionFailedException;
@@ -90,6 +91,13 @@ class DefaultDatastoreEntityConverterTests {
   void setUp() {
     this.datastore =
         HELPER.getOptions().toBuilder().setNamespace("ghijklmnop").build().getService();
+  }
+
+  @AfterEach
+  void tearDown() throws Exception {
+    if (this.datastore != null) {
+      this.datastore.close();
+    }
   }
 
   @Test
@@ -197,8 +205,10 @@ class DefaultDatastoreEntityConverterTests {
             .build();
 
     assertThatThrownBy(() -> ENTITY_CONVERTER.read(DiscrimEntityY.class, entityY))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessageContaining("More than one class in an inheritance hierarchy " + "has the same DiscriminatorValue: ");
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessageContaining(
+            "More than one class in an inheritance hierarchy "
+                + "has the same DiscriminatorValue: ");
   }
 
   @Test
@@ -225,13 +235,15 @@ class DefaultDatastoreEntityConverterTests {
   @Test
   void testWrongTypeReadException() {
 
-    Entity entity = getEntityBuilder().set("stringField", "string value").set("boolField", 123L).build();
+    Entity entity =
+        getEntityBuilder().set("stringField", "string value").set("boolField", 123L).build();
     assertThatThrownBy(() -> ENTITY_CONVERTER.read(TestDatastoreItem.class, entity))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessageContaining("Unable to read "
-                    + "com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItem entity")
-            .hasMessageContaining("Unable to read property boolField")
-            .hasMessageContaining("Unable to convert class java.lang.Long to class java.lang.Boolean");
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessageContaining(
+            "Unable to read "
+                + "com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItem entity")
+        .hasMessageContaining("Unable to read property boolField")
+        .hasMessageContaining("Unable to convert class java.lang.Long to class java.lang.Boolean");
   }
 
   @Test
@@ -241,8 +253,8 @@ class DefaultDatastoreEntityConverterTests {
         getEntityBuilder().set("stringField", "string value").set("boolField", 123L).build();
 
     assertThatThrownBy(() -> ENTITY_CONVERTER.read(Object.class, entity))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessage("Unable to convert Datastore Entity to class java.lang.Object");
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessage("Unable to convert Datastore Entity to class java.lang.Object");
   }
 
   @Test
@@ -255,12 +267,14 @@ class DefaultDatastoreEntityConverterTests {
             .build();
 
     assertThatThrownBy(() -> ENTITY_CONVERTER.read(TestDatastoreItem.class, entity))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessageContaining("Unable to read "
-                    + "com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItem entity")
-            .hasMessageContaining("Unable to read property boolField")
-            .hasMessageContaining("Unable to convert class "
-                    + "com.google.common.collect.SingletonImmutableList to class java.lang.Boolean");
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessageContaining(
+            "Unable to read "
+                + "com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItem entity")
+        .hasMessageContaining("Unable to read property boolField")
+        .hasMessageContaining(
+            "Unable to convert class "
+                + "com.google.common.collect.SingletonImmutableList to class java.lang.Boolean");
   }
 
   @Test
@@ -363,11 +377,12 @@ class DefaultDatastoreEntityConverterTests {
     Entity.Builder builder = getEntityBuilder();
 
     assertThatThrownBy(() -> ENTITY_CONVERTER.write(item, builder))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessageContaining("Unable to write testItemUnsupportedFields.unsupportedField")
-            .hasMessageContaining("Unable to convert class "
-                    + "com.google.cloud.spring.data.datastore.core.convert."
-                    + "TestItemUnsupportedFields$NewType to Datastore supported type.");
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessageContaining("Unable to write testItemUnsupportedFields.unsupportedField")
+        .hasMessageContaining(
+            "Unable to convert class "
+                + "com.google.cloud.spring.data.datastore.core.convert."
+                + "TestItemUnsupportedFields$NewType to Datastore supported type.");
   }
 
   @Test
@@ -420,13 +435,15 @@ class DefaultDatastoreEntityConverterTests {
     Entity entity = builder.build();
 
     assertThatThrownBy(() -> ENTITY_CONVERTER.read(TestDatastoreItemCollections.class, entity))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessageContaining("Unable to read"
-                    + " com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItemCollections"
-                    + " entity;")
-            .hasMessageContaining("Unable to read property beanContext;")
-            .hasMessageContaining("Failed to convert from type [java.util.ArrayList<?>] to type"
-                    + " [com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItemCollections$ComparableBeanContextSupport]");
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessageContaining(
+            "Unable to read"
+                + " com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItemCollections"
+                + " entity;")
+        .hasMessageContaining("Unable to read property beanContext;")
+        .hasMessageContaining(
+            "Failed to convert from type [java.util.ArrayList<?>] to type"
+                + " [com.google.cloud.spring.data.datastore.core.convert.TestDatastoreItemCollections$ComparableBeanContextSupport]");
   }
 
   @Test
@@ -548,11 +565,12 @@ class DefaultDatastoreEntityConverterTests {
     Entity.Builder builder = getEntityBuilder();
 
     assertThatThrownBy(() -> ENTITY_CONVERTER.write(item, builder))
-            .isInstanceOf(DatastoreDataException.class)
-            .hasMessageContaining("Unable to write collectionOfUnsupportedTypes.unsupportedElts")
-            .hasMessageContaining("Unable to convert "
-                    + "class com.google.cloud.spring.data.datastore.core.convert."
-                    + "TestItemUnsupportedFields$NewType to Datastore supported type.");
+        .isInstanceOf(DatastoreDataException.class)
+        .hasMessageContaining("Unable to write collectionOfUnsupportedTypes.unsupportedElts")
+        .hasMessageContaining(
+            "Unable to convert "
+                + "class com.google.cloud.spring.data.datastore.core.convert."
+                + "TestItemUnsupportedFields$NewType to Datastore supported type.");
   }
 
   @Test
@@ -582,7 +600,8 @@ class DefaultDatastoreEntityConverterTests {
   @Test
   void testCollectionFieldsUnsupportedWriteReadException() {
 
-    TestItemUnsupportedFields.CollectionOfUnsupportedTypes item = getCollectionOfUnsupportedTypesItem();
+    TestItemUnsupportedFields.CollectionOfUnsupportedTypes item =
+        getCollectionOfUnsupportedTypesItem();
 
     DatastoreEntityConverter entityConverter =
         new DefaultDatastoreEntityConverter(
@@ -600,14 +619,16 @@ class DefaultDatastoreEntityConverterTests {
     Class parameter = TestItemUnsupportedFields.CollectionOfUnsupportedTypes.class;
 
     assertThatThrownBy(() -> entityConverter.read(parameter, entity))
-            .hasMessageContaining("Unable to read property unsupportedElts")
-            .hasMessageContaining("Unable process elements of a collection")
-            .hasMessageContaining("No converter found capable of converting from type [java.lang.Integer] "
-                    + "to type [com.google.cloud.spring.data.datastore.core.convert."
-                    + "TestItemUnsupportedFields$NewType]")
-            .hasMessageContaining("Unable to read com.google.cloud.spring.data.datastore.core.convert."
-                    + "TestItemUnsupportedFields$CollectionOfUnsupportedTypes entity")
-            .isInstanceOf(DatastoreDataException.class);
+        .hasMessageContaining("Unable to read property unsupportedElts")
+        .hasMessageContaining("Unable process elements of a collection")
+        .hasMessageContaining(
+            "No converter found capable of converting from type [java.lang.Integer] "
+                + "to type [com.google.cloud.spring.data.datastore.core.convert."
+                + "TestItemUnsupportedFields$NewType]")
+        .hasMessageContaining(
+            "Unable to read com.google.cloud.spring.data.datastore.core.convert."
+                + "TestItemUnsupportedFields$CollectionOfUnsupportedTypes entity")
+        .isInstanceOf(DatastoreDataException.class);
   }
 
   @Test
@@ -892,21 +913,26 @@ class DefaultDatastoreEntityConverterTests {
   @Test
   void testMismatchedStringIdLongProperty() {
 
-    Entity testEntity = Entity.newBuilder(this.datastore.newKeyFactory().setKind("aKind").newKey("a")).build();
+    Entity testEntity =
+        Entity.newBuilder(this.datastore.newKeyFactory().setKind("aKind").newKey("a")).build();
 
     assertThatThrownBy(() -> ENTITY_CONVERTER.read(LongIdEntity.class, testEntity))
-            .isInstanceOf(ConversionFailedException.class)
-            .hasMessageContaining("The given key doesn't have a numeric ID but a conversion to Long was attempted");
+        .isInstanceOf(ConversionFailedException.class)
+        .hasMessageContaining(
+            "The given key doesn't have a numeric ID but a conversion to Long was attempted");
   }
 
   @Test
   void testMismatchedLongIdStringProperty() {
 
-    Entity testEntity = Entity.newBuilder(this.datastore.newKeyFactory().setKind("aKind").newKey(1)).build();
+    Entity testEntity =
+        Entity.newBuilder(this.datastore.newKeyFactory().setKind("aKind").newKey(1)).build();
 
     assertThatThrownBy(() -> ENTITY_CONVERTER.read(StringIdEntity.class, testEntity))
-            .isInstanceOf(ConversionFailedException.class)
-            .hasMessageContaining("The given key doesn't have a String name value but a conversion to String was attempted");
+        .isInstanceOf(ConversionFailedException.class)
+        .hasMessageContaining(
+            "The given key doesn't have a String name value but a conversion to String was"
+                + " attempted");
   }
 
   private Entity.Builder getEntityBuilder() {

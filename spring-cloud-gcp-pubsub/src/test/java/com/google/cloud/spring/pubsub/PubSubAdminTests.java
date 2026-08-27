@@ -74,7 +74,10 @@ class PubSubAdminTests {
 
   @Test
   void testNewPubSubAdmin() throws IOException {
-    assertThat(new PubSubAdmin(() -> "test-project", NoCredentials::getInstance)).isNotNull();
+    try (PubSubAdmin pubSubAdmin =
+        new PubSubAdmin(() -> "test-project", NoCredentials::getInstance)) {
+      assertThat(pubSubAdmin).isNotNull();
+    }
   }
 
   @Test
@@ -309,13 +312,14 @@ class PubSubAdminTests {
 
   @Test
   void testDefaultAckDeadline() throws IOException {
-    PubSubAdmin psa = new PubSubAdmin(() -> "test-project", NoCredentials::getInstance);
-    int defaultAckDeadline = psa.getDefaultAckDeadline();
-    psa.setDefaultAckDeadline(defaultAckDeadline + 1);
-    assertThat(psa.getDefaultAckDeadline()).isEqualTo(defaultAckDeadline + 1);
+    try (PubSubAdmin psa = new PubSubAdmin(() -> "test-project", NoCredentials::getInstance)) {
+      int defaultAckDeadline = psa.getDefaultAckDeadline();
+      psa.setDefaultAckDeadline(defaultAckDeadline + 1);
+      assertThat(psa.getDefaultAckDeadline()).isEqualTo(defaultAckDeadline + 1);
 
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> psa.setDefaultAckDeadline(PubSubAdmin.MIN_ACK_DEADLINE_SECONDS - 1));
+      assertThatExceptionOfType(IllegalArgumentException.class)
+          .isThrownBy(() -> psa.setDefaultAckDeadline(PubSubAdmin.MIN_ACK_DEADLINE_SECONDS - 1));
+    }
   }
 
   @Test

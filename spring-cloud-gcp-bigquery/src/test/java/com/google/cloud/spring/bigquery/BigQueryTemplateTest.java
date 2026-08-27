@@ -24,6 +24,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.bigquery.BigQuery;
@@ -93,7 +94,7 @@ class BigQueryTemplateTest {
     bigqueryRpcMock = mock(HttpBigQueryRpc.class);
     when(rpcFactoryMock.create(any(BigQueryOptions.class))).thenReturn(bigqueryRpcMock);
     options = createBigQueryOptionsForProject(PROJECT, rpcFactoryMock);
-    bigQueryWriteClientMock = mock(BigQueryWriteClient.class);
+    bigQueryWriteClientMock = mock(BigQueryWriteClient.class, withSettings().withoutAnnotations());
     bigquery = options.getService();
     bqInitSettings.put("DATASET_NAME", DATASET);
     bqInitSettings.put("JSON_WRITER_BATCH_SIZE", JSON_WRITER_BATCH_SIZE);
@@ -176,7 +177,6 @@ class BigQueryTemplateTest {
     assertEquals(0, apiRes.getErrors().size());
   }
 
-
   @Test
   void writeJsonStreamFailsOnGenericWritingException()
       throws DescriptorValidationException, IOException, InterruptedException, ExecutionException {
@@ -192,8 +192,6 @@ class BigQueryTemplateTest {
 
     ListenableFuture<WriteApiResponse> futRes =
         bqTemplateSpy.writeJsonStream(TABLE, jsoninputStream, getDefaultSchema());
-    assertThat(futRes)
-        .withFailMessage("boom!")
-        .failsWithin(Duration.ofSeconds(1));
+    assertThat(futRes).withFailMessage("boom!").failsWithin(Duration.ofSeconds(1));
   }
 }
