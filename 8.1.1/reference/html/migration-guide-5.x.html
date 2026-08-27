@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Migration Guide from Spring Cloud GCP 5.x to 6.x</title>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
+
+</head>
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
+<li><a href="#_migration_guide_from_spring_cloud_gcp_5_x_to_6_x">Migration Guide from Spring Cloud GCP 5.x to 6.x</a>
+<ul class="sectlevel2">
+<li><a href="#_before_you_start">Before you start</a></li>
+<li><a href="#_upgrade_to_spring_cloud_gcp_6_0">Upgrade to Spring Cloud GCP 6.0</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_migration_guide_from_spring_cloud_gcp_5_x_to_6_x"><a class="anchor" href="#_migration_guide_from_spring_cloud_gcp_5_x_to_6_x"></a><a class="link" href="#_migration_guide_from_spring_cloud_gcp_5_x_to_6_x">Migration Guide from Spring Cloud GCP 5.x to 6.x</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_before_you_start"><a class="anchor" href="#_before_you_start"></a><a class="link" href="#_before_you_start">Before you start</a></h3>
+<div class="sect3">
+<h4 id="_upgrade_to_the_5_x_version"><a class="anchor" href="#_upgrade_to_the_5_x_version"></a><a class="link" href="#_upgrade_to_the_5_x_version">Upgrade to the 5.x version</a></h4>
+<div class="paragraph">
+<p>This doc assumes you are running with Spring Cloud GCP 5.x.</p>
+</div>
+<div class="paragraph">
+<p>If you are currently running with an earlier major version of Spring Cloud GCP, i.e., 1.x or 2.x, we recommend that you upgrade to [Spring Cloud GCP 5.x] before migrating to Spring Cloud GCP 6.x.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="migration-guide-1.x.adoc">Migration guide from Spring Cloud GCP 1.x to 2.x</a></p>
+</li>
+<li>
+<p><a href="migration-guide-3.x.adoc">Migration guide from Spring Cloud GCP 3.x to 4.x</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Note that since Spring Cloud GCP 5.0 has few breaking changes, we have only provided release notes
+as reference.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_review_system_requirements"><a class="anchor" href="#_review_system_requirements"></a><a class="link" href="#_review_system_requirements">Review System requirements</a></h4>
+<div class="paragraph">
+<p>Spring Cloud GCP 6.0 is built on Spring Boot 3.4.x and Spring Framework 6.2.x, which requires Java 17 at minimum.
+If you are currently on Java 8 or Java 11, you need to upgrade your JDK before you can develop an application based on Spring Cloud GCP 6.0.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_upgrade_to_spring_cloud_gcp_6_0"><a class="anchor" href="#_upgrade_to_spring_cloud_gcp_6_0"></a><a class="link" href="#_upgrade_to_spring_cloud_gcp_6_0">Upgrade to Spring Cloud GCP 6.0</a></h3>
+<div class="sect3">
+<h4 id="_update_bill_of_materials_bom"><a class="anchor" href="#_update_bill_of_materials_bom"></a><a class="link" href="#_update_bill_of_materials_bom">Update Bill of Materials (BOM)</a></h4>
+<div class="paragraph">
+<p>If you’re a Maven user, add our BOM to your pom.xml <code>&lt;dependencyManagement&gt;</code> section.
+This will allow you to not specify versions for any of the Maven dependencies and instead delegate versioning to the BOM.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-gcp-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;6.0.0&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_review_dependencies"><a class="anchor" href="#_review_dependencies"></a><a class="link" href="#_review_dependencies">Review Dependencies</a></h5>
+<div class="paragraph">
+<p>Run <code>mvn dependency:tree</code> (<code>gradlew dependencies</code> for Gradle projects) to see the dependency tree of your project.
+Ensure Spring-related dependencies have matching versions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Spring Boot 3.4.x</p>
+</li>
+<li>
+<p>Spring Cloud 2024.x</p>
+<div class="ulist">
+<ul>
+<li>
+<p>For detailed dependency versions, see "2024.0 (Moorgate)" column in <a href="https://github.com/spring-cloud/spring-cloud-release/wiki/Supported-Versions#supported-releases">Spring Cloud: Supported Versions</a> table.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_secret_manager"><a class="anchor" href="#_secret_manager"></a><a class="link" href="#_secret_manager">Secret Manager</a></h4>
+<div class="paragraph">
+<p>Introduced support for the <code>${sm@secret_id}</code> syntax. This new syntax is encouraged over the (still
+supported) <code>${sm://secret_id}</code> syntax. Users still relying on the <code>sm://</code> syntax will be issued a
+warning.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Value("${sm@my_secret}")
+String mySecret;
+---
+</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_datastore"><a class="anchor" href="#_datastore"></a><a class="link" href="#_datastore">Datastore</a></h4>
+<div class="paragraph">
+<p>Introduced support for <code>ValueExpressionDelegate</code>. This class is suggested over
+<code>QueryMethodEvaluationContextProvider</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_spanner"><a class="anchor" href="#_spanner"></a><a class="link" href="#_spanner">Spanner</a></h4>
+<div class="paragraph">
+<p>Introduced support for <code>ValueExpressionDelegate</code>. This class is suggested over
+<code>QueryMethodEvaluationContextProvider</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+</div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Migration Guide from Spring Framework on Google Cloud 1.x to 2.x</title>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
+
+</head>
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
+<li><a href="#_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x">Migration Guide from Spring Framework on Google Cloud 1.x to 2.x</a>
+<ul class="sectlevel2">
+<li><a href="#_maven_group_id_change">Maven Group ID Change</a></li>
+<li><a href="#_java_package_name_change">Java Package Name Change</a></li>
+<li><a href="#_deprecated_items_removed">Deprecated Items Removed</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x"><a class="anchor" href="#_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x"></a><a class="link" href="#_migration_guide_from_spring_framework_on_google_cloud_1_x_to_2_x">Migration Guide from Spring Framework on Google Cloud 1.x to 2.x</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_maven_group_id_change"><a class="anchor" href="#_maven_group_id_change"></a><a class="link" href="#_maven_group_id_change">Maven Group ID Change</a></h3>
+<div class="paragraph">
+<p>Spring Cloud  <a href="https://spring.io/blog/2019/07/24/simplifying-the-spring-cloud-release-train">unbundled</a> Spring Framework on Google Cloud and other cloud providers from their release train.
+To use the newly unbundled libraries, add the <code>spring-cloud-gcp-dependencies</code> bill of materials (BOM) and change the <code>spring-cloud-gcp</code> group IDs in your <code>pom.xml</code> files:</p>
+</div>
+<div class="listingblock">
+<div class="title">Before (pom.xml)</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;
+      &lt;version&gt;${spring-cloud.version}&lt;/version&gt;
+      &lt;type&gt;pom&lt;/type&gt;
+      &lt;scope&gt;import&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;
+
+&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-gcp-starter&lt;/artifactId&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">After (pom.xml)</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.google.cloud&lt;/groupId&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;artifactId&gt;spring-cloud-gcp-dependencies&lt;/artifactId&gt;
+      &lt;version&gt;3.4.0&lt;/version&gt;
+      &lt;type&gt;pom&lt;/type&gt;
+      &lt;scope&gt;import&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;
+
+&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.google.cloud&lt;/groupId&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+    &lt;artifactId&gt;spring-cloud-gcp-starter&lt;/artifactId&gt;
+  &lt;/dependency&gt;
+  ... <i class="conum" data-value="4"></i><b>(4)</b>
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Upgrade to Spring Cloud Ilford release</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Explicitly add <code>spring-cloud-gcp-dependencies</code> to import the BOM</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Change Group IDs to <code>com.google.cloud</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Add other <code>starters</code> as desired (i.e., <code>spring-cloud-gcp-starter-pubsub</code> or <code>spring-cloud-gcp-starter-storage</code>)</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_java_package_name_change"><a class="anchor" href="#_java_package_name_change"></a><a class="link" href="#_java_package_name_change">Java Package Name Change</a></h3>
+<div class="paragraph">
+<p>All code in Spring Framework on Google Cloud has been moved from <code>org.springframework.cloud.gcp</code> over to the <code>com.google.cloud.spring</code> package.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deprecated_items_removed"><a class="anchor" href="#_deprecated_items_removed"></a><a class="link" href="#_deprecated_items_removed">Deprecated Items Removed</a></h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Property <code>spring.cloud.gcp.datastore.emulatorHost</code> </dt>
+<dd>
+<p>Use <code>spring.cloud.gcp.datastore.host</code> instead</p>
+</dd>
+<dt class="hdlist1"><code>GcpPubSubHeaders.ACKNOWLEDGEMENT</code></dt>
+<dd>
+<p>Use <code>GcpPubSubHeaders.ORIGINAL_MESSAGE</code>, which is of type <code>BasicAcknowledgeablePubsubMessage</code></p>
+</dd>
+<dt class="hdlist1"><code>SpannerQueryOptions.getQueryOptions()</code></dt>
+<dd>
+<p>Use <code>getOptions()</code></p>
+</dd>
+<dt class="hdlist1"><code>PubSubTemplate.subscribe(String, MessageReceiver)</code></dt>
+<dd>
+<p>Use <code>subscribe(String, Consumer&lt;BasicAcknowledgeablePubsubMessage&gt;)</code></p>
+</dd>
+<dt class="hdlist1"><code>SpannerReadOptions.getReadOptions()</code></dt>
+<dd>
+<p>Use <code>getOptions()</code></p>
+</dd>
+<dt class="hdlist1">Cloud Logging</dt>
+<dd>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>org.springframework.cloud.gcp.autoconfigure.logging</code> package</dt>
+<dd>
+<p>Use <code>com.google.cloud.spring.logging</code> from the <code>spring-cloud-gcp-logging</code> module.</p>
+</dd>
+<dt class="hdlist1">Cloud Logging Logback Appenders</dt>
+<dd>
+<p>Replace <code>org/springframework/cloud/gcp/autoconfigure/logging/logback[-json]-appender.xml</code> with <code>com/google/cloud/spring/logging/logback[-json]-appender.xml</code> from the <code>spring-cloud-gcp-logging</code> module.</p>
+<div class="listingblock">
+<div class="title">logback-spring.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;configuration&gt;
+  &lt;include resource="com/google/cloud/spring/logging/logback-appender.xml" /&gt;
+  ...
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+</div>
+  </div>
+</div>
+</body>
+</html>
