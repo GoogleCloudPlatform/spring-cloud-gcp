@@ -51,6 +51,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.ConversionFailedException;
@@ -92,6 +93,13 @@ class DefaultDatastoreEntityConverterTests {
   void setUp() {
     this.datastore =
         HELPER.getOptions().toBuilder().setNamespace("ghijklmnop").build().getService();
+  }
+
+  @AfterEach
+  void tearDown() throws Exception {
+    if (this.datastore != null) {
+      this.datastore.close();
+    }
   }
 
   @Test
@@ -966,7 +974,8 @@ class DefaultDatastoreEntityConverterTests {
     assertThatThrownBy(() -> ENTITY_CONVERTER.read(StringIdEntity.class, testEntity))
         .isInstanceOf(ConversionFailedException.class)
         .hasStackTraceContaining(
-            "The given key doesn't have a String name value but a conversion to String was attempted");
+            "The given key doesn't have a String name value but a conversion to String was"
+                + " attempted");
   }
 
   private Entity.Builder getEntityBuilder() {
