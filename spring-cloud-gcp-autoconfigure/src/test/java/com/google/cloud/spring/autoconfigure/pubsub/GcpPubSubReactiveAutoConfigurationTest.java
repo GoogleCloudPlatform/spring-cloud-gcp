@@ -50,14 +50,16 @@ import reactor.test.StepVerifier;
 @ExtendWith(MockitoExtension.class)
 class GcpPubSubReactiveAutoConfigurationTest {
 
-  @Mock PubSubSubscriberTemplate mockSubscriberTemplate;
+  PubSubSubscriberTemplate mockSubscriberTemplate;
 
-  @Mock AcknowledgeablePubsubMessage mockMessage;
+  AcknowledgeablePubsubMessage mockMessage;
 
   @BeforeEach
   void setUpMocks() {
-    this.mockSubscriberTemplate = Mockito.mock(PubSubSubscriberTemplate.class);
-    this.mockMessage = Mockito.mock(AcknowledgeablePubsubMessage.class);
+    this.mockSubscriberTemplate =
+        Mockito.mock(PubSubSubscriberTemplate.class, Mockito.withSettings().withoutAnnotations());
+    this.mockMessage =
+        Mockito.mock(AcknowledgeablePubsubMessage.class, Mockito.withSettings().withoutAnnotations());
   }
 
   @Test

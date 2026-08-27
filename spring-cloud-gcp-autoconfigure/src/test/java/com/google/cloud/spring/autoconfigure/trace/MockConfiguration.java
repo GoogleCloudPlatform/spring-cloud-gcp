@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.trace;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
@@ -34,7 +35,7 @@ public class MockConfiguration {
   @Bean
   private static CredentialsProvider googleCredentials() {
     return () -> {
-      Credentials creds = mock(Credentials.class);
+      Credentials creds = mock(Credentials.class, withSettings().withoutAnnotations());
       doAnswer(
               (Answer<Void>)
                   invocationOnMock -> {

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
@@ -38,7 +39,7 @@ class SecretManagerCompatibilityTests {
             "spring.cloud.gcp.secretmanager.project-id=" + PROJECT_NAME,
             "spring.cloud.gcp.sql.enabled=false");
 
-    client = mock(SecretManagerServiceClient.class);
+    client = mock(SecretManagerServiceClient.class, withSettings().withoutAnnotations());
     SecretVersionName secretVersionName =
         SecretVersionName.newBuilder()
             .setProject(PROJECT_NAME)

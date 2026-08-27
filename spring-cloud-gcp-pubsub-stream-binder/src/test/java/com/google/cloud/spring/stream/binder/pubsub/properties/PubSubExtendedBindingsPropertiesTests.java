@@ -104,9 +104,12 @@ class PubSubExtendedBindingsPropertiesTests {
       SubscriberFactory subscriberFactory = Mockito.mock(SubscriberFactory.class);
       when(subscriberFactory.getProjectId()).thenReturn("test-project");
       when(subscriberFactory.createSubscriberStub(any()))
-          .thenReturn(Mockito.mock(SubscriberStub.class));
+          .thenReturn(
+              Mockito.mock(
+                  SubscriberStub.class, Mockito.withSettings().withoutAnnotations()));
       when(subscriberFactory.createSubscriber(anyString(), any()))
-          .thenReturn(Mockito.mock(Subscriber.class));
+          .thenReturn(
+              Mockito.mock(Subscriber.class, Mockito.withSettings().withoutAnnotations()));
 
       return new PubSubTemplate(
           new PubSubPublisherTemplate(publisherFactory),

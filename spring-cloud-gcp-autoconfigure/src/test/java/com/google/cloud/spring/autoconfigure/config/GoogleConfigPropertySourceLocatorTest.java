@@ -23,6 +23,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
@@ -62,7 +63,7 @@ class GoogleConfigPropertySourceLocatorTest {
     this.expectedProperties.put("property-int", 10);
     this.expectedProperties.put("property-bool", true);
     this.projectIdProvider = () -> "projectid";
-    this.credentialsProvider = () -> mock(Credentials.class);
+    this.credentialsProvider = () -> mock(Credentials.class, withSettings().withoutAnnotations());
   }
 
   @Test

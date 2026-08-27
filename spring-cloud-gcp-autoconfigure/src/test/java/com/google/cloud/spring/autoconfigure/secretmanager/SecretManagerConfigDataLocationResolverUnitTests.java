@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
@@ -41,7 +42,8 @@ class SecretManagerConfigDataLocationResolverUnitTests {
 
   @Test
   void createSecretManagerClientWithPresetClientTest() {
-    SecretManagerServiceClient client = mock(SecretManagerServiceClient.class);
+    SecretManagerServiceClient client =
+        mock(SecretManagerServiceClient.class, withSettings().withoutAnnotations());
     SecretManagerConfigDataLocationResolver.setSecretManagerServiceClient(client);
     assertThat(
         SecretManagerConfigDataLocationResolver.createSecretManagerClient(context))
@@ -64,8 +66,10 @@ class SecretManagerConfigDataLocationResolverUnitTests {
   @BeforeEach
   void registerBean() {
     GcpSecretManagerProperties properties = mock(GcpSecretManagerProperties.class);
-    CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
-    SecretManagerServiceClient secretManagerServiceClient = mock(SecretManagerServiceClient.class);
+    CredentialsProvider credentialsProvider =
+        mock(CredentialsProvider.class, withSettings().withoutAnnotations());
+    SecretManagerServiceClient secretManagerServiceClient =
+        mock(SecretManagerServiceClient.class, withSettings().withoutAnnotations());
 
     defaultBootstrapContext.register(GcpSecretManagerProperties.class,
         BootstrapRegistry.InstanceSupplier.of(properties));

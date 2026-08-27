@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.pubsub;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.batching.FlowControlSettings;
@@ -262,7 +263,8 @@ class GcpPubSubAutoConfigurationTests {
 
   @Test
   void customExecutorProviderUsedWhenProvided() {
-    ExecutorProvider executorProvider = mock(ExecutorProvider.class);
+    ExecutorProvider executorProvider =
+        mock(ExecutorProvider.class, withSettings().withoutAnnotations());
 
     contextRunner
         .withBean("subscriberExecutorProvider", ExecutorProvider.class, () -> executorProvider)
@@ -743,7 +745,7 @@ class GcpPubSubAutoConfigurationTests {
 
   @Test
   void customRetrySettingsUsedWhenProvided() {
-    RetrySettings retrySettings = mock(RetrySettings.class);
+    RetrySettings retrySettings = mock(RetrySettings.class, withSettings().withoutAnnotations());
 
     contextRunner
         .withBean("subscriberRetrySettings", RetrySettings.class, () -> retrySettings)
@@ -1074,7 +1076,8 @@ class GcpPubSubAutoConfigurationTests {
 
   @Test
   void customFlowControlUsedWhenProvided() {
-    FlowControlSettings flowControlSettings = mock(FlowControlSettings.class);
+    FlowControlSettings flowControlSettings =
+        mock(FlowControlSettings.class, withSettings().withoutAnnotations());
 
     contextRunner
         .withBean(

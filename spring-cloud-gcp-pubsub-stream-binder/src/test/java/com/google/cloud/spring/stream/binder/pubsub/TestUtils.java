@@ -18,6 +18,7 @@ package com.google.cloud.spring.stream.binder.pubsub;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.auth.CredentialTypeForMetrics;
 import com.google.auth.Credentials;
@@ -26,7 +27,7 @@ public class TestUtils {
   public static final Credentials MOCK_CREDENTIALS = createMockCredentials();
 
   private static Credentials createMockCredentials() {
-    Credentials mockCredential = mock(Credentials.class);
+    Credentials mockCredential = mock(Credentials.class, withSettings().withoutAnnotations());
     when(mockCredential.getMetricsCredentialType())
         .thenReturn(CredentialTypeForMetrics.DO_NOT_SEND);
     return mockCredential;
