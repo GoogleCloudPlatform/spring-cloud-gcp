@@ -15,6 +15,24 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.1.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.1.0...v8.1.1) (2026-08-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.junit:junit-bom to v6.1.2 ([#4570](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4570)) ([b86ca77](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b86ca77415d0c60c13e9a20220d827889d80b186))
+* **deps:** update dependency tools.jackson.core:jackson-core to v3.1.4 [security] ([#4588](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4588)) ([cc5ac01](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/cc5ac01cbab3dbd04def11487e82956fe2c5e0b2))
+
+
+### Dependencies
+
+* Bump cloud-sql-socket-factory to v1.29.0 ([#4598](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4598)) ([a6306f5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a6306f51a156232ddc7b9e3de87c7ed6e03c9fc4))
+
+
+### Documentation
+
+* update compatibility matrix to include Spring Boot 4.1.x ([#4592](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4592)) ([4875210](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4875210cbae9ea11080a10336eb33b2b28a97783))
+
 ## [8.1.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.0.5...v8.1.0) (2026-07-13)
 
 
