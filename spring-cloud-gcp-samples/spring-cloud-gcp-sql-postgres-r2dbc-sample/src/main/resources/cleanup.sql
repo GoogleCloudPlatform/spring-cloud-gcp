@@ -1,1 +1,1 @@
--- No-op cleanup to prevent race conditions during concurrent CI test runs
+DROP TABLE IF EXISTS users;
