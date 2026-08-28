@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -77,7 +78,8 @@ class TracingSubscriberFactoryTest {
 
   @Test
   void test_createSubscriberStub() {
-    SubscriberStub mockSubscriberStub = mock(SubscriberStub.class);
+    SubscriberStub mockSubscriberStub =
+        mock(SubscriberStub.class, withSettings().withoutAnnotations());
     TracingSubscriberStub mockTracingSubscriberStub = mock(TracingSubscriberStub.class);
     when(mockDelegate.createSubscriberStub(any())).thenReturn(mockSubscriberStub);
     when(mockPubSubTracing.subscriberStub(mockSubscriberStub))

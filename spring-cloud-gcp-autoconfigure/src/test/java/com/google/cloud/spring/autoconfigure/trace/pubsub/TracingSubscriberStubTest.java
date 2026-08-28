@@ -23,6 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import brave.handler.MutableSpan;
 import com.google.api.core.AbstractApiFuture;
@@ -39,7 +40,8 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
 class TracingSubscriberStubTest extends PubSubTestBase {
-  SubscriberStub mockSubscriberStub = mock(SubscriberStub.class);
+  SubscriberStub mockSubscriberStub =
+      mock(SubscriberStub.class, withSettings().withoutAnnotations());
 
   TracingSubscriberStub tracingSubscriberStub = pubSubTracing.subscriberStub(mockSubscriberStub);
 

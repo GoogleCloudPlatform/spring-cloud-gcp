@@ -28,6 +28,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiService;
@@ -61,9 +62,9 @@ class PubSubTemplateTests {
 
   @Mock private SubscriberFactory mockSubscriberFactory;
 
-  @Mock private Publisher mockPublisher;
+  private Publisher mockPublisher;
 
-  @Mock private Subscriber mockSubscriber;
+  private Subscriber mockSubscriber;
 
   private PubSubTemplate pubSubTemplate;
 
@@ -88,6 +89,8 @@ class PubSubTemplateTests {
 
   @BeforeEach
   void setUp() {
+    this.mockPublisher = mock(Publisher.class, withSettings().withoutAnnotations());
+    this.mockSubscriber = mock(Subscriber.class, withSettings().withoutAnnotations());
     this.pubSubTemplate = createTemplate();
     this.settableApiFuture = SettableApiFuture.create();
     this.pubsubMessage =
@@ -171,9 +174,8 @@ class PubSubTemplateTests {
         .thenThrow(new PubSubException("couldn't create the publisher."));
 
     assertThatThrownBy(() -> this.pubSubTemplate.publish("testTopic", this.pubsubMessage))
-            .isInstanceOf(PubSubException.class)
-            .hasMessage("couldn't create the publisher.");
-
+        .isInstanceOf(PubSubException.class)
+        .hasMessage("couldn't create the publisher.");
   }
 
   @Test
@@ -206,7 +208,7 @@ class PubSubTemplateTests {
 
     when(this.mockSubscriberFactory.createSubscriber(
             eq("testSubscription"), isA(MessageReceiver.class)))
-            .thenReturn(this.mockSubscriber);
+        .thenReturn(this.mockSubscriber);
     when(this.mockSubscriber.startAsync()).thenReturn(mock(ApiService.class));
 
     Subscriber subscriber = this.pubSubTemplate.subscribe("testSubscription", message -> {});

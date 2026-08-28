@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.secretmanager;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.rpc.NotFoundException;
@@ -125,7 +126,8 @@ class SecretManagerBootstrapConfigurationTests {
 
     @Bean
     public static SecretManagerServiceClient secretManagerClient() {
-      SecretManagerServiceClient client = mock(SecretManagerServiceClient.class);
+      SecretManagerServiceClient client =
+          mock(SecretManagerServiceClient.class, withSettings().withoutAnnotations());
 
       SecretVersionName secretVersionName =
           SecretVersionName.newBuilder()
@@ -183,7 +185,7 @@ class SecretManagerBootstrapConfigurationTests {
 
     @Bean
     public static CredentialsProvider googleCredentials() {
-      return () -> mock(Credentials.class);
+      return () -> mock(Credentials.class, withSettings().withoutAnnotations());
     }
 
     // This is added in here to verify that the Secret Manager property source locator bean

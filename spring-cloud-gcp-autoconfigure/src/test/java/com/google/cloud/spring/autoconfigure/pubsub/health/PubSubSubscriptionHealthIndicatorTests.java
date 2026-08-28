@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.pubsub.health;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
@@ -30,7 +31,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
@@ -38,7 +38,7 @@ import org.springframework.boot.actuate.health.Status;
 @ExtendWith(MockitoExtension.class)
 class PubSubSubscriptionHealthIndicatorTests {
 
-  @Mock private MetricServiceClient metricServiceClient;
+  private MetricServiceClient metricServiceClient;
 
   private PubSubSubscriptionHealthIndicator healthIndicator;
 
@@ -52,7 +52,9 @@ class PubSubSubscriptionHealthIndicatorTests {
 
   @BeforeEach
   void setUp() throws Exception {
-    ExecutorProvider executorProvider = mock(ExecutorProvider.class);
+    this.metricServiceClient = mock(MetricServiceClient.class, withSettings().withoutAnnotations());
+    ExecutorProvider executorProvider =
+        mock(ExecutorProvider.class, withSettings().withoutAnnotations());
     HealthTrackerRegistry trackerRegistry =
         new HealthTrackerRegistryImpl(
             DEFAULT_PROJECT_ID,

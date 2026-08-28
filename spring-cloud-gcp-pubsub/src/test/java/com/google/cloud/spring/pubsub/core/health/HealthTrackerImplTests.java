@@ -22,6 +22,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.cloud.monitoring.v3.MetricServiceClient.ListTimeSeriesPage;
@@ -36,7 +37,6 @@ import java.util.concurrent.locks.LockSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for HealthTrackerImpl. */
@@ -49,13 +49,13 @@ class HealthTrackerImplTests {
   private static final int BACKLOG_THRESHOLD = 200;
   private static final int MINUTE_INTERNAL = 1;
 
-  @Mock private MetricServiceClient metricServiceClient;
+  private MetricServiceClient metricServiceClient;
 
   private HealthTracker healthTracker;
 
   @BeforeEach
   void setUp() throws Exception {
-    metricServiceClient = mock(MetricServiceClient.class);
+    metricServiceClient = mock(MetricServiceClient.class, withSettings().withoutAnnotations());
     healthTracker =
         new HealthTrackerImpl(
             ProjectSubscriptionName.of(PROJECT_ID, SUBSCRIPTION_ID),

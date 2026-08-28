@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.core.ApiService;
 import com.google.api.core.ApiService.State;
@@ -37,16 +38,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for HealthTrackerRegistryImpl. */
 @ExtendWith(MockitoExtension.class)
 class HealthTrackerRegistryImplTests {
 
-  @Mock private MetricServiceClient metricServiceClient;
+  private MetricServiceClient metricServiceClient;
 
-  @Mock private ExecutorProvider executorProvider;
+  private ExecutorProvider executorProvider;
 
   @Captor private ArgumentCaptor<ApiService.Listener> captor;
 
@@ -62,6 +62,8 @@ class HealthTrackerRegistryImplTests {
 
   @BeforeEach
   void setUp() throws Exception {
+    metricServiceClient = mock(MetricServiceClient.class, withSettings().withoutAnnotations());
+    executorProvider = mock(ExecutorProvider.class, withSettings().withoutAnnotations());
     healthTrackerRegistry =
         new HealthTrackerRegistryImpl(
             DEFAULT_PROJECT_ID,

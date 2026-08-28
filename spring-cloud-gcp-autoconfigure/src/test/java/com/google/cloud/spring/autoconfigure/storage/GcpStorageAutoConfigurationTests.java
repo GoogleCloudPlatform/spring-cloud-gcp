@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.storage;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.auth.Credentials;
@@ -101,7 +102,7 @@ class GcpStorageAutoConfigurationTests {
 
     @Bean
     public static CredentialsProvider googleCredentials() {
-      return () -> mock(Credentials.class);
+      return () -> mock(Credentials.class, withSettings().withoutAnnotations());
     }
 
     @Bean
