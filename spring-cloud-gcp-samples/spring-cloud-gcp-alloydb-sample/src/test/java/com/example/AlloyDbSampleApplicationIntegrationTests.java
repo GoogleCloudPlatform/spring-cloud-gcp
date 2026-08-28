@@ -56,6 +56,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
     })
 class AlloyDbSampleApplicationIntegrationTests {
 
+  // Unique, timestamped schema name to isolate this test run from concurrent CI jobs.
+  // The timestamp prefix allows the 24-hour janitor sweep to identify and prune orphaned schemas.
   private static final String SCHEMA_NAME =
       "test_schema_alloydb_"
           + System.currentTimeMillis()
@@ -66,6 +68,18 @@ class AlloyDbSampleApplicationIntegrationTests {
 
   private static JdbcTemplate staticJdbcTemplate;
 
+  /**
+   * Configures HikariCP's {@code connection-init-sql} dynamically.
+   *
+   * <p>Whenever a physical connection is opened by the pool (both during Spring Boot's startup
+   * database initialization and during web request handling by {@code WebController}), HikariCP
+   * executes this SQL.
+   *
+   * <p>Setting {@code search_path TO <SCHEMA_NAME>, public} routes all unqualified table references
+   * (e.g. {@code CREATE TABLE users} and {@code SELECT * FROM users}) to our isolated schema. This
+   * allows the sample code and SQL files to remain standard and unmodified, while avoiding manual
+   * out-of-band JDBC connections before Spring context startup (which is GraalVM Native Image safe).
+   */
   @DynamicPropertySource
   static void registerProperties(DynamicPropertyRegistry registry) {
     registry.add(
@@ -80,11 +94,18 @@ class AlloyDbSampleApplicationIntegrationTests {
 
   @Autowired private TestRestTemplate testRestTemplate;
 
+  /** Captures the injected {@link JdbcTemplate} for use in static lifecycle methods. */
   @Autowired
   void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
     staticJdbcTemplate = jdbcTemplate;
   }
 
+  /**
+   * Janitor sweep: queries the PostgreSQL metadata catalog for test schemas created more than 24
+   * hours ago (e.g. from crashed or aborted CI runs) and drops them.
+   *
+   * <p>Schemas from active concurrent test runs are only seconds/minutes old and will not be touched.
+   */
   @BeforeEach
   void cleanOldSchemas() {
     if (cleanedOldSchemas || staticJdbcTemplate == null) {
@@ -114,6 +135,7 @@ class AlloyDbSampleApplicationIntegrationTests {
     }
   }
 
+  /** Best-effort teardown to drop the isolated schema and its tables upon test completion. */
   @AfterAll
   static void teardownSchema() {
     if (staticJdbcTemplate != null && SCHEMA_NAME != null) {
