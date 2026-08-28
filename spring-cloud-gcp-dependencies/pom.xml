@@ -34,11 +34,15 @@
 	</distributionManagement>
 
 	<properties>
-		<gcp-libraries-bom.version>26.76.0</gcp-libraries-bom.version>
+		<gcp-libraries-bom.version>26.87.0</gcp-libraries-bom.version>
 		<cloud-sql-socket-factory.version>1.23.1</cloud-sql-socket-factory.version>
 		<r2dbc-postgres-driver.version>1.0.7.RELEASE</r2dbc-postgres-driver.version>
 		<cloud-spanner-r2dbc.version>1.3.0</cloud-spanner-r2dbc.version>
 		<alloydb-jdbc-connector.version>1.2.0</alloydb-jdbc-connector.version>
+		<!-- Manually manage version since it was removed from libraries-bom after 26.86.0 -->
+		<google-cloud-datacatalog.version>1.101.0</google-cloud-datacatalog.version>
+		<!-- Pin dataplex on 5.x LTS to preserve ContentServiceClient compatibility -->
+		<google-cloud-dataplex.version>1.83.0</google-cloud-dataplex.version>
 	</properties>
 
 	<dependencyManagement>
@@ -302,8 +306,40 @@
 			<!-- spring dependency overrides -->
 			<dependency>
 				<groupId>io.opentelemetry</groupId>
+				<artifactId>opentelemetry-bom</artifactId>
+				<version>1.62.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.opentelemetry</groupId>
 				<artifactId>opentelemetry-api</artifactId>
-				<version>1.47.0</version>
+				<version>1.62.0</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.annotation</groupId>
+				<artifactId>javax.annotation-api</artifactId>
+				<version>1.3.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>google-cloud-datacatalog</artifactId>
+				<version>${google-cloud-datacatalog.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>google-cloud-dataplex</artifactId>
+				<version>${google-cloud-dataplex.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.api.grpc</groupId>
+				<artifactId>grpc-google-cloud-dataplex-v1</artifactId>
+				<version>${google-cloud-dataplex.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.api.grpc</groupId>
+				<artifactId>proto-google-cloud-dataplex-v1</artifactId>
+				<version>${google-cloud-dataplex.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
