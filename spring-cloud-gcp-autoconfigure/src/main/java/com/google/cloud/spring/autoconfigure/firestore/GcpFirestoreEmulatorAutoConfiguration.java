@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.firestore;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.auth.Credentials;
 import com.google.cloud.firestore.FirestoreOptions;
+import com.google.cloud.spring.autoconfigure.emulator.FirestoreEmulatorCredentials;
 import com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreAutoConfiguration.FirestoreReactiveAutoConfiguration;
 import com.google.cloud.spring.data.firestore.FirestoreTemplate;
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper;
@@ -27,11 +28,6 @@ import com.google.firestore.v1.FirestoreGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
-import java.net.URI;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -77,37 +73,7 @@ public class GcpFirestoreEmulatorAutoConfiguration {
   }
 
   private Credentials emulatorCredentials() {
-    final Map<String, List<String>> headerMap = new HashMap<>();
-    headerMap.put("Authorization", Collections.singletonList("Bearer owner"));
-    headerMap.put("google-cloud-resource-prefix", Collections.singletonList(
-        rootPath.substring(0, rootPath.lastIndexOf("/documents"))));
-
-    return new Credentials() {
-      @Override
-      public String getAuthenticationType() {
-        return null;
-      }
-
-      @Override
-      public Map<String, List<String>> getRequestMetadata(URI uri) {
-        return headerMap;
-      }
-
-      @Override
-      public boolean hasRequestMetadata() {
-        return true;
-      }
-
-      @Override
-      public boolean hasRequestMetadataOnly() {
-        return true;
-      }
-
-      @Override
-      public void refresh() {
-        // no-op
-      }
-    };
+    return new FirestoreEmulatorCredentials(this.rootPath);
   }
 
   /** Reactive Firestore autoconfiguration to enable emulator use. */
