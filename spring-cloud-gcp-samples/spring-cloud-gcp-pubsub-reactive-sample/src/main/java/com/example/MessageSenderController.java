@@ -18,6 +18,7 @@ package com.example;
 
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,11 +35,14 @@ public class MessageSenderController {
 
   @Autowired PubSubPublisherTemplate pubSubPublisherTemplate;
 
+  @Value("${sample.topic:exampleTopic}")
+  private String topicName;
+
   @PostMapping("/postMessage")
   public RedirectView publish(@ModelAttribute("message") Message message) {
 
     for (int i = 0; i < message.count; i++) {
-      this.pubSubPublisherTemplate.publish("exampleTopic", message.message + " " + i);
+      this.pubSubPublisherTemplate.publish(this.topicName, message.message + " " + i);
     }
 
     return new RedirectView("/?statusMessage=Published");

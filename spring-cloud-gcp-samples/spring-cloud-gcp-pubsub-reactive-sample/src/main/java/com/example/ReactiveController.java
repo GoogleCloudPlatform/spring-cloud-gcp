@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,11 +51,14 @@ public class ReactiveController {
   @Autowired
   PubSubReactiveFactory reactiveFactory;
 
+  @Value("${sample.subscription:exampleSubscription}")
+  private String subscriptionName;
+
   @GetMapping(value = "/getMessages", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public Flux<String> getMessages() {
 
     Flux<AcknowledgeablePubsubMessage> flux =
-        this.reactiveFactory.poll("exampleSubscription", 1000);
+        this.reactiveFactory.poll(this.subscriptionName, 1000);
 
     AtomicInteger count = new AtomicInteger(0);
 
