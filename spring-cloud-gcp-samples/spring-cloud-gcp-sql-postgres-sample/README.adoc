@@ -46,5 +46,3 @@ The database will be populated based on the link:src/main/resources/schema.sql[s
 
 When the application is up, navigate to http://localhost:8080/getTuples in your browser, or use the `Web Preview`
 button in Cloud Shell to preview the app on port 8080. This will print the contents of the `users` table.
-
-NOTE: The sample initializes the database using `CREATE TABLE IF NOT EXISTS users` and populates it with sample rows without dropping the table on shutdown. The `users` table will persist in your Cloud SQL instance after running the sample. If you wish to remove the table, you can drop it manually using your SQL client (`DROP TABLE users;`).
