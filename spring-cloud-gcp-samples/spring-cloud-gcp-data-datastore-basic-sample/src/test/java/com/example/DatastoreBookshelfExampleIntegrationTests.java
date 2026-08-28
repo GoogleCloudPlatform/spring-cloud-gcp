@@ -33,6 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -40,6 +41,7 @@ import org.springframework.util.MultiValueMap;
 /** Tests for the Book Shelf sample app. */
 // Please use "-Dit.datastore=true" to enable the tests.
 @ExtendWith(SpringExtension.class)
+@TestPropertySource("classpath:application-test.properties")
 @AutoConfigureTestRestTemplate
 @SpringBootTest(
     classes = DatastoreBookshelfExample.class,
@@ -55,11 +57,13 @@ class DatastoreBookshelfExampleIntegrationTests {
   void saveBooks() {
     sendRequest(
         "/saveBook",
-        "{\"id\":12345678, \"title\":\"The Moon Is a Harsh Mistress\", \"author\":\"Robert A. Heinlein\", \"year\":1966}",
+        "{\"id\":12345678, \"title\":\"The Moon Is a Harsh Mistress\", \"author\":\"Robert A."
+            + " Heinlein\", \"year\":1966}",
         HttpMethod.POST);
     sendRequest(
         "/saveBook",
-        "{\"title\":\"Stranger in a Strange Land\", \"author\":\"Robert A. Heinlein\", \"year\":1961}",
+        "{\"title\":\"Stranger in a Strange Land\", \"author\":\"Robert A. Heinlein\","
+            + " \"year\":1961}",
         HttpMethod.POST);
     sendRequest(
         "/saveBook",
@@ -93,7 +97,8 @@ class DatastoreBookshelfExampleIntegrationTests {
               String responseBody = sendRequest("/findAllBooks", null, HttpMethod.GET);
               assertThat(responseBody)
                   .contains(
-                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
+                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein',"
+                          + " year=1966")
                   .contains(
                       "title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
                   .contains("title='The Crack in Space', author='Philip K. Dick', year=1966")
@@ -111,7 +116,8 @@ class DatastoreBookshelfExampleIntegrationTests {
                   sendRequest("/findByAuthor?author=Robert A. Heinlein", null, HttpMethod.GET);
               assertThat(responseBody)
                   .contains(
-                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
+                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein',"
+                          + " year=1966")
                   .contains(
                       "title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
                   .doesNotContain("title='The Crack in Space', author='Philip K. Dick', year=1966")
@@ -129,7 +135,8 @@ class DatastoreBookshelfExampleIntegrationTests {
                   sendRequest("/findByYearGreaterThan?year=1967", null, HttpMethod.GET);
               assertThat(responseBody)
                   .doesNotContain(
-                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
+                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein',"
+                          + " year=1966")
                   .doesNotContain(
                       "title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
                   .doesNotContain("title='The Crack in Space', author='Philip K. Dick', year=1966")
@@ -148,7 +155,8 @@ class DatastoreBookshelfExampleIntegrationTests {
                       "/findByAuthorYear?author=Philip K. Dick&year=1966", null, HttpMethod.GET);
               assertThat(responseBody)
                   .doesNotContain(
-                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
+                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein',"
+                          + " year=1966")
                   .doesNotContain(
                       "title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
                   .contains("title='The Crack in Space', author='Philip K. Dick', year=1966")
@@ -166,7 +174,8 @@ class DatastoreBookshelfExampleIntegrationTests {
               String responseBody = sendRequest("/findAllBooks", null, HttpMethod.GET);
               assertThat(responseBody)
                   .doesNotContain(
-                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein', year=1966")
+                      "title='The Moon Is a Harsh Mistress', author='Robert A. Heinlein',"
+                          + " year=1966")
                   .doesNotContain(
                       "title='Stranger in a Strange Land', author='Robert A. Heinlein', year=1961")
                   .doesNotContain("title='The Crack in Space', author='Philip K. Dick', year=1966")

@@ -16,10 +16,16 @@
 
 package com.example;
 
+import com.google.cloud.spring.pubsub.PubSubAdmin;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +33,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -43,13 +51,46 @@ import reactor.test.StepVerifier;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = ReactiveReceiverApplication.class)
 @AutoConfigureWebTestClient
+@TestInstance(Lifecycle.PER_CLASS)
 class ReactiveReceiverApplicationIntegrationTest {
+
+  private static final String TEST_TOPIC = "reactive-sample-topic-" + UUID.randomUUID();
+
+  private static final String TEST_SUBSCRIPTION = "reactive-sample-sub-" + UUID.randomUUID();
+
+  @DynamicPropertySource
+  static void registerProperties(DynamicPropertyRegistry registry) {
+    registry.add("sample.topic", () -> TEST_TOPIC);
+    registry.add("sample.subscription", () -> TEST_SUBSCRIPTION);
+  }
 
   @LocalServerPort private int port;
 
   @Autowired private WebTestClient webTestClient;
 
   @Autowired private PubSubTemplate pubSubTemplate;
+
+  @Autowired private PubSubAdmin pubSubAdmin;
+
+  @BeforeAll
+  void setUp() {
+    if (this.pubSubAdmin.getTopic(TEST_TOPIC) == null) {
+      this.pubSubAdmin.createTopic(TEST_TOPIC);
+    }
+    if (this.pubSubAdmin.getSubscription(TEST_SUBSCRIPTION) == null) {
+      this.pubSubAdmin.createSubscription(TEST_SUBSCRIPTION, TEST_TOPIC);
+    }
+  }
+
+  @AfterAll
+  void tearDown() {
+    if (this.pubSubAdmin.getSubscription(TEST_SUBSCRIPTION) != null) {
+      this.pubSubAdmin.deleteSubscription(TEST_SUBSCRIPTION);
+    }
+    if (this.pubSubAdmin.getTopic(TEST_TOPIC) != null) {
+      this.pubSubAdmin.deleteTopic(TEST_TOPIC);
+    }
+  }
 
   @Test
   void testSample() throws UnsupportedEncodingException {
