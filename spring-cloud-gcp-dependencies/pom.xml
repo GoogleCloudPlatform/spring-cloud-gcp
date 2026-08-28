@@ -306,8 +306,15 @@
 			<!-- spring dependency overrides -->
 			<dependency>
 				<groupId>io.opentelemetry</groupId>
+				<artifactId>opentelemetry-bom</artifactId>
+				<version>1.62.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.opentelemetry</groupId>
 				<artifactId>opentelemetry-api</artifactId>
-				<version>1.47.0</version>
+				<version>1.62.0</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.annotation</groupId>

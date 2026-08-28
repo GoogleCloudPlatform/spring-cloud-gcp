@@ -17,10 +17,14 @@
 package com.google.cloud.spring.autoconfigure.spanner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.NoCredentials;
+import com.google.cloud.spanner.DatabaseAdminClient;
+import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.gson.Gson;
@@ -128,6 +132,23 @@ class GcpSpannerEmulatorAutoConfigurationTests {
     @Bean
     public Gson gson() {
       return new Gson();
+    }
+
+    /**
+     * Mock bean for Spanner client.
+     *
+     * <p>google-cloud-spanner 6.121.0+ actively checks emulator connectivity during
+     * GapicSpannerRpc constructor initialization when the emulator is enabled. Because these
+     * unit tests verify SpannerOptions and CredentialsProvider auto-configuration without a
+     * running emulator, providing a mock Spanner bean avoids eager connection attempts during
+     * Spring context startup.
+     */
+    @Bean
+    public Spanner spanner() {
+      Spanner spanner = mock(Spanner.class);
+      DatabaseAdminClient dbAdminClient = mock(DatabaseAdminClient.class);
+      when(spanner.getDatabaseAdminClient()).thenReturn(dbAdminClient);
+      return spanner;
     }
   }
 }
