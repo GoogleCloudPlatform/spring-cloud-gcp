@@ -56,6 +56,10 @@ import reactor.test.StepVerifier;
     classes = ReactiveReceiverApplication.class)
 class ReactiveReceiverApplicationIntegrationTest {
 
+  // Dynamic UUIDs ensure complete resource isolation when multiple CI matrix runners
+  // or PR builds execute concurrently against the shared GCP project.
+  // Without a UUID suffix, parallel runners would pull messages from each other's
+  // subscription, or runner A's @AfterAll teardown would delete runner B's topic mid-test.
   private static final String TOPIC_NAME = "reactive-sample-topic-" + UUID.randomUUID();
 
   private static final String SUBSCRIPTION_NAME = "reactive-sample-sub-" + UUID.randomUUID();
@@ -66,12 +70,17 @@ class ReactiveReceiverApplicationIntegrationTest {
 
   private static String projectName;
 
+  /**
+   * Overrides sample.topic and sample.subscription so the application binds to this test run's
+   * isolated Pub/Sub resources.
+   */
   @DynamicPropertySource
   static void registerProperties(DynamicPropertyRegistry registry) {
     registry.add("sample.topic", () -> TOPIC_NAME);
     registry.add("sample.subscription", () -> SUBSCRIPTION_NAME);
   }
 
+  /** Provisions the isolated topic and subscription before tests run. */
   @BeforeAll
   static void setup() throws IOException {
     projectName = ProjectName.of(ServiceOptions.getDefaultProjectId()).getProject();
@@ -86,6 +95,7 @@ class ReactiveReceiverApplicationIntegrationTest {
         10);
   }
 
+  /** Tears down the isolated subscription and topic after all tests have completed. */
   @AfterAll
   static void tearDown() {
     if (subscriptionAdminClient != null) {
