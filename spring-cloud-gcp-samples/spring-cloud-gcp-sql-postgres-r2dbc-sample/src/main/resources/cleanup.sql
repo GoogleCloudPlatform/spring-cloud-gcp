@@ -1,1 +1,3 @@
-DROP TABLE IF EXISTS users;
+-- No-op cleanup to prevent race conditions during concurrent CI test runs.
+-- Tables persist across test invocations; do not DROP tables here as it
+-- breaks concurrent CI jobs sharing the database instance.
