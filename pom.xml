@@ -33,11 +33,11 @@
 		<project.parent.version>${project.version}</project.parent.version>
 		<!-- Dependency versions -->
 		<spring-cloud-dependencies.version>2025.1.2</spring-cloud-dependencies.version>
-		<spring-boot-dependencies.version>4.1.0</spring-boot-dependencies.version>
+		<spring-boot-dependencies.version>4.1.1</spring-boot-dependencies.version>
 		<spring-cloud-gcp-dependencies.version>${project.parent.version}</spring-cloud-gcp-dependencies.version>
 		<zipkin-gcp.version>2.3.0</zipkin-gcp.version>
 		<java-cfenv.version>2.5.0</java-cfenv.version>
-		<micrometer-tracing.version>1.4.3</micrometer-tracing.version>
+		<micrometer-tracing.version>1.7.1</micrometer-tracing.version>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
