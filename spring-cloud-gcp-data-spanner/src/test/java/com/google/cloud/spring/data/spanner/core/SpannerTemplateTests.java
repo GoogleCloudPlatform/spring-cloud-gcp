@@ -56,6 +56,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.Column;
 import com.google.cloud.spring.data.spanner.core.mapping.Embedded;
 import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.core.mapping.Where;
@@ -511,6 +512,18 @@ class SpannerTemplateTests {
         () -> assertThat(this.spannerTemplate.query(TestEntity.class, query, null)).isEmpty(),
         x -> {});
     verify(this.databaseClient, times(1)).singleUse();
+  }
+
+  @Test
+  void forUpdateQueryRequiresReadWriteTransactionTest() {
+    assertThatThrownBy(
+            () ->
+                this.spannerTemplate.query(
+                    TestEntity.class,
+                    Statement.of("SELECT * FROM custom_test_table FOR UPDATE"),
+                    new SpannerQueryOptions().setForUpdate(true)))
+        .isInstanceOf(SpannerDataException.class)
+        .hasMessage("FOR UPDATE queries must be executed in a read-write transaction.");
   }
 
   @Test
