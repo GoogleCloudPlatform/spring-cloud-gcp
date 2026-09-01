@@ -15,6 +15,15 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.1.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.1.1...v8.1.2) (2026-09-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.junit:junit-bom to v6.1.3 ([#4599](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4599)) ([2eec0ae](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2eec0aed6ccaa31ecdd3bf47485672c84f26cf31))
+* **deps:** update spring-boot-dependencies to v4.1.1 [security] ([#4614](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4614)) ([804d0a7](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/804d0a7854e4203a028e72dfebda6796201ce5ea))
+* **deps:** update spring-cloud-dependencies to v2025.1.3 [security] ([#4615](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4615)) ([fd8431d](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fd8431d9fd5125ef1dbfc22a0198742468aa8f07))
+
 ## [8.1.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.1.0...v8.1.1) (2026-08-27)
 
 
