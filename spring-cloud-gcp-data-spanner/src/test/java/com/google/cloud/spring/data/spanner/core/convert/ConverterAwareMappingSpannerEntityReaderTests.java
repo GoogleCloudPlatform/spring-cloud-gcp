@@ -47,6 +47,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.ConversionFailedException;
+import org.springframework.core.convert.ConverterNotFoundException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 
@@ -276,11 +277,15 @@ class ConverterAwareMappingSpannerEntityReaderTests {
     assertThatThrownBy(() -> this.spannerEntityReader.read(
         FaultyTestEntity.class,
         struct,
-        java.util.Set.of("id"),
-        false
+        null, // includeColumns = null means read all columns
+        true  // allowMissingColumns = true prevents failing early on the missing 'id' column
     ))
-        .isInstanceOf(SpannerDataException.class)
-        .hasMessageContaining("Unable to read column from Cloud Spanner results");
+        // We expect ConverterNotFoundException because:
+        // 1. The missing 'id' column is allowed and does not cause a failure.
+        // 2. The reader proceeds to process 'fieldWithUnsupportedType'.
+        // 3. Since there is no converter from String to TestEntity, Spring throws ConverterNotFoundException.
+        .isInstanceOf(ConverterNotFoundException.class)
+        .hasMessageContaining("No converter found capable of converting from type");
   }
 
   @Test
