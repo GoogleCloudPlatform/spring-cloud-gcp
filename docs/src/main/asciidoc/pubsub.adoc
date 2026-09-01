@@ -84,6 +84,9 @@ The request byte threshold to use for batching. | No | 1 byte (batching off)
 | `spring.cloud.gcp.pubsub.publisher.batching.delay-threshold-seconds`|
 The delay threshold to use for batching.
 After this amount of time has elapsed (counting from the first element added), the elements will be wrapped up in a batch and sent. | No | 1 ms (batching off)
+| `spring.cloud.gcp.pubsub.publisher.batching.delay-threshold-duration`|
+The delay threshold to use for batching.
+After this amount of time has elapsed (counting from the first element added), the elements will be wrapped up in a batch and sent. | No | 1 ms (batching off)
 | `spring.cloud.gcp.pubsub.publisher.batching.enabled`|
 Enables batching. | No | false
 | `spring.cloud.gcp.pubsub.publisher.enable-message-ordering`|
