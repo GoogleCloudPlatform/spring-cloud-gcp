@@ -22,6 +22,7 @@ import com.google.cloud.NoCredentials;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.DatastoreReaderWriter;
+import com.google.cloud.http.HttpTransportOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
@@ -76,6 +77,8 @@ public class GcpDatastoreAutoConfiguration {
 
   private final String host;
 
+  private final boolean useHttp;
+
   GcpDatastoreAutoConfiguration(
       GcpDatastoreProperties gcpDatastoreProperties,
       GcpProjectIdProvider projectIdProvider,
@@ -107,6 +110,7 @@ public class GcpDatastoreAutoConfiguration {
     }
 
     this.host = hostToConnect;
+    this.useHttp = gcpDatastoreProperties.isUseHttp();
   }
 
   @Bean
@@ -193,6 +197,9 @@ public class GcpDatastoreAutoConfiguration {
             .setProjectId(this.projectId)
             .setHeaderProvider(new UserAgentHeaderProvider(this.getClass()))
             .setCredentials(this.credentials);
+    if (this.useHttp) {
+      builder.setTransportOptions(HttpTransportOptions.newBuilder().build());
+    }
     if (namespace != null) {
       builder.setNamespace(namespace);
     }
