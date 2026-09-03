@@ -26,11 +26,13 @@ import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
+import com.google.cloud.http.HttpTransportOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.datastore.health.DatastoreHealthIndicator;
 import com.google.cloud.spring.autoconfigure.datastore.health.DatastoreHealthIndicatorAutoConfiguration;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import java.util.function.Supplier;
@@ -122,6 +124,75 @@ class GcpDatastoreAutoConfigurationTests {
           assertThat(datastoreOptions.getNamespace()).isEqualTo("testNamespace");
           assertThat(datastoreOptions.getHost()).isEqualTo("localhost:8081");
         });
+  }
+
+  @Test
+  void testDatastoreHttpTransportOption() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.datastore.use-http=true")
+        .run(
+            context -> {
+              DatastoreOptions datastoreOptions = getDatastoreBean(context).getOptions();
+              assertThat(datastoreOptions.getTransportOptions())
+                  .isInstanceOf(HttpTransportOptions.class);
+            });
+  }
+
+  @Test
+  void testDatastoreDefaultTransportOption() {
+    this.contextRunner.run(
+        context -> {
+          DatastoreOptions datastoreOptions = getDatastoreBean(context).getOptions();
+          assertThat(datastoreOptions.getTransportOptions())
+              .isNotInstanceOf(HttpTransportOptions.class);
+        });
+  }
+
+  @Test
+  void testDatastoreHttpTransportOptionWithExplicitFalse() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.datastore.use-http=false")
+        .run(
+            context -> {
+              DatastoreOptions datastoreOptions = getDatastoreBean(context).getOptions();
+              assertThat(datastoreOptions.getTransportOptions())
+                  .isNotInstanceOf(HttpTransportOptions.class);
+            });
+  }
+
+  @Test
+  void testDatastoreHttpTransportWithNamespaceProvider() {
+    ApplicationContextRunner runner =
+        new ApplicationContextRunner()
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpDatastoreAutoConfiguration.class, GcpContextAutoConfiguration.class))
+            .withUserConfiguration(TestConfigurationWithNamespaceProviderOnly.class)
+            .withPropertyValues(
+                "spring.cloud.gcp.datastore.project-id=test-project",
+                "spring.cloud.gcp.datastore.host=localhost:8081",
+                "spring.cloud.gcp.datastore.use-http=true",
+                "management.health.datastore.enabled=false");
+
+    runner.run(
+        context -> {
+          DatastoreProvider provider = context.getBean(DatastoreProvider.class);
+          assertThat(provider).isNotNull();
+          Datastore client = provider.get();
+          assertThat(client.getOptions().getTransportOptions())
+              .isInstanceOf(HttpTransportOptions.class);
+          assertThat(client.getOptions().getNamespace()).isEqualTo("dynamic-namespace");
+        });
+  }
+
+  @Test
+  void testDatastoreTemplateWithHttpTransport() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.datastore.use-http=true")
+        .run(
+            context -> {
+              assertThat(context.getBean(DatastoreTemplate.class)).isNotNull();
+            });
   }
 
   @Test
@@ -260,6 +331,21 @@ class GcpDatastoreAutoConfigurationTests {
     @Bean
     public DatastoreNamespaceProvider datastoreNamespaceProvider() {
       return () -> "blah";
+    }
+  }
+
+  /** Spring Boot config for tests with only DatastoreNamespaceProvider. */
+  @Configuration
+  static class TestConfigurationWithNamespaceProviderOnly {
+
+    @Bean
+    public CredentialsProvider credentialsProvider() {
+      return () -> NoCredentials.getInstance();
+    }
+
+    @Bean
+    public DatastoreNamespaceProvider datastoreNamespaceProvider() {
+      return () -> "dynamic-namespace";
     }
   }
 }
