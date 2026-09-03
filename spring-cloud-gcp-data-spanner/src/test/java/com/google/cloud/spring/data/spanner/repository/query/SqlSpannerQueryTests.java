@@ -156,15 +156,9 @@ class SqlSpannerQueryTests {
   void noPageableParamQueryTest(boolean useValueExpressionDelegate) throws NoSuchMethodException {
     String sql =
         "SELECT DISTINCT * FROM "
-            + ":com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Trade:";
-    // @formatter:off
-    String entityResolvedSql =
-        "SELECT *, ARRAY (SELECT AS STRUCT disabled, id, childId, value, ARRAY (SELECT AS STRUCT"
-            + " canceled, documentId, id, childId, content FROM documents WHERE (documents.id ="
-            + " children.id AND documents.childId = children.childId) AND (canceled = false)) AS"
-            + " documents FROM children WHERE (children.id = trades.id) AND (disabled = false)) AS"
-            + " children FROM (SELECT DISTINCT * FROM trades) trades";
-    // @formatter:on
+            + ":com.google.cloud.spring.data.spanner.repository.query.SqlSpannerQueryTests$Trade:"
+            + " ORDER BY id DESC LIMIT 3";
+    String entityResolvedSql = "SELECT DISTINCT * FROM trades ORDER BY id DESC LIMIT 3";
 
     final Class toReturn = Trade.class;
     when(queryMethod.isCollectionQuery()).thenReturn(false);
