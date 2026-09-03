@@ -171,13 +171,13 @@
 					<plugin>
 						<groupId>org.graalvm.buildtools</groupId>
 						<artifactId>native-maven-plugin</artifactId>
-						<version>0.11.3</version>
+						<version>0.11.5</version>
 						<extensions>true</extensions>
 						<dependencies>
 							<dependency>
 								<groupId>org.graalvm.buildtools</groupId>
 								<artifactId>junit-platform-native</artifactId>
-								<version>0.11.3</version>
+								<version>0.11.5</version>
 							</dependency>
 						</dependencies>
 						<configuration>
