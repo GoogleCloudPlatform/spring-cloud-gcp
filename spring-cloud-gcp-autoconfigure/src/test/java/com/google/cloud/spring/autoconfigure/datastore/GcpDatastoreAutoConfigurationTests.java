@@ -127,9 +127,9 @@ class GcpDatastoreAutoConfigurationTests {
   }
 
   @Test
-  void testDatastoreHttpTransportOption() {
+  void testDatastoreHttpJsonTransportOption() {
     this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.datastore.use-http=true")
+        .withPropertyValues("spring.cloud.gcp.datastore.use-http-json=true")
         .run(
             context -> {
               DatastoreOptions datastoreOptions = getDatastoreBean(context).getOptions();
@@ -149,9 +149,9 @@ class GcpDatastoreAutoConfigurationTests {
   }
 
   @Test
-  void testDatastoreHttpTransportOptionWithExplicitFalse() {
+  void testDatastoreHttpJsonTransportOptionWithExplicitFalse() {
     this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.datastore.use-http=false")
+        .withPropertyValues("spring.cloud.gcp.datastore.use-http-json=false")
         .run(
             context -> {
               DatastoreOptions datastoreOptions = getDatastoreBean(context).getOptions();
@@ -161,7 +161,7 @@ class GcpDatastoreAutoConfigurationTests {
   }
 
   @Test
-  void testDatastoreHttpTransportWithNamespaceProvider() {
+  void testDatastoreHttpJsonTransportWithNamespaceProvider() {
     ApplicationContextRunner runner =
         new ApplicationContextRunner()
             .withConfiguration(
@@ -171,7 +171,7 @@ class GcpDatastoreAutoConfigurationTests {
             .withPropertyValues(
                 "spring.cloud.gcp.datastore.project-id=test-project",
                 "spring.cloud.gcp.datastore.host=localhost:8081",
-                "spring.cloud.gcp.datastore.use-http=true",
+                "spring.cloud.gcp.datastore.use-http-json=true",
                 "management.health.datastore.enabled=false");
 
     runner.run(
@@ -186,9 +186,9 @@ class GcpDatastoreAutoConfigurationTests {
   }
 
   @Test
-  void testDatastoreTemplateWithHttpTransport() {
+  void testDatastoreTemplateWithHttpJsonTransport() {
     this.contextRunner
-        .withPropertyValues("spring.cloud.gcp.datastore.use-http=true")
+        .withPropertyValues("spring.cloud.gcp.datastore.use-http-json=true")
         .run(
             context -> {
               assertThat(context.getBean(DatastoreTemplate.class)).isNotNull();

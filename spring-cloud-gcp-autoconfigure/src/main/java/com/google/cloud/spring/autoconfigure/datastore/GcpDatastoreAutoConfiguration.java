@@ -77,7 +77,7 @@ public class GcpDatastoreAutoConfiguration {
 
   private final String host;
 
-  private final boolean useHttp;
+  private final boolean useHttpJson;
 
   GcpDatastoreAutoConfiguration(
       GcpDatastoreProperties gcpDatastoreProperties,
@@ -110,7 +110,7 @@ public class GcpDatastoreAutoConfiguration {
     }
 
     this.host = hostToConnect;
-    this.useHttp = gcpDatastoreProperties.isUseHttp();
+    this.useHttpJson = gcpDatastoreProperties.isUseHttpJson();
   }
 
   @Bean
@@ -197,7 +197,7 @@ public class GcpDatastoreAutoConfiguration {
             .setProjectId(this.projectId)
             .setHeaderProvider(new UserAgentHeaderProvider(this.getClass()))
             .setCredentials(this.credentials);
-    if (this.useHttp) {
+    if (this.useHttpJson) {
       builder.setTransportOptions(HttpTransportOptions.newBuilder().build());
     }
     if (namespace != null) {

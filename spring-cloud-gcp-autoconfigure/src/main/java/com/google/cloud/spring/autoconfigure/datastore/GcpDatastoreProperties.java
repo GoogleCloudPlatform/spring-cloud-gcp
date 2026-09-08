@@ -49,8 +49,8 @@ public class GcpDatastoreProperties implements CredentialsSupplier {
   /** Whether skip the insertion if the value is null */
   private boolean skipNullValue;
 
-  /** Whether to use HTTP transport instead of gRPC for Cloud Datastore. */
-  private boolean useHttp;
+  /** Whether to use HTTP/JSON transport instead of gRPC for Cloud Datastore. */
+  private boolean useHttpJson;
 
   @Override
   public Credentials getCredentials() {
@@ -101,11 +101,21 @@ public class GcpDatastoreProperties implements CredentialsSupplier {
     this.skipNullValue = skipNullValue;
   }
 
-  public boolean isUseHttp() {
-    return useHttp;
+  /**
+   * Returns whether to use HTTP/JSON transport instead of gRPC for Cloud Datastore.
+   *
+   * @return {@code true} if HTTP/JSON transport is enabled; {@code false} otherwise.
+   */
+  public boolean isUseHttpJson() {
+    return useHttpJson;
   }
 
-  public void setUseHttp(boolean useHttp) {
-    this.useHttp = useHttp;
+  /**
+   * Sets whether to use HTTP/JSON transport instead of gRPC for Cloud Datastore.
+   *
+   * @param useHttpJson {@code true} to use HTTP/JSON transport; {@code false} to use gRPC.
+   */
+  public void setUseHttpJson(boolean useHttpJson) {
+    this.useHttpJson = useHttpJson;
   }
 }
