@@ -291,8 +291,10 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
     return query(
         entityClass,
         SpannerStatementQueryExecutor.buildStatementFromSqlWithArgs(
-            SpannerStatementQueryExecutor.applySortingPagingQueryOptions(
-                entityClass, options, sql, this.mappingContext, false),
+            SpannerStatementQueryExecutor.applyForUpdate(
+                SpannerStatementQueryExecutor.applySortingPagingQueryOptions(
+                    entityClass, options, sql, this.mappingContext, false),
+                options.isForUpdate()),
             null,
             null,
             null,
@@ -502,6 +504,10 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
   }
 
   public ResultSet executeQuery(Statement statement, SpannerQueryOptions options) {
+    if (options != null && options.isForUpdate() && !isReadWriteTransactionActive()) {
+      throw new SpannerDataException(
+          "FOR UPDATE queries must be executed in a read-write transaction.");
+    }
     ResultSet resultSet = performQuery(statement, options);
     if (LOGGER.isDebugEnabled()) {
       String message;
@@ -640,7 +646,8 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
         executeQuery(statement, options),
         entityClass,
         (options != null) ? options.getIncludeProperties() : null,
-        options != null && options.isAllowPartialRead());
+        options != null && options.isAllowPartialRead(),
+        options != null && options.isForUpdate());
   }
 
   private <T> List<T> mapToListAndResolveChildren(
@@ -648,20 +655,36 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
       Class<T> entityClass,
       Set<String> includeProperties,
       boolean allowMissingColumns) {
+    return mapToListAndResolveChildren(
+        resultSet, entityClass, includeProperties, allowMissingColumns, false);
+  }
+
+  private <T> List<T> mapToListAndResolveChildren(
+      ResultSet resultSet,
+      Class<T> entityClass,
+      Set<String> includeProperties,
+      boolean allowMissingColumns,
+      boolean forUpdate) {
     return resolveChildEntities(
         this.spannerEntityProcessor.mapToList(
             resultSet, entityClass, includeProperties, allowMissingColumns),
-        includeProperties);
+        includeProperties,
+        forUpdate);
   }
 
   private <T> List<T> resolveChildEntities(List<T> entities, Set<String> includeProperties) {
+    return resolveChildEntities(entities, includeProperties, false);
+  }
+
+  private <T> List<T> resolveChildEntities(
+      List<T> entities, Set<String> includeProperties, boolean forUpdate) {
     for (Object entity : entities) {
-      resolveChildEntity(entity, includeProperties);
+      resolveChildEntity(entity, includeProperties, forUpdate);
     }
     return entities;
   }
 
-  private void resolveChildEntity(Object entity, Set<String> includeProperties) {
+  private void resolveChildEntity(Object entity, Set<String> includeProperties, boolean forUpdate) {
     SpannerPersistentEntity<?> spannerPersistentEntity =
         this.mappingContext.getPersistentEntityOrFail(entity.getClass());
 
@@ -675,7 +698,7 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
           // an interleaved property can only be List
           List propertyValue = (List) accessor.getProperty(spannerPersistentProperty);
           if (propertyValue != null) {
-            resolveChildEntities(propertyValue, null);
+            resolveChildEntities(propertyValue, null, forUpdate);
             return;
           }
           Class<?> childType = spannerPersistentProperty.getColumnInnerType();
@@ -688,8 +711,9 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
                           this.spannerSchemaUtils.getKey(entity),
                           spannerPersistentProperty,
                           this.spannerEntityProcessor.getWriteConverter(),
-                          this.mappingContext),
-                      null);
+                          this.mappingContext,
+                          forUpdate),
+                      new SpannerQueryOptions().setForUpdate(forUpdate));
 
           accessor.setProperty(
               spannerPersistentProperty,
@@ -716,6 +740,10 @@ public class SpannerTemplate implements SpannerOperations, ApplicationEventPubli
       }
     }
     return null;
+  }
+
+  private boolean isReadWriteTransactionActive() {
+    return this instanceof ReadWriteTransactionSpannerTemplate || getTransactionContext() != null;
   }
 
   private <A> A doWithOrWithoutTransactionContext(

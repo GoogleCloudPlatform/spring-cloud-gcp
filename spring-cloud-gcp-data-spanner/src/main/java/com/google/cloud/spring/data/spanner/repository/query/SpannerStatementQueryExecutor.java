@@ -22,6 +22,7 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.ValueBinder;
 import com.google.cloud.spring.data.spanner.core.SpannerPageableQueryOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.convert.ConversionUtils;
 import com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityWriter;
@@ -87,8 +88,26 @@ public final class SpannerStatementQueryExecutor {
       Parameter[] queryMethodParamsMetadata,
       SpannerTemplate spannerTemplate,
       SpannerMappingContext spannerMappingContext) {
+    return executeQuery(
+        type,
+        tree,
+        parameterAccessor,
+        queryMethodParamsMetadata,
+        spannerTemplate,
+        spannerMappingContext,
+        false);
+  }
+
+  public static <T> List<T> executeQuery(
+      Class<T> type,
+      PartTree tree,
+      ParameterAccessor parameterAccessor,
+      Parameter[] queryMethodParamsMetadata,
+      SpannerTemplate spannerTemplate,
+      SpannerMappingContext spannerMappingContext,
+      boolean forUpdate) {
     SqlStringAndPlaceholders sqlStringAndPlaceholders =
-        buildPartTreeSqlString(tree, spannerMappingContext, type, parameterAccessor);
+        buildPartTreeSqlString(tree, spannerMappingContext, type, parameterAccessor, forUpdate);
     Map<String, Parameter> paramMetadataMap =
         preparePartTreeSqlTagParameterMap(queryMethodParamsMetadata, sqlStringAndPlaceholders);
     Object[] params = StreamSupport.stream(parameterAccessor.spliterator(), false).toArray();
@@ -101,7 +120,7 @@ public final class SpannerStatementQueryExecutor {
             spannerTemplate.getSpannerEntityProcessor().getWriteConverter(),
             params,
             paramMetadataMap),
-        null);
+        new SpannerQueryOptions().setForUpdate(forUpdate));
   }
 
   private static Map<String, Parameter> preparePartTreeSqlTagParameterMap(
@@ -143,8 +162,28 @@ public final class SpannerStatementQueryExecutor {
       Parameter[] queryMethodParamsMetadata,
       SpannerTemplate spannerTemplate,
       SpannerMappingContext spannerMappingContext) {
+    return executeQuery(
+        rowFunc,
+        type,
+        tree,
+        parameterAccessor,
+        queryMethodParamsMetadata,
+        spannerTemplate,
+        spannerMappingContext,
+        false);
+  }
+
+  public static <A, T> List<A> executeQuery(
+      Function<Struct, A> rowFunc,
+      Class<T> type,
+      PartTree tree,
+      ParameterAccessor parameterAccessor,
+      Parameter[] queryMethodParamsMetadata,
+      SpannerTemplate spannerTemplate,
+      SpannerMappingContext spannerMappingContext,
+      boolean forUpdate) {
     SqlStringAndPlaceholders sqlStringAndPlaceholders =
-        buildPartTreeSqlString(tree, spannerMappingContext, type, parameterAccessor);
+        buildPartTreeSqlString(tree, spannerMappingContext, type, parameterAccessor, forUpdate);
     Map<String, Parameter> paramMetadataMap =
         preparePartTreeSqlTagParameterMap(queryMethodParamsMetadata, sqlStringAndPlaceholders);
     Object[] params = StreamSupport.stream(parameterAccessor.spliterator(), false).toArray();
@@ -157,7 +196,22 @@ public final class SpannerStatementQueryExecutor {
             spannerTemplate.getSpannerEntityProcessor().getWriteConverter(),
             params,
             paramMetadataMap),
-        null);
+        new SpannerQueryOptions().setForUpdate(forUpdate));
+  }
+
+  /**
+   * Appends {@code FOR UPDATE} to a select query when requested.
+   *
+   * @param sql SQL query
+   * @param forUpdate whether locking is requested
+   * @return the resulting SQL query
+   */
+  public static String applyForUpdate(String sql, boolean forUpdate) {
+    return forUpdate
+            && !sql.regionMatches(
+                true, sql.length() - "FOR UPDATE".length(), "FOR UPDATE", 0, "FOR UPDATE".length())
+        ? sql + " FOR UPDATE"
+        : sql;
   }
 
   /**
@@ -196,7 +250,9 @@ public final class SpannerStatementQueryExecutor {
         mappingContext.getPersistentEntityOrFail(entityClass);
 
     final String subquery =
-        fetchInterleaved ? getChildrenSubquery(persistentEntity, mappingContext) : "";
+        fetchInterleaved
+            ? getChildrenSubquery(persistentEntity, mappingContext, options.isForUpdate())
+            : "";
     final String alias = subquery.isEmpty() ? "" : " " + persistentEntity.tableName();
     StringBuilder sb =
         applySort(
@@ -248,12 +304,28 @@ public final class SpannerStatementQueryExecutor {
       SpannerPersistentProperty spannerPersistentProperty,
       SpannerCustomConverter writeConverter,
       SpannerMappingContext mappingContext) {
+    return getChildrenRowsQuery(
+        parentKey, spannerPersistentProperty, writeConverter, mappingContext, false);
+  }
+
+  public static Statement getChildrenRowsQuery(
+      Key parentKey,
+      SpannerPersistentProperty spannerPersistentProperty,
+      SpannerCustomConverter writeConverter,
+      SpannerMappingContext mappingContext,
+      boolean forUpdate) {
     Class<?> childType = spannerPersistentProperty.getColumnInnerType();
     SpannerPersistentEntity<?> persistentEntity =
         mappingContext.getPersistentEntityOrFail(childType);
     String whereClause = getWhere(spannerPersistentProperty, persistentEntity);
     return buildQuery(
-        KeySet.singleKey(parentKey), persistentEntity, writeConverter, mappingContext, whereClause);
+        KeySet.singleKey(parentKey),
+        persistentEntity,
+        writeConverter,
+        mappingContext,
+        whereClause,
+        null,
+        forUpdate);
   }
 
   /**
@@ -298,7 +370,8 @@ public final class SpannerStatementQueryExecutor {
       SpannerCustomConverter writeConverter,
       SpannerMappingContext mappingContext,
       String whereClause) {
-    return buildQuery(keySet, persistentEntity, writeConverter, mappingContext, whereClause, null);
+    return buildQuery(
+        keySet, persistentEntity, writeConverter, mappingContext, whereClause, null, false);
   }
 
   /**
@@ -325,6 +398,18 @@ public final class SpannerStatementQueryExecutor {
       SpannerMappingContext mappingContext,
       String whereClause,
       String index) {
+    return buildQuery(
+        keySet, persistentEntity, writeConverter, mappingContext, whereClause, index, false);
+  }
+
+  public static <T> Statement buildQuery(
+      KeySet keySet,
+      SpannerPersistentEntity<T> persistentEntity,
+      SpannerCustomConverter writeConverter,
+      SpannerMappingContext mappingContext,
+      String whereClause,
+      String index,
+      boolean forUpdate) {
     List<String> orParts = new ArrayList<>();
     List<String> tags = new ArrayList<>();
     List keyParts = new ArrayList();
@@ -349,12 +434,13 @@ public final class SpannerStatementQueryExecutor {
     String condition = combineWithAnd(keyClause, whereClause);
     String sb =
         "SELECT "
-            + getColumnsStringForSelect(persistentEntity, mappingContext, true)
+            + getColumnsStringForSelect(persistentEntity, mappingContext, true, forUpdate)
             + " FROM "
             + (!StringUtils.hasLength(index)
                 ? persistentEntity.tableName()
                 : String.format("%s@{FORCE_INDEX=%s}", persistentEntity.tableName(), index))
-            + (condition.isEmpty() ? "" : WHERE + condition);
+            + (condition.isEmpty() ? "" : WHERE + condition)
+            + (forUpdate ? " FOR UPDATE" : "");
     return buildStatementFromSqlWithArgs(sb, tags, null, writeConverter, keyParts.toArray(), null);
   }
 
@@ -363,7 +449,8 @@ public final class SpannerStatementQueryExecutor {
       SpannerPersistentEntity<P> parentPersistentEntity,
       SpannerMappingContext mappingContext,
       String columnName,
-      String whereClause) {
+      String whereClause,
+      boolean forUpdate) {
     String tableName = childPersistentEntity.tableName();
     List<SpannerPersistentProperty> parentKeyProperties =
         parentPersistentEntity.getFlattenedPrimaryKeyProperties();
@@ -386,6 +473,7 @@ public final class SpannerStatementQueryExecutor {
         + tableName
         + WHERE
         + condition
+        + (forUpdate ? " FOR UPDATE" : "")
         + ") AS "
         + columnName;
   }
@@ -495,9 +583,18 @@ public final class SpannerStatementQueryExecutor {
       SpannerPersistentEntity<?> spannerPersistentEntity,
       SpannerMappingContext mappingContext,
       boolean fetchInterleaved) {
+    return getColumnsStringForSelect(
+        spannerPersistentEntity, mappingContext, fetchInterleaved, false);
+  }
+
+  public static String getColumnsStringForSelect(
+      SpannerPersistentEntity<?> spannerPersistentEntity,
+      SpannerMappingContext mappingContext,
+      boolean fetchInterleaved,
+      boolean forUpdate) {
     final String sql = String.join(", ", spannerPersistentEntity.columns());
     return fetchInterleaved
-        ? sql + getChildrenSubquery(spannerPersistentEntity, mappingContext)
+        ? sql + getChildrenSubquery(spannerPersistentEntity, mappingContext, forUpdate)
         : sql;
   }
 
@@ -519,7 +616,9 @@ public final class SpannerStatementQueryExecutor {
   }
 
   private static String getChildrenSubquery(
-      SpannerPersistentEntity<?> spannerPersistentEntity, SpannerMappingContext mappingContext) {
+      SpannerPersistentEntity<?> spannerPersistentEntity,
+      SpannerMappingContext mappingContext,
+      boolean forUpdate) {
     StringJoiner joiner = new StringJoiner(", ", ", ", "").setEmptyValue("");
     spannerPersistentEntity.doWithInterleavedProperties(
         spannerPersistentProperty -> {
@@ -533,7 +632,8 @@ public final class SpannerStatementQueryExecutor {
                     spannerPersistentEntity,
                     mappingContext,
                     spannerPersistentProperty.getColumnName(),
-                    getWhere(spannerPersistentProperty, childPersistentEntity)));
+                    getWhere(spannerPersistentProperty, childPersistentEntity),
+                    forUpdate));
           }
         });
     return joiner.toString();
@@ -543,14 +643,15 @@ public final class SpannerStatementQueryExecutor {
       PartTree tree,
       SpannerMappingContext spannerMappingContext,
       Class type,
-      ParameterAccessor params) {
+      ParameterAccessor params,
+      boolean forUpdate) {
 
     SpannerPersistentEntity<?> persistentEntity =
         spannerMappingContext.getPersistentEntityOrFail(type);
     List<String> tags = new ArrayList<>();
     StringBuilder stringBuilder = new StringBuilder();
 
-    buildSelect(persistentEntity, tree, stringBuilder, spannerMappingContext);
+    buildSelect(persistentEntity, tree, stringBuilder, spannerMappingContext, forUpdate);
     buildFrom(persistentEntity, stringBuilder);
     buildWhere(tree, persistentEntity, tags, stringBuilder);
     applySort(
@@ -558,6 +659,9 @@ public final class SpannerStatementQueryExecutor {
         stringBuilder,
         persistentEntity);
     buildLimit(tree, stringBuilder, params.getPageable());
+    if (!(tree.isCountProjection() || tree.isExistsProjection())) {
+      stringBuilder.append(forUpdate ? " FOR UPDATE" : "");
+    }
 
     String selectSql = stringBuilder.toString();
 
@@ -575,7 +679,8 @@ public final class SpannerStatementQueryExecutor {
       SpannerPersistentEntity<?> spannerPersistentEntity,
       PartTree tree,
       StringBuilder stringBuilder,
-      SpannerMappingContext mappingContext) {
+      SpannerMappingContext mappingContext,
+      boolean forUpdate) {
     stringBuilder
         .append("SELECT ")
         .append(tree.isDistinct() ? "DISTINCT " : "")
@@ -583,7 +688,8 @@ public final class SpannerStatementQueryExecutor {
             getColumnsStringForSelect(
                 spannerPersistentEntity,
                 mappingContext,
-                !(tree.isExistsProjection() || tree.isCountProjection())))
+                !(tree.isExistsProjection() || tree.isCountProjection()),
+                forUpdate))
         .append(" ");
   }
 

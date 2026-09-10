@@ -85,4 +85,9 @@ public class SpannerQueryMethod extends QueryMethod {
   Query getQueryAnnotation() {
     return AnnotatedElementUtils.findMergedAnnotation(this.queryMethod, Query.class);
   }
+
+  boolean isForUpdate() {
+    Query query = getQueryAnnotation();
+    return query != null && query.forUpdate();
+  }
 }

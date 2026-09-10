@@ -55,4 +55,13 @@ class SpannerSortPageQueryOptionsTests {
     spannerQueryOptions.addQueryOption(r1).addQueryOption(r2);
     assertThat(Arrays.asList(spannerQueryOptions.getOptions())).containsExactlyInAnyOrder(r1, r2);
   }
+
+  @Test
+  void forUpdateTest() {
+    SpannerQueryOptions spannerQueryOptions = new SpannerQueryOptions();
+
+    assertThat(spannerQueryOptions.isForUpdate()).isFalse();
+    assertThat(spannerQueryOptions.setForUpdate(true)).isSameAs(spannerQueryOptions);
+    assertThat(spannerQueryOptions.isForUpdate()).isTrue();
+  }
 }

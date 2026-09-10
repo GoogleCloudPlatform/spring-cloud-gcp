@@ -1081,6 +1081,42 @@ Parameters can also be of type `Struct` or POJOs.
 If a POJO is given as a parameter, it will be converted to a `Struct` with the same type-conversion logic as used to create write mutations.
 Comparisons using Struct parameters are limited to https://cloud.google.com/spanner/docs/data-types#limited-comparisons-for-struct[what is available with Cloud Spanner].
 
+==== Locking rows with `FOR UPDATE`
+
+For workloads with high write contention, a query can acquire exclusive locks by setting
+`forUpdate = true` on the `@Query` annotation.
+The annotation can be used with a derived query without specifying a SQL string:
+
+[source,java]
+----
+public interface TradeRepository extends SpannerRepository<Trade, Key> {
+
+	@Query(forUpdate = true)
+	Optional<Trade> findBySymbol(String symbol);
+}
+----
+
+To retrieve an entity by its ID with exclusive locks, use `findByIdForUpdate`:
+
+[source,java]
+----
+@Transactional(transactionManager = "spannerTransactionManager")
+public void updateTrade(Key tradeId) {
+	Trade trade = tradeRepository.findByIdForUpdate(tradeId).orElseThrow();
+	trade.setAction("SELL");
+	tradeRepository.save(trade);
+}
+----
+
+Both forms must be executed in a read-write transaction.
+The generated queries also apply `FOR UPDATE` when loading eager or lazy interleaved children.
+For programmatic queries with `SpannerTemplate`, set `forUpdate` on `SpannerQueryOptions`.
+
+`FOR UPDATE` can reduce transaction aborts when concurrent transactions read and update the same
+data, but conflicting transactions wait for the locks and can therefore reduce throughput.
+See https://cloud.google.com/spanner/docs/use-select-for-update[Use SELECT FOR UPDATE] for details
+and restrictions.
+
 
 ==== Query methods by convention
 
