@@ -15,6 +15,13 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.2.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.2.0...v8.2.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* resolve release javadoc aggregate inheritance on sub-modules ([#4626](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4626)) ([a545fe5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/a545fe54f437ab073f1b9d11f0e75daf8fee2549))
+
 ## [8.2.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.1.1...v8.2.0) (2026-09-08)
 
 
