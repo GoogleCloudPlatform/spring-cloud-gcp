@@ -14,6 +14,18 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [7.5.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.10...v7.5.0) (2026-09-11)
+
+
+### Features
+
+* **datastore:** add use-http property to configure HTTP transport ([#4617](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4617)) ([#4622](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4622)) ([0e5c5b2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0e5c5b2cf4d3295474e0e63ba9cb6808060b0013))
+
+
+### Dependencies
+
+* bump com.google.cloud:libraries-bom from 26.85.0 to 26.86.0 ([#4595](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4595)) ([0a529b9](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/0a529b95f369fea0e3666bb1493133523fe57a97))
+
 ## [7.4.10](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v7.4.9...v7.4.10) (2026-07-09)
 
 
