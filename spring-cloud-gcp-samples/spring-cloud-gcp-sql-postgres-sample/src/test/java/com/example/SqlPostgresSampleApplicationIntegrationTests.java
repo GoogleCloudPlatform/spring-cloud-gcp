@@ -19,7 +19,10 @@ package com.example;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +35,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.ClassUtils;
 
@@ -46,18 +51,100 @@ import org.springframework.util.ClassUtils;
       "spring.cloud.gcp.sql.database-name=code_samples_test_db",
       "spring.cloud.gcp.sql.instance-connection-name=${GCLOUD_PROJECT}:us-central1:testpostgres",
       "spring.datasource.username=postgres",
-      "spring.datasource.continue-on-error=true",
+      "spring.sql.init.continue-on-error=true",
       "spring.sql.init.mode=always"
     })
 class SqlPostgresSampleApplicationIntegrationTests {
 
+  // Unique, timestamped schema name to isolate this test run from concurrent CI jobs.
+  // The timestamp prefix allows the 24-hour janitor sweep to identify and prune orphaned schemas.
+  private static final String SCHEMA_NAME =
+      "test_schema_"
+          + System.currentTimeMillis()
+          + "_"
+          + UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+
+  private static boolean cleanedOldSchemas;
+
+  private static JdbcTemplate staticJdbcTemplate;
+
+  /**
+   * Configures HikariCP's {@code connection-init-sql} dynamically.
+   *
+   * <p>Whenever a physical connection is opened by the pool (both during Spring Boot's startup
+   * database initialization and during web request handling by {@code WebController}), HikariCP
+   * executes this SQL.
+   *
+   * <p>Setting {@code search_path TO <SCHEMA_NAME>, public} routes all unqualified table references
+   * (e.g. {@code CREATE TABLE users} and {@code SELECT * FROM users}) to our isolated schema. This
+   * allows the sample code and SQL files to remain standard and unmodified, while avoiding manual
+   * out-of-band JDBC connections before Spring context startup (which is GraalVM Native Image safe).
+   */
+  @DynamicPropertySource
+  static void registerProperties(DynamicPropertyRegistry registry) {
+    registry.add(
+        "spring.datasource.hikari.connection-init-sql",
+        () ->
+            "CREATE SCHEMA IF NOT EXISTS "
+                + SCHEMA_NAME
+                + "; SET search_path TO "
+                + SCHEMA_NAME
+                + ", public;");
+  }
+
   @Autowired private TestRestTemplate testRestTemplate;
 
-  @Autowired private JdbcTemplate jdbcTemplate;
+  /** Captures the injected {@link JdbcTemplate} for use in static lifecycle methods. */
+  @Autowired
+  void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+    staticJdbcTemplate = jdbcTemplate;
+  }
 
-  @AfterEach
-  void clearTable() {
-    this.jdbcTemplate.execute("DROP TABLE IF EXISTS users");
+  /**
+   * Janitor sweep: queries the PostgreSQL metadata catalog for test schemas created more than 24
+   * hours ago (e.g. from crashed or aborted CI runs) and drops them.
+   *
+   * <p>Schemas from active concurrent test runs are only seconds/minutes old and will not be touched.
+   */
+  @BeforeEach
+  void cleanOldSchemas() {
+    if (cleanedOldSchemas || staticJdbcTemplate == null) {
+      return;
+    }
+    cleanedOldSchemas = true;
+    long cutoff = System.currentTimeMillis() - TimeUnit.HOURS.toMillis(24);
+    List<String> schemas =
+        staticJdbcTemplate.queryForList(
+            "SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE 'test_schema_%'",
+            String.class);
+    for (String schema : schemas) {
+      if (schema.equals(SCHEMA_NAME)) {
+        continue;
+      }
+      String[] parts = schema.split("_");
+      if (parts.length >= 3) {
+        try {
+          long timestamp = Long.parseLong(parts[2]);
+          if (timestamp < cutoff) {
+            staticJdbcTemplate.execute("DROP SCHEMA IF EXISTS " + schema + " CASCADE");
+          }
+        } catch (NumberFormatException ignored) {
+          // ignore malformed schema names
+        }
+      }
+    }
+  }
+
+  /** Best-effort teardown to drop the isolated schema and its tables upon test completion. */
+  @AfterAll
+  static void teardownSchema() {
+    if (staticJdbcTemplate != null && SCHEMA_NAME != null) {
+      try {
+        staticJdbcTemplate.execute("DROP SCHEMA IF EXISTS " + SCHEMA_NAME + " CASCADE");
+      } catch (Exception ignored) {
+        // Ignored; janitor in future test runs will clean up schemas older than 24 hours
+      }
+    }
   }
 
   @Test
