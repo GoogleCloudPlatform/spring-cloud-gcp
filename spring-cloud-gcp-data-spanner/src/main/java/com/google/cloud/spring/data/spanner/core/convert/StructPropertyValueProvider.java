@@ -20,6 +20,7 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerDataException;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.mapping.model.PropertyValueProvider;
@@ -112,7 +113,7 @@ class StructPropertyValueProvider implements PropertyValueProvider<SpannerPersis
     Type.Code spannerColumnType = spannerPersistentProperty.getAnnotatedColumnItemType();
     if (spannerColumnType == Type.Code.JSON) {
       Object value =
-          this.structAccessor.getSingleJsonValue(colName, spannerPersistentProperty.getType());
+          this.structAccessor.getSingleJsonValue(colName, getJsonType(spannerPersistentProperty));
       return (T) value;
     }
     Object value = this.structAccessor.getSingleValue(colName);
@@ -129,7 +130,7 @@ class StructPropertyValueProvider implements PropertyValueProvider<SpannerPersis
     if (spannerColumnType == Type.Code.JSON) {
       return (List<T>)
           this.structAccessor.getListJsonValue(
-              colName, spannerPersistentProperty.getColumnInnerType());
+              colName, getJsonArrayItemType(spannerPersistentProperty));
     }
     List<?> listValue = this.structAccessor.getListValue(colName);
     return listValue.stream()
@@ -146,5 +147,33 @@ class StructPropertyValueProvider implements PropertyValueProvider<SpannerPersis
             && !this.readConverter.canConvert(sourceClass, targetType))
         ? this.entityReader.read(targetType, (Struct) sourceValue, null, this.allowMissingColumns)
         : this.readConverter.convert(sourceValue, targetType);
+  }
+
+  private java.lang.reflect.Type getJsonType(SpannerPersistentProperty spannerPersistentProperty) {
+    if (spannerPersistentProperty.getField() != null) {
+      return spannerPersistentProperty.getField().getGenericType();
+    }
+    if (spannerPersistentProperty.getGetter() != null) {
+      return spannerPersistentProperty.getGetter().getGenericReturnType();
+    }
+    return spannerPersistentProperty.getType();
+  }
+
+  private java.lang.reflect.Type getJsonArrayItemType(
+      SpannerPersistentProperty spannerPersistentProperty) {
+    java.lang.reflect.Type type = getJsonType(spannerPersistentProperty);
+    if (!(type instanceof ParameterizedType)) {
+      return spannerPersistentProperty.getColumnInnerType();
+    }
+    java.lang.reflect.Type[] typeArguments = ((ParameterizedType) type).getActualTypeArguments();
+    if (typeArguments.length != 1) {
+      throw new SpannerDataException(
+          "in field '"
+              + spannerPersistentProperty.getColumnName()
+              + "': Unsupported number of type parameters found: "
+              + typeArguments.length
+              + " Only collections of exactly 1 type parameter are supported.");
+    }
+    return typeArguments[0];
   }
 }
