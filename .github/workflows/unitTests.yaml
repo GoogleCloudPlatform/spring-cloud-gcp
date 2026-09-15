@@ -105,7 +105,7 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: 17.0.20+101
           distribution: temurin
 
       - uses: actions/cache@v4
