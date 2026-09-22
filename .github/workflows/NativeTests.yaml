@@ -157,14 +157,17 @@ jobs:
 
       - name: Select targets
         id: select-targets
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          CHANGES: ${{ steps.filter.outputs.changes }}
+          INFRA_CHANGED: ${{ steps.filter.outputs.infra }}
         run: |
           FULL_LIST='["alloydb-sample", "bigquery-sample", "bigquery", "core", "data-firestore", "data-firestore-sample", "datastore", "datastore-basic-sample", "kms", "kms-sample", "logging-sample", "metrics-sample", "pubsub-sample", "pubsub-bus-sample", "pubsub-integration-sample", "secretmanager", "secretmanager-sample", "spanner", "sql-mysql-sample", "sql-postgres-sample", "starter-firestore-sample", "storage", "storage-sample", "trace-sample", "vision", "vision-sample"]'
-          if [[ "${{ github.event_name }}" != "pull_request" ]]; then
+          if [[ "$EVENT_NAME" != "pull_request" ]]; then
             echo "targets=$FULL_LIST" >> $GITHUB_OUTPUT
             echo "run_tests=true" >> $GITHUB_OUTPUT
           else
-            CHANGES='${{ steps.filter.outputs.changes }}'
-            if [[ "${{ steps.filter.outputs.infra }}" == "true" ]]; then
+            if [[ "$INFRA_CHANGED" == "true" ]]; then
               echo "targets=$FULL_LIST" >> $GITHUB_OUTPUT
               echo "run_tests=true" >> $GITHUB_OUTPUT
             else
@@ -230,7 +233,8 @@ jobs:
         id: intTest
         env:
           DB_PASSWORD: ${{ secrets.SPRING_CLOUD_GCP_CI_NATIVE_DB_ROOT_PASSWORD }}
-        run: MODULE_UNDER_TEST="${{ matrix.it }}" ./.github/workflows/scripts/native-image-tests.sh
+          MODULE_UNDER_TEST: ${{ matrix.it }}
+        run: ./.github/workflows/scripts/native-image-tests.sh
       - name: Aggregate Report
         run: |
           ./mvnw \

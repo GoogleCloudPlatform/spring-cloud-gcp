@@ -47,18 +47,21 @@ jobs:
       - name: Get libraries bom version
         id: get_libraries_bom_version
         continue-on-error: false
+        env:
+          FORKED_REPO: ${{ github.event.inputs.forked_repo }}
+          BRANCH_NAME: ${{ github.event.inputs.branch_name }}
         # Fetch updated pom file with the new libraries-bom version.
         # This step differs slightly depending on whether the workflow is triggered for a forked repo.
         run: |
           set -x
           sudo apt-get update
           sudo apt-get install libxml2-utils
-          if [[ ${{ github.event.inputs.forked_repo }} != "none" ]]; then
-            git fetch https://github.com/${{ github.event.inputs.forked_repo }}.git ${{ github.event.inputs.branch_name }}
+          if [[ "$FORKED_REPO" != "none" ]]; then
+            git fetch "https://github.com/${FORKED_REPO}.git" "$BRANCH_NAME"
             git checkout FETCH_HEAD -- spring-cloud-gcp-dependencies/pom.xml
           else 
-            git fetch origin ${{ github.event.inputs.branch_name }}
-            git checkout origin/${{ github.event.inputs.branch_name }} -- spring-cloud-gcp-dependencies/pom.xml
+            git fetch origin "$BRANCH_NAME"
+            git checkout "origin/${BRANCH_NAME}" -- spring-cloud-gcp-dependencies/pom.xml
           fi
           echo "LIBRARIES_BOM_VERSION=$(xmllint --xpath "string(//*[local-name()='gcp-libraries-bom.version'])" spring-cloud-gcp-dependencies/pom.xml)" >> $GITHUB_OUTPUT
       - name: Setup Java 17
@@ -134,6 +137,10 @@ jobs:
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_OUTPUT
       - name: Push commit to branch
         if: steps.detect_changes.outputs.CHANGED_FILES > 0
+        env:
+          FORKED_REPO: ${{ github.event.inputs.forked_repo }}
+          BRANCH_NAME: ${{ github.event.inputs.branch_name }}
+          BOT_TOKEN: ${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}
         run: |
           set -x
           
@@ -145,22 +152,22 @@ jobs:
           git config --global user.email "cloud-java-bot@google.com"
           
           # push changes to branch
-          if [[ ${{ github.event.inputs.forked_repo }} != "none" ]]; then
-            git fetch https://github.com/${{ github.event.inputs.forked_repo }}.git ${{ github.event.inputs.branch_name }}
+          if [[ "$FORKED_REPO" != "none" ]]; then
+            git fetch "https://github.com/${FORKED_REPO}.git" "$BRANCH_NAME"
             git checkout FETCH_HEAD
             git stash pop
             git add ./spring-cloud-previews
             git commit -m "chore: update starter modules in spring-cloud-previews"
-            git push https://${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}@github.com/${{ github.event.inputs.forked_repo }}.git HEAD:${{ github.event.inputs.branch_name }}
+            git push "https://${BOT_TOKEN}@github.com/${FORKED_REPO}.git" "HEAD:${BRANCH_NAME}"
           else
             git remote remove origin
-            git remote add origin https://${{ secrets.CLOUD_JAVA_BOT_GITHUB_TOKEN }}@github.com/GoogleCloudPlatform/spring-cloud-gcp.git
-            git fetch origin ${{ github.event.inputs.branch_name }}
-            git checkout ${{ github.event.inputs.branch_name }}
+            git remote add origin "https://${BOT_TOKEN}@github.com/GoogleCloudPlatform/spring-cloud-gcp.git"
+            git fetch origin "$BRANCH_NAME"
+            git checkout "$BRANCH_NAME"
             git reset --hard
             git stash pop
             git add ./spring-cloud-previews
             git commit -m "chore: update starter modules in spring-cloud-previews"
-            git push -u origin ${{ github.event.inputs.branch_name }}
+            git push -u origin "$BRANCH_NAME"
           fi
 

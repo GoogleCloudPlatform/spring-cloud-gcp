@@ -144,14 +144,17 @@ jobs:
 
       - name: Select targets
         id: select-targets
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          CHANGES: ${{ steps.filter.outputs.changes }}
+          INFRA_CHANGED: ${{ steps.filter.outputs.infra }}
         run: |
           FULL_LIST='["alloydb", "bigquery", "cloudsql", "config", "datastore", "firestore", "kms", "kotlin", "logging", "metrics", "multisample", "pubsub", "pubsub-bus", "pubsub-docs", "pubsub-emulator", "pubsub-integration", "secretmanager", "spanner", "storage", "trace", "vision"]'
-          if [[ "${{ github.event_name }}" != "pull_request" ]]; then
+          if [[ "$EVENT_NAME" != "pull_request" ]]; then
             echo "targets=$FULL_LIST" >> $GITHUB_OUTPUT
             echo "run_tests=true" >> $GITHUB_OUTPUT
           else
-            CHANGES='${{ steps.filter.outputs.changes }}'
-            if [[ "${{ steps.filter.outputs.infra }}" == "true" ]]; then
+            if [[ "$INFRA_CHANGED" == "true" ]]; then
               echo "targets=$FULL_LIST" >> $GITHUB_OUTPUT
               echo "run_tests=true" >> $GITHUB_OUTPUT
             else
@@ -220,6 +223,7 @@ jobs:
         id: intTest
         env:
           DB_PASSWORD: ${{ secrets.SPRING_CLOUD_GCP_CI_DB_ROOT_PASSWORD }}
+          MODULE_UNDER_TEST: ${{ matrix.it }}
         run: |
           ./mvnw \
             --batch-mode \
@@ -231,7 +235,7 @@ jobs:
             --define org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss:SSS \
             --define "spring.datasource.password=${DB_PASSWORD}" \
             --define "spring.r2dbc.password=${DB_PASSWORD}" \
-            --define it.${{ matrix.it }}=true \
+            --define "it.${MODULE_UNDER_TEST}=true" \
             verify
       - name: Aggregate Report
         run: |
