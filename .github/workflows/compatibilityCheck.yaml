@@ -1,5 +1,8 @@
 name: Compatibility Check
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
@@ -50,6 +53,8 @@ jobs:
         id: date
         run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Read inputs
         run: |
           echo "repo: $REPO"

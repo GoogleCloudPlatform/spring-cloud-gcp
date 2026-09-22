@@ -1,5 +1,8 @@
 name: Linkage Check
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     branches:
@@ -22,6 +25,8 @@ jobs:
         id: date
         run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-java@v4
         with:
           java-version: 8

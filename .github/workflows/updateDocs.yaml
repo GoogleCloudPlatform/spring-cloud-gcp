@@ -27,6 +27,8 @@ jobs:
       id: date
       run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
     - uses: actions/checkout@v3
+      with:
+        persist-credentials: false
     - run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
@@ -36,7 +38,7 @@ jobs:
         java-version: 17
         distribution: temurin
 
-    - uses: actions/cache@v4
+    - uses: actions/cache@v4 # zizmor: ignore[cache-poisoning]
       id: mvn-cache
       with:
         path: ~/.m2/repository
