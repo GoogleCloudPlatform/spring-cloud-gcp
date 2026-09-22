@@ -54,17 +54,22 @@ jobs:
           install
 
     - name: Remove SNAPSHOT # Needed for releases
+      env:
+        TAG_NAME: ${{ github.event.release.tag_name }}
       run: |
-        if [[ -n "${{ github.event.release.tag_name }}" ]] ; then
+        if [[ -n "$TAG_NAME" ]] ; then
           ./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
         fi
 
     - name: Update Docs
+      env:
+        TAG_NAME: ${{ github.event.release.tag_name }}
+        COMMITTISH: ${{ github.event.inputs.committish }}
       run: |
-        if [[ -n "${{ github.event.release.tag_name }}" ]] ; then
-          ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.release.tag_name }} --destination . --build
-        elif [[ -n "${{ github.event.inputs.committish }}" ]] && [[ "${{ github.event.inputs.committish }}" != "main" ]] ; then
-            ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.inputs.committish }} --destination . --build
+        if [[ -n "$TAG_NAME" ]] ; then
+          ./docs/src/main/asciidoc/ghpages.sh --version "$TAG_NAME" --destination . --build
+        elif [[ -n "$COMMITTISH" ]] && [[ "$COMMITTISH" != "main" ]] ; then
+            ./docs/src/main/asciidoc/ghpages.sh --version "$COMMITTISH" --destination . --build
         else
           ./mvnw install -P docs -P '!CI' -pl docs -DskipTests # Simplified PR check
         fi
