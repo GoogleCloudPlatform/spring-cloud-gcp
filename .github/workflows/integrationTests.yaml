@@ -1,5 +1,8 @@
 name: Integration Tests
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
@@ -25,6 +28,8 @@ jobs:
       run_tests: ${{ steps.select-targets.outputs.run_tests }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -184,6 +189,8 @@ jobs:
         id: date
         run: echo "date=$(date +'%Y-%m-%d' --utc)" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Setup Java ${{ matrix.java }}
         uses: actions/setup-java@v4
         with:
