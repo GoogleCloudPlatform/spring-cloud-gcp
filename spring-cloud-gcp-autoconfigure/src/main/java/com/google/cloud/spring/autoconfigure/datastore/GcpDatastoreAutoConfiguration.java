@@ -39,7 +39,10 @@ import com.google.cloud.spring.data.datastore.core.convert.TwoStepsConversions;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -79,6 +82,8 @@ public class GcpDatastoreAutoConfiguration {
 
   private final boolean useHttpJson;
 
+  private final int cacheCapacity;
+
   GcpDatastoreAutoConfiguration(
       GcpDatastoreProperties gcpDatastoreProperties,
       GcpProjectIdProvider projectIdProvider,
@@ -111,6 +116,7 @@ public class GcpDatastoreAutoConfiguration {
 
     this.host = hostToConnect;
     this.useHttpJson = gcpDatastoreProperties.isUseHttpJson();
+    this.cacheCapacity = gcpDatastoreProperties.getCacheCapacity();
   }
 
   @Bean
@@ -187,8 +193,71 @@ public class GcpDatastoreAutoConfiguration {
   }
 
   private DatastoreProvider getDatastoreProvider(DatastoreNamespaceProvider keySupplier) {
-    ConcurrentHashMap<String, Datastore> store = new ConcurrentHashMap<>();
-    return () -> store.computeIfAbsent(keySupplier.get(), this::getDatastore);
+    return new CachedDatastoreProvider(keySupplier, this.cacheCapacity, this::getDatastore);
+  }
+
+  static class CachedDatastoreProvider implements DatastoreProvider {
+
+    private final DatastoreNamespaceProvider keySupplier;
+
+    private final Map<String, Datastore> store;
+
+    private final Function<String, Datastore> datastoreFactory;
+
+    CachedDatastoreProvider(
+        DatastoreNamespaceProvider keySupplier,
+        int cacheCapacity,
+        Function<String, Datastore> datastoreFactory) {
+      this.keySupplier = keySupplier;
+      this.datastoreFactory = datastoreFactory;
+      int capacity = Math.max(1, cacheCapacity);
+      this.store =
+          Collections.synchronizedMap(
+              new LinkedHashMap<String, Datastore>(capacity, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<String, Datastore> eldest) {
+                  if (size() > capacity) {
+                    closeDatastore(eldest.getValue());
+                    return true;
+                  }
+                  return false;
+                }
+              });
+    }
+
+    @Override
+    public Datastore get() {
+      String namespace = this.keySupplier != null ? this.keySupplier.get() : null;
+      synchronized (this.store) {
+        return this.store.computeIfAbsent(namespace, this.datastoreFactory);
+      }
+    }
+
+    @Override
+    public void close() {
+      synchronized (this.store) {
+        for (Datastore datastore : this.store.values()) {
+          closeDatastore(datastore);
+        }
+        this.store.clear();
+      }
+    }
+
+    int size() {
+      synchronized (this.store) {
+        return this.store.size();
+      }
+    }
+
+    private static void closeDatastore(Datastore datastore) {
+      if (datastore != null) {
+        try {
+          datastore.close();
+        } catch (Exception e) {
+          LOGGER.warn("Failed to close Datastore client", e);
+        }
+      }
+    }
   }
 
   private Datastore getDatastore(String namespace) {

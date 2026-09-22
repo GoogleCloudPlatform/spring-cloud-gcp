@@ -24,4 +24,8 @@ import java.util.function.Supplier;
  *
  * @since 1.2
  */
-public interface DatastoreProvider extends Supplier<Datastore> {}
+public interface DatastoreProvider extends Supplier<Datastore>, AutoCloseable {
+
+  @Override
+  default void close() {}
+}
