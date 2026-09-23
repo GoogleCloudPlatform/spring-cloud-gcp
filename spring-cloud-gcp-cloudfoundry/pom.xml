@@ -15,7 +15,7 @@
     <description>Spring Framework on Google Cloud Cloud Foundry Module</description>
 
     <properties>
-        <jmockit.version>1.49</jmockit.version>
+        <jmockit.version>1.50</jmockit.version>
         <argLine /> <!-- Needs to be defined so code coverage on/off profile works. -->
     </properties>
     <dependencies>
