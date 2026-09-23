@@ -39,7 +39,6 @@ import com.google.cloud.spring.data.datastore.core.convert.TwoStepsConversions;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -204,6 +203,8 @@ public class GcpDatastoreAutoConfiguration {
 
     private final Function<String, Datastore> datastoreFactory;
 
+    private Datastore evicted;
+
     CachedDatastoreProvider(
         DatastoreNamespaceProvider keySupplier,
         int cacheCapacity,
@@ -212,25 +213,47 @@ public class GcpDatastoreAutoConfiguration {
       this.datastoreFactory = datastoreFactory;
       int capacity = Math.max(1, cacheCapacity);
       this.store =
-          Collections.synchronizedMap(
-              new LinkedHashMap<String, Datastore>(capacity, 0.75f, true) {
-                @Override
-                protected boolean removeEldestEntry(Map.Entry<String, Datastore> eldest) {
-                  if (size() > capacity) {
-                    closeDatastore(eldest.getValue());
-                    return true;
-                  }
-                  return false;
-                }
-              });
+          new LinkedHashMap<String, Datastore>(capacity, 0.75f, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<String, Datastore> eldest) {
+              if (size() > capacity) {
+                evicted = eldest.getValue();
+                return true;
+              }
+              return false;
+            }
+          };
     }
 
     @Override
     public Datastore get() {
       String namespace = this.keySupplier != null ? this.keySupplier.get() : null;
+      Datastore client;
       synchronized (this.store) {
-        return this.store.computeIfAbsent(namespace, this.datastoreFactory);
+        client = this.store.get(namespace);
+        if (client != null) {
+          return client;
+        }
       }
+
+      Datastore newClient = this.datastoreFactory.apply(namespace);
+      Datastore toClose = null;
+      synchronized (this.store) {
+        client = this.store.get(namespace);
+        if (client != null) {
+          toClose = newClient;
+        } else {
+          this.evicted = null;
+          this.store.put(namespace, newClient);
+          toClose = this.evicted;
+          this.evicted = null;
+        }
+      }
+
+      if (toClose != null) {
+        closeDatastore(toClose);
+      }
+      return client != null ? client : newClient;
     }
 
     @Override
