@@ -198,7 +198,8 @@ public class GcpDatastoreAutoConfiguration {
   }
 
   /**
-   * Thread-safe bounded LRU cache for {@link Datastore} clients keyed by namespace.
+   * Thread-safe bounded Least Recently Used (LRU) cache for {@link Datastore} clients keyed by
+   * namespace.
    * <p>
    * When dynamic namespaces are configured, each namespace requires its own {@link Datastore}
    * client with dedicated options. To prevent resource leaks from unbounded cache growth
@@ -224,7 +225,7 @@ public class GcpDatastoreAutoConfiguration {
       this.keySupplier = keySupplier;
       this.datastoreFactory = datastoreFactory;
       this.capacity = Math.max(1, cacheCapacity);
-      // Access-order LinkedHashMap: eldest accessed entry is at the head for LRU eviction.
+      // Access-order LinkedHashMap: eldest accessed entry is at the head for Least Recently Used (LRU) eviction.
       this.store = new LinkedHashMap<>(this.capacity, 0.75f, true);
     }
 
