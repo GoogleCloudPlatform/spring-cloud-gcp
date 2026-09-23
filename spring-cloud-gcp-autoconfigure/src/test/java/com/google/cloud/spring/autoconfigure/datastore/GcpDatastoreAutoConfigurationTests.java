@@ -351,13 +351,19 @@ class GcpDatastoreAutoConfigurationTests {
                 "spring.cloud.gcp.datastore.host=localhost:8081",
                 "management.health.datastore.enabled=false");
 
+    AtomicReference<DatastoreProvider> providerRef = new AtomicReference<>();
     runner.run(
         context -> {
           DatastoreProvider provider = context.getBean(DatastoreProvider.class);
           assertThat(provider).isNotNull();
+          providerRef.set(provider);
           Datastore client = provider.get();
           assertThat(client).isNotNull();
         });
+
+    assertThatThrownBy(() -> providerRef.get().get())
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage("DatastoreProvider has been closed");
   }
 
   private Datastore getDatastoreBean(ApplicationContext context) {

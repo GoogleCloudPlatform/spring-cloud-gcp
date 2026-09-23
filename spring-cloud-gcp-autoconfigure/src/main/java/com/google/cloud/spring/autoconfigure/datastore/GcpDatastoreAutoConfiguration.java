@@ -226,7 +226,7 @@ public class GcpDatastoreAutoConfiguration {
       this.datastoreFactory = datastoreFactory;
       this.capacity = Math.max(1, cacheCapacity);
       // Access-order LinkedHashMap: eldest accessed entry is at the head for Least Recently Used (LRU) eviction.
-      this.store = new LinkedHashMap<>(this.capacity, 0.75f, true);
+      this.store = new LinkedHashMap<>(Math.min(16, this.capacity), 0.75f, true);
     }
 
     @Override
