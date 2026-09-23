@@ -39,7 +39,9 @@ import com.google.cloud.spring.data.datastore.core.convert.TwoStepsConversions;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -205,7 +207,7 @@ public class GcpDatastoreAutoConfiguration {
 
     private final int capacity;
 
-    private boolean closed = false;
+    private volatile boolean closed = false;
 
     CachedDatastoreProvider(
         DatastoreNamespaceProvider keySupplier,
@@ -261,12 +263,14 @@ public class GcpDatastoreAutoConfiguration {
 
     @Override
     public void close() {
+      List<Datastore> toClose;
       synchronized (this.store) {
         this.closed = true;
-        for (Datastore datastore : this.store.values()) {
-          closeDatastore(datastore);
-        }
+        toClose = new ArrayList<>(this.store.values());
         this.store.clear();
+      }
+      for (Datastore datastore : toClose) {
+        closeDatastore(datastore);
       }
     }
 
