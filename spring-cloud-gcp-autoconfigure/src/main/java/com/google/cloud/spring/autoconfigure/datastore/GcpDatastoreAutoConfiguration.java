@@ -203,7 +203,9 @@ public class GcpDatastoreAutoConfiguration {
 
     private final Function<String, Datastore> datastoreFactory;
 
-    private Datastore evicted;
+    private final int capacity;
+
+    private boolean closed = false;
 
     CachedDatastoreProvider(
         DatastoreNamespaceProvider keySupplier,
@@ -211,18 +213,8 @@ public class GcpDatastoreAutoConfiguration {
         Function<String, Datastore> datastoreFactory) {
       this.keySupplier = keySupplier;
       this.datastoreFactory = datastoreFactory;
-      int capacity = Math.max(1, cacheCapacity);
-      this.store =
-          new LinkedHashMap<String, Datastore>(capacity, 0.75f, true) {
-            @Override
-            protected boolean removeEldestEntry(Map.Entry<String, Datastore> eldest) {
-              if (size() > capacity) {
-                evicted = eldest.getValue();
-                return true;
-              }
-              return false;
-            }
-          };
+      this.capacity = Math.max(1, cacheCapacity);
+      this.store = new LinkedHashMap<>(this.capacity, 0.75f, true);
     }
 
     @Override
@@ -230,6 +222,9 @@ public class GcpDatastoreAutoConfiguration {
       String namespace = this.keySupplier != null ? this.keySupplier.get() : null;
       Datastore client;
       synchronized (this.store) {
+        if (this.closed) {
+          throw new IllegalStateException("DatastoreProvider has been closed");
+        }
         client = this.store.get(namespace);
         if (client != null) {
           return client;
@@ -239,19 +234,27 @@ public class GcpDatastoreAutoConfiguration {
       Datastore newClient = this.datastoreFactory.apply(namespace);
       Datastore toClose = null;
       synchronized (this.store) {
-        client = this.store.get(namespace);
-        if (client != null) {
+        if (this.closed) {
           toClose = newClient;
         } else {
-          this.evicted = null;
-          this.store.put(namespace, newClient);
-          toClose = this.evicted;
-          this.evicted = null;
+          client = this.store.get(namespace);
+          if (client != null) {
+            toClose = newClient;
+          } else {
+            if (this.store.size() >= this.capacity) {
+              String eldestKey = this.store.keySet().iterator().next();
+              toClose = this.store.remove(eldestKey);
+            }
+            this.store.put(namespace, newClient);
+          }
         }
       }
 
       if (toClose != null) {
         closeDatastore(toClose);
+      }
+      if (this.closed) {
+        throw new IllegalStateException("DatastoreProvider has been closed");
       }
       return client != null ? client : newClient;
     }
@@ -259,6 +262,7 @@ public class GcpDatastoreAutoConfiguration {
     @Override
     public void close() {
       synchronized (this.store) {
+        this.closed = true;
         for (Datastore datastore : this.store.values()) {
           closeDatastore(datastore);
         }

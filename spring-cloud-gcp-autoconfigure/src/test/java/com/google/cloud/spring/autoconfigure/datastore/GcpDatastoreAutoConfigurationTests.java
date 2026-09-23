@@ -319,6 +319,9 @@ class GcpDatastoreAutoConfigurationTests {
     verify(client2).close();
     verify(client3).close();
     assertThat(provider.size()).isEqualTo(0);
+    assertThatThrownBy(() -> provider.get())
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage("DatastoreProvider has been closed");
   }
 
   @Test
