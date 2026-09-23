@@ -196,6 +196,9 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
 
   @Override
   public List executeRawResult(Object[] parameters) {
+    if (this.isDml && this.queryMethod.isForUpdate()) {
+      throw new SpannerDataException("FOR UPDATE cannot be used with a DML query.");
+    }
 
     ParameterAccessor paramAccessor =
         new ParametersParameterAccessor(getQueryMethod().getParameters(), parameters);
@@ -219,6 +222,7 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
   private List executeReadSql(Pageable pageable, Sort sort, QueryTagValue queryTagValue) {
     SpannerPageableQueryOptions spannerQueryOptions =
         new SpannerPageableQueryOptions().setAllowPartialRead(true);
+    spannerQueryOptions.setForUpdate(this.queryMethod.isForUpdate());
 
     if (sort != null && sort.isSorted()) {
       spannerQueryOptions.setSort(sort);
@@ -239,6 +243,9 @@ public class SqlSpannerQuery<T> extends AbstractSpannerQuery<T> {
             queryTagValue.sql,
             this.spannerMappingContext,
             entity != null && entity.hasEagerlyLoadedProperties());
+    queryTagValue.sql =
+        SpannerStatementQueryExecutor.applyForUpdate(
+            queryTagValue.sql, spannerQueryOptions.isForUpdate());
 
     Statement statement = buildStatementFromQueryAndTags(queryTagValue);
 

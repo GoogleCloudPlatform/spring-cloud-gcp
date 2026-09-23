@@ -93,6 +93,11 @@ class SpannerQueryLookupStrategyTests {
               public boolean dmlStatement() {
                 return false;
               }
+
+              @Override
+              public boolean forUpdate() {
+                return false;
+              }
             });
   }
 
