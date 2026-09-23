@@ -197,6 +197,14 @@ public class GcpDatastoreAutoConfiguration {
     return new CachedDatastoreProvider(keySupplier, this.cacheCapacity, this::getDatastore);
   }
 
+  /**
+   * Thread-safe bounded LRU cache for {@link Datastore} clients keyed by namespace.
+   * <p>
+   * When dynamic namespaces are configured, each namespace requires its own {@link Datastore}
+   * client with dedicated options. To prevent resource leaks from unbounded cache growth
+   * (e.g. gRPC channels and threads), this cache evicts the least-recently-used client
+   * and ensures proper closure of evicted clients and on context shutdown.
+   */
   static class CachedDatastoreProvider implements DatastoreProvider {
 
     private final DatastoreNamespaceProvider keySupplier;
@@ -216,6 +224,7 @@ public class GcpDatastoreAutoConfiguration {
       this.keySupplier = keySupplier;
       this.datastoreFactory = datastoreFactory;
       this.capacity = Math.max(1, cacheCapacity);
+      // Access-order LinkedHashMap: eldest accessed entry is at the head for LRU eviction.
       this.store = new LinkedHashMap<>(this.capacity, 0.75f, true);
     }
 
@@ -223,6 +232,7 @@ public class GcpDatastoreAutoConfiguration {
     public Datastore get() {
       String namespace = this.keySupplier != null ? this.keySupplier.get() : null;
       Datastore client;
+      // Fast path: check if client already exists under lock.
       synchronized (this.store) {
         if (this.closed) {
           throw new IllegalStateException("DatastoreProvider has been closed");
@@ -233,16 +243,19 @@ public class GcpDatastoreAutoConfiguration {
         }
       }
 
+      // Create new client outside the lock to avoid blocking concurrent accesses across namespaces.
       Datastore newClient = this.datastoreFactory.apply(namespace);
       Datastore toClose = null;
       synchronized (this.store) {
         if (this.closed) {
           toClose = newClient;
         } else {
+          // Re-check in case another thread created a client for this namespace in the meantime.
           client = this.store.get(namespace);
           if (client != null) {
             toClose = newClient;
           } else {
+            // Evict the least recently used client if capacity is reached.
             if (this.store.size() >= this.capacity) {
               String eldestKey = this.store.keySet().iterator().next();
               toClose = this.store.remove(eldestKey);
@@ -252,6 +265,7 @@ public class GcpDatastoreAutoConfiguration {
         }
       }
 
+      // Close evicted or redundant client outside the lock to avoid blocking during network/channel shutdown.
       if (toClose != null) {
         closeDatastore(toClose);
       }
@@ -264,6 +278,7 @@ public class GcpDatastoreAutoConfiguration {
     @Override
     public void close() {
       List<Datastore> toClose;
+      // Snapshot and clear entries under lock, then close outside the lock.
       synchronized (this.store) {
         this.closed = true;
         toClose = new ArrayList<>(this.store.values());

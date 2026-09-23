@@ -324,6 +324,7 @@ class GcpDatastoreAutoConfigurationTests {
         .hasMessage("DatastoreProvider has been closed");
   }
 
+  // Verifies configuration of the cache-capacity property.
   @Test
   void testDatastoreCacheCapacityProperty() {
     this.contextRunner
@@ -335,6 +336,8 @@ class GcpDatastoreAutoConfigurationTests {
             });
   }
 
+  // Verifies that DatastoreProvider is registered as an AutoCloseable bean in the context
+  // and closes cleanly on context shutdown.
   @Test
   void testDatastoreProviderClosedOnContextShutdown() {
     ApplicationContextRunner runner =
