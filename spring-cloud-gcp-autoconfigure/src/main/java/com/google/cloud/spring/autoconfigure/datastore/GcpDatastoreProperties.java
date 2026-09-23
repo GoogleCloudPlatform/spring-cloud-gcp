@@ -52,6 +52,9 @@ public class GcpDatastoreProperties implements CredentialsSupplier {
   /** Whether to use HTTP/JSON transport instead of gRPC for Cloud Datastore. */
   private boolean useHttpJson;
 
+  /** Maximum number of Datastore clients to cache when using dynamic namespaces. Defaults to 100. */
+  private int cacheCapacity = 100;
+
   @Override
   public Credentials getCredentials() {
     return this.credentials;
@@ -117,5 +120,23 @@ public class GcpDatastoreProperties implements CredentialsSupplier {
    */
   public void setUseHttpJson(boolean useHttpJson) {
     this.useHttpJson = useHttpJson;
+  }
+
+  /**
+   * Returns the maximum number of Datastore clients to cache when using dynamic namespaces.
+   *
+   * @return the cache capacity.
+   */
+  public int getCacheCapacity() {
+    return this.cacheCapacity;
+  }
+
+  /**
+   * Sets the maximum number of Datastore clients to cache when using dynamic namespaces.
+   *
+   * @param cacheCapacity the cache capacity to set.
+   */
+  public void setCacheCapacity(int cacheCapacity) {
+    this.cacheCapacity = cacheCapacity;
   }
 }

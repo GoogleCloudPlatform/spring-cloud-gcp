@@ -39,7 +39,11 @@ import com.google.cloud.spring.data.datastore.core.convert.TwoStepsConversions;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -79,6 +83,8 @@ public class GcpDatastoreAutoConfiguration {
 
   private final boolean useHttpJson;
 
+  private final int cacheCapacity;
+
   GcpDatastoreAutoConfiguration(
       GcpDatastoreProperties gcpDatastoreProperties,
       GcpProjectIdProvider projectIdProvider,
@@ -111,6 +117,7 @@ public class GcpDatastoreAutoConfiguration {
 
     this.host = hostToConnect;
     this.useHttpJson = gcpDatastoreProperties.isUseHttpJson();
+    this.cacheCapacity = gcpDatastoreProperties.getCacheCapacity();
   }
 
   @Bean
@@ -187,8 +194,117 @@ public class GcpDatastoreAutoConfiguration {
   }
 
   private DatastoreProvider getDatastoreProvider(DatastoreNamespaceProvider keySupplier) {
-    ConcurrentHashMap<String, Datastore> store = new ConcurrentHashMap<>();
-    return () -> store.computeIfAbsent(keySupplier.get(), this::getDatastore);
+    return new CachedDatastoreProvider(keySupplier, this.cacheCapacity, this::getDatastore);
+  }
+
+  /**
+   * Thread-safe bounded Least Recently Used (LRU) cache for {@link Datastore} clients keyed by
+   * namespace.
+   * <p>
+   * When dynamic namespaces are configured, each namespace requires its own {@link Datastore}
+   * client with dedicated options. To prevent resource leaks from unbounded cache growth
+   * (e.g. gRPC channels and threads), this cache evicts the least-recently-used client
+   * and ensures proper closure of evicted clients and on context shutdown.
+   */
+  static class CachedDatastoreProvider implements DatastoreProvider {
+
+    private final DatastoreNamespaceProvider keySupplier;
+
+    private final Map<String, Datastore> store;
+
+    private final Function<String, Datastore> datastoreFactory;
+
+    private final int capacity;
+
+    private volatile boolean closed = false;
+
+    CachedDatastoreProvider(
+        DatastoreNamespaceProvider keySupplier,
+        int cacheCapacity,
+        Function<String, Datastore> datastoreFactory) {
+      this.keySupplier = keySupplier;
+      this.datastoreFactory = datastoreFactory;
+      this.capacity = Math.max(1, cacheCapacity);
+      // Access-order LinkedHashMap: eldest accessed entry is at the head for Least Recently Used (LRU) eviction.
+      this.store = new LinkedHashMap<>(Math.min(16, this.capacity), 0.75f, true);
+    }
+
+    @Override
+    public Datastore get() {
+      String namespace = this.keySupplier != null ? this.keySupplier.get() : null;
+      Datastore client;
+      // Fast path: check if client already exists under lock.
+      synchronized (this.store) {
+        if (this.closed) {
+          throw new IllegalStateException("DatastoreProvider has been closed");
+        }
+        client = this.store.get(namespace);
+        if (client != null) {
+          return client;
+        }
+      }
+
+      // Create new client outside the lock to avoid blocking concurrent accesses across namespaces.
+      Datastore newClient = this.datastoreFactory.apply(namespace);
+      Datastore toClose = null;
+      synchronized (this.store) {
+        if (this.closed) {
+          toClose = newClient;
+        } else {
+          // Re-check in case another thread created a client for this namespace in the meantime.
+          client = this.store.get(namespace);
+          if (client != null) {
+            toClose = newClient;
+          } else {
+            // Evict the least recently used client if capacity is reached.
+            if (this.store.size() >= this.capacity) {
+              String eldestKey = this.store.keySet().iterator().next();
+              toClose = this.store.remove(eldestKey);
+            }
+            this.store.put(namespace, newClient);
+          }
+        }
+      }
+
+      // Close evicted or redundant client outside the lock to avoid blocking during network/channel shutdown.
+      if (toClose != null) {
+        closeDatastore(toClose);
+      }
+      if (this.closed) {
+        throw new IllegalStateException("DatastoreProvider has been closed");
+      }
+      return client != null ? client : newClient;
+    }
+
+    @Override
+    public void close() {
+      List<Datastore> toClose;
+      // Snapshot and clear entries under lock, then close outside the lock.
+      synchronized (this.store) {
+        this.closed = true;
+        toClose = new ArrayList<>(this.store.values());
+        this.store.clear();
+      }
+      for (Datastore datastore : toClose) {
+        closeDatastore(datastore);
+      }
+    }
+
+    int size() {
+      synchronized (this.store) {
+        return this.store.size();
+      }
+    }
+
+    private static void closeDatastore(Datastore datastore) {
+      if (datastore != null) {
+        try {
+          datastore.close();
+        } catch (Exception e) {
+          LOGGER.warn("Failed to close Datastore client", e);
+        }
+      }
+    }
   }
 
   private Datastore getDatastore(String namespace) {

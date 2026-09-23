@@ -21,7 +21,14 @@ import java.util.function.Supplier;
 
 /**
  * This interface is the return type for the bean that provides Cloud Datastore clients.
+ * <p>
+ * Extending {@link AutoCloseable} allows implementations caching Datastore clients to release
+ * underlying gRPC channels and resources when the application context is closed.
  *
  * @since 1.2
  */
-public interface DatastoreProvider extends Supplier<Datastore> {}
+public interface DatastoreProvider extends Supplier<Datastore>, AutoCloseable {
+
+  @Override
+  default void close() {}
+}
