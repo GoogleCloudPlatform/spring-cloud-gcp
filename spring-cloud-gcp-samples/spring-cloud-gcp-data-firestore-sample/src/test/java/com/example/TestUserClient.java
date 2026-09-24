@@ -72,9 +72,9 @@ public class TestUserClient {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     map.add("name", user.getName());
-    map.add("age", user.getAge());
+    map.add("age", String.valueOf(user.getAge()));
     map.add(
         "pets",
         user.getPets().stream()
@@ -84,7 +84,7 @@ public class TestUserClient {
         "phones",
         phoneNumbers.stream().map(PhoneNumber::getNumber).collect(Collectors.joining(",")));
 
-    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+    HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
     return this.restTemplate.postForObject("/users/saveUser", request, User.class);
   }
 }

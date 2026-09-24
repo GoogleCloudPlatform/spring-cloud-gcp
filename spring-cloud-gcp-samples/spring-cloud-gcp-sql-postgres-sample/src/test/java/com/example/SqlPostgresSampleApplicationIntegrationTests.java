@@ -46,7 +46,7 @@ import org.springframework.util.ClassUtils;
       "spring.cloud.gcp.sql.database-name=code_samples_test_db",
       "spring.cloud.gcp.sql.instance-connection-name=${GCLOUD_PROJECT}:us-central1:testpostgres",
       "spring.datasource.username=postgres",
-      "spring.datasource.continue-on-error=true",
+      "spring.sql.init.continue-on-error=true",
       "spring.sql.init.mode=always"
     })
 class SqlPostgresSampleApplicationIntegrationTests {
