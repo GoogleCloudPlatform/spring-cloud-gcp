@@ -17,7 +17,11 @@
 package com.example;
 
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,14 +36,19 @@ import org.springframework.web.reactive.result.view.RedirectView;
 @Controller
 public class MessageSenderController {
 
+  @Value("${sample.topic:exampleTopic}")
+  private String topicName = "exampleTopic";
+
   @Autowired PubSubPublisherTemplate pubSubPublisherTemplate;
 
   @PostMapping("/postMessage")
   public RedirectView publish(@ModelAttribute("message") Message message) {
 
+    List<CompletableFuture<String>> futures = new ArrayList<>(message.count);
     for (int i = 0; i < message.count; i++) {
-      this.pubSubPublisherTemplate.publish("exampleTopic", message.message + " " + i);
+      futures.add(this.pubSubPublisherTemplate.publish(this.topicName, message.message + " " + i));
     }
+    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
     return new RedirectView("/?statusMessage=Published");
   }
