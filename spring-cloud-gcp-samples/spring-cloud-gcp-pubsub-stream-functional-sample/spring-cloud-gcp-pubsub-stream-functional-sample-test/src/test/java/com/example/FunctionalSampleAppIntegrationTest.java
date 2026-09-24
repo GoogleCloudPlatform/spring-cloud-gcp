@@ -50,7 +50,7 @@ class FunctionalSampleAppIntegrationTest {
     map.add("username", "integration-test-user");
 
     URI redirect = this.restTemplate.postForLocation("http://localhost:8080/postMessage", map);
-    assertThat(redirect).hasToString("http://localhost:8080/index.html");
+    assertThat(redirect).hasToString("index.html");
 
     Awaitility.await()
         .atMost(10, TimeUnit.SECONDS)
