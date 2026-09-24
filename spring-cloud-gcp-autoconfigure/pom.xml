@@ -420,13 +420,6 @@
         </dependency>
 
         <dependency>
-            <!-- Needed for making conditional expressions in logback files. -->
-            <groupId>org.codehaus.janino</groupId>
-            <artifactId>janino</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
