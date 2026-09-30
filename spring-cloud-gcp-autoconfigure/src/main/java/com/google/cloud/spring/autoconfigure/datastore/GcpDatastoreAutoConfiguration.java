@@ -206,7 +206,7 @@ public class GcpDatastoreAutoConfiguration {
    * channels and threads), this cache evicts least-recently-used clients and ensures proper
    * closure of evicted clients and on context shutdown.
    */
-  static class CachedDatastoreProvider implements DatastoreProvider {
+  static class CachedDatastoreProvider implements DatastoreProvider, AutoCloseable {
 
     // Guava caches do not accept null keys. Map null namespace (default namespace) to an empty
     // string sentinel.
