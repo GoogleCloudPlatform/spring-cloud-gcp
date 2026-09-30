@@ -227,7 +227,8 @@ public class GcpDatastoreAutoConfiguration {
               .maximumSize(Math.max(1, cacheCapacity))
               // Automatically close evicted Datastore clients to release native gRPC channels and
               // threads.
-              .removalListener(notification -> closeDatastore(notification.getValue()))
+              .<String, Datastore>removalListener(
+                  notification -> closeDatastore(notification.getValue()))
               // Revert the empty string sentinel back to null for default namespace
               // DatastoreOptions.
               .build(CacheLoader.from(key -> datastoreFactory.apply(key.isEmpty() ? null : key)));
@@ -244,9 +245,15 @@ public class GcpDatastoreAutoConfiguration {
       try {
         client = this.cache.getUnchecked(key);
       } catch (Exception e) {
+        Throwable cause = e.getCause() != null ? e.getCause() : e;
+        if (cause instanceof RuntimeException runtimeException) {
+          throw runtimeException;
+        }
+        if (cause instanceof Error error) {
+          throw error;
+        }
         throw new RuntimeException(
-            "Failed to acquire Datastore client for namespace: " + namespace,
-            e.getCause() != null ? e.getCause() : e);
+            "Failed to acquire Datastore client for namespace: " + namespace, cause);
       }
       if (this.closed) {
         this.cache.invalidate(key);
@@ -268,8 +275,8 @@ public class GcpDatastoreAutoConfiguration {
       return (int) this.cache.size();
     }
 
-    private static void closeDatastore(Object datastore) {
-      if (datastore instanceof Datastore client) {
+    private static void closeDatastore(Datastore client) {
+      if (client != null) {
         try {
           client.close();
         } catch (Exception e) {
