@@ -41,9 +41,7 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingConte
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.cache.RemovalNotification;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.commons.logging.Log;
@@ -229,18 +227,10 @@ public class GcpDatastoreAutoConfiguration {
               .maximumSize(Math.max(1, cacheCapacity))
               // Automatically close evicted Datastore clients to release native gRPC channels and
               // threads.
-              .removalListener(
-                  (RemovalNotification<String, Datastore> notification) ->
-                      closeDatastore(notification.getValue()))
-              .build(
-                  new CacheLoader<>() {
-                    @Override
-                    public Datastore load(String key) {
-                      // Revert the empty string sentinel back to null for default namespace
-                      // DatastoreOptions.
-                      return datastoreFactory.apply(key.isEmpty() ? null : key);
-                    }
-                  });
+              .removalListener(notification -> closeDatastore(notification.getValue()))
+              // Revert the empty string sentinel back to null for default namespace
+              // DatastoreOptions.
+              .build(CacheLoader.from(key -> datastoreFactory.apply(key.isEmpty() ? null : key)));
     }
 
     @Override
@@ -252,10 +242,11 @@ public class GcpDatastoreAutoConfiguration {
       String key = namespace != null ? namespace : DEFAULT_NAMESPACE;
       Datastore client;
       try {
-        client = this.cache.get(key);
-      } catch (ExecutionException e) {
+        client = this.cache.getUnchecked(key);
+      } catch (Exception e) {
         throw new RuntimeException(
-            "Failed to acquire Datastore client for namespace: " + namespace, e.getCause());
+            "Failed to acquire Datastore client for namespace: " + namespace,
+            e.getCause() != null ? e.getCause() : e);
       }
       if (this.closed) {
         this.cache.invalidate(key);
@@ -277,10 +268,10 @@ public class GcpDatastoreAutoConfiguration {
       return (int) this.cache.size();
     }
 
-    private static void closeDatastore(Datastore datastore) {
-      if (datastore != null) {
+    private static void closeDatastore(Object datastore) {
+      if (datastore instanceof Datastore client) {
         try {
-          datastore.close();
+          client.close();
         } catch (Exception e) {
           LOGGER.warn("Failed to close Datastore client", e);
         }
