@@ -235,17 +235,33 @@ public class GcpDatastoreAutoConfiguration {
               .build(CacheLoader.from(key -> datastoreFactory.apply(key.isEmpty() ? null : key)));
     }
 
+    /**
+     * Retrieves a {@link Datastore} client configured for the current namespace.
+     *
+     * <p>If a client for the namespace already exists in the cache, it is returned; otherwise, a
+     * new instance is created via the factory and cached.
+     *
+     * @return a {@link Datastore} client for the current namespace
+     * @throws IllegalStateException if the provider has been closed
+     */
     @Override
     public Datastore get() {
+      // Reject calls if the provider has already been closed.
       if (this.closed) {
         throw new IllegalStateException("DatastoreProvider has been closed");
       }
+
+      // Resolve the current namespace, mapping null (default namespace) to the empty string
+      // sentinel.
       String namespace = this.keySupplier != null ? this.keySupplier.get() : null;
       String key = namespace != null ? namespace : DEFAULT_NAMESPACE;
+
       Datastore client;
       try {
         client = this.cache.getUnchecked(key);
       } catch (UncheckedExecutionException e) {
+        // Unwrap Guava's UncheckedExecutionException to propagate original runtime exceptions
+        // (e.g. DatastoreException) directly to the caller.
         Throwable cause = e.getCause();
         if (cause instanceof RuntimeException runtimeException) {
           throw runtimeException;
@@ -253,6 +269,8 @@ public class GcpDatastoreAutoConfiguration {
         throw new RuntimeException(
             "Failed to acquire Datastore client for namespace: " + namespace, cause);
       }
+
+      // Guard against race conditions if close() was invoked concurrently while computing/loading.
       if (this.closed) {
         this.cache.invalidate(key);
         this.cache.cleanUp();
@@ -261,6 +279,10 @@ public class GcpDatastoreAutoConfiguration {
       return client;
     }
 
+    /**
+     * Closes the provider, evicting and closing all cached {@link Datastore} clients to release
+     * underlying gRPC channels and thread pools.
+     */
     @Override
     public void close() {
       this.closed = true;
@@ -268,11 +290,22 @@ public class GcpDatastoreAutoConfiguration {
       this.cache.cleanUp();
     }
 
+    /**
+     * Runs pending cache maintenance and returns the approximate number of cached clients. Visible
+     * for testing.
+     *
+     * @return the number of cached {@link Datastore} clients
+     */
     int size() {
       this.cache.cleanUp();
       return (int) this.cache.size();
     }
 
+    /**
+     * Safely closes a {@link Datastore} client instance, logging any errors encountered.
+     *
+     * @param client the {@link Datastore} client to close
+     */
     private static void closeDatastore(Datastore client) {
       if (client != null) {
         try {
