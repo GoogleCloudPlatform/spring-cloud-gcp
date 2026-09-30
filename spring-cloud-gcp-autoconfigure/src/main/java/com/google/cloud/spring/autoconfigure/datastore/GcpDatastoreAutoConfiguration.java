@@ -200,15 +200,17 @@ public class GcpDatastoreAutoConfiguration {
 
   /**
    * Thread-safe bounded Least Recently Used (LRU) cache for {@link Datastore} clients keyed by
-   * namespace.
+   * namespace, backed by Guava's {@link LoadingCache}.
    *
    * <p>When dynamic namespaces are configured, each namespace requires its own {@link Datastore}
    * client with dedicated options. To prevent resource leaks from unbounded cache growth (e.g. gRPC
-   * channels and threads), this cache evicts the least-recently-used client and ensures proper
+   * channels and threads), this cache evicts least-recently-used clients and ensures proper
    * closure of evicted clients and on context shutdown.
    */
   static class CachedDatastoreProvider implements DatastoreProvider {
 
+    // Guava caches do not accept null keys. Map null namespace (default namespace) to an empty
+    // string sentinel.
     private static final String DEFAULT_NAMESPACE = "";
 
     private final DatastoreNamespaceProvider keySupplier;
@@ -225,6 +227,8 @@ public class GcpDatastoreAutoConfiguration {
       this.cache =
           CacheBuilder.newBuilder()
               .maximumSize(Math.max(1, cacheCapacity))
+              // Automatically close evicted Datastore clients to release native gRPC channels and
+              // threads.
               .removalListener(
                   (RemovalNotification<String, Datastore> notification) ->
                       closeDatastore(notification.getValue()))
@@ -232,6 +236,8 @@ public class GcpDatastoreAutoConfiguration {
                   new CacheLoader<>() {
                     @Override
                     public Datastore load(String key) {
+                      // Revert the empty string sentinel back to null for default namespace
+                      // DatastoreOptions.
                       return datastoreFactory.apply(key.isEmpty() ? null : key);
                     }
                   });
@@ -251,6 +257,7 @@ public class GcpDatastoreAutoConfiguration {
         throw new RuntimeException(
             "Failed to acquire Datastore client for namespace: " + namespace, e.getCause());
       }
+      // Run maintenance cleanups to execute removal notifications promptly.
       this.cache.cleanUp();
       if (this.closed) {
         this.cache.invalidate(key);
