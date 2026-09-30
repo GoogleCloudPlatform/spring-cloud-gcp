@@ -41,6 +41,7 @@ import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingConte
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import java.io.IOException;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -244,13 +245,10 @@ public class GcpDatastoreAutoConfiguration {
       Datastore client;
       try {
         client = this.cache.getUnchecked(key);
-      } catch (Exception e) {
-        Throwable cause = e.getCause() != null ? e.getCause() : e;
+      } catch (UncheckedExecutionException e) {
+        Throwable cause = e.getCause();
         if (cause instanceof RuntimeException runtimeException) {
           throw runtimeException;
-        }
-        if (cause instanceof Error error) {
-          throw error;
         }
         throw new RuntimeException(
             "Failed to acquire Datastore client for namespace: " + namespace, cause);
