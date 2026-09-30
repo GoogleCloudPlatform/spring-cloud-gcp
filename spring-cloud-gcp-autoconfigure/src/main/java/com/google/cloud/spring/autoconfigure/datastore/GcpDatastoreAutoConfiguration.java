@@ -257,8 +257,6 @@ public class GcpDatastoreAutoConfiguration {
         throw new RuntimeException(
             "Failed to acquire Datastore client for namespace: " + namespace, e.getCause());
       }
-      // Run maintenance cleanups to execute removal notifications promptly.
-      this.cache.cleanUp();
       if (this.closed) {
         this.cache.invalidate(key);
         this.cache.cleanUp();
