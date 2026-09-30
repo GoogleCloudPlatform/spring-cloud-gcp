@@ -38,11 +38,12 @@ import com.google.cloud.spring.data.datastore.core.convert.ReadWriteConversions;
 import com.google.cloud.spring.data.datastore.core.convert.TwoStepsConversions;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.RemovalNotification;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.commons.logging.Log;
@@ -200,21 +201,19 @@ public class GcpDatastoreAutoConfiguration {
   /**
    * Thread-safe bounded Least Recently Used (LRU) cache for {@link Datastore} clients keyed by
    * namespace.
-   * <p>
-   * When dynamic namespaces are configured, each namespace requires its own {@link Datastore}
-   * client with dedicated options. To prevent resource leaks from unbounded cache growth
-   * (e.g. gRPC channels and threads), this cache evicts the least-recently-used client
-   * and ensures proper closure of evicted clients and on context shutdown.
+   *
+   * <p>When dynamic namespaces are configured, each namespace requires its own {@link Datastore}
+   * client with dedicated options. To prevent resource leaks from unbounded cache growth (e.g. gRPC
+   * channels and threads), this cache evicts the least-recently-used client and ensures proper
+   * closure of evicted clients and on context shutdown.
    */
   static class CachedDatastoreProvider implements DatastoreProvider {
 
+    private static final String DEFAULT_NAMESPACE = "";
+
     private final DatastoreNamespaceProvider keySupplier;
 
-    private final Map<String, Datastore> store;
-
-    private final Function<String, Datastore> datastoreFactory;
-
-    private final int capacity;
+    private final LoadingCache<String, Datastore> cache;
 
     private volatile boolean closed = false;
 
@@ -223,77 +222,54 @@ public class GcpDatastoreAutoConfiguration {
         int cacheCapacity,
         Function<String, Datastore> datastoreFactory) {
       this.keySupplier = keySupplier;
-      this.datastoreFactory = datastoreFactory;
-      this.capacity = Math.max(1, cacheCapacity);
-      // Access-order LinkedHashMap: eldest accessed entry is at the head for Least Recently Used (LRU) eviction.
-      this.store = new LinkedHashMap<>(Math.min(16, this.capacity), 0.75f, true);
+      this.cache =
+          CacheBuilder.newBuilder()
+              .maximumSize(Math.max(1, cacheCapacity))
+              .removalListener(
+                  (RemovalNotification<String, Datastore> notification) ->
+                      closeDatastore(notification.getValue()))
+              .build(
+                  new CacheLoader<>() {
+                    @Override
+                    public Datastore load(String key) {
+                      return datastoreFactory.apply(key.isEmpty() ? null : key);
+                    }
+                  });
     }
 
     @Override
     public Datastore get() {
-      String namespace = this.keySupplier != null ? this.keySupplier.get() : null;
-      Datastore client;
-      // Fast path: check if client already exists under lock.
-      synchronized (this.store) {
-        if (this.closed) {
-          throw new IllegalStateException("DatastoreProvider has been closed");
-        }
-        client = this.store.get(namespace);
-        if (client != null) {
-          return client;
-        }
-      }
-
-      // Create new client outside the lock to avoid blocking concurrent accesses across namespaces.
-      Datastore newClient = this.datastoreFactory.apply(namespace);
-      Datastore toClose = null;
-      synchronized (this.store) {
-        if (this.closed) {
-          toClose = newClient;
-        } else {
-          // Re-check in case another thread created a client for this namespace in the meantime.
-          client = this.store.get(namespace);
-          if (client != null) {
-            toClose = newClient;
-          } else {
-            // Evict the least recently used client if capacity is reached.
-            if (this.store.size() >= this.capacity) {
-              String eldestKey = this.store.keySet().iterator().next();
-              toClose = this.store.remove(eldestKey);
-            }
-            this.store.put(namespace, newClient);
-          }
-        }
-      }
-
-      // Close evicted or redundant client outside the lock to avoid blocking during network/channel shutdown.
-      if (toClose != null) {
-        closeDatastore(toClose);
-      }
       if (this.closed) {
         throw new IllegalStateException("DatastoreProvider has been closed");
       }
-      return client != null ? client : newClient;
+      String namespace = this.keySupplier != null ? this.keySupplier.get() : null;
+      String key = namespace != null ? namespace : DEFAULT_NAMESPACE;
+      Datastore client;
+      try {
+        client = this.cache.get(key);
+      } catch (ExecutionException e) {
+        throw new RuntimeException(
+            "Failed to acquire Datastore client for namespace: " + namespace, e.getCause());
+      }
+      this.cache.cleanUp();
+      if (this.closed) {
+        this.cache.invalidate(key);
+        this.cache.cleanUp();
+        throw new IllegalStateException("DatastoreProvider has been closed");
+      }
+      return client;
     }
 
     @Override
     public void close() {
-      List<Datastore> toClose;
-      // Snapshot and clear entries under lock, then close outside the lock.
-      synchronized (this.store) {
-        this.closed = true;
-        toClose = new ArrayList<>(this.store.values());
-        this.store.clear();
-      }
-      for (Datastore datastore : toClose) {
-        closeDatastore(datastore);
-      }
+      this.closed = true;
+      this.cache.invalidateAll();
+      this.cache.cleanUp();
     }
 
     int size() {
-      synchronized (this.store) {
-        return this.store.size();
-      }
+      this.cache.cleanUp();
+      return (int) this.cache.size();
     }
 
     private static void closeDatastore(Datastore datastore) {
