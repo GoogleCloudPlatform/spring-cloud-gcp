@@ -311,7 +311,7 @@ public class GcpDatastoreAutoConfiguration {
         try {
           client.close();
         } catch (Exception e) {
-          LOGGER.warn("Failed to close Datastore client", e);
+          LOGGER.debug("Failed to close Datastore client", e);
         }
       }
     }
