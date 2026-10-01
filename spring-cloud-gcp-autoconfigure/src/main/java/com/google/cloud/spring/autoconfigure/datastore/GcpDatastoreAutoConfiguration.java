@@ -38,8 +38,12 @@ import com.google.cloud.spring.data.datastore.core.convert.ReadWriteConversions;
 import com.google.cloud.spring.data.datastore.core.convert.TwoStepsConversions;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreDataException;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -79,6 +83,8 @@ public class GcpDatastoreAutoConfiguration {
 
   private final boolean useHttpJson;
 
+  private final int cacheCapacity;
+
   GcpDatastoreAutoConfiguration(
       GcpDatastoreProperties gcpDatastoreProperties,
       GcpProjectIdProvider projectIdProvider,
@@ -111,6 +117,7 @@ public class GcpDatastoreAutoConfiguration {
 
     this.host = hostToConnect;
     this.useHttpJson = gcpDatastoreProperties.isUseHttpJson();
+    this.cacheCapacity = gcpDatastoreProperties.getCacheCapacity();
   }
 
   @Bean
@@ -187,8 +194,127 @@ public class GcpDatastoreAutoConfiguration {
   }
 
   private DatastoreProvider getDatastoreProvider(DatastoreNamespaceProvider keySupplier) {
-    ConcurrentHashMap<String, Datastore> store = new ConcurrentHashMap<>();
-    return () -> store.computeIfAbsent(keySupplier.get(), this::getDatastore);
+    return new CachedDatastoreProvider(keySupplier, this.cacheCapacity, this::getDatastore);
+  }
+
+  /**
+   * Thread-safe bounded Least Recently Used (LRU) cache for {@link Datastore} clients keyed by
+   * namespace, backed by Guava's {@link LoadingCache}.
+   *
+   * <p>When dynamic namespaces are configured, each namespace requires its own {@link Datastore}
+   * client with dedicated options. To prevent resource leaks from unbounded cache growth (e.g. gRPC
+   * channels and threads), this cache evicts least-recently-used clients and ensures proper
+   * closure of evicted clients and on context shutdown.
+   */
+  static class CachedDatastoreProvider implements DatastoreProvider, AutoCloseable {
+
+    // Guava caches do not accept null keys. Map null namespace (default namespace) to an empty
+    // string sentinel.
+    private static final String DEFAULT_NAMESPACE = "";
+
+    private final DatastoreNamespaceProvider keySupplier;
+
+    private final LoadingCache<String, Datastore> cache;
+
+    private volatile boolean closed = false;
+
+    CachedDatastoreProvider(
+        DatastoreNamespaceProvider keySupplier,
+        int cacheCapacity,
+        Function<String, Datastore> datastoreFactory) {
+      this.keySupplier = keySupplier;
+      this.cache =
+          CacheBuilder.newBuilder()
+              .maximumSize(Math.max(1, cacheCapacity))
+              // Automatically close evicted Datastore clients to release native gRPC channels and
+              // threads.
+              .<String, Datastore>removalListener(
+                  notification -> closeDatastore(notification.getValue()))
+              // Revert the empty string sentinel back to null for default namespace
+              // DatastoreOptions.
+              .build(CacheLoader.from(key -> datastoreFactory.apply(key.isEmpty() ? null : key)));
+    }
+
+    /**
+     * Retrieves a {@link Datastore} client configured for the current namespace.
+     *
+     * <p>If a client for the namespace already exists in the cache, it is returned; otherwise, a
+     * new instance is created via the factory and cached.
+     *
+     * @return a {@link Datastore} client for the current namespace
+     * @throws IllegalStateException if the provider has been closed
+     */
+    @Override
+    public Datastore get() {
+      // Reject calls if the provider has already been closed.
+      if (this.closed) {
+        throw new IllegalStateException("DatastoreProvider has been closed");
+      }
+
+      // Resolve the current namespace, mapping null (default namespace) to the empty string
+      // sentinel.
+      String namespace = this.keySupplier != null ? this.keySupplier.get() : null;
+      String key = namespace != null ? namespace : DEFAULT_NAMESPACE;
+
+      Datastore client;
+      try {
+        client = this.cache.getUnchecked(key);
+      } catch (UncheckedExecutionException e) {
+        // Unwrap Guava's UncheckedExecutionException to propagate original runtime exceptions
+        // (e.g. DatastoreException) directly to the caller.
+        Throwable cause = e.getCause();
+        if (cause instanceof RuntimeException runtimeException) {
+          throw runtimeException;
+        }
+        throw new RuntimeException(
+            "Failed to acquire Datastore client for namespace: " + namespace, cause);
+      }
+
+      // Guard against race conditions if close() was invoked concurrently while computing/loading.
+      if (this.closed) {
+        this.cache.invalidate(key);
+        this.cache.cleanUp();
+        throw new IllegalStateException("DatastoreProvider has been closed");
+      }
+      return client;
+    }
+
+    /**
+     * Closes the provider, evicting and closing all cached {@link Datastore} clients to release
+     * underlying gRPC channels and thread pools.
+     */
+    @Override
+    public void close() {
+      this.closed = true;
+      this.cache.invalidateAll();
+      this.cache.cleanUp();
+    }
+
+    /**
+     * Runs pending cache maintenance and returns the approximate number of cached clients. Visible
+     * for testing.
+     *
+     * @return the number of cached {@link Datastore} clients
+     */
+    int size() {
+      this.cache.cleanUp();
+      return (int) this.cache.size();
+    }
+
+    /**
+     * Safely closes a {@link Datastore} client instance, logging any errors encountered.
+     *
+     * @param client the {@link Datastore} client to close
+     */
+    private static void closeDatastore(Datastore client) {
+      if (client != null) {
+        try {
+          client.close();
+        } catch (Exception e) {
+          LOGGER.debug("Failed to close Datastore client", e);
+        }
+      }
+    }
   }
 
   private Datastore getDatastore(String namespace) {

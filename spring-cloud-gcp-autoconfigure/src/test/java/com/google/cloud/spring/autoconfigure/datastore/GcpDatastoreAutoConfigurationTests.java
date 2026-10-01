@@ -20,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
@@ -35,6 +37,7 @@ import com.google.cloud.spring.data.datastore.core.DatastoreOperations;
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate;
 import com.google.cloud.spring.data.datastore.core.DatastoreTransactionManager;
 import com.google.cloud.spring.data.datastore.core.mapping.DatastoreMappingContext;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -271,6 +274,96 @@ class GcpDatastoreAutoConfigurationTests {
               assertThat(datastoreMappingContext).isNotNull();
               assertThat(datastoreMappingContext.isSkipNullValue()).isTrue();
             });
+  }
+
+  @Test
+  void testCachedDatastoreProviderBoundedEvictionAndClose() throws Exception {
+    Datastore client1 = mock(Datastore.class);
+    Datastore client2 = mock(Datastore.class);
+    Datastore client3 = mock(Datastore.class);
+
+    AtomicReference<String> namespace = new AtomicReference<>("ns1");
+    GcpDatastoreAutoConfiguration.CachedDatastoreProvider provider =
+        new GcpDatastoreAutoConfiguration.CachedDatastoreProvider(
+            namespace::get,
+            2,
+            ns -> {
+              switch (ns) {
+                case "ns1":
+                  return client1;
+                case "ns2":
+                  return client2;
+                case "ns3":
+                  return client3;
+                default:
+                  return mock(Datastore.class);
+              }
+            });
+
+    assertThat(provider.get()).isSameAs(client1);
+    namespace.set("ns2");
+    assertThat(provider.get()).isSameAs(client2);
+    assertThat(provider.size()).isEqualTo(2);
+
+    // Accessing ns3 should evict the eldest (ns1) and close it
+    namespace.set("ns3");
+    assertThat(provider.get()).isSameAs(client3);
+    assertThat(provider.size()).isEqualTo(2);
+
+    verify(client1).close();
+    verify(client2, never()).close();
+    verify(client3, never()).close();
+
+    // Closing provider should close all remaining clients (ns2, ns3)
+    provider.close();
+    verify(client2).close();
+    verify(client3).close();
+    assertThat(provider.size()).isEqualTo(0);
+    assertThatThrownBy(() -> provider.get())
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage("DatastoreProvider has been closed");
+  }
+
+  // Verifies configuration of the cache-capacity property.
+  @Test
+  void testDatastoreCacheCapacityProperty() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.datastore.cache-capacity=50")
+        .run(
+            context -> {
+              GcpDatastoreProperties properties = context.getBean(GcpDatastoreProperties.class);
+              assertThat(properties.getCacheCapacity()).isEqualTo(50);
+            });
+  }
+
+  // Verifies that DatastoreProvider is registered as an AutoCloseable bean in the context
+  // and closes cleanly on context shutdown.
+  @Test
+  void testDatastoreProviderClosedOnContextShutdown() {
+    ApplicationContextRunner runner =
+        new ApplicationContextRunner()
+            .withConfiguration(
+                AutoConfigurations.of(
+                    GcpDatastoreAutoConfiguration.class, GcpContextAutoConfiguration.class))
+            .withUserConfiguration(TestConfigurationWithNamespaceProviderOnly.class)
+            .withPropertyValues(
+                "spring.cloud.gcp.datastore.project-id=test-project",
+                "spring.cloud.gcp.datastore.host=localhost:8081",
+                "management.health.datastore.enabled=false");
+
+    AtomicReference<DatastoreProvider> providerRef = new AtomicReference<>();
+    runner.run(
+        context -> {
+          DatastoreProvider provider = context.getBean(DatastoreProvider.class);
+          assertThat(provider).isNotNull();
+          providerRef.set(provider);
+          Datastore client = provider.get();
+          assertThat(client).isNotNull();
+        });
+
+    assertThatThrownBy(() -> providerRef.get().get())
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage("DatastoreProvider has been closed");
   }
 
   private Datastore getDatastoreBean(ApplicationContext context) {
