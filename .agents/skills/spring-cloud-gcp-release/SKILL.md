@@ -60,7 +60,7 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
         PR_SHA=${PR_INFO% *}
         IS_FORK=${PR_INFO#* }
         if [ "$IS_FORK" = "true" ] && [ -n "$PR_SHA" ]; then
-          for run_id in $(gh api "/repos/{owner}/{repo}/actions/runs?status=action_required&head_sha=$PR_SHA" --jq ".workflow_runs[]?.id"); do
+          for run_id in $(gh api "/repos/{owner}/{repo}/actions/runs?head_sha=$PR_SHA" --jq '.workflow_runs[] | select(.status == "action_required" or .status == "waiting" or .conclusion == "action_required") | .id'); do
             gh api --method POST "/repos/{owner}/{repo}/actions/runs/$run_id/approve"
           done
         fi
@@ -105,10 +105,10 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
         IS_FORK=${PR_INFO#* }
         if [ "$IS_FORK" = "true" ] && [ -n "$PR_SHA" ]; then
           for i in {1..12}; do
-            ACTION_RUNS=$(gh api "/repos/{owner}/{repo}/actions/runs?status=action_required&head_sha=$PR_SHA" --jq ".workflow_runs[]?.id")
+            ACTION_RUNS=$(gh api "/repos/{owner}/{repo}/actions/runs?head_sha=$PR_SHA" --jq '.workflow_runs[] | select(.status == "action_required" or .status == "waiting" or .conclusion == "action_required") | .id')
             if [ -n "$ACTION_RUNS" ]; then
               sleep 5
-              ACTION_RUNS=$(gh api "/repos/{owner}/{repo}/actions/runs?status=action_required&head_sha=$PR_SHA" --jq ".workflow_runs[]?.id")
+              ACTION_RUNS=$(gh api "/repos/{owner}/{repo}/actions/runs?head_sha=$PR_SHA" --jq '.workflow_runs[] | select(.status == "action_required" or .status == "waiting" or .conclusion == "action_required") | .id')
               for run_id in $ACTION_RUNS; do
                 gh api --method POST "/repos/{owner}/{repo}/actions/runs/$run_id/approve"
               done
