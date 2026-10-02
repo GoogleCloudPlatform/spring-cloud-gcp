@@ -101,11 +101,13 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
         PR_SHA=$(gh pr view <PR_NUMBER> --json headRefOid --jq .headRefOid)
         if [ -n "$PR_SHA" ]; then
           for i in {1..12}; do
-            RUNS=$(gh api "/repos/{owner}/{repo}/actions/runs?status=action_required&head_sha=$PR_SHA" --jq ".workflow_runs[]?.id")
-            if [ -n "$RUNS" ]; then
-              for run_id in $RUNS; do
-                gh api --method POST "/repos/{owner}/{repo}/actions/runs/$run_id/approve"
-              done
+            read -r TOTAL ACTION_RUNS <<< "$(gh api "/repos/{owner}/{repo}/actions/runs?head_sha=$PR_SHA" --jq '.total_count, ([.workflow_runs[]? | select(.conclusion == "action_required" or .status == "action_required") | .id] | join(" "))' | tr '\n' ' ')"
+            if [ "${TOTAL:-0}" -gt 0 ]; then
+              if [ -n "$ACTION_RUNS" ]; then
+                for run_id in $ACTION_RUNS; do
+                  gh api --method POST "/repos/{owner}/{repo}/actions/runs/$run_id/approve"
+                done
+              fi
               break
             fi
             sleep 5
