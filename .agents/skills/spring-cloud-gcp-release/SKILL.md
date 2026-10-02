@@ -57,7 +57,7 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
     *   **Approve Forked PR Workflows**: If a PR originates from a fork (e.g. Renovate or Dependabot forks), workflows may pause in `action_required` status waiting for approval. Programmatically approve them using:
         ```bash
         PR_SHA=$(gh pr view <PR_NUMBER> --json headRefOid --jq .headRefOid)
-        for run_id in $(gh api "/repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?status=action_required&event=pull_request&per_page=100" --jq ".workflow_runs[] | select(.head_sha == \"$PR_SHA\") | .id"); do
+        for run_id in $(gh api "/repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?status=action_required&event=pull_request&per_page=100" --jq ".workflow_runs[]? | select(.head_sha == \"$PR_SHA\") | .id"); do
           gh api --method POST "/repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs/$run_id/approve"
         done
         ```
@@ -93,11 +93,12 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
     *   **Trigger and Approve Presubmits**: If required presubmit checks do not trigger automatically after the bot commit, close and reopen the PR:
         ```bash
         gh pr close <PR_NUMBER> && gh pr reopen <PR_NUMBER>
+        sleep 10
         ```
         Then programmatically approve any workflows in `action_required` status:
         ```bash
         PR_SHA=$(gh pr view <PR_NUMBER> --json headRefOid --jq .headRefOid)
-        for run_id in $(gh api "/repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?status=action_required&event=pull_request&per_page=100" --jq ".workflow_runs[] | select(.head_sha == \"$PR_SHA\") | .id"); do
+        for run_id in $(gh api "/repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?status=action_required&event=pull_request&per_page=100" --jq ".workflow_runs[]? | select(.head_sha == \"$PR_SHA\") | .id"); do
           gh api --method POST "/repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs/$run_id/approve"
         done
         ```
