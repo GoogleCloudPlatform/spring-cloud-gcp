@@ -58,7 +58,7 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
         ```bash
         PR_SHA=$(gh pr view <PR_NUMBER> --json headRefOid --jq .headRefOid)
         if [ -n "$PR_SHA" ]; then
-          for run_id in $(gh api "/repos/{owner}/{repo}/actions/runs?status=action_required&event=pull_request&per_page=100" --jq ".workflow_runs[]? | select(.head_sha == \"$PR_SHA\") | .id"); do
+          for run_id in $(gh api "/repos/{owner}/{repo}/actions/runs?status=action_required&head_sha=$PR_SHA" --jq ".workflow_runs[]?.id"); do
             gh api --method POST "/repos/{owner}/{repo}/actions/runs/$run_id/approve"
           done
         fi
@@ -101,7 +101,7 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
         ```bash
         PR_SHA=$(gh pr view <PR_NUMBER> --json headRefOid --jq .headRefOid)
         if [ -n "$PR_SHA" ]; then
-          for run_id in $(gh api "/repos/{owner}/{repo}/actions/runs?status=action_required&event=pull_request&per_page=100" --jq ".workflow_runs[]? | select(.head_sha == \"$PR_SHA\") | .id"); do
+          for run_id in $(gh api "/repos/{owner}/{repo}/actions/runs?status=action_required&head_sha=$PR_SHA" --jq ".workflow_runs[]?.id"); do
             gh api --method POST "/repos/{owner}/{repo}/actions/runs/$run_id/approve"
           done
         fi
