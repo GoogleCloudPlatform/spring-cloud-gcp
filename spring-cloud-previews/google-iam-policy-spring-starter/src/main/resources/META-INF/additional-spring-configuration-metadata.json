@@ -1,6 +1,12 @@
 {
   "properties": [
     {
+      "name": "com.google.iam.v3.access-policies.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud iam/AccessPolicies components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.iam.v3.policy-bindings.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud iam/PolicyBindings components.",

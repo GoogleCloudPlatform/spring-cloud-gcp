@@ -212,6 +212,30 @@ public class MemorystoreSpringAutoConfiguration {
               clientSettingsBuilder.getBackupSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getBackupSettings().setRetrySettings(getBackupRetrySettings);
 
+      RetrySettings listTokenAuthUsersRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listTokenAuthUsersSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listTokenAuthUsersSettings()
+          .setRetrySettings(listTokenAuthUsersRetrySettings);
+
+      RetrySettings getTokenAuthUserRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getTokenAuthUserSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getTokenAuthUserSettings()
+          .setRetrySettings(getTokenAuthUserRetrySettings);
+
+      RetrySettings listAuthTokensRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAuthTokensSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listAuthTokensSettings().setRetrySettings(listAuthTokensRetrySettings);
+
+      RetrySettings getAuthTokenRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getAuthTokenSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getAuthTokenSettings().setRetrySettings(getAuthTokenRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -323,6 +347,55 @@ public class MemorystoreSpringAutoConfiguration {
       clientSettingsBuilder.getBackupSettings().setRetrySettings(getBackupRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getBackup from properties.");
+      }
+    }
+    Retry listTokenAuthUsersRetry = clientProperties.getListTokenAuthUsersRetry();
+    if (listTokenAuthUsersRetry != null) {
+      RetrySettings listTokenAuthUsersRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listTokenAuthUsersSettings().getRetrySettings(),
+              listTokenAuthUsersRetry);
+      clientSettingsBuilder
+          .listTokenAuthUsersSettings()
+          .setRetrySettings(listTokenAuthUsersRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listTokenAuthUsers from properties.");
+      }
+    }
+    Retry getTokenAuthUserRetry = clientProperties.getGetTokenAuthUserRetry();
+    if (getTokenAuthUserRetry != null) {
+      RetrySettings getTokenAuthUserRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getTokenAuthUserSettings().getRetrySettings(),
+              getTokenAuthUserRetry);
+      clientSettingsBuilder
+          .getTokenAuthUserSettings()
+          .setRetrySettings(getTokenAuthUserRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getTokenAuthUser from properties.");
+      }
+    }
+    Retry listAuthTokensRetry = clientProperties.getListAuthTokensRetry();
+    if (listAuthTokensRetry != null) {
+      RetrySettings listAuthTokensRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listAuthTokensSettings().getRetrySettings(),
+              listAuthTokensRetry);
+      clientSettingsBuilder.listAuthTokensSettings().setRetrySettings(listAuthTokensRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listAuthTokens from properties.");
+      }
+    }
+    Retry getAuthTokenRetry = clientProperties.getGetAuthTokenRetry();
+    if (getAuthTokenRetry != null) {
+      RetrySettings getAuthTokenRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getAuthTokenSettings().getRetrySettings(), getAuthTokenRetry);
+      clientSettingsBuilder.getAuthTokenSettings().setRetrySettings(getAuthTokenRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getAuthToken from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

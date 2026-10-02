@@ -33,7 +33,9 @@ public class SecureSourceManagerSpringProperties implements CredentialsSupplier 
   /** OAuth2 credentials to authenticate and authorize calls to Google Cloud Client Libraries. */
   @NestedConfigurationProperty
   private final Credentials credentials =
-      new Credentials("https://www.googleapis.com/auth/cloud-platform");
+      new Credentials(
+          "https://www.googleapis.com/auth/cloud-platform",
+          "https://www.googleapis.com/auth/securesourcemanager.read-write");
   /** Quota project to use for billing. */
   private String quotaProjectId;
   /** Number of threads used for executors. */
@@ -122,6 +124,11 @@ public class SecureSourceManagerSpringProperties implements CredentialsSupplier 
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry fetchBlobRetry;
+  /**
+   * Allow override of retry settings at method-level for fetchRefs. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry fetchRefsRetry;
   /**
    * Allow override of retry settings at method-level for getIssue. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -341,6 +348,14 @@ public class SecureSourceManagerSpringProperties implements CredentialsSupplier 
 
   public void setFetchBlobRetry(Retry fetchBlobRetry) {
     this.fetchBlobRetry = fetchBlobRetry;
+  }
+
+  public Retry getFetchRefsRetry() {
+    return this.fetchRefsRetry;
+  }
+
+  public void setFetchRefsRetry(Retry fetchRefsRetry) {
+    this.fetchRefsRetry = fetchRefsRetry;
   }
 
   public Retry getGetIssueRetry() {

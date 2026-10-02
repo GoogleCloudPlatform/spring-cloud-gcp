@@ -97,6 +97,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.global-frontend-settings-service.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/GlobalFrontendSettingsService components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.global-network-endpoint-groups.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/GlobalNetworkEndpointGroups components.",
@@ -133,9 +139,21 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.hosts.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/Hosts components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.image-family-views.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/ImageFamilyViews components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.image-views.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/ImageViews components.",
       "defaultValue": true
     },
     {
@@ -253,6 +271,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.compute.v1.managed-rulesets.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/ManagedRulesets components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.compute.v1.network-attachments.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/NetworkAttachments components.",
@@ -322,6 +346,12 @@
       "name": "com.google.cloud.compute.v1.preview-features.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/PreviewFeatures components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.project-views.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/ProjectViews components.",
       "defaultValue": true
     },
     {
@@ -538,6 +568,12 @@
       "name": "com.google.cloud.compute.v1.regions.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud compute/Regions components.",
+      "defaultValue": true
+    },
+    {
+      "name": "com.google.cloud.compute.v1.reliability-risks.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud compute/ReliabilityRisks components.",
       "defaultValue": true
     },
     {

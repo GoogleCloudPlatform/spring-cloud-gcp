@@ -257,6 +257,11 @@ public class SecureSourceManagerSpringAutoConfiguration {
               clientSettingsBuilder.fetchBlobSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.fetchBlobSettings().setRetrySettings(fetchBlobRetrySettings);
 
+      RetrySettings fetchRefsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchRefsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.fetchRefsSettings().setRetrySettings(fetchRefsRetrySettings);
+
       RetrySettings getIssueRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getIssueSettings().getRetrySettings(), serviceRetry);
@@ -514,6 +519,16 @@ public class SecureSourceManagerSpringAutoConfiguration {
       clientSettingsBuilder.fetchBlobSettings().setRetrySettings(fetchBlobRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for fetchBlob from properties.");
+      }
+    }
+    Retry fetchRefsRetry = clientProperties.getFetchRefsRetry();
+    if (fetchRefsRetry != null) {
+      RetrySettings fetchRefsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.fetchRefsSettings().getRetrySettings(), fetchRefsRetry);
+      clientSettingsBuilder.fetchRefsSettings().setRetrySettings(fetchRefsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for fetchRefs from properties.");
       }
     }
     Retry getIssueRetry = clientProperties.getGetIssueRetry();

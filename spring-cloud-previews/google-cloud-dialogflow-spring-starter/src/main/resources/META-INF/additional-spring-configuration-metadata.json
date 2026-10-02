@@ -13,6 +13,12 @@
       "defaultValue": true
     },
     {
+      "name": "com.google.cloud.dialogflow.v2.companion-agents.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Auto-configure Google Cloud dialogflow/CompanionAgents components.",
+      "defaultValue": true
+    },
+    {
       "name": "com.google.cloud.dialogflow.v2.contexts.enabled",
       "type": "java.lang.Boolean",
       "description": "Auto-configure Google Cloud dialogflow/Contexts components.",

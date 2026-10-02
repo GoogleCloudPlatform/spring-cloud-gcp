@@ -1,5 +1,6 @@
 com.google.cloud.dialogflow.v2.spring.AgentsSpringAutoConfiguration
 com.google.cloud.dialogflow.v2.spring.AnswerRecordsSpringAutoConfiguration
+com.google.cloud.dialogflow.v2.spring.CompanionAgentsSpringAutoConfiguration
 com.google.cloud.dialogflow.v2.spring.ContextsSpringAutoConfiguration
 com.google.cloud.dialogflow.v2.spring.ConversationsSpringAutoConfiguration
 com.google.cloud.dialogflow.v2.spring.ConversationDatasetsSpringAutoConfiguration

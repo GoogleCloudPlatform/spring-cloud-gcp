@@ -367,6 +367,14 @@ public class ReservationServiceSpringAutoConfiguration {
           .listReservationGroupsSettings()
           .setRetrySettings(listReservationGroupsRetrySettings);
 
+      RetrySettings updateReservationGroupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateReservationGroupSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .updateReservationGroupSettings()
+          .setRetrySettings(updateReservationGroupRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -760,6 +768,20 @@ public class ReservationServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for listReservationGroups from properties.");
+      }
+    }
+    Retry updateReservationGroupRetry = clientProperties.getUpdateReservationGroupRetry();
+    if (updateReservationGroupRetry != null) {
+      RetrySettings updateReservationGroupRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateReservationGroupSettings().getRetrySettings(),
+              updateReservationGroupRetry);
+      clientSettingsBuilder
+          .updateReservationGroupSettings()
+          .setRetrySettings(updateReservationGroupRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateReservationGroup from properties.");
       }
     }
     return clientSettingsBuilder.build();

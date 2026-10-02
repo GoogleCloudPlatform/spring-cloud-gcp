@@ -123,6 +123,16 @@ public class CloudTasksSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry runTaskRetry;
   /**
+   * Allow override of retry settings at method-level for updateCmekConfig. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateCmekConfigRetry;
+  /**
+   * Allow override of retry settings at method-level for getCmekConfig. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getCmekConfigRetry;
+  /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -296,6 +306,22 @@ public class CloudTasksSpringProperties implements CredentialsSupplier {
 
   public void setRunTaskRetry(Retry runTaskRetry) {
     this.runTaskRetry = runTaskRetry;
+  }
+
+  public Retry getUpdateCmekConfigRetry() {
+    return this.updateCmekConfigRetry;
+  }
+
+  public void setUpdateCmekConfigRetry(Retry updateCmekConfigRetry) {
+    this.updateCmekConfigRetry = updateCmekConfigRetry;
+  }
+
+  public Retry getGetCmekConfigRetry() {
+    return this.getCmekConfigRetry;
+  }
+
+  public void setGetCmekConfigRetry(Retry getCmekConfigRetry) {
+    this.getCmekConfigRetry = getCmekConfigRetry;
   }
 
   public Retry getListLocationsRetry() {

@@ -546,6 +546,41 @@ public class DlpServiceSpringAutoConfiguration {
           .updateConnectionSettings()
           .setRetrySettings(updateConnectionRetrySettings);
 
+      RetrySettings createContentPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createContentPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .createContentPolicySettings()
+          .setRetrySettings(createContentPolicyRetrySettings);
+
+      RetrySettings updateContentPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateContentPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .updateContentPolicySettings()
+          .setRetrySettings(updateContentPolicyRetrySettings);
+
+      RetrySettings getContentPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getContentPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .getContentPolicySettings()
+          .setRetrySettings(getContentPolicyRetrySettings);
+
+      RetrySettings listContentPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listContentPoliciesSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .listContentPoliciesSettings()
+          .setRetrySettings(listContentPoliciesRetrySettings);
+
+      RetrySettings deleteContentPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteContentPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .deleteContentPolicySettings()
+          .setRetrySettings(deleteContentPolicyRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -1273,6 +1308,76 @@ public class DlpServiceSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for updateConnection from properties.");
+      }
+    }
+    Retry createContentPolicyRetry = clientProperties.getCreateContentPolicyRetry();
+    if (createContentPolicyRetry != null) {
+      RetrySettings createContentPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.createContentPolicySettings().getRetrySettings(),
+              createContentPolicyRetry);
+      clientSettingsBuilder
+          .createContentPolicySettings()
+          .setRetrySettings(createContentPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for createContentPolicy from properties.");
+      }
+    }
+    Retry updateContentPolicyRetry = clientProperties.getUpdateContentPolicyRetry();
+    if (updateContentPolicyRetry != null) {
+      RetrySettings updateContentPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateContentPolicySettings().getRetrySettings(),
+              updateContentPolicyRetry);
+      clientSettingsBuilder
+          .updateContentPolicySettings()
+          .setRetrySettings(updateContentPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateContentPolicy from properties.");
+      }
+    }
+    Retry getContentPolicyRetry = clientProperties.getGetContentPolicyRetry();
+    if (getContentPolicyRetry != null) {
+      RetrySettings getContentPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getContentPolicySettings().getRetrySettings(),
+              getContentPolicyRetry);
+      clientSettingsBuilder
+          .getContentPolicySettings()
+          .setRetrySettings(getContentPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for getContentPolicy from properties.");
+      }
+    }
+    Retry listContentPoliciesRetry = clientProperties.getListContentPoliciesRetry();
+    if (listContentPoliciesRetry != null) {
+      RetrySettings listContentPoliciesRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listContentPoliciesSettings().getRetrySettings(),
+              listContentPoliciesRetry);
+      clientSettingsBuilder
+          .listContentPoliciesSettings()
+          .setRetrySettings(listContentPoliciesRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for listContentPolicies from properties.");
+      }
+    }
+    Retry deleteContentPolicyRetry = clientProperties.getDeleteContentPolicyRetry();
+    if (deleteContentPolicyRetry != null) {
+      RetrySettings deleteContentPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.deleteContentPolicySettings().getRetrySettings(),
+              deleteContentPolicyRetry);
+      clientSettingsBuilder
+          .deleteContentPolicySettings()
+          .setRetrySettings(deleteContentPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for deleteContentPolicy from properties.");
       }
     }
     return clientSettingsBuilder.build();
