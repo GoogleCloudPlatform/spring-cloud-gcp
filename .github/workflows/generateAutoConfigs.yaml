@@ -89,7 +89,6 @@ jobs:
             --define maven.javadoc.skip=true \
             -P non-previews,\!default \
             install
-          ./mvnw test-compile -pl spring-cloud-generator
       - name: Generate libraries
         continue-on-error: false
         working-directory: spring-cloud-generator
