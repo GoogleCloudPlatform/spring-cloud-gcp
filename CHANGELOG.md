@@ -15,6 +15,14 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.2.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.2.1...v8.2.2) (2026-10-02)
+
+
+### Bug Fixes
+
+* **datastore:** bound dynamic namespace client cache and clean up on shutdown ([#4640](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4640)) ([2ec5057](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/2ec5057a22ef969eb38839c79c4d621fbfac24b3))
+* **deps:** update google cloud dependencies ([#4577](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4577)) ([148ec65](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/148ec651da0f0cdac8993c899f55152cf4cf2e6d))
+
 ## [8.2.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.2.0...v8.2.1) (2026-09-11)
 
 
