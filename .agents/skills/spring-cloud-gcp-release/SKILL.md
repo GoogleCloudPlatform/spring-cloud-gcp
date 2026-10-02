@@ -54,10 +54,10 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
         gh pr list --base <BRANCH> --json number,title,author,createdAt --jq ".[] | select((.author.login == \"renovate\" or .author.login == \"dependabot\" or .author.isBot == true) and .createdAt > \"$LAST_RELEASE_DATE\")"
         ```
 3.  For each found dependency upgrade PR, approve and squash-merge it:
-    *   **Approve Forked PR Workflows**: If a PR originates from a fork (e.g. Renovate or Dependabot forks), workflows may pause in `waiting` status waiting for approval. Programmatically approve them using:
+    *   **Approve Forked PR Workflows**: If a PR originates from a fork (e.g. Renovate or Dependabot forks), workflows may pause in `action_required` status waiting for approval. Programmatically approve them using:
         ```bash
         PR_SHA=$(gh pr view <PR_NUMBER> --json headRefOid --jq .headRefOid)
-        for run_id in $(gh api "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?status=waiting&per_page=20" --jq ".workflow_runs[] | select(.head_sha == \"$PR_SHA\") | .id"); do
+        for run_id in $(gh api "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?status=action_required&per_page=20" --jq ".workflow_runs[] | select(.head_sha == \"$PR_SHA\") | .id"); do
           gh api --method POST "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs/$run_id/approve"
         done
         ```
@@ -94,10 +94,10 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
         ```bash
         gh pr close <PR_NUMBER> && gh pr reopen <PR_NUMBER>
         ```
-        Then programmatically approve any workflows in `waiting` status:
+        Then programmatically approve any workflows in `action_required` status:
         ```bash
         PR_SHA=$(gh pr view <PR_NUMBER> --json headRefOid --jq .headRefOid)
-        for run_id in $(gh api "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?status=waiting&per_page=20" --jq ".workflow_runs[] | select(.head_sha == \"$PR_SHA\") | .id"); do
+        for run_id in $(gh api "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?status=action_required&per_page=20" --jq ".workflow_runs[] | select(.head_sha == \"$PR_SHA\") | .id"); do
           gh api --method POST "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs/$run_id/approve"
         done
         ```
