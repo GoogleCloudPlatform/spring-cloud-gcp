@@ -154,6 +154,11 @@ public class RoutersSpringAutoConfiguration {
               clientSettingsBuilder.getSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getSettings().setRetrySettings(getRetrySettings);
 
+      RetrySettings getNamedSetRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getNamedSetSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getNamedSetSettings().setRetrySettings(getNamedSetRetrySettings);
+
       RetrySettings getNatIpInfoRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.getNatIpInfoSettings().getRetrySettings(), serviceRetry);
@@ -187,6 +192,11 @@ public class RoutersSpringAutoConfiguration {
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listBgpRoutesSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.listBgpRoutesSettings().setRetrySettings(listBgpRoutesRetrySettings);
+
+      RetrySettings listNamedSetsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listNamedSetsSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.listNamedSetsSettings().setRetrySettings(listNamedSetsRetrySettings);
 
       RetrySettings listRoutePoliciesRetrySettings =
           RetryUtil.updateRetrySettings(
@@ -223,6 +233,16 @@ public class RoutersSpringAutoConfiguration {
       clientSettingsBuilder.getSettings().setRetrySettings(getRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for get from properties.");
+      }
+    }
+    Retry getNamedSetRetry = clientProperties.getGetNamedSetRetry();
+    if (getNamedSetRetry != null) {
+      RetrySettings getNamedSetRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getNamedSetSettings().getRetrySettings(), getNamedSetRetry);
+      clientSettingsBuilder.getNamedSetSettings().setRetrySettings(getNamedSetRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getNamedSet from properties.");
       }
     }
     Retry getNatIpInfoRetry = clientProperties.getGetNatIpInfoRetry();
@@ -291,6 +311,16 @@ public class RoutersSpringAutoConfiguration {
       clientSettingsBuilder.listBgpRoutesSettings().setRetrySettings(listBgpRoutesRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for listBgpRoutes from properties.");
+      }
+    }
+    Retry listNamedSetsRetry = clientProperties.getListNamedSetsRetry();
+    if (listNamedSetsRetry != null) {
+      RetrySettings listNamedSetsRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.listNamedSetsSettings().getRetrySettings(), listNamedSetsRetry);
+      clientSettingsBuilder.listNamedSetsSettings().setRetrySettings(listNamedSetsRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for listNamedSets from properties.");
       }
     }
     Retry listRoutePoliciesRetry = clientProperties.getListRoutePoliciesRetry();

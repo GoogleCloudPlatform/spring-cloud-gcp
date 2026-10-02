@@ -228,6 +228,16 @@ public class RecaptchaEnterpriseServiceSpringAutoConfiguration {
               clientSettingsBuilder.getMetricsSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.getMetricsSettings().setRetrySettings(getMetricsRetrySettings);
 
+      RetrySettings getPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getPolicySettings().setRetrySettings(getPolicyRetrySettings);
+
+      RetrySettings updatePolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updatePolicySettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.updatePolicySettings().setRetrySettings(updatePolicyRetrySettings);
+
       RetrySettings createFirewallPolicyRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.createFirewallPolicySettings().getRetrySettings(),
@@ -452,6 +462,26 @@ public class RecaptchaEnterpriseServiceSpringAutoConfiguration {
       clientSettingsBuilder.getMetricsSettings().setRetrySettings(getMetricsRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for getMetrics from properties.");
+      }
+    }
+    Retry getPolicyRetry = clientProperties.getGetPolicyRetry();
+    if (getPolicyRetry != null) {
+      RetrySettings getPolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getPolicySettings().getRetrySettings(), getPolicyRetry);
+      clientSettingsBuilder.getPolicySettings().setRetrySettings(getPolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getPolicy from properties.");
+      }
+    }
+    Retry updatePolicyRetry = clientProperties.getUpdatePolicyRetry();
+    if (updatePolicyRetry != null) {
+      RetrySettings updatePolicyRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updatePolicySettings().getRetrySettings(), updatePolicyRetry);
+      clientSettingsBuilder.updatePolicySettings().setRetrySettings(updatePolicyRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for updatePolicy from properties.");
       }
     }
     Retry createFirewallPolicyRetry = clientProperties.getCreateFirewallPolicyRetry();

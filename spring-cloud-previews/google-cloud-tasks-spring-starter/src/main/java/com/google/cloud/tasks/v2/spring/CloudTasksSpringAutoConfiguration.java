@@ -241,6 +241,18 @@ public class CloudTasksSpringAutoConfiguration {
               clientSettingsBuilder.runTaskSettings().getRetrySettings(), serviceRetry);
       clientSettingsBuilder.runTaskSettings().setRetrySettings(runTaskRetrySettings);
 
+      RetrySettings updateCmekConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateCmekConfigSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder
+          .updateCmekConfigSettings()
+          .setRetrySettings(updateCmekConfigRetrySettings);
+
+      RetrySettings getCmekConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getCmekConfigSettings().getRetrySettings(), serviceRetry);
+      clientSettingsBuilder.getCmekConfigSettings().setRetrySettings(getCmekConfigRetrySettings);
+
       RetrySettings listLocationsRetrySettings =
           RetryUtil.updateRetrySettings(
               clientSettingsBuilder.listLocationsSettings().getRetrySettings(), serviceRetry);
@@ -417,6 +429,30 @@ public class CloudTasksSpringAutoConfiguration {
       clientSettingsBuilder.runTaskSettings().setRetrySettings(runTaskRetrySettings);
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured method-level retry settings for runTask from properties.");
+      }
+    }
+    Retry updateCmekConfigRetry = clientProperties.getUpdateCmekConfigRetry();
+    if (updateCmekConfigRetry != null) {
+      RetrySettings updateCmekConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.updateCmekConfigSettings().getRetrySettings(),
+              updateCmekConfigRetry);
+      clientSettingsBuilder
+          .updateCmekConfigSettings()
+          .setRetrySettings(updateCmekConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for updateCmekConfig from properties.");
+      }
+    }
+    Retry getCmekConfigRetry = clientProperties.getGetCmekConfigRetry();
+    if (getCmekConfigRetry != null) {
+      RetrySettings getCmekConfigRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.getCmekConfigSettings().getRetrySettings(), getCmekConfigRetry);
+      clientSettingsBuilder.getCmekConfigSettings().setRetrySettings(getCmekConfigRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Configured method-level retry settings for getCmekConfig from properties.");
       }
     }
     Retry listLocationsRetry = clientProperties.getListLocationsRetry();

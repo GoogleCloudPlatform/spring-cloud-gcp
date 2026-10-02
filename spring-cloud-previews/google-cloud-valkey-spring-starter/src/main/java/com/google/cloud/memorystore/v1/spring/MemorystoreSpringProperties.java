@@ -33,7 +33,10 @@ public class MemorystoreSpringProperties implements CredentialsSupplier {
   /** OAuth2 credentials to authenticate and authorize calls to Google Cloud Client Libraries. */
   @NestedConfigurationProperty
   private final Credentials credentials =
-      new Credentials("https://www.googleapis.com/auth/cloud-platform");
+      new Credentials(
+          "https://www.googleapis.com/auth/cloud-platform",
+          "https://www.googleapis.com/auth/memorystore.read-only",
+          "https://www.googleapis.com/auth/memorystore.read-write");
   /** Quota project to use for billing. */
   private String quotaProjectId;
   /** Number of threads used for executors. */
@@ -82,6 +85,26 @@ public class MemorystoreSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry getBackupRetry;
+  /**
+   * Allow override of retry settings at method-level for listTokenAuthUsers. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listTokenAuthUsersRetry;
+  /**
+   * Allow override of retry settings at method-level for getTokenAuthUser. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getTokenAuthUserRetry;
+  /**
+   * Allow override of retry settings at method-level for listAuthTokens. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listAuthTokensRetry;
+  /**
+   * Allow override of retry settings at method-level for getAuthToken. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getAuthTokenRetry;
   /**
    * Allow override of retry settings at method-level for listLocations. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -193,6 +216,38 @@ public class MemorystoreSpringProperties implements CredentialsSupplier {
 
   public void setGetBackupRetry(Retry getBackupRetry) {
     this.getBackupRetry = getBackupRetry;
+  }
+
+  public Retry getListTokenAuthUsersRetry() {
+    return this.listTokenAuthUsersRetry;
+  }
+
+  public void setListTokenAuthUsersRetry(Retry listTokenAuthUsersRetry) {
+    this.listTokenAuthUsersRetry = listTokenAuthUsersRetry;
+  }
+
+  public Retry getGetTokenAuthUserRetry() {
+    return this.getTokenAuthUserRetry;
+  }
+
+  public void setGetTokenAuthUserRetry(Retry getTokenAuthUserRetry) {
+    this.getTokenAuthUserRetry = getTokenAuthUserRetry;
+  }
+
+  public Retry getListAuthTokensRetry() {
+    return this.listAuthTokensRetry;
+  }
+
+  public void setListAuthTokensRetry(Retry listAuthTokensRetry) {
+    this.listAuthTokensRetry = listAuthTokensRetry;
+  }
+
+  public Retry getGetAuthTokenRetry() {
+    return this.getAuthTokenRetry;
+  }
+
+  public void setGetAuthTokenRetry(Retry getAuthTokenRetry) {
+    this.getAuthTokenRetry = getAuthTokenRetry;
   }
 
   public Retry getListLocationsRetry() {

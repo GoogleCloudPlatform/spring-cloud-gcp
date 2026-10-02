@@ -53,6 +53,11 @@ public class RoutersSpringProperties implements CredentialsSupplier {
    */
   @NestedConfigurationProperty private Retry getRetry;
   /**
+   * Allow override of retry settings at method-level for getNamedSet. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getNamedSetRetry;
+  /**
    * Allow override of retry settings at method-level for getNatIpInfo. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
    */
@@ -82,6 +87,11 @@ public class RoutersSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listBgpRoutesRetry;
+  /**
+   * Allow override of retry settings at method-level for listNamedSets. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listNamedSetsRetry;
   /**
    * Allow override of retry settings at method-level for listRoutePolicies. If defined, this takes
    * precedence over service-level retry configurations for that RPC method.
@@ -138,6 +148,14 @@ public class RoutersSpringProperties implements CredentialsSupplier {
     this.getRetry = getRetry;
   }
 
+  public Retry getGetNamedSetRetry() {
+    return this.getNamedSetRetry;
+  }
+
+  public void setGetNamedSetRetry(Retry getNamedSetRetry) {
+    this.getNamedSetRetry = getNamedSetRetry;
+  }
+
   public Retry getGetNatIpInfoRetry() {
     return this.getNatIpInfoRetry;
   }
@@ -184,6 +202,14 @@ public class RoutersSpringProperties implements CredentialsSupplier {
 
   public void setListBgpRoutesRetry(Retry listBgpRoutesRetry) {
     this.listBgpRoutesRetry = listBgpRoutesRetry;
+  }
+
+  public Retry getListNamedSetsRetry() {
+    return this.listNamedSetsRetry;
+  }
+
+  public void setListNamedSetsRetry(Retry listNamedSetsRetry) {
+    this.listNamedSetsRetry = listNamedSetsRetry;
   }
 
   public Retry getListRoutePoliciesRetry() {

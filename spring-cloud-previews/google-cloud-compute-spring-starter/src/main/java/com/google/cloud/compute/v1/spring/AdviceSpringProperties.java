@@ -47,6 +47,16 @@ public class AdviceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry calendarModeRetry;
+  /**
+   * Allow override of retry settings at method-level for capacity. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry capacityRetry;
+  /**
+   * Allow override of retry settings at method-level for capacityHistory. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry capacityHistoryRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -83,5 +93,21 @@ public class AdviceSpringProperties implements CredentialsSupplier {
 
   public void setCalendarModeRetry(Retry calendarModeRetry) {
     this.calendarModeRetry = calendarModeRetry;
+  }
+
+  public Retry getCapacityRetry() {
+    return this.capacityRetry;
+  }
+
+  public void setCapacityRetry(Retry capacityRetry) {
+    this.capacityRetry = capacityRetry;
+  }
+
+  public Retry getCapacityHistoryRetry() {
+    return this.capacityHistoryRetry;
+  }
+
+  public void setCapacityHistoryRetry(Retry capacityHistoryRetry) {
+    this.capacityHistoryRetry = capacityHistoryRetry;
   }
 }

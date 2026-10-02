@@ -317,6 +317,31 @@ public class DlpServiceSpringProperties implements CredentialsSupplier {
    * precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry updateConnectionRetry;
+  /**
+   * Allow override of retry settings at method-level for createContentPolicy. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry createContentPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for updateContentPolicy. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateContentPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for getContentPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getContentPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for listContentPolicies. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry listContentPoliciesRetry;
+  /**
+   * Allow override of retry settings at method-level for deleteContentPolicy. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry deleteContentPolicyRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -793,5 +818,45 @@ public class DlpServiceSpringProperties implements CredentialsSupplier {
 
   public void setUpdateConnectionRetry(Retry updateConnectionRetry) {
     this.updateConnectionRetry = updateConnectionRetry;
+  }
+
+  public Retry getCreateContentPolicyRetry() {
+    return this.createContentPolicyRetry;
+  }
+
+  public void setCreateContentPolicyRetry(Retry createContentPolicyRetry) {
+    this.createContentPolicyRetry = createContentPolicyRetry;
+  }
+
+  public Retry getUpdateContentPolicyRetry() {
+    return this.updateContentPolicyRetry;
+  }
+
+  public void setUpdateContentPolicyRetry(Retry updateContentPolicyRetry) {
+    this.updateContentPolicyRetry = updateContentPolicyRetry;
+  }
+
+  public Retry getGetContentPolicyRetry() {
+    return this.getContentPolicyRetry;
+  }
+
+  public void setGetContentPolicyRetry(Retry getContentPolicyRetry) {
+    this.getContentPolicyRetry = getContentPolicyRetry;
+  }
+
+  public Retry getListContentPoliciesRetry() {
+    return this.listContentPoliciesRetry;
+  }
+
+  public void setListContentPoliciesRetry(Retry listContentPoliciesRetry) {
+    this.listContentPoliciesRetry = listContentPoliciesRetry;
+  }
+
+  public Retry getDeleteContentPolicyRetry() {
+    return this.deleteContentPolicyRetry;
+  }
+
+  public void setDeleteContentPolicyRetry(Retry deleteContentPolicyRetry) {
+    this.deleteContentPolicyRetry = deleteContentPolicyRetry;
   }
 }

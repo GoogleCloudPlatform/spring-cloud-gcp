@@ -225,6 +225,11 @@ public class ClusterManagerSpringProperties implements CredentialsSupplier {
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry fetchNodePoolUpgradeInfoRetry;
+  /**
+   * Allow override of retry settings at method-level for completeControlPlaneUpgrade. If defined,
+   * this takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry completeControlPlaneUpgradeRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -549,5 +554,13 @@ public class ClusterManagerSpringProperties implements CredentialsSupplier {
 
   public void setFetchNodePoolUpgradeInfoRetry(Retry fetchNodePoolUpgradeInfoRetry) {
     this.fetchNodePoolUpgradeInfoRetry = fetchNodePoolUpgradeInfoRetry;
+  }
+
+  public Retry getCompleteControlPlaneUpgradeRetry() {
+    return this.completeControlPlaneUpgradeRetry;
+  }
+
+  public void setCompleteControlPlaneUpgradeRetry(Retry completeControlPlaneUpgradeRetry) {
+    this.completeControlPlaneUpgradeRetry = completeControlPlaneUpgradeRetry;
   }
 }

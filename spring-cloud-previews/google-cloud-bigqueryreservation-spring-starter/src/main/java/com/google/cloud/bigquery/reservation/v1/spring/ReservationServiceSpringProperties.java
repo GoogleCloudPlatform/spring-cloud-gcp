@@ -189,6 +189,11 @@ public class ReservationServiceSpringProperties implements CredentialsSupplier {
    * takes precedence over service-level retry configurations for that RPC method.
    */
   @NestedConfigurationProperty private Retry listReservationGroupsRetry;
+  /**
+   * Allow override of retry settings at method-level for updateReservationGroup. If defined, this
+   * takes precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updateReservationGroupRetry;
 
   @Override
   public Credentials getCredentials() {
@@ -457,5 +462,13 @@ public class ReservationServiceSpringProperties implements CredentialsSupplier {
 
   public void setListReservationGroupsRetry(Retry listReservationGroupsRetry) {
     this.listReservationGroupsRetry = listReservationGroupsRetry;
+  }
+
+  public Retry getUpdateReservationGroupRetry() {
+    return this.updateReservationGroupRetry;
+  }
+
+  public void setUpdateReservationGroupRetry(Retry updateReservationGroupRetry) {
+    this.updateReservationGroupRetry = updateReservationGroupRetry;
   }
 }

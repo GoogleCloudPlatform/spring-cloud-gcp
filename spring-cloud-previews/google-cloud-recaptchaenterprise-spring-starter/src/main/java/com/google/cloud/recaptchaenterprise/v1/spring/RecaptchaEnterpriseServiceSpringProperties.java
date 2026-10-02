@@ -106,6 +106,16 @@ public class RecaptchaEnterpriseServiceSpringProperties implements CredentialsSu
    */
   @NestedConfigurationProperty private Retry getMetricsRetry;
   /**
+   * Allow override of retry settings at method-level for getPolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry getPolicyRetry;
+  /**
+   * Allow override of retry settings at method-level for updatePolicy. If defined, this takes
+   * precedence over service-level retry configurations for that RPC method.
+   */
+  @NestedConfigurationProperty private Retry updatePolicyRetry;
+  /**
    * Allow override of retry settings at method-level for createFirewallPolicy. If defined, this
    * takes precedence over service-level retry configurations for that RPC method.
    */
@@ -282,6 +292,22 @@ public class RecaptchaEnterpriseServiceSpringProperties implements CredentialsSu
 
   public void setGetMetricsRetry(Retry getMetricsRetry) {
     this.getMetricsRetry = getMetricsRetry;
+  }
+
+  public Retry getGetPolicyRetry() {
+    return this.getPolicyRetry;
+  }
+
+  public void setGetPolicyRetry(Retry getPolicyRetry) {
+    this.getPolicyRetry = getPolicyRetry;
+  }
+
+  public Retry getUpdatePolicyRetry() {
+    return this.updatePolicyRetry;
+  }
+
+  public void setUpdatePolicyRetry(Retry updatePolicyRetry) {
+    this.updatePolicyRetry = updatePolicyRetry;
   }
 
   public Retry getCreateFirewallPolicyRetry() {

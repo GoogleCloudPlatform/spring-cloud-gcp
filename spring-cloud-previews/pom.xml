@@ -91,7 +91,6 @@
     <module>google-cloud-dataproc-spring-starter</module>
     <module>google-cloud-dataplex-spring-starter</module>
     <module>google-cloud-datalineage-spring-starter</module>
-    <module>google-cloud-datacatalog-spring-starter</module>
     <module>google-cloud-data-fusion-spring-starter</module>
     <module>google-cloud-containeranalysis-spring-starter</module>
     <module>google-cloud-container-spring-starter</module>
@@ -108,7 +107,6 @@
     <module>google-cloud-bigquerydatatransfer-spring-starter</module>
     <module>google-cloud-bigqueryconnection-spring-starter</module>
     <module>google-cloud-backupdr-spring-starter</module>
-    <module>google-cloud-automl-spring-starter</module>
     <module>google-cloud-assured-workloads-spring-starter</module>
     <module>google-cloud-asset-spring-starter</module>
     <module>google-cloud-artifact-registry-spring-starter</module>

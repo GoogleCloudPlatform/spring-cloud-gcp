@@ -386,6 +386,14 @@ public class ClusterManagerSpringAutoConfiguration {
           .fetchNodePoolUpgradeInfoSettings()
           .setRetrySettings(fetchNodePoolUpgradeInfoRetrySettings);
 
+      RetrySettings completeControlPlaneUpgradeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.completeControlPlaneUpgradeSettings().getRetrySettings(),
+              serviceRetry);
+      clientSettingsBuilder
+          .completeControlPlaneUpgradeSettings()
+          .setRetrySettings(completeControlPlaneUpgradeRetrySettings);
+
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Configured service-level retry settings from properties.");
       }
@@ -820,6 +828,20 @@ public class ClusterManagerSpringAutoConfiguration {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
             "Configured method-level retry settings for fetchNodePoolUpgradeInfo from properties.");
+      }
+    }
+    Retry completeControlPlaneUpgradeRetry = clientProperties.getCompleteControlPlaneUpgradeRetry();
+    if (completeControlPlaneUpgradeRetry != null) {
+      RetrySettings completeControlPlaneUpgradeRetrySettings =
+          RetryUtil.updateRetrySettings(
+              clientSettingsBuilder.completeControlPlaneUpgradeSettings().getRetrySettings(),
+              completeControlPlaneUpgradeRetry);
+      clientSettingsBuilder
+          .completeControlPlaneUpgradeSettings()
+          .setRetrySettings(completeControlPlaneUpgradeRetrySettings);
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Configured method-level retry settings for completeControlPlaneUpgrade from properties.");
       }
     }
     return clientSettingsBuilder.build();
