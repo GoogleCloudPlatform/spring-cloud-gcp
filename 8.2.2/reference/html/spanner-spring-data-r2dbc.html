@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Cloud Spanner Spring Data R2DBC</title>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/setup.js"></script><script defer src="js/site.js"></script>
+
+</head>
+<body class="book toc2 toc-left"><div id="banner-container" class="container" role="banner">
+  <div id="banner" class="contained" role="banner">
+    <div id="switch-theme">
+      <input type="checkbox" id="switch-theme-checkbox" />
+      <label for="switch-theme-checkbox">Dark Theme</label>
+    </div>
+  </div>
+</div>
+<div id="tocbar-container" class="container" role="navigation">
+  <div id="tocbar" class="contained" role="navigation">
+    <button id="toggle-toc"></button>
+  </div>
+</div>
+<div id="main-container" class="container">
+  <div id="main" class="contained">
+    <div id="doc" class="doc">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<span id="back-to-index"><a href="${index-link}">Back to index</a></span><ul class="sectlevel1">
+<li><a href="#spring-data-cloud-spanner-r2dbc">Cloud Spanner Spring Data R2DBC</a>
+<ul class="sectlevel2">
+<li><a href="#_setup">Setup</a></li>
+<li><a href="#_overview">Overview</a></li>
+<li><a href="#_sample_application">Sample Application</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="spring-data-cloud-spanner-r2dbc"><a class="anchor" href="#spring-data-cloud-spanner-r2dbc"></a><a class="link" href="#spring-data-cloud-spanner-r2dbc">Cloud Spanner Spring Data R2DBC</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Spring Data R2DBC Dialect for Cloud Spanner enables the usage of <a href="https://github.com/spring-projects/spring-data-r2dbc">Spring Data R2DBC</a> with Cloud Spanner.</p>
+</div>
+<div class="paragraph">
+<p>The goal of the Spring Data project is to create easy and consistent ways of using data access technologies from Spring Framework applications.</p>
+</div>
+<div class="sect2">
+<h3 id="_setup"><a class="anchor" href="#_setup"></a><a class="link" href="#_setup">Setup</a></h3>
+<div class="paragraph">
+<p>Maven coordinates, using <a href="getting-started.html#bill-of-materials">Spring Framework on Google Cloud BOM</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">    &lt;dependency&gt;
+        &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-spanner-spring-data-r2dbc&lt;/artifactId&gt;
+    &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gradle coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>dependencies {
+    implementation("com.google.cloud:spring-cloud-spanner-spring-data-r2dbc")
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_overview"><a class="anchor" href="#_overview"></a><a class="link" href="#_overview">Overview</a></h3>
+<div class="paragraph">
+<p>Spring Data R2DBC allows you to use the convenient features of Spring Data in a reactive application.
+These features include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Spring configuration support using Java based <code>@Configuration</code> classes.</p>
+</li>
+<li>
+<p>Annotation based mapping metadata.</p>
+</li>
+<li>
+<p>Automatic implementation of Repository interfaces.</p>
+</li>
+<li>
+<p>Support for Reactive Transactions.</p>
+</li>
+<li>
+<p>Schema and data initialization utilities.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>See the <a href="https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/">Spring Data R2DBC documentation</a> for more information on how to use Spring Data R2DBC.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sample_application"><a class="anchor" href="#_sample_application"></a><a class="link" href="#_sample_application">Sample Application</a></h3>
+<div class="paragraph">
+<p>We provide a <a href="https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-spanner-r2dbc-samples">sample application</a> which demonstrates using the Spring Data R2DBC framework with Cloud Spanner in <a href="https://docs.spring.io/spring-framework/reference/web/webflux.html">Spring WebFlux</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+</div>
+  </div>
+</div>
+</body>
+</html>
