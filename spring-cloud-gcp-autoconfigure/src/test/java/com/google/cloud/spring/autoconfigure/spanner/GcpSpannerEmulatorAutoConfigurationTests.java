@@ -17,10 +17,12 @@
 package com.google.cloud.spring.autoconfigure.spanner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.NoCredentials;
+import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.gson.Gson;
@@ -126,6 +128,17 @@ class GcpSpannerEmulatorAutoConfigurationTests {
     @Bean
     public Gson gson() {
       return new Gson();
+    }
+
+    /**
+     * Provides a mock Spanner client to prevent eager socket connection attempts
+     * to offline emulator hosts during context startup.
+     *
+     * @return a mock Spanner client instance
+     */
+    @Bean
+    public Spanner spanner() {
+      return mock(Spanner.class);
     }
   }
 }
