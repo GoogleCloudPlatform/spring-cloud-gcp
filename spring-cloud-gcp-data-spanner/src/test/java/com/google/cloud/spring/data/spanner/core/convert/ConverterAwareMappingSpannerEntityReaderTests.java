@@ -434,6 +434,30 @@ class ConverterAwareMappingSpannerEntityReaderTests {
   }
 
   @Test
+  void readGenericJsonFieldTest() {
+    Struct row = mock(Struct.class);
+    when(row.getString("id")).thenReturn("1234");
+    when(row.getType())
+        .thenReturn(
+            Type.struct(
+                Arrays.asList(
+                    Type.StructField.of("id", Type.string()),
+                    Type.StructField.of("params", Type.json()))));
+    when(row.getColumnType("id")).thenReturn(Type.string());
+
+    when(row.getJson("params"))
+        .thenReturn("{\"genericField\":{\"p1\":\"address line\",\"p2\":\"5\"}}");
+
+    TestEntities.TestEntityGenericJson result =
+        this.spannerEntityReader.read(TestEntities.TestEntityGenericJson.class, row);
+
+    assertThat(result.id).isEqualTo("1234");
+    assertThat(result.params.genericField).isInstanceOf(TestEntities.Params.class);
+    assertThat(result.params.genericField.p1).isEqualTo("address line");
+    assertThat(result.params.genericField.p2).isEqualTo("5");
+  }
+
+  @Test
   void readArrayJsonFieldTest() {
     Struct row = mock(Struct.class);
     when(row.getString("id")).thenReturn("1234");
@@ -463,6 +487,42 @@ class ConverterAwareMappingSpannerEntityReaderTests {
 
     assertThat(result.paramsList.get(1).p1).isEqualTo("address line 2");
     assertThat(result.paramsList.get(1).p2).isEqualTo("6");
+
+    assertThat(result.paramsList.get(2)).isNull();
+  }
+
+  @Test
+  void readGenericArrayJsonFieldTest() {
+    Struct row = mock(Struct.class);
+    when(row.getString("id")).thenReturn("1234");
+    when(row.getType())
+        .thenReturn(
+            Type.struct(
+                Arrays.asList(
+                    Type.StructField.of("id", Type.string()),
+                    Type.StructField.of("paramsList", Type.array(Type.json())))));
+    when(row.getColumnType("id")).thenReturn(Type.string());
+
+    when(row.getColumnType("paramsList")).thenReturn(Type.array(Type.json()));
+    when(row.getJsonList("paramsList"))
+        .thenReturn(
+            Arrays.asList(
+                "{\"genericField\":{\"p1\":\"address line\",\"p2\":\"5\"}}",
+                "{\"genericField\":{\"p1\":\"address line 2\",\"p2\":\"6\"}}",
+                null));
+
+    TestEntities.TestEntityGenericJsonArray result =
+        this.spannerEntityReader.read(TestEntities.TestEntityGenericJsonArray.class, row);
+
+    assertThat(result.id).isEqualTo("1234");
+
+    assertThat(result.paramsList.get(0).genericField).isInstanceOf(TestEntities.Params.class);
+    assertThat(result.paramsList.get(0).genericField.p1).isEqualTo("address line");
+    assertThat(result.paramsList.get(0).genericField.p2).isEqualTo("5");
+
+    assertThat(result.paramsList.get(1).genericField).isInstanceOf(TestEntities.Params.class);
+    assertThat(result.paramsList.get(1).genericField.p1).isEqualTo("address line 2");
+    assertThat(result.paramsList.get(1).genericField.p2).isEqualTo("6");
 
     assertThat(result.paramsList.get(2)).isNull();
   }
