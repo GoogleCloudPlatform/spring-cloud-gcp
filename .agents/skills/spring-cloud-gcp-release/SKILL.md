@@ -54,10 +54,17 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
         gh pr list --base <BRANCH> --json number,title,author,createdAt --jq ".[] | select((.author.login == \"renovate\" or .author.login == \"dependabot\" or .author.isBot == true) and .createdAt > \"$LAST_RELEASE_DATE\")"
         ```
 3.  For each found dependency upgrade PR, approve and squash-merge it:
-    ```bash
-    gh pr review <PR_NUMBER> --approve
-    gh pr merge <PR_NUMBER> --squash
-    ```
+    *   **Approve Forked PR Workflows**: If a PR originates from a fork (e.g. Renovate or Dependabot forks), workflows may pause with `action_required` status waiting for approval. Programmatically approve them using:
+        ```bash
+        for run_id in $(gh api "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?per_page=20" --jq '.workflow_runs[] | select(.conclusion == "action_required" and .head_branch == "<PR_BRANCH>") | .id'); do
+          gh api --method POST "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs/$run_id/approve"
+        done
+        ```
+    *   Approve and squash-merge the PR once checks pass:
+        ```bash
+        gh pr review <PR_NUMBER> --approve
+        gh pr merge <PR_NUMBER> --squash
+        ```
 4.  Verify fallback:
     *   **If releasing `main`**: Verify that the `gapic-generator-java-bom` PR is merged. If not open/merged, tick its box in the Renovate Dependency Dashboard (Issue #1705) to trigger it.
     *   **If releasing a maintenance branch**: Verify that the `libraries-bom` PR is merged. If not open/merged, tick its box in the Renovate Dependency Dashboard (Issue #1705) to trigger it.
@@ -81,7 +88,22 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
     ```bash
     gh pr diff <PR_NUMBER> --name-only
     ```
-4.  Approve and squash-merge the `libraries-bom` PR.
+4.  Approve and squash-merge the `libraries-bom` PR:
+    *   **Trigger and Approve Presubmits**: If required presubmit checks do not trigger automatically after the bot commit, close and reopen the PR:
+        ```bash
+        gh pr close <PR_NUMBER> && gh pr reopen <PR_NUMBER>
+        ```
+        Then programmatically approve any workflows waiting in `action_required` status:
+        ```bash
+        for run_id in $(gh api "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?per_page=20" --jq '.workflow_runs[] | select(.conclusion == "action_required" and .head_branch == "<PR_BRANCH>") | .id'); do
+          gh api --method POST "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs/$run_id/approve"
+        done
+        ```
+    *   Once all required checks pass, approve and squash-merge:
+        ```bash
+        gh pr review <PR_NUMBER> --approve
+        gh pr merge <PR_NUMBER> --squash
+        ```
 
 ### Step 4: Merge Release PR
 1.  Wait for `release-please` to create the Release PR on the target branch (re-running this query every 2 minutes, up to a maximum of 10 minutes or 5 attempts):
