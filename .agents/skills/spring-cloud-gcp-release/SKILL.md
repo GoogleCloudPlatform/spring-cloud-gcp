@@ -56,8 +56,8 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
 3.  For each found dependency upgrade PR, approve and squash-merge it:
     *   **Approve Forked PR Workflows**: If a PR originates from a fork (e.g. Renovate or Dependabot forks), workflows may pause in `waiting` status waiting for approval. Programmatically approve them using:
         ```bash
-        PR_BRANCH=$(gh pr view <PR_NUMBER> --json headRefName --jq .headRefName)
-        for run_id in $(gh api "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?status=waiting&per_page=20" --jq ".workflow_runs[] | select(.head_branch == \"$PR_BRANCH\") | .id"); do
+        PR_SHA=$(gh pr view <PR_NUMBER> --json headRefOid --jq .headRefOid)
+        for run_id in $(gh api "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?status=waiting&per_page=20" --jq ".workflow_runs[] | select(.head_sha == \"$PR_SHA\") | .id"); do
           gh api --method POST "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs/$run_id/approve"
         done
         ```
@@ -96,8 +96,8 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
         ```
         Then programmatically approve any workflows in `waiting` status:
         ```bash
-        PR_BRANCH=$(gh pr view <PR_NUMBER> --json headRefName --jq .headRefName)
-        for run_id in $(gh api "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?status=waiting&per_page=20" --jq ".workflow_runs[] | select(.head_branch == \"$PR_BRANCH\") | .id"); do
+        PR_SHA=$(gh pr view <PR_NUMBER> --json headRefOid --jq .headRefOid)
+        for run_id in $(gh api "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs?status=waiting&per_page=20" --jq ".workflow_runs[] | select(.head_sha == \"$PR_SHA\") | .id"); do
           gh api --method POST "repos/GoogleCloudPlatform/spring-cloud-gcp/actions/runs/$run_id/approve"
         done
         ```
