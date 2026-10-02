@@ -56,8 +56,10 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
 3.  For each found dependency upgrade PR, approve and squash-merge it:
     *   **Approve Forked PR Workflows**: If a PR originates from a fork (e.g. Renovate or Dependabot forks), workflows may pause in `action_required` status waiting for approval. Programmatically approve them using:
         ```bash
-        PR_SHA=$(gh pr view <PR_NUMBER> --json headRefOid --jq .headRefOid)
-        if [ -n "$PR_SHA" ]; then
+        PR_INFO=$(gh pr view <PR_NUMBER> --json headRefOid,isCrossRepository --jq '.headRefOid + " " + (.isCrossRepository | tostring)')
+        PR_SHA=${PR_INFO% *}
+        IS_FORK=${PR_INFO#* }
+        if [ "$IS_FORK" = "true" ] && [ -n "$PR_SHA" ]; then
           for run_id in $(gh api "/repos/{owner}/{repo}/actions/runs?status=action_required&head_sha=$PR_SHA" --jq ".workflow_runs[]?.id"); do
             gh api --method POST "/repos/{owner}/{repo}/actions/runs/$run_id/approve"
           done
@@ -98,8 +100,10 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
         ```
         Then programmatically approve any workflows in `action_required` status:
         ```bash
-        PR_SHA=$(gh pr view <PR_NUMBER> --json headRefOid --jq .headRefOid)
-        if [ -n "$PR_SHA" ]; then
+        PR_INFO=$(gh pr view <PR_NUMBER> --json headRefOid,isCrossRepository --jq '.headRefOid + " " + (.isCrossRepository | tostring)')
+        PR_SHA=${PR_INFO% *}
+        IS_FORK=${PR_INFO#* }
+        if [ "$IS_FORK" = "true" ] && [ -n "$PR_SHA" ]; then
           for i in {1..12}; do
             ACTION_RUNS=$(gh api "/repos/{owner}/{repo}/actions/runs?status=action_required&head_sha=$PR_SHA" --jq ".workflow_runs[]?.id")
             if [ -n "$ACTION_RUNS" ]; then
