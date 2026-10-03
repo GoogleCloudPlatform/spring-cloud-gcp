@@ -206,6 +206,21 @@ public class GoogleStorageResource implements WritableResource {
   }
 
   /**
+   * Creates the blob that this {@link GoogleStorageResource} represents in Google Cloud Storage and
+   * fills it with provided stream of data.
+   *
+   * @param inputStream data read from the InputStream will be used as the initial content of the
+   *     bucket object
+   * @return the created blob object
+   * @throws IOException on I/O error
+   * @throws StorageException if any errors during blob creation arise, such as if the blob already
+   *     exists
+   */
+  public Blob createBlobFrom(InputStream inputStream) throws IOException {
+    return this.storage.createFrom(BlobInfo.newBuilder(getBlobId()).build(), inputStream);
+  }
+
+  /**
    * Creates the bucket that this resource references in Google Cloud Storage.
    *
    * @return the {@link Bucket} object for the bucket
