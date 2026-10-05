@@ -54,13 +54,17 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
         gh pr list --base <BRANCH> --json number,title,author,createdAt --jq ".[] | select((.author.login == \"renovate\" or .author.login == \"dependabot\" or .author.isBot == true) and .createdAt > \"$LAST_RELEASE_DATE\")"
         ```
 3.  For each found dependency upgrade PR, approve and squash-merge it:
-    *   **Approve Forked PR Workflows**: If a PR originates from a fork (e.g. Renovate or Dependabot forks), workflows may pause in `action_required` status waiting for approval. Programmatically approve them using:
+    *   **Approve Forked PR Workflows**: If a PR originates from a fork, verify that the PR author is strictly an approved bot (`renovate-bot` or `app/dependabot` / `dependabot[bot]`) before approving workflows in `action_required` status:
         ```bash
-        IFS=, read -r PR_SHA IS_FORK <<< "$(gh pr view <PR_NUMBER> --json headRefOid,isCrossRepository --jq '(.headRefOid // "") + "," + (.isCrossRepository | tostring)')"
+        IFS=, read -r PR_SHA IS_FORK PR_AUTHOR <<< "$(gh pr view <PR_NUMBER> --json headRefOid,isCrossRepository,author --jq '(.headRefOid // "") + "," + (.isCrossRepository | tostring) + "," + (.author.login // "")')"
         if [ "$IS_FORK" = "true" ] && [ -n "$PR_SHA" ]; then
-          for run_id in $(gh api "repos/:owner/:repo/actions/runs?head_sha=$PR_SHA" --jq '.workflow_runs[]? | select(.status == "action_required" or .status == "waiting" or .conclusion == "action_required") | .id'); do
-            gh api --method POST "repos/:owner/:repo/actions/runs/$run_id/approve" || true
-          done
+          if [ "$PR_AUTHOR" = "renovate-bot" ] || [ "$PR_AUTHOR" = "app/dependabot" ] || [ "$PR_AUTHOR" = "dependabot[bot]" ]; then
+            for run_id in $(gh api "repos/:owner/:repo/actions/runs?head_sha=$PR_SHA" --jq '.workflow_runs[]? | select(.status == "action_required" or .status == "waiting" or .conclusion == "action_required") | .id'); do
+              gh api --method POST "repos/:owner/:repo/actions/runs/$run_id/approve" || true
+            done
+          else
+            echo "Refusing to approve workflows: PR author '$PR_AUTHOR' is not an approved bot account."
+          fi
         fi
         ```
     *   Approve and squash-merge the PR once checks pass:
@@ -96,22 +100,26 @@ Before updating `libraries-bom` or creating the release, check for and merge ope
         ```bash
         gh pr close <PR_NUMBER> && gh pr reopen <PR_NUMBER>
         ```
-        Then programmatically approve any workflows in `action_required` status:
+        Then programmatically approve any workflows in `action_required` status (strictly ensuring the PR author is an approved bot):
         ```bash
-        IFS=, read -r PR_SHA IS_FORK <<< "$(gh pr view <PR_NUMBER> --json headRefOid,isCrossRepository --jq '(.headRefOid // "") + "," + (.isCrossRepository | tostring)')"
+        IFS=, read -r PR_SHA IS_FORK PR_AUTHOR <<< "$(gh pr view <PR_NUMBER> --json headRefOid,isCrossRepository,author --jq '(.headRefOid // "") + "," + (.isCrossRepository | tostring) + "," + (.author.login // "")')"
         if [ "$IS_FORK" = "true" ] && [ -n "$PR_SHA" ]; then
-          for i in {1..12}; do
-            ACTION_RUNS=$(gh api "repos/:owner/:repo/actions/runs?head_sha=$PR_SHA" --jq '.workflow_runs[]? | select(.status == "action_required" or .status == "waiting" or .conclusion == "action_required") | .id')
-            if [ -n "$ACTION_RUNS" ]; then
+          if [ "$PR_AUTHOR" = "renovate-bot" ] || [ "$PR_AUTHOR" = "app/dependabot" ] || [ "$PR_AUTHOR" = "dependabot[bot]" ]; then
+            for i in {1..12}; do
+              ACTION_RUNS=$(gh api "repos/:owner/:repo/actions/runs?head_sha=$PR_SHA" --jq '.workflow_runs[]? | select(.status == "action_required" or .status == "waiting" or .conclusion == "action_required") | .id')
+              if [ -n "$ACTION_RUNS" ]; then
+                sleep 5
+                FINAL_RUNS=$(gh api "repos/:owner/:repo/actions/runs?head_sha=$PR_SHA" --jq '.workflow_runs[]? | select(.status == "action_required" or .status == "waiting" or .conclusion == "action_required") | .id')
+                for run_id in ${FINAL_RUNS:-$ACTION_RUNS}; do
+                  gh api --method POST "repos/:owner/:repo/actions/runs/$run_id/approve" || true
+                done
+                break
+              fi
               sleep 5
-              FINAL_RUNS=$(gh api "repos/:owner/:repo/actions/runs?head_sha=$PR_SHA" --jq '.workflow_runs[]? | select(.status == "action_required" or .status == "waiting" or .conclusion == "action_required") | .id')
-              for run_id in ${FINAL_RUNS:-$ACTION_RUNS}; do
-                gh api --method POST "repos/:owner/:repo/actions/runs/$run_id/approve" || true
-              done
-              break
-            fi
-            sleep 5
-          done
+            done
+          else
+            echo "Refusing to approve workflows: PR author '$PR_AUTHOR' is not an approved bot account."
+          fi
         fi
         ```
     *   Once all required checks pass, approve and squash-merge:
