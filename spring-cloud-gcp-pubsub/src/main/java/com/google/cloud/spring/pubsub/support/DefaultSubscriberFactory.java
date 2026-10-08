@@ -33,10 +33,13 @@ import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.PubSubException;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
+import com.google.cloud.spring.pubsub.core.subscriber.SubscriberCustomizer;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PullRequest;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
@@ -95,6 +98,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
   private ExecutorProvider globalExecutorProvider;
 
   private Code[] retryableCodes;
+
+  private List<SubscriberCustomizer> customizers = Collections.emptyList();
 
   /**
    * Default {@link DefaultSubscriberFactory} constructor.
@@ -239,6 +244,16 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     this.healthTrackerRegistry = healthTrackerRegistry;
   }
 
+  /**
+   * Accepts a list of {@link Subscriber.Builder} customizers. The customizers are applied in the
+   * order provided, so the later customizers can override any settings provided by the earlier
+   * ones.
+   */
+  public void setCustomizers(List<SubscriberCustomizer> customizers) {
+    Assert.notNull(customizers, "Non-null customizers expected");
+    this.customizers = Collections.unmodifiableList(customizers);
+  }
+
   @Override
   public Subscriber createSubscriber(String subscriptionName, MessageReceiver receiver) {
     ProjectSubscriptionName projectSubscriptionName =
@@ -307,6 +322,8 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     if (universeDomain != null) {
       subscriberBuilder.setUniverseDomain(universeDomain);
     }
+
+    applyCustomizers(subscriberBuilder, subscriptionName);
 
     Subscriber subscriber = subscriberBuilder.build();
 
@@ -618,5 +635,11 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     ProjectSubscriptionName projectSubscriptionName =
         PubSubSubscriptionUtils.toProjectSubscriptionName(subscriptionName, this.projectId);
     return !healthTrackerRegistry.isTracked(projectSubscriptionName);
+  }
+
+  private void applyCustomizers(Subscriber.Builder subscriberBuilder, String subscriptionName) {
+    for (SubscriberCustomizer customizer : this.customizers) {
+      customizer.apply(subscriberBuilder, subscriptionName);
+    }
   }
 }
