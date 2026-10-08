@@ -15,6 +15,18 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.2.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.2.2...v8.2.3) (2026-10-08)
+
+
+### Bug Fixes
+
+* **pubsub-sample:** remove duplicate awaitility dependency ([#4669](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4669)) ([130cfa2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/130cfa26eda0df978ab3636df4508df390f2b90e))
+
+
+### Documentation
+
+* update README for release 8.2.2 ([#4662](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4662)) ([56e2ad4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/56e2ad441bc512466f912437e16ed5afaa9c3291))
+
 ## [8.2.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.2.1...v8.2.2) (2026-10-02)
 
 
