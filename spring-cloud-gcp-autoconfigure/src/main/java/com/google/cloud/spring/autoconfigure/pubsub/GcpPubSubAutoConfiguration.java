@@ -45,6 +45,7 @@ import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
 import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
+import com.google.cloud.spring.pubsub.core.subscriber.SubscriberCustomizer;
 import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
@@ -54,6 +55,7 @@ import com.google.cloud.spring.pubsub.support.converter.PubSubMessageConverter;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -246,7 +248,8 @@ public class GcpPubSubAutoConfiguration {
       @Qualifier("healthTrackerRegistry")
           ObjectProvider<HealthTrackerRegistry> healthTrackerRegistry,
       @Qualifier("subscriberTransportChannelProvider")
-          TransportChannelProvider subscriberTransportChannelProvider) {
+          TransportChannelProvider subscriberTransportChannelProvider,
+      ObjectProvider<SubscriberCustomizer> customizersProvider) {
     DefaultSubscriberFactory factory =
         new DefaultSubscriberFactory(this.finalProjectIdProvider, this.gcpPubSubProperties);
 
@@ -281,6 +284,11 @@ public class GcpPubSubAutoConfiguration {
     factory.setRetrySettingsMap(this.subscriberRetrySettingsMap);
     factory.setGlobalRetrySettings(this.globalRetrySettings);
     healthTrackerRegistry.ifAvailable(factory::setHealthTrackerRegistry);
+
+    List<SubscriberCustomizer> customizers =
+        new ArrayList<>(customizersProvider.orderedStream().toList());
+    Collections.reverse(customizers); // highest priority customizer needs to be last
+    factory.setCustomizers(customizers);
 
     return factory;
   }
