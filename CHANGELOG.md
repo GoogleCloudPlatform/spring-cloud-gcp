@@ -15,6 +15,13 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.2.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.2.3...v8.2.4) (2026-10-09)
+
+
+### Bug Fixes
+
+* **generator:** update showcase-spring-starter golden files for gapic-showcase ([#4671](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4671)) ([55c23fc](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/55c23fc6d07302002aa3941af508d544844b8746))
+
 ## [8.2.3](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.2.2...v8.2.3) (2026-10-08)
 
 
