@@ -75,7 +75,7 @@ function generate_showcase_spring_starter(){
   pushd java-showcase
   # For local development, we cleanup any traces of previous runs
   rm -rdf "${output_folder}"
-  mvn clean install
+  mvn clean install -Dflatten.skip=true
   gapic_showcase_client_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
   pushd gapic-showcase
