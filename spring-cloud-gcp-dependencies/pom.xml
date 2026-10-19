@@ -386,6 +386,29 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<!--
+		This BOM has no parent, so the Maven super POM release-profile (-DperformRelease) adds
+		maven-source-plugin and maven-javadoc-plugin without versions. Maven then picks the
+		version from repository metadata, which differs between Maven Central and Airlock.
+		Pin the versions that the root pom.xml uses.
+	-->
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.12.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.4.0</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
 	<profiles>
 
     <!--

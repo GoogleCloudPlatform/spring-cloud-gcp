@@ -56,7 +56,7 @@ jobs:
     - name: Remove SNAPSHOT # Needed for releases
       run: |
         if [[ -n "${{ github.event.release.tag_name }}" ]] ; then
-          ./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
+          ./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules -P docs
         fi
 
     - name: Update Docs

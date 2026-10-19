@@ -41,7 +41,7 @@
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
-		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+		<maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
 		<maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
 		<maven-flatten-plugin.version>1.7.3</maven-flatten-plugin.version>
 		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
@@ -507,8 +507,7 @@
 				<module>spring-cloud-previews</module>
 				<module>spring-cloud-generator</module>
 				<module>spring-cloud-spanner-spring-data-r2dbc</module>
-				<!-- Docs and Samples -->
-				<module>docs</module>
+				<!-- Samples (docs is in the "docs" profile) -->
 				<module>spring-cloud-gcp-samples</module>
 			</modules>
 		</profile>
@@ -540,9 +539,20 @@
 
 				<module>spring-cloud-generator</module>
 				<module>spring-cloud-spanner-spring-data-r2dbc</module>
-				<!-- Docs and Samples -->
-				<module>docs</module>
+				<!-- Samples (docs is in the "docs" profile) -->
 				<module>spring-cloud-gcp-samples</module>
+			</modules>
+		</profile>
+		<profile>
+			<!--
+				Build the reference docs only with -P docs (see updateDocs.yaml and ghpages.sh).
+				The docs module inherits spring-cloud-build 4.0.5, which imports spring-boot-dependencies 3.0.9
+				and so com.oracle.database.jdbc:ojdbc-bom:21.7.0.0. Airlock rejects that BOM (Oracle FUTC license),
+				so regular and release builds must not load the docs POM.
+			-->
+			<id>docs</id>
+			<modules>
+				<module>docs</module>
 			</modules>
 		</profile>
 		<profile>
