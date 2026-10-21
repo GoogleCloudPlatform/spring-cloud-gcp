@@ -35,11 +35,13 @@ import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubConfiguration;
 import com.google.cloud.spring.pubsub.core.publisher.PublisherCustomizer;
+import com.google.cloud.spring.pubsub.core.subscriber.SubscriberCustomizer;
 import com.google.cloud.spring.pubsub.support.CachingPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
 import com.google.cloud.spring.pubsub.support.PubSubSubscriptionUtils;
 import com.google.cloud.spring.pubsub.support.PublisherFactory;
+import com.google.cloud.spring.pubsub.support.SubscriberFactory;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.List;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -1405,6 +1407,29 @@ class GcpPubSubAutoConfigurationTests {
   }
 
   @Test
+  void createSubscriberWithCustomizer() {
+    contextRunner
+        .withUserConfiguration(CustomizerConfig.class)
+        .run(
+            ctx -> {
+              SubscriberFactory factory =
+                  ctx.getBean("defaultSubscriberFactory", SubscriberFactory.class);
+
+              List<SubscriberCustomizer> customizers =
+                  (List<SubscriberCustomizer>) FieldUtils.readField(factory, "customizers", true);
+              assertThat(customizers).hasSize(3);
+              assertThat(customizers.get(0)).isInstanceOf(NoopCustomizer.class);
+              assertThat(customizers.get(1)).isInstanceOf(NoopCustomizer.class);
+              // DefaultSubscriberFactory applies highest priority last
+              assertThat(customizers.get(2)).isInstanceOf(OpenTelemetryCustomizer.class);
+
+              Subscriber subscriber =
+                  factory.createSubscriber("subscription-name", (message, consumer) -> {});
+              assertThat(subscriber).extracting("enableOpenTelemetryTracing").isEqualTo(true);
+            });
+  }
+
+  @Test
   void flowControlSettings_multipleKeysForSameSubscription_firstOneUsed(CapturedOutput output) {
     contextRunner
         .withPropertyValues(
@@ -1504,16 +1529,27 @@ class GcpPubSubAutoConfigurationTests {
       return new BatchingSettingsCustomizer();
     }
 
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @Bean
+    OpenTelemetryCustomizer openTelemetryCustomizer() {
+      return new OpenTelemetryCustomizer();
+    }
+
     @Bean
     NoopCustomizer noop2() {
       return new NoopCustomizer();
     }
   }
 
-  static class NoopCustomizer implements PublisherCustomizer {
+  static class NoopCustomizer implements PublisherCustomizer, SubscriberCustomizer {
 
     @Override
     public void apply(Publisher.Builder publisherBuilder, String topic) {
+      // do nothing
+    }
+
+    @Override
+    public void apply(Subscriber.Builder subscriberBuilder, String subscriptionName) {
       // do nothing
     }
   }
@@ -1523,6 +1559,14 @@ class GcpPubSubAutoConfigurationTests {
     @Override
     public void apply(Publisher.Builder publisherBuilder, String topic) {
       publisherBuilder.setBatchingSettings(TEST_BATCHING_SETTINGS);
+    }
+  }
+
+  static class OpenTelemetryCustomizer implements SubscriberCustomizer {
+
+    @Override
+    public void apply(Subscriber.Builder subscriberBuilder, String subscriptionName) {
+      subscriberBuilder.setEnableOpenTelemetryTracing(true);
     }
   }
 
