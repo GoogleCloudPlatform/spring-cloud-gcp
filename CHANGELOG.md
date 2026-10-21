@@ -15,6 +15,18 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.3.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.2.4...v8.3.0) (2026-10-21)
+
+
+### Features
+
+* **pubsub:** Add `SubscriberCustomizer` support for Pub/Sub subscribers ([#4668](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4668)) ([ac903ae](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/ac903aefa5d57d5e502fc1808d1c7de37b9936df))
+
+
+### Bug Fixes
+
+* **deps:** build and release with dependencies from Airlock only ([#4674](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4674)) ([fb3a7d2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/fb3a7d25fffde35252b11a1e25e80758e5fe12d3))
+
 ## [8.2.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.2.3...v8.2.4) (2026-10-09)
 
 
