@@ -4,7 +4,10 @@
 
 | Version | Supported          |
 | ------- |--------------------|
-| 5.x   | :heavy_check_mark: |
+| 8.x   | :heavy_check_mark: |
+| 7.x   | :heavy_check_mark: |
+| 6.x   | :heavy_check_mark: |
+| 5.x   | :x:                |
 | 4.x   | :x: |
 | 3.x   | :heavy_check_mark: |
 | 2.x   | :x:                |

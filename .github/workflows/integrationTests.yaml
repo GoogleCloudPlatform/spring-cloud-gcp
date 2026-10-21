@@ -6,7 +6,6 @@ on:
       - main
       - 7.x
       - 6.x
-      - 5.x
       - 3.x
   pull_request:
     types: [opened, synchronize, reopened]
