@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,6 +21,7 @@ import com.google.cloud.spring.data.firestore.Document;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.data.annotation.Version;
 
 /** Example POJO to demonstrate Spring Cloud GCP Spring Data Firestore operations. */
 @Document(collectionName = "users")
@@ -31,6 +32,13 @@ public class User {
   int age;
 
   List<Pet> pets;
+
+  /**
+   * The version field enables optimistic locking.
+   * Spring Data increments this value automatically on every update.
+   */
+  @Version
+  Long version;
 
   User() {
     pets = new ArrayList<>();
@@ -66,6 +74,14 @@ public class User {
     this.pets = pets;
   }
 
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -75,16 +91,24 @@ public class User {
       return false;
     }
     User user = (User) o;
-    return age == user.age && Objects.equals(name, user.name) && Objects.equals(pets, user.pets);
+    return age == user.age
+        && Objects.equals(name, user.name)
+        && Objects.equals(pets, user.pets)
+        && Objects.equals(version, user.version);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, age, pets);
+    return Objects.hash(name, age, pets, version);
   }
 
   @Override
   public String toString() {
-    return "User{" + "name='" + name + '\'' + ", age=" + age + ", pets=" + pets + '}';
+    return "User{"
+        + "name='" + name + '\''
+        + ", age=" + age
+        + ", pets=" + pets
+        + ", version=" + version
+        + '}';
   }
 }
