@@ -47,6 +47,8 @@ import java.util.List;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -305,6 +307,95 @@ class GcpPubSubAutoConfigurationTests {
               .isEqualTo("global-gcp-pubsub-subscriber");
           assertThat(globalSchedulerBean.isDaemon()).isTrue();
         });
+  }
+
+  @Test
+  void threadPoolScheduler_virtualThreadsDisabledByDefault() {
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=7")
+        .run(
+            ctx -> {
+              ThreadPoolTaskScheduler globalScheduler =
+                  (ThreadPoolTaskScheduler)
+                      ctx.getBean("globalPubSubSubscriberThreadPoolScheduler");
+              ThreadPoolTaskScheduler selectiveScheduler =
+                  (ThreadPoolTaskScheduler)
+                      ctx.getBean(
+                          "threadPoolScheduler_projects/fake project/subscriptions/subscription-name");
+
+              assertThat(FieldUtils.readField(globalScheduler, "virtualThreads", true))
+                  .isEqualTo(false);
+              assertThat(FieldUtils.readField(selectiveScheduler, "virtualThreads", true))
+                  .isEqualTo(false);
+              assertThat(
+                      FieldUtils.readField(
+                          ctx.getBean("pubsubPublisherThreadPool"), "virtualThreads", true))
+                  .isEqualTo(false);
+              assertThat(
+                      FieldUtils.readField(
+                          ctx.getBean("pubSubAcknowledgementExecutor"), "virtualThreads", true))
+                  .isEqualTo(false);
+            });
+  }
+
+  @Test
+  @EnabledForJreRange(min = JRE.JAVA_21)
+  void threadPoolScheduler_virtualThreadsEnabled() {
+    contextRunner
+        .withPropertyValues(
+            "spring.threads.virtual.enabled=true",
+            "spring.cloud.gcp.pubsub.subscription.subscription-name.executor-threads=7")
+        .run(
+            ctx -> {
+              ThreadPoolTaskScheduler globalScheduler =
+                  (ThreadPoolTaskScheduler)
+                      ctx.getBean("globalPubSubSubscriberThreadPoolScheduler");
+              ThreadPoolTaskScheduler selectiveScheduler =
+                  (ThreadPoolTaskScheduler)
+                      ctx.getBean(
+                          "threadPoolScheduler_projects/fake project/subscriptions/subscription-name");
+
+              assertThat(FieldUtils.readField(globalScheduler, "virtualThreads", true))
+                  .isEqualTo(true);
+              assertThat(FieldUtils.readField(selectiveScheduler, "virtualThreads", true))
+                  .isEqualTo(true);
+              assertThat(
+                      FieldUtils.readField(
+                          ctx.getBean("pubsubPublisherThreadPool"), "virtualThreads", true))
+                  .isEqualTo(true);
+              assertThat(
+                      FieldUtils.readField(
+                          ctx.getBean("pubSubAcknowledgementExecutor"), "virtualThreads", true))
+                  .isEqualTo(true);
+              assertThat(globalScheduler.getThreadNamePrefix())
+                  .isEqualTo("global-gcp-pubsub-subscriber");
+              assertThat(FieldUtils.readField(selectiveScheduler, "poolSize", true)).isEqualTo(7);
+            });
+  }
+
+  @Test
+  @EnabledForJreRange(max = JRE.JAVA_20)
+  void threadPoolScheduler_virtualThreadsIgnoredBeforeJava21() {
+    contextRunner
+        .withPropertyValues("spring.threads.virtual.enabled=true")
+        .run(
+            ctx -> {
+              ThreadPoolTaskScheduler globalScheduler =
+                  (ThreadPoolTaskScheduler)
+                      ctx.getBean("globalPubSubSubscriberThreadPoolScheduler");
+
+              assertThat(FieldUtils.readField(globalScheduler, "virtualThreads", true))
+                  .isEqualTo(false);
+              assertThat(
+                      FieldUtils.readField(
+                          ctx.getBean("pubsubPublisherThreadPool"), "virtualThreads", true))
+                  .isEqualTo(false);
+              assertThat(
+                      FieldUtils.readField(
+                          ctx.getBean("pubSubAcknowledgementExecutor"), "virtualThreads", true))
+                  .isEqualTo(false);
+            });
   }
 
   @Test
