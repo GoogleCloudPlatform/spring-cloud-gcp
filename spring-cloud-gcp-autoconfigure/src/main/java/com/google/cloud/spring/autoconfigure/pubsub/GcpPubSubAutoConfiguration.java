@@ -75,6 +75,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.thread.Threading;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.GenericApplicationContext;
@@ -167,6 +168,7 @@ public class GcpPubSubAutoConfiguration {
         this.gcpPubSubProperties.getPublisher().getExecutorAwaitTerminationMillis());
     scheduler.setThreadNamePrefix("gcp-pubsub-publisher");
     scheduler.setDaemon(true);
+    scheduler.setVirtualThreads(isVirtualThreadsEnabled());
     return scheduler;
   }
 
@@ -195,6 +197,7 @@ public class GcpPubSubAutoConfiguration {
         this.gcpPubSubProperties.getSubscriber().getMaxAcknowledgementThreads());
     ackExecutor.setThreadNamePrefix("gcp-pubsub-ack-executor");
     ackExecutor.setDaemon(true);
+    ackExecutor.setVirtualThreads(isVirtualThreadsEnabled());
     return ackExecutor;
   }
 
@@ -592,7 +595,18 @@ public class GcpPubSubAutoConfiguration {
     scheduler.setPoolSize(executorThreads);
     scheduler.setThreadNamePrefix(threadName);
     scheduler.setDaemon(true);
+    scheduler.setVirtualThreads(isVirtualThreadsEnabled());
     return scheduler;
+  }
+
+  /**
+   * Whether Pub/Sub thread pools should use virtual threads. True when {@code
+   * spring.threads.virtual.enabled} is set and the JVM supports virtual threads (Java 21+).
+   *
+   * @return whether to use virtual threads
+   */
+  private boolean isVirtualThreadsEnabled() {
+    return Threading.VIRTUAL.isActive(this.applicationContext.getEnvironment());
   }
 
   private void createAndRegisterSelectiveFlowControlSettings(GenericApplicationContext context) {
