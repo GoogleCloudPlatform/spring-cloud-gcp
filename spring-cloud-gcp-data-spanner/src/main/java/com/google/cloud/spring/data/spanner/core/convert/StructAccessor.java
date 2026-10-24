@@ -174,12 +174,17 @@ public class StructAccessor {
   }
 
   <T> List<T> getListJsonValue(String colName, Class<T> colType) {
+    return getListJsonValue(colName, (java.lang.reflect.Type) colType);
+  }
+
+  @SuppressWarnings("unchecked")
+  <T> List<T> getListJsonValue(String colName, java.lang.reflect.Type colType) {
     if (this.struct.getColumnType(colName).getCode() != Code.ARRAY) {
       throw new SpannerDataException(EXCEPTION_COL_NOT_ARRAY + colName);
     }
     List<String> jsonStringList = this.struct.getJsonList(colName);
     List<T> result = new ArrayList<>();
-    jsonStringList.forEach(item -> result.add(gson.fromJson(item, colType)));
+    jsonStringList.forEach(item -> result.add((T) gson.fromJson(item, colType)));
     return result;
   }
 
@@ -224,11 +229,16 @@ public class StructAccessor {
   }
 
   <T> T getSingleJsonValue(String colName, Class<T> colType) {
+    return getSingleJsonValue(colName, (java.lang.reflect.Type) colType);
+  }
+
+  @SuppressWarnings("unchecked")
+  <T> T getSingleJsonValue(String colName, java.lang.reflect.Type colType) {
     if (this.struct.isNull(colName)) {
       return null;
     }
     String jsonString = this.struct.getJson(colName);
-    return gson.fromJson(jsonString, colType);
+    return (T) gson.fromJson(jsonString, colType);
   }
 
   // TODO: change this to private in next major release
