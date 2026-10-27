@@ -77,7 +77,7 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2024.0-Release-Notes[2024.0.x] (Moorgate)
 |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.4-Release-Notes[3.4.x]
 |https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-6.2-Release-Notes[6.2.0 or above]
-|Yes
+|Critical patches only**
 
 |5.x
 |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2023.0-Release-Notes[2023.0.x] (Leyton)
@@ -97,7 +97,7 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes[2021.0.x] (Jubilee)
 |https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.6-Release-Notes[2.6.x], https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.7-Release-Notes[2.7.x]
 |https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-5.x#whats-new-in-version-53[5.3.x]
-|Yes
+|Critical patches only**
 
 |2.x
 |https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2020.0-Release-Notes[2020.0.x] (Ilford)
@@ -105,7 +105,8 @@ This project has dependency and transitive dependencies on Spring Projects. The 
 |https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-5.x#whats-new-in-version-53[5.3.x]
 |No
 |===
-&ast; The Spring Cloud GCP 5.x trace module only supports Spring Boot 3.3.x due to link:https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.3-Release-Notes#brave-and-zipkin[Boot's major version increment] of its Brave and Zipkin dependencies.
+&ast; The Spring Cloud GCP 5.x trace module only supports Spring Boot 3.3.x due to link:https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.3-Release-Notes#brave-and-zipkin[Boot's major version increment] of its Brave and Zipkin dependencies. +
+&ast;&ast; Branches supporting critical patches only will be deprecated after 1 year.
 
 == Spring Initializr
 
