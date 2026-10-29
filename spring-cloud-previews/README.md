@@ -28,7 +28,6 @@ add the following dependency to your `pom.xml`:
 |[java/artifact-registry](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/artifact-registry/README.md)|com.google.cloud:google-cloud-artifact-registry-spring-starter|
 |[java/asset](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/asset/README.md)|com.google.cloud:google-cloud-asset-spring-starter|
 |[java/assured-workloads](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/assured-workloads/README.md)|com.google.cloud:google-cloud-assured-workloads-spring-starter|
-|[java/automl](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/automl/README.md)|com.google.cloud:google-cloud-automl-spring-starter|
 |[java/backupdr](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/backupdr/README.md)|com.google.cloud:google-cloud-backupdr-spring-starter|
 |[java/bigqueryconnection](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/bigqueryconnection/README.md)|com.google.cloud:google-cloud-bigqueryconnection-spring-starter|
 |[java/bigquerydatatransfer](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/bigquerydatatransfer/README.md)|com.google.cloud:google-cloud-bigquerydatatransfer-spring-starter|
@@ -45,7 +44,6 @@ add the following dependency to your `pom.xml`:
 |[java/container](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/container/README.md)|com.google.cloud:google-cloud-container-spring-starter|
 |[java/containeranalysis](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/containeranalysis/README.md)|com.google.cloud:google-cloud-containeranalysis-spring-starter|
 |[java/data-fusion](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/data-fusion/README.md)|com.google.cloud:google-cloud-data-fusion-spring-starter|
-|[java/datacatalog](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/datacatalog/README.md)|com.google.cloud:google-cloud-datacatalog-spring-starter|
 |[java/datalineage](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/datalineage/README.md)|com.google.cloud:google-cloud-datalineage-spring-starter|
 |[java/dataplex](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/dataplex/README.md)|com.google.cloud:google-cloud-dataplex-spring-starter|
 |[java/dataproc-metastore](https://github.com/googleapis/google-cloud-java/blob/v1.61.0/java/dataproc-metastore/README.md)|com.google.cloud:google-cloud-dataproc-metastore-spring-starter|
