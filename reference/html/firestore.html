@@ -301,6 +301,7 @@ public class User {
   public void setAge(Integer age) {
     this.age = age;
   }
+
 }
 </span></code></pre>
 </div>
@@ -398,11 +399,13 @@ public class User {
   public void setHomeAddress(Address homeAddress) {
     this.homeAddress = homeAddress;
   }
+
   public static class Address {
     String streetAddress;
     String country;
 
     public Address() {}
+
   }
 }
 </code></pre>
@@ -521,6 +524,7 @@ You can refer to nested fields using <a href="https://docs.spring.io/spring-data
         .expectNext(0L)
         .verifyComplete();
   }
+
 }
 </code></pre>
 </div>
@@ -632,6 +636,7 @@ public class FirestoreTemplateExample {
                 .block())
         .containsExactly(u2);
   }
+
 }
 </code></pre>
 </div>
@@ -830,6 +835,7 @@ public UserService userService() {
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
   @Autowired UserService userService;
+
 }
 </code></pre>
 </div>
@@ -981,6 +987,7 @@ Firestore firestore;
 
    LOGGER.info("Update time: " + writeResult.getUpdateTime());
  }
+
 
  User readDocumentToObject() throws ExecutionException, InterruptedException {
    ApiFuture&lt;DocumentSnapshot&gt; documentFuture = this.firestore.document("users/joe").get();

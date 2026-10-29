@@ -310,7 +310,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>7.5.0</strong></p>
+<p><strong>8.3.1</strong></p>
 </div>
 </div>
 </div>
@@ -389,6 +389,13 @@
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2025.1-Release-Notes">2025.1.x</a> (Oakwood)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Release-Notes">4.0.x</a>, <a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.1-Release-Notes">4.1.x</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-7.0-Release-Notes">7.0.0+</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">7.x</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2025.0-Release-Notes">2025.0.x</a> (Moorgate)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.5-Release-Notes">3.5.x</a></p></td>
@@ -400,14 +407,14 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2024.0-Release-Notes">2024.0.x</a> (Moorgate)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.4-Release-Notes">3.4.x</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-6.2-Release-Notes">6.2.0+</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Critical patches only**</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">5.x</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2023.0-Release-Notes">2023.0.x</a> (Leyton)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes">3.2.x</a>*, <a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.3-Release-Notes">3.3.x</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-6.x#whats-new-in-version-61">6.1.x</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4.x</p></td>
@@ -421,7 +428,7 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2021.0-Release-Notes">2021.0.x</a> (Jubilee)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2.6.x, 2.7.x</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">5.3.x</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Critical patches only**</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2.x</p></td>
@@ -432,12 +439,9 @@
 </tr>
 </tbody>
 </table>
-<div class="ulist">
-<ul>
-<li>
-<p>Except trace</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>&ast; Except trace<br>
+&ast;&ast; Branches supporting critical patches only will be deprecated after 1 year.</p>
 </div>
 </div>
 <div class="sect2">
@@ -475,7 +479,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
        &lt;dependency&gt;
            &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
            &lt;artifactId&gt;spring-cloud-gcp-dependencies&lt;/artifactId&gt;
-           &lt;version&gt;7.5.0&lt;/version&gt;
+           &lt;version&gt;8.3.1&lt;/version&gt;
            &lt;type&gt;pom&lt;/type&gt;
            &lt;scope&gt;import&lt;/scope&gt;
        &lt;/dependency&gt;
@@ -489,7 +493,7 @@ Instead, the version of the BOM you’re using determines the versions of the us
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>dependencies {
-    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:7.5.0")
+    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:8.3.1")
 }</code></pre>
 </div>
 </div>
@@ -3035,8 +3039,7 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; topics =
-    pubSubAdmin.listTopics().stream().map(Topic::getName).toList();
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; topics = pubSubAdmin.listTopics().stream().map(Topic::getName).toList();
 </code></pre>
 </div>
 </div>
@@ -3118,9 +3121,7 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; subscriptions =
-    pubSubAdmin.listSubscriptions().stream()
-        .map(Subscription::getName)
-        .toList();
+    pubSubAdmin.listSubscriptions().stream().map(Subscription::getName).toList();
 </code></pre>
 </div>
 </div>
@@ -9731,6 +9732,7 @@ public class User {
   public void setAge(Integer age) {
     this.age = age;
   }
+
 }
 </span></code></pre>
 </div>
@@ -9828,11 +9830,13 @@ public class User {
   public void setHomeAddress(Address homeAddress) {
     this.homeAddress = homeAddress;
   }
+
   public static class Address {
     String streetAddress;
     String country;
 
     public Address() {}
+
   }
 }
 </code></pre>
@@ -9951,6 +9955,7 @@ You can refer to nested fields using <a href="https://docs.spring.io/spring-data
         .expectNext(0L)
         .verifyComplete();
   }
+
 }
 </code></pre>
 </div>
@@ -10062,6 +10067,7 @@ public class FirestoreTemplateExample {
                 .block())
         .containsExactly(u2);
   }
+
 }
 </code></pre>
 </div>
@@ -10260,6 +10266,7 @@ public UserService userService() {
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class MyApplication {
   @Autowired UserService userService;
+
 }
 </code></pre>
 </div>
@@ -10411,6 +10418,7 @@ Firestore firestore;
 
    LOGGER.info("Update time: " + writeResult.getUpdateTime());
  }
+
 
  User readDocumentToObject() throws ExecutionException, InterruptedException {
    ApiFuture&lt;DocumentSnapshot&gt; documentFuture = this.firestore.document("users/joe").get();
@@ -11999,7 +12007,7 @@ It enables the use of the Google Parameter Manager as a source for Spring Boot c
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-parameter&lt;/artifactId&gt;
-    &lt;version&gt;7.5.0&lt;/version&gt;
+    &lt;version&gt;8.3.1&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -12011,7 +12019,7 @@ It enables the use of the Google Parameter Manager as a source for Spring Boot c
 <pre class="highlight"><code>dependencies {
     compile group: 'org.springframework.cloud',
     name: 'spring-cloud-gcp-starter-parameter',
-    version: '7.5.0'
+    version: '8.3.1'
 }</code></pre>
 </div>
 </div>
@@ -12268,7 +12276,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.google.cloud&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-gcp-starter-config&lt;/artifactId&gt;
-    &lt;version&gt;7.5.0&lt;/version&gt;
+    &lt;version&gt;8.3.1&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -12280,7 +12288,7 @@ It enables the use of the Google Runtime Configuration API as a source for Sprin
 <pre class="highlight"><code>dependencies {
     compile group: 'org.springframework.cloud',
     name: 'spring-cloud-gcp-starter-config',
-    version: '7.5.0'
+    version: '8.3.1'
 }</code></pre>
 </div>
 </div>
