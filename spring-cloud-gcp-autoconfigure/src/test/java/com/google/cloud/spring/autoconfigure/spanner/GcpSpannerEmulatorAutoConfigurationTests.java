@@ -18,7 +18,6 @@ package com.google.cloud.spring.autoconfigure.spanner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.retrying.RetrySettings;
@@ -123,9 +122,7 @@ class GcpSpannerEmulatorAutoConfigurationTests {
             });
   }
 
-  /**
-   * Spring Boot config for tests.
-   */
+  /** Spring Boot config for tests. */
   @Configuration
   static class TestConfiguration {
 
@@ -135,20 +132,24 @@ class GcpSpannerEmulatorAutoConfigurationTests {
     }
 
     /**
-     * Mock bean for Spanner client.
+     * Provides a mock Spanner client to prevent eager socket connection attempts to offline
+     * emulator hosts during context startup.
      *
-     * <p>google-cloud-spanner 6.121.0+ actively checks emulator connectivity during
-     * GapicSpannerRpc constructor initialization when the emulator is enabled. Because these
-     * unit tests verify SpannerOptions and CredentialsProvider auto-configuration without a
-     * running emulator, providing a mock Spanner bean avoids eager connection attempts during
-     * Spring context startup.
+     * @return a mock Spanner client instance
      */
     @Bean
     public Spanner spanner() {
-      Spanner spanner = mock(Spanner.class);
-      DatabaseAdminClient dbAdminClient = mock(DatabaseAdminClient.class);
-      when(spanner.getDatabaseAdminClient()).thenReturn(dbAdminClient);
-      return spanner;
+      return mock(Spanner.class);
+    }
+
+    /**
+     * Provides a mock DatabaseAdminClient to satisfy dependencies of SpannerDatabaseAdminTemplate.
+     *
+     * @return a mock DatabaseAdminClient instance
+     */
+    @Bean
+    public DatabaseAdminClient databaseAdminClient() {
+      return mock(DatabaseAdminClient.class);
     }
   }
 }
