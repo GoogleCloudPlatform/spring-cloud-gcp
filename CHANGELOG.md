@@ -15,6 +15,18 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.3.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.3.0...v8.3.1) (2026-10-29)
+
+
+### Bug Fixes
+
+* **deps:** update google cloud dependencies ([#4652](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4652)) ([318d911](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/318d911cb545498ecb125fb1a3a17e71c2719684))
+
+
+### Documentation
+
+* update README for release 8.3.0 and 7.5.0 ([#4685](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4685)) ([b906e66](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/b906e6601b1bada86b55506c94ae90b0ffedd095))
+
 ## [8.3.0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.2.4...v8.3.0) (2026-10-21)
 
 
