@@ -1311,7 +1311,8 @@ Generally when referring to topics and subscriptions, you can either use the sho
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; topics = pubSubAdmin.listTopics().stream().map(Topic::getName).toList();
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; topics =
+    pubSubAdmin.listTopics().stream().map(Topic::getName).toList();
 </code></pre>
 </div>
 </div>
@@ -1393,7 +1394,9 @@ You can also pass a <code>Subscription.Builder</code> for full control over any 
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; subscriptions =
-    pubSubAdmin.listSubscriptions().stream().map(Subscription::getName).toList();
+    pubSubAdmin.listSubscriptions().stream()
+        .map(Subscription::getName)
+        .toList();
 </code></pre>
 </div>
 </div>
