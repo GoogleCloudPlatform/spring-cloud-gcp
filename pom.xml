@@ -798,6 +798,7 @@
 							</execution>
 							<execution>
 								<id>aggregate</id>
+								<inherited>false</inherited>
 								<goals>
 									<goal>aggregate-no-fork</goal>
 								</goals>
