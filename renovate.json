@@ -4,9 +4,6 @@
 	],
 	"prHourlyLimit": 10,
 	"prConcurrentLimit": 20,
-	"ignorePaths": [
-		".kokoro/requirements.txt"
-	],
 	"packageRules": [
 		{
 			"matchPackageNames": [
