@@ -14,6 +14,13 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [6.5.12](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.5.11...v6.5.12) (2026-10-30)
+
+
+### Bug Fixes
+
+* prevent javadoc aggregate execution from running on sub-modules ([#4624](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4624)) ([#4698](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4698)) ([38bad77](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/38bad7779a1765f089c5652ff2c39bff8ab23a5e))
+
 ## [6.5.11](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v6.5.10...v6.5.11) (2026-10-29)
 
 
