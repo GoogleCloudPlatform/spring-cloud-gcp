@@ -130,6 +130,21 @@ This can be customized, by registering a `SelectiveSchedulerThreadNameProvider` 
 NOTE: By default, subscription-specific `maxInboundMetadataSize` is set to 4MB.
 This can be customized, by registering a `TransportChannelProvider` bean.
 
+===== Virtual Threads
+
+When running on Java 21 or later with `spring.threads.virtual.enabled=true`, the thread pools created by autoconfiguration use https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html[virtual threads] instead of platform threads.
+This applies to:
+
+* the global subscriber thread pool (`globalPubSubSubscriberThreadPoolScheduler`) and any subscription-specific thread pools,
+* the publisher thread pool (`pubsubPublisherThreadPool`),
+* the acknowledgement executor (`pubSubAcknowledgementExecutor`).
+
+Pool sizes and thread name prefixes are unchanged: the configured number of threads are created as virtual threads.
+On Java versions before 21 the property is ignored and platform threads are used.
+
+NOTE: Thread pools you provide as custom beans (for example, `pubsubPublisherThreadPool` or `subscriberExecutorProvider`) are left as they are.
+To use virtual threads with them, configure the custom bean yourself.
+
 ==== GRPC Connection Settings
 
 The Pub/Sub API uses the https://cloud.google.com/pubsub/docs/reference/service_apis_overview#grpc_api[GRPC] protocol to send API requests to the Pub/Sub service.
