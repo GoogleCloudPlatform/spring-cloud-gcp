@@ -53,4 +53,12 @@ public @interface Query {
    *     method is executed as a DML query.
    */
   boolean dmlStatement() default false;
+
+  /**
+   * Indicates if the query should acquire exclusive locks on the selected rows. This option is
+   * valid only for select queries executed in a read-write transaction.
+   *
+   * @return {@code true} if {@code FOR UPDATE} should be applied.
+   */
+  boolean forUpdate() default false;
 }

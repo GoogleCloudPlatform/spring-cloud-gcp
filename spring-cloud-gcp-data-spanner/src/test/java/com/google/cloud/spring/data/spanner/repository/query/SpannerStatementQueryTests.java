@@ -33,6 +33,7 @@ import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerEntityProcessor;
 import com.google.cloud.spring.data.spanner.core.convert.SpannerWriteConverter;
 import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
@@ -294,6 +295,52 @@ class SpannerStatementQueryTests {
   }
 
   @Test
+  void forUpdateDerivedQueryTest() throws NoSuchMethodException {
+    when(this.queryMethod.getName()).thenReturn("findById");
+    when(this.queryMethod.isForUpdate()).thenReturn(true);
+    Method method = QueryHolder.class.getMethod("repositoryMethod10", String.class);
+    when(this.queryMethod.getQueryMethod()).thenReturn(method);
+    doReturn(new DefaultParameters(ParametersSource.of(method)))
+        .when(this.queryMethod)
+        .getParameters();
+    this.partTreeSpannerQuery = spy(createQuery());
+
+    when(this.spannerTemplate.query((Class) any(), any(), any()))
+        .thenAnswer(
+            invocation -> {
+              Statement statement = invocation.getArgument(1);
+              assertThat(statement.getSql())
+                  .isEqualTo(
+                      "SELECT shares, trader_id, ticker, price, action, id, value, uuid "
+                          + "FROM trades WHERE ( id=@tag0 ) FOR UPDATE");
+              return Collections.emptyList();
+            });
+
+    doReturn(Object.class).when(this.partTreeSpannerQuery).getReturnedSimpleConvertableItemType();
+    doReturn(null).when(this.partTreeSpannerQuery).convertToSimpleReturnType(any(), any());
+
+    this.partTreeSpannerQuery.execute(new Object[] {"id"});
+  }
+
+  @Test
+  void forUpdateLocksEagerInterleavedChildrenTest() {
+    SpannerMappingContext mappingContext = new SpannerMappingContext();
+    Statement statement =
+        SpannerStatementQueryExecutor.buildQuery(
+            com.google.cloud.spanner.KeySet.singleKey(com.google.cloud.spanner.Key.of("parent")),
+            mappingContext.getPersistentEntityOrFail(Parent.class),
+            new SpannerWriteConverter(),
+            mappingContext,
+            null,
+            null,
+            true);
+
+    assertThat(statement.getSql())
+        .contains("FROM children WHERE children.id = parents.id FOR UPDATE")
+        .endsWith("WHERE (id = @tag0) FOR UPDATE");
+  }
+
+  @Test
   void uuidUntypedBindingTest() throws NoSuchMethodException {
     when(this.queryMethod.getName()).thenReturn("findByUuid");
     this.partTreeSpannerQuery = spy(createQuery());
@@ -552,6 +599,22 @@ class SpannerStatementQueryTests {
     java.util.UUID uuid;
   }
 
+  @Table(name = "parents")
+  private static class Parent {
+    @PrimaryKey String id;
+
+    @Interleaved List<Child> children;
+  }
+
+  @Table(name = "children")
+  private static class Child {
+    @PrimaryKey(keyOrder = 1)
+    String id;
+
+    @PrimaryKey(keyOrder = 2)
+    String childId;
+  }
+
   // The methods in this class are used to emulate repository methods
   private static class QueryHolder {
     public long repositoryMethod1(
@@ -615,6 +678,10 @@ class SpannerStatementQueryTests {
     }
 
     public long repositoryMethod9(List<java.util.UUID> tag0) {
+      return 0;
+    }
+
+    public long repositoryMethod10(String tag0) {
       return 0;
     }
   }

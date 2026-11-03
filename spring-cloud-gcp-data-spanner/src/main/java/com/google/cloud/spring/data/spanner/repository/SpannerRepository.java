@@ -17,6 +17,7 @@
 package com.google.cloud.spring.data.spanner.repository;
 
 import com.google.cloud.spring.data.spanner.core.SpannerOperations;
+import java.util.Optional;
 import java.util.function.Function;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -58,4 +59,13 @@ public interface SpannerRepository<T, I>
    * @return the final result of the transaction.
    */
   <A> A performReadOnlyTransaction(Function<SpannerRepository<T, I>, A> operations);
+
+  /**
+   * Retrieves an entity by its id and acquires exclusive locks on the selected row and its
+   * interleaved children. This method must be called in a read-write transaction.
+   *
+   * @param id the entity id
+   * @return the entity, or empty if none was found
+   */
+  Optional<T> findByIdForUpdate(I id);
 }
