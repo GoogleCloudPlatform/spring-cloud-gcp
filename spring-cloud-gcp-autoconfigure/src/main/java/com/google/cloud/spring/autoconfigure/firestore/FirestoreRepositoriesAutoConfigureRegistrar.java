@@ -20,8 +20,6 @@ import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFi
 import com.google.cloud.spring.data.firestore.repository.config.FirestoreRepositoryConfigurationExtension;
 import java.lang.annotation.Annotation;
 import org.springframework.boot.autoconfigure.data.AbstractRepositoryConfigurationSourceSupport;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.data.repository.config.RepositoryConfigurationExtension;
 
 /**
@@ -47,10 +45,6 @@ public class FirestoreRepositoriesAutoConfigureRegistrar
     return new FirestoreRepositoryConfigurationExtension();
   }
 
-  @EnableReactiveFirestoreRepositories(
-      excludeFilters =
-          @ComponentScan.Filter(
-              type = FilterType.REGEX,
-              pattern = ".*GcpFirestoreEmulatorAutoConfiguration.*"))
+  @EnableReactiveFirestoreRepositories
   private static class EnableFirestoreRepositoriesConfiguration {}
 }
