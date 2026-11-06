@@ -23,7 +23,7 @@ fi
 cd ${SPRING_GENERATOR_DIR}
 # start file, always override is present
 filename=${SPRING_GENERATOR_DIR}/scripts/resources/library_list.txt
-echo "# library_name, googleapis_location, coordinates_version, monorepo_folder" > "$filename"
+echo "# library_name, googleapis_location, coordinates_version, monorepo_folder, additional_protos" > "$filename"
 
 # loop through configs for the monorepo (google-cloud-java)
 # Note that this logic will not work for non-cloud APIs
@@ -93,7 +93,9 @@ for name in $library_names; do
     continue
   fi
 
-  echo "$unique_module_name, $proto_paths_latest, $distribution_name, $monorepo_folder" >> $filename
+  additional_protos=$(yq eval '.libraries[] | select(.name == "'$name'") | .apis[] | select(.path == "'$proto_paths_latest'") | .java.additional_protos[].path' ./google-cloud-java/librarian.yaml | paste -sd ";" -)
+
+  echo "$unique_module_name, $proto_paths_latest, $distribution_name, $monorepo_folder, $additional_protos" >> $filename
   count=$((count+1))
 done
 echo "Total in-scope client libraries: $count"
