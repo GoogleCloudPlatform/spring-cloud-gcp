@@ -75,9 +75,21 @@ public class SecretManagerConfigDataLocationResolver
   public List<SecretManagerConfigDataResource> resolve(
       ConfigDataLocationResolverContext context, ConfigDataLocation location)
       throws ConfigDataLocationNotFoundException, ConfigDataResourceNotFoundException {
-    registerSecretManagerBeans(context);
+    boolean enabled = isSecretManagerEnabled(context);
+    // When disabled, skip creating credentials and clients, but still return the resource so that
+    // a non-optional import does not fail; the loader then returns empty config data.
+    if (enabled) {
+      registerSecretManagerBeans(context);
+    }
 
-    return Collections.singletonList(new SecretManagerConfigDataResource(location));
+    return Collections.singletonList(new SecretManagerConfigDataResource(location, enabled));
+  }
+
+  private static boolean isSecretManagerEnabled(ConfigDataLocationResolverContext context) {
+    return context
+        .getBinder()
+        .bind(GcpSecretManagerProperties.PREFIX + ".enabled", Boolean.class)
+        .orElse(true);
   }
 
   private static void registerSecretManagerBeans(ConfigDataLocationResolverContext context) {

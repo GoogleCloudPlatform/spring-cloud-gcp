@@ -34,7 +34,18 @@ class SecretManagerConfigDataResourceUnitTests {
   @Test
   void toStringTest() {
 
-    String expectedString = "SecretManagerConfigDataResource{" + "location=" + location + "}";
+    String expectedString =
+        "SecretManagerConfigDataResource{" + "location=" + location + ", enabled=true}";
     assertThat(resource).hasToString(expectedString);
+  }
+
+  @Test
+  void resourceIsEnabledByDefault() {
+    assertThat(resource.isEnabled()).isTrue();
+  }
+
+  @Test
+  void resourcesWithDifferentEnabledFlagShouldNotBeEqual() {
+    assertThat(resource).isNotEqualTo(new SecretManagerConfigDataResource(location, false));
   }
 }

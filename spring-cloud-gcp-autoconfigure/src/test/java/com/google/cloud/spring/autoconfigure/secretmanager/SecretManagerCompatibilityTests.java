@@ -11,9 +11,11 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
+import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import com.google.protobuf.ByteString;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -132,6 +134,25 @@ class SecretManagerCompatibilityTests {
       assertThat(environment.getProperty(prefix + "fake-secret")).isNull();
     }
   }
+
+  /**
+   * Users who disable Secret Manager should be able to keep a non-optional `spring.config.import`
+   * without credentials, and no Secret Manager beans should be created.
+   */
+  @Test
+  void testConfigurationWhenSecretManagerIsDisabled() {
+    application.properties(
+        "spring.cloud.gcp.secretmanager.enabled=false",
+        "spring.config.import=sm@",
+        "my.value=${sm@my-secret:fallback}");
+    try (ConfigurableApplicationContext applicationContext = application.run()) {
+      assertThat(applicationContext.getEnvironment().getProperty("my.value")).isEqualTo("fallback");
+      assertThat(applicationContext.getBeanFactory().getSingletonNames())
+          .noneMatch(name -> name.startsWith("gcp-secretmanager-config-data-"));
+      assertThat(applicationContext.getBeanNamesForType(SecretManagerTemplate.class)).isEmpty();
+    }
+  }
+
   @ParameterizedTest
   @MethodSource("prefixes")
   void testConfigurationPropertiesBinding(String prefix, String projectIdPropertyName) {

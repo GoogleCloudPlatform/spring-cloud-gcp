@@ -24,8 +24,19 @@ public class SecretManagerConfigDataResource extends ConfigDataResource {
 
   private final ConfigDataLocation location;
 
+  private final boolean enabled;
+
   public SecretManagerConfigDataResource(ConfigDataLocation location) {
+    this(location, true);
+  }
+
+  public SecretManagerConfigDataResource(ConfigDataLocation location, boolean enabled) {
     this.location = location;
+    this.enabled = enabled;
+  }
+
+  public boolean isEnabled() {
+    return enabled;
   }
 
   @Override
@@ -37,16 +48,23 @@ public class SecretManagerConfigDataResource extends ConfigDataResource {
       return false;
     }
     SecretManagerConfigDataResource that = (SecretManagerConfigDataResource) o;
-    return location.equals(that.location);
+    // The flag is part of the identity so that an import resolved again with a different value
+    // is loaded again instead of being treated as already loaded.
+    return enabled == that.enabled && location.equals(that.location);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(location);
+    return Objects.hash(location, enabled);
   }
 
   @Override
   public String toString() {
-    return "SecretManagerConfigDataResource{" + "location=" + location + '}';
+    return "SecretManagerConfigDataResource{"
+        + "location="
+        + location
+        + ", enabled="
+        + enabled
+        + '}';
   }
 }
