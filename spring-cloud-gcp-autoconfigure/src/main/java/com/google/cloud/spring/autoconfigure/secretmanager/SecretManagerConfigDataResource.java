@@ -19,6 +19,7 @@ package com.google.cloud.spring.autoconfigure.secretmanager;
 import java.util.Objects;
 import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataResource;
+import org.springframework.util.Assert;
 
 public class SecretManagerConfigDataResource extends ConfigDataResource {
 
@@ -31,6 +32,7 @@ public class SecretManagerConfigDataResource extends ConfigDataResource {
   }
 
   public SecretManagerConfigDataResource(ConfigDataLocation location, boolean enabled) {
+    Assert.notNull(location, "location must not be null");
     this.location = location;
     this.enabled = enabled;
   }
