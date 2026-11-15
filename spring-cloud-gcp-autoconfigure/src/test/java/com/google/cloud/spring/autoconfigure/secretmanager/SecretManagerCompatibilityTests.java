@@ -15,10 +15,10 @@ import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import com.google.protobuf.ByteString;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.bootstrap.BootstrapRegistry.InstanceSupplier;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -139,11 +139,12 @@ class SecretManagerCompatibilityTests {
    * Users who disable Secret Manager should be able to keep a non-optional `spring.config.import`
    * without credentials, and no Secret Manager beans should be created.
    */
-  @Test
-  void testConfigurationWhenSecretManagerIsDisabled() {
+  @ParameterizedTest
+  @ValueSource(strings = {"sm://", "sm@"})
+  void testConfigurationWhenSecretManagerIsDisabled(String prefix) {
     application.properties(
         "spring.cloud.gcp.secretmanager.enabled=false",
-        "spring.config.import=sm@",
+        "spring.config.import=" + prefix,
         "my.value=${sm@my-secret:fallback}");
     try (ConfigurableApplicationContext applicationContext = application.run()) {
       assertThat(applicationContext.getEnvironment().getProperty("my.value")).isEqualTo("fallback");

@@ -16,7 +16,6 @@ import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -158,13 +157,6 @@ class SecretManagerConfigDataLocationResolverUnitTests {
 
     @BeforeEach
     void setUp() {
-      // Preset the static client and factory so that, if the resolver ever registers beans again,
-      // the test fails on the assertions below rather than on missing Application Default
-      // Credentials.
-      SecretManagerConfigDataLocationResolver.setSecretManagerServiceClient(
-          mock(SecretManagerServiceClient.class));
-      SecretManagerConfigDataLocationResolver.setSecretManagerServiceClientFactory(
-          mock(SecretManagerServiceClientFactory.class));
       when(context.getBinder())
           .thenReturn(
               new Binder(
@@ -173,16 +165,10 @@ class SecretManagerConfigDataLocationResolverUnitTests {
       when(context.getBootstrapContext()).thenReturn(emptyBootstrapContext);
     }
 
-    @AfterEach
-    void tearDown() {
-      SecretManagerConfigDataLocationResolver.setSecretManagerServiceClient(null);
-      SecretManagerConfigDataLocationResolver.setSecretManagerServiceClientFactory(null);
-    }
-
     @ParameterizedTest
     @MethodSource(
         "com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolverUnitTests#prefixes")
-    void resolveDoesNotRegisterSecretManagerBeansWhenDisabled(String prefix) {
+    void resolveSkipsBeanRegistration(String prefix) {
       List<SecretManagerConfigDataResource> resources =
           resolver.resolve(context, ConfigDataLocation.of(prefix));
 
