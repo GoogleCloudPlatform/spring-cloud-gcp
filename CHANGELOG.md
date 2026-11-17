@@ -15,6 +15,13 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.3.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.3.1...v8.3.2) (2026-11-17)
+
+
+### Documentation
+
+* point README issue link to .github/ISSUE_TEMPLATE ([#4709](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4709)) ([353dd35](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/353dd3511018759ecce41cf419247f6fccc34552))
+
 ## [8.3.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.3.0...v8.3.1) (2026-10-29)
 
 
