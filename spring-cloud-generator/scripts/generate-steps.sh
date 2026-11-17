@@ -97,8 +97,10 @@ function modify_workspace_file(){
 # For individual library, set up bazel rules
 #
 # $1 - googleapis folder (e.g. google/cloud/accessapproval/v1)
+# $2 - semicolon-separated additional_protos from librarian.yaml (optional)
 function prepare_bazel_build(){
   googleapis_folder=$1
+  additional_protos=$2
 
   # If googleapis folder does not exist, exit
   if [ ! -d "$(pwd)/${googleapis_folder}" ]
@@ -112,15 +114,17 @@ function prepare_bazel_build(){
   SPRING_RULE_NAME="    \\\"java_gapic_spring_library\\\","
   perl -0777 -pi -e "s/(load\((.*?)\"java_gapic_library\",)/\$1\n${SPRING_RULE_NAME}/s" ${googleapis_folder}/BUILD.bazel
 
-  modify_build_file ${googleapis_folder}/BUILD.bazel
+  modify_build_file ${googleapis_folder}/BUILD.bazel "$additional_protos"
 }
 
 # Parameterized function that handles modifications to the BUILD.bazel file,
 # Used by both generate.sh and generate-showcase.sh
 #
 # $1 - path to BUILD.bazel
+# $2 - semicolon-separated additional_protos from librarian.yaml (optional)
 function modify_build_file(){
   path_to_build_file=$1
+  additional_protos=$2
 
   # Add java_gapic_spring_library rule, with attrs copied from corresponding java_gapic_library rule
   GAPIC_RULE_NAME="$(buildozer 'print name' ${path_to_build_file}:%java_gapic_library)"
@@ -140,6 +144,17 @@ function modify_build_file(){
               echo "attribute $attribute not found in java_gapic_library rule, skipping"
       fi
     done
+
+  # Align proto_library_with_info deps with librarian.yaml additional_protos
+  PROTO_WITH_INFO_NAME="$(buildozer 'print name' ${path_to_build_file}:%proto_library_with_info 2>/dev/null || true)"
+  if [[ -n "$PROTO_WITH_INFO_NAME" ]]; then
+    if [[ "$additional_protos" != *"google/iam/v1/iam_policy.proto"* ]]; then
+      buildozer 'remove deps //google/iam/v1:iam_policy_proto' "${path_to_build_file}:${PROTO_WITH_INFO_NAME}" 2>/dev/null || true
+    fi
+    if [[ "$additional_protos" != *"google/cloud/location/locations.proto"* ]]; then
+      buildozer 'remove deps //google/cloud/location:location_proto' "${path_to_build_file}:${PROTO_WITH_INFO_NAME}" 2>/dev/null || true
+    fi
+  fi
 }
 
 # Fetch all `*java_gapic_spring` build rules and build them at once
