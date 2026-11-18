@@ -32,6 +32,10 @@ public class SecretManagerConfigDataLoader
   @Override
   public ConfigData load(ConfigDataLoaderContext context, SecretManagerConfigDataResource resource)
       throws IOException, ConfigDataResourceNotFoundException {
+    if (!resource.isEnabled()) {
+      return ConfigData.EMPTY;
+    }
+
     SecretManagerTemplate secretManagerTemplate =
         context.getBootstrapContext().get(SecretManagerTemplate.class);
 

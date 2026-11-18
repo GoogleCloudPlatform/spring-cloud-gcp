@@ -1,6 +1,7 @@
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.config.ConfigDataLocation;
@@ -34,7 +35,25 @@ class SecretManagerConfigDataResourceUnitTests {
   @Test
   void toStringTest() {
 
-    String expectedString = "SecretManagerConfigDataResource{" + "location=" + location + "}";
+    String expectedString =
+        "SecretManagerConfigDataResource{" + "location=" + location + ", enabled=true}";
     assertThat(resource).hasToString(expectedString);
+  }
+
+  @Test
+  void resourceIsEnabledByDefault() {
+    assertThat(resource.isEnabled()).isTrue();
+  }
+
+  @Test
+  void resourcesWithDifferentEnabledFlagShouldNotBeEqual() {
+    assertThat(resource).isNotEqualTo(new SecretManagerConfigDataResource(location, false));
+  }
+
+  @Test
+  void resourceRejectsNullLocation() {
+    assertThatThrownBy(() -> new SecretManagerConfigDataResource(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("location must not be null");
   }
 }
