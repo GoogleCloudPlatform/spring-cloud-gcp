@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.1.0</version>
+		<version>4.2.0-RC2</version>
 		<relativePath/>
 	</parent>
 
@@ -19,6 +19,7 @@
 
 	<properties>
 		<main.basedir>${basedir}/..</main.basedir>
+		<spring-cloud-dependencies.version>2026.0.0-RC2</spring-cloud-dependencies.version>
 
 		<!-- Checkstyle versions. Keep in sync with ../pom.xml -->
 		<maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
