@@ -56,9 +56,11 @@ jobs:
           if [[ ${{ github.event.inputs.forked_repo }} != "none" ]]; then
             git fetch https://github.com/${{ github.event.inputs.forked_repo }}.git ${{ github.event.inputs.branch_name }}
             git checkout FETCH_HEAD -- spring-cloud-gcp-dependencies/pom.xml
+            git checkout FETCH_HEAD -- spring-cloud-generator/pom.xml || true
           else 
             git fetch origin ${{ github.event.inputs.branch_name }}
             git checkout origin/${{ github.event.inputs.branch_name }} -- spring-cloud-gcp-dependencies/pom.xml
+            git checkout origin/${{ github.event.inputs.branch_name }} -- spring-cloud-generator/pom.xml || true
           fi
           echo "LIBRARIES_BOM_VERSION=$(xmllint --xpath "string(//*[local-name()='gcp-libraries-bom.version'])" spring-cloud-gcp-dependencies/pom.xml)" >> $GITHUB_OUTPUT
       - name: Setup Java 17
@@ -66,7 +68,9 @@ jobs:
         with:
           java-version: 17
       - run: bazelisk version
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
       - name: Install buildozer
         run: |
           go install github.com/bazelbuild/buildtools/buildozer@latest
