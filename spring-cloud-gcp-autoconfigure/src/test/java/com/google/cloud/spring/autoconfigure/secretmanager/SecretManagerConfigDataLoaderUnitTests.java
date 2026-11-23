@@ -1,16 +1,21 @@
 package com.google.cloud.spring.autoconfigure.secretmanager;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import com.google.cloud.spring.secretmanager.SecretManagerPropertySource;
 import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.bootstrap.ConfigurableBootstrapContext;
+import org.springframework.boot.context.config.ConfigData;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
 import org.springframework.boot.context.config.ConfigDataLocation;
 
@@ -38,5 +43,29 @@ class SecretManagerConfigDataLoaderUnitTests {
     SecretManagerConfigDataResource resource =
         new SecretManagerConfigDataResource(ConfigDataLocation.of("fake"));
     assertThatCode(() -> loader.load(loaderContext, resource)).doesNotThrowAnyException();
+  }
+
+  @Test
+  void loadReturnsEmptyConfigDataWhenDisabled() throws Exception {
+    SecretManagerConfigDataResource resource =
+        new SecretManagerConfigDataResource(ConfigDataLocation.of("sm@"), false);
+
+    assertThat(loader.load(loaderContext, resource)).isSameAs(ConfigData.EMPTY);
+    verifyNoInteractions(loaderContext);
+  }
+
+  @Test
+  void loadReturnsSecretManagerPropertySourceWhenEnabled() throws Exception {
+    when(loaderContext.getBootstrapContext()).thenReturn(bootstrapContext);
+    when(bootstrapContext.get(GcpProjectIdProvider.class)).thenReturn(idProvider);
+    when(bootstrapContext.get(SecretManagerTemplate.class)).thenReturn(template);
+    SecretManagerConfigDataResource resource =
+        new SecretManagerConfigDataResource(ConfigDataLocation.of("sm@"), true);
+
+    ConfigData configData = loader.load(loaderContext, resource);
+
+    assertThat(configData.getPropertySources())
+        .singleElement()
+        .isInstanceOf(SecretManagerPropertySource.class);
   }
 }

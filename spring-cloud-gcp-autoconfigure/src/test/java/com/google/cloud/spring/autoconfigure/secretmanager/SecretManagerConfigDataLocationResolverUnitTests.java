@@ -12,7 +12,9 @@ import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
+import com.google.cloud.spring.secretmanager.SecretManagerTemplate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -26,6 +28,7 @@ import org.springframework.boot.bootstrap.DefaultBootstrapContext;
 import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
 import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /** Unit tests for {@link SecretManagerConfigDataLocationResolver}. */
@@ -144,6 +147,38 @@ class SecretManagerConfigDataLocationResolverUnitTests {
 
       when(context.getBinder()).thenReturn(new Binder());
       when(context.getBootstrapContext()).thenReturn(defaultBootstrapContext);
+    }
+  }
+
+  @Nested
+  class WhenSecretManagerDisabled {
+
+    private final DefaultBootstrapContext emptyBootstrapContext = new DefaultBootstrapContext();
+
+    @BeforeEach
+    void setUp() {
+      when(context.getBinder())
+          .thenReturn(
+              new Binder(
+                  new MapConfigurationPropertySource(
+                      Map.of("spring.cloud.gcp.secretmanager.enabled", "false"))));
+      when(context.getBootstrapContext()).thenReturn(emptyBootstrapContext);
+    }
+
+    @ParameterizedTest
+    @MethodSource(
+        "com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerConfigDataLocationResolverUnitTests#prefixes")
+    void resolveSkipsBeanRegistration(String prefix) {
+      List<SecretManagerConfigDataResource> resources =
+          resolver.resolve(context, ConfigDataLocation.of(prefix));
+
+      assertThat(resources).hasSize(1);
+      assertThat(resources.get(0).isEnabled()).isFalse();
+      assertThat(emptyBootstrapContext.isRegistered(CredentialsProvider.class)).isFalse();
+      assertThat(emptyBootstrapContext.isRegistered(SecretManagerServiceClient.class)).isFalse();
+      assertThat(emptyBootstrapContext.isRegistered(SecretManagerServiceClientFactory.class))
+          .isFalse();
+      assertThat(emptyBootstrapContext.isRegistered(SecretManagerTemplate.class)).isFalse();
     }
   }
 
