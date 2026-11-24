@@ -16,6 +16,9 @@
 
 package com.google.cloud.spring.autoconfigure.firestore;
 
+import static com.google.auth.Credentials.GOOGLE_DEFAULT_UNIVERSE;
+
+import com.google.api.gax.rpc.EndpointContext;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
@@ -33,8 +36,6 @@ import org.springframework.util.StringUtils;
 @ConfigurationProperties("spring.cloud.gcp.firestore")
 public class GcpFirestoreProperties implements CredentialsSupplier {
   private static final String ROOT_PATH_FORMAT = "projects/%s/databases/%s/documents";
-  private static final String DEFAULT_UNIVERSE_DOMAIN = "googleapis.com";
-  private static final String UNIVERSE_DOMAIN_ENV_VAR = "GOOGLE_CLOUD_UNIVERSE_DOMAIN";
 
   /**
    * Overrides the GCP OAuth2 credentials specified in the Core module. Uses same URL as Datastore
@@ -116,11 +117,11 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
     if (StringUtils.hasText(this.universeDomain)) {
       return this.universeDomain;
     }
-    String envUniverseDomain = envProvider.apply(UNIVERSE_DOMAIN_ENV_VAR);
+    String envUniverseDomain = envProvider.apply(EndpointContext.GOOGLE_CLOUD_UNIVERSE_DOMAIN);
     if (StringUtils.hasText(envUniverseDomain)) {
       return envUniverseDomain;
     }
-    return DEFAULT_UNIVERSE_DOMAIN;
+    return GOOGLE_DEFAULT_UNIVERSE;
   }
 
   /**

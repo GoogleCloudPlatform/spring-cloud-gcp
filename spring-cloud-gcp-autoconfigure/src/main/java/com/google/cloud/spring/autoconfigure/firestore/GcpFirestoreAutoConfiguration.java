@@ -20,6 +20,7 @@ import com.google.api.client.util.escape.PercentEscaper;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.rpc.EndpointContext;
 import com.google.api.gax.rpc.internal.Headers;
 import com.google.auth.Credentials;
 import com.google.cloud.NoCredentials;
@@ -144,10 +145,9 @@ public class GcpFirestoreAutoConfiguration {
         && !credentialsUniverseDomain.equals(expectedUniverseDomain)) {
       throw new IllegalStateException(
           String.format(
-              "The configured universe domain (%s) does not match the universe domain found in the"
-                  + " credentials (%s). If you haven't configured the universe domain explicitly,"
-                  + " `googleapis.com` is the default.",
-              expectedUniverseDomain, credentialsUniverseDomain));
+              EndpointContext.INVALID_UNIVERSE_DOMAIN_ERROR_TEMPLATE,
+              expectedUniverseDomain,
+              credentialsUniverseDomain));
     }
   }
 
