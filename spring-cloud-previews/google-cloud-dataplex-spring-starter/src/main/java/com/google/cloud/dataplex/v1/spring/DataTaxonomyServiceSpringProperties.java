@@ -38,7 +38,7 @@ public class DataTaxonomyServiceSpringProperties implements CredentialsSupplier 
           "https://www.googleapis.com/auth/dataplex.read-write");
   /** Quota project to use for billing. */
   private String quotaProjectId;
-  /** Universe domain for the client. */
+  /** Universe domain used to configure the client endpoint. */
   private String universeDomain;
   /** Number of threads used for executors. */
   private Integer executorThreadCount;

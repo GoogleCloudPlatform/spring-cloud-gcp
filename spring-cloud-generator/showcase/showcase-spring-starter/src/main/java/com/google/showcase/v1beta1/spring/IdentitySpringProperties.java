@@ -34,7 +34,7 @@ public class IdentitySpringProperties implements CredentialsSupplier {
   @NestedConfigurationProperty private final Credentials credentials = new Credentials();
   /** Quota project to use for billing. */
   private String quotaProjectId;
-  /** Universe domain for the client. */
+  /** Universe domain used to configure the client endpoint. */
   private String universeDomain;
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
