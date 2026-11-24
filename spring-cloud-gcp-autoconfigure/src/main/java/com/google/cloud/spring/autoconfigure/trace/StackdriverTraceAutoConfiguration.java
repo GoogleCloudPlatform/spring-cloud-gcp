@@ -27,6 +27,9 @@ import brave.propagation.stackdriver.StackdriverTracePropagation;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedExecutorProvider;
+import com.google.api.gax.rpc.EndpointContext;
+import com.google.auth.Credentials;
+import com.google.cloud.NoCredentials;
 import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
@@ -38,8 +41,10 @@ import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -98,15 +103,29 @@ public class StackdriverTraceAutoConfiguration {
 
   private final CredentialsProvider finalCredentialsProvider;
 
+  private final String universeDomain;
+
+  private final String endpoint;
+
   private final UserAgentHeaderProvider headerProvider =
       new UserAgentHeaderProvider(this.getClass());
 
   private ThreadPoolTaskScheduler defaultTraceSenderThreadPool;
 
+  @Autowired
   public StackdriverTraceAutoConfiguration(
       GcpProjectIdProvider gcpProjectIdProvider,
       CredentialsProvider credentialsProvider,
       GcpTraceProperties gcpTraceProperties)
+      throws IOException {
+    this(gcpProjectIdProvider, credentialsProvider, gcpTraceProperties, System::getenv);
+  }
+
+  StackdriverTraceAutoConfiguration(
+      GcpProjectIdProvider gcpProjectIdProvider,
+      CredentialsProvider credentialsProvider,
+      GcpTraceProperties gcpTraceProperties,
+      Function<String, String> envProvider)
       throws IOException {
     this.finalProjectIdProvider =
         (gcpTraceProperties.getProjectId() != null)
@@ -116,6 +135,28 @@ public class StackdriverTraceAutoConfiguration {
         gcpTraceProperties.getCredentials().hasKey()
             ? new DefaultCredentialsProvider(gcpTraceProperties)
             : credentialsProvider;
+    this.universeDomain = gcpTraceProperties.getResolvedUniverseDomain(envProvider);
+    this.endpoint = gcpTraceProperties.getResolvedEndpoint(envProvider);
+  }
+
+  /**
+   * Validates that the credential's universe domain (when present) matches the configured universe
+   * domain to prevent sending credentials to the wrong universe.
+   */
+  static void validateUniverseDomain(Credentials credentials, String expectedUniverseDomain)
+      throws IOException {
+    if (credentials == null || credentials instanceof NoCredentials) {
+      return;
+    }
+    String credentialsUniverseDomain = credentials.getUniverseDomain();
+    if (credentialsUniverseDomain != null
+        && !credentialsUniverseDomain.equals(expectedUniverseDomain)) {
+      throw new IllegalStateException(
+          String.format(
+              EndpointContext.INVALID_UNIVERSE_DOMAIN_ERROR_TEMPLATE,
+              expectedUniverseDomain,
+              credentialsUniverseDomain));
+    }
   }
 
   @Bean(CUSTOMIZER_BEAN_NAME)
@@ -167,7 +208,7 @@ public class StackdriverTraceAutoConfiguration {
   @Bean(destroyMethod = "shutdownNow")
   @ConditionalOnMissingBean(name = "stackdriverSenderChannel")
   public ManagedChannel stackdriverSenderChannel() {
-    return ManagedChannelBuilder.forTarget("dns:///cloudtrace.googleapis.com")
+    return ManagedChannelBuilder.forTarget(this.endpoint)
         .userAgent(this.headerProvider.getUserAgent())
         .build();
   }
@@ -179,10 +220,13 @@ public class StackdriverTraceAutoConfiguration {
       @Qualifier("traceExecutorProvider") ExecutorProvider executorProvider,
       @Qualifier("stackdriverSenderChannel") ManagedChannel channel)
       throws IOException {
+    Credentials credentials = this.finalCredentialsProvider.getCredentials();
+    // This path uses a raw ManagedChannel and bypasses GAX EndpointContext validation, so verify
+    // the credential's universe domain explicitly before attaching call credentials.
+    validateUniverseDomain(credentials, this.universeDomain);
     CallOptions callOptions =
         CallOptions.DEFAULT
-            .withCallCredentials(
-                MoreCallCredentials.from(this.finalCredentialsProvider.getCredentials()))
+            .withCallCredentials(MoreCallCredentials.from(credentials))
             .withExecutor(executorProvider.getExecutor());
 
     if (traceProperties.getAuthority() != null) {
