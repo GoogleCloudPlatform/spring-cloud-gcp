@@ -171,11 +171,11 @@ class EchoAutoConfigurationTests {
   @Test
   void testUniverseDomainFromProperties() {
     this.contextRunner
-        .withPropertyValues("com.google.showcase.v1beta1.echo.universe-domain=custom.example.com")
+        .withPropertyValues("com.google.showcase.v1beta1.echo.universe-domain=googleapis.com")
         .run(
             ctx -> {
               EchoClient client = ctx.getBean(EchoClient.class);
-              assertThat(client.getSettings().getUniverseDomain()).isEqualTo("custom.example.com");
+              assertThat(client.getSettings().getUniverseDomain()).isEqualTo("googleapis.com");
             });
   }
 
