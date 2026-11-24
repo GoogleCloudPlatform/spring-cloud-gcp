@@ -148,11 +148,11 @@ class GcpParameterBootstrapConfigurationTest {
         GcpParameterBootstrapConfiguration.buildParameterManagerSettings(
             properties,
             () -> TestUtils.MOCK_CREDENTIALS,
-            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "tpc.example.com" : null);
+            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "custom.example.com" : null);
 
-    assertThat(settings.getUniverseDomain()).isEqualTo("tpc.example.com");
+    assertThat(settings.getUniverseDomain()).isEqualTo("custom.example.com");
     assertThat(settings.getEndpoint())
-        .isEqualTo("parametermanager.us-central1.rep.tpc.example.com:443");
+        .isEqualTo("parametermanager.us-central1.rep.custom.example.com:443");
   }
 
   @Test
@@ -181,10 +181,10 @@ class GcpParameterBootstrapConfigurationTest {
         GcpParameterBootstrapConfiguration.buildParameterManagerSettings(
             properties,
             () -> TestUtils.MOCK_CREDENTIALS,
-            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "tpc.example.com" : null);
+            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "custom.example.com" : null);
 
-    assertThat(settings.getUniverseDomain()).isEqualTo("tpc.example.com");
-    assertThat(settings.getEndpoint()).isEqualTo("parametermanager.tpc.example.com:443");
+    assertThat(settings.getUniverseDomain()).isEqualTo("custom.example.com");
+    assertThat(settings.getEndpoint()).isEqualTo("parametermanager.custom.example.com:443");
   }
 
   private static class TestConfiguration {

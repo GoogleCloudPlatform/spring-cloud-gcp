@@ -71,11 +71,11 @@ public class DefaultParameterManagerClientFactoryUnitTests {
             () -> TestUtils.MOCK_CREDENTIALS,
             globalClient,
             null,
-            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "tpc.example.com" : null);
+            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "custom.example.com" : null);
     try (ParameterManagerClient client = regionalFactory.getClient("europe-west1")) {
-      assertThat(client.getSettings().getUniverseDomain()).isEqualTo("tpc.example.com");
+      assertThat(client.getSettings().getUniverseDomain()).isEqualTo("custom.example.com");
       assertThat(client.getSettings().getEndpoint())
-          .isEqualTo("parametermanager.europe-west1.rep.tpc.example.com:443");
+          .isEqualTo("parametermanager.europe-west1.rep.custom.example.com:443");
     }
   }
 
