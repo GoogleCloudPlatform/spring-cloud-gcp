@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.threeten.bp.Duration;
 
 /** The default {@link SubscriberFactory} implementation. */
@@ -385,7 +386,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
         this.universeDomain != null
             ? this.universeDomain
             : this.pubSubConfiguration.getSubscriber().getUniverseDomain();
-    if (universeDomain != null) {
+    if (StringUtils.hasText(universeDomain)) {
       subscriberStubSettings.setUniverseDomain(universeDomain);
     }
 
@@ -427,7 +428,7 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     // global subscriber property) so pull RPCs and PubSubHealthIndicator match streaming
     // subscribers.
     String universeDomain = getUniverseDomain(subscriptionName);
-    if (universeDomain != null) {
+    if (StringUtils.hasText(universeDomain)) {
       subscriberStubSettings.setUniverseDomain(universeDomain);
     }
 
