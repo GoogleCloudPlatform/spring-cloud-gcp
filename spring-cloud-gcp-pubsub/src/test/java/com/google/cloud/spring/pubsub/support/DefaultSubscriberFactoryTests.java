@@ -29,6 +29,7 @@ import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
+import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.FixedTransportChannelProvider;
@@ -47,6 +48,7 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PullRequest;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -898,5 +900,41 @@ class DefaultSubscriberFactoryTests {
     Assertions.assertThatThrownBy(() -> factory.setCustomizers(null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Non-null customizers expected");
+  }
+
+  @Test
+  void buildSubscriberStubSettingsUsesGlobalAndPerSubscriptionUniverseDomain() throws IOException {
+    PubSubConfiguration config = new PubSubConfiguration();
+    config.getSubscriber().setUniverseDomain("global.example.com");
+    PubSubConfiguration.Subscriber selective = new PubSubConfiguration.Subscriber();
+    selective.setUniverseDomain("selective.example.com");
+    config.setSubscription(Collections.singletonMap("custom-sub", selective));
+    config.initialize("angeldust");
+
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", config);
+    factory.setCredentialsProvider(NoCredentialsProvider.create());
+
+    SubscriberStubSettings healthCheckStub =
+        factory.buildSubscriberStubSettings("spring-cloud-gcp-healthcheck-123");
+    assertThat(healthCheckStub.getUniverseDomain()).isEqualTo("global.example.com");
+    assertThat(healthCheckStub.getEndpoint()).isEqualTo("pubsub.global.example.com:443");
+
+    SubscriberStubSettings selectiveStub = factory.buildSubscriberStubSettings("custom-sub");
+    assertThat(selectiveStub.getUniverseDomain()).isEqualTo("selective.example.com");
+    assertThat(selectiveStub.getEndpoint()).isEqualTo("pubsub.selective.example.com:443");
+  }
+
+  @Test
+  void buildGlobalSubscriberStubSettingsUsesConfiguredUniverseDomain() throws IOException {
+    PubSubConfiguration config = new PubSubConfiguration();
+    config.getSubscriber().setUniverseDomain("global.example.com");
+    config.initialize("angeldust");
+
+    DefaultSubscriberFactory factory = new DefaultSubscriberFactory(() -> "angeldust", config);
+    factory.setCredentialsProvider(NoCredentialsProvider.create());
+
+    SubscriberStubSettings globalStub = factory.buildGlobalSubscriberStubSettings();
+    assertThat(globalStub.getUniverseDomain()).isEqualTo("global.example.com");
+    assertThat(globalStub.getEndpoint()).isEqualTo("pubsub.global.example.com:443");
   }
 }

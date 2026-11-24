@@ -80,6 +80,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.util.StringUtils;
 import org.threeten.bp.Duration;
 
 /** Auto-config for Pub/Sub. */
@@ -415,11 +416,25 @@ public class GcpPubSubAutoConfiguration {
       @Qualifier("publisherTransportChannelProvider")
           TransportChannelProvider publisherTransportChannelProvider) {
     try {
-      return TopicAdminSettings.newBuilder()
-          .setCredentialsProvider(this.finalCredentialsProvider)
-          .setHeaderProvider(this.headerProvider)
-          .setTransportChannelProvider(publisherTransportChannelProvider)
-          .build();
+      TopicAdminSettings.Builder settingsBuilder =
+          TopicAdminSettings.newBuilder()
+              .setCredentialsProvider(this.finalCredentialsProvider)
+              .setHeaderProvider(this.headerProvider)
+              .setTransportChannelProvider(publisherTransportChannelProvider);
+      // Propagate configured endpoint and universe domain so topic admin RPCs match publisher
+      // configuration instead of falling back to googleapis.com.
+      String endpoint = this.gcpPubSubProperties.getPublisher().getEndpoint();
+      if (StringUtils.hasText(endpoint)) {
+        settingsBuilder.setEndpoint(endpoint);
+      }
+      String universeDomain =
+          resolveFirstNonBlank(
+              this.gcpPubSubProperties.getPublisher().getUniverseDomain(),
+              this.gcpPubSubProperties.getSubscriber().getUniverseDomain());
+      if (universeDomain != null) {
+        settingsBuilder.setUniverseDomain(universeDomain);
+      }
+      return settingsBuilder.build();
     } catch (IOException ioe) {
       throw new PubSubException("An error occurred while creating TopicAdminSettings.", ioe);
     }
@@ -431,15 +446,37 @@ public class GcpPubSubAutoConfiguration {
       @Qualifier("subscriberTransportChannelProvider")
           TransportChannelProvider subscriberTransportChannelProvider) {
     try {
-      return SubscriptionAdminClient.create(
+      SubscriptionAdminSettings.Builder settingsBuilder =
           SubscriptionAdminSettings.newBuilder()
               .setCredentialsProvider(this.finalCredentialsProvider)
               .setHeaderProvider(this.headerProvider)
-              .setTransportChannelProvider(subscriberTransportChannelProvider)
-              .build());
+              .setTransportChannelProvider(subscriberTransportChannelProvider);
+      // Propagate configured universe domain so subscription admin RPCs match subscriber
+      // configuration instead of falling back to googleapis.com.
+      String universeDomain =
+          resolveFirstNonBlank(
+              this.gcpPubSubProperties.getSubscriber().getUniverseDomain(),
+              this.gcpPubSubProperties.getPublisher().getUniverseDomain());
+      if (universeDomain != null) {
+        settingsBuilder.setUniverseDomain(universeDomain);
+      }
+      return SubscriptionAdminClient.create(settingsBuilder.build());
     } catch (IOException ioe) {
       throw new PubSubException("An error occurred while creating SubscriptionAdminClient.", ioe);
     }
+  }
+
+  /**
+   * Returns the first non-blank value from {@code primary} or {@code fallback}, or {@code null}.
+   */
+  private static String resolveFirstNonBlank(String primary, String fallback) {
+    if (StringUtils.hasText(primary)) {
+      return primary;
+    }
+    if (StringUtils.hasText(fallback)) {
+      return fallback;
+    }
+    return null;
   }
 
   @Bean

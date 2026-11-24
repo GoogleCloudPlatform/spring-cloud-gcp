@@ -16,15 +16,20 @@
 
 package com.google.cloud.spring.autoconfigure.pubsub.health;
 
+import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
+import com.google.cloud.monitoring.v3.MetricServiceSettings;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubProperties;
+import com.google.cloud.spring.core.DefaultCredentialsProvider;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistry;
 import com.google.cloud.spring.pubsub.core.health.HealthTrackerRegistryImpl;
 import java.io.IOException;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -36,7 +41,9 @@ import org.springframework.boot.health.autoconfigure.contributor.CompositeHealth
 import org.springframework.boot.health.autoconfigure.contributor.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.context.annotation.Bean;
+import org.springframework.lang.Nullable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.util.StringUtils;
 
 /**
  * @since 2.0.6
@@ -58,20 +65,51 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration
 
   private final String projectId;
 
+  @Nullable private final CredentialsProvider credentialsProvider;
+
   public PubSubSubscriptionHealthIndicatorAutoConfiguration(
-      GcpPubSubProperties gcpPubSubProperties, GcpProjectIdProvider projectIdProvider) {
+      GcpPubSubProperties gcpPubSubProperties, GcpProjectIdProvider projectIdProvider)
+      throws IOException {
+    this(gcpPubSubProperties, projectIdProvider, null);
+  }
+
+  @Autowired
+  public PubSubSubscriptionHealthIndicatorAutoConfiguration(
+      GcpPubSubProperties gcpPubSubProperties,
+      GcpProjectIdProvider projectIdProvider,
+      @Nullable ObjectProvider<CredentialsProvider> credentialsProvider)
+      throws IOException {
     super(PubSubSubscriptionHealthIndicator::new);
     this.projectId =
         (gcpPubSubProperties.getProjectId() != null)
             ? gcpPubSubProperties.getProjectId()
             : projectIdProvider.getProjectId();
     this.gcpPubSubProperties = gcpPubSubProperties;
+    if (gcpPubSubProperties.getCredentials().hasKey()) {
+      this.credentialsProvider = new DefaultCredentialsProvider(gcpPubSubProperties);
+    } else {
+      this.credentialsProvider =
+          credentialsProvider != null ? credentialsProvider.getIfAvailable() : null;
+    }
   }
 
   @Bean
   @ConditionalOnMissingBean
   public MetricServiceClient metricServiceClient() throws IOException {
-    return MetricServiceClient.create();
+    MetricServiceSettings.Builder settingsBuilder = MetricServiceSettings.newBuilder();
+    // Propagate configured credentials and universe domain so lag/backlog health checks do not
+    // fall back to default ADC or googleapis.com.
+    if (this.credentialsProvider != null) {
+      settingsBuilder.setCredentialsProvider(this.credentialsProvider);
+    }
+    String universeDomain = this.gcpPubSubProperties.getSubscriber().getUniverseDomain();
+    if (!StringUtils.hasText(universeDomain)) {
+      universeDomain = this.gcpPubSubProperties.getPublisher().getUniverseDomain();
+    }
+    if (StringUtils.hasText(universeDomain)) {
+      settingsBuilder.setUniverseDomain(universeDomain);
+    }
+    return MetricServiceClient.create(settingsBuilder.build());
   }
 
   @Bean

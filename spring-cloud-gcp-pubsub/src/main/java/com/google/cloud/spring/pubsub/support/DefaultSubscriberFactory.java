@@ -379,6 +379,16 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
       subscriberStubSettings.setEndpoint(endpoint);
     }
 
+    // Propagate configured universe domain (explicit override or global subscriber property) so
+    // pull stubs do not fall back to googleapis.com.
+    String universeDomain =
+        this.universeDomain != null
+            ? this.universeDomain
+            : this.pubSubConfiguration.getSubscriber().getUniverseDomain();
+    if (universeDomain != null) {
+      subscriberStubSettings.setUniverseDomain(universeDomain);
+    }
+
     ExecutorProvider executor =
         this.executorProvider != null ? this.executorProvider : this.globalExecutorProvider;
     if (executor != null) {
@@ -411,6 +421,14 @@ public class DefaultSubscriberFactory implements SubscriberFactory {
     String endpoint = getPullEndpoint(subscriptionName);
     if (endpoint != null) {
       subscriberStubSettings.setEndpoint(endpoint);
+    }
+
+    // Propagate the resolved universe domain (factory override, per-subscription property, or
+    // global subscriber property) so pull RPCs and PubSubHealthIndicator match streaming
+    // subscribers.
+    String universeDomain = getUniverseDomain(subscriptionName);
+    if (universeDomain != null) {
+      subscriberStubSettings.setUniverseDomain(universeDomain);
     }
 
     ExecutorProvider executor = getExecutorProvider(subscriptionName);
