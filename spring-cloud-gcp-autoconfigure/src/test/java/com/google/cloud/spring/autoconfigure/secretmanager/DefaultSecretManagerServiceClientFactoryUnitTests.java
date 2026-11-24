@@ -45,11 +45,11 @@ class DefaultSecretManagerServiceClientFactoryUnitTests {
         new DefaultSecretManagerServiceClientFactory(
             credentialsProvider,
             null,
-            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "tpc.example.com" : null);
+            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "custom.example.com" : null);
     try (SecretManagerServiceClient client = factory.getClient("europe-west1")) {
-      assertThat(client.getSettings().getUniverseDomain()).isEqualTo("tpc.example.com");
+      assertThat(client.getSettings().getUniverseDomain()).isEqualTo("custom.example.com");
       assertThat(client.getSettings().getEndpoint())
-          .isEqualTo("secretmanager.europe-west1.rep.tpc.example.com:443");
+          .isEqualTo("secretmanager.europe-west1.rep.custom.example.com:443");
     }
   }
 
@@ -73,10 +73,11 @@ class DefaultSecretManagerServiceClientFactoryUnitTests {
         new DefaultSecretManagerServiceClientFactory(
             credentialsProvider,
             null,
-            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "tpc.example.com" : null);
+            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "custom.example.com" : null);
     try (SecretManagerServiceClient client = factory.getClient("global")) {
-      assertThat(client.getSettings().getUniverseDomain()).isEqualTo("tpc.example.com");
-      assertThat(client.getSettings().getEndpoint()).isEqualTo("secretmanager.tpc.example.com:443");
+      assertThat(client.getSettings().getUniverseDomain()).isEqualTo("custom.example.com");
+      assertThat(client.getSettings().getEndpoint())
+          .isEqualTo("secretmanager.custom.example.com:443");
     }
   }
 }
