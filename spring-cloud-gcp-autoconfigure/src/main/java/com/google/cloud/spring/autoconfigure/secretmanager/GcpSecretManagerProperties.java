@@ -46,6 +46,12 @@ public class GcpSecretManagerProperties implements CredentialsSupplier {
    */
   private boolean allowDefaultSecret;
 
+  /**
+   * Universe domain of the Secret Manager client. When unset, falls back to the {@code
+   * GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable and then {@code googleapis.com}.
+   */
+  private String universeDomain;
+
   public Credentials getCredentials() {
     return credentials;
   }
@@ -64,5 +70,15 @@ public class GcpSecretManagerProperties implements CredentialsSupplier {
 
   public void setAllowDefaultSecret(boolean allowDefaultSecret) {
     this.allowDefaultSecret = allowDefaultSecret;
+  }
+
+  /** Returns the configured universe domain, or {@code null} if unset. */
+  public String getUniverseDomain() {
+    return universeDomain;
+  }
+
+  /** Sets the universe domain for the Secret Manager client. */
+  public void setUniverseDomain(String universeDomain) {
+    this.universeDomain = universeDomain;
   }
 }
