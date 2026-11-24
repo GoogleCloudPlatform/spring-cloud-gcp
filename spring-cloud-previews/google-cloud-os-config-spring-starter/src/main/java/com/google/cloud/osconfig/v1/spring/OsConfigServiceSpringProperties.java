@@ -36,6 +36,8 @@ public class OsConfigServiceSpringProperties implements CredentialsSupplier {
       new Credentials("https://www.googleapis.com/auth/cloud-platform");
   /** Quota project to use for billing. */
   private String quotaProjectId;
+  /** Universe domain used to configure the client endpoint. */
+  private String universeDomain;
   /** Number of threads used for executors. */
   private Integer executorThreadCount;
   /** Allow override of default transport channel provider to use REST instead of gRPC. */
@@ -114,6 +116,14 @@ public class OsConfigServiceSpringProperties implements CredentialsSupplier {
 
   public void setQuotaProjectId(String quotaProjectId) {
     this.quotaProjectId = quotaProjectId;
+  }
+
+  public String getUniverseDomain() {
+    return this.universeDomain;
+  }
+
+  public void setUniverseDomain(String universeDomain) {
+    this.universeDomain = universeDomain;
   }
 
   public boolean getUseRest() {

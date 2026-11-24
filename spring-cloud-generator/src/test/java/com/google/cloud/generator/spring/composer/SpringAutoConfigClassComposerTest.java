@@ -18,6 +18,7 @@ package com.google.cloud.generator.spring.composer;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.generator.engine.writer.JavaWriterVisitor;
 import com.google.api.generator.gapic.model.GapicClass;
 import com.google.api.generator.gapic.model.GapicContext;
 import com.google.api.generator.gapic.model.Service;
@@ -89,5 +90,16 @@ public class SpringAutoConfigClassComposerTest {
             .generate(this.echoRestContext, this.echoRestProtoService);
     String fileName = clazz.classDefinition().classIdentifier() + "Rest.golden";
     Assert.assertGoldenClass(this.getClass(), clazz, fileName);
+  }
+
+  @Test
+  public void generateAutoConfigClazzOmitsDefaultEndpointForGoogleapisHost() {
+    Service googleapisService =
+        this.echoProtoService.toBuilder().setDefaultHost("echo.googleapis.com").build();
+    GapicClass clazz =
+        SpringAutoConfigClassComposer.instance().generate(this.echoContext, googleapisService);
+    JavaWriterVisitor visitor = new JavaWriterVisitor();
+    clazz.classDefinition().accept(visitor);
+    assertThat(visitor.write()).doesNotContain("getDefaultEndpoint()");
   }
 }

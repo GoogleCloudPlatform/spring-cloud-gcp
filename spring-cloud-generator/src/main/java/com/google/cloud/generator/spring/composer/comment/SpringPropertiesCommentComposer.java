@@ -28,6 +28,8 @@ public class SpringPropertiesCommentComposer {
   private static final String CREDENTIALS_DESCRIPTION =
       "OAuth2 credentials to authenticate and authorize calls to Google Cloud Client Libraries.";
   private static final String QUOTA_PROJECT_ID_DESCRIPTION = "Quota project to use for billing.";
+  private static final String UNIVERSE_DOMAIN_DESCRIPTION =
+      "Universe domain used to configure the client endpoint.";
   private static final String EXECUTOR_THREAD_COUNT_DESCRIPTION =
       "Number of threads used for executors.";
   private static final String USE_REST_DESCRIPTION =
@@ -55,6 +57,11 @@ public class SpringPropertiesCommentComposer {
 
   public static CommentStatement createQuotaProjectIdPropertyComment() {
     return toSimpleJavaDocComment(QUOTA_PROJECT_ID_DESCRIPTION);
+  }
+
+  /** Creates the Javadoc comment for the {@code universeDomain} property. */
+  public static CommentStatement createUniverseDomainPropertyComment() {
+    return toSimpleJavaDocComment(UNIVERSE_DOMAIN_DESCRIPTION);
   }
 
   public static CommentStatement createExecutorThreadCountPropertyComment() {

@@ -127,7 +127,6 @@ public class FeatureOnlineStoreServiceSpringAutoConfiguration {
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)
-        .setEndpoint(FeatureOnlineStoreServiceSettings.getDefaultEndpoint())
         .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());
@@ -136,6 +135,15 @@ public class FeatureOnlineStoreServiceSpringAutoConfiguration {
             "Quota project id set to "
                 + this.clientProperties.getQuotaProjectId()
                 + ", this overrides project id from credentials.");
+      }
+    }
+    if (this.clientProperties.getUniverseDomain() != null) {
+      clientSettingsBuilder.setUniverseDomain(this.clientProperties.getUniverseDomain());
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Universe domain set to "
+                + this.clientProperties.getUniverseDomain()
+                + ", this overrides the default universe domain.");
       }
     }
     if (this.clientProperties.getExecutorThreadCount() != null) {
