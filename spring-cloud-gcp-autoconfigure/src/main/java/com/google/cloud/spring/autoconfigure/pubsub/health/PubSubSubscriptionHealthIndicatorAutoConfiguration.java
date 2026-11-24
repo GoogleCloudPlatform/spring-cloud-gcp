@@ -68,8 +68,7 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration
   @Nullable private final CredentialsProvider credentialsProvider;
 
   public PubSubSubscriptionHealthIndicatorAutoConfiguration(
-      GcpPubSubProperties gcpPubSubProperties, GcpProjectIdProvider projectIdProvider)
-      throws IOException {
+      GcpPubSubProperties gcpPubSubProperties, GcpProjectIdProvider projectIdProvider) {
     this(gcpPubSubProperties, projectIdProvider, null);
   }
 
@@ -77,20 +76,15 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration
   public PubSubSubscriptionHealthIndicatorAutoConfiguration(
       GcpPubSubProperties gcpPubSubProperties,
       GcpProjectIdProvider projectIdProvider,
-      @Nullable ObjectProvider<CredentialsProvider> credentialsProvider)
-      throws IOException {
+      @Nullable ObjectProvider<CredentialsProvider> credentialsProvider) {
     super(PubSubSubscriptionHealthIndicator::new);
     this.projectId =
         (gcpPubSubProperties.getProjectId() != null)
             ? gcpPubSubProperties.getProjectId()
             : projectIdProvider.getProjectId();
     this.gcpPubSubProperties = gcpPubSubProperties;
-    if (gcpPubSubProperties.getCredentials().hasKey()) {
-      this.credentialsProvider = new DefaultCredentialsProvider(gcpPubSubProperties);
-    } else {
-      this.credentialsProvider =
-          credentialsProvider != null ? credentialsProvider.getIfAvailable() : null;
-    }
+    this.credentialsProvider =
+        credentialsProvider != null ? credentialsProvider.getIfAvailable() : null;
   }
 
   @Bean
@@ -99,8 +93,12 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration
     MetricServiceSettings.Builder settingsBuilder = MetricServiceSettings.newBuilder();
     // Propagate configured credentials and universe domain so lag/backlog health checks do not
     // fall back to default ADC or googleapis.com.
-    if (this.credentialsProvider != null) {
-      settingsBuilder.setCredentialsProvider(this.credentialsProvider);
+    CredentialsProvider resolvedCredentialsProvider =
+        this.gcpPubSubProperties.getCredentials().hasKey()
+            ? new DefaultCredentialsProvider(this.gcpPubSubProperties)
+            : this.credentialsProvider;
+    if (resolvedCredentialsProvider != null) {
+      settingsBuilder.setCredentialsProvider(resolvedCredentialsProvider);
     }
     String universeDomain = this.gcpPubSubProperties.getSubscriber().getUniverseDomain();
     if (!StringUtils.hasText(universeDomain)) {
