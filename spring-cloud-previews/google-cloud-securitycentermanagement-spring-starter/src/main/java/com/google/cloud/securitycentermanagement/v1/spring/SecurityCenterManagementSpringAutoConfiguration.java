@@ -147,6 +147,15 @@ public class SecurityCenterManagementSpringAutoConfiguration {
                 + ", this overrides project id from credentials.");
       }
     }
+    if (this.clientProperties.getUniverseDomain() != null) {
+      clientSettingsBuilder.setUniverseDomain(this.clientProperties.getUniverseDomain());
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
+            "Universe domain set to "
+                + this.clientProperties.getUniverseDomain()
+                + ", this overrides the default universe domain.");
+      }
+    }
     if (this.clientProperties.getExecutorThreadCount() != null) {
       ExecutorProvider executorProvider =
           SecurityCenterManagementSettings.defaultExecutorProviderBuilder()

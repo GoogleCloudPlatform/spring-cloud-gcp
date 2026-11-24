@@ -653,6 +653,40 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
 
     bodyStatements.add(setQuotaProjectIdStatement);
 
+    // Set universe domain if specified via configuration property
+    MethodInvocationExpr getUniverseDomain =
+        MethodInvocationExpr.builder()
+            .setMethodName("getUniverseDomain")
+            .setReturnType(TypeNode.STRING)
+            .setExprReferenceExpr(thisClientPropertiesVarExpr)
+            .build();
+    RelationalOperationExpr universeDomainIsNotNull =
+        RelationalOperationExpr.notEqualToWithExprs(getUniverseDomain, ValueExpr.createNullExpr());
+
+    MethodInvocationExpr setUniverseDomain =
+        MethodInvocationExpr.builder()
+            .setExprReferenceExpr(VariableExpr.withVariable(settingBuilderVariable))
+            .setMethodName("setUniverseDomain")
+            .setArguments(getUniverseDomain)
+            .build();
+
+    Statement universeDomainLoggerStatement =
+        LoggerUtils.createLoggerStatement(
+            LoggerUtils.concatManyWithExprs(
+                ValueExpr.withValue(StringObjectValue.withValue("Universe domain set to ")),
+                getUniverseDomain,
+                ValueExpr.withValue(
+                    StringObjectValue.withValue(", this overrides the default universe domain."))),
+            types);
+
+    IfStatement setUniverseDomainStatement =
+        createIfStatement(
+            universeDomainIsNotNull,
+            Arrays.asList(ExprStatement.withExpr(setUniverseDomain), universeDomainLoggerStatement),
+            null);
+
+    bodyStatements.add(setUniverseDomainStatement);
+
     // Set executor thread count if specified via configuration property
     MethodInvocationExpr getExecutorThreadCount =
         MethodInvocationExpr.builder()

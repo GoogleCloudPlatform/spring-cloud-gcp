@@ -137,6 +137,12 @@ public class SpringPropertiesClassComposer implements ClassComposer {
             "quotaProjectId", TypeNode.STRING, false, null, null);
     statements.add(SpringPropertiesCommentComposer.createQuotaProjectIdPropertyComment());
     statements.add(quotaProjectIdVarStatement);
+    // Generates universeDomain variable
+    ExprStatement universeDomainVarStatement =
+        ComposerUtils.createMemberVarStatement(
+            "universeDomain", TypeNode.STRING, false, null, null);
+    statements.add(SpringPropertiesCommentComposer.createUniverseDomainPropertyComment());
+    statements.add(universeDomainVarStatement);
     // Generates executorThreadCount variable
     ExprStatement executorThreadCountVarStatement =
         ComposerUtils.createMemberVarStatement(
@@ -194,6 +200,9 @@ public class SpringPropertiesClassComposer implements ClassComposer {
     methodDefinitions.add(
         createGetterMethod(thisClassType, "quotaProjectId", TypeNode.STRING, null));
     methodDefinitions.add(createSetterMethod(thisClassType, "quotaProjectId", TypeNode.STRING));
+    methodDefinitions.add(
+        createGetterMethod(thisClassType, "universeDomain", TypeNode.STRING, null));
+    methodDefinitions.add(createSetterMethod(thisClassType, "universeDomain", TypeNode.STRING));
     if (ComposerUtils.shouldSupportRestOptionWithGrpcDefault(transport, service)) {
       methodDefinitions.add(createGetterMethod(thisClassType, "useRest", TypeNode.BOOLEAN, null));
       methodDefinitions.add(createSetterMethod(thisClassType, "useRest", TypeNode.BOOLEAN));
