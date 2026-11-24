@@ -441,6 +441,17 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
     return credentialIfStatement.build();
   }
 
+  /**
+   * Returns true if the service's default host is a {@code googleapis.com} endpoint, where {@code
+   * gax-java} supports universe-domain endpoint templating without pinning {@code
+   * getDefaultEndpoint()}.
+   */
+  private static boolean isGoogleapisHost(Service service) {
+    String defaultHost = service.defaultHost();
+    return defaultHost != null
+        && (defaultHost.endsWith(".googleapis.com") || defaultHost.contains(".googleapis.com:"));
+  }
+
   private static MethodDefinition createSettingsBeanMethod(
       Service service,
       Transport transport,
@@ -562,8 +573,10 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setExprReferenceExpr(thisExpr)
             .build();
 
-    // Omit setEndpoint(<Service>Settings.getDefaultEndpoint()) so gax-java can expand the default
-    // endpoint template with GOOGLE_CLOUD_UNIVERSE_DOMAIN instead of pinning googleapis.com.
+    // For googleapis.com services, omit setEndpoint(<Service>Settings.getDefaultEndpoint()) so
+    // gax-java can expand the default endpoint template with GOOGLE_CLOUD_UNIVERSE_DOMAIN instead
+    // of pinning googleapis.com. Keep setEndpoint() for non-googleapis hosts (e.g. gapic-showcase
+    // localhost:7469) where endpoint templating is not applicable.
     Expr settingsBuilderExpr =
         MethodInvocationExpr.builder()
             .setExprReferenceExpr(VariableExpr.withVariable(settingBuilderVariable))
@@ -576,6 +589,20 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setMethodName("setTransportChannelProvider")
             .setArguments(transportChannelProviderVariableExpr)
             .build();
+    if (!isGoogleapisHost(service)) {
+      MethodInvocationExpr defaultEndpointMethodInvocationExpr =
+          MethodInvocationExpr.builder()
+              .setStaticReferenceType(types.get("ServiceSettings"))
+              .setMethodName("getDefaultEndpoint")
+              .setReturnType(TypeNode.STRING)
+              .build();
+      settingsBuilderExpr =
+          MethodInvocationExpr.builder()
+              .setExprReferenceExpr(settingsBuilderExpr)
+              .setMethodName("setEndpoint")
+              .setArguments(defaultEndpointMethodInvocationExpr)
+              .build();
+    }
     MethodInvocationExpr userAgentHeaderProviderInvocation =
         MethodInvocationExpr.builder()
             .setExprReferenceExpr(thisExpr)
