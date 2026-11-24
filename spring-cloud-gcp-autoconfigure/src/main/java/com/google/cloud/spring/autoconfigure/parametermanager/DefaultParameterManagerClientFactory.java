@@ -104,6 +104,8 @@ public class DefaultParameterManagerClientFactory implements ParameterManagerCli
                     .setHeaderProvider(
                         new UserAgentHeaderProvider(ParameterManagerConfigDataLoader.class))
                     .setUniverseDomain(resolvedUniverseDomain);
+            // Calling setEndpoint() disables GAX endpoint templating, so interpolate the resolved
+            // universe domain into regional endpoints instead of hardcoding googleapis.com.
             if (!loc.equals(GLOBAL_LOCATION)) {
               settings.setEndpoint(
                   String.format("parametermanager.%s.rep.%s:443", loc, resolvedUniverseDomain));

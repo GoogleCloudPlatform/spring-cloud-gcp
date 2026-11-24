@@ -82,6 +82,8 @@ public class GcpParameterBootstrapConfiguration {
                 new UserAgentHeaderProvider(GcpParameterBootstrapConfiguration.class))
             .setUniverseDomain(resolvedUniverseDomain);
 
+    // Calling setEndpoint() disables GAX endpoint templating, so interpolate the resolved
+    // universe domain into regional endpoints instead of hardcoding googleapis.com.
     if (StringUtils.hasText(properties.getLocation())
         && !properties.getLocation().equals("global")) {
       String apiEndpoint =
