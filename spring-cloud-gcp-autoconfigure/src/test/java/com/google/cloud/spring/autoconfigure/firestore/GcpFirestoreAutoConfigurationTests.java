@@ -163,19 +163,19 @@ class GcpFirestoreAutoConfigurationTests {
             properties,
             () -> "test-project",
             () -> TestUtils.MOCK_CREDENTIALS,
-            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "tpc.example.com" : null);
+            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "custom.example.com" : null);
 
     FirestoreOptions options = config.firestoreOptions();
-    assertThat(options.getUniverseDomain()).isEqualTo("tpc.example.com");
+    assertThat(options.getUniverseDomain()).isEqualTo("custom.example.com");
     InstantiatingGrpcChannelProvider channelProvider =
         (InstantiatingGrpcChannelProvider) options.getTransportChannelProvider();
-    assertThat(channelProvider.getEndpoint()).isEqualTo("firestore.tpc.example.com:443");
+    assertThat(channelProvider.getEndpoint()).isEqualTo("firestore.custom.example.com:443");
   }
 
   @Test
   void testReactiveStubRejectsMismatchedCredentialsUniverseDomain() throws Exception {
     Credentials mismatchedCredentials = Mockito.mock(Credentials.class);
-    Mockito.when(mismatchedCredentials.getUniverseDomain()).thenReturn("tpc.example.com");
+    Mockito.when(mismatchedCredentials.getUniverseDomain()).thenReturn("custom.example.com");
 
     assertThatThrownBy(
             () ->
@@ -183,7 +183,7 @@ class GcpFirestoreAutoConfigurationTests {
                     mismatchedCredentials, "googleapis.com"))
         .isInstanceOf(IllegalStateException.class)
         .hasMessageContaining("googleapis.com")
-        .hasMessageContaining("tpc.example.com");
+        .hasMessageContaining("custom.example.com");
   }
 
   /** Spring Boot config for tests. */

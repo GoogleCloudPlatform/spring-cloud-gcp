@@ -132,7 +132,8 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
     if (StringUtils.hasText(this.hostPort)) {
       return this.hostPort;
     }
-    // Derive the default endpoint from the resolved universe domain instead of hardcoding GDU.
+    // Derive the default endpoint from the resolved universe domain instead of hardcoding
+    // googleapis.com.
     return String.format("firestore.%s:443", getResolvedUniverseDomain(envProvider));
   }
 
