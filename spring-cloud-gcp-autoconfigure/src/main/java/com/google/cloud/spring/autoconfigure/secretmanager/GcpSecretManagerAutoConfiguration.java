@@ -70,6 +70,8 @@ public class GcpSecretManagerAutoConfiguration {
             .setCredentialsProvider(this.credentialsProvider)
             .setHeaderProvider(
                 new UserAgentHeaderProvider(GcpSecretManagerAutoConfiguration.class));
+    // Only override universeDomain when explicitly set; otherwise let GAX resolve
+    // GOOGLE_CLOUD_UNIVERSE_DOMAIN or default to googleapis.com.
     if (StringUtils.hasText(this.properties.getUniverseDomain())) {
       settingsBuilder.setUniverseDomain(this.properties.getUniverseDomain());
     }

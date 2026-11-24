@@ -169,6 +169,8 @@ public class SecretManagerConfigDataLocationResolver
           SecretManagerServiceSettings.newBuilder()
               .setCredentialsProvider(credentialsProvider)
               .setHeaderProvider(new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class));
+      // Only override universeDomain when explicitly set; otherwise let GAX resolve
+      // GOOGLE_CLOUD_UNIVERSE_DOMAIN or default to googleapis.com.
       if (StringUtils.hasText(properties.getUniverseDomain())) {
         settingsBuilder.setUniverseDomain(properties.getUniverseDomain());
       }

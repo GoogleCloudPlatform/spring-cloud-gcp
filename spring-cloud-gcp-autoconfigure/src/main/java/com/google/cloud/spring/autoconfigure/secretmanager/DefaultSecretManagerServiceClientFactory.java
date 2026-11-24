@@ -99,6 +99,8 @@ public class DefaultSecretManagerServiceClientFactory implements SecretManagerSe
                     .setHeaderProvider(
                         new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class))
                     .setUniverseDomain(resolvedUniverseDomain);
+            // Calling setEndpoint() disables GAX endpoint templating, so interpolate the resolved
+            // universe domain into regional endpoints instead of hardcoding googleapis.com.
             if (!loc.equals(GLOBAL_LOCATION)) {
               settings.setEndpoint(
                   String.format("secretmanager.%s.rep.%s:443", loc, resolvedUniverseDomain));
