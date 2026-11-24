@@ -132,8 +132,8 @@ class GcpSpannerEmulatorAutoConfigurationTests {
     }
 
     /**
-     * Provides a mock Spanner client to prevent eager socket connection attempts
-     * to offline emulator hosts during context startup.
+     * Provides a mock Spanner client to prevent eager socket connection attempts to offline
+     * emulator hosts during context startup.
      *
      * @return a mock Spanner client instance
      */

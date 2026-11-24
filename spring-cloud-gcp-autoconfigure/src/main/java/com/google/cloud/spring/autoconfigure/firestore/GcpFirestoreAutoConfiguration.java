@@ -21,6 +21,8 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.rpc.internal.Headers;
+import com.google.auth.Credentials;
+import com.google.cloud.NoCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
@@ -39,6 +41,8 @@ import io.grpc.Metadata;
 import io.grpc.auth.MoreCallCredentials;
 import io.grpc.stub.MetadataUtils;
 import java.io.IOException;
+import java.util.function.Function;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -74,12 +78,24 @@ public class GcpFirestoreAutoConfiguration {
 
   private final String hostPort;
 
+  private final String universeDomain;
+
   private final String firestoreRootPath;
 
+  @Autowired
   GcpFirestoreAutoConfiguration(
       GcpFirestoreProperties gcpFirestoreProperties,
       GcpProjectIdProvider projectIdProvider,
       CredentialsProvider credentialsProvider)
+      throws IOException {
+    this(gcpFirestoreProperties, projectIdProvider, credentialsProvider, System::getenv);
+  }
+
+  GcpFirestoreAutoConfiguration(
+      GcpFirestoreProperties gcpFirestoreProperties,
+      GcpProjectIdProvider projectIdProvider,
+      CredentialsProvider credentialsProvider,
+      Function<String, String> envProvider)
       throws IOException {
 
     this.projectId = gcpFirestoreProperties.getResolvedProjectId(projectIdProvider);
@@ -95,7 +111,8 @@ public class GcpFirestoreAutoConfiguration {
               : credentialsProvider);
     }
 
-    this.hostPort = gcpFirestoreProperties.getHostPort();
+    this.universeDomain = gcpFirestoreProperties.getResolvedUniverseDomain(envProvider);
+    this.hostPort = gcpFirestoreProperties.getResolvedHostPort(envProvider);
     this.firestoreRootPath = gcpFirestoreProperties.getFirestoreRootPath(projectIdProvider);
   }
 
@@ -106,10 +123,32 @@ public class GcpFirestoreAutoConfiguration {
         .setCredentialsProvider(this.credentialsProvider)
         .setProjectId(this.projectId)
         .setDatabaseId(databaseId)
+        .setUniverseDomain(this.universeDomain)
         .setHeaderProvider(USER_AGENT_HEADER_PROVIDER)
         .setChannelProvider(
             InstantiatingGrpcChannelProvider.newBuilder().setEndpoint(this.hostPort).build())
         .build();
+  }
+
+  /**
+   * Validates that the credential's universe domain (when present) matches the configured universe
+   * domain to prevent sending credentials to the wrong universe.
+   */
+  static void validateUniverseDomain(Credentials credentials, String expectedUniverseDomain)
+      throws IOException {
+    if (credentials == null || credentials instanceof NoCredentials) {
+      return;
+    }
+    String credentialsUniverseDomain = credentials.getUniverseDomain();
+    if (credentialsUniverseDomain != null
+        && !credentialsUniverseDomain.equals(expectedUniverseDomain)) {
+      throw new IllegalStateException(
+          String.format(
+              "The configured universe domain (%s) does not match the universe domain found in the"
+                  + " credentials (%s). If you haven't configured the universe domain explicitly,"
+                  + " `googleapis.com` is the default.",
+              expectedUniverseDomain, credentialsUniverseDomain));
+    }
   }
 
   @Bean
@@ -130,10 +169,11 @@ public class GcpFirestoreAutoConfiguration {
     public FirestoreGrpc.FirestoreStub firestoreGrpcStub(
         @Qualifier("firestoreManagedChannel") ManagedChannel firestoreManagedChannel)
         throws IOException {
+      Credentials credentials =
+          GcpFirestoreAutoConfiguration.this.credentialsProvider.getCredentials();
+      validateUniverseDomain(credentials, GcpFirestoreAutoConfiguration.this.universeDomain);
       return FirestoreGrpc.newStub(firestoreManagedChannel)
-          .withCallCredentials(
-              MoreCallCredentials.from(
-                  GcpFirestoreAutoConfiguration.this.credentialsProvider.getCredentials()));
+          .withCallCredentials(MoreCallCredentials.from(credentials));
     }
 
     @Bean

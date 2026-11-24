@@ -20,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.auth.Credentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.spring.autoconfigure.TestUtils;
@@ -130,6 +132,58 @@ class GcpFirestoreAutoConfigurationTests {
               assertThat(getRoutingHeader(context))
                   .isEqualTo("project_id=test&database_id=mydb%5E2");
             });
+  }
+
+  @Test
+  void testUniverseDomainPropertyAppliedToSyncAndReactivePaths() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.firestore.universe-domain=example.com")
+        .run(
+            ctx -> {
+              FirestoreOptions options = ctx.getBean(Firestore.class).getOptions();
+              assertThat(options.getUniverseDomain()).isEqualTo("example.com");
+              InstantiatingGrpcChannelProvider channelProvider =
+                  (InstantiatingGrpcChannelProvider) options.getTransportChannelProvider();
+              assertThat(channelProvider.getEndpoint()).isEqualTo("firestore.example.com:443");
+
+              FirestoreGrpc.FirestoreStub stub =
+                  ctx.getBean("firestoreGrpcStub", FirestoreGrpc.FirestoreStub.class);
+              ManagedChannel channel = (ManagedChannel) stub.getChannel();
+              assertThat(channel.authority()).isEqualTo("firestore.example.com:443");
+            });
+  }
+
+  @Test
+  void testEnvUniverseDomainResolvesEndpointWhenPropertyUnset() throws Exception {
+    GcpFirestoreProperties properties = new GcpFirestoreProperties();
+    properties.setProjectId("test-project");
+
+    GcpFirestoreAutoConfiguration config =
+        new GcpFirestoreAutoConfiguration(
+            properties,
+            () -> "test-project",
+            () -> TestUtils.MOCK_CREDENTIALS,
+            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "tpc.example.com" : null);
+
+    FirestoreOptions options = config.firestoreOptions();
+    assertThat(options.getUniverseDomain()).isEqualTo("tpc.example.com");
+    InstantiatingGrpcChannelProvider channelProvider =
+        (InstantiatingGrpcChannelProvider) options.getTransportChannelProvider();
+    assertThat(channelProvider.getEndpoint()).isEqualTo("firestore.tpc.example.com:443");
+  }
+
+  @Test
+  void testReactiveStubRejectsMismatchedCredentialsUniverseDomain() throws Exception {
+    Credentials mismatchedCredentials = Mockito.mock(Credentials.class);
+    Mockito.when(mismatchedCredentials.getUniverseDomain()).thenReturn("tpc.example.com");
+
+    assertThatThrownBy(
+            () ->
+                GcpFirestoreAutoConfiguration.validateUniverseDomain(
+                    mismatchedCredentials, "googleapis.com"))
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("googleapis.com")
+        .hasMessageContaining("tpc.example.com");
   }
 
   /** Spring Boot config for tests. */
