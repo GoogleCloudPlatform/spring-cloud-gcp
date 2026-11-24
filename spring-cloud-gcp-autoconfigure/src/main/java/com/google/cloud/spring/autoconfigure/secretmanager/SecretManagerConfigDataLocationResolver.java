@@ -44,6 +44,7 @@ import org.springframework.boot.context.config.ConfigDataLocationNotFoundExcepti
 import org.springframework.boot.context.config.ConfigDataLocationResolver;
 import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.util.StringUtils;
 
 public class SecretManagerConfigDataLocationResolver
     implements ConfigDataLocationResolver<SecretManagerConfigDataResource> {
@@ -164,12 +165,16 @@ public class SecretManagerConfigDataLocationResolver
       GcpSecretManagerProperties properties =
           context.getBootstrapContext().get(GcpSecretManagerProperties.class);
       DefaultCredentialsProvider credentialsProvider = new DefaultCredentialsProvider(properties);
-      SecretManagerServiceSettings settings =
+      SecretManagerServiceSettings.Builder settingsBuilder =
           SecretManagerServiceSettings.newBuilder()
               .setCredentialsProvider(credentialsProvider)
-              .setHeaderProvider(new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class))
-              .build();
-      secretManagerServiceClient = SecretManagerServiceClient.create(settings);
+              .setHeaderProvider(new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class));
+      // Only override universeDomain when explicitly set; otherwise let GAX resolve
+      // GOOGLE_CLOUD_UNIVERSE_DOMAIN or default to googleapis.com.
+      if (StringUtils.hasText(properties.getUniverseDomain())) {
+        settingsBuilder.setUniverseDomain(properties.getUniverseDomain());
+      }
+      secretManagerServiceClient = SecretManagerServiceClient.create(settingsBuilder.build());
 
       return secretManagerServiceClient;
     } catch (IOException e) {
@@ -184,8 +189,11 @@ public class SecretManagerConfigDataLocationResolver
     if (secretManagerServiceClientFactory != null) {
       return secretManagerServiceClientFactory;
     }
+    GcpSecretManagerProperties properties =
+        context.getBootstrapContext().get(GcpSecretManagerProperties.class);
     return new DefaultSecretManagerServiceClientFactory(
-        context.getBootstrapContext().get(CredentialsProvider.class));
+        context.getBootstrapContext().get(CredentialsProvider.class),
+        properties != null ? properties.getUniverseDomain() : null);
   }
 
   private static SecretManagerTemplate createSecretManagerTemplate(

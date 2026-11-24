@@ -19,6 +19,8 @@ package com.google.cloud.spring.autoconfigure.secretmanager;
 import static com.google.cloud.spring.secretmanager.SecretManagerTemplate.GLOBAL_LOCATION;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.rpc.EndpointContext;
+import com.google.auth.Credentials;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
@@ -26,9 +28,11 @@ import com.google.cloud.spring.secretmanager.SecretManagerServiceClientFactory;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * A default implementation of the {@link SecretManagerServiceClientFactory} interface.
@@ -41,10 +45,41 @@ import org.springframework.util.ObjectUtils;
 public class DefaultSecretManagerServiceClientFactory implements SecretManagerServiceClientFactory {
 
   private final CredentialsProvider credentialsProvider;
+  @Nullable private final String universeDomain;
+  private final Function<String, String> envProvider;
   private final Map<String, SecretManagerServiceClient> clientCache = new ConcurrentHashMap<>();
 
   DefaultSecretManagerServiceClientFactory(CredentialsProvider credentialsProvider) {
+    this(credentialsProvider, null, System::getenv);
+  }
+
+  DefaultSecretManagerServiceClientFactory(
+      CredentialsProvider credentialsProvider, @Nullable String universeDomain) {
+    this(credentialsProvider, universeDomain, System::getenv);
+  }
+
+  DefaultSecretManagerServiceClientFactory(
+      CredentialsProvider credentialsProvider,
+      @Nullable String universeDomain,
+      Function<String, String> envProvider) {
     this.credentialsProvider = credentialsProvider;
+    this.universeDomain = universeDomain;
+    this.envProvider = envProvider;
+  }
+
+  /**
+   * Resolves the universe domain from explicit configuration, falling back to {@code
+   * GOOGLE_CLOUD_UNIVERSE_DOMAIN} and then {@code googleapis.com}.
+   */
+  String resolveUniverseDomain() {
+    if (StringUtils.hasText(this.universeDomain)) {
+      return this.universeDomain;
+    }
+    String envUniverseDomain = this.envProvider.apply(EndpointContext.GOOGLE_CLOUD_UNIVERSE_DOMAIN);
+    if (StringUtils.hasText(envUniverseDomain)) {
+      return envUniverseDomain;
+    }
+    return Credentials.GOOGLE_DEFAULT_UNIVERSE;
   }
 
   @Override
@@ -56,13 +91,18 @@ public class DefaultSecretManagerServiceClientFactory implements SecretManagerSe
         location,
         loc -> {
           try {
+            String resolvedUniverseDomain = resolveUniverseDomain();
             SecretManagerServiceSettings.Builder settings =
                 SecretManagerServiceSettings.newBuilder()
                     .setCredentialsProvider(credentialsProvider)
                     .setHeaderProvider(
-                        new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class));
+                        new UserAgentHeaderProvider(SecretManagerConfigDataLoader.class))
+                    .setUniverseDomain(resolvedUniverseDomain);
+            // Calling setEndpoint() disables GAX endpoint templating, so interpolate the resolved
+            // universe domain into regional endpoints instead of hardcoding googleapis.com.
             if (!loc.equals(GLOBAL_LOCATION)) {
-              settings.setEndpoint(String.format("secretmanager.%s.rep.googleapis.com:443", loc));
+              settings.setEndpoint(
+                  String.format("secretmanager.%s.rep.%s:443", loc, resolvedUniverseDomain));
             }
             return SecretManagerServiceClient.create(settings.build());
           } catch (IOException e) {

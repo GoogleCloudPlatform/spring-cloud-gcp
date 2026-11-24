@@ -98,6 +98,24 @@ class GcpSecretManagerAutoConfigurationUnitTests {
     contextRunner.run(ctx -> assertThat(ctx.getBean(SecretManagerTemplate.class)).isNotNull());
   }
 
+  @Test
+  void testUniverseDomainPropertyAppliedToClientAndRegionalFactory() {
+    contextRunner
+        .withPropertyValues("spring.cloud.gcp.secretmanager.universe-domain=example.com")
+        .run(
+            ctx -> {
+              SecretManagerServiceClient client = ctx.getBean(SecretManagerServiceClient.class);
+              assertThat(client.getSettings().getUniverseDomain()).isEqualTo("example.com");
+
+              SecretManagerServiceClientFactory factory =
+                  ctx.getBean(SecretManagerServiceClientFactory.class);
+              SecretManagerServiceClient regionalClient = factory.getClient("us-central1");
+              assertThat(regionalClient.getSettings().getUniverseDomain()).isEqualTo("example.com");
+              assertThat(regionalClient.getSettings().getEndpoint())
+                  .isEqualTo("secretmanager.us-central1.rep.example.com:443");
+            });
+  }
+
   static class TestConfig {
 
     @Bean
