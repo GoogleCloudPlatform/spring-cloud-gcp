@@ -128,9 +128,11 @@ public class GcpFirestoreProperties implements CredentialsSupplier {
    * or computing {@code firestore.<universeDomain>:443} otherwise.
    */
   String getResolvedHostPort(Function<String, String> envProvider) {
+    // Respect explicit emulator or custom host-port overrides.
     if (StringUtils.hasText(this.hostPort)) {
       return this.hostPort;
     }
+    // Derive the default endpoint from the resolved universe domain instead of hardcoding GDU.
     return String.format("firestore.%s:443", getResolvedUniverseDomain(envProvider));
   }
 

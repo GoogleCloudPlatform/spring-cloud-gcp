@@ -171,6 +171,8 @@ public class GcpFirestoreAutoConfiguration {
         throws IOException {
       Credentials credentials =
           GcpFirestoreAutoConfiguration.this.credentialsProvider.getCredentials();
+      // The reactive path uses a raw ManagedChannel and bypasses GAX EndpointContext validation,
+      // so verify the credential's universe domain explicitly before attaching call credentials.
       validateUniverseDomain(credentials, GcpFirestoreAutoConfiguration.this.universeDomain);
       return FirestoreGrpc.newStub(firestoreManagedChannel)
           .withCallCredentials(MoreCallCredentials.from(credentials));
