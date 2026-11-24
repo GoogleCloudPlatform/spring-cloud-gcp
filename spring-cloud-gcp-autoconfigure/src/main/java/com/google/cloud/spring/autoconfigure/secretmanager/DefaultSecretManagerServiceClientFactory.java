@@ -19,6 +19,8 @@ package com.google.cloud.spring.autoconfigure.secretmanager;
 import static com.google.cloud.spring.secretmanager.SecretManagerTemplate.GLOBAL_LOCATION;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.rpc.EndpointContext;
+import com.google.auth.Credentials;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.spring.core.UserAgentHeaderProvider;
@@ -41,9 +43,6 @@ import org.springframework.util.StringUtils;
  */
 @Component
 public class DefaultSecretManagerServiceClientFactory implements SecretManagerServiceClientFactory {
-
-  private static final String DEFAULT_UNIVERSE_DOMAIN = "googleapis.com";
-  private static final String UNIVERSE_DOMAIN_ENV_VAR = "GOOGLE_CLOUD_UNIVERSE_DOMAIN";
 
   private final CredentialsProvider credentialsProvider;
   @Nullable private final String universeDomain;
@@ -76,11 +75,11 @@ public class DefaultSecretManagerServiceClientFactory implements SecretManagerSe
     if (StringUtils.hasText(this.universeDomain)) {
       return this.universeDomain;
     }
-    String envUniverseDomain = this.envProvider.apply(UNIVERSE_DOMAIN_ENV_VAR);
+    String envUniverseDomain = this.envProvider.apply(EndpointContext.GOOGLE_CLOUD_UNIVERSE_DOMAIN);
     if (StringUtils.hasText(envUniverseDomain)) {
       return envUniverseDomain;
     }
-    return DEFAULT_UNIVERSE_DOMAIN;
+    return Credentials.GOOGLE_DEFAULT_UNIVERSE;
   }
 
   @Override
