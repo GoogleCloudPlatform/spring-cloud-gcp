@@ -125,7 +125,6 @@ public class ReliabilityRisksSpringAutoConfiguration {
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)
-        .setEndpoint(ReliabilityRisksSettings.getDefaultEndpoint())
         .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());

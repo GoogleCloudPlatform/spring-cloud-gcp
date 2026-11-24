@@ -126,7 +126,6 @@ public class FirewallActivationSpringAutoConfiguration {
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)
-        .setEndpoint(FirewallActivationSettings.getDefaultEndpoint())
         .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());

@@ -136,7 +136,6 @@ public class ReachabilityServiceSpringAutoConfiguration {
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)
-        .setEndpoint(ReachabilityServiceSettings.getDefaultEndpoint())
         .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());

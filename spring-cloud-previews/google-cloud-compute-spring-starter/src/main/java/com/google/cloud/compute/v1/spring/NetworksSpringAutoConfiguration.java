@@ -121,7 +121,6 @@ public class NetworksSpringAutoConfiguration {
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)
-        .setEndpoint(NetworksSettings.getDefaultEndpoint())
         .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());

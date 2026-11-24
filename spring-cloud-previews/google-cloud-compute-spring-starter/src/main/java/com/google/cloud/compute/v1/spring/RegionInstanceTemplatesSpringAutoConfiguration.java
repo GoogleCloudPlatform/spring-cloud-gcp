@@ -127,7 +127,6 @@ public class RegionInstanceTemplatesSpringAutoConfiguration {
     clientSettingsBuilder
         .setCredentialsProvider(this.credentialsProvider)
         .setTransportChannelProvider(defaultTransportChannelProvider)
-        .setEndpoint(RegionInstanceTemplatesSettings.getDefaultEndpoint())
         .setHeaderProvider(this.userAgentHeaderProvider());
     if (this.clientProperties.getQuotaProjectId() != null) {
       clientSettingsBuilder.setQuotaProjectId(this.clientProperties.getQuotaProjectId());
