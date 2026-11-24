@@ -562,6 +562,8 @@ public class SpringAutoConfigClassComposer implements ClassComposer {
             .setExprReferenceExpr(thisExpr)
             .build();
 
+    // Omit setEndpoint(<Service>Settings.getDefaultEndpoint()) so gax-java can expand the default
+    // endpoint template with GOOGLE_CLOUD_UNIVERSE_DOMAIN instead of pinning googleapis.com.
     Expr settingsBuilderExpr =
         MethodInvocationExpr.builder()
             .setExprReferenceExpr(VariableExpr.withVariable(settingBuilderVariable))
