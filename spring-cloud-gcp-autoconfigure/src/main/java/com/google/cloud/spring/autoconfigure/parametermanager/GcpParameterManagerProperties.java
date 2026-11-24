@@ -45,6 +45,12 @@ public class GcpParameterManagerProperties implements CredentialsSupplier {
    */
   private boolean allowDefaultParameter;
 
+  /**
+   * Universe domain of the Parameter Manager client. When unset, falls back to the {@code
+   * GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable and then {@code googleapis.com}.
+   */
+  private String universeDomain;
+
   public Credentials getCredentials() {
     return credentials;
   }
@@ -63,5 +69,15 @@ public class GcpParameterManagerProperties implements CredentialsSupplier {
 
   public void setAllowDefaultParameter(boolean allowDefaultParameter) {
     this.allowDefaultParameter = allowDefaultParameter;
+  }
+
+  /** Returns the configured universe domain, or {@code null} if unset. */
+  public String getUniverseDomain() {
+    return universeDomain;
+  }
+
+  /** Sets the universe domain for the Parameter Manager client. */
+  public void setUniverseDomain(String universeDomain) {
+    this.universeDomain = universeDomain;
   }
 }

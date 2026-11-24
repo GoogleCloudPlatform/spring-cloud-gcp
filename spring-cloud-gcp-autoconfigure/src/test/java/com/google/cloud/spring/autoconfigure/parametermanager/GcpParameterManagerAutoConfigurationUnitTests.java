@@ -98,6 +98,24 @@ class GcpParameterManagerAutoConfigurationUnitTests {
     contextRunner.run(ctx -> assertThat(ctx.getBean(ParameterManagerTemplate.class)).isNotNull());
   }
 
+  @Test
+  void testUniverseDomainPropertyAppliedToClientAndRegionalFactory() {
+    contextRunner
+        .withPropertyValues("spring.cloud.gcp.parametermanager.universe-domain=example.com")
+        .run(
+            ctx -> {
+              ParameterManagerClient client = ctx.getBean(ParameterManagerClient.class);
+              assertThat(client.getSettings().getUniverseDomain()).isEqualTo("example.com");
+
+              ParameterManagerClientFactory factory =
+                  ctx.getBean(ParameterManagerClientFactory.class);
+              ParameterManagerClient regionalClient = factory.getClient("us-central1");
+              assertThat(regionalClient.getSettings().getUniverseDomain()).isEqualTo("example.com");
+              assertThat(regionalClient.getSettings().getEndpoint())
+                  .isEqualTo("parametermanager.us-central1.rep.example.com:443");
+            });
+  }
+
   static class TestConfig {
 
     @Bean

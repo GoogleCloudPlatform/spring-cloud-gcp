@@ -21,6 +21,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
+import com.google.cloud.parametermanager.v1.ParameterManagerSettings;
+import com.google.cloud.spring.autoconfigure.TestUtils;
+import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -134,6 +137,54 @@ class GcpParameterBootstrapConfigurationTest {
         context ->
             assertThatExceptionOfType(NoSuchBeanDefinitionException.class)
                 .isThrownBy(() -> context.getBean(GcpParameterProperties.class)));
+  }
+
+  @Test
+  void testRegionalEndpointUsesEnvUniverseDomain() throws IOException {
+    GcpParameterProperties properties = new GcpParameterProperties();
+    properties.setLocation("us-central1");
+
+    ParameterManagerSettings settings =
+        GcpParameterBootstrapConfiguration.buildParameterManagerSettings(
+            properties,
+            () -> TestUtils.MOCK_CREDENTIALS,
+            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "tpc.example.com" : null);
+
+    assertThat(settings.getUniverseDomain()).isEqualTo("tpc.example.com");
+    assertThat(settings.getEndpoint())
+        .isEqualTo("parametermanager.us-central1.rep.tpc.example.com:443");
+  }
+
+  @Test
+  void testRegionalEndpointUsesExplicitUniverseDomainOverEnv() throws IOException {
+    GcpParameterProperties properties = new GcpParameterProperties();
+    properties.setLocation("europe-west1");
+    properties.setUniverseDomain("explicit.example.com");
+
+    ParameterManagerSettings settings =
+        GcpParameterBootstrapConfiguration.buildParameterManagerSettings(
+            properties,
+            () -> TestUtils.MOCK_CREDENTIALS,
+            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "env.example.com" : null);
+
+    assertThat(settings.getUniverseDomain()).isEqualTo("explicit.example.com");
+    assertThat(settings.getEndpoint())
+        .isEqualTo("parametermanager.europe-west1.rep.explicit.example.com:443");
+  }
+
+  @Test
+  void testGlobalLocationUsesResolvedUniverseDomain() throws IOException {
+    GcpParameterProperties properties = new GcpParameterProperties();
+    properties.setLocation("global");
+
+    ParameterManagerSettings settings =
+        GcpParameterBootstrapConfiguration.buildParameterManagerSettings(
+            properties,
+            () -> TestUtils.MOCK_CREDENTIALS,
+            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "tpc.example.com" : null);
+
+    assertThat(settings.getUniverseDomain()).isEqualTo("tpc.example.com");
+    assertThat(settings.getEndpoint()).isEqualTo("parametermanager.tpc.example.com:443");
   }
 
   private static class TestConfiguration {

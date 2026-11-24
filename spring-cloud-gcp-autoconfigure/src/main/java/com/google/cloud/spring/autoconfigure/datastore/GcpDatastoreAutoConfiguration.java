@@ -203,8 +203,8 @@ public class GcpDatastoreAutoConfiguration {
    *
    * <p>When dynamic namespaces are configured, each namespace requires its own {@link Datastore}
    * client with dedicated options. To prevent resource leaks from unbounded cache growth (e.g. gRPC
-   * channels and threads), this cache evicts least-recently-used clients and ensures proper
-   * closure of evicted clients and on context shutdown.
+   * channels and threads), this cache evicts least-recently-used clients and ensures proper closure
+   * of evicted clients and on context shutdown.
    */
   static class CachedDatastoreProvider implements DatastoreProvider, AutoCloseable {
 

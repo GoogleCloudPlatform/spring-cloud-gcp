@@ -26,9 +26,11 @@ import com.google.cloud.spring.parametermanager.ParameterManagerClientFactory;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * A default implementation of the {@link ParameterManagerClientFactory} interface.
@@ -40,13 +42,50 @@ import org.springframework.util.ObjectUtils;
 @Component
 public class DefaultParameterManagerClientFactory implements ParameterManagerClientFactory {
 
+  private static final String DEFAULT_UNIVERSE_DOMAIN = "googleapis.com";
+  private static final String UNIVERSE_DOMAIN_ENV_VAR = "GOOGLE_CLOUD_UNIVERSE_DOMAIN";
+
   private final CredentialsProvider credentialsProvider;
+  @Nullable private final String universeDomain;
+  private final Function<String, String> envProvider;
   private final Map<String, ParameterManagerClient> clientCache = new ConcurrentHashMap<>();
 
   DefaultParameterManagerClientFactory(
       CredentialsProvider credentialsProvider, ParameterManagerClient client) {
+    this(credentialsProvider, client, null, System::getenv);
+  }
+
+  DefaultParameterManagerClientFactory(
+      CredentialsProvider credentialsProvider,
+      ParameterManagerClient client,
+      @Nullable String universeDomain) {
+    this(credentialsProvider, client, universeDomain, System::getenv);
+  }
+
+  DefaultParameterManagerClientFactory(
+      CredentialsProvider credentialsProvider,
+      ParameterManagerClient client,
+      @Nullable String universeDomain,
+      Function<String, String> envProvider) {
     this.credentialsProvider = credentialsProvider;
+    this.universeDomain = universeDomain;
+    this.envProvider = envProvider;
     this.clientCache.putIfAbsent(GLOBAL_LOCATION, client);
+  }
+
+  /**
+   * Resolves the universe domain from explicit configuration, falling back to {@code
+   * GOOGLE_CLOUD_UNIVERSE_DOMAIN} and then {@code googleapis.com}.
+   */
+  String resolveUniverseDomain() {
+    if (StringUtils.hasText(this.universeDomain)) {
+      return this.universeDomain;
+    }
+    String envUniverseDomain = this.envProvider.apply(UNIVERSE_DOMAIN_ENV_VAR);
+    if (StringUtils.hasText(envUniverseDomain)) {
+      return envUniverseDomain;
+    }
+    return DEFAULT_UNIVERSE_DOMAIN;
   }
 
   @Override
@@ -58,14 +97,16 @@ public class DefaultParameterManagerClientFactory implements ParameterManagerCli
         location,
         loc -> {
           try {
+            String resolvedUniverseDomain = resolveUniverseDomain();
             ParameterManagerSettings.Builder settings =
                 ParameterManagerSettings.newBuilder()
                     .setCredentialsProvider(credentialsProvider)
                     .setHeaderProvider(
-                        new UserAgentHeaderProvider(ParameterManagerConfigDataLoader.class));
+                        new UserAgentHeaderProvider(ParameterManagerConfigDataLoader.class))
+                    .setUniverseDomain(resolvedUniverseDomain);
             if (!loc.equals(GLOBAL_LOCATION)) {
               settings.setEndpoint(
-                  String.format("parametermanager.%s.rep.googleapis.com:443", loc));
+                  String.format("parametermanager.%s.rep.%s:443", loc, resolvedUniverseDomain));
             }
             return ParameterManagerClient.create(settings.build());
           } catch (IOException e) {
