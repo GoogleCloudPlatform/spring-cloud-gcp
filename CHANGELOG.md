@@ -15,6 +15,22 @@ history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
 
+## [8.3.2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.3.1...v8.3.2) (2026-11-25)
+
+
+### Bug Fixes
+
+* **firestore:** support universe domain and validate credentials on reactive path ([#4726](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4726)) ([78432f0](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/78432f09887b0d059ac66c5ca615f676bf47def9))
+* **pubsub:** propagate universe domain to subscriber stub, admin, and health indicator clients ([#4729](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4729)) ([edc34f2](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/edc34f280edb0a89f9c8483d689288b57b4b033f))
+* **secretmanager:** support universe domain for regional endpoints ([#4724](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4724)) ([f1c9684](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/f1c96845de680f2f4c579405bd6d0ce3647aeed8))
+* **trace:** support universe domain and validate credentials ([#4728](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4728)) ([427916a](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/427916ad0f118de7ffeb5dcb30e750af48a1b2a2))
+* update actions/setup-go version in generateAutoConfigs workflow ([#4649](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4649)) ([4c239bd](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/4c239bdbe17b5db1d2514e9b06d1574767d743ed))
+
+
+### Documentation
+
+* point README issue link to .github/ISSUE_TEMPLATE ([#4709](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/4709)) ([353dd35](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/353dd3511018759ecce41cf419247f6fccc34552))
+
 ## [8.3.1](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v8.3.0...v8.3.1) (2026-10-29)
 
 
