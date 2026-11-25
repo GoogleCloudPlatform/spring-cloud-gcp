@@ -17,6 +17,7 @@
 package com.google.cloud.spring.autoconfigure.trace;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -26,6 +27,8 @@ import brave.TracingCustomizer;
 import brave.handler.SpanHandler;
 import brave.propagation.TraceContextOrSamplingFlags;
 import com.google.api.gax.core.ExecutorProvider;
+import com.google.auth.Credentials;
+import com.google.cloud.spring.autoconfigure.TestUtils;
 import com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfigurationTests.MultipleSpanHandlersConfig.GcpTraceService;
 import com.google.cloud.spring.autoconfigure.trace.StackdriverTraceAutoConfigurationTests.MultipleSpanHandlersConfig.OtherSender;
@@ -139,6 +142,69 @@ class StackdriverTraceAutoConfigurationTests {
               assertThat(FieldUtils.readField(sender, "serverResponseTimeoutMs", true))
                   .isEqualTo(5000L);
             });
+  }
+
+  @Test
+  void testUniverseDomainPropertyConfiguresChannelTarget() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.trace.universe-domain=custom.example.com")
+        .withBean(
+            StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
+            SpanHandler.class,
+            () -> SpanHandler.NOOP)
+        .run(
+            context -> {
+              ManagedChannel channel =
+                  context.getBean("stackdriverSenderChannel", ManagedChannel.class);
+              assertThat(channel.authority()).isEqualTo("cloudtrace.custom.example.com");
+            });
+  }
+
+  @Test
+  void testEndpointPropertyOverridesChannelTarget() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.trace.endpoint=dns:///custom-trace.example.com:443")
+        .withBean(
+            StackdriverTraceAutoConfiguration.SPAN_HANDLER_BEAN_NAME,
+            SpanHandler.class,
+            () -> SpanHandler.NOOP)
+        .run(
+            context -> {
+              ManagedChannel channel =
+                  context.getBean("stackdriverSenderChannel", ManagedChannel.class);
+              assertThat(channel.authority()).isEqualTo("custom-trace.example.com:443");
+            });
+  }
+
+  @Test
+  void testEnvUniverseDomainResolvesChannelTargetWhenPropertyUnset() throws Exception {
+    GcpTraceProperties properties = new GcpTraceProperties();
+    StackdriverTraceAutoConfiguration config =
+        new StackdriverTraceAutoConfiguration(
+            () -> "proj",
+            () -> TestUtils.MOCK_CREDENTIALS,
+            properties,
+            env -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(env) ? "custom.example.com" : null);
+    ManagedChannel channel = config.stackdriverSenderChannel();
+    try {
+      assertThat(channel.authority()).isEqualTo("cloudtrace.custom.example.com");
+    } finally {
+      channel.shutdownNow();
+    }
+  }
+
+  @Test
+  void testValidateUniverseDomainRejectsMismatchedCredentials() throws Exception {
+    Credentials mismatchedCredentials = mock(Credentials.class);
+    when(mismatchedCredentials.getUniverseDomain()).thenReturn("custom.example.com");
+
+    assertThatThrownBy(
+            () ->
+                StackdriverTraceAutoConfiguration.validateUniverseDomain(
+                    mismatchedCredentials, "googleapis.com"))
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("googleapis.com")
+        .hasMessageContaining("custom.example.com");
   }
 
   @Test

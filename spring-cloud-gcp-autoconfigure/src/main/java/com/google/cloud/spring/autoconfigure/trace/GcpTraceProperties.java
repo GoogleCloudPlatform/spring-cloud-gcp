@@ -16,11 +16,16 @@
 
 package com.google.cloud.spring.autoconfigure.trace;
 
+import static com.google.auth.Credentials.GOOGLE_DEFAULT_UNIVERSE;
+
+import com.google.api.gax.rpc.EndpointContext;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.GcpScope;
+import java.util.function.Function;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.util.StringUtils;
 
 /** Stackdriver Trace Properties. */
 @ConfigurationProperties("spring.cloud.gcp.trace")
@@ -62,6 +67,19 @@ public class GcpTraceProperties implements CredentialsSupplier {
 
   /** Timeout in seconds for server response when sending traces. */
   private Long serverResponseTimeoutMs;
+
+  /**
+   * Universe domain of the Trace client. When unset, falls back to the {@code
+   * GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable and then {@code googleapis.com}.
+   */
+  private String universeDomain;
+
+  /**
+   * Custom gRPC target endpoint for the Trace channel (for example, {@code
+   * dns:///cloudtrace.example.com}). When unset, defaults to {@code
+   * dns:///cloudtrace.<universeDomain>}.
+   */
+  private String endpoint;
 
   public String getProjectId() {
     return this.projectId;
@@ -145,5 +163,54 @@ public class GcpTraceProperties implements CredentialsSupplier {
 
   public void setServerResponseTimeoutMs(Long serverResponseTimeoutMs) {
     this.serverResponseTimeoutMs = serverResponseTimeoutMs;
+  }
+
+  /** Returns the configured universe domain, or {@code null} if unset. */
+  public String getUniverseDomain() {
+    return this.universeDomain;
+  }
+
+  /** Sets the universe domain for the Trace client. */
+  public void setUniverseDomain(String universeDomain) {
+    this.universeDomain = universeDomain;
+  }
+
+  /** Returns the configured gRPC target endpoint, or {@code null} if unset. */
+  public String getEndpoint() {
+    return this.endpoint;
+  }
+
+  /** Sets a custom gRPC target endpoint for the Trace channel. */
+  public void setEndpoint(String endpoint) {
+    this.endpoint = endpoint;
+  }
+
+  /**
+   * Resolves the universe domain from explicit configuration, falling back to {@code
+   * GOOGLE_CLOUD_UNIVERSE_DOMAIN} and then {@code googleapis.com}.
+   */
+  String getResolvedUniverseDomain(Function<String, String> envProvider) {
+    if (StringUtils.hasText(this.universeDomain)) {
+      return this.universeDomain;
+    }
+    String envUniverseDomain = envProvider.apply(EndpointContext.GOOGLE_CLOUD_UNIVERSE_DOMAIN);
+    if (StringUtils.hasText(envUniverseDomain)) {
+      return envUniverseDomain;
+    }
+    return GOOGLE_DEFAULT_UNIVERSE;
+  }
+
+  /**
+   * Resolves the gRPC target endpoint, using the explicitly configured {@code endpoint} when set or
+   * computing {@code dns:///cloudtrace.<universeDomain>} otherwise.
+   */
+  String getResolvedEndpoint(Function<String, String> envProvider) {
+    // Respect explicit custom endpoint overrides.
+    if (StringUtils.hasText(this.endpoint)) {
+      return this.endpoint;
+    }
+    // Derive the default target from the resolved universe domain instead of hardcoding
+    // googleapis.com.
+    return String.format("dns:///cloudtrace.%s", getResolvedUniverseDomain(envProvider));
   }
 }
