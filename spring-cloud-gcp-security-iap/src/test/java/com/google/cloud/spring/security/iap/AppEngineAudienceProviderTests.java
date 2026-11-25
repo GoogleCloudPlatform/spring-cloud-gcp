@@ -18,11 +18,22 @@ package com.google.cloud.spring.security.iap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.cloud.resourcemanager.Project;
+import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.resourcemanager.ResourceManager;
+import com.google.cloud.resourcemanager.v3.GetProjectRequest;
+import com.google.cloud.resourcemanager.v3.Project;
+import com.google.cloud.resourcemanager.v3.ProjectName;
+import com.google.cloud.resourcemanager.v3.ProjectsClient;
+import com.google.cloud.resourcemanager.v3.stub.ProjectsStub;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -34,9 +45,20 @@ class AppEngineAudienceProviderTests {
 
   @Mock GcpProjectIdProvider mockProjectIdProvider;
 
+  @Mock ProjectsStub mockProjectsStub;
+
+  @Mock UnaryCallable<GetProjectRequest, Project> mockGetProjectCallable;
+
   @Mock ResourceManager mockResourceManager;
 
-  @Mock Project mockProject;
+  @Mock com.google.cloud.resourcemanager.Project mockLegacyProject;
+
+  private ProjectsClient projectsClient;
+
+  @BeforeEach
+  void setUp() {
+    this.projectsClient = ProjectsClient.create(this.mockProjectsStub);
+  }
 
   @Test
   void testNullProjectIdProviderDisallowed() {
@@ -47,6 +69,126 @@ class AppEngineAudienceProviderTests {
   }
 
   @Test
+  void testNullProjectsClientDisallowed() {
+    AppEngineAudienceProvider audienceProvider =
+        new AppEngineAudienceProvider(this.mockProjectIdProvider);
+    assertThatThrownBy(() -> audienceProvider.setProjectsClient(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("ProjectsClient cannot be null.");
+  }
+
+  @Test
+  void testNullProjectDisallowedWithProjectsClient() {
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
+    when(this.mockProjectsStub.getProjectCallable()).thenReturn(this.mockGetProjectCallable);
+    AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
+    provider.setProjectsClient(this.projectsClient);
+    assertThatThrownBy(provider::getAudience)
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageStartingWith(
+            "Project expected not to be null. Is Cloud Resource Manager API enabled");
+  }
+
+  @Test
+  void testEmptyProjectNameDisallowedWithProjectsClient() {
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
+    stubGetProject("steal-spaceship", Project.newBuilder().build());
+
+    AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
+    provider.setProjectsClient(this.projectsClient);
+    assertThatThrownBy(provider::getAudience)
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Project Number expected not to be null.");
+  }
+
+  @Test
+  void testMalformedProjectNameDisallowedWithProjectsClient() {
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
+    stubGetProject("steal-spaceship", Project.newBuilder().setName("invalid-name").build());
+
+    AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
+    provider.setProjectsClient(this.projectsClient);
+    assertThatThrownBy(provider::getAudience)
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Project Number expected not to be null.");
+  }
+
+  @Test
+  void testNullProjectIdDisallowedWithProjectsClient() {
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn(null);
+
+    AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
+    provider.setProjectsClient(this.projectsClient);
+    assertThatThrownBy(provider::getAudience)
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Project Id expected not to be null.");
+  }
+
+  @Test
+  void testAudienceFormatCorrectWithProjectsClient() {
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
+    stubGetProject("steal-spaceship", Project.newBuilder().setName("projects/42").build());
+
+    AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
+    provider.setProjectsClient(this.projectsClient);
+
+    assertThat(provider.getAudience()).isEqualTo("/projects/42/apps/steal-spaceship");
+    provider.close();
+    verify(this.mockProjectsStub, never()).close();
+  }
+
+  @Test
+  void testDefaultProjectsClientCreatedLazilyCachedAndClosedOnClose() {
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
+    stubGetProject("steal-spaceship", Project.newBuilder().setName("projects/42").build());
+
+    AtomicInteger createCount = new AtomicInteger();
+    AppEngineAudienceProvider provider =
+        new AppEngineAudienceProvider(this.mockProjectIdProvider) {
+          @Override
+          ProjectsClient createProjectsClient() {
+            createCount.incrementAndGet();
+            return projectsClient;
+          }
+        };
+
+    assertThat(createCount.get()).isZero();
+    assertThat(provider.getAudience()).isEqualTo("/projects/42/apps/steal-spaceship");
+    assertThat(provider.getAudience()).isEqualTo("/projects/42/apps/steal-spaceship");
+    assertThat(createCount.get()).isEqualTo(1);
+    verify(this.mockProjectsStub, never()).close();
+
+    provider.close();
+    verify(this.mockProjectsStub).close();
+  }
+
+  /** Stubs the v3 GetProject RPC response for the given project ID. */
+  private void stubGetProject(String projectId, Project response) {
+    when(this.mockProjectsStub.getProjectCallable()).thenReturn(this.mockGetProjectCallable);
+    GetProjectRequest expectedRequest =
+        GetProjectRequest.newBuilder().setName(ProjectName.of(projectId).toString()).build();
+    when(this.mockGetProjectCallable.call(expectedRequest)).thenReturn(response);
+  }
+
+  @Test
+  void testDefaultProjectsClientCreationFailureWrapped() {
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
+
+    AppEngineAudienceProvider provider =
+        new AppEngineAudienceProvider(this.mockProjectIdProvider) {
+          @Override
+          ProjectsClient createProjectsClient() throws IOException {
+            throw new IOException("client creation failed");
+          }
+        };
+
+    assertThatThrownBy(provider::getAudience)
+        .isInstanceOf(UncheckedIOException.class)
+        .hasMessageContaining("Failed to create Resource Manager ProjectsClient.");
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
   void testNullResourceManagerDisallowed() {
     AppEngineAudienceProvider audienceProvider =
         new AppEngineAudienceProvider(this.mockProjectIdProvider);
@@ -56,6 +198,7 @@ class AppEngineAudienceProviderTests {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testNullProjectDisallowed() {
     when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
     AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
@@ -67,11 +210,11 @@ class AppEngineAudienceProviderTests {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testNullProjectNumberDisallowed() {
     when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
-    when(mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
-    when(this.mockResourceManager.get("steal-spaceship")).thenReturn(this.mockProject);
-    when(this.mockProject.getProjectNumber()).thenReturn(null);
+    when(this.mockResourceManager.get("steal-spaceship")).thenReturn(this.mockLegacyProject);
+    when(this.mockLegacyProject.getProjectNumber()).thenReturn(null);
 
     AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
     provider.setResourceManager(this.mockResourceManager);
@@ -81,11 +224,11 @@ class AppEngineAudienceProviderTests {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testNullProjectIdDisallowed() {
-    when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
-    when(mockProjectIdProvider.getProjectId()).thenReturn(null);
-    when(this.mockResourceManager.get(null)).thenReturn(this.mockProject);
-    when(this.mockProject.getProjectNumber()).thenReturn(42L);
+    when(this.mockProjectIdProvider.getProjectId()).thenReturn(null);
+    when(this.mockResourceManager.get(null)).thenReturn(this.mockLegacyProject);
+    when(this.mockLegacyProject.getProjectNumber()).thenReturn(42L);
 
     AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
     provider.setResourceManager(this.mockResourceManager);
@@ -95,10 +238,11 @@ class AppEngineAudienceProviderTests {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testAudienceFormatCorrect() {
     when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
-    when(this.mockResourceManager.get("steal-spaceship")).thenReturn(this.mockProject);
-    when(this.mockProject.getProjectNumber()).thenReturn(42L);
+    when(this.mockResourceManager.get("steal-spaceship")).thenReturn(this.mockLegacyProject);
+    when(this.mockLegacyProject.getProjectNumber()).thenReturn(42L);
 
     AppEngineAudienceProvider provider = new AppEngineAudienceProvider(this.mockProjectIdProvider);
     provider.setResourceManager(this.mockResourceManager);
