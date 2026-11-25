@@ -1521,21 +1521,39 @@ class GcpPubSubAutoConfigurationTests {
   void universeDomainAndEndpointPropagatedToAdminClients() {
     contextRunner
         .withPropertyValues(
-            "spring.cloud.gcp.pubsub.publisher.universe-domain=pub.example.com",
-            "spring.cloud.gcp.pubsub.subscriber.universe-domain=sub.example.com")
+            "spring.cloud.gcp.pubsub.publisher.universe-domain=custom.example.com",
+            "spring.cloud.gcp.pubsub.subscriber.universe-domain=custom.example.com")
         .run(
             ctx -> {
               TopicAdminSettings topicAdminSettings = ctx.getBean(TopicAdminSettings.class);
-              assertThat(topicAdminSettings.getUniverseDomain()).isEqualTo("pub.example.com");
-              assertThat(topicAdminSettings.getEndpoint()).isEqualTo("pubsub.pub.example.com:443");
+              assertThat(topicAdminSettings.getUniverseDomain()).isEqualTo("custom.example.com");
+              assertThat(topicAdminSettings.getEndpoint())
+                  .isEqualTo("pubsub.custom.example.com:443");
 
               SubscriptionAdminClient subscriptionAdminClient =
                   ctx.getBean(SubscriptionAdminClient.class);
               assertThat(subscriptionAdminClient.getSettings().getUniverseDomain())
-                  .isEqualTo("sub.example.com");
+                  .isEqualTo("custom.example.com");
               assertThat(subscriptionAdminClient.getSettings().getEndpoint())
-                  .isEqualTo("pubsub.sub.example.com:443");
+                  .isEqualTo("pubsub.custom.example.com:443");
             });
+  }
+
+  @Test
+  void conflictingUniverseDomainsFailAdminClients() {
+    contextRunner
+        .withPropertyValues(
+            "spring.cloud.gcp.pubsub.publisher.universe-domain=pub.example.com",
+            "spring.cloud.gcp.pubsub.subscriber.universe-domain=sub.example.com")
+        .run(
+            ctx ->
+                assertThat(ctx)
+                    .hasFailed()
+                    .getFailure()
+                    .hasRootCauseInstanceOf(IllegalArgumentException.class)
+                    .hasRootCauseMessage(
+                        "Conflicting universe domains configured: publisher (pub.example.com) and"
+                            + " subscriber (sub.example.com) must match."));
   }
 
   @Configuration

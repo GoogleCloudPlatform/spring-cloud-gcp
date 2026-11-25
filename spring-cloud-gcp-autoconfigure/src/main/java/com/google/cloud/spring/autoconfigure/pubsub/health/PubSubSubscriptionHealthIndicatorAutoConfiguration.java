@@ -100,15 +100,34 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration
     if (resolvedCredentialsProvider != null) {
       settingsBuilder.setCredentialsProvider(resolvedCredentialsProvider);
     }
-    // Precedence: subscriber.universe-domain, falling back to publisher.universe-domain when unset.
-    String universeDomain = this.gcpPubSubProperties.getSubscriber().getUniverseDomain();
-    if (!StringUtils.hasText(universeDomain)) {
-      universeDomain = this.gcpPubSubProperties.getPublisher().getUniverseDomain();
-    }
-    if (StringUtils.hasText(universeDomain)) {
+    String universeDomain = resolveUniverseDomain(this.gcpPubSubProperties);
+    if (universeDomain != null) {
       settingsBuilder.setUniverseDomain(universeDomain);
     }
     return MetricServiceClient.create(settingsBuilder.build());
+  }
+
+  /**
+   * Resolves the configured universe domain from publisher/subscriber properties, failing if both
+   * are explicitly set to different values.
+   */
+  private static String resolveUniverseDomain(GcpPubSubProperties properties) {
+    String publisherUniverseDomain = properties.getPublisher().getUniverseDomain();
+    String subscriberUniverseDomain = properties.getSubscriber().getUniverseDomain();
+    boolean hasPublisher = StringUtils.hasText(publisherUniverseDomain);
+    boolean hasSubscriber = StringUtils.hasText(subscriberUniverseDomain);
+    if (hasPublisher
+        && hasSubscriber
+        && !publisherUniverseDomain.equals(subscriberUniverseDomain)) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Conflicting universe domains configured: publisher (%s) and subscriber (%s) must"
+                  + " match.",
+              publisherUniverseDomain, subscriberUniverseDomain));
+    }
+    return hasPublisher
+        ? publisherUniverseDomain
+        : (hasSubscriber ? subscriberUniverseDomain : null);
   }
 
   @Bean

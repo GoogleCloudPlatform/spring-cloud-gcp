@@ -421,18 +421,13 @@ public class GcpPubSubAutoConfiguration {
               .setCredentialsProvider(this.finalCredentialsProvider)
               .setHeaderProvider(this.headerProvider)
               .setTransportChannelProvider(publisherTransportChannelProvider);
-      // Propagate configured endpoint and universe domain so topic admin RPCs match publisher
-      // configuration instead of falling back to googleapis.com. Precedence:
-      // publisher.universe-domain, falling back to subscriber.universe-domain when unset (e.g.,
-      // subscriber-only apps).
+      // Propagate configured endpoint and universe domain so topic admin RPCs do not fall back
+      // to googleapis.com.
       String endpoint = this.gcpPubSubProperties.getPublisher().getEndpoint();
       if (StringUtils.hasText(endpoint)) {
         settingsBuilder.setEndpoint(endpoint);
       }
-      String universeDomain =
-          resolveFirstNonBlank(
-              this.gcpPubSubProperties.getPublisher().getUniverseDomain(),
-              this.gcpPubSubProperties.getSubscriber().getUniverseDomain());
+      String universeDomain = resolveUniverseDomain(this.gcpPubSubProperties);
       if (universeDomain != null) {
         settingsBuilder.setUniverseDomain(universeDomain);
       }
@@ -453,14 +448,9 @@ public class GcpPubSubAutoConfiguration {
               .setCredentialsProvider(this.finalCredentialsProvider)
               .setHeaderProvider(this.headerProvider)
               .setTransportChannelProvider(subscriberTransportChannelProvider);
-      // Propagate configured universe domain so subscription admin RPCs match subscriber
-      // configuration instead of falling back to googleapis.com. Precedence:
-      // subscriber.universe-domain, falling back to publisher.universe-domain when unset (e.g.,
-      // publisher-only apps).
-      String universeDomain =
-          resolveFirstNonBlank(
-              this.gcpPubSubProperties.getSubscriber().getUniverseDomain(),
-              this.gcpPubSubProperties.getPublisher().getUniverseDomain());
+      // Propagate configured universe domain so subscription admin RPCs do not fall back to
+      // googleapis.com.
+      String universeDomain = resolveUniverseDomain(this.gcpPubSubProperties);
       if (universeDomain != null) {
         settingsBuilder.setUniverseDomain(universeDomain);
       }
@@ -471,16 +461,26 @@ public class GcpPubSubAutoConfiguration {
   }
 
   /**
-   * Returns the first non-blank value from {@code primary} or {@code fallback}, or {@code null}.
+   * Resolves the configured universe domain from publisher/subscriber properties, failing if both
+   * are explicitly set to different values.
    */
-  private static String resolveFirstNonBlank(String primary, String fallback) {
-    if (StringUtils.hasText(primary)) {
-      return primary;
+  private static String resolveUniverseDomain(GcpPubSubProperties properties) {
+    String publisherUniverseDomain = properties.getPublisher().getUniverseDomain();
+    String subscriberUniverseDomain = properties.getSubscriber().getUniverseDomain();
+    boolean hasPublisher = StringUtils.hasText(publisherUniverseDomain);
+    boolean hasSubscriber = StringUtils.hasText(subscriberUniverseDomain);
+    if (hasPublisher
+        && hasSubscriber
+        && !publisherUniverseDomain.equals(subscriberUniverseDomain)) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Conflicting universe domains configured: publisher (%s) and subscriber (%s) must"
+                  + " match.",
+              publisherUniverseDomain, subscriberUniverseDomain));
     }
-    if (StringUtils.hasText(fallback)) {
-      return fallback;
-    }
-    return null;
+    return hasPublisher
+        ? publisherUniverseDomain
+        : (hasSubscriber ? subscriberUniverseDomain : null);
   }
 
   @Bean
