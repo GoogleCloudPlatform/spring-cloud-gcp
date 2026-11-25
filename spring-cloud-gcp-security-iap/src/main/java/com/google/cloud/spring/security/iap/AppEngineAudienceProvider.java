@@ -16,11 +16,15 @@
 
 package com.google.cloud.spring.security.iap;
 
-import com.google.cloud.resourcemanager.Project;
 import com.google.cloud.resourcemanager.ResourceManager;
-import com.google.cloud.resourcemanager.ResourceManagerOptions;
+import com.google.cloud.resourcemanager.v3.Project;
+import com.google.cloud.resourcemanager.v3.ProjectName;
+import com.google.cloud.resourcemanager.v3.ProjectsClient;
 import com.google.cloud.spring.core.GcpProjectIdProvider;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * {@link org.springframework.security.oauth2.jwt.Jwt} token validator for GCP App Engine (both
@@ -32,10 +36,15 @@ public class AppEngineAudienceProvider implements AudienceProvider {
 
   private static final String AUDIENCE_FORMAT = "/projects/%s/apps/%s";
 
+  private static final String PROJECT_NOT_FOUND_MESSAGE =
+      "Project expected not to be null. Is Cloud Resource Manager API enabled?"
+          + " (https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com)";
+
   private final GcpProjectIdProvider projectIdProvider;
 
-  private ResourceManager resourceManager =
-      ResourceManagerOptions.getDefaultInstance().getService();
+  private ProjectsClient projectsClient;
+
+  private ResourceManager resourceManager;
 
   public AppEngineAudienceProvider(GcpProjectIdProvider projectIdProvider) {
     Assert.notNull(projectIdProvider, "GcpProjectIdProvider cannot be null.");
@@ -45,21 +54,85 @@ public class AppEngineAudienceProvider implements AudienceProvider {
 
   @Override
   public String getAudience() {
-    Project project = this.resourceManager.get(this.projectIdProvider.getProjectId());
-    Assert.notNull(
-        project,
-        "Project expected not to be null. Is Cloud Resource Manager API enabled?"
-            + " (https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com)");
+    if (this.resourceManager != null) {
+      return getAudienceWithLegacyResourceManager();
+    }
+
+    String projectId = this.projectIdProvider.getProjectId();
+    Assert.notNull(projectId, "Project Id expected not to be null.");
+
+    Project project = fetchProject(projectId);
+    Assert.notNull(project, PROJECT_NOT_FOUND_MESSAGE);
+
+    String projectNumber = extractProjectNumber(project);
+    Assert.hasText(projectNumber, "Project Number expected not to be null.");
+
+    return String.format(AUDIENCE_FORMAT, projectNumber, projectId);
+  }
+
+  /**
+   * Sets the Resource Manager v3 {@link ProjectsClient} used to resolve project numbers.
+   *
+   * @param projectsClient the {@link ProjectsClient} to use; must not be {@code null}
+   */
+  public void setProjectsClient(ProjectsClient projectsClient) {
+    Assert.notNull(projectsClient, "ProjectsClient cannot be null.");
+    this.projectsClient = projectsClient;
+    this.resourceManager = null;
+  }
+
+  /**
+   * Sets the legacy {@link ResourceManager} client used to resolve project numbers.
+   *
+   * @param resourceManager the legacy {@link ResourceManager} to use; must not be {@code null}
+   * @deprecated Use {@link #setProjectsClient(ProjectsClient)} instead.
+   */
+  @Deprecated
+  public void setResourceManager(ResourceManager resourceManager) {
+    Assert.notNull(resourceManager, "ResourceManager cannot be null.");
+    this.resourceManager = resourceManager;
+    this.projectsClient = null;
+  }
+
+  /** Creates a default Resource Manager v3 {@link ProjectsClient}. */
+  ProjectsClient createProjectsClient() throws IOException {
+    return ProjectsClient.create();
+  }
+
+  /**
+   * Fetches the v3 {@link Project} for the given project ID, closing any locally created client.
+   */
+  private Project fetchProject(String projectId) {
+    ProjectName name = ProjectName.of(projectId);
+    if (this.projectsClient != null) {
+      return this.projectsClient.getProject(name);
+    }
+    try (ProjectsClient client = createProjectsClient()) {
+      return client.getProject(name);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to create Resource Manager ProjectsClient.", e);
+    }
+  }
+
+  /** Extracts the project number from a v3 {@link Project}'s resource name. */
+  private static String extractProjectNumber(Project project) {
+    String name = project.getName();
+    if (!StringUtils.hasText(name) || !ProjectName.isParsableFrom(name)) {
+      return null;
+    }
+    ProjectName parsed = ProjectName.parse(name);
+    return parsed != null ? parsed.getProject() : null;
+  }
+
+  /** Resolves the audience using a caller-supplied legacy {@link ResourceManager} client. */
+  private String getAudienceWithLegacyResourceManager() {
+    var project = this.resourceManager.get(this.projectIdProvider.getProjectId());
+    Assert.notNull(project, PROJECT_NOT_FOUND_MESSAGE);
     Assert.notNull(project.getProjectNumber(), "Project Number expected not to be null.");
 
     String projectId = this.projectIdProvider.getProjectId();
     Assert.notNull(projectId, "Project Id expected not to be null.");
 
     return String.format(AUDIENCE_FORMAT, project.getProjectNumber(), projectId);
-  }
-
-  public void setResourceManager(ResourceManager resourceManager) {
-    Assert.notNull(resourceManager, "ResourceManager cannot be null.");
-    this.resourceManager = resourceManager;
   }
 }
