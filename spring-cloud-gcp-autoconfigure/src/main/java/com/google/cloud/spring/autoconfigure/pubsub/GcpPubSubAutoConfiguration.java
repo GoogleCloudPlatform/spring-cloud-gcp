@@ -422,7 +422,9 @@ public class GcpPubSubAutoConfiguration {
               .setHeaderProvider(this.headerProvider)
               .setTransportChannelProvider(publisherTransportChannelProvider);
       // Propagate configured endpoint and universe domain so topic admin RPCs match publisher
-      // configuration instead of falling back to googleapis.com.
+      // configuration instead of falling back to googleapis.com. Precedence:
+      // publisher.universe-domain, falling back to subscriber.universe-domain when unset (e.g.,
+      // subscriber-only apps).
       String endpoint = this.gcpPubSubProperties.getPublisher().getEndpoint();
       if (StringUtils.hasText(endpoint)) {
         settingsBuilder.setEndpoint(endpoint);
@@ -452,7 +454,9 @@ public class GcpPubSubAutoConfiguration {
               .setHeaderProvider(this.headerProvider)
               .setTransportChannelProvider(subscriberTransportChannelProvider);
       // Propagate configured universe domain so subscription admin RPCs match subscriber
-      // configuration instead of falling back to googleapis.com.
+      // configuration instead of falling back to googleapis.com. Precedence:
+      // subscriber.universe-domain, falling back to publisher.universe-domain when unset (e.g.,
+      // publisher-only apps).
       String universeDomain =
           resolveFirstNonBlank(
               this.gcpPubSubProperties.getSubscriber().getUniverseDomain(),

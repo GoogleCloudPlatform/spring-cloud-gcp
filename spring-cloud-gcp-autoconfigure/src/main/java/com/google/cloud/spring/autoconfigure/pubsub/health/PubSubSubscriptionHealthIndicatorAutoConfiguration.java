@@ -100,6 +100,7 @@ public class PubSubSubscriptionHealthIndicatorAutoConfiguration
     if (resolvedCredentialsProvider != null) {
       settingsBuilder.setCredentialsProvider(resolvedCredentialsProvider);
     }
+    // Precedence: subscriber.universe-domain, falling back to publisher.universe-domain when unset.
     String universeDomain = this.gcpPubSubProperties.getSubscriber().getUniverseDomain();
     if (!StringUtils.hasText(universeDomain)) {
       universeDomain = this.gcpPubSubProperties.getPublisher().getUniverseDomain();
