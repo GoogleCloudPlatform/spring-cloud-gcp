@@ -65,7 +65,8 @@ public class PartTreeSpannerQuery<T> extends AbstractSpannerQuery<T> {
           paramAccessor,
           getQueryMethod().getQueryMethod().getParameters(),
           this.spannerTemplate,
-          this.spannerMappingContext);
+          this.spannerMappingContext,
+          false);
     }
     if (this.tree.isDelete()) {
       return this.spannerTemplate.performReadWriteTransaction(getDeleteFunction(parameters));
@@ -76,7 +77,8 @@ public class PartTreeSpannerQuery<T> extends AbstractSpannerQuery<T> {
         paramAccessor,
         getQueryMethod().getQueryMethod().getParameters(),
         this.spannerTemplate,
-        this.spannerMappingContext);
+        this.spannerMappingContext,
+        this.queryMethod.isForUpdate());
   }
 
   private Function<SpannerTemplate, List> getDeleteFunction(Object[] parameters) {
@@ -90,7 +92,8 @@ public class PartTreeSpannerQuery<T> extends AbstractSpannerQuery<T> {
               paramAccessor,
               getQueryMethod().getQueryMethod().getParameters(),
               transactionTemplate,
-              this.spannerMappingContext);
+              this.spannerMappingContext,
+              false);
       transactionTemplate.deleteAll(entitiesToDelete);
 
       List result = null;

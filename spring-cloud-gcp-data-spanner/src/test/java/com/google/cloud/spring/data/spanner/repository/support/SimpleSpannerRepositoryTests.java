@@ -103,6 +103,16 @@ class SimpleSpannerRepositoryTests {
   }
 
   @Test
+  void findForUpdateNullIdTest() {
+    SimpleSpannerRepository spannerRepository =
+        new SimpleSpannerRepository<Object, Key>(this.template, Object.class);
+
+    assertThatThrownBy(() -> spannerRepository.findByIdForUpdate(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("A non-null ID is required.");
+  }
+
+  @Test
   void existsNullIdTest() {
 
     SimpleSpannerRepository spannerRepository =
