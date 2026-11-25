@@ -133,11 +133,12 @@ class AppEngineAudienceProviderTests {
     provider.setProjectsClient(this.projectsClient);
 
     assertThat(provider.getAudience()).isEqualTo("/projects/42/apps/steal-spaceship");
+    provider.close();
     verify(this.mockProjectsStub, never()).close();
   }
 
   @Test
-  void testDefaultProjectsClientCreatedLazilyAndClosed() {
+  void testDefaultProjectsClientCreatedLazilyCachedAndClosedOnClose() {
     when(this.mockProjectIdProvider.getProjectId()).thenReturn("steal-spaceship");
     stubGetProject("steal-spaceship", Project.newBuilder().setName("projects/42").build());
 
@@ -153,7 +154,11 @@ class AppEngineAudienceProviderTests {
 
     assertThat(createCount.get()).isZero();
     assertThat(provider.getAudience()).isEqualTo("/projects/42/apps/steal-spaceship");
+    assertThat(provider.getAudience()).isEqualTo("/projects/42/apps/steal-spaceship");
     assertThat(createCount.get()).isEqualTo(1);
+    verify(this.mockProjectsStub, never()).close();
+
+    provider.close();
     verify(this.mockProjectsStub).close();
   }
 

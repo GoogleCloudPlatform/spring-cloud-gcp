@@ -32,7 +32,7 @@ import org.springframework.util.StringUtils;
  *
  * @since 1.1
  */
-public class AppEngineAudienceProvider implements AudienceProvider {
+public class AppEngineAudienceProvider implements AudienceProvider, AutoCloseable {
 
   private static final String AUDIENCE_FORMAT = "/projects/%s/apps/%s";
 
@@ -43,6 +43,8 @@ public class AppEngineAudienceProvider implements AudienceProvider {
   private final GcpProjectIdProvider projectIdProvider;
 
   private ProjectsClient projectsClient;
+
+  private boolean ownsProjectsClient;
 
   private ResourceManager resourceManager;
 
@@ -75,9 +77,11 @@ public class AppEngineAudienceProvider implements AudienceProvider {
    *
    * @param projectsClient the {@link ProjectsClient} to use; must not be {@code null}
    */
-  public void setProjectsClient(ProjectsClient projectsClient) {
+  public synchronized void setProjectsClient(ProjectsClient projectsClient) {
     Assert.notNull(projectsClient, "ProjectsClient cannot be null.");
+    closeOwnedProjectsClient();
     this.projectsClient = projectsClient;
+    this.ownsProjectsClient = false;
     this.resourceManager = null;
   }
 
@@ -88,10 +92,18 @@ public class AppEngineAudienceProvider implements AudienceProvider {
    * @deprecated Use {@link #setProjectsClient(ProjectsClient)} instead.
    */
   @Deprecated
-  public void setResourceManager(ResourceManager resourceManager) {
+  public synchronized void setResourceManager(ResourceManager resourceManager) {
     Assert.notNull(resourceManager, "ResourceManager cannot be null.");
+    closeOwnedProjectsClient();
     this.resourceManager = resourceManager;
     this.projectsClient = null;
+    this.ownsProjectsClient = false;
+  }
+
+  /** Closes the internally created {@link ProjectsClient}, if any. */
+  @Override
+  public synchronized void close() {
+    closeOwnedProjectsClient();
   }
 
   /** Creates a default Resource Manager v3 {@link ProjectsClient}. */
@@ -99,18 +111,30 @@ public class AppEngineAudienceProvider implements AudienceProvider {
     return ProjectsClient.create();
   }
 
-  /**
-   * Fetches the v3 {@link Project} for the given project ID, closing any locally created client.
-   */
+  /** Fetches the v3 {@link Project} for the given project ID. */
   private Project fetchProject(String projectId) {
-    ProjectName name = ProjectName.of(projectId);
-    if (this.projectsClient != null) {
-      return this.projectsClient.getProject(name);
+    return getOrCreateProjectsClient().getProject(ProjectName.of(projectId));
+  }
+
+  /** Returns the configured {@link ProjectsClient}, lazily creating and caching one if needed. */
+  private synchronized ProjectsClient getOrCreateProjectsClient() {
+    if (this.projectsClient == null) {
+      try {
+        this.projectsClient = createProjectsClient();
+        this.ownsProjectsClient = true;
+      } catch (IOException e) {
+        throw new UncheckedIOException("Failed to create Resource Manager ProjectsClient.", e);
+      }
     }
-    try (ProjectsClient client = createProjectsClient()) {
-      return client.getProject(name);
-    } catch (IOException e) {
-      throw new UncheckedIOException("Failed to create Resource Manager ProjectsClient.", e);
+    return this.projectsClient;
+  }
+
+  /** Closes and clears the cached {@link ProjectsClient} only when owned by this provider. */
+  private void closeOwnedProjectsClient() {
+    if (this.ownsProjectsClient && this.projectsClient != null) {
+      this.projectsClient.close();
+      this.projectsClient = null;
+      this.ownsProjectsClient = false;
     }
   }
 
