@@ -42,11 +42,11 @@ public class AppEngineAudienceProvider implements AudienceProvider, AutoCloseabl
 
   private final GcpProjectIdProvider projectIdProvider;
 
-  private ProjectsClient projectsClient;
+  private volatile ProjectsClient projectsClient;
 
   private boolean ownsProjectsClient;
 
-  private ResourceManager resourceManager;
+  private volatile ResourceManager resourceManager;
 
   public AppEngineAudienceProvider(GcpProjectIdProvider projectIdProvider) {
     Assert.notNull(projectIdProvider, "GcpProjectIdProvider cannot be null.");
@@ -56,8 +56,9 @@ public class AppEngineAudienceProvider implements AudienceProvider, AutoCloseabl
 
   @Override
   public String getAudience() {
-    if (this.resourceManager != null) {
-      return getAudienceWithLegacyResourceManager();
+    ResourceManager legacyResourceManager = this.resourceManager;
+    if (legacyResourceManager != null) {
+      return getAudienceWithLegacyResourceManager(legacyResourceManager);
     }
 
     String projectId = this.projectIdProvider.getProjectId();
@@ -117,16 +118,23 @@ public class AppEngineAudienceProvider implements AudienceProvider, AutoCloseabl
   }
 
   /** Returns the configured {@link ProjectsClient}, lazily creating and caching one if needed. */
-  private synchronized ProjectsClient getOrCreateProjectsClient() {
-    if (this.projectsClient == null) {
-      try {
-        this.projectsClient = createProjectsClient();
-        this.ownsProjectsClient = true;
-      } catch (IOException e) {
-        throw new UncheckedIOException("Failed to create Resource Manager ProjectsClient.", e);
+  private ProjectsClient getOrCreateProjectsClient() {
+    ProjectsClient client = this.projectsClient;
+    if (client == null) {
+      synchronized (this) {
+        client = this.projectsClient;
+        if (client == null) {
+          try {
+            client = createProjectsClient();
+            this.projectsClient = client;
+            this.ownsProjectsClient = true;
+          } catch (IOException e) {
+            throw new UncheckedIOException("Failed to create Resource Manager ProjectsClient.", e);
+          }
+        }
       }
     }
-    return this.projectsClient;
+    return client;
   }
 
   /** Closes and clears the cached {@link ProjectsClient} only when owned by this provider. */
@@ -149,8 +157,8 @@ public class AppEngineAudienceProvider implements AudienceProvider, AutoCloseabl
   }
 
   /** Resolves the audience using a caller-supplied legacy {@link ResourceManager} client. */
-  private String getAudienceWithLegacyResourceManager() {
-    var project = this.resourceManager.get(this.projectIdProvider.getProjectId());
+  private String getAudienceWithLegacyResourceManager(ResourceManager legacyResourceManager) {
+    var project = legacyResourceManager.get(this.projectIdProvider.getProjectId());
     Assert.notNull(project, PROJECT_NOT_FOUND_MESSAGE);
     Assert.notNull(project.getProjectNumber(), "Project Number expected not to be null.");
 
