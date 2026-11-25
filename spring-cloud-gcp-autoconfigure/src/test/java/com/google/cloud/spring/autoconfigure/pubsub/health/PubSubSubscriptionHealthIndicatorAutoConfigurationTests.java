@@ -73,4 +73,53 @@ class PubSubSubscriptionHealthIndicatorAutoConfigurationTests {
         .withPropertyValues("spring.cloud.gcp.pubsub.health.lagThreshold=1")
         .run(ctx -> assertThat(ctx).doesNotHaveBean(PubSubSubscriptionHealthIndicator.class));
   }
+
+  @Test
+  void metricServiceClientPropagatesCredentialsAndUniverseDomain() {
+    new ApplicationContextRunner()
+        .withConfiguration(
+            AutoConfigurations.of(
+                PubSubSubscriptionHealthIndicatorAutoConfiguration.class,
+                GcpPubSubAutoConfiguration.class))
+        .withBean(GcpProjectIdProvider.class, () -> () -> "fake project")
+        .withBean(CredentialsProvider.class, () -> () -> TestUtils.MOCK_CREDENTIALS)
+        .withPropertyValues(
+            "spring.cloud.gcp.pubsub.health.lagThreshold=1",
+            "spring.cloud.gcp.pubsub.health.backlogThreshold=1",
+            "spring.cloud.gcp.pubsub.subscriber.universe-domain=custom.example.com")
+        .run(
+            ctx -> {
+              MetricServiceClient client = ctx.getBean(MetricServiceClient.class);
+              assertThat(client.getSettings().getUniverseDomain()).isEqualTo("custom.example.com");
+              assertThat(client.getSettings().getEndpoint())
+                  .isEqualTo("monitoring.custom.example.com:443");
+              assertThat(client.getSettings().getCredentialsProvider().getCredentials())
+                  .isSameAs(TestUtils.MOCK_CREDENTIALS);
+            });
+  }
+
+  @Test
+  void metricServiceClientFailsOnConflictingUniverseDomains() {
+    new ApplicationContextRunner()
+        .withConfiguration(
+            AutoConfigurations.of(
+                PubSubSubscriptionHealthIndicatorAutoConfiguration.class,
+                GcpPubSubAutoConfiguration.class))
+        .withBean(GcpProjectIdProvider.class, () -> () -> "fake project")
+        .withBean(CredentialsProvider.class, () -> () -> TestUtils.MOCK_CREDENTIALS)
+        .withPropertyValues(
+            "spring.cloud.gcp.pubsub.health.lagThreshold=1",
+            "spring.cloud.gcp.pubsub.health.backlogThreshold=1",
+            "spring.cloud.gcp.pubsub.publisher.universe-domain=pub.example.com",
+            "spring.cloud.gcp.pubsub.subscriber.universe-domain=sub.example.com")
+        .run(
+            ctx ->
+                assertThat(ctx)
+                    .hasFailed()
+                    .getFailure()
+                    .hasRootCauseInstanceOf(IllegalArgumentException.class)
+                    .hasRootCauseMessage(
+                        "Conflicting universe domains configured: publisher (pub.example.com) and"
+                            + " subscriber (sub.example.com) must match."));
+  }
 }

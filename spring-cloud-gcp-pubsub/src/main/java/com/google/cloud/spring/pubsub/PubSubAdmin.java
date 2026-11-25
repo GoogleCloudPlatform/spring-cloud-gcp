@@ -34,7 +34,9 @@ import com.google.pubsub.v1.Topic;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /** Pub/Sub admin utility that creates new topics and subscriptions on Google Cloud Pub/Sub. */
 public class PubSubAdmin implements AutoCloseable {
@@ -64,24 +66,53 @@ public class PubSubAdmin implements AutoCloseable {
    */
   public PubSubAdmin(
       GcpProjectIdProvider projectIdProvider, CredentialsProvider credentialsProvider) {
+    this(projectIdProvider, credentialsProvider, null, null);
+  }
+
+  /**
+   * Instantiates TopicAdminClient and SubscriptionAdminClient with the provided credentials
+   * provider and optional universe domain and endpoint overrides.
+   *
+   * @param projectIdProvider the project id provider to use
+   * @param credentialsProvider the credentials provider to use
+   * @param universeDomain optional universe domain override
+   * @param endpoint optional endpoint override
+   * @throws PubSubException thrown when there are errors in contacting Google Cloud Pub/Sub
+   */
+  public PubSubAdmin(
+      GcpProjectIdProvider projectIdProvider,
+      CredentialsProvider credentialsProvider,
+      @Nullable String universeDomain,
+      @Nullable String endpoint) {
     Assert.notNull(projectIdProvider, "The project ID provider can't be null.");
     this.projectId = projectIdProvider.getProjectId();
     Assert.hasText(this.projectId, "The project ID can't be null or empty.");
 
     try {
-      this.topicAdminClient =
-          TopicAdminClient.create(
-              TopicAdminSettings.newBuilder().setCredentialsProvider(credentialsProvider).build());
+      TopicAdminSettings.Builder topicAdminSettingsBuilder =
+          TopicAdminSettings.newBuilder().setCredentialsProvider(credentialsProvider);
+      if (StringUtils.hasText(universeDomain)) {
+        topicAdminSettingsBuilder.setUniverseDomain(universeDomain);
+      }
+      if (StringUtils.hasText(endpoint)) {
+        topicAdminSettingsBuilder.setEndpoint(endpoint);
+      }
+      this.topicAdminClient = TopicAdminClient.create(topicAdminSettingsBuilder.build());
     } catch (Exception ex) {
       throw new PubSubException("Failed to create TopicAdminClient", ex);
     }
 
     try {
+      SubscriptionAdminSettings.Builder subscriptionAdminSettingsBuilder =
+          SubscriptionAdminSettings.newBuilder().setCredentialsProvider(credentialsProvider);
+      if (StringUtils.hasText(universeDomain)) {
+        subscriptionAdminSettingsBuilder.setUniverseDomain(universeDomain);
+      }
+      if (StringUtils.hasText(endpoint)) {
+        subscriptionAdminSettingsBuilder.setEndpoint(endpoint);
+      }
       this.subscriptionAdminClient =
-          SubscriptionAdminClient.create(
-              SubscriptionAdminSettings.newBuilder()
-                  .setCredentialsProvider(credentialsProvider)
-                  .build());
+          SubscriptionAdminClient.create(subscriptionAdminSettingsBuilder.build());
     } catch (Exception ex) {
       this.topicAdminClient.close();
       throw new PubSubException("Failed to create SubscriptionAdminClient", ex);

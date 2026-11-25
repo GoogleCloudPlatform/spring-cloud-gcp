@@ -80,6 +80,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.util.StringUtils;
 import org.threeten.bp.Duration;
 
 /** Auto-config for Pub/Sub. */
@@ -415,11 +416,22 @@ public class GcpPubSubAutoConfiguration {
       @Qualifier("publisherTransportChannelProvider")
           TransportChannelProvider publisherTransportChannelProvider) {
     try {
-      return TopicAdminSettings.newBuilder()
-          .setCredentialsProvider(this.finalCredentialsProvider)
-          .setHeaderProvider(this.headerProvider)
-          .setTransportChannelProvider(publisherTransportChannelProvider)
-          .build();
+      TopicAdminSettings.Builder settingsBuilder =
+          TopicAdminSettings.newBuilder()
+              .setCredentialsProvider(this.finalCredentialsProvider)
+              .setHeaderProvider(this.headerProvider)
+              .setTransportChannelProvider(publisherTransportChannelProvider);
+      // Propagate configured endpoint and universe domain so topic admin RPCs do not fall back
+      // to googleapis.com.
+      String endpoint = this.gcpPubSubProperties.getPublisher().getEndpoint();
+      if (StringUtils.hasText(endpoint)) {
+        settingsBuilder.setEndpoint(endpoint);
+      }
+      String universeDomain = resolveUniverseDomain(this.gcpPubSubProperties);
+      if (universeDomain != null) {
+        settingsBuilder.setUniverseDomain(universeDomain);
+      }
+      return settingsBuilder.build();
     } catch (IOException ioe) {
       throw new PubSubException("An error occurred while creating TopicAdminSettings.", ioe);
     }
@@ -431,15 +443,44 @@ public class GcpPubSubAutoConfiguration {
       @Qualifier("subscriberTransportChannelProvider")
           TransportChannelProvider subscriberTransportChannelProvider) {
     try {
-      return SubscriptionAdminClient.create(
+      SubscriptionAdminSettings.Builder settingsBuilder =
           SubscriptionAdminSettings.newBuilder()
               .setCredentialsProvider(this.finalCredentialsProvider)
               .setHeaderProvider(this.headerProvider)
-              .setTransportChannelProvider(subscriberTransportChannelProvider)
-              .build());
+              .setTransportChannelProvider(subscriberTransportChannelProvider);
+      // Propagate configured universe domain so subscription admin RPCs do not fall back to
+      // googleapis.com.
+      String universeDomain = resolveUniverseDomain(this.gcpPubSubProperties);
+      if (universeDomain != null) {
+        settingsBuilder.setUniverseDomain(universeDomain);
+      }
+      return SubscriptionAdminClient.create(settingsBuilder.build());
     } catch (IOException ioe) {
       throw new PubSubException("An error occurred while creating SubscriptionAdminClient.", ioe);
     }
+  }
+
+  /**
+   * Resolves the configured universe domain from publisher/subscriber properties, failing if both
+   * are explicitly set to different values.
+   */
+  private static String resolveUniverseDomain(GcpPubSubProperties properties) {
+    String publisherUniverseDomain = properties.getPublisher().getUniverseDomain();
+    String subscriberUniverseDomain = properties.getSubscriber().getUniverseDomain();
+    boolean hasPublisher = StringUtils.hasText(publisherUniverseDomain);
+    boolean hasSubscriber = StringUtils.hasText(subscriberUniverseDomain);
+    if (hasPublisher
+        && hasSubscriber
+        && !publisherUniverseDomain.equals(subscriberUniverseDomain)) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Conflicting universe domains configured: publisher (%s) and subscriber (%s) must"
+                  + " match.",
+              publisherUniverseDomain, subscriberUniverseDomain));
+    }
+    return hasPublisher
+        ? publisherUniverseDomain
+        : (hasSubscriber ? subscriberUniverseDomain : null);
   }
 
   @Bean
