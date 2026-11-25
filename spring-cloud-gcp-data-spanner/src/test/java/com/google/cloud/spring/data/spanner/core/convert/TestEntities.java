@@ -300,6 +300,34 @@ class TestEntities {
     }
   }
 
+  /** A test class with generic Json field. */
+  @Table(name = "generic_json_test_table")
+  static class TestEntityGenericJson {
+    @PrimaryKey String id;
+
+    @Column(spannerType = TypeCode.JSON)
+    GenericParams<Params> params;
+
+    TestEntityGenericJson(String id, GenericParams<Params> params) {
+      this.id = id;
+      this.params = params;
+    }
+  }
+
+  /** A test class with generic Json Array field. */
+  @Table(name = "generic_jsonarray_test_table")
+  static class TestEntityGenericJsonArray {
+    @PrimaryKey String id;
+
+    @Column(spannerType = TypeCode.JSON)
+    List<GenericParams<Params>> paramsList;
+
+    TestEntityGenericJsonArray(String id, List<GenericParams<Params>> paramsList) {
+      this.id = id;
+      this.paramsList = paramsList;
+    }
+  }
+
   static class Params {
     String p1;
 
@@ -308,6 +336,14 @@ class TestEntities {
     Params(String p1, String p2) {
       this.p1 = p1;
       this.p2 = p2;
+    }
+  }
+
+  static class GenericParams<T> {
+    T genericField;
+
+    GenericParams(T genericField) {
+      this.genericField = genericField;
     }
   }
 
