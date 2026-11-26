@@ -27,6 +27,7 @@ import com.google.cloud.spring.data.spanner.core.mapping.SpannerMappingContext;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentEntity;
 import com.google.cloud.spring.data.spanner.core.mapping.SpannerPersistentProperty;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.OptionalLong;
@@ -238,15 +239,24 @@ public class SpannerSchemaUtils {
 
   private <T> void addColumnDdlStrings(
       SpannerPersistentEntity<T> spannerPersistentEntity, StringJoiner stringJoiner) {
+    ArrayList<String> allColumnStrings = new ArrayList<>();
+    collectColumnDdlStrings(spannerPersistentEntity, allColumnStrings);
+    Collections.sort(allColumnStrings);
+    for (String columnString : allColumnStrings) {
+      stringJoiner.add(columnString);
+    }
+  }
+
+  private <T> void collectColumnDdlStrings(
+      SpannerPersistentEntity<T> spannerPersistentEntity, List<String> collector) {
     spannerPersistentEntity.doWithColumnBackedProperties(
         spannerPersistentProperty -> {
           if (spannerPersistentProperty.isEmbedded()) {
-            addColumnDdlStrings(
+            collectColumnDdlStrings(
                 this.mappingContext.getPersistentEntityOrFail(spannerPersistentProperty.getType()),
-                stringJoiner);
+                collector);
           } else {
-            stringJoiner.add(
-                getColumnDdlString(spannerPersistentProperty, this.spannerEntityProcessor));
+            collector.add(getColumnDdlString(spannerPersistentProperty, this.spannerEntityProcessor));
           }
         });
   }
