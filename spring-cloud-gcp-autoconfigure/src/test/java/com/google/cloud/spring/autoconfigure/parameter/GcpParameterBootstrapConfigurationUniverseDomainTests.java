@@ -47,11 +47,16 @@ class GcpParameterBootstrapConfigurationUniverseDomainTests {
 
   private static ParameterManagerSettings settings(
       String location, String universeDomain, String envValue) {
+    return settings(location, universeDomain, envValue, false);
+  }
+
+  private static ParameterManagerSettings settings(
+      String location, String universeDomain, String envValue, boolean nullEnv) {
     GcpParameterProperties props = new GcpParameterProperties();
     props.setLocation(location);
     props.setUniverseDomain(universeDomain);
     Function<String, String> env =
-        name -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(name) ? envValue : null;
+        nullEnv ? null : name -> "GOOGLE_CLOUD_UNIVERSE_DOMAIN".equals(name) ? envValue : null;
     try {
       return GcpParameterBootstrapConfiguration.buildSettings(
               props, () -> TestUtils.MOCK_CREDENTIALS, env)
@@ -87,5 +92,23 @@ class GcpParameterBootstrapConfigurationUniverseDomainTests {
     ParameterManagerSettings s = settings("global", "p.example", null);
     assertThat(s.getUniverseDomain()).isEqualTo("p.example");
     assertThat(s.getEndpoint()).isEqualTo("parametermanager.p.example:443");
+  }
+
+  private static String systemUniverseOrDefault() {
+    String fromEnv = System.getenv("GOOGLE_CLOUD_UNIVERSE_DOMAIN");
+    return fromEnv != null && !fromEnv.isBlank() ? fromEnv : "googleapis.com";
+  }
+
+  @Test
+  void nullEnvFallsBackToSystemEnvironment() {
+    assertThat(GcpParameterBootstrapConfiguration.resolveUniverseDomain(null, null))
+        .isEqualTo(systemUniverseOrDefault());
+  }
+
+  @Test
+  void buildSettingsWithNullEnvUsesSystemEnvironmentForRegionalEndpoint() {
+    ParameterManagerSettings s = settings("us-central1", null, null, true);
+    assertThat(s.getEndpoint())
+        .isEqualTo("parametermanager.us-central1.rep." + systemUniverseOrDefault() + ":443");
   }
 }

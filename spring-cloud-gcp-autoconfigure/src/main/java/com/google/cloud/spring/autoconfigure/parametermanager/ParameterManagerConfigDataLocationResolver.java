@@ -159,7 +159,7 @@ public class ParameterManagerConfigDataLocationResolver
                   new UserAgentHeaderProvider(ParameterManagerConfigDataLoader.class));
       // Only override universeDomain when explicitly set; otherwise let GAX resolve
       // GOOGLE_CLOUD_UNIVERSE_DOMAIN or default to googleapis.com.
-      if (StringUtils.hasText(properties.getUniverseDomain())) {
+      if (properties != null && StringUtils.hasText(properties.getUniverseDomain())) {
         settingsBuilder.setUniverseDomain(properties.getUniverseDomain());
       }
       parameterManagerClient = ParameterManagerClient.create(settingsBuilder.build());

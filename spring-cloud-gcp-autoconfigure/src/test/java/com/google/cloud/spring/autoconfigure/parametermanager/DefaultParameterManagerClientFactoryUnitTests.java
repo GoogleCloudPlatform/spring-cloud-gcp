@@ -90,4 +90,12 @@ public class DefaultParameterManagerClientFactoryUnitTests {
           .isEqualTo("parametermanager.us-east1.rep.explicit.example.com:443");
     }
   }
+
+  @Test
+  void nullEnvProviderFallsBackToSystemEnvironment() {
+    String fromEnv = System.getenv("GOOGLE_CLOUD_UNIVERSE_DOMAIN");
+    String expected =
+        fromEnv != null && !fromEnv.isBlank() ? fromEnv : "googleapis.com";
+    assertThat(factoryWith(null, null).resolveUniverseDomain()).isEqualTo(expected);
+  }
 }

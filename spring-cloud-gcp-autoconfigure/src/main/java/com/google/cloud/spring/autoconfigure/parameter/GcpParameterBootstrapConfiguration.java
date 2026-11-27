@@ -75,7 +75,8 @@ public class GcpParameterBootstrapConfiguration {
     // universe domain into regional endpoints instead of hardcoding googleapis.com.
     if (StringUtils.hasText(properties.getLocation())
         && !"global".equals(properties.getLocation())) {
-      String universeDomain = resolveUniverseDomain(properties.getUniverseDomain(), env);
+      Function<String, String> envProvider = env != null ? env : System::getenv;
+      String universeDomain = resolveUniverseDomain(properties.getUniverseDomain(), envProvider);
       settings.setUniverseDomain(universeDomain);
       settings.setEndpoint(
           String.format(
@@ -88,7 +89,8 @@ public class GcpParameterBootstrapConfiguration {
     if (StringUtils.hasText(configured)) {
       return configured;
     }
-    String fromEnv = env.apply(EndpointContext.GOOGLE_CLOUD_UNIVERSE_DOMAIN);
+    Function<String, String> envProvider = env != null ? env : System::getenv;
+    String fromEnv = envProvider.apply(EndpointContext.GOOGLE_CLOUD_UNIVERSE_DOMAIN);
     if (StringUtils.hasText(fromEnv)) {
       return fromEnv;
     }

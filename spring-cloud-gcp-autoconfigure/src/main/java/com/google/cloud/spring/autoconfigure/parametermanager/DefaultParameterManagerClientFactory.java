@@ -68,7 +68,7 @@ public class DefaultParameterManagerClientFactory implements ParameterManagerCli
       Function<String, String> envProvider) {
     this.credentialsProvider = credentialsProvider;
     this.universeDomain = universeDomain;
-    this.envProvider = envProvider;
+    this.envProvider = envProvider != null ? envProvider : System::getenv;
     this.clientCache.putIfAbsent(GLOBAL_LOCATION, client);
   }
 
