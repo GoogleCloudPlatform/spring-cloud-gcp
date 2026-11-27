@@ -33,6 +33,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.util.StringUtils;
 
 /** Autoconfiguration for GCP Parameter Manager. */
 @AutoConfiguration
@@ -60,20 +61,25 @@ public class GcpParameterManagerAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean
   public ParameterManagerClient parameterManagerClient() throws IOException {
-    ParameterManagerSettings settings =
+    ParameterManagerSettings.Builder settingsBuilder =
         ParameterManagerSettings.newBuilder()
             .setCredentialsProvider(this.credentialsProvider)
             .setHeaderProvider(
-                new UserAgentHeaderProvider(GcpParameterManagerAutoConfiguration.class))
-            .build();
-    return ParameterManagerClient.create(settings);
+                new UserAgentHeaderProvider(GcpParameterManagerAutoConfiguration.class));
+    // Only override universeDomain when explicitly set; otherwise let GAX resolve
+    // GOOGLE_CLOUD_UNIVERSE_DOMAIN or default to googleapis.com.
+    if (StringUtils.hasText(this.properties.getUniverseDomain())) {
+      settingsBuilder.setUniverseDomain(this.properties.getUniverseDomain());
+    }
+    return ParameterManagerClient.create(settingsBuilder.build());
   }
 
   @Bean
   @ConditionalOnMissingBean
   public ParameterManagerClientFactory parameterManagerClientFactory(
       ParameterManagerClient client) {
-    return new DefaultParameterManagerClientFactory(this.credentialsProvider, client);
+    return new DefaultParameterManagerClientFactory(
+        this.credentialsProvider, client, this.properties.getUniverseDomain());
   }
 
   @Bean
