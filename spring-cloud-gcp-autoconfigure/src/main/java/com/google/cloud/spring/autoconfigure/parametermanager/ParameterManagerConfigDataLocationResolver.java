@@ -38,6 +38,7 @@ import org.springframework.boot.context.config.ConfigDataLocationNotFoundExcepti
 import org.springframework.boot.context.config.ConfigDataLocationResolver;
 import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.util.StringUtils;
 
 public class ParameterManagerConfigDataLocationResolver
     implements ConfigDataLocationResolver<ParameterManagerConfigDataResource> {
@@ -151,13 +152,17 @@ public class ParameterManagerConfigDataLocationResolver
       GcpParameterManagerProperties properties =
           context.getBootstrapContext().get(GcpParameterManagerProperties.class);
       DefaultCredentialsProvider credentialsProvider = new DefaultCredentialsProvider(properties);
-      ParameterManagerSettings settings =
+      ParameterManagerSettings.Builder settingsBuilder =
           ParameterManagerSettings.newBuilder()
               .setCredentialsProvider(credentialsProvider)
               .setHeaderProvider(
-                  new UserAgentHeaderProvider(ParameterManagerConfigDataLoader.class))
-              .build();
-      parameterManagerClient = ParameterManagerClient.create(settings);
+                  new UserAgentHeaderProvider(ParameterManagerConfigDataLoader.class));
+      // Only override universeDomain when explicitly set; otherwise let GAX resolve
+      // GOOGLE_CLOUD_UNIVERSE_DOMAIN or default to googleapis.com.
+      if (properties != null && StringUtils.hasText(properties.getUniverseDomain())) {
+        settingsBuilder.setUniverseDomain(properties.getUniverseDomain());
+      }
+      parameterManagerClient = ParameterManagerClient.create(settingsBuilder.build());
 
       return parameterManagerClient;
     } catch (IOException e) {
@@ -173,8 +178,12 @@ public class ParameterManagerConfigDataLocationResolver
       return parameterManagerClientFactory;
     }
     ParameterManagerClient client = context.getBootstrapContext().get(ParameterManagerClient.class);
+    GcpParameterManagerProperties properties =
+        context.getBootstrapContext().get(GcpParameterManagerProperties.class);
     return new DefaultParameterManagerClientFactory(
-        context.getBootstrapContext().get(CredentialsProvider.class), client);
+        context.getBootstrapContext().get(CredentialsProvider.class),
+        client,
+        properties != null ? properties.getUniverseDomain() : null);
   }
 
   private static ParameterManagerTemplate createParameterManagerTemplate(
